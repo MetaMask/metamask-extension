@@ -2406,8 +2406,8 @@
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
         "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": true,
+        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/hashes": true,
         "@metamask/utils": true,
-        "@metamask/utils>@noble/hashes": true,
         "superstruct": true
       }
     },
@@ -2416,7 +2416,13 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@noble/hashes": true
+        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {

@@ -6,8 +6,51 @@
         "process.emitWarning": true
       },
       "packages": {
-        "@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "@babel/code-frame>@babel/highlight": true,
+        "@babel/code-frame>chalk": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "@babel/code-frame>@babel/highlight>chalk>supports-color": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "@metamask/jazzicon>color>color-convert": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color": {
+      "builtin": {
+        "os.release": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "@babel/code-frame>chalk": {
@@ -1080,6 +1123,16 @@
         "react>object-assign": true
       }
     },
+    "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>has-unicode": {
+      "builtin": {
+        "os.type": true
+      },
+      "globals": {
+        "process.env.LANG": true,
+        "process.env.LC_ALL": true,
+        "process.env.LC_CTYPE": true
+      }
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width": {
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
@@ -1095,6 +1148,11 @@
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": {
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
+      }
+    },
+    "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>wide-align": {
+      "packages": {
+        "yargs>string-width": true
       }
     },
     "@lavamoat/lavapack": {
@@ -1118,13 +1176,13 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>convert-source-map": true,
+        "@lavamoat/lavapack>espree": true,
         "@lavamoat/lavapack>readable-stream": true,
+        "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
-        "eslint>espree": true,
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "through2": true
+        "lavamoat>lavamoat-core": true
       }
     },
     "@lavamoat/lavapack>combine-source-map": {
@@ -1158,6 +1216,13 @@
         "value": true
       }
     },
+    "@lavamoat/lavapack>espree": {
+      "packages": {
+        "eslint>eslint-visitor-keys": true,
+        "eslint>espree>acorn-jsx": true,
+        "jsdom>acorn": true
+      }
+    },
     "@lavamoat/lavapack>readable-stream": {
       "builtin": {
         "buffer.Buffer": true,
@@ -1175,6 +1240,52 @@
         "browserify>string_decoder": true,
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true
+      }
+    },
+    "@lavamoat/lavapack>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true,
+        "@lavamoat/lavapack>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream>string_decoder": {
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true
       }
     },
     "@metamask/build-utils": {
@@ -1510,8 +1621,16 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "brfs>resolve>path-parse": true,
-        "depcheck>is-core-module": true
+        "brfs>resolve>is-core-module": true,
+        "brfs>resolve>path-parse": true
+      }
+    },
+    "brfs>resolve>is-core-module": {
+      "globals": {
+        "process.versions": true
+      },
+      "packages": {
+        "browserify>has": true
       }
     },
     "brfs>resolve>path-parse": {
@@ -2324,7 +2443,12 @@
         "process.versions": true
       },
       "packages": {
-        "browserify>has": true
+        "depcheck>is-core-module>hasown": true
+      }
+    },
+    "depcheck>is-core-module>hasown": {
+      "packages": {
+        "browserify>has>function-bind": true
       }
     },
     "depcheck>json5": {
@@ -3110,8 +3234,8 @@
     },
     "eslint>espree": {
       "packages": {
-        "eslint>eslint-visitor-keys": true,
         "eslint>espree>acorn-jsx": true,
+        "eslint>espree>eslint-visitor-keys": true,
         "jsdom>acorn": true
       }
     },
@@ -4954,6 +5078,7 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>detect-libc": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": true
       }
@@ -5011,7 +5136,18 @@
       },
       "packages": {
         "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": {
+      "builtin": {
+        "os.homedir": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.getuid": true,
+        "process.platform": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": {
@@ -5022,6 +5158,70 @@
         "process.env.TMPDIR": true,
         "process.env.windir": true,
         "process.platform": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "util": true
+      },
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true
+      },
+      "packages": {
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>console-control-strings": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": true,
+        "nyc>yargs>set-blocking": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "util.inherits": true
+      },
+      "packages": {
+        "koa>delegates": true,
+        "readable-stream": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": {
+      "builtin": {
+        "util.format": true
+      },
+      "globals": {
+        "clearInterval": true,
+        "process": true,
+        "setImmediate": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>console-control-strings": true,
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>has-unicode": true,
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>wide-align": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>aproba": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "nyc>signal-exit": true,
+        "react>object-assign": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": {
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "gulp>gulp-cli>yargs>string-width>code-point-at": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": {
+      "packages": {
+        "gulp>gulp-cli>yargs>string-width>is-fullwidth-code-point>number-is-nan": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": {
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": {
@@ -6143,25 +6343,13 @@
       "packages": {
         "@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
+        "browserify>concat-stream": true,
         "duplexify": true,
-        "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true
-      }
-    },
-    "lavamoat-browserify>concat-stream": {
-      "globals": {
-        "Buffer.concat": true,
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "browserify>concat-stream>typedarray": true,
-        "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -6191,50 +6379,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "lavamoat-browserify>readable-stream": true
+        "lavamoat-browserify>through2>readable-stream": true,
+        "watchify>xtend": true
       }
     },
-    "lavamoat>@babel/highlight": {
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>supports-color": {
+    "lavamoat-browserify>through2>readable-stream": {
       "builtin": {
-        "os.release": true
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
       },
       "globals": {
-        "process.env": true,
-        "process.platform": true,
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
         "process.stderr": true,
         "process.stdout": true,
-        "process.versions.node.split": true
+        "process.version.slice": true,
+        "setImmediate": true
       },
       "packages": {
-        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+        "lavamoat-browserify>through2>readable-stream>safe-buffer": true,
+        "lavamoat-browserify>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+    "lavamoat-browserify>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "lavamoat-browserify>through2>readable-stream>string_decoder": {
+      "packages": {
+        "lavamoat-browserify>through2>readable-stream>safe-buffer": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6245,7 +6425,41 @@
         "path.relative": true
       },
       "packages": {
-        "brfs>resolve": true
+        "lavamoat>@lavamoat/aa>resolve": true
+      }
+    },
+    "lavamoat>@lavamoat/aa>resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.realpath": true,
+        "fs.realpathSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "brfs>resolve>path-parse": true,
+        "depcheck>is-core-module": true
       }
     },
     "lavamoat>json-stable-stringify": {
@@ -6256,8 +6470,8 @@
     "lavamoat>lavamoat-core": {
       "builtin": {
         "events": true,
-        "fs.existsSync": true,
         "fs.readFileSync": true,
+        "node:fs/promises.readFile": true,
         "path.extname": true,
         "path.join": true
       },
@@ -6342,8 +6556,48 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name": true,
+        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "depcheck>@babel/traverse>globals": true,
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
+        "lavamoat>lavamoat-tofu>@babel/types": true,
+        "nock>debug": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@babel/core>@babel/generator>jsesc": true,
+        "lavamoat>lavamoat-tofu>@babel/types": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-tofu>@babel/types>@babel/helper-string-parser": true
       }
     },
     "lodash": {
@@ -6428,6 +6682,13 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
+      }
+    },
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "nock>debug": {
@@ -8037,14 +8298,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "mockttp>portfinder>mkdirp": true
       }
     },
     "stylelint>global-modules": {

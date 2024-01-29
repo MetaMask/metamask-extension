@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.8.0]
+## [11.7.5]
+### Fixed
+- Fix compatability of MetaMask Extension and Chrome versions v122 and higher [#22590](https://github.com/MetaMask/metamask-extension/pull/22590)
+
 ## [11.7.4]
 
 ## [11.7.3]
@@ -4272,6 +4276,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...HEAD
 [11.8.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...v11.8.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.5...HEAD
+[11.7.5]: https://github.com/MetaMask/metamask-extension/compare/v11.7.4...v11.7.5
 [11.7.4]: https://github.com/MetaMask/metamask-extension/compare/v11.7.3...v11.7.4
 [11.7.3]: https://github.com/MetaMask/metamask-extension/compare/v11.7.2...v11.7.3
 [11.7.2]: https://github.com/MetaMask/metamask-extension/compare/v11.7.1...v11.7.2
