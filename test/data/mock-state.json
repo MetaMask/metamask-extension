@@ -111,7 +111,8 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": false
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
