@@ -148,6 +148,7 @@ export class NetworkOrderController extends BaseController<
     this.update((state) => {
       state.orderedNetworkList = uniqueArray;
     });
+
   }
 
   /**

@@ -93,26 +93,32 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
-      return nonTestNetworks;
+      return items;
     }
 
     // Create a mapping of chainId to index in orderedNetworksList
-    const chainIdIndexMap = Object.fromEntries(
-      orderedNetworksList.map((network, index) => [network.networkId, index]),
-    );
-
-    // Sort nonTestNetworks based on the order of chainIds in orderedNetworksList
-    const sortedNetworkList = [...nonTestNetworks].sort((a, b) => {
-      const indexA = chainIdIndexMap[a.chainId] ?? Infinity;
-      const indexB = chainIdIndexMap[b.chainId] ?? Infinity;
-      return indexA - indexB;
+    const orderedIndexMap = {};
+    orderedNetworksList.forEach((network, index) => {
+      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
     });
 
-    return sortedNetworkList;
+    // Sort nonTestNetworks based on the order in orderedNetworksList
+    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
+      const keyA = `${a.chainId}_${a.rpcUrl}`;
+      const keyB = `${b.chainId}_${b.rpcUrl}`;
+      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
+    });
+
+    return sortedNonTestNetworks;
   };
 
   const networksList = newOrderNetworks();
-  const [items, setItems] = useState([...networksList]);
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    // Update items whenever orderedNetworksList changes
+    setItems(newOrderNetworks());
+  }, [orderedNetworksList]);
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
