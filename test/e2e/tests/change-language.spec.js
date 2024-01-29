@@ -161,6 +161,9 @@ describe('Settings - general tab, validate the change language functionality:', 
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
 
+        await driver.isElementPresent('.loading-overlay__spinner');
+        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+
         await driver.clickElement(selectors.advanceText);
 
         // Confirm that the language change is reflected in search box water text

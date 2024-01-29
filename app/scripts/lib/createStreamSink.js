@@ -1,7 +1,7 @@
-import { Writable as WritableStream } from 'readable-stream';
+import { Writable } from 'readable-stream';
 import promiseToCallback from 'promise-to-callback';
 
-class AsyncWritableStream extends WritableStream {
+class AsyncWritableStream extends Writable {
   constructor(asyncWriteFn, _opts) {
     const opts = { objectMode: true, ..._opts };
     super(opts);

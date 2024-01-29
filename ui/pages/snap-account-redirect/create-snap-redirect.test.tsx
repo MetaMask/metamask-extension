@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/jest';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../helpers/constants/common';
 import SnapAccountRedirect from './snap-account-redirect';
 
 const store = configureStore({
@@ -15,7 +16,7 @@ global.platform = {
   openTab: jest.fn(),
 };
 
-const mockUrl = 'https://metamask.github.io/snap-simple-keyring/1.0.0/';
+const mockUrl = TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL;
 const mockSnapName = 'Snap Simple Keyring';
 const mockSnapId = 'npm:@metamask/snap-simple-keyring';
 const mockMessage = 'Redirecting to Snap Simple Keyring';
