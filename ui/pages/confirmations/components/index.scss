@@ -1,10 +1,23 @@
 /** Please import your files in alphabetical order **/
 @import 'advanced-gas-controls/index';
+@import 'advanced-gas-fee-popover/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-gas-limit/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'confirm-page-container/index';
 @import 'confirmation-warning-modal/index';
 @import 'custom-nonce/index';
 @import 'edit-gas-display/index';
-@import 'gas-details-item/index';
+@import 'edit-gas-fee-button/index';
+@import 'edit-gas-fee-popover/index';
+@import 'edit-gas-fee-popover/edit-gas-item/index';
+@import 'edit-gas-fee-popover/network-statistics/index';
+@import 'edit-gas-fee-popover/network-statistics/status-slider/index';
+@import 'edit-gas-fee-popover/edit-gas-tooltip/index';
+@import 'edit-gas-popover/index';
 @import 'gas-timing/index';
 @import 'multilayer-fee-message/index';
 @import 'set-approval-for-all-warning/index';

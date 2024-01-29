@@ -8,7 +8,7 @@ import {
   txDataSelector,
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
-import GasDetailsItem from '../../../pages/confirmations/components/gas-details-item';
+import GasDetailsItem from '../gas-details-item';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { ConfirmLegacyGasDisplay } from './confirm-legacy-gas-display';
 

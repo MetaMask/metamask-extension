@@ -36,7 +36,7 @@ import {
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { estimateGas } from '../../../../store/actions';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
-import { useGasFeeContext } from '../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 

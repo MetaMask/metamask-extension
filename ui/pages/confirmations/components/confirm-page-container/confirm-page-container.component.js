@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../../shared/constants/gas';
-import { GasFeeContextProvider } from '../../contexts/gasFee';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 
@@ -22,9 +22,9 @@ import Button from '../../../../components/ui/button';
 import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../../../components/ui/sender-to-recipient';
 
-import AdvancedGasFeePopover from '../../../../components/app/advanced-gas-fee-popover';
-import EditGasFeePopover from '../../../../components/app/edit-gas-fee-popover/edit-gas-fee-popover';
-import EditGasPopover from '../../../../components/app/edit-gas-popover';
+import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
+import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
+import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../../../components/ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import { Text } from '../../../../components/component-library';

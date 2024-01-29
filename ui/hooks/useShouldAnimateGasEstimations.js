@@ -6,7 +6,7 @@ import {
   getGasLoadingAnimationIsShowing,
   toggleGasLoadingAnimation,
 } from '../ducks/app/app';
-import { useGasFeeEstimates } from '../pages/confirmations/hooks/useGasFeeEstimates';
+import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();

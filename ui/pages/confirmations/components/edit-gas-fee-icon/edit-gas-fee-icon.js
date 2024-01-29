@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useGasFeeContext } from '../../contexts/gasFee';
-import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import {
   BUTTON_VARIANT,

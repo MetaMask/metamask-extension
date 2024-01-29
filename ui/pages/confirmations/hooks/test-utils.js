@@ -21,7 +21,7 @@ import {
 } from '../../../ducks/swaps/swaps';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei

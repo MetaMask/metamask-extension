@@ -51,7 +51,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import ApproveContentCard from '../components/approve-content-card/approve-content-card';
 import CustomSpendingCap from '../components/custom-spending-cap/custom-spending-cap';
 import Dialog from '../../../components/ui/dialog';
-import { useGasFeeContext } from '../contexts/gasFee';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { valuesFor } from '../../../helpers/utils/util';

@@ -1,24 +1,10 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
 @import 'add-network/index';
-@import 'advanced-gas-fee-popover/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-gas-limit/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
-@import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'app-loading-spinner/index';
 @import 'alerts/alerts';
 @import 'beta-header/index';
 @import 'cancel-speedup-popover/index';
-@import 'edit-gas-fee-button/index';
-@import 'edit-gas-fee-popover/index';
-@import 'edit-gas-fee-popover/edit-gas-item/index';
-@import 'edit-gas-fee-popover/network-statistics/index';
-@import 'edit-gas-fee-popover/network-statistics/status-slider/index';
-@import 'edit-gas-fee-popover/edit-gas-tooltip/index';
-@import 'edit-gas-popover/index';
 @import 'import-token/index';
 @import 'nfts-items/index';
 @import 'nfts-tab/index';
@@ -30,6 +16,7 @@
 @import 'connected-sites-list/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'flask/experimental-area/index';
+@import 'gas-details-item/index';
 @import 'snaps/snap-content-footer/index';
 @import 'snaps/snap-install-warning/index';
 @import 'snaps/snap-ui-renderer/index';

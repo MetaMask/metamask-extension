@@ -28,7 +28,7 @@ import UserPreferencedCurrencyDisplay from '../../../../components/app/user-pref
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { addHexes } from '../../../../../shared/modules/conversion.utils';
 import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
-import { useGasFeeContext } from '../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 export default function FeeDetailsComponent({
   txData,
