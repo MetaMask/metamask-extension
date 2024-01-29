@@ -92,11 +92,11 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
 
         assert(
           bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: transfer_farming\n`,
+          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
         );
         assert(
           bannerAlertText.includes(expectedDescriptionMainnet),
-          `Unexpected banner alert description. Expected: ${expectedDescriptionMainnet} \nExpected reason: transfer_farming\n`,
+          `Unexpected banner alert description. Expected: ${expectedDescriptionMainnet} \nExpected reason: approval_farming\n`,
         );
 
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -139,11 +139,11 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
 
         assert(
           bannerAlertFoundByTitle,
-          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: transfer_farming\n`,
+          `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: raw_native_token_transfer\n`,
         );
         assert(
           bannerAlertText.includes(expectedDescriptionArbitrum),
-          `Unexpected banner alert description. Expected: ${expectedDescriptionArbitrum} \nExpected reason: transfer_farming\n`,
+          `Unexpected banner alert description. Expected: ${expectedDescriptionArbitrum} \nExpected reason: raw_native_token_transfer\n`,
         );
       },
     );
