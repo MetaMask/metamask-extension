@@ -2873,6 +2873,10 @@ export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
+export function setPetnamesEnabled(value: boolean) {
+  return setPreference('petnamesEnabled', value);
+}
+
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
@@ -3335,6 +3339,11 @@ export function setSwapsFeatureFlags(
   };
 }
 
+type Quotes = [
+  { destinationAmount: string; decimals: number; aggregator: string },
+  string,
+];
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3351,19 +3360,9 @@ export function fetchAndSetQuotes(
     accountBalance: string;
     chainId: string;
   },
-): ThunkAction<
-  Promise<
-    [
-      { destinationAmount: string; decimals: number; aggregator: string },
-      string,
-    ]
-  >,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<Quotes>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const [quotes, selectedAggId] = await submitRequestToBackground(
+    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
       'fetchAndSetQuotes',
       [fetchParams, fetchParamsMetaData],
     );
@@ -4615,7 +4614,6 @@ export function setUseRequestQueue(val: boolean): void {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
@@ -4623,7 +4621,6 @@ export function setUseExternalNameSources(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
