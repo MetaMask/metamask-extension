@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
