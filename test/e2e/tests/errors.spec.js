@@ -658,6 +658,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await driver.findElement('#password');
+
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
