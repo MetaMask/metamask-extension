@@ -96,12 +96,17 @@ export const NetworkListMenu = ({ onClose }) => {
       return nonTestNetworks;
     }
 
-    // Reorder nonTestNetworks based on the order of chainIds in orderedNetworksList
-    const sortedNetworkList = orderedNetworksList
-      .map((chainId) =>
-        nonTestNetworks.find((network) => network.chainId === chainId),
-      )
-      .filter(Boolean);
+    // Create a mapping of chainId to index in orderedNetworksList
+    const chainIdIndexMap = Object.fromEntries(
+      orderedNetworksList.map((network, index) => [network.networkId, index]),
+    );
+
+    // Sort nonTestNetworks based on the order of chainIds in orderedNetworksList
+    const sortedNetworkList = [...nonTestNetworks].sort((a, b) => {
+      const indexA = chainIdIndexMap[a.chainId] ?? Infinity;
+      const indexB = chainIdIndexMap[b.chainId] ?? Infinity;
+      return indexA - indexB;
+    });
 
     return sortedNetworkList;
   };
@@ -124,13 +129,20 @@ export const NetworkListMenu = ({ onClose }) => {
     if (!result.destination) {
       return;
     }
+
     const newItems = [...items];
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
-    setItems(newItems);
-    const orderedArray = newItems.map((obj) => obj.chainId);
+
+    // Convert the updated array back to NetworksInfo format
+    const orderedArray = newItems.map((obj) => ({
+      networkId: obj.chainId, // Assuming chainId is the networkId
+      networkRpcUrl: obj.rpcUrl,
+    }));
 
     dispatch(updateNetworksList(orderedArray));
+
+    setItems(newItems);
   };
 
   let searchResults =
@@ -161,7 +173,9 @@ export const NetworkListMenu = ({ onClose }) => {
         return null;
       }
 
-      const isCurrentNetwork = currentNetwork.id === network.id;
+      const isCurrentNetwork =
+        currentNetwork.id === network.id &&
+        currentNetwork.rpcUrl === network.rpcUrl;
 
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;

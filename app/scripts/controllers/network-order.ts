@@ -7,6 +7,7 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import type { Patch } from 'immer';
+import { WritableDraft } from 'immer/dist/internal';
 import { MAINNET_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
@@ -15,11 +16,18 @@ const controllerName = 'NetworkOrderController';
 /**
  * The network ID of a network.
  */
-export type NetworkId = string;
+
+export type NetworksInfo = {
+  networkId: string;
+  networkRpcUrl: string;
+};
+
+// Explicitly define NetworksInfoMap with string keys
+export type NetworksInfoMap = Record<string, NetworksInfo>;
 
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
-  orderedNetworkList: NetworkId[];
+  orderedNetworkList: NetworksInfoMap;
 };
 
 // Describes the structure of a state change event
@@ -49,7 +57,7 @@ export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
 
 // Default state for the controller
 const defaultState = {
-  orderedNetworkList: [],
+  orderedNetworkList: {},
 };
 
 // Metadata for the controller state
@@ -116,17 +124,29 @@ export class NetworkOrderController extends BaseController<
     const combinedNetworks = [...MAINNET_CHAINS, ...networkConfigurations];
 
     // Extract unique chainIds from the combined networks
-    const uniqueChainIds = combinedNetworks.map((item) => item.chainId);
+    const uniqueChainIds = combinedNetworks.map((item) => ({
+      networkId: item.chainId,
+      networkRpcUrl: item.rpcUrl,
+    }));
 
-    // Update the state with the new networks list
+    const combinedArray = [...this.state.orderedNetworkList, ...uniqueChainIds];
+
+    const uniqueArray: any[] | WritableDraft<NetworksInfoMap> = [];
+    combinedArray.forEach((item: { networkId: any; networkRpcUrl: any; } ) => {
+      if (
+        !uniqueArray.some(
+          (uniqueItem) =>
+            uniqueItem.networkRpcUrl === item.networkRpcUrl &&
+            uniqueItem.networkId === item.networkId,
+        )
+      ) {
+        uniqueArray.push(item);
+      }
+    });
+
+    //Update the state with the new networks list
     this.update((state) => {
-      // Combine existing networks with unique chainIds, excluding duplicates
-      state.orderedNetworkList = [
-        ...state.orderedNetworkList,
-        ...uniqueChainIds.filter(
-          (id) => !state.orderedNetworkList.includes(id),
-        ),
-      ];
+      state.orderedNetworkList = uniqueArray;
     });
   }
 
@@ -136,7 +156,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(networkList: []) {
+  updateNetworksList(networkList: NetworksInfoMap) {
     this.update((state) => {
       state.orderedNetworkList = networkList;
       return state;

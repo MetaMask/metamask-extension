@@ -1251,7 +1251,7 @@ export function getSortedAnnouncementsToShow(state) {
 }
 
 export function getOrderedNetworksList(state) {
-  return state.metamask.orderedNetworkList;
+  return Object.values(state.metamask.orderedNetworkList);
 }
 
 export function getPinnedAccountsList(state) {
