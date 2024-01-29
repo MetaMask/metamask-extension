@@ -25,7 +25,6 @@ const CUSTODIAN_PSEUDO_STATUS = 'inCustody';
 const pendingStatusHash = {
   [TransactionStatus.submitted]: TransactionGroupStatus.pending,
   [TransactionStatus.approved]: TransactionGroupStatus.pending,
-  [TransactionStatus.signed]: TransactionGroupStatus.pending,
 };
 
 const statusToClassNameHash = {
@@ -41,6 +40,20 @@ const statusToClassNameHash = {
   ///: END:ONLY_INCLUDE_IF
 };
 
+function getStatusKey(status, isEarliestNonce) {
+  if (status === TransactionStatus.approved) {
+    return SIGNING_PSUEDO_STATUS;
+  }
+
+  if (pendingStatusHash[status]) {
+    return isEarliestNonce
+      ? TransactionGroupStatus.pending
+      : QUEUED_PSEUDO_STATUS;
+  }
+
+  return status;
+}
+
 export default function TransactionStatusLabel({
   status,
   date,
@@ -54,22 +67,8 @@ export default function TransactionStatusLabel({
   ///: END:ONLY_INCLUDE_IF
 }) {
   const t = useI18nContext();
+  const statusKey = getStatusKey(status, isEarliestNonce);
   let tooltipText = error?.rpc?.message || error?.message;
-  let statusKey = status;
-
-  if (pendingStatusHash[status]) {
-    statusKey = isEarliestNonce
-      ? TransactionGroupStatus.pending
-      : QUEUED_PSEUDO_STATUS;
-  }
-
-  if (
-    statusKey === TransactionGroupStatus.pending &&
-    status === TransactionStatus.approved
-  ) {
-    statusKey = SIGNING_PSUEDO_STATUS;
-  }
-
   let statusText = statusKey && t(statusKey);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

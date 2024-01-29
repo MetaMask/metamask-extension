@@ -13,7 +13,7 @@ import {
 import { PageContainerFooter } from '../../../ui/page-container';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
-  PREVIOUS_APPROVED_SIGNED_TRANSACTION,
+  IS_SIGNING_OR_SUBMITTING,
 } from '../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../helpers/constants/design-system';
 
@@ -188,8 +188,8 @@ export default class ConfirmPageContainerContent extends Component {
     const showInsuffienctFundsError =
       (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
-    const showPendingApproveOrSignError =
-      errorKey === PREVIOUS_APPROVED_SIGNED_TRANSACTION;
+    const showIsSigningOrSubmittingError =
+      errorKey === IS_SIGNING_OR_SUBMITTING;
 
     return (
       <div
@@ -218,6 +218,7 @@ export default class ConfirmPageContainerContent extends Component {
         {this.renderContent()}
         {!supportsEIP1559 &&
           !showInsuffienctFundsError &&
+          !showIsSigningOrSubmittingError &&
           (errorKey || errorMessage) && (
             <BannerAlert
               severity={Severity.Danger}
@@ -256,7 +257,7 @@ export default class ConfirmPageContainerContent extends Component {
             }
           />
         )}
-        {showPendingApproveOrSignError && (
+        {showIsSigningOrSubmittingError && (
           <BannerAlert
             severity={Severity.Danger}
             description={t(errorKey)}

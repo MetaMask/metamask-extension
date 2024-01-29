@@ -248,7 +248,9 @@ const mapStateToProps = (state, ownProps) => {
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
-  const approvedAndSignedTransactions = getApprovedAndSignedTransactions(state);
+  const isSigningOrSubmitting = Boolean(
+    getApprovedAndSignedTransactions(state).length,
+  );
 
   return {
     balance,
@@ -302,7 +304,7 @@ const mapStateToProps = (state, ownProps) => {
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
     isUsingPaymaster,
-    approvedAndSignedTransactions,
+    isSigningOrSubmitting,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

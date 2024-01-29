@@ -2119,8 +2119,8 @@ export function clearPendingTokens(): Action {
 
 export function abortTransactionSigning(
   transactionId: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
-  return (async (dispatch: MetaMaskReduxDispatch) => {
+): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('abortTransactionSigning', [
         transactionId,
@@ -2128,7 +2128,7 @@ export function abortTransactionSigning(
     } catch (error) {
       dispatch(displayWarning(error));
     }
-  }) as any;
+  };
 }
 
 export function createCancelTransaction(

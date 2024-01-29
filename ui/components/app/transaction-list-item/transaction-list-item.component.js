@@ -232,6 +232,7 @@ function TransactionListItemInner({
 
     return (
       <Button
+        data-testid="speed-up-button"
         type="primary"
         onClick={hasCancelled ? cancelTransaction : retryTransaction}
         style={hasCancelled ? { width: 'auto' } : null}
@@ -244,6 +245,8 @@ function TransactionListItemInner({
     isUnapproved,
     t,
     isPending,
+    isSigning,
+    isSubmitting,
     hasCancelled,
     retryTransaction,
     cancelTransaction,
@@ -252,7 +255,8 @@ function TransactionListItemInner({
     ///: END:ONLY_INCLUDE_IF
   ]);
   const currentChain = useSelector(getCurrentNetwork);
-  let showCancelButton = !hasCancelled && isPending && !isUnapproved;
+  let showCancelButton =
+    !hasCancelled && isPending && !isUnapproved && !isSubmitting;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   showCancelButton = showCancelButton && !isCustodian;
