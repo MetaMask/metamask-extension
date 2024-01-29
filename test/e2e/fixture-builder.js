@@ -319,7 +319,7 @@ function defaultFixture() {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false
+        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -445,7 +445,7 @@ function onboardingFixture() {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false
+        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
