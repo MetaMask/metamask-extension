@@ -28,6 +28,8 @@ export const ExcludedSnapEndowments = Object.freeze({
     'This endowment is experimental and therefore not available.',
   'endowment:name-lookup':
     'This endowment is experimental and therefore not available.',
+  'endowment:signature-insight':
+    'This endowment is experimental and therefore not available.',
   ///: END:ONLY_INCLUDE_IF
 });
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getSignatureOriginCaveat } from '@metamask/snaps-controllers';
-import { handleSnapRequest } from '../store/actions';
+import { handleSnapRequest } from '../../store/actions';
 import {
   getSignatureInsightSnapIds,
   getPermissionSubjectsDeepEqual,
-} from '../selectors';
+} from '../../selectors';
 
 const SIGNATURE_INSIGHT_PERMISSION = 'endowment:signature-insight';
 

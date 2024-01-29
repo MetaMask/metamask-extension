@@ -29,7 +29,7 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { useSignatureInsights } from '../../hooks/useSignatureInsights';
+import { useSignatureInsights } from '../../hooks/snaps/useSignatureInsights';
 ///: END:ONLY_INCLUDE_IF
 
 const signatureSelect = (txData, targetSubjectMetadata) => {
@@ -79,52 +79,6 @@ const ConfirmTxScreen = ({ match }) => {
 
   const [prevValue, setPrevValues] = useState();
   const history = useHistory();
-
-  const getTxData = useCallback(() => {
-    const { params: { id: transactionId } = {} } = match;
-
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      unapprovedMsgs,
-      unapprovedPersonalMsgs,
-      {},
-      {},
-      unapprovedTypedMessages,
-      chainId,
-    );
-
-    log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
-
-    const unconfirmedTx = transactionId
-      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
-      : unconfTxList[index];
-    return cloneDeep(unconfirmedTx);
-  }, [
-    chainId,
-    index,
-    match,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTxs,
-    unapprovedTypedMessages,
-  ]);
-
-  const txData = useMemo(() => getTxData() || {}, [getTxData]);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const { data } = useSignatureInsights({ txData });
-
-  const warnings = data?.reduce((warningsArr, promise) => {
-    if (promise.response?.severity === SeverityLevel.Critical) {
-      const {
-        snapId,
-        response: { content },
-      } = promise;
-      warningsArr.push({ snapId, content });
-    }
-    return warningsArr;
-  }, []);
-  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     const unconfTxList = txHelper(
@@ -210,6 +164,52 @@ const ConfirmTxScreen = ({ match }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  const getTxData = useCallback(() => {
+    const { params: { id: transactionId } = {} } = match;
+
+    const unconfTxList = txHelper(
+      unapprovedTxs || {},
+      unapprovedMsgs,
+      unapprovedPersonalMsgs,
+      {},
+      {},
+      unapprovedTypedMessages,
+      chainId,
+    );
+
+    log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
+
+    const unconfirmedTx = transactionId
+      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
+      : unconfTxList[index];
+    return cloneDeep(unconfirmedTx);
+  }, [
+    chainId,
+    index,
+    match,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTxs,
+    unapprovedTypedMessages,
+  ]);
+
+  const txData = useMemo(() => getTxData() || {}, [getTxData]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const { data } = useSignatureInsights({ txData });
+
+  const warnings = data?.reduce((warningsArr, promise) => {
+    if (promise.response?.severity === SeverityLevel.Critical) {
+      const {
+        snapId,
+        response: { content },
+      } = promise;
+      warningsArr.push({ snapId, content });
+    }
+    return warningsArr;
+  }, []);
+  ///: END:ONLY_INCLUDE_IF
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, txData.msgParams?.origin),
