@@ -47,7 +47,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifySnaps,
@@ -78,7 +78,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const address = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -143,16 +143,20 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
-      <AccountDetailsMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={address}
-      />
-      <ViewExplorerMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={address}
-      />
+      {account && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+          <ViewExplorerMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+        </>
+      )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
