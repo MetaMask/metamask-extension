@@ -116,6 +116,7 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'"
   },
   "resolutions": {
+    "@metamask/transaction-controller@^21.0.1": "npm:@metamask-previews/transaction-controller@21.0.1-preview.56c80981",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.23.2#~/.yarn/patches/@babel-runtime-npm-7.23.2-d013d6cf7e.patch",
