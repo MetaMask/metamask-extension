@@ -11,14 +11,14 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as Actions from '../../../store/actions';
 import configureStore from '../../../store/store';
 
-import { useGasFeeEstimates } from './useGasEstimates';
+import { useGasEstimates } from './useGasEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
-jest.mock('./useGasFeeEstimates', () => ({
-  useGasFeeEstimates: jest.fn(),
+jest.mock('./useGasEstimates', () => ({
+  useGasEstimates: jest.fn(),
 }));
-useGasFeeEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
+useGasEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
 
 jest.mock('../../../selectors', () => ({
   checkNetworkAndAccountSupports1559: () => true,
