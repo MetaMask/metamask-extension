@@ -20,7 +20,7 @@ import Send from './send';
 
 const middleware = [thunk];
 
-jest.mock('../../ducks/send/send', () => {
+jest.mock('../../../ducks/send/send', () => {
   const original = jest.requireActual('../../ducks/send/send');
   return {
     ...original,
