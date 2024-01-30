@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.7.6]
+### Fixed
+- Resolves transaction custodian promise when setting transaction status to submitted or failed ([#3845](MetaMask/core#3845))
+
 ## [11.7.5]
 ### Fixed
 - Fix compatability of MetaMask Extension and Chrome versions v122 and higher [#22590](https://github.com/MetaMask/metamask-extension/pull/22590)
