@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getSignatureOriginCaveat } from '@metamask/snaps-controllers';
+import { SeverityLevel } from '@metamask/snaps-sdk';
 import { handleSnapRequest } from '../../store/actions';
 import {
   getSignatureInsightSnapIds,
@@ -14,6 +15,7 @@ export function useSignatureInsights({ txData }) {
   const snapIds = useSelector(getSignatureInsightSnapIds);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
+  const [warnings, setWarnings] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -25,6 +27,11 @@ export function useSignatureInsights({ txData }) {
         msgParams: { from, data: msgData, signatureMethod, origin },
       } = txData;
 
+      /**
+       * Both eth_signTypedData_v3 and eth_signTypedData_v4 methods
+       * need to be parsed because their data is stringified. All other
+       * signature methods do not, so they are ignored.
+       */
       const shouldParse =
         signatureMethod === 'eth_signTypedData_v3' ||
         signatureMethod === 'eth_signTypedData_v4';
@@ -76,8 +83,20 @@ export function useSignatureInsights({ txData }) {
         };
       });
 
+      const insightWarnings = reformattedData.reduce((warningsArr, promise) => {
+        if (promise.response?.severity === SeverityLevel.Critical) {
+          const {
+            snapId,
+            response: { content },
+          } = promise;
+          warningsArr.push({ snapId, content });
+        }
+        return warningsArr;
+      }, []);
+
       if (!cancelled) {
         setData(reformattedData);
+        setWarnings(insightWarnings);
         setLoading(false);
       }
     }
@@ -89,5 +108,5 @@ export function useSignatureInsights({ txData }) {
     };
   }, [txData, snapIds, subjects]);
 
-  return { data, loading };
+  return { data, loading, warnings };
 }

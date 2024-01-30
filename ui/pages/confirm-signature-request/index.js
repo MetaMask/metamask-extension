@@ -6,9 +6,6 @@ import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import { SubjectType } from '@metamask/permission-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { SeverityLevel } from '@metamask/snaps-sdk';
-///: END:ONLY_INCLUDE_IF
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -197,18 +194,7 @@ const ConfirmTxScreen = ({ match }) => {
   const txData = useMemo(() => getTxData() || {}, [getTxData]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const { data } = useSignatureInsights({ txData });
-
-  const warnings = data?.reduce((warningsArr, promise) => {
-    if (promise.response?.severity === SeverityLevel.Critical) {
-      const {
-        snapId,
-        response: { content },
-      } = promise;
-      warningsArr.push({ snapId, content });
-    }
-    return warningsArr;
-  }, []);
+  const { warnings } = useSignatureInsights({ txData });
   ///: END:ONLY_INCLUDE_IF
 
   const targetSubjectMetadata = useSelector((state) =>

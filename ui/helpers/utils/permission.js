@@ -567,8 +567,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     if (
       isNonEmptyArray(permissionValue.caveats) &&
-      permissionValue.caveats[0].type === SnapCaveatType.SignatureOrigin &&
-      permissionValue.caveats[0].value
+      permissionValue.caveats.find((caveat) => {
+        return caveat.type === SnapCaveatType.SignatureOrigin && caveat.value;
+      })
     ) {
       result.push({
         ...baseDescription,
