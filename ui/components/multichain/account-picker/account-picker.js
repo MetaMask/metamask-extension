@@ -25,7 +25,6 @@ export const AccountPicker = ({
   name,
   onClick,
   disabled = false,
-  showAddress = false,
   labelProps = {},
   textProps = {},
   className = '',
@@ -44,10 +43,10 @@ export const AccountPicker = ({
       textProps={{
         display: Display.Flex,
         alignItems: AlignItems.center,
-        gap: 1,
+        gap: 2,
         ...textProps,
       }}
-      size={showAddress ? ButtonBaseSize.Sm : ButtonBaseSize.Md}
+      size={ButtonBaseSize.Sm}
       disabled={disabled}
       endIconName={IconName.ArrowDown}
       endIconProps={{
@@ -55,6 +54,7 @@ export const AccountPicker = ({
         size: Size.SM,
       }}
       {...props}
+      gap={2}
     >
       <AvatarAccount
         variant={
@@ -98,10 +98,6 @@ AccountPicker.propTypes = {
    * Represents if the AccountPicker should be actionable
    */
   disabled: PropTypes.bool,
-  /**
-   * Represents if the account address should display
-   */
-  showAddress: PropTypes.bool,
   /**
    * Represents if the AccountPicker should take full width
    */

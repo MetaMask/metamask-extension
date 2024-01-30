@@ -22,20 +22,23 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
   IconColor,
   JustifyContent,
+  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
+  ButtonBase,
+  ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
   Text,
 } from '../../component-library';
@@ -309,37 +312,44 @@ export const AppHeader = ({ location }) => {
                       });
                     }}
                     disabled={disableAccountPicker}
-                    showAddress={Boolean(process.env.MULTICHAIN)}
                     labelProps={{ fontWeight: FontWeight.Bold }}
                   />
                   {process.env.MULTICHAIN ? (
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Row}
-                      alignItems={AlignItems.center}
+                    <Tooltip
+                      position="left"
+                      title={copied ? t('addressCopied') : null}
                     >
-                      <Text
-                        color={TextColor.textAlternative}
-                        variant={TextVariant.bodySm}
+                      <ButtonBase
+                        onClick={() => handleCopy(checksummedCurrentAddress)}
+                        size={ButtonBaseSize.Sm}
+                        backgroundColor={BackgroundColor.transparent}
+                        borderRadius={BorderRadius.LG}
+                        endIconName={
+                          copied ? IconName.CopySuccess : IconName.Copy
+                        }
+                        endIconProps={{
+                          color: IconColor.iconAlternative,
+                          size: Size.SM,
+                        }}
                         ellipsis
+                        textProps={{
+                          display: Display.Flex,
+                          alignItems: AlignItems.center,
+                          gap: 2,
+                        }}
+                        style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                        data-testid="app-header-copy-button"
                       >
-                        {shortenedAddress}
-                      </Text>
-                      <Tooltip
-                        position="left"
-                        title={copied ? t('addressCopied') : null}
-                      >
-                        <ButtonIcon
-                          onClick={() => handleCopy(checksummedCurrentAddress)}
-                          iconName={
-                            copied ? IconName.CopySuccess : IconName.Copy
-                          }
-                          size={IconSize.Sm}
-                          data-testid="app-header-copy-button"
-                          color={IconColor.iconAlternative}
-                        />
-                      </Tooltip>
-                    </Box>
+                        <Text
+                          color={TextColor.textAlternative}
+                          variant={TextVariant.bodySm}
+                          ellipsis
+                          as="span"
+                        >
+                          {shortenedAddress}
+                        </Text>
+                      </ButtonBase>
+                    </Tooltip>
                   ) : null}
                 </Box>
               ) : null}
