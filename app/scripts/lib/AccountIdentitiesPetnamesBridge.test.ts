@@ -14,7 +14,6 @@ import { PetnameEntry } from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'name1';
-const NON_PARTICIPANT_ORIGIN_MOCK = NameOrigin.API;
 
 /**
  * Creates a PetnameEntry with the given name and address.
