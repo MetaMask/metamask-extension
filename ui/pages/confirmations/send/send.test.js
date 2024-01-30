@@ -21,7 +21,7 @@ import Send from './send';
 const middleware = [thunk];
 
 jest.mock('../../../ducks/send/send', () => {
-  const original = jest.requireActual('../../ducks/send/send');
+  const original = jest.requireActual('../../../ducks/send/send');
   return {
     ...original,
     // We don't really need to start a draft transaction, and the mock store
