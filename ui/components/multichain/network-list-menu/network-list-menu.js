@@ -93,7 +93,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
-      return items;
+      return nonTestNetworks;
     }
 
     // Create a mapping of chainId to index in orderedNetworksList
@@ -113,12 +113,8 @@ export const NetworkListMenu = ({ onClose }) => {
   };
 
   const networksList = newOrderNetworks();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([...networksList]);
 
-  useEffect(() => {
-    // Update items whenever orderedNetworksList changes
-    setItems(newOrderNetworks());
-  }, [orderedNetworksList]);
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));

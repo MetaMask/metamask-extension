@@ -1,4 +1,7 @@
 {
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
@@ -8,8 +11,5 @@
       "fileMatch": ["app/manifest/*/*.json"],
       "url": "https://json.schemastore.org/chrome-manifest"
     }
-  ],
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  ]
 }

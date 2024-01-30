@@ -1251,7 +1251,6 @@ export function getSortedAnnouncementsToShow(state) {
 }
 
 export function getOrderedNetworksList(state) {
-  console.log(state.metamask.orderedNetworkList)
   return state.metamask.orderedNetworkList;
 }
 

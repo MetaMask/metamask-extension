@@ -7,7 +7,6 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import type { Patch } from 'immer';
-import { WritableDraft } from 'immer/dist/internal';
 import { MAINNET_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
@@ -22,12 +21,9 @@ export type NetworksInfo = {
   networkRpcUrl: string;
 };
 
-// Explicitly define NetworksInfoMap with string keys
-export type NetworksInfoMap = Record<string, NetworksInfo>;
-
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
-  orderedNetworkList: NetworksInfoMap;
+  orderedNetworkList: NetworksInfo[];
 };
 
 // Describes the structure of a state change event
@@ -56,8 +52,8 @@ export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
 >;
 
 // Default state for the controller
-const defaultState = {
-  orderedNetworkList: {},
+const defaultState: NetworkOrderControllerState = {
+  orderedNetworkList: [],
 };
 
 // Metadata for the controller state
@@ -129,26 +125,36 @@ export class NetworkOrderController extends BaseController<
       networkRpcUrl: item.rpcUrl,
     }));
 
-    const combinedArray = [...this.state.orderedNetworkList, ...uniqueChainIds];
+    // Arrays to store reordered and new unique chainIds
+    let reorderedNetworks: NetworksInfo[] = [];
+    const newUniqueNetworks: NetworksInfo[] = [];
 
-    const uniqueArray: any[] | WritableDraft<NetworksInfoMap> = [];
-    combinedArray.forEach((item: { networkId: any; networkRpcUrl: any; } ) => {
-      if (
-        !uniqueArray.some(
-          (uniqueItem) =>
-            uniqueItem.networkRpcUrl === item.networkRpcUrl &&
-            uniqueItem.networkId === item.networkId,
-        )
-      ) {
-        uniqueArray.push(item);
+    // Iterate through uniqueChainIds to reorder existing elements
+    uniqueChainIds.forEach((newItem) => {
+      const existingIndex = this.state.orderedNetworkList.findIndex(
+        (item) =>
+          item.networkId === newItem.networkId &&
+          item.networkRpcUrl === newItem.networkRpcUrl,
+      );
+      // eslint-disable-next-line no-negated-condition
+      if (existingIndex !== -1) {
+        // Reorder existing element
+        reorderedNetworks[existingIndex] = newItem;
+      } else {
+        // Add new unique element
+        newUniqueNetworks.push(newItem);
       }
     });
 
-    //Update the state with the new networks list
-    this.update((state) => {
-      state.orderedNetworkList = uniqueArray;
-    });
+    // Filter out null values and concatenate reordered and new unique networks
+    reorderedNetworks = reorderedNetworks
+      .filter((item) => Boolean(item))
+      .concat(newUniqueNetworks);
 
+    // Update the state with the new networks list
+    this.update((state) => {
+      state.orderedNetworkList = reorderedNetworks;
+    });
   }
 
   /**
@@ -157,7 +163,7 @@ export class NetworkOrderController extends BaseController<
    * @param networkList - The list of networks to update in the state.
    */
 
-  updateNetworksList(networkList: NetworksInfoMap) {
+  updateNetworksList(networkList: []) {
     this.update((state) => {
       state.orderedNetworkList = networkList;
       return state;
