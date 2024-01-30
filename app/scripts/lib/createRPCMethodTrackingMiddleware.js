@@ -1,7 +1,6 @@
 import { detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
-import { TransactionStatus } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -230,7 +229,7 @@ export default function createRPCMethodTrackingMiddleware({
             data,
             origin,
           },
-          status: TransactionStatus.unapproved,
+          status: 'unapproved', // not sure why this is broken
           type: req.method,
         };
 
