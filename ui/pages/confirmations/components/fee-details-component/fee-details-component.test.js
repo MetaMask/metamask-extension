@@ -6,7 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import FeeDetailsComponent from './fee-details-component';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
     .mockImplementation(() => Promise.resolve()),

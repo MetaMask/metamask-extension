@@ -12,7 +12,7 @@ import configureStore from '../../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

@@ -2,10 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockSendState from '../../../../../../test/data/mock-send-state.json';
+
 import SendGasRow from '.';
 
-jest.mock('../../../../ducks/send', () => ({
-  ...jest.requireActual('../../../../ducks/send'),
+jest.mock('../../../../../ducks/send', () => ({
+  ...jest.requireActual('../../../../../ducks/send'),
   getGasInputMode: jest.fn().mockReturnValue('INLINE'),
 }));
 

@@ -11,16 +11,16 @@ import * as txUtil from '../../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../../shared/lib/metamask-controller-utils';
 import TransactionAlerts from './transaction-alerts';
 
-jest.mock('../../../selectors/transactions', () => {
+jest.mock('../../../../selectors/transactions', () => {
   return {
-    ...jest.requireActual('../../../selectors/transactions'),
+    ...jest.requireActual('../../../../selectors/transactions'),
     submittedPendingTransactionsSelector: jest.fn(),
   };
 });
 
-jest.mock('../../../contexts/gasFee');
+jest.mock('../../../../contexts/gasFee');
 
-jest.mock('../../../selectors/account-abstraction');
+jest.mock('../../../../selectors/account-abstraction');
 
 function render({
   componentProps = {},

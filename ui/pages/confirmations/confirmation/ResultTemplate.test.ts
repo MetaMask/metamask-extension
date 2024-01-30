@@ -4,8 +4,8 @@ import { isArray } from 'lodash';
 import {
   BackgroundColor,
   IconColor,
-} from '../../helpers/constants/design-system';
-import { IconName } from '../../components/component-library';
+} from '../../../helpers/constants/design-system';
+import { IconName } from '../../../components/component-library';
 import { ResultTemplate, ResultTemplateActions } from './ResultTemplate';
 import { TemplateRendererComponent } from './util';
 

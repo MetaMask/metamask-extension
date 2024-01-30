@@ -6,7 +6,7 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import EditGasFeeIcon from './edit-gas-fee-icon';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
@@ -16,7 +16,7 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 const mockOpenModalFn = jest.fn();
-jest.mock('../../../contexts/transaction-modal', () => ({
+jest.mock('../../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: () => ({
     closeModal: () => undefined,
     openModal: mockOpenModalFn,

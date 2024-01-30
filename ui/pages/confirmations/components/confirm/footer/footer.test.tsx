@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/jest';
 import { Footer } from '.';
 
 const render = () => {

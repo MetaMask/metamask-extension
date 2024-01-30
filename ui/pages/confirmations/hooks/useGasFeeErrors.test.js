@@ -15,7 +15,7 @@ import {
   configureLegacy,
 } from './test-utils';
 
-jest.mock('../useGasFeeEstimates', () => ({
+jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 

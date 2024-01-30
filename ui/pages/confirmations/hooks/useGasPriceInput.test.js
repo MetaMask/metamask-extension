@@ -11,7 +11,7 @@ import {
 } from './test-utils';
 import { useGasPriceInput } from './useGasPriceInput';
 
-jest.mock('../useGasFeeEstimates', () => ({
+jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 

@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import ConfirmHexData from './confirm-hexdata';
 
-jest.mock('../../../../shared/lib/fetch-with-cache');
+jest.mock('../../../../../shared/lib/fetch-with-cache');
 
 describe('ConfirmHexData', () => {
   const store = configureStore(mockState);

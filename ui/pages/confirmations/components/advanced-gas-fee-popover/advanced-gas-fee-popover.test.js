@@ -11,7 +11,7 @@ import configureStore from '../../../../store/store';
 
 import AdvancedGasFeePopover from './advanced-gas-fee-popover';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
@@ -21,7 +21,7 @@ jest.mock('../../../store/actions', () => ({
   createTransactionEventFragment: jest.fn(),
 }));
 
-jest.mock('../../../contexts/transaction-modal', () => ({
+jest.mock('../../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: () => ({
     closeModal: () => undefined,
     currentModal: 'advancedGasFee',

@@ -16,7 +16,7 @@ import configureStore from '../../../../store/store';
 
 import EditGasFeeButton from './edit-gas-fee-button';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

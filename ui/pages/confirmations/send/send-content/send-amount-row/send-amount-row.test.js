@@ -13,12 +13,12 @@ import SendAmountRow from '.';
 
 const mockUpdateSendAmount = jest.fn();
 
-jest.mock('../../../../ducks/send', () => ({
-  ...jest.requireActual('../../../../ducks/send'),
+jest.mock('../../../../../ducks/send', () => ({
+  ...jest.requireActual('../../../../../ducks/send'),
   updateSendAmount: () => mockUpdateSendAmount,
 }));
 
-jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+jest.mock('../../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
   };

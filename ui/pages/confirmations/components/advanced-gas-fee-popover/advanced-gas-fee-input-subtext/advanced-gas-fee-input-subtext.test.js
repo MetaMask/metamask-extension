@@ -3,7 +3,7 @@ import { renderWithProvider, screen } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(null),
   addPollingTokenToAppState: jest.fn(),

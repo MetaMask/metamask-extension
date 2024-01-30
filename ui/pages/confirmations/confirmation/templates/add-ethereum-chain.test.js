@@ -9,7 +9,7 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
 
-jest.mock('../../../../shared/lib/fetch-with-cache');
+jest.mock('../../../../../shared/lib/fetch-with-cache');
 
 const middleware = [thunk];
 

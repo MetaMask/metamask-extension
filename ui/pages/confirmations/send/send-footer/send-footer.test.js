@@ -15,13 +15,13 @@ const mockResetSendState = jest.fn();
 const mockSendTransaction = jest.fn();
 const mockCancelTx = jest.fn();
 
-jest.mock('../../../ducks/send/index.js', () => ({
-  ...jest.requireActual('../../../ducks/send/index.js'),
+jest.mock('../../../../ducks/send/index.js', () => ({
+  ...jest.requireActual('../../../../ducks/send/index.js'),
   signTransaction: () => mockSendTransaction,
   resetSendState: () => mockResetSendState,
 }));
 
-jest.mock('../../../store/actions.ts', () => ({
+jest.mock('../../../../store/actions.ts', () => ({
   cancelTx: () => mockCancelTx,
 }));
 

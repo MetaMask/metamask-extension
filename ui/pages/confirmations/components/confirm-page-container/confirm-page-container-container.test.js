@@ -158,7 +158,7 @@ const props = {
   },
 };
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
@@ -166,16 +166,16 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-jest.mock('../../../pages/swaps/swaps.util', () => {
-  const actual = jest.requireActual('../../../pages/swaps/swaps.util');
+jest.mock('../../../../pages/swaps/swaps.util', () => {
+  const actual = jest.requireActual('../../../../pages/swaps/swaps.util');
   return {
     ...actual,
     fetchTokenBalance: jest.fn(() => Promise.resolve()),
   };
 });
 
-jest.mock('../../../../shared/lib/token-util', () => {
-  const actual = jest.requireActual('../../../../shared/lib/token-util');
+jest.mock('../../../../../shared/lib/token-util', () => {
+  const actual = jest.requireActual('../../../../../shared/lib/token-util');
   return {
     ...actual,
     fetchTokenBalance: jest.fn(() => Promise.resolve()),

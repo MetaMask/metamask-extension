@@ -7,6 +7,7 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
 } from '../../../../shared/modules/conversion.utils';
+
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
@@ -15,7 +16,7 @@ import {
 } from './test-utils';
 import { useGasEstimates } from './useGasEstimates';
 
-jest.mock('../useGasFeeEstimates', () => ({
+jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 

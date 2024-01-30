@@ -9,7 +9,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../../../selectors', () => ({
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
   getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
   getInternalAccountsSortedByKeyring: () => [
@@ -19,7 +19,7 @@ jest.mock('../../../../selectors', () => ({
   getCurrentNetworkTransactions: (s) => `getCurrentNetworkTransactions:${s}`,
 }));
 
-jest.mock('../../../../ducks/domains', () => ({
+jest.mock('../../../../../ducks/domains', () => ({
   getDomainResolution: (s) => `mockSendDomainResolution:${s}`,
   getDomainType: (s) => `mockSendDomainType:${s}`,
   getResolvingSnap: (s) => `mockSendResolvingSnap:${s}`,
@@ -29,7 +29,7 @@ jest.mock('../../../../ducks/domains', () => ({
     `useMyAccountsForRecipientSearch:${s}`,
 }));
 
-jest.mock('../../../../ducks/send', () => ({
+jest.mock('../../../../../ducks/send', () => ({
   updateRecipient: ({ address, nickname }) =>
     `{mockUpdateRecipient: {address: ${address}, nickname: ${nickname}}}`,
   updateRecipientUserInput: (s) => `mockUpdateRecipientUserInput:${s}`,

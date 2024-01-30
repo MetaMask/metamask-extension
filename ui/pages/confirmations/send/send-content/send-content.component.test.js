@@ -12,7 +12,7 @@ import {
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendContent from '.';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
   addPollingTokenToAppState: jest.fn(),
@@ -22,7 +22,7 @@ jest.mock('../../../store/actions', () => ({
   getTokenSymbol: jest.fn().mockResolvedValue('ETH'),
 }));
 
-jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
   };

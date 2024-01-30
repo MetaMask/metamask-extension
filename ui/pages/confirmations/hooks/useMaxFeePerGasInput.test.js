@@ -13,7 +13,7 @@ import {
 } from './test-utils';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
 
-jest.mock('../useGasFeeEstimates', () => ({
+jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 

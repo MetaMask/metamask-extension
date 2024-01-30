@@ -50,11 +50,14 @@ setBackgroundConnection({
   setDefaultHomeActiveTabName: jest.fn(),
 });
 
-jest.mock('../../ducks/confirm-transaction/confirm-transaction.duck', () => ({
-  setTransactionToConfirm: jest.fn().mockImplementation((txId) => {
-    return { type: 'mock-set-transaction-to-confirm', value: txId };
+jest.mock(
+  '../../../ducks/confirm-transaction/confirm-transaction.duck',
+  () => ({
+    setTransactionToConfirm: jest.fn().mockImplementation((txId) => {
+      return { type: 'mock-set-transaction-to-confirm', value: txId };
+    }),
   }),
-}));
+);
 
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');
@@ -74,7 +77,7 @@ jest.mock('../confirm-contract-interaction', () => {
     },
   };
 });
-jest.mock('../confirm-decrypt-message', () => {
+jest.mock('../../confirm-decrypt-message', () => {
   return {
     __esModule: true,
     default: () => {
@@ -90,7 +93,7 @@ jest.mock('../confirm-deploy-contract', () => {
     },
   };
 });
-jest.mock('../confirm-encryption-public-key', () => {
+jest.mock('../../confirm-encryption-public-key', () => {
   return {
     __esModule: true,
     default: () => {

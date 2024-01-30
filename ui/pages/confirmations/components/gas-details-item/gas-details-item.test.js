@@ -10,7 +10,7 @@ import configureStore from '../../../../store/store';
 
 import GasDetailsItem from './gas-details-item';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

@@ -24,7 +24,7 @@ const mockStoreInitialState = {
 
 const mockShowModal = jest.fn();
 
-jest.mock('../../../store/actions.ts', () => {
+jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
   };

@@ -25,11 +25,11 @@ import {
   generateUseSelectorRouter,
 } from './test-utils';
 
-jest.mock('../useUserPreferencedCurrency', () => ({
+jest.mock('../../../hooks/useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),
 }));
 
-jest.mock('../useGasFeeEstimates', () => ({
+jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 

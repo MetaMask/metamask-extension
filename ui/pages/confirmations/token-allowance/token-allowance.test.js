@@ -105,7 +105,7 @@ const state = {
 const mockShowModal = jest.fn();
 const mockedState = jest.mocked(state);
 
-jest.mock('../../store/actions', () => ({
+jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   getGasFeeEstimatesAndStartPolling: jest
@@ -122,7 +122,7 @@ jest.mock('../../store/actions', () => ({
   estimateGas: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-jest.mock('../../contexts/gasFee', () => ({
+jest.mock('../../../contexts/gasFee', () => ({
   useGasFeeContext: () => ({
     maxPriorityFeePerGas: '0.1',
     maxFeePerGas: '0.1',

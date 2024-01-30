@@ -16,7 +16,7 @@ import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import PriorityfeeInput from './priority-fee-input';
 
-jest.mock('../../../../../store/actions', () => ({
+jest.mock('../../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

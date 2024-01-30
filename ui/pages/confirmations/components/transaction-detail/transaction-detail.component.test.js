@@ -12,7 +12,7 @@ import configureStore from '../../../../store/store';
 
 import TransactionDetail from './transaction-detail.component';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

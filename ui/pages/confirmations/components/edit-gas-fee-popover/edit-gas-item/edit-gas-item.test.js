@@ -16,7 +16,7 @@ import {
 } from '../../../../../../shared/constants/network';
 import EditGasItem from './edit-gas-item';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

@@ -94,7 +94,7 @@ jest.mock('react-redux', () => {
 
 const mockCustodySignFn = jest.fn();
 
-jest.mock('../../../hooks/useMMICustodySignMessage', () => ({
+jest.mock('../../../../hooks/useMMICustodySignMessage', () => ({
   useMMICustodySignMessage: () => ({
     custodySignFn: mockCustodySignFn,
   }),

@@ -7,7 +7,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import Confirmation from '../confirmation';
 
-jest.mock('../../../../shared/lib/fetch-with-cache');
+jest.mock('../../../../../shared/lib/fetch-with-cache');
 
 const middleware = [thunk];
 const mockApprovalId = 1;

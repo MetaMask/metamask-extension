@@ -16,7 +16,7 @@ import {
 import { shortenAddress } from '../../../../helpers/utils/util';
 import SignatureRequestOriginal from '.';
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   completedTx: jest.fn().mockReturnValue({ type: 'test' }),

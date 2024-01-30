@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import EditGasToolTip from './edit-gas-tooltip';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
