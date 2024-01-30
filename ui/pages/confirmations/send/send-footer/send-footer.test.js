@@ -2,13 +2,13 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
-import { SEND_STAGES } from '../../../ducks/send';
+} from '../../../../helpers/constants/routes';
+import { SEND_STAGES } from '../../../../ducks/send';
 import SendFooter from '.';
 
 const mockResetSendState = jest.fn();

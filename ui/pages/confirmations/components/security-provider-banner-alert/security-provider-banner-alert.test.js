@@ -1,7 +1,7 @@
 import React from 'react';
-import { Severity } from '../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SecurityProvider } from '../../../../shared/constants/security-provider';
+import { Severity } from '../../../../helpers/constants/design-system';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from '.';
 
 const mockTitle = 'Malicious third party detected';

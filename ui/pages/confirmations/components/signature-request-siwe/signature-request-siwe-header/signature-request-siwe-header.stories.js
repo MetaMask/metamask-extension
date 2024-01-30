@@ -1,5 +1,5 @@
 import React from 'react';
-import testData from '../../../../../.storybook/test-data';
+import testData from '../../../../../../.storybook/test-data';
 import SignatureRequestSIWEHeader from '.';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];

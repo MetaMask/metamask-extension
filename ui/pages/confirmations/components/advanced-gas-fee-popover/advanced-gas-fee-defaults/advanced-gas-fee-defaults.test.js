@@ -4,18 +4,18 @@ import { fireEvent, screen } from '@testing-library/react';
 import {
   EditGasModes,
   GasEstimateTypes,
-} from '../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockEstimates from '../../../../../test/data/mock-estimates.json';
-import mockState from '../../../../../test/data/mock-state.json';
-import * as Actions from '../../../../store/actions';
+} from '../../../../../../shared/constants/gas';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockEstimates from '../../../../../../test/data/mock-estimates.json';
+import mockState from '../../../../../../test/data/mock-state.json';
+import * as Actions from '../../../../../store/actions';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
-import configureStore from '../../../../store/store';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
 
 import AdvancedGasFeeInputs from '../advanced-gas-fee-inputs';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 const TEXT_SELECTOR = 'Save these values as my default for the Goerli network.';

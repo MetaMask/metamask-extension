@@ -2,8 +2,8 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import ConfirmPageContainerHeader from '.';
 
 jest.mock('../../../../../app/scripts/lib/util', () => ({

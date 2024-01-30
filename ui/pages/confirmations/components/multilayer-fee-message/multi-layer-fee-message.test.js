@@ -1,8 +1,8 @@
 import React from 'react';
 
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import configureStore from '../../../../store/store';
 import MultilayerFeeMessage from './multi-layer-fee-message';
 
 jest.mock('../../../helpers/utils/optimism/fetchEstimatedL1Fee', () => '0x5');

@@ -5,7 +5,10 @@ import {
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 
-import { currentConfirmationSelector, getAllNetworks } from '../../../selectors';
+import {
+  currentConfirmationSelector,
+  getAllNetworks,
+} from '../../../selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';

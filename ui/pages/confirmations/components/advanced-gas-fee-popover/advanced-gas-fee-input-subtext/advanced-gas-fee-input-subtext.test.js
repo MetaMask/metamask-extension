@@ -1,6 +1,6 @@
 import React from 'react';
-import { renderWithProvider, screen } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
+import { renderWithProvider, screen } from '../../../../../../test/jest';
+import configureStore from '../../../../../store/store';
 import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';
 
 jest.mock('../../../../store/actions', () => ({

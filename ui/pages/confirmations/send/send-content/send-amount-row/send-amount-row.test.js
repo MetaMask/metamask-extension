@@ -2,13 +2,13 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import mockSendState from '../../../../../test/data/mock-send-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockSendState from '../../../../../../test/data/mock-send-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import {
   AssetType,
   TokenStandard,
-} from '../../../../../shared/constants/transaction';
-import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+} from '../../../../../../shared/constants/transaction';
+import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendAmountRow from '.';
 
 const mockUpdateSendAmount = jest.fn();

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import testData from '../../../.storybook/test-data';
-import configureStore from '../../store/store';
+import testData from '../../../../.storybook/test-data';
+import configureStore from '../../../store/store';
 import {
   BlockaidReason,
   BlockaidResultType,
   SECURITY_PROVIDER_MESSAGE_SEVERITY,
-} from '../../../shared/constants/security-provider';
+} from '../../../../shared/constants/security-provider';
 
 import TokenAllowance from './token-allowance';
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import * as Sentry from '@sentry/browser';
-import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
-import { Severity } from '../../../../helpers/constants/design-system';
+import { renderWithLocalization } from '../../../../../../test/lib/render-helpers';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
+} from '../../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
 jest.mock('@sentry/browser');

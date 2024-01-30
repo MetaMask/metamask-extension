@@ -4,8 +4,8 @@ import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { KeyringType } from '../../../shared/constants/keyring';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';

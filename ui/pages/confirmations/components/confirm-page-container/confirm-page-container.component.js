@@ -22,6 +22,7 @@ import Button from '../../../../components/ui/button';
 import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../../../components/ui/sender-to-recipient';
 
+import { fetchTokenBalance } from '../../../../../shared/lib/token-util';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
@@ -34,7 +35,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../../../../components/app/network-account-balance-header/network-account-balance-header';
-import { fetchTokenBalance } from '../../../../../shared/lib/token-util';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)

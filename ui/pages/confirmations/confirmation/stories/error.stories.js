@@ -4,8 +4,8 @@ import { isArray } from 'lodash';
 import {
   Display,
   FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { IconName } from '../../../components/component-library';
+} from '../../../../helpers/constants/design-system';
+import { IconName } from '../../../../components/component-library';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 

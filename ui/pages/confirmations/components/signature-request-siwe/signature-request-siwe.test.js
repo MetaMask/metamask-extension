@@ -1,10 +1,10 @@
 import React from 'react';
 import { cloneDeep } from 'lodash';
 import { fireEvent } from '@testing-library/react';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import configureStore from '../../../../store/store';
 import SignatureRequestSIWE from '.';
 
 const MOCK_ORIGIN = 'https://example-dapp.website';

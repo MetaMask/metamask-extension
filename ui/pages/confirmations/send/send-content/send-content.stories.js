@@ -1,9 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import mockState from '../../../../test/data/mock-state.json';
-import { AssetType } from '../../../../shared/constants/transaction';
-import configureStore from '../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import configureStore from '../../../../store/store';
 
 import SendContent from './send-content.component';
 

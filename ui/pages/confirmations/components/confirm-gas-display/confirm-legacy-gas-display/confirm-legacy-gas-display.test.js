@@ -1,10 +1,10 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
-import mockState from '../../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../../test/jest';
-import configureStore from '../../../../store/store';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../../test/jest';
+import configureStore from '../../../../../store/store';
 
 import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
 

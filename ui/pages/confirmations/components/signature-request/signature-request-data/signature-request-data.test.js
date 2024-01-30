@@ -1,9 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { sanitizeMessage } from '../../../../helpers/utils/util';
-import Identicon from '../../../ui/identicon';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { sanitizeMessage } from '../../../../../helpers/utils/util';
+import Identicon from '../../../../../components/ui/identicon';
 import SignatureRequestData from './signature-request-data';
 
 describe('Signature Request Data', () => {

@@ -1,13 +1,13 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockEstimates from '../../../../test/data/mock-estimates.json';
-import mockState from '../../../../test/data/mock-state.json';
-import { MAX_GAS_LIMIT_DEC } from '../../../pages/send/send.constants';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import configureStore from '../../../store/store';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockEstimates from '../../../../../test/data/mock-estimates.json';
+import mockState from '../../../../../test/data/mock-state.json';
+import { MAX_GAS_LIMIT_DEC } from '../../send/send.constants';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import configureStore from '../../../../store/store';
 
 import AdvancedGasFeePopover from './advanced-gas-fee-popover';
 

@@ -4,8 +4,8 @@ import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
 import { NetworkStatus } from '@metamask/network-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
 

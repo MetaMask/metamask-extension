@@ -1,5 +1,5 @@
 import React from 'react';
-import { TokenStandard } from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 export default {

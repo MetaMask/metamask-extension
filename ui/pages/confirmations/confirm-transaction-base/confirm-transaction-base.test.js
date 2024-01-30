@@ -26,7 +26,7 @@ import { domainInitialState } from '../../../ducks/domains';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../shared/constants/security-provider';
+} from '../../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 const middleware = [thunk];

@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import mockSendState from '../../../../../test/data/mock-send-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockSendState from '../../../../../../test/data/mock-send-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import SendAssetRow from './send-asset-row.component';
 
 const mockStore = configureMockStore()(mockSendState);

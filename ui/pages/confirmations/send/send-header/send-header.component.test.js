@@ -3,13 +3,13 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { fireEvent } from '@testing-library/react';
-import { SEND_STAGES } from '../../../ducks/send';
-import { renderWithProvider } from '../../../../test/jest';
-import { AssetType } from '../../../../shared/constants/transaction';
+import { SEND_STAGES } from '../../../../ducks/send';
+import { renderWithProvider } from '../../../../../test/jest';
+import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-} from '../../../../test/jest/mocks';
+} from '../../../../../test/jest/mocks';
 import SendHeader from './send-header.component';
 
 const middleware = [thunk];

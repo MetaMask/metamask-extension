@@ -5,10 +5,10 @@ import { Provider } from 'react-redux';
 import {
   updateSendStage,
   updateSendAsset,
-} from '../../../../.storybook/actions/sb-send-action';
+} from '../../../../../.storybook/actions/sb-send-action';
 
-import sendSBReducer from '../../../../.storybook/reducers/sb-send-reducer';
-import historySBReducer from '../../../../.storybook/reducers/sb-history-reducer';
+import sendSBReducer from '../../../../../.storybook/reducers/sb-send-reducer';
+import historySBReducer from '../../../../../.storybook/reducers/sb-history-reducer';
 import SendHeader from './send-header.component';
 
 export default {

@@ -2,14 +2,14 @@ import React from 'react';
 import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockSendState from '../../../../test/data/mock-send-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockSendState from '../../../../../test/data/mock-send-state.json';
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+} from '../../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendContent from '.';
 
 jest.mock('../../../store/actions', () => ({

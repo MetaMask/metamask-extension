@@ -1,9 +1,9 @@
 import React from 'react';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import configureStore from '../../../../store/store';
 import ConfirmSubTitle from './confirm-subtitle';
 
 describe('ConfirmSubTitle', () => {

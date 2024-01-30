@@ -2,7 +2,7 @@ import React from 'react';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
+} from '../../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
 const mockFeatures = [

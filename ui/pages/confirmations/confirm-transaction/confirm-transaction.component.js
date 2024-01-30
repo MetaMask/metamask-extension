@@ -48,7 +48,7 @@ import {
 } from '../../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
-import Confirm from '../../confirm/confirm';
+import Confirm from '../confirm/confirm';
 ///: END:ONLY_INCLUDE_IF
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 

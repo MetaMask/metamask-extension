@@ -4,13 +4,13 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import {
   getNativeCurrency,
   getProviderConfig,
-} from '../../../ducks/metamask/metamask';
+} from '../../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
@@ -23,7 +23,7 @@ import {
   unconfirmedTransactionsHashSelector,
   getAccountType,
   getMemoizedMetaMaskInternalAccounts,
-} from '../../../selectors';
+} from '../../../../selectors';
 import SignatureRequest from './signature-request';
 
 const baseProps = {

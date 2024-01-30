@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../../test/jest';
-import { GasFeeContext } from '../../../../../contexts/gasFee';
-import configureStore from '../../../../../store/store';
+import { renderWithProvider } from '../../../../../../../test/jest';
+import { GasFeeContext } from '../../../../../../contexts/gasFee';
+import configureStore from '../../../../../../store/store';
 
 import StatusSlider from './status-slider';
 

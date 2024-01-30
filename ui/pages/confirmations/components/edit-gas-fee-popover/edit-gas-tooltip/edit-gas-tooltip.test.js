@@ -1,7 +1,7 @@
 import React from 'react';
-import configureStore from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/jest';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
+import { renderWithProvider } from '../../../../../../test/jest';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import EditGasToolTip from './edit-gas-tooltip';
 
 jest.mock('../../../../store/actions', () => ({

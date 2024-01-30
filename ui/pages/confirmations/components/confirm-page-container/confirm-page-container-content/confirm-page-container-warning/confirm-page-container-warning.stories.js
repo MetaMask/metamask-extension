@@ -1,6 +1,6 @@
 import React from 'react';
-import { BannerAlert } from '../../../../component-library';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { BannerAlert } from '../../../../../../components/component-library';
+import { Severity } from '../../../../../../helpers/constants/design-system';
 import ConfirmPageContainerWarning from '.';
 
 export default {

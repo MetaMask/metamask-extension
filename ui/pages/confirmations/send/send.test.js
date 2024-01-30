@@ -4,18 +4,18 @@ import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { NetworkType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
-import { domainInitialState } from '../../ducks/domains';
-import { setBackgroundConnection } from '../../store/background-connection';
+import { SEND_STAGES, startNewDraftTransaction } from '../../../ducks/send';
+import { domainInitialState } from '../../../ducks/domains';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../shared/constants/network';
-import { renderWithProvider } from '../../../test/jest';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
+} from '../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../test/jest';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { KeyringType } from '../../../../shared/constants/keyring';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
 import Send from './send';
 
 const middleware = [thunk];

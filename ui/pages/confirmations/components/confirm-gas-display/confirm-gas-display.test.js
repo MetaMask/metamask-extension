@@ -3,13 +3,13 @@ import { screen } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import mockEstimates from '../../../../test/data/mock-estimates.json';
-import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
+import mockEstimates from '../../../../../test/data/mock-estimates.json';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/jest';
+import configureStore from '../../../../store/store';
 
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import ConfirmGasDisplay from './confirm-gas-display';
 
 jest.mock('../../../store/actions', () => ({

@@ -4,11 +4,11 @@ import thunk from 'redux-thunk';
 
 import ReactRouterDOM from 'react-router-dom';
 
-import * as ConfirmTransactionDucks from '../../ducks/confirm-transaction/confirm-transaction.duck';
-import * as Actions from '../../store/actions';
-import _mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../store/background-connection';
+import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
+import * as Actions from '../../../store/actions';
+import _mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { setBackgroundConnection } from '../../../store/background-connection';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -18,7 +18,7 @@ import {
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-} from '../../helpers/constants/routes';
+} from '../../../helpers/constants/routes';
 
 import ConfirmTransaction from '.';
 

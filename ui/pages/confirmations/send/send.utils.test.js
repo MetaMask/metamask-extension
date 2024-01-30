@@ -1,6 +1,6 @@
 import { rawEncode } from 'ethereumjs-abi';
 
-import { TokenStandard } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
   generateERC20TransferData,
   isBalanceSufficient,
