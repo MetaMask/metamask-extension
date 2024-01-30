@@ -29,9 +29,9 @@ import {
   Modal,
   ModalOverlay,
   Text,
+  ModalContent,
+  ModalHeader,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { AddressCopyButton } from '../address-copy-button';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
@@ -72,7 +72,11 @@ export const AccountDetails = ({ address }) => {
   return (
     <>
       {/* This is the Modal that says "Show private key" on top and has a few states */}
-      <Modal isOpen={!showHoldToReveal} onClose={onClose}>
+      <Modal
+        isOpen={!showHoldToReveal}
+        onClose={onClose}
+        data-testid="account-details-modal"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader

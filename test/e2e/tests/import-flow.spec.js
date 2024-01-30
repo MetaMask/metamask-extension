@@ -67,15 +67,19 @@ describe('Import flow @no-mmi', function () {
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // shows a QR code for the account
-        await driver.findVisibleElement('.mm-modal');
+        await driver.findVisibleElement(
+          '[data-testid="account-details-modal"]',
+        );
         // shows the correct account address
         await driver.findElement({
           css: '.multichain-address-copy-button',
           text: '0x0Cc52...7afD3',
         });
 
-        await driver.clickElement('.mm-modal button[aria-label="Close"]');
-
+        await driver.clickElement('button[aria-label="Close"]');
+        await driver.waitForElementNotPresent(
+          '[data-testid="account-details-modal"]',
+        );
         // logs out of the account
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

@@ -149,7 +149,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    console.log(`\nExecuting testcase: ${title}\n`);
+    console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
       driver: driverProxy ?? driver,
@@ -158,6 +158,11 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
+    if (errorsAndExceptions && failOnConsoleError) {
+      throw new Error(errorsAndExceptions);
+    }
 
     // At this point the suite has executed successfully, so we can log out a success message
     // (Note: a Chrome browser error will unfortunately pop up after this success message)
@@ -696,13 +701,7 @@ const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
-  // TODO: Update Test when Multichain Send Flow is added
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement('[data-testid="app-footer-actions-button"]');
-    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
-  } else {
-    await driver.clickElement('[data-testid="eth-overview-send"]');
-  }
+  await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
 const sendTransaction = async (
@@ -764,28 +763,16 @@ const TEST_SEED_PHRASE_TWO =
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement(`[data-testid="home__asset-tab"]`);
-    await driver.findElement({
-      css: '[data-testid="token-balance-overview-currency-display"]',
-      text: `${balance} ETH`,
-    });
-  } else {
-    await driver.findElement({
-      css: '[data-testid="eth-overview__primary-currency"]',
-      text: `${balance} ETH`,
-    });
-  }
+  await driver.findElement({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `${balance} ETH`,
+  });
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 async function waitForAccountRendered(driver) {
-  await driver.findElement(
-    process.env.MULTICHAIN
-      ? '[data-testid="token-balance-overview-currency-display"]'
-      : '[data-testid="eth-overview__primary-currency"]',
-  );
+  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
 }
 
 /**

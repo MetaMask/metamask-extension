@@ -634,12 +634,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Transfer tokens from different networks"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge is not available in this network"
-  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -657,12 +651,6 @@
   },
   "buyAndSell": {
     "message": "Buy & Sell"
-  },
-  "buyAndSellDescription": {
-    "message": "Buy crypto or sell your crypto for cash"
-  },
-  "buyAndSellDisabled": {
-    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
@@ -792,6 +780,12 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmTitleDescSignature": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleSignature": {
+    "message": "Signature request"
+  },
   "confirmed": {
     "message": "Confirmed"
   },
@@ -915,9 +909,6 @@
   },
   "connectionRequest": {
     "message": "Connection request"
-  },
-  "connections": {
-    "message": "Connections"
   },
   "contactUs": {
     "message": "Contact us"
@@ -1673,7 +1664,7 @@
     "message": "Suggest address names"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signature and transaction requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -1916,7 +1907,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-
   "hideToken": {
     "message": "Hide token"
   },
@@ -3628,6 +3618,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "petnamesEnabledToggle": {
+    "message": "Petnames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This allows you to assign a name to any address. This name will be visible to you only."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
@@ -4095,9 +4091,6 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
-  "selectActionButton": {
-    "message": "Select action"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4112,9 +4105,6 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
-  "selectAnAction": {
-    "message": "Select an action"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
@@ -4145,9 +4135,6 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
-  },
-  "sendDescription": {
-    "message": "Send crypto to any account"
   },
   "sendNoContactsConversionText": {
     "message": "click here"
@@ -4205,8 +4192,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"
@@ -4633,9 +4620,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Stake your crypto to earn rewards"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4833,14 +4817,8 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDescription": {
-    "message": "Swap and trade your tokens"
-  },
   "swapDirectContract": {
     "message": "Direct contract"
-  },
-  "swapDisabled": {
-    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"

@@ -15,15 +15,21 @@ import {
   Display,
   IconColor,
   JustifyContent,
+  Size,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarFavicon,
   BadgeWrapper,
   Box,
   Icon,
   IconName,
   IconSize,
 } from '../../component-library';
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getOriginOfCurrentTab,
+  getSelectedInternalAccount,
+  getSubjectMetadata,
+} from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -36,9 +42,14 @@ export const ConnectedSiteMenu = ({
 }) => {
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const subjectMetadata = useSelector(getSubjectMetadata);
+  const connectedOrigin = useSelector(getOriginOfCurrentTab);
+  const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
   const isConnectedtoOtherAccountOrSnap =
+    Boolean(connectedSubjectsMetadata?.iconUrl) ||
     status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
     status === STATUS_CONNECTED_TO_SNAP;
+
   return (
     <Box
       className={classNames('multichain-connected-site-menu', className)}
@@ -62,7 +73,7 @@ export const ConnectedSiteMenu = ({
         <BadgeWrapper
           positionObj={
             isConnectedtoOtherAccountOrSnap
-              ? { bottom: 4, right: -1, zIndex: 1 }
+              ? { bottom: -1, right: -2, zIndex: 1 }
               : { bottom: 2, right: -4, zIndex: 1 }
           }
           badge={
@@ -81,11 +92,19 @@ export const ConnectedSiteMenu = ({
             />
           }
         >
-          <Icon
-            name={IconName.Global}
-            size={IconSize.Sm}
-            color={IconColor.iconDefault}
-          />
+          {connectedSubjectsMetadata?.iconUrl ? (
+            <AvatarFavicon
+              name={connectedSubjectsMetadata.name}
+              size={Size.SM}
+              src={connectedSubjectsMetadata.iconUrl}
+            />
+          ) : (
+            <Icon
+              name={IconName.Global}
+              size={IconSize.Sm}
+              color={IconColor.iconDefault}
+            />
+          )}
         </BadgeWrapper>
       </Tooltip>
     </Box>

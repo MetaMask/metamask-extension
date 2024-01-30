@@ -421,8 +421,8 @@ export const TEST_CHAINS = [
 ];
 
 export const MAINNET_CHAINS = [
-  { chainId: CHAIN_IDS.MAINNET },
-  { chainId: CHAIN_IDS.LINEA_MAINNET },
+  { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
+  { chainId: CHAIN_IDS.LINEA_MAINNET, rpcUrl: LINEA_MAINNET_RPC_URL },
 ];
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>

@@ -674,6 +674,11 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+export function getPetnamesEnabled(state) {
+  const { petnamesEnabled = true } = getPreferences(state);
+  return petnamesEnabled;
+}
+
 export function getShowExtensionInFullSizeView(state) {
   const { showExtensionInFullSizeView } = getPreferences(state);
   return Boolean(showExtensionInFullSizeView);
