@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import 'chartjs-adapter-moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ReactNode } from 'react-markdown';
 import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
@@ -10,6 +11,8 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -39,33 +42,15 @@ import {
 } from '../../../../shared/constants/transaction';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { getPricePrecision } from './util';
+import { getPricePrecision, localizeLargeNumber } from './util';
 import AssetChart from './asset-chart';
 
-/**
- * Formats a potentially large number to the nearest unit.
- * e.g. 1T for trillions, 2B for billions, 3M for millions, 456,789 for thousands, etc.
- *
- * @param t - An I18nContext translator.
- * @param number - The number to format.
- * @returns A localized string of the formatted number + unit.
- */
-const formatNumber = (t: any, number: number) => {
-  if (number >= 1000000000000) {
-    return `${(number / 1000000000000).toFixed(2)}${t('trillionAbbreviation')}`;
-  } else if (number >= 1000000000) {
-    return `${(number / 1000000000).toFixed(2)}${t('billionAbbreviation')}`;
-  } else if (number >= 1000000) {
-    return `${(number / 1000000).toFixed(2)}${t('millionAbbreviation')}`;
-  }
-  return number.toFixed(2);
-};
-
-const renderRow = (leftColumn: string, rightColumn: string) => (
+const renderRow = (leftColumn: string, rightColumn: ReactNode) => (
   <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-    {/* // left should be grey/alternative */}
-    <Text variant={TextVariant.bodyMdMedium}>{leftColumn}</Text>
-    <Text variant={TextVariant.bodyMd}>{rightColumn}</Text>
+    <Text color={TextColor.textAlternative} variant={TextVariant.bodyMdMedium}>
+      {leftColumn}
+    </Text>
+    {rightColumn}
   </Box>
 );
 
@@ -118,184 +103,185 @@ const AssetV2 = ({
     // TODO: Header with back button on left and and ... kebab menu on right
     <Box>
       <Box padding={4} paddingBottom={0}>
-        <Text>{name ? `${name} (${symbol})` : symbol}</Text>
-        <Text variant={TextVariant.headingLg}>
-          {spotPrices?.price
-            ? formatCurrency(
-                spotPrices.price,
-                currency,
-                getPricePrecision(spotPrices.price),
-              )
-            : ''}
+        <Text color={TextColor.textAlternative}>
+          {name ? `${name} (${symbol})` : symbol}
         </Text>
       </Box>
-      <AssetChart address={address} symbol={symbol} />
+      <AssetChart address={address} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         padding={4}
         paddingTop={9}
         gap={6}
-        style={{boxShadow:'0px -15px 15px -15px gray inset'}} // todo dark theme?
+        style={{ boxShadow: '0px -15px 15px -15px gray inset' }} // todo dark theme?
       >
-        <Text variant={TextVariant.headingMd}>{t('yourBalance')}</Text>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <AvatarToken src={image} size={AvatarTokenSize.Md} />
-            <Text paddingLeft={3} >
-              {name ?? symbol}
-            </Text>
-          </Box>
-          <Box>
-            <Text >
-              {balance} {symbol}
-              {/* TODO: Try to show fiat value of balance here */}
-            </Text>
-          </Box>
-        </Box>
-        <Box display={Display.Flex} gap={4}>
-          <ButtonSecondary padding={5} width={BlockSize.Full}>
-            {t('bridge')}
-            {/* TODO: Implement bridge onClick */}
-          </ButtonSecondary>
-          <ButtonSecondary
-            padding={5}
-            width={BlockSize.Full}
-            onClick={async () => {
-              trackEvent({
-                event: MetaMetricsEventName.NavSendButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  token_symbol: symbol,
-                  location: MetaMetricsSwapsEventSource.TokenView,
-                  text: 'Send',
-                  chain_id: chainId,
-                },
-              });
-              try {
-                await dispatch(
-                  startNewDraftTransaction({
-                    type,
-                    details:
-                      type === AssetType.native
-                        ? undefined
-                        : {
-                            standard: TokenStandard.ERC20,
-                            decimals: asset.decimals,
-                            symbol,
-                            address,
-                          },
-                  }),
-                );
-                history.push(SEND_ROUTE);
-              } catch (err: any) {
-                if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
-                  throw err;
-                }
-              }
-            }}
+        <Box>
+          <Text variant={TextVariant.headingMd} paddingBottom={4}>
+            {t('yourBalance')}
+          </Text>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
           >
-            {t('send')}
-          </ButtonSecondary>
-        </Box>
-        {type === AssetType.token ? (
-          <>
-            <Text variant={TextVariant.headingMd}>{t('tokenDetails')}</Text>
-            <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                {/* button is lower line height than "contract addtres " text */}
-                <Text>{t('contractAddress')}</Text>
-                <AddressCopyButton address={address} shorten />
-              </Box>
-              {asset.decimals === undefined ? undefined : (
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
-                  <Text>{t('tokenDecimal')}</Text>
-                  <Text>{asset.decimals}</Text>
-                </Box>
-              )}
+            <Box display={Display.Flex} alignItems={AlignItems.center}>
+              <AvatarToken src={image} size={AvatarTokenSize.Md} />
+              <Text variant={TextVariant.bodyLgMedium} paddingLeft={3}>
+                {name ?? symbol}
+              </Text>
             </Box>
-          </>
-
-
-// for sectiona, 16 gap between sections and 8 between items within section
-        ) : undefined}
-        {spotPrices?.marketCap > 0 ||
-        spotPrices?.totalVolume > 0 ||
-        spotPrices?.circulatingSupply > 0 ||
-        spotPrices?.allTimeHigh > 0 ||
-        spotPrices?.allTimeLow > 0 ? (
-          <>
-            <Text variant={TextVariant.headingMd}>{t('marketDetails')}</Text>
+            <Box>
+              {/* <Text
+                variant={TextVariant.bodyLgMedium}
+                textAlign={TextAlign.Right}
+              >
+                $123
+              </Text> */}
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.Right}
+              >
+                {balance} {symbol}
+              </Text>
+            </Box>
+          </Box>
+          <Box display={Display.Flex} gap={4} paddingTop={2}>
+            <ButtonSecondary padding={5} width={BlockSize.Full}>
+              {t('bridge')}
+              {/* TODO: Implement bridge onClick */}
+            </ButtonSecondary>
+            <ButtonSecondary
+              padding={5}
+              width={BlockSize.Full}
+              onClick={async () => {
+                trackEvent({
+                  event: MetaMetricsEventName.NavSendButtonClicked,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    token_symbol: symbol,
+                    location: MetaMetricsSwapsEventSource.TokenView,
+                    text: 'Send',
+                    chain_id: chainId,
+                  },
+                });
+                try {
+                  await dispatch(
+                    startNewDraftTransaction({
+                      type,
+                      details:
+                        type === AssetType.native
+                          ? undefined
+                          : {
+                              standard: TokenStandard.ERC20,
+                              decimals: asset.decimals,
+                              symbol,
+                              address,
+                            },
+                    }),
+                  );
+                  history.push(SEND_ROUTE);
+                } catch (err: any) {
+                  if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
+                    throw err;
+                  }
+                }
+              }}
+            >
+              {t('send')}
+            </ButtonSecondary>
+          </Box>
+        </Box>
+        {type === AssetType.token && (
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+            <Text variant={TextVariant.headingMd} paddingBottom={4}>
+              {t('tokenDetails')}
+            </Text>
+            {renderRow(
+              t('contractAddress'),
+              <AddressCopyButton address={address} shorten />,
+            )}
+            {asset.decimals !== undefined &&
+              renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
+          </Box>
+        )}
+        {(spotPrices?.marketCap > 0 ||
+          spotPrices?.totalVolume > 0 ||
+          spotPrices?.circulatingSupply > 0 ||
+          spotPrices?.allTimeHigh > 0 ||
+          spotPrices?.allTimeLow > 0) && (
+          <Box>
+            <Text variant={TextVariant.headingMd} paddingBottom={4}>
+              {t('marketDetails')}
+            </Text>
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
-              gap={3}
+              gap={2}
             >
-              {spotPrices?.marketCap > 0
-                ? renderRow(
-                    t('marketCap'),
-                    formatNumber(t, spotPrices.marketCap),
-                  )
-                : undefined}
-              {spotPrices?.totalVolume > 0
-                ? renderRow(
-                    t('totalVolume'),
-                    formatNumber(t, spotPrices.totalVolume),
-                  )
-                : undefined}
-              {spotPrices?.totalVolume > 0 && spotPrices?.marketCap > 0
-                ? renderRow(
-                    `${t('volume')} / ${t('marketCap')}`,
-                    (spotPrices.totalVolume / spotPrices.marketCap).toPrecision(
-                      4,
-                    ),
-                  )
-                : undefined}
-              {spotPrices?.circulatingSupply > 0
-                ? renderRow(
-                    t('circulatingSupply'),
-                    formatNumber(t, spotPrices.circulatingSupply),
-                  )
-                : undefined}
-              {spotPrices?.allTimeHigh > 0
-                ? renderRow(
-                    t('allTimeHigh'),
-                    formatCurrency(
+              {spotPrices?.marketCap > 0 &&
+                renderRow(
+                  t('marketCap'),
+                  <Text>{localizeLargeNumber(t, spotPrices.marketCap)}</Text>,
+                )}
+              {spotPrices?.totalVolume > 0 &&
+                renderRow(
+                  t('totalVolume'),
+                  <Text>{localizeLargeNumber(t, spotPrices.totalVolume)}</Text>,
+                )}
+              {spotPrices?.totalVolume > 0 &&
+                spotPrices?.marketCap > 0 &&
+                renderRow(
+                  `${t('volume')} / ${t('marketCap')}`,
+                  <Text>
+                    {(
+                      spotPrices.totalVolume / spotPrices.marketCap
+                    ).toPrecision(4)}
+                  </Text>,
+                )}
+              {spotPrices?.circulatingSupply > 0 &&
+                renderRow(
+                  t('circulatingSupply'),
+                  <Text>
+                    {localizeLargeNumber(t, spotPrices.circulatingSupply)}
+                  </Text>,
+                )}
+              {spotPrices?.allTimeHigh > 0 &&
+                renderRow(
+                  t('allTimeHigh'),
+                  <Text>
+                    {formatCurrency(
                       spotPrices.allTimeHigh,
                       currency,
                       getPricePrecision(spotPrices.allTimeHigh),
-                    ),
-                  )
-                : undefined}
-              {spotPrices?.allTimeLow > 0
-                ? renderRow(
-                    t('allTimeLow'),
-                    formatCurrency(
+                    )}
+                  </Text>,
+                )}
+              {spotPrices?.allTimeLow > 0 &&
+                renderRow(
+                  t('allTimeLow'),
+                  <Text>
+                    {formatCurrency(
                       spotPrices.allTimeLow,
                       currency,
                       getPricePrecision(spotPrices.allTimeLow),
-                    ),
-                  )
-                : undefined}
+                    )}
+                  </Text>,
+                )}
             </Box>
-          </>
-        ) : undefined}
+          </Box>
+        )}
         <Text variant={TextVariant.headingMd}>{t('yourActivity')}</Text>
         {/* TODO: Transaction history */}
       </Box>
       <Box
         padding={4}
         backgroundColor={BackgroundColor.backgroundDefault}
-        style={{ position: 'sticky', bottom: 0, boxShadow: 'lightgrey 0px 0px 12px 0px' }} // todo dark theme?
+        style={{
+          position: 'sticky',
+          bottom: 0,
+          boxShadow: 'lightgrey 0px 0px 12px 0px',
+        }} // todo dark theme?
       >
         <Box display={Display.Flex} gap={4}>
           <ButtonSecondary

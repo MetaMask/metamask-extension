@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import 'chartjs-adapter-moment';
 import { useSelector } from 'react-redux';
 import {
@@ -7,7 +7,6 @@ import {
   LinearScale,
   PointElement,
   TimeScale,
-  Tooltip,
   Filler,
   ScriptableContext,
 } from 'chart.js';
@@ -23,6 +22,7 @@ import {
   FlexDirection,
   JustifyContent,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -95,104 +95,95 @@ Chart.register(
   PointElement,
   LineElement,
   Filler,
-  Tooltip,
   CrosshairPlugin,
+  // Fixes crosshair to be hidden on mouseout
+  {
+    id: 'updateOnMouseOut',
+    afterEvent: (chart, args) =>
+      args.event.type === 'mouseout' ? chart.update('none') : null,
+  },
 );
 
-const aspectRatio = 1.3;
+const dateFormatter = Intl.DateTimeFormat(navigator.language, {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+});
 
-const getChartOptions = (currency: string) =>
-  ({
-    aspectRatio,
-    fill: true,
-    layout: { autoPadding: false },
-    elements: {
-      line: { borderWidth: 2 },
-      point: { pointStyle: false },
+const chartOptions = {
+  aspectRatio: 1.3,
+  fill: true,
+  layout: { autoPadding: false },
+  elements: {
+    line: { borderWidth: 2 },
+    point: { pointStyle: false },
+  },
+  scales: {
+    x: {
+      display: false,
+      type: 'time',
+      grid: { display: false },
     },
-    scales: {
-      x: {
-        display: false,
-        type: 'time',
-        grid: { display: false },
-      },
-      y: {
-        display: false,
-        grid: { display: false },
-      },
+    y: {
+      display: false,
+      grid: { display: false },
     },
-    plugins: {
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-        backgroundColor: '#EBEBEB',
-        titleColor: '#24272A',
-        bodyColor: '#24272A',
-        yAlign: 'bottom',
-        caretPadding: 100000,
-        displayColors: false,
-        callbacks: {
-          label: (ctx: any) =>
-            formatCurrency(ctx.raw, currency, getPricePrecision(ctx.raw)),
-        },
-      },
-      crosshair: {
-        zoom: { enabled: false },
-        line: {
-          color: '#BBC0C5',
-          width: 2,
-        },
+  },
+  plugins: {
+    crosshair: {
+      zoom: { enabled: false },
+      line: {
+        color: '#BBC0C5',
+        width: 2,
       },
     },
-  } as const);
+  },
+} as const;
 
 // A chart showing historic prices for a native or token asset
-const AssetChart = ({
-  address,
-  symbol,
-}: {
-  address: string;
-  symbol: string;
-}) => {
+const AssetChart = ({ address }: { address: string }) => {
   const t = useI18nContext();
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
 
+  const chartRef = useRef<Chart<'line', number[], Date>>(null);
   const [prices, setPrices] = useState<any>();
   const [timeRange, setTimeRange] = useState<TimeRange>('1D');
+  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
   // TODO: consider exposing this fetch through a controller
   useEffect(() => {
+    setHoveredIndex(0); // todo why zero?
     setPrices(undefined);
     fetch(
+      // todo or use the historic-price-graph api instead?  see how they re implemented in backend
       `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
     )
       .then((resp) => (resp.status === 200 ? resp.json() : { prices: [] }))
-      .then((data) => setPrices(data.prices));
+      .then((data) => {
+        setPrices(data.prices);
+        setHoveredIndex(data.prices.length - 1);
+      });
   }, [chainId, address, currency, timeRange]);
 
-  let priceDelta, pricePercent, data;
+  // Calculate data that changes on hover
+  let priceDelta, pricePercent;
   if (prices?.length > 0) {
     const firstPrice = prices[0][1];
-    const lastPrice = prices[prices.length - 1][1];
-    priceDelta = lastPrice - firstPrice;
-    pricePercent = 100 * ((lastPrice - firstPrice) / firstPrice);
+    const hoveredPrice = prices[hoveredIndex][1];
+    priceDelta = hoveredPrice - firstPrice;
+    pricePercent = 100 * ((hoveredPrice - firstPrice) / firstPrice);
+  }
 
-    // Green if up, red if down
-    const up = priceDelta >= 0;
-    const borderColor = up ? '#28A745' : '#D73847';
-    const gradientStart = up
-      ? 'rgba(40, 167, 69, 0.30)'
-      : 'rgba(229, 0, 0, 0.30)';
-    const gradientEnd = 'rgba(217, 217, 217, 0.00)';
-
-    data = {
-      labels: prices.map((item: any) => new Date(item[0])),
+  const up = priceDelta >= 0;
+  const data = useMemo(
+    () => ({
+      labels: prices?.map((item: any) => new Date(item[0])),
       datasets: [
         {
-          label: symbol,
-          data: prices.map((item: any) => item[1]),
-          borderColor,
+          data: prices?.map((item: any) => item[1]),
+          borderColor: up ? '#28A745' : '#D73847',
           backgroundColor: (context: ScriptableContext<'line'>) => {
             const gradient = context.chart.ctx.createLinearGradient(
               0,
@@ -200,17 +191,23 @@ const AssetChart = ({
               0,
               context.chart.height,
             );
-            gradient.addColorStop(0, gradientStart);
-            gradient.addColorStop(1, gradientEnd);
+            gradient.addColorStop(
+              0,
+              up ? 'rgba(40, 167, 69, 0.30)' : 'rgba(229, 0, 0, 0.30)',
+            );
+            gradient.addColorStop(1, 'rgba(217, 217, 217, 0.00)');
             return gradient;
           },
         },
       ],
-    };
-  }
+    }),
+    [prices, up],
+  );
 
-  // background --background-default-pressed
+  // todo: can we only generate labels and datasets on time range change
+  // and only change colors on `up` change?
 
+  // background --background-default-pressed ???
   const getButton = (label: string, range: TimeRange) => {
     const opts = { onClick: () => setTimeRange(range) };
     return range === timeRange ? (
@@ -230,13 +227,23 @@ const AssetChart = ({
 
   return (
     <Box>
-      <Box padding={4} paddingTop={0} paddingBottom={4}>
+      <Text paddingLeft={4} variant={TextVariant.headingLg}>
+        {prices?.length > 0 &&
+          formatCurrency(
+            prices[hoveredIndex][1],
+            currency,
+            getPricePrecision(prices[hoveredIndex][1]),
+          )}
+      </Text>
+      <Box paddingLeft={4} paddingBottom={4}>
         {priceDelta !== undefined && pricePercent !== undefined ? (
           <>
             {priceDelta >= 0 ? chartUp : chartDown}
             <Text
               display={Display.InlineBlock}
+              variant={TextVariant.bodyMdMedium}
               marginLeft={1}
+              marginRight={1}
               color={
                 priceDelta >= 0
                   ? TextColor.successDefault
@@ -251,6 +258,13 @@ const AssetChart = ({
               ({priceDelta >= 0 ? '+' : ''}
               {pricePercent.toFixed(2)}%)
             </Text>
+            <Text
+              display={Display.InlineBlock}
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+            >
+              {dateFormatter.format(prices[hoveredIndex][0])}
+            </Text>
           </>
         ) : (
           // Placeholder to take up same amount of room during loading
@@ -258,18 +272,31 @@ const AssetChart = ({
         )}
       </Box>
       {(function () {
-        if (data) {
+        if (prices?.length > 0) {
           return (
             <Line
+              ref={chartRef}
               data={data}
-              options={getChartOptions(currency)}
+              onMouseMove={(e) => {
+                setHoveredIndex(
+                  Math.min(
+                    prices?.length - 1,
+                    Math.round(
+                      (e.nativeEvent.offsetX / chartRef.current.width) *
+                        prices?.length,
+                    ),
+                  ),
+                );
+              }}
+              onMouseOut={() => setHoveredIndex(prices?.length - 1)}
+              options={chartOptions}
               updateMode="none"
             />
           );
         }
         return prices?.length === 0 ? (
           <Box
-            style={{ height: `${100/aspectRatio}vw` }}
+            style={{ height: `${100 / chartOptions.aspectRatio}vw` }}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
@@ -285,12 +312,14 @@ const AssetChart = ({
             <Text>{t('couldNotFetchDataForToken')}</Text>
           </Box>
         ) : (
+          // TODO: using the chart but making the background a diff color while no data might work too?
+          //
           // TODO: This box is a skeleton for the chart while data is fetching. It (and the box above)
-          // should be the same height as the chart, which maintains a 1:2 aspect ratio. 50vw is perfect
-          // in popup mode, but is too large in fullscreen mode since the full viewport is not used.
-          // We really want height to be "50% of the parent's width", not 50% of the viewport's width.
+          // should be the same height as the chart, which maintains `aspectRatio`. This skeleton
+          // maintains the same aspect ratio, but against the viewport. This works in popup mode
+          // but not in fullscreen mode. We really want height relative to the parent's width, not vw.
           <Box
-            style={{ height: `${100/aspectRatio}vw` }}
+            style={{ height: `${100 / chartOptions.aspectRatio}vw` }}
             borderRadius={BorderRadius.LG}
             marginLeft={4}
             marginRight={4}
