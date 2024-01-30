@@ -149,7 +149,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    console.log(`\nExecuting testcase: ${title}\n`);
+    console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
       driver: driverProxy ?? driver,
@@ -158,6 +158,11 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
+    if (errorsAndExceptions && failOnConsoleError) {
+      throw new Error(errorsAndExceptions);
+    }
 
     // At this point the suite has executed successfully, so we can log out a success message
     // (Note: a Chrome browser error will unfortunately pop up after this success message)
