@@ -1475,12 +1475,8 @@ export default class MetamaskController extends EventEmitter {
         },
         messenger: this.controllerMessenger.getRestricted({
           name: 'TransactionController',
-          allowedActions: [
-            `${this.approvalController.name}:addRequest`,
-          ],
-          allowedEvents: [
-            `NetworkController:stateChange`
-          ]
+          allowedActions: [`${this.approvalController.name}:addRequest`],
+          allowedEvents: [`NetworkController:stateChange`],
         }),
         onNetworkStateChange: (listener) => {
           networkControllerMessenger.subscribe(
