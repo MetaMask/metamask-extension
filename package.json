@@ -291,7 +291,7 @@
     "@metamask/snaps-rpc-methods": "^4.0.1",
     "@metamask/snaps-sdk": "^1.2.0",
     "@metamask/snaps-utils": "^5.0.0",
-    "@metamask/transaction-controller": "^18.3.1",
+    "@metamask/transaction-controller": "^21.0.1",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
