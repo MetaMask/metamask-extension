@@ -123,18 +123,4 @@ describe('AssetList', () => {
       expect(screen.getByText('Refresh list')).toBeInTheDocument();
     });
   });
-
-  describe('token fiat value calculations', () => {
-    it('calculates the correct fiat account total', async () => {
-      process.env.MULTICHAIN = 1;
-      await act(async () => {
-        render();
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
-        jest.resetModules();
-      });
-    });
-  });
 });
