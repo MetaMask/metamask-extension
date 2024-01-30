@@ -60,6 +60,7 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
+  isAccountSnap,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
@@ -323,6 +324,7 @@ export const getSmartTransactionsErrorMessageDismissed = (state) =>
 
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
+  const accountSnapUsed = isAccountSnap(state);
   const chainId = getCurrentChainId(state);
   const isAllowedNetwork =
     ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
@@ -333,6 +335,7 @@ export const getSmartTransactionsEnabled = (state) => {
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
     isAllowedNetwork &&
+      !accountSnapUsed &&
       !hardwareWalletUsed &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness,

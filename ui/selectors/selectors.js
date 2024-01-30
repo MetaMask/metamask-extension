@@ -210,6 +210,17 @@ export function isHardwareWallet(state) {
 }
 
 /**
+ * Checks if the current account is a Snap account.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function isAccountSnap(state) {
+  const keyring = getCurrentKeyring(state);
+  return Boolean(keyring?.type?.includes('Snap'));
+}
+
+/**
  * Get a HW wallet type, e.g. "Ledger Hardware"
  *
  * @param {object} state
