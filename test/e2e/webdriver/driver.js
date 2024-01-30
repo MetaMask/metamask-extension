@@ -79,17 +79,22 @@ function wrapElementWithAPI(element, driver) {
     try {
       await element.originalClick();
     } catch (e) {
-      if (
-        e.name === 'ElementClickInterceptedError' &&
-        e.message.includes('<div class="mm-box loading-overlay">')
-      ) {
-        // Wait for the loading overlay to disappear and try again
-        await driver.wait(
-          until.elementIsNotPresent(By.css('.loading-overlay')),
-        );
+      if (e.name === 'ElementClickInterceptedError') {
+        if (e.message.includes('<div class="mm-box loading-overlay">')) {
+          // Wait for the loading overlay to disappear and try again
+          await driver.wait(
+            until.elementIsNotPresent(By.css('.loading-overlay')),
+          );
+        }
+        if (e.message.includes('<div class="modal__backdrop">')) {
+          // Wait for the modal to disappear and try again
+          await driver.wait(
+            until.elementIsNotPresent(By.css('.modal__backdrop')),
+          );
+        }
         await element.originalClick();
       } else {
-        throw e; // If the error is not related to the loading overlay, throw it
+        throw e; // If the error is not related to the loading overlay or modal backdrop, throw it
       }
     }
   };
