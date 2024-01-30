@@ -209,14 +209,16 @@ describe('Send ETH', function () {
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
-          await driver.findVisibleElement('.modal');
+          await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
           // cancel action will close the dialog and shut down camera initialization
           await driver.waitForSelector({
             css: '.qr-scanner__error',
             text: "We couldn't access your camera. Please give it another try.",
           });
           await driver.clickElement({ text: 'Cancel', tag: 'button' });
-          await driver.waitForElementNotPresent('.modal');
+          await driver.waitForElementNotPresent(
+            '[data-testid="qr-scanner-modal"]',
+          );
         },
       );
     });
