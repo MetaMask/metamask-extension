@@ -59,7 +59,6 @@ export enum BlockaidResultType {
   Errored = 'Error',
 
   // MetaMask defined result types
-  Failed = 'Failed',
   NotApplicable = 'NotApplicable',
   Loading = 'loading',
 }

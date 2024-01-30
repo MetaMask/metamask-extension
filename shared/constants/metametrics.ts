@@ -774,6 +774,7 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
   SecurityAlertFailed = 'security_alert_failed',
+  SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
 }
 

@@ -98,7 +98,7 @@ describe('PPOMMiddleware', () => {
     };
     await middlewareFunction(req, undefined, () => undefined);
     expect((req.securityAlertResponse as any)?.result_type).toBe(
-      BlockaidResultType.Failed,
+      BlockaidResultType.Errored,
     );
     expect((req.securityAlertResponse as any)?.reason).toBe(
       BlockaidReason.failed,

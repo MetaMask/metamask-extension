@@ -96,7 +96,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     </Text>
   ) : null;
 
-  const isFailedResultType = resultType === BlockaidResultType.Failed;
+  const isFailedResultType = resultType === BlockaidResultType.Errored;
 
   const severity =
     resultType === BlockaidResultType.Malicious

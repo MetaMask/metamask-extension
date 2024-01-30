@@ -160,6 +160,7 @@ export async function addTransaction(
 
       const securityAlertId = uuid();
 
+<<<<<<< HEAD
       ppomController
         .usePPOM(async (ppom) => {
           try {
@@ -186,6 +187,30 @@ export async function addTransaction(
             securityAlertId,
           });
         });
+=======
+      ppomController.usePPOM(async (ppom) => {
+        try {
+          const securityAlertResponse = await ppom.validateJsonRpc(ppomRequest);
+          updateSecurityAlertResponseByTxId(
+            request.transactionOptions,
+            securityAlertResponse,
+          );
+        } catch (e) {
+          captureException(e);
+          const errorObject = e as unknown as Error;
+          console.error('Error validating JSON RPC using PPOM: ', e);
+          const securityAlertResponse = {
+            result_type: BlockaidResultType.Errored,
+            reason: BlockaidReason.failed,
+            description: `${errorObject.name}: ${errorObject.message}`,
+          };
+          updateSecurityAlertResponseByTxId(
+            request.transactionOptions,
+            securityAlertResponse,
+          );
+        }
+      });
+>>>>>>> cc58a564d4 (if validateJsonRPC fails, send to sentry and add response to SAR.)
 
       request.transactionOptions.securityAlertResponse = {
         reason: BlockaidResultType.Loading,
@@ -193,6 +218,7 @@ export async function addTransaction(
         securityAlertId,
       };
     } catch (e) {
+      console.error('Error validating JSON RPC using PPOM: ', e);
       captureException(e);
     }
   }

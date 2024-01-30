@@ -70,13 +70,13 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Errored}`, () => {
     const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
-            result_type: BlockaidResultType.Failed,
+            result_type: BlockaidResultType.Errored,
           },
         }}
       />,
@@ -248,14 +248,14 @@ describe('Blockaid Banner Alert', () => {
   });
 
   describe('when constructing the Blockaid Report URL', () => {
-    describe(`when result_type='${BlockaidResultType.Failed}'`, () => {
+    describe(`when result_type='${BlockaidResultType.Errored}'`, () => {
       it('should pass the classification as "error" and the resultType as "Error"', () => {
         const { getByRole } = renderWithProvider(
           <BlockaidBannerAlert
             txData={{
               securityAlertResponse: {
                 ...mockSecurityAlertResponse,
-                result_type: BlockaidResultType.Failed,
+                result_type: BlockaidResultType.Errored,
               },
             }}
           />,
