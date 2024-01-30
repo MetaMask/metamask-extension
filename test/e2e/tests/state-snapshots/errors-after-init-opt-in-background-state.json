@@ -169,6 +169,7 @@
       "petnamesEnabled": true
     },
     "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
