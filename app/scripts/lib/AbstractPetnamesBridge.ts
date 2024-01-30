@@ -125,27 +125,27 @@ export abstract class AbstractPetnamesBridge {
    * This predicate describes a subset of Petnames state that is relevant
    * to the bridge.
    *
-   * By default, the isSyncParticipant method returns true for all Petnames,
+   * By default, the shouldSyncPetname method returns true for all Petnames,
    * meaning every PetnameEntry in the NameController state is considered for
    * synchronization. This would result in Petnames state being a mirror of
-   * the source entries or vice versa after synchronization
+   * the source entries or vice versa after synchronization.
    *
    * If you override this method to return false for some Petnames, those
    * entries are effectively 'masked' or excluded from the synchronization
    * process. This has a couple of implications:
    *
    * Source->Petnames direction: Masked Petname entries will not be deleted.
-   * If isSyncParticipant returns false for some target Petname,that entry
+   * If shouldSyncPetname returns false for some target Petname,that entry
    * will not be deleted from Petnames state during synchronization.
    *
    * Petnames->Source direction: Masked Petname entries will not be added to
-   * Source.  If isSyncParticipant returns false for some Petname, that entry
+   * Source.  If shouldSyncPetname returns false for some Petname, that entry
    * will not be added to the Source list during synchronization.
    *
    * @param _targetEntry - The entry from Petname state to check for membership.
    * @returns true iff the target Petname entry should participate in synchronization.
    */
-  protected isSyncParticipant(_targetEntry: PetnameEntry): boolean {
+  protected shouldSyncPetname(_targetEntry: PetnameEntry): boolean {
     // All petname entries are sync participants by default.
     return true;
   }
@@ -199,7 +199,7 @@ export abstract class AbstractPetnamesBridge {
             sourceId: sourceId ?? undefined,
             origin: origin ?? undefined,
           };
-          if (this.isSyncParticipant(entry)) {
+          if (this.shouldSyncPetname(entry)) {
             entries.push(entry);
           }
         }

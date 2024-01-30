@@ -182,36 +182,30 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     );
   });
 
-  it('does not delete non-participating Petname entries', () => {
-    const preferencesController = createPreferencesControllerMock(
-      createPreferencesStateWithIdentity(ADDRESS_MOCK, NAME_MOCK),
-    );
-    const nameController = createNameControllerMock({
-      ...EMPTY_NAME_STATE,
-      names: {
-        [NameType.ETHEREUM_ADDRESS]: {
-          [ADDRESS_MOCK]: {
-            [FALLBACK_VARIATION]: {
-              name: NAME_MOCK,
-              proposedNames: {},
-              sourceId: 'ens',
-              origin: NON_PARTICIPANT_ORIGIN_MOCK,
-            },
-          },
-        },
-      },
+  describe('shouldSyncPetname', () => {
+    it('returns true iff entry is from ACCOUNT_IDENTITY origin', () => {
+      class TestBridge extends AccountIdentitiesPetnamesBridge {
+        public shouldSyncPetname(entry: PetnameEntry): boolean {
+          return super.shouldSyncPetname(entry);
+        }
+      }
+      const preferencesController = createPreferencesControllerMock(
+        EMPTY_PREFERENCES_STATE,
+      );
+      const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+      const bridge = new TestBridge({
+        preferencesController,
+        nameController,
+        messenger: {} as any,
+      });
+      bridge.init();
+      Object.values(NameOrigin).forEach((origin) => {
+        expect(
+          bridge.shouldSyncPetname({
+            origin,
+          } as any),
+        ).toBe(origin === NameOrigin.ACCOUNT_IDENTITY);
+      });
     });
-    const bridge = new AccountIdentitiesPetnamesBridge({
-      preferencesController,
-      nameController,
-      messenger: {} as any,
-    });
-    bridge.init();
-
-    preferencesController.updateMockStateAndTriggerListener(
-      EMPTY_PREFERENCES_STATE,
-    );
-
-    expect(nameController.setName).not.toHaveBeenCalled();
   });
 });

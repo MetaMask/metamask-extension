@@ -81,7 +81,7 @@ class TestPetnamesBridge extends AbstractPetnamesBridge {
 
   onSourceChange = jest.fn();
 
-  isSyncParticipant = jest.fn((_: PetnameEntry) => true);
+  shouldSyncPetname = jest.fn((_: PetnameEntry) => true);
 }
 
 function createNameControllerMock(state: NameControllerState) {
@@ -234,7 +234,7 @@ describe('AbstractPetnamesBridge', () => {
       expect(nameController.setName).not.toHaveBeenCalled();
     });
 
-    describe('isSyncParticipant', () => {
+    describe('shouldSyncPetname', () => {
       it('masks certain Petname entries from being deleted', () => {
         const nameController = createNameControllerMock({
           ...EMPTY_NAME_STATE,
@@ -262,7 +262,7 @@ describe('AbstractPetnamesBridge', () => {
           nameController,
           messenger,
         });
-        bridge.isSyncParticipant.mockImplementation(
+        bridge.shouldSyncPetname.mockImplementation(
           (entry: PetnameEntry) => entry.origin === PARTICIPANT_ORIGIN_MOCK,
         );
         bridge.init();
@@ -395,7 +395,7 @@ describe('AbstractPetnamesBridge', () => {
       );
     });
 
-    describe('isSyncParticipant', () => {
+    describe('shouldSyncPetname', () => {
       it('masks certain Petname entries from being added to the Source', () => {
         const nameController = createNameControllerMock({
           ...EMPTY_NAME_STATE,
@@ -423,7 +423,7 @@ describe('AbstractPetnamesBridge', () => {
           nameController,
           messenger,
         });
-        bridge.isSyncParticipant.mockImplementation(
+        bridge.shouldSyncPetname.mockImplementation(
           (entry: PetnameEntry) => entry.origin === PARTICIPANT_ORIGIN_MOCK,
         );
         bridge.init();

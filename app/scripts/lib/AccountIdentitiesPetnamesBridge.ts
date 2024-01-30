@@ -58,7 +58,7 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge {
   /**
    * @override
    */
-  protected isSyncParticipant(targetEntry: PetnameEntry): boolean {
+  protected shouldSyncPetname(targetEntry: PetnameEntry): boolean {
     return targetEntry.origin === NameOrigin.ACCOUNT_IDENTITY;
   }
 }
