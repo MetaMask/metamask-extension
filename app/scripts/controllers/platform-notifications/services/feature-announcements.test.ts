@@ -1,4 +1,4 @@
-import { getFeatureAnnouncementNotifications } from './feature-announcements';
+import { FeatureAnnouncementsService } from './feature-announcements';
 
 jest.mock('@contentful/rich-text-html-renderer', () => ({
   documentToHtmlString: jest
@@ -10,28 +10,31 @@ global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
     status: 200,
-    json: () => Promise.resolve({}),
+    json: () => Promise.resolve({ items: [] }),
   } as Response),
 );
 
 describe('Feature Announcement Notifications', () => {
+  let service: FeatureAnnouncementsService;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    service = new FeatureAnnouncementsService();
   });
 
   it('should return an empty array if fetch fails', async () => {
-    (global.fetch as jest.Mock).mockImplementationOnce(() => {
-      throw new Error('Fetch failed');
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      json: () => Promise.resolve({ items: [] }),
     });
-    const notifications = await getFeatureAnnouncementNotifications();
+    const notifications = await service.getFeatureAnnouncementNotifications([]);
     expect(notifications).toEqual([]);
   });
 
   it('should return an empty array if data is not available', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve(null),
+      json: () => Promise.resolve({ items: [] }),
     });
-    const notifications = await getFeatureAnnouncementNotifications();
+    const notifications = await service.getFeatureAnnouncementNotifications([]);
     expect(notifications).toEqual([]);
   });
 
@@ -97,11 +100,24 @@ describe('Feature Announcement Notifications', () => {
         ],
       },
     };
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve(mockData),
-    });
 
-    const notifications = await getFeatureAnnouncementNotifications(['1']);
+    (global.fetch as jest.Mock)
+      .mockImplementationOnce(() => {
+        throw new Error('Fetch failed');
+      })
+      .mockImplementationOnce(() => {
+        throw new Error('Fetch failed');
+      })
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockData),
+        }),
+      );
+
+    const notifications = await service.getFeatureAnnouncementNotifications([
+      '1',
+    ]);
     expect(notifications).toHaveLength(1);
     expect(notifications[0]).toEqual({
       id: '1',

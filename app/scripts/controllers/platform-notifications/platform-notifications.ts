@@ -1,22 +1,37 @@
 import {
   BaseController,
   RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
 } from '@metamask/base-controller';
-import { getFeatureAnnouncementNotifications } from './services/feature-announcements';
+import { FeatureAnnouncementsService } from './services/feature-announcements';
 import type { Notification } from './types/notification';
 
 // Unique name for the controller
 const controllerName = 'PlatformNotificationsController';
 
-// State shape for PlatformNotificationsController
+/**
+ * State shape for PlatformNotificationsController
+ */
 export type PlatformNotificationsControllerState = {
+  /**
+   * List of platform notifications
+   */
   platformNotificationsList: Notification[];
+
+  /**
+   * List of read platform notifications
+   */
   platformNotificationsReadList: string[];
+
+  /**
+   * Loading state for platform notifications
+   */
   platformNotificationsIsLoading: boolean;
 };
 
 // Describes the action for updating the accounts list
-export type PlatformNotificationsControllerupdateNotificationsListAction = {
+export type PlatformNotificationsControllerUpdateNotificationsListAction = {
   type: `${typeof controllerName}:updatePlatformNotificationsList`;
   handler: PlatformNotificationsController['updatePlatformNotificationsList'];
 };
@@ -28,9 +43,18 @@ export type PlatformNotificationsControllerUpdateLoadingStateAction = {
 };
 
 // Union of all possible actions for the messenger
+// Union of all possible actions for the messenger
 export type PlatformNotificationsControllerMessengerActions =
-  | PlatformNotificationsControllerupdateNotificationsListAction
-  | PlatformNotificationsControllerUpdateLoadingStateAction;
+  | PlatformNotificationsControllerUpdateNotificationsListAction
+  | PlatformNotificationsControllerUpdateLoadingStateAction
+  | ControllerGetStateAction<'state', PlatformNotificationsControllerState>;
+
+// Union of all possible events for the messenger
+export type PlatformNotificationsControllerMessengerEvents =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    PlatformNotificationsControllerState
+  >;
 
 // Type for the messenger of PlatformNotificationsController
 export type PlatformNotificationsControllerMessenger =
@@ -68,6 +92,8 @@ export class PlatformNotificationsController extends BaseController<
   PlatformNotificationsControllerState,
   PlatformNotificationsControllerMessenger
 > {
+  private featureAnnouncementsService: FeatureAnnouncementsService;
+
   /**
    * Creates a PlatformNotificationsController instance.
    *
@@ -99,6 +125,8 @@ export class PlatformNotificationsController extends BaseController<
         platformNotificationsReadList,
       },
     });
+
+    this.featureAnnouncementsService = new FeatureAnnouncementsService();
   }
 
   /**
@@ -106,9 +134,23 @@ export class PlatformNotificationsController extends BaseController<
    *
    * @param isLoading - The loading state to update in the state.
    */
-  updatePlatformNotificationsIsLoadingState(isLoading: boolean) {
+  private updatePlatformNotificationsIsLoadingState(isLoading: boolean) {
     this.update((state) => {
       state.platformNotificationsIsLoading = isLoading;
+      return state;
+    });
+  }
+
+  /**
+   * Updates the accounts list in the state with the provided list of accounts.
+   *
+   * @param platformNotificationsList - The list of the notifications to update in the state.
+   */
+  private updatePlatformNotificationsList(
+    platformNotificationsList: Notification[],
+  ) {
+    this.update((state) => {
+      state.platformNotificationsList = platformNotificationsList;
       return state;
     });
   }
@@ -119,44 +161,27 @@ export class PlatformNotificationsController extends BaseController<
   async fetchAndUpdatePlatformNotifications() {
     this.updatePlatformNotificationsIsLoadingState(true);
 
-    const platformNotificationsReadList =
-      this.getReadPlatformNotificationsList();
-    const platformNotifications = await getFeatureAnnouncementNotifications(
-      platformNotificationsReadList,
-    );
+    const { platformNotificationsReadList } = this.state;
+    const platformNotifications =
+      await this.featureAnnouncementsService.getFeatureAnnouncementNotifications(
+        platformNotificationsReadList,
+      );
     this.updatePlatformNotificationsList(platformNotifications);
 
     this.updatePlatformNotificationsIsLoadingState(false);
   }
 
   /**
-   * Retrieves the list of read platform notifications.
-   * This method returns the current state of read platform notifications.
-   */
-  getReadPlatformNotificationsList() {
-    return this.state.platformNotificationsReadList;
-  }
-
-  /**
-   * Updates the accounts list in the state with the provided list of accounts.
-   *
-   * @param platformNotificationsList - The list of the notifications to update in the state.
-   */
-  updatePlatformNotificationsList(platformNotificationsList: Notification[]) {
-    this.update((state) => {
-      state.platformNotificationsList = platformNotificationsList;
-      return state;
-    });
-  }
-
-  /**
    * Updates the platform notifications list in the state with the provided list of accounts.
    *
-   * @param platformNotificationsReadList - The list of the notifications to update in the state.
+   * @param ids - The list of the notification ids to update in the state.
    */
-  updatePlatformNotificationsReadList(platformNotificationsReadList: string[]) {
+  markPlatformNotificationsAsRead(ids: string[]) {
     this.update((state) => {
-      state.platformNotificationsReadList = platformNotificationsReadList;
+      state.platformNotificationsReadList = [
+        ...state.platformNotificationsReadList,
+        ...ids,
+      ];
       return state;
     });
   }

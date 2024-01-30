@@ -268,9 +268,7 @@ import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-fa
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
-///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
 import { PlatformNotificationsController } from './controllers/platform-notifications/platform-notifications';
-///: END:ONLY_INCLUDE_IF
 
 import {
   CaveatMutatorFactories,
@@ -1296,7 +1294,6 @@ export default class MetamaskController extends EventEmitter {
 
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
     const platformNotificationsMessenger =
       this.controllerMessenger.getRestricted({
         name: 'PlatformNotificationsController',
@@ -1305,7 +1302,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: platformNotificationsMessenger,
       state: initState.PlatformNotificationsController,
     });
-    ///: END:ONLY_INCLUDE_IF
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
@@ -1955,9 +1951,7 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
       PlatformNotificationsController: this.platformNotificationsController,
-      ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       DesktopController: this.desktopController.store,
@@ -2011,9 +2005,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IF
 
-        ///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
         PlatformNotificationsController: this.platformNotificationsController,
-        ///: END:ONLY_INCLUDE_IF
 
         ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         DesktopController: this.desktopController.store,
@@ -3354,13 +3346,11 @@ export default class MetamaskController extends EventEmitter {
       setName: this.nameController.setName.bind(this.nameController),
       ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
       fetchAndUpdatePlatformNotifications:
         this.fetchAndUpdatePlatformNotifications.bind(this),
 
-      updatePlatformNotificationsReadList:
-        this.updatePlatformNotificationsReadList.bind(this),
-      ///: END:ONLY_INCLUDE_IF
+      markPlatformNotificationsAsRead:
+        this.markPlatformNotificationsAsRead.bind(this),
     };
   }
 
@@ -5495,18 +5485,19 @@ export default class MetamaskController extends EventEmitter {
   };
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
   /**
    * Fetches and updates platform notifications.
    * This method retrieves the latest notifications from the platform and updates the state accordingly.
    * If an error occurs during the process, it is logged and rethrown.
    */
   fetchAndUpdatePlatformNotifications() {
-    try {
-      this.platformNotificationsController.fetchAndUpdatePlatformNotifications();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
+    if (process.env.PLATFORM_NOTIFICATIONS) {
+      try {
+        this.platformNotificationsController.fetchAndUpdatePlatformNotifications();
+      } catch (err) {
+        log.error(err.message);
+        throw err;
+      }
     }
   }
 
@@ -5515,12 +5506,11 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string[]} ids - The notifications ids to mark as read.
    */
-  updatePlatformNotificationsReadList(ids) {
-    this.platformNotificationsController.updatePlatformNotificationsReadList(
-      ids,
-    );
+  markPlatformNotificationsAsRead(ids) {
+    if (process.env.PLATFORM_NOTIFICATIONS) {
+      this.platformNotificationsController.markPlatformNotificationsAsRead(ids);
+    }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   updateNetworksList = (sortedNetworkList) => {
     try {

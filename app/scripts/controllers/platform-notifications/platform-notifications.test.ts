@@ -1,10 +1,18 @@
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { PlatformNotificationsController } from './platform-notifications';
+import { FeatureAnnouncementsService } from './services/feature-announcements';
 import { TRIGGER_TYPES } from './constants/triggers';
 import type { Notification } from './types/notification';
 
+jest.mock('./services/feature-announcements', () => ({
+  FeatureAnnouncementsService: jest.fn().mockImplementation(() => ({
+    getFeatureAnnouncementNotifications: jest.fn(),
+  })),
+}));
+
 describe('PlatformNotificationsController', () => {
   let controller: PlatformNotificationsController;
+  let mockGetFeatureAnnouncementNotifications: jest.Mock;
 
   beforeEach(() => {
     const messenger = {
@@ -18,7 +26,16 @@ describe('PlatformNotificationsController', () => {
       any,
       any
     >;
-    controller = new PlatformNotificationsController({ messenger });
+
+    mockGetFeatureAnnouncementNotifications = jest.fn();
+    (FeatureAnnouncementsService as jest.Mock).mockImplementation(() => ({
+      getFeatureAnnouncementNotifications:
+        mockGetFeatureAnnouncementNotifications,
+    }));
+
+    controller = new PlatformNotificationsController({
+      messenger,
+    });
   });
 
   it('should initialize with the correct default state', () => {
@@ -29,12 +46,7 @@ describe('PlatformNotificationsController', () => {
     });
   });
 
-  it('should update loading state', () => {
-    controller.updatePlatformNotificationsIsLoadingState(true);
-    expect(controller.state.platformNotificationsIsLoading).toBe(true);
-  });
-
-  it('should update platform notifications list', () => {
+  it('should fetch and update platform notifications', async () => {
     const notifications: Notification[] = [
       {
         type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
@@ -65,13 +77,18 @@ describe('PlatformNotificationsController', () => {
         isRead: true,
       },
     ];
-    controller.updatePlatformNotificationsList(notifications);
+    mockGetFeatureAnnouncementNotifications.mockResolvedValue(notifications);
+
+    await controller.fetchAndUpdatePlatformNotifications();
+
+    expect(mockGetFeatureAnnouncementNotifications).toHaveBeenCalled();
     expect(controller.state.platformNotificationsList).toEqual(notifications);
+    expect(controller.state.platformNotificationsIsLoading).toBe(false);
   });
 
   it('should update platform notifications read list', () => {
     const readList = ['1', '2'];
-    controller.updatePlatformNotificationsReadList(readList);
+    controller.markPlatformNotificationsAsRead(readList);
     expect(controller.state.platformNotificationsReadList).toEqual(readList);
   });
 });

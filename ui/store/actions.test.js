@@ -2152,4 +2152,29 @@ describe('Actions', () => {
       expect(fetchAndUpdatePlatformNotifications.calledOnce).toBeTruthy();
     });
   });
+
+  describe('#markPlatformNotificationsAsRead', () => {
+    it('calls markPlatformNotificationsAsRead in background and updates state', async () => {
+      const store = mockStore();
+      const markPlatformNotificationsAsRead = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        markPlatformNotificationsAsRead,
+        getState: sinon.stub().callsFake((cb) =>
+          cb(null, {
+            platformNotificationsReadList: ['1', '2'],
+          }),
+        ),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const ids = ['1', '2'];
+      await store.dispatch(actions.markPlatformNotificationsAsRead(ids));
+
+      expect(markPlatformNotificationsAsRead.calledOnceWith(ids)).toBeTruthy();
+    });
+  });
 });

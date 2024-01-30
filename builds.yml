@@ -29,6 +29,9 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/3.5.0/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - PLATFORM_NOTIFICATIONS: false
+      - CONTENTFUL_ACCESS_SPACE_ID: null
+      - CONTENTFUL_ACCESS_TOKEN: null
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -72,6 +75,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
+      - PLATFORM_NOTIFICATIONS: true
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -93,6 +97,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - PLATFORM_NOTIFICATIONS: false
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
     buildNameOverride: false
@@ -112,6 +117,7 @@ buildTypes:
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
+      - PLATFORM_NOTIFICATIONS: false
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -147,6 +153,7 @@ features:
   conf-redesign:
   platform-notifications:
     env:
+      - PLATFORM_NOTIFICATIONS
       - CONTENTFUL_ACCESS_SPACE_ID
       - CONTENTFUL_ACCESS_TOKEN
 

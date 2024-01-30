@@ -10,7 +10,7 @@ describe('Platform Notifications Duck', () => {
 
   beforeEach(() => {
     store = mockStore({
-      metamask: {
+      platformNotifications: {
         notificationsList: [],
         notificationsReadList: [],
         notificationsIsLoading: false,
