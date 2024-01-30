@@ -15,13 +15,12 @@ import { useGasFeeEstimates } from './useGasEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
-
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 useGasFeeEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../../selectors', () => ({
   checkNetworkAndAccountSupports1559: () => true,
 }));
 
