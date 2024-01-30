@@ -10,11 +10,13 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import * as Actions from '../../../store/actions';
 import configureStore from '../../../store/store';
+
 import { useGasFeeEstimates } from './useGasEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
-jest.mock('../../..hooks/useGasFeeEstimates', () => ({
+
+jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 useGasFeeEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
