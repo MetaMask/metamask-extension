@@ -281,6 +281,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           tag: 'button',
         });
 
+        await driver.waitForSelector('[data-testid="add-network-modal"]');
         const [
           networkNameField,
           networkUrlField,
@@ -293,7 +294,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.waitForElementNotPresent('span .modal');
+        await driver.waitForElementNotPresent(
+          '[data-testid="add-network-modal"]',
+        );
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // After login, check that notification message for added network is displayed
