@@ -10,8 +10,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { useDisplayName } from '../../../hooks/useDisplayName';
 import NameDetails from './name-details/name-details';
-import { useDisplayName } from 'ui/hooks/useDisplayName';
 
 export interface NameProps {
   /** Whether to prevent the modal from opening when the component is clicked. */
