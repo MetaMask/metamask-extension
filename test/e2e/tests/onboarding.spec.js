@@ -117,12 +117,11 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        const dropdowns = await driver.findElements('select');
-        const dropdownElement = dropdowns[1];
-        await dropdownElement.click();
-        const options = await dropdownElement.findElements(
-          By.tagName('option'),
+        const dropdownElement = await driver.findElement(
+          '.import-srp__number-of-words-dropdown',
         );
+        await dropdownElement.click();
+        const options = await dropdownElement.findElements(By.css('option'));
 
         const iterations = options.length;
 
