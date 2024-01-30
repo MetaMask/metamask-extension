@@ -1,13 +1,13 @@
 import React from 'react';
 import { captureException } from '@sentry/browser';
 
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../component-library';
 import {
   BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowProps,
