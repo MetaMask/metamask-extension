@@ -1,5 +1,5 @@
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index 470ed9065fa18ab5ce5b0c5fb3d3101faa6263d1..afba12ef11cd30d22754300348e51a7247279c1b 100644
+index 470ed9065fa18ab5ce5b0c5fb3d3101faa6263d1..1562af7cfe3e93e3a7bef3c730e6f4fa1c6ee440 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
 @@ -117,6 +117,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
@@ -10,16 +10,21 @@ index 470ed9065fa18ab5ce5b0c5fb3d3101faa6263d1..afba12ef11cd30d22754300348e51a72
      private readonly afterSign;
      private readonly beforeApproveOnInit;
      private readonly beforeCheckPendingTransaction;
-@@ -478,6 +479,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+@@ -478,6 +479,12 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
       * Removes unapproved transactions from state.
       */
      clearUnapprovedTransactions(): void;
++    /**
++     * Stop the signing process for a specific transaction.
++     * Throws an error causing the transaction status to be set to failed.
++     * @param transactionId - The ID of the transaction to stop signing.
++     */
 +    abortTransactionSigning(transactionId: string): void;
      private addMetadata;
      private updateGasProperties;
      private getCurrentChainTransactionsByStatus;
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..e2c1ef64f25e81cdfd61145e3beb718abbd7048a 100644
+index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..17f41a3f3b0b7f4682aa651a723004a9ea0b7750 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
 @@ -100,6 +100,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
@@ -30,10 +35,25 @@ index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..e2c1ef64f25e81cdfd61145e3beb718a
          /**
           * EventEmitter instance used to listen to specific transactional events
           */
-@@ -1031,6 +1032,17 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -899,6 +900,9 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             updatedTransactionMeta.error = (0, utils_1.normalizeTxError)(new Error(errorMessage));
+         }
+         this.updateTransaction(updatedTransactionMeta, `TransactionController:updateCustodialTransaction - Custodial transaction updated`);
++        if ([types_1.TransactionStatus.submitted, types_1.TransactionStatus.failed].includes(status)) {
++            this.hub.emit(`${transactionMeta.id}:finished`, updatedTransactionMeta);
++        }
+     }
+     /**
+      * Creates approvals for all unapproved transactions persisted.
+@@ -1031,6 +1035,23 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
          const transactions = this.state.transactions.filter(({ status }) => status !== types_1.TransactionStatus.unapproved);
          this.update({ transactions: this.trimTransactionsForState(transactions) });
      }
++    /**
++     * Stop the signing process for a specific transaction.
++     * Throws an error causing the transaction status to be set to failed.
++     * @param transactionId - The ID of the transaction to stop signing.
++     */
 +    abortTransactionSigning(transactionId) {
 +        const transactionMeta = this.getTransaction(transactionId);
 +        if (!transactionMeta) {
@@ -44,11 +64,12 @@ index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..e2c1ef64f25e81cdfd61145e3beb718a
 +            throw new Error(`Cannot abort signing as transaction is not waiting for signing`);
 +        }
 +        abortCallback();
++        this.signAbortCallbacks.delete(transactionId);
 +    }
      addMetadata(transactionMeta) {
          const { transactions } = this.state;
          transactions.push(transactionMeta);
-@@ -1544,12 +1556,16 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -1544,12 +1565,16 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
          this.pendingTransactionTracker.hub.on('transaction-updated', this.updateTransaction.bind(this));
      }
      signTransaction(transactionMeta, txParams) {
@@ -67,21 +88,6 @@ index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..e2c1ef64f25e81cdfd61145e3beb718a
              if (!signedTx) {
                  (0, logger_1.projectLogger)('Skipping signed status as no signed transaction');
                  return undefined;
-diff --git a/dist/types.d.ts b/dist/types.d.ts
-index d80d057d48112d9047fc6fe419c132c44a53c509..ec8e0b7dbd199fdac79ec9d967a141afd0e3c862 100644
---- a/dist/types.d.ts
-+++ b/dist/types.d.ts
-@@ -154,6 +154,10 @@ declare type TransactionMetaBase = {
-      * Which estimate level was used
-      */
-     estimateUsed?: string;
-+    /**
-+     * Description of the link clicked associated with the transaction
-+     */
-+    externalLinkClicked?: string;
-     /**
-      * The chosen amount which will be the same as the originally proposed token
-      * amount if the user does not edit the  amount or will be a custom token
 diff --git a/dist/utils/utils.js b/dist/utils/utils.js
 index 13f878ee31dd5bc7d280561a9fb91313c72c7ca1..8090c8f63b8c24c211f0c402831694f47dc45bed 100644
 --- a/dist/utils/utils.js
