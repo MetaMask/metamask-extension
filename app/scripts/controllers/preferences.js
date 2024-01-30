@@ -580,7 +580,8 @@ export default class PreferencesController {
 
   /**
    * A setter for the `isIpfsGatewayEnabled` property
-   * @param {boolean} enabled Whether or not IPFS is enabled
+   *
+   * @param {boolean} enabled - Whether or not IPFS is enabled
    */
   async setIsIpfsGatewayEnabled(enabled) {
     this.store.updateState({ isIpfsGatewayEnabled: enabled });
