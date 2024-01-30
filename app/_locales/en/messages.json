@@ -353,7 +353,7 @@
     "message": "Alerts"
   },
   "all": {
-    "message": "All"
+    "message": "ALL"
   },
   "allConnections": {
     "message": "All Connections"
@@ -2437,7 +2437,7 @@
     "message": "Manage in settings"
   },
   "marketCap": {
-    "message": "Market Cap"
+    "message": "Market cap"
   },
   "marketDetails": {
     "message": "Market details"
