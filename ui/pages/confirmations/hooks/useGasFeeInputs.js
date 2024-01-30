@@ -6,25 +6,25 @@ import {
   GasRecommendations,
   EditGasModes,
   PriorityLevels,
-} from '../../shared/constants/gas';
-import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+} from '../../../../shared/constants/gas';
+import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
-} from '../selectors';
-import { isLegacyTransaction } from '../helpers/utils/transactions.util';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
+} from '../../../selectors';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
-import { editGasModeIsSpeedUpOrCancel } from '../helpers/utils/gas';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
-import { Numeric } from '../../shared/modules/Numeric';
-import { EtherDenomination } from '../../shared/constants/common';
-import { useGasFeeErrors } from '../pages/confirmations/hooks/useGasFeeErrors';
-import { useGasPriceInput } from '../pages/confirmations/hooks/useGasPriceInput';
-import { useMaxFeePerGasInput } from '../pages/confirmations/hooks/useMaxFeePerGasInput';
-import { useMaxPriorityFeePerGasInput } from '../pages/confirmations/hooks/useMaxPriorityFeePerGasInput';
-import { useGasEstimates } from '../pages/confirmations/hooks/useGasEstimates';
-import { useTransactionFunctions } from '../pages/confirmations/hooks/useTransactionFunctions';
+import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
+import { useGasFeeErrors } from './useGasFeeErrors';
+import { useGasPriceInput } from './useGasPriceInput';
+import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
+import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
+import { useGasEstimates } from './useGasEstimates';
+import { useTransactionFunctions } from './useTransactionFunctions';
 
 /**
  * In EIP_1559_V2 implementation as used by useGasfeeInputContext() the use of this hook is evolved.
@@ -89,7 +89,7 @@ import { useTransactionFunctions } from '../pages/confirmations/hooks/useTransac
  * @param {string} [minimumGasLimit]
  * @param {EditGasModes[keyof EditGasModes]} editGasMode
  * @returns {GasFeeInputReturnType & import(
- *  './useGasFeeEstimates'
+ *  '../../../hooks/useGasFeeEstimates'
  * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
 

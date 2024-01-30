@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../contexts/i18n';
-import Tooltip from '../tooltip';
+import { I18nContext } from '../../../../contexts/i18n';
+import Tooltip from '../../../../components/ui/tooltip';
 import {
   ButtonLink,
   Icon,
@@ -9,7 +9,7 @@ import {
   IconSize,
   Text,
   Box,
-} from '../../component-library';
+} from '../../../../components/component-library';
 
 import {
   AlignItems,
@@ -21,8 +21,8 @@ import {
   BackgroundColor,
   TextColor,
   IconColor,
-} from '../../../helpers/constants/design-system';
-import { Numeric } from '../../../../shared/modules/Numeric';
+} from '../../../../helpers/constants/design-system';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 
 export default function ReviewSpendingCap({
   tokenName,

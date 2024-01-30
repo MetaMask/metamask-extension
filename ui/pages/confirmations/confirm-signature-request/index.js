@@ -12,7 +12,7 @@ import SignatureRequest from '../components/signature-request';
 import SignatureRequestSIWE from '../components/signature-request-siwe';
 import SignatureRequestOriginal from '../components/signature-request-original';
 import Loading from '../../../components/ui/loading-screen';
-import { useRouting } from '../../../hooks/useRouting';
+import { useRouting } from '../hooks/useRouting';
 import {
   getTotalUnapprovedSignatureRequestCount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

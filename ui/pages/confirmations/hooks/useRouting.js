@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { getMostRecentOverviewPage } from '../ducks/history/history';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 
 /**
  * useRouting - hook for re-uable reoting related code.

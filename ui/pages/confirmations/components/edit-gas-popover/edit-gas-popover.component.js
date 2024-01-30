@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { useGasFeeInputs } from '../../../../hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../../hooks/useGasFeeInputs';
 import { txParamsAreDappSuggested } from '../../../../../shared/modules/transaction.utils';
 import {
   EditGasModes,
@@ -31,7 +31,7 @@ import {
   showLoadingIndication,
 } from '../../../../store/actions';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
-import { useIncrementedGasFees } from '../../../../hooks/useIncrementedGasFees';
+import { useIncrementedGasFees } from '../../hooks/useIncrementedGasFees';
 import {
   decGWEIToHexWEI,
   decimalToHex,

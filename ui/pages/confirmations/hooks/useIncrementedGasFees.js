@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import { decGWEIToHexWEI } from '../../shared/modules/conversion.utils';
-import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
-import { addTenPercentAndRound } from '../helpers/utils/gas';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { addTenPercentAndRound } from '../../../helpers/utils/gas';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 /**
  * Helper that returns the higher of two options for a new gas fee:

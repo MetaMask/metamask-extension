@@ -41,10 +41,10 @@ import {
   Text,
   Box,
 } from '../../../../components/component-library';
-import TransactionDetailItem from '../../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetailItem from '../../components/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import { ConfirmGasDisplay } from '../../../../components/app/confirm-gas-display';
+import { ConfirmGasDisplay } from '../../components/confirm-gas-display';
 import CustomNonce from '../../components/custom-nonce';
 import { COPY_OPTIONS } from '../../../../../shared/constants/copy';
 import FeeDetailsComponent from '../../components/fee-details-component/fee-details-component';

@@ -17,7 +17,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
-import { ConfirmGasDisplay } from '../../../../components/app/confirm-gas-display';
+import { ConfirmGasDisplay } from '../confirm-gas-display';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 
 export default function ApproveContentCard({

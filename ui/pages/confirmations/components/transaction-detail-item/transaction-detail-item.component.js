@@ -10,8 +10,8 @@ import {
   TextVariant,
   Display,
   FlexWrap,
-} from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+} from '../../../../helpers/constants/design-system';
+import { Text } from '../../../../components/component-library';
 
 export default function TransactionDetailItem({
   'data-testid': dataTestId,

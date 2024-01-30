@@ -17,7 +17,7 @@ import {
   IconName,
   Text,
 } from '../../../../components/component-library';
-import TransactionDetailItem from '../../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import {
   getIsMultiLayerFeeNetwork,
   getPreferences,

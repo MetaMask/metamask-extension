@@ -3,33 +3,33 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { useSelector } from 'react-redux';
-import { Text } from '../../component-library';
-import { TextColor } from '../../../helpers/constants/design-system';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { PriorityLevels } from '../../../../shared/constants/gas';
+import { Text } from '../../../../components/component-library';
+import { TextColor } from '../../../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
   getIsMultiLayerFeeNetwork,
   getPreferences,
   getTxData,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
-} from '../../../selectors';
-import { getCurrentDraftTransaction } from '../../../ducks/send';
+} from '../../../../selectors';
+import { getCurrentDraftTransaction } from '../../../../ducks/send';
 import {
   hexWEIToDecGWEI,
   sumHexes,
-} from '../../../../shared/modules/conversion.utils';
-import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+} from '../../../../../shared/modules/conversion.utils';
+import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Box from '../../ui/box';
-import LoadingHeartBeat from '../../ui/loading-heartbeat';
-import EditGasFeeIcon from '../../../pages/confirmations/components/edit-gas-fee-icon/edit-gas-fee-icon';
-import GasTiming from '../../../pages/confirmations/components/gas-timing/gas-timing.component';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+import Box from '../../../../components/ui/box';
+import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
+import EditGasFeeIcon from '../edit-gas-fee-icon/edit-gas-fee-icon';
+import GasTiming from '../gas-timing/gas-timing.component';
+import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 
 const GasDetailsItem = ({
   'data-testid': dataTestId,

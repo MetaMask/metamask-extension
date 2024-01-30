@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getIsMainnet,
   getIsMultiLayerFeeNetwork,
@@ -11,22 +11,26 @@ import {
   getUseCurrencyRateCheck,
   transactionFeeSelector,
   txDataSelector,
-} from '../../../../selectors';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
+} from '../../../../../selectors';
+import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 
 import TransactionDetailItem from '../../transaction-detail-item';
-import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
-import InfoTooltip from '../../../ui/info-tooltip';
-import LoadingHeartBeat from '../../../ui/loading-heartbeat';
+import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display';
+import InfoTooltip from '../../../../../components/ui/info-tooltip';
+import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 import {
   FONT_STYLE,
   TextVariant,
   TextColor,
-} from '../../../../helpers/constants/design-system';
-import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import MultilayerFeeMessage from '../../../../pages/confirmations/components/multilayer-fee-message/multi-layer-fee-message';
-import { Icon, IconName, Text } from '../../../component-library';
+} from '../../../../../helpers/constants/design-system';
+import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
+import { getNativeCurrency } from '../../../../../ducks/metamask/metamask';
+import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
+import {
+  Icon,
+  IconName,
+  Text,
+} from '../../../../../components/component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;

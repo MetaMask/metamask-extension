@@ -19,9 +19,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import ContractTokenValues from '../../../components/ui/contract-token-values/contract-token-values';
+import ContractTokenValues from '../components/contract-token-values/contract-token-values';
 import Button from '../../../components/ui/button';
-import ReviewSpendingCap from '../../../components/ui/review-spending-cap/review-spending-cap';
+import ReviewSpendingCap from '../components/review-spending-cap/review-spending-cap';
 import { PageContainerFooter } from '../../../components/ui/page-container';
 import ContractDetailsModal from '../components/contract-details-modal/contract-details-modal';
 import {

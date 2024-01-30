@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../ui/box';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Box from '../../../../components/ui/box';
 
-import EditGasFeeButton from '../../../pages/confirmations/components/edit-gas-fee-button';
+import EditGasFeeButton from '../edit-gas-fee-button';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 
 export default function TransactionDetail({

@@ -24,7 +24,7 @@ import Typography from '../../../../components/ui/typography/typography';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
+import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;

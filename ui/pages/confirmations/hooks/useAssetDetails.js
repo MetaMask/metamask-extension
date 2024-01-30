@@ -1,12 +1,15 @@
 import { isEqual } from 'lodash';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getNfts, getTokens } from '../ducks/metamask/metamask';
-import { getAssetDetails } from '../helpers/utils/token-util';
-import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { usePrevious } from './usePrevious';
-import { useTokenTracker } from './useTokenTracker';
+import { getNfts, getTokens } from '../../../ducks/metamask/metamask';
+import { getAssetDetails } from '../../../helpers/utils/token-util';
+import {
+  hideLoadingIndication,
+  showLoadingIndication,
+} from '../../../store/actions';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { useTokenTracker } from '../../../hooks/useTokenTracker';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();

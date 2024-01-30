@@ -20,7 +20,7 @@ import { editExistingTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 
-import { useAssetDetails } from '../../../hooks/useAssetDetails';
+import { useAssetDetails } from '../hooks/useAssetDetails';
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
   const { txParams: { data, to: tokenAddress, from: userAddress } = {} } =

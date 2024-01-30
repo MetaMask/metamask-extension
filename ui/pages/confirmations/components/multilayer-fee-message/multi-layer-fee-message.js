@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
-import TransactionDetailItem from '../../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { SECONDARY } from '../../../../helpers/constants/common';

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import { getCurrentDraftTransaction } from '../ducks/send';
-import { getUnapprovedTransactions } from '../selectors';
+import { getCurrentDraftTransaction } from '../../../ducks/send';
+import { getUnapprovedTransactions } from '../../../selectors';
 
 /**
  * Returns an object that resembles the txData.txParams from the Transactions state.

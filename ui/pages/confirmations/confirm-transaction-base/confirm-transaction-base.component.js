@@ -30,8 +30,8 @@ import NoteToTrader from '../../../components/institutional/note-to-trader';
 ///: END:ONLY_INCLUDE_IF
 
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
-import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../components/transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../components/ledger-instruction-field';
 import {
@@ -52,7 +52,7 @@ import TransactionAlerts from '../components/transaction-alerts';
 import { ConfirmHexData } from '../components/confirm-hexdata';
 import { ConfirmTitle } from '../components/confirm-title';
 import { ConfirmSubTitle } from '../components/confirm-subtitle';
-import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
+import { ConfirmGasDisplay } from '../components/confirm-gas-display';
 import updateTxData from '../../../../shared/modules/updateTxData';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../../shared/constants/keyring';

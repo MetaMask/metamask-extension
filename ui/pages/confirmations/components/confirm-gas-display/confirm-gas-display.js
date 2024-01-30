@@ -6,10 +6,10 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   checkNetworkAndAccountSupports1559,
   txDataSelector,
-} from '../../../selectors';
-import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+} from '../../../../selectors';
+import { isLegacyTransaction } from '../../../../helpers/utils/transactions.util';
 import GasDetailsItem from '../gas-details-item';
-import { getCurrentDraftTransaction } from '../../../ducks/send';
+import { getCurrentDraftTransaction } from '../../../../ducks/send';
 import { ConfirmLegacyGasDisplay } from './confirm-legacy-gas-display';
 
 const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
