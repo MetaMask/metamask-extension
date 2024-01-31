@@ -780,12 +780,6 @@
   "unknown": {
     "message": "Nežinoma"
   },
-  "unknownCameraError": {
-    "message": "Kreipiantis į jūsų kamerą iškilo problema. Bandykite dar kartą..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Vaje! Kažkas negerai..."
-  },
   "unknownNetwork": {
     "message": "Nežinomas privatusis tinklas"
   },

@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "Không xác định"
   },
-  "unknownCameraError": {
-    "message": "Đã xảy ra lỗi khi cố gắng truy cập máy ảnh của bạn. Vui lòng thử lại..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Rất tiếc! Đã xảy ra sự cố...."
-  },
   "unknownCollection": {
     "message": "Bộ sưu tập chưa có tên"
   },

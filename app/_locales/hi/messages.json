@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "अज्ञात"
   },
-  "unknownCameraError": {
-    "message": "आपके कैमरे तक पहुंचने की कोशिश करते समय एक गड़बड़ी हुई। कृपया फिर से कोशिश करें..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ओह! कुछ गलत हो गया...."
-  },
   "unknownCollection": {
     "message": "अनाम संग्रह"
   },

@@ -956,10 +956,10 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#verifyseedPhrase', () => {
-      it('errors when no keying is provided', async () => {
-        await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
-          'No HD keyring found',
+    describe('#getSeedPhrase', () => {
+      it('errors when no password is provided', async () => {
+        await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
+          'KeyringController - Cannot unlock without a previous vault.',
         );
       });
 

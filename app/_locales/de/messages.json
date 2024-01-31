@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "Unbekannt"
   },
-  "unknownCameraError": {
-    "message": "Beim Versuch, auf Ihre Kamera zuzugreifen, ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut …"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppla! Etwas ist schiefgelaufen ..."
-  },
   "unknownCollection": {
     "message": "Unbenannte Sammlung"
   },

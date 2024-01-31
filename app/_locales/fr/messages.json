@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "Inconnu"
   },
-  "unknownCameraError": {
-    "message": "Une erreur s’est produite lors de l’accès à votre appareil photo. Veuillez réessayer..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oups ! Il y a eu un problème...."
-  },
   "unknownCollection": {
     "message": "Collection sans nom"
   },

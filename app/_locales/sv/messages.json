@@ -755,12 +755,6 @@
   "unknown": {
     "message": "okänt"
   },
-  "unknownCameraError": {
-    "message": "Ett fel inträffade när din kamera försökte användas. Försök igen..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppsan! Något gick fel..."
-  },
   "unknownNetwork": {
     "message": "Okänt privatnätverk"
   },

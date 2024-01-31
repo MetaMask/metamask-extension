@@ -4924,12 +4924,6 @@
   "unknown": {
     "message": "Desconhecido"
   },
-  "unknownCameraError": {
-    "message": "Houve um erro ao tentar acessar sua câmera. Tente novamente..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ops! Algo deu errado...."
-  },
   "unknownCollection": {
     "message": "Coleção sem nome"
   },

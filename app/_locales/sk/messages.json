@@ -746,12 +746,6 @@
   "unknown": {
     "message": "Neznámé"
   },
-  "unknownCameraError": {
-    "message": "Pri pokuse o prístup k fotoaparátu sa vyskytla chyba. Skúste znova..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Och! Niečo zlyhalo..."
-  },
   "unknownNetwork": {
     "message": "Neznámá soukromá síť"
   },
