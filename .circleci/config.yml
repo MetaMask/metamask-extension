@@ -23,7 +23,7 @@ executors:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.39.0-jammy
+      - image: mcr.microsoft.com/playwright:v1.41.1-jammy
 
 orbs:
   gh: circleci/github-cli@2.0
