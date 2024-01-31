@@ -40,9 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added token detection support for Arbitrum, Optimism, Base, and zkSync networks ([#21841](https://github.com/MetaMask/metamask-extension/pull/21841))
 - Added fiat balance display to the token import confirmation modal ([#22263](https://github.com/MetaMask/metamask-extension/pull/22263))
 - Introduced support for sending and receiving ERC1155 tokens ([#22228](https://github.com/MetaMask/metamask-extension/pull/22228))
-- Announced the default enablement of Blockaid for enhanced security ([#22338](https://github.com/MetaMask/metamask-extension/pull/22338))
 - Enhanced Blockaid by enabling direct reporting of false positives via a pre-filled form ([#22274](https://github.com/MetaMask/metamask-extension/pull/22274))
 - Enabled Blockaid validations by default for all users ([#22246](https://github.com/MetaMask/metamask-extension/pull/22246))
+    - - Announced the default enablement of Blockaid for enhanced security ([#22338](https://github.com/MetaMask/metamask-extension/pull/22338))
 - Introduced a loading message for unresponsive deprecated networks ([#22323](https://github.com/MetaMask/metamask-extension/pull/22323))
 - Added a deprecation warning for the Goerli testnet selection ([#22264](https://github.com/MetaMask/metamask-extension/pull/22264))
 - Introduced a 'What's New' announcement for the Staking feature ([#22291](https://github.com/MetaMask/metamask-extension/pull/22291))
@@ -55,12 +55,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Flask] Add Petnames functionality to transaction confirmation screens ([#22190](https://github.com/MetaMask/metamask-extension/pull/22190))
 
 ### Changed
-- Enhanced wallet restoration to include accounts with ERC20 token balances, regardless of ETH balance ([#22071](https://github.com/MetaMask/metamask-extension/pull/22071))
+- Enhanced account restoration to include accounts with ERC20 token balances, regardless of ETH balance ([#22071](https://github.com/MetaMask/metamask-extension/pull/22071))
 - Re-enabled the 'Add account Snap' toggle in the experimental settings ([#22260](https://github.com/MetaMask/metamask-extension/pull/22260))
 - Updated the Account Management Snaps listing to use the Snaps registry ([#22166](https://github.com/MetaMask/metamask-extension/pull/22166))
 - Improved the import token flow with a new design and enhanced user experience ([#21704](https://github.com/MetaMask/metamask-extension/pull/21704))
 - Improved Blockaid false positive reporting with an updated URL ([#22403](https://github.com/MetaMask/metamask-extension/pull/22403))
-- Updated the native token on the Optimism network to ETH ([#22510](https://github.com/MetaMask/metamask-extension/pull/22510))
 - Updated ConsenSys website URL from consensys.net to consensys.io ([#22412](https://github.com/MetaMask/metamask-extension/pull/22412))
 - Enhanced the confirmation screens for managing account snaps ([#22298](https://github.com/MetaMask/metamask-extension/pull/22298))
 
@@ -70,15 +69,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a redirection issue in the import tokens modal on non-mainnet networks ([#22470](https://github.com/MetaMask/metamask-extension/pull/22470))
 - Fixed a redirection issue in the import tokens banner ([#22461](https://github.com/MetaMask/metamask-extension/pull/22461))
 - Fixed a display issue during window resizing in the import tokens modal ([#22371](https://github.com/MetaMask/metamask-extension/pull/22371))
-- Enhanced contract deployment with accurate gas estimation ([#22374](https://github.com/MetaMask/metamask-extension/pull/22374))
+- Fixed issue causing contract deployment tx gas estimation to be too low in some cases ([#22374](https://github.com/MetaMask/metamask-extension/pull/22374))
 - Fixed an issue to ensure the gas details section is displayed for legacy transactions ([#22404](https://github.com/MetaMask/metamask-extension/pull/22404))
 - Ensured total gas fees are displayed for transactions that are set to fail ([#22441](https://github.com/MetaMask/metamask-extension/pull/22441))
 - Fixed styling issues in the Snaps custom UI ([#22443](https://github.com/MetaMask/metamask-extension/pull/22443))
 - Fixed an issue with Snap UI elements overflowing ([#22467](https://github.com/MetaMask/metamask-extension/pull/22467))
 - Resolved an issue that caused an 'unlock request already pending' error when attempting multiple simultaneous actions ([#22241](https://github.com/MetaMask/metamask-extension/pull/22241))
-- Resolved an issue with incorrect account name display in the send transaction flow ([#22482](https://github.com/MetaMask/metamask-extension/pull/22482))
-- Resolved an issue with the 'Finish signing' dialog not appearing for asynchronous Snap account transactions ([#22484](https://github.com/MetaMask/metamask-extension/pull/22484))
 - Removed the MetaMask fee line from the fee details component to avoid potential misunderstanding about its purpose ([#22230](https://github.com/MetaMask/metamask-extension/pull/22230))
+- Updated the native token on the Optimism network to ETH ([#22510](https://github.com/MetaMask/metamask-extension/pull/22510))
 
 ## [11.7.3]
 ### Fixed
