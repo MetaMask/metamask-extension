@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Nạp"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Tìm hiểu thêm"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Do những thay đổi trong giao thức của Ethereum: các mạng thử nghiệm Rinkeby, Ropsten và Kovan có thể không hoạt động đáng tin cậy và sẽ sớm bị ngừng sử dụng."
-  },
   "description": {
     "message": "Mô tả"
   },

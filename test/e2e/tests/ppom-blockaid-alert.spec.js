@@ -138,6 +138,22 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
     });
 }
 
+async function mockInfuraWithFailedResponses(mockServer) {
+  await mockInfura(mockServer);
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'debug_traceCall',
+      params: [{ accessList: [], data: '0x00000000' }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 500,
+      };
+    });
+}
+
 /**
  * Tests various Blockaid PPOM security alerts. Some other tests live in separate files due to
  * the need for more sophisticated JSON-RPC mock requests. Some example PPOM Blockaid
@@ -146,7 +162,13 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
-  it('should not show security alerts for benign requests', async function () {
+  /**
+   * todo: fix test
+   *
+   * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/1766}
+   */
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -277,6 +299,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
+        testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
       },
 

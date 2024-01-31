@@ -1,11 +1,11 @@
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { memoize } from 'lodash';
 import semver from 'semver';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
@@ -17,7 +17,6 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
-  AURORA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -56,10 +55,10 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   removeSnapIdPrefix,
   getSnapName,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
@@ -92,16 +91,21 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
+import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 // eslint-disable-next-line import/order
 import {
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
 } from './permissions';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { createDeepEqualSelector } from './util';
 
 /**
@@ -263,11 +267,11 @@ export function getAccountTypeForKeyring(keyring) {
 
   const { type } = keyring;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   if (type.startsWith('Custody')) {
     return 'custody';
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   switch (type) {
     case KeyringType.trezor:
@@ -679,7 +683,7 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -687,12 +691,12 @@ export function getSubjectMetadata(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
@@ -700,11 +704,11 @@ export function getTargetSubjectMetadata(state, origin) {
       iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
     };
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   return metadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Input selector for reusing the same state object.
  * Used in memoized selectors created with createSelector
@@ -814,7 +818,7 @@ export const getAnySnapUpdateAvailable = createSelector(
     return [...snapMap.values()].some((value) => value === true);
   },
 );
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
@@ -1020,7 +1024,7 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
@@ -1120,7 +1124,7 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get an object of announcement IDs and if they are allowed or not.
@@ -1159,9 +1163,9 @@ function getAllowedAnnouncementIds(state) {
     20: currentKeyringIsLedger && isFirefox,
     21: false,
     22: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: true,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
@@ -1202,6 +1206,9 @@ export function getSortedAnnouncementsToShow(state) {
   return announcementsSortedByDate;
 }
 
+export function getOrderedNetworksList(state) {
+  return state.metamask.orderedNetworkList;
+}
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -1224,6 +1231,14 @@ export function getShowTermsOfUse(state) {
     new Date(termsOfUseLastAgreed).getTime() <
     new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
   );
+}
+
+export function getShowSurveyToast(state) {
+  const { surveyLinkLastClickedOrClosed } = state.metamask;
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
+  const now = Date.now();
+  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1545,15 +1560,13 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return LINEA_GOERLI_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
-    case CHAIN_IDS.AURORA:
-      return AURORA_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, Linea and Aurora
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, and Linea
  *
  * @param {*} state
  * @returns Boolean
@@ -1567,7 +1580,6 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
     CHAIN_IDS.LINEA_MAINNET,
-    CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
 
@@ -1610,7 +1622,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, and Avalanche
  *
  * @param {*} state
  * @returns Boolean
@@ -1657,7 +1669,7 @@ export function getUseRequestQueue(state) {
   return state.metamask.useRequestQueue;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
  *
@@ -1667,9 +1679,9 @@ export function getUseRequestQueue(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
  *
@@ -1679,7 +1691,7 @@ export function getIsSecurityAlertsEnabled(state) {
 export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
@@ -1783,7 +1795,7 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IF(desktop)
 /**
  * To get the `desktopEnabled` value which determines whether we use the desktop app
  *
@@ -1793,9 +1805,9 @@ export function getNameSources(state) {
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * To get all installed snaps with proper metadata
  *
@@ -1835,8 +1847,8 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
   return snapsInstallPrivacyWarningShown;
 }
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
   const { snapsAddSnapAccountModalDismissed } = state.metamask;
 
@@ -1863,4 +1875,4 @@ export function getKeyringSnapRemovalResult(state) {
   return state.appState.keyringRemovalSnapModal;
 }
 
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF

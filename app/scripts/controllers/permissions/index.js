@@ -4,6 +4,6 @@ export * from './enums';
 export * from './permission-log';
 export * from './specifications';
 export * from './selectors';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export * from './snaps/snap-permissions';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF

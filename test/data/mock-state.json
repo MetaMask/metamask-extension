@@ -315,6 +315,7 @@
     "useCurrencyRateCheck": true,
     "useNftDetection": true,
     "openSeaEnabled": true,
+    "orderedNetworkList": [],
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",

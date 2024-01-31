@@ -5,6 +5,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
@@ -114,7 +115,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -231,7 +232,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

@@ -131,7 +131,7 @@ export const UI_NOTIFICATIONS = {
       src: 'images/global-menu-block-explorer.svg',
     },
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   23: {
     id: 23,
     date: null,
@@ -140,7 +140,7 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   24: {
     id: 24,
     date: null,
@@ -380,7 +380,7 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: {
       ...UI_NOTIFICATIONS[23],
       title: t('notifications23Title'),
@@ -395,7 +395,7 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: {
       ...UI_NOTIFICATIONS[24],
       title: t('notifications24Title'),

@@ -5,6 +5,7 @@ const {
   openDapp,
   regularDelayMs,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -39,7 +40,7 @@ describe('Personal sign', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -93,7 +94,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

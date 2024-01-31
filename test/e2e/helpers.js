@@ -261,7 +261,7 @@ async function withFixtures(options, testSuite) {
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
   InstalledExtensions: 'Extensions',
-  Notification: 'MetaMask Notification',
+  Dialog: 'MetaMask Dialog',
   Phishing: 'MetaMask Phishing Detection',
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
@@ -594,6 +594,25 @@ const switchToOrOpenDapp = async (
   }
 };
 
+const connectToDapp = async (driver) => {
+  await openDapp(driver);
+  // Connect to dapp
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+
+  await switchToNotificationWindow(driver);
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+};
+
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
@@ -830,10 +849,7 @@ async function validateContractDetails(driver) {
 async function switchToNotificationWindow(driver, numHandles = 3) {
   const windowHandles = await driver.waitUntilXWindowHandles(numHandles);
 
-  await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.Notification,
-    windowHandles,
-  );
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
 }
 
 /**
@@ -895,6 +911,14 @@ function assertInAnyOrder(requests, assertions) {
   );
 }
 
+async function getCleanAppState(driver) {
+  return await driver.executeScript(
+    () =>
+      window.stateHooks?.getCleanAppState &&
+      window.stateHooks.getCleanAppState(),
+  );
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -922,6 +946,7 @@ module.exports = {
   testSRPDropdownIterations,
   openDapp,
   switchToOrOpenDapp,
+  connectToDapp,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -949,4 +974,5 @@ module.exports = {
   assertInAnyOrder,
   genRandInitBal,
   openActionMenuAndStartSendFlow,
+  getCleanAppState,
 };

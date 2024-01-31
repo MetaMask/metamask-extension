@@ -1,4 +1,7 @@
 {
+  "DragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -488,6 +491,10 @@
   },
   "attributions": {
     "message": "Attributions"
+  },
+  "auroraDeprecationWarning": {
+    "message": "MetaMask will be deprecating support for $1 network",
+    "description": "$1 is name of deprecated network"
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
@@ -1223,11 +1230,8 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Learn more"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Due to the protocol changes of Ethereum: Rinkeby, Ropsten and Kovan test networks may not work as reliably and will be deprecated soon."
+  "deprecatedAuroraNetworkMsg": {
+    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
   "description": {
     "message": "Description"
@@ -3281,8 +3285,7 @@
     "message": "OpenSea + Blockaid"
   },
   "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1",
-    "description": "$1 is the link to OpenSea's terms of use"
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4759,6 +4762,12 @@
   "supportCenter": {
     "message": "Visit our support center"
   },
+  "surveyConversion": {
+    "message": "Take our survey"
+  },
+  "surveyTitle": {
+    "message": "Shape the future of MetaMask"
+  },
   "swap": {
     "message": "Swap"
   },
@@ -5305,7 +5314,7 @@
     "message": "ON (Not recommended)"
   },
   "toggleRequestQueueDescription": {
-    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which my break your user experience on certain sites."
+    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
   "toggleRequestQueueField": {
     "message": "Select networks for each site"
@@ -5475,12 +5484,6 @@
   },
   "transactionInsightWarningHeader": {
     "message": "This request may be risky"
-  },
-  "transactionInsightsDeprecationInfo": {
-    "message": "Explore more ways to get transaction insights with"
-  },
-  "transactionInsightsDeprecationTitle": {
-    "message": "This feature will be deprecated soon"
   },
   "transactionNote": {
     "message": "Transaction note"

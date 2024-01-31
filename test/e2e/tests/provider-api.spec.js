@@ -45,7 +45,7 @@ describe('MetaMask', function () {
         await driver.switchToWindow(windowHandles[0]);
 
         await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const switchedChainIdDiv = await driver.waitForSelector({

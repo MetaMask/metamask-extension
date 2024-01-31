@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "入金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "詳細"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "イーサリアムのプロトコル変更のため: Rinkeby、Ropsten、Kovanテストネットワークは動作が安定しない可能性があり、近いうちに非推奨になります。"
-  },
   "description": {
     "message": "説明"
   },

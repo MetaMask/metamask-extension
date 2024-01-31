@@ -124,16 +124,15 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                 </p>
               </div>
             </div>
-            <h6
-              class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
+            <div
+              class="settings-page__content-description"
             >
               <span>
                  
                 Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. 
                 <a
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--bodyMd mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                   href="https://opensea.io/securityproviderterms"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                   target="_blank"
                 >
                   Terms of use
@@ -141,7 +140,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                 
                  
               </span>
-            </h6>
+            </div>
           </div>
           <label
             class="toggle-button toggle-button--off"
@@ -305,7 +304,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         <div
           class="settings-page__content-description"
         >
-          This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which my break your user experience on certain sites.
+          This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites.
         </div>
       </div>
       <div

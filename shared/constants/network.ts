@@ -227,6 +227,7 @@ export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
+export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -371,6 +372,11 @@ export const TEST_CHAINS = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LOCALHOST,
+];
+
+export const MAINNET_CHAINS = [
+  { chainId: CHAIN_IDS.MAINNET },
+  { chainId: CHAIN_IDS.LINEA_MAINNET },
 ];
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>

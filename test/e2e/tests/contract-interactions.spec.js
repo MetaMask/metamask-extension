@@ -51,7 +51,7 @@ describe('Deploy contract and call contract methods', function () {
         });
 
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
@@ -76,7 +76,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement('#withdrawButton');
         await driver.waitUntilXWindowHandles(3);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(

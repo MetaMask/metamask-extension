@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Deposito"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Matuto pa"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Dahil sa mga pagbabago ng protokol ng Ethereum: ang mga test network na Rinkeby, Ropsten at Kovan ay maaaring hindi gumana tulad ng maaasahan at malapit nang itigil ang paggamit."
-  },
   "description": {
     "message": "Deskripsyon"
   },

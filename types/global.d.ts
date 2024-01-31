@@ -9,6 +9,43 @@ declare class Platform {
   closeCurrentWindow: () => void;
 }
 
+declare class MessageSender {
+  documentId?: string;
+
+  documentLivecycle?: string;
+
+  frameId?: number;
+
+  id?: string;
+
+  origin?: string;
+
+  url?: string;
+}
+
+declare class Runtime {
+  onMessage: {
+    addListener: (
+      callback: (
+        message: any,
+        sender: MessageSender,
+        sendResponse: (response: any) => void,
+      ) => void,
+    ) => void;
+  };
+
+  sendMessage: (
+    extensionId?: string,
+    message: any,
+    options?: Record<string, unknown>,
+    callback?: (response: any) => void,
+  ) => void;
+}
+
+declare class Chrome {
+  runtime: Runtime;
+}
+
 type SentryObject = Sentry & {
   // Verifies that the user has opted into metrics and then updates the sentry
   // instance to track sessions and begins the session.
@@ -26,6 +63,8 @@ export declare global {
   var platform: Platform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: SentryObject | undefined;
+
+  var chrome: Chrome;
 
   namespace jest {
     interface Matchers<R> {

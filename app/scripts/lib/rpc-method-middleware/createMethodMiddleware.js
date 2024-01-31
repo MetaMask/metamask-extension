@@ -1,9 +1,9 @@
 import { permissionRpcMethods } from '@metamask/permission-controller';
 import {
   selectHooks,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   permittedMethods as permittedSnapMethods,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/snaps-rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { flatten } from 'lodash';
@@ -76,7 +76,7 @@ export function createMethodMiddleware(hooks) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 const snapHandlerMap = permittedSnapMethods.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map.set(methodName, handler);
@@ -113,4 +113,4 @@ export function createSnapMethodMiddleware(isSnap, hooks) {
     return next();
   };
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF

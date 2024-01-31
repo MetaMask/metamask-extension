@@ -4,21 +4,20 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 async function validateEncryptionKey(driver, encryptionKey) {
   await driver.clickElement('#getEncryptionKeyButton');
-  await driver.waitUntilXWindowHandles(3);
-  let windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+  let windowHandles = await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
   await driver.waitForSelector({
     css: '.request-encryption-public-key__header__text',
     text: 'Request encryption public key',
   });
   await driver.clickElement({ text: 'Provide', tag: 'button' });
-  await driver.waitUntilXWindowHandles(2);
-  windowHandles = await driver.getAllWindowHandles();
+  windowHandles = await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
   await driver.findElement({
     css: '#encryptionKeyDisplay',
@@ -37,9 +36,8 @@ async function encryptMessage(driver, message) {
 
 async function decryptMessage(driver) {
   await driver.clickElement('#decryptButton');
-  await driver.waitUntilXWindowHandles(3);
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+  const windowHandles = await driver.waitUntilXWindowHandles(3);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
   await driver.waitForSelector({
     css: '.request-decrypt-message__header__text',
     text: 'Decrypt request',
@@ -159,7 +157,7 @@ describe('Encrypt Decrypt', function () {
         // ------ Switch to Dapp ------
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -188,10 +186,9 @@ describe('Encrypt Decrypt', function () {
 
         // ------ Get Encryption key and display ETH ------
         await driver.clickElement('#getEncryptionKeyButton');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.waitForSelector({
@@ -229,10 +226,9 @@ describe('Encrypt Decrypt', function () {
 
         // ------ Get Encryption key and display ETH ------
         await driver.clickElement('#getEncryptionKeyButton');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.waitForSelector({

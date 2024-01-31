@@ -80,9 +80,9 @@ interface AppState {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 interface AppSliceState {
@@ -156,9 +156,9 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -507,7 +507,7 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -525,7 +525,7 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     default:
       return appState;

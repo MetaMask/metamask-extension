@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Para Yatır"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum'da yaşanan protokol değişikliklerinden dolayı: Rinkeby, Ropsten, Kovan test ağları güvenilir bir şekilde çalışmayabilir ve yakında kullanım dışı olacak."
-  },
   "description": {
     "message": "Açıklama"
   },

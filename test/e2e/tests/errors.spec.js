@@ -32,6 +32,7 @@ const maskedBackgroundFields = [
   'AppStateController.browserEnvironment.browser',
   'AppStateController.browserEnvironment.os',
   'AppStateController.outdatedBrowserWarningLastShown',
+  'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
 ];
@@ -40,6 +41,7 @@ const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 const removedBackgroundFields = [
   // This property is timing-dependent
   'AccountTracker.currentBlockGasLimit',
+  'AccountTracker.currentBlockGasLimitByChainId',
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',

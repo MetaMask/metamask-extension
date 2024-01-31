@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "保证金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "了解详情"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten 和 Kovan 测试网络可能无法可靠地工作，很快就会被弃用。"
-  },
   "description": {
     "message": "描述"
   },

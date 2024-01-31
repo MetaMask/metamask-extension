@@ -9,20 +9,20 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { Box, ButtonSecondary, IconName, Text } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentChainId,
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   isBalanceCached,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
@@ -33,22 +33,22 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 
 export const BalanceOverview = ({ balance, loading }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const metaMetricsId = useSelector(getMetaMetricsId);
   const chainId = useSelector(getCurrentChainId);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   const balanceIsCached = useSelector(isBalanceCached);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
 
@@ -73,7 +73,7 @@ export const BalanceOverview = ({ balance, loading }) => {
     ) : null;
   };
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Box
@@ -115,12 +115,12 @@ export const BalanceOverview = ({ balance, loading }) => {
         ) : null}
       </Box>
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         renderInstitutionalButtons()
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <ButtonSecondary
           className="token-balance-portfolio"
           data-testid="token-balance-portfolio"
@@ -146,7 +146,7 @@ export const BalanceOverview = ({ balance, loading }) => {
         >
           {t('portfolio')}
         </ButtonSecondary>
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
     </Box>
   );

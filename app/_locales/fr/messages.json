@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Effectuez un dépôt"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "En savoir plus"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "En raison des changements apportés au protocole d’Ethereum, les réseaux testnet Rinkeby, Ropsten et Kovan peuvent ne pas fonctionner d’une manière aussi fiable qu’auparavant et deviendront bientôt obsolètes."
-  },
   "description": {
     "message": "Description"
   },

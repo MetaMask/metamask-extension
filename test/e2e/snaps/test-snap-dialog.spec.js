@@ -1,4 +1,4 @@
-const { withFixtures, unlockWallet } = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -39,7 +39,7 @@ describe('Test Snap Dialog', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -77,7 +77,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(500);
@@ -113,7 +113,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(500);
@@ -141,7 +141,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(500);
@@ -169,7 +169,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(500);
@@ -197,7 +197,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(500);

@@ -12,6 +12,34 @@ const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 function defaultFixture() {
   return {
     data: {
+      AccountsController: {
+        internalAccounts: {
+          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
       AlertController: {
         alertEnabledness: {
           unconnectedAccount: true,
@@ -144,14 +172,17 @@ function defaultFixture() {
             id: 22,
             isShown: true,
           },
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           23: {
             date: null,
             id: 23,
             isShown: false,
           },
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
+      },
+      NetworkOrderController: {
+        orderedNetworkList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -448,6 +479,11 @@ class FixtureBuilder {
 
   withAnnouncementController(data) {
     merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
+  withNetworkOrderController(data) {
+    merge(this.fixture.data.NetworkOrderController, data);
     return this;
   }
 
@@ -784,6 +820,134 @@ class FixtureBuilder {
         },
       },
       selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withAccountsController(data) {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
+  withAccountsControllerImportedAccount() {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          '58093703-57e9-4ea9-8545-49e8a75cb084': {
+            id: '58093703-57e9-4ea9-8545-49e8a75cb084',
+            address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 2',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 3',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withAccountsControllerAdditionalAccountIdentities() {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 2',
+              lastSelected: 1665507500000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
     });
   }
 

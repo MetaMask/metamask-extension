@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -45,7 +46,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const windowHandles = await driver.getAllWindowHandles();
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.waitForSelector({
@@ -84,7 +85,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const windowHandles = await driver.getAllWindowHandles();
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.waitForSelector({

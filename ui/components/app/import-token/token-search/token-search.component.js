@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { TextFieldSearch } from '../../../component-library';
+import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import { BlockSize } from '../../../../helpers/constants/design-system';
 
 export default class TokenSearch extends Component {

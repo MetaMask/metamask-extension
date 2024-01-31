@@ -25,9 +25,9 @@ import {
   isLegacyTransaction,
 } from '../../helpers/utils/transactions.util';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
@@ -54,9 +54,9 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../shared/constants/keyring';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
 
 export default class ConfirmTransactionBase extends Component {
@@ -162,9 +162,9 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   componentDidUpdate(prevProps) {
@@ -631,11 +631,11 @@ export default class ConfirmTransactionBase extends Component {
     let loadingIndicatorMessage;
 
     switch (keyringForAccount?.type) {
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       case KeyringType.snap:
         loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
         break;
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       default:
         if (isHardwareKeyring(keyringForAccount?.type)) {
           loadingIndicatorMessage = this.context.t(
@@ -956,9 +956,9 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
       displayAccountBalanceHeader,
       title,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       isNoteToTraderSupported,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const {
       submitting,
@@ -1024,7 +1024,7 @@ export default class ConfirmTransactionBase extends Component {
           detailsComponent={this.renderDetails()}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
@@ -1036,7 +1036,7 @@ export default class ConfirmTransactionBase extends Component {
               />
             )
           }
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
           tokenAddress={tokenAddress}

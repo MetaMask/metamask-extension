@@ -42,7 +42,7 @@ export default function ConfigureSnapPopup({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose} margin={[4, 4, 4, 4]}>
+        <ModalHeader onClose={onClose} marginBottom={4}>
           {type === ConfigureSnapPopupType.CONFIGURE
             ? t('configureSnapPopupTitle')
             : t('configureSnapPopupInstallTitle')}

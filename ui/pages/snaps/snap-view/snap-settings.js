@@ -1,7 +1,7 @@
 import React, {
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   useEffect,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,18 +25,18 @@ import {
 import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded';
 import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning';
 import ConnectedSitesList from '../../../components/app/connected-sites-list';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   removeSnap,
   removePermissionsFor,
   updateCaveat,
   updateSnap,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   showKeyringSnapRemovalModal,
   getSnapAccountsById,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
   getSnaps,
@@ -45,9 +45,9 @@ import {
   getPermissionSubjects,
   getTargetSubjectMetadata,
   getSnapLatestVersion,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMemoizedMetaMaskIdentities,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getSnapName } from '../../../helpers/utils/util';
 import {
@@ -63,9 +63,9 @@ import { DelineatorType } from '../../../helpers/constants/snaps';
 import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 function SnapSettings({ snapId }) {
   const history = useHistory();
@@ -83,9 +83,9 @@ function SnapSettings({ snapId }) {
 
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const identities = useSelector(getMemoizedMetaMaskIdentities);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithSnapPermission(state, snap?.id),
@@ -99,7 +99,7 @@ function SnapSettings({ snapId }) {
   );
 
   let isKeyringSnap = false;
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
 
   useEffect(() => {
@@ -113,7 +113,7 @@ function SnapSettings({ snapId }) {
       })();
     }
   }, [snap?.id, identities, isKeyringSnap]);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
     const caveatValue =
@@ -245,7 +245,7 @@ function SnapSettings({ snapId }) {
             snapName={snapName}
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
             <>
               <KeyringSnapRemovalWarning
                 snap={snap}
@@ -284,7 +284,7 @@ function SnapSettings({ snapId }) {
                 }
               />
             </>
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </Box>
       </Box>

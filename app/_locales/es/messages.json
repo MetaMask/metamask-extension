@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Depositar"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Más información"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Debido a los cambios de protocolo de Ethereum: es posible que las redes de prueba de Rinkeby, Ropsten y Kovan no funcionen de manera tan confiable y queden obsoletas pronto."
-  },
   "description": {
     "message": "Descripción"
   },

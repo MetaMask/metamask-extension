@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Депозит"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Подробнее"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Из-за изменений протокола Ethereum: тестовые сети Rinkeby, Ropsten, Kovan могут работать не очень надежно и скоро будут признаны устаревшими."
-  },
   "description": {
     "message": "Описание"
   },

@@ -5,6 +5,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 
 describe('Switch ethereum chain', function () {
@@ -46,7 +47,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -77,7 +78,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

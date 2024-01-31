@@ -25,9 +25,9 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   registerDesktopErrorActions,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -211,9 +211,9 @@ async function start() {
       (
         err,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       ) => {
         if (err) {
           // if there's an error, store will be = metamaskState
@@ -221,9 +221,9 @@ async function start() {
             'troubleStarting',
             err,
             store,
-            ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+            ///: BEGIN:ONLY_INCLUDE_IF(desktop)
             backgroundConnection,
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           );
           return;
         }
@@ -249,10 +249,10 @@ async function start() {
         displayCriticalError(
           'troubleStarting',
           err,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           undefined,
           backgroundConnection,
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         );
         return;
       }
@@ -292,9 +292,9 @@ function initializeUi(activeTab, connectionStream, cb) {
       cb(
         err,
         null,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       );
       return;
     }
@@ -314,24 +314,24 @@ async function displayCriticalError(
   errorKey,
   err,
   metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   backgroundConnection,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 ) {
   const html = await getErrorHtml(
     errorKey,
     SUPPORT_LINK,
     metamaskState,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     err,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   );
 
   container.innerHTML = html;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   registerDesktopErrorActions(backgroundConnection, browser);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const button = document.getElementById('critical-error-button');
 

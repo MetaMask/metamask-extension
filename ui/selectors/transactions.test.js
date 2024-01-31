@@ -147,6 +147,57 @@ describe('Transaction Selectors', () => {
       expect(Array.isArray(selectedTx)).toStrictEqual(true);
       expect(selectedTx).toStrictEqual(orderedTxList);
     });
+    it('should not duplicate incoming transactions', () => {
+      const state = {
+        metamask: {
+          providerConfig: {
+            nickname: 'mainnet',
+            chainId: CHAIN_IDS.MAINNET,
+          },
+          featureFlags: {},
+          selectedAddress: '0xAddress',
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 0,
+              txParams: {
+                from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 1,
+              txParams: {
+                from: '0xAddress',
+                to: '0xRecipient',
+              },
+            },
+            {
+              id: 2,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 2,
+              type: TransactionStatus.incoming,
+              txParams: {
+                from: '0xAddress',
+                to: '0xAddress',
+              },
+            },
+          ],
+        },
+      };
+
+      const orderedTxList = state.metamask.transactions.sort(
+        (a, b) => b.time - a.time,
+      );
+
+      const selectedTx = transactionsSelector(state);
+
+      expect(Array.isArray(selectedTx)).toStrictEqual(true);
+      expect(selectedTx).toStrictEqual(orderedTxList);
+    });
   });
 
   describe('nonceSortedTransactionsSelector', () => {

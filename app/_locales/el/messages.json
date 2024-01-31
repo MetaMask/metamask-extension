@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Κατάθεση"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Λόγω των αλλαγών στο πρωτόκολλο του Ethereum: τα δοκιμαστικά δίκτυα Rinkeby, Ropsten και Kovan μπορεί να μη λειτουργούν τόσο αξιόπιστα και θα καταργηθούν σύντομα."
-  },
   "description": {
     "message": "Περιγραφή"
   },

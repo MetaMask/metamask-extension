@@ -3,9 +3,9 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,

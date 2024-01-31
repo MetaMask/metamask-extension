@@ -65,6 +65,7 @@ export enum IconName {
   Data = 'data',
   Diagram = 'diagram',
   DocumentCode = 'document-code',
+  DragDrop = 'drag-drop',
   Edit = 'edit',
   Eraser = 'eraser',
   Ethereum = 'ethereum',

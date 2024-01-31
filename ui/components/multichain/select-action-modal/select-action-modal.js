@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useLocation,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
 import {
   Box,
@@ -16,46 +16,46 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import { SelectActionModalItem } from '../select-action-modal-item';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
 import {
   getCurrentChainId,
   getIsSwapsChain,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { I18nContext } from '../../../contexts/i18n';
 import { AssetType } from '../../../../shared/constants/transaction';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getMmiPortfolioUrl } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 export const SelectActionModal = ({ onClose }) => {
@@ -66,7 +66,7 @@ export const SelectActionModal = ({ onClose }) => {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
@@ -76,9 +76,9 @@ export const SelectActionModal = ({ onClose }) => {
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isBuyableChain = useSelector(getIsBuyableChain);
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
 
   const stakingEvent = () => {
@@ -87,7 +87,7 @@ export const SelectActionModal = ({ onClose }) => {
       event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal
@@ -103,7 +103,7 @@ export const SelectActionModal = ({ onClose }) => {
         </ModalHeader>
         <Box className="select-action-modal__container" marginTop={6}>
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <SelectActionModalItem
               actionIcon={IconName.PlusMinus}
               showIcon
@@ -126,10 +126,10 @@ export const SelectActionModal = ({ onClose }) => {
                 onClose();
               }}
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             <SelectActionModalItem
               actionIcon={IconName.Stake}
               showIcon
@@ -143,7 +143,7 @@ export const SelectActionModal = ({ onClose }) => {
                 onClose();
               }}
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
           <SelectActionModalItem
             actionIcon={IconName.SwapHorizontal}
@@ -152,13 +152,13 @@ export const SelectActionModal = ({ onClose }) => {
             disabled={!isSwapsChain}
             tooltipTitle={t('swapDisabled')}
             onClick={() => {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               global.platform.openTab({
                 url: `${mmiPortfolioUrl}/swap`,
               });
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
 
-              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
               if (isSwapsChain) {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
@@ -177,7 +177,7 @@ export const SelectActionModal = ({ onClose }) => {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
               }
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
               onClose();
             }}
             data-testid="select-action-modal-item-swap"
@@ -206,7 +206,7 @@ export const SelectActionModal = ({ onClose }) => {
             data-testid="select-action-modal-item-send"
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <SelectActionModalItem
               actionIcon={IconName.Arrow2UpRight}
               showIcon
@@ -240,7 +240,7 @@ export const SelectActionModal = ({ onClose }) => {
                 onClose();
               }}
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </Box>
       </ModalContent>
