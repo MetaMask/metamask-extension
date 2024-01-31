@@ -3273,33 +3273,6 @@
         "browserify>punycode": true
       }
     },
-    "eth-json-rpc-filters": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "eth-json-rpc-filters>async-mutex": true,
-        "eth-json-rpc-filters>eth-query": true,
-        "json-rpc-engine": true,
-        "pify": true
-      }
-    },
-    "eth-json-rpc-filters>async-mutex": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "mockttp>graphql-tag>tslib": true
-      }
-    },
-    "eth-json-rpc-filters>eth-query": {
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "nock>debug": true,
-        "watchify>xtend": true
-      }
-    },
     "eth-keyring-controller>@metamask/browser-passworder": {
       "globals": {
         "crypto": true
