@@ -1655,33 +1655,13 @@
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 минут(-ы)",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 мин.",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Может быть, через $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Вероятно, через < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 секунд(-ы)",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 сек.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Весьма вероятно, через < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Использовано газа"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "примерная"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Подробнее о плате за газ"

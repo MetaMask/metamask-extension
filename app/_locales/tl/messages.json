@@ -1655,33 +1655,13 @@
     "message": "$1 oras",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minuto",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Baka sa $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Posible sa < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 na segundo",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 seg",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Napakaposible sa < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Nagamit na Gas"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tinantyang bayad sa gas"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "tinantya"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Alamin pa ang tungkol sa mga bayad sa gas"

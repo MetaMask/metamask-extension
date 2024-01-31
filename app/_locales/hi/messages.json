@@ -1655,33 +1655,13 @@
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 मिनट",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1मिनट",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "शायद $1 में",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "संभवत < $1 में",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 सेकंड",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 सेकंड",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "<$1 में बहुत संभावना है",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "इस्तेमाल की गई गैस"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "अनुमानित गैस फ़ीस"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "अनुमानित"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "गैस फ़ीस के बारे में और अधिक जानें"

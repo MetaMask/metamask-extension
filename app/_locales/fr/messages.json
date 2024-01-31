@@ -1655,33 +1655,13 @@
     "message": "$1 h",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutes",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Peut-être dans $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Probablement dans < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 secondes",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Très probablement dans < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gaz utilisé"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Frais de carburant estimés"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "estimé"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "En savoir plus sur les frais de carburant"

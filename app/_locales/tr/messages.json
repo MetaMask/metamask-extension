@@ -1655,33 +1655,13 @@
     "message": "$1 sa.",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 dakika",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 dk",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Belki $1 içinde",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Muhtemelen < $1 içinde",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 saniye",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 sn",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Büyük olasılıkla > $1 içinde",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Kullanılan gaz"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Tahmini gaz ücreti"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "tahmini"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"

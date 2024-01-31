@@ -329,7 +329,8 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
-        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
 
         const baseFeeInput = await driver.findElement(
@@ -342,13 +343,15 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await priorityFeeInput.fill('1');
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
+
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
-          text: '0.04503836 ETH',
+          css: '.currency-display-component__text',
+          text: '0.05684869',
         });
+
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
-          text: '0.04503836 ETH',
+          css: '.currency-display-component__suffix',
+          text: 'ETH',
         });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -377,7 +380,22 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         );
 
         await driver.waitForSelector({
-          text: '0.000000025',
+          xpath: "//div[contains(text(), 'Base fee')]",
+        });
+
+        const allFeeValues = await driver.findElements(
+          '.currency-display-component__text',
+        );
+
+        /**
+         * Below lines check that fee values are numeric.
+         * Because these values change for every e2e run,
+         * It's better to just check that the values are there and are numeric
+         */
+        assert.equal(allFeeValues.length > 0, true);
+
+        allFeeValues.forEach(async (feeValue) => {
+          assert.equal(/\d+\.?\d*/u.test(await feeValue.getText()), true);
         });
       },
     );

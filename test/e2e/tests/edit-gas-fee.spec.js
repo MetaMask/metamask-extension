@@ -38,7 +38,7 @@ describe('Editing Confirm Transaction', function () {
         assert.equal(await transactionAmount.getText(), '1');
 
         // update estimates to high
-        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await driver.waitForSelector({
           text: 'sec',
           tag: 'span',
@@ -46,29 +46,29 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-high"] > span:first-child',
         );
-        await driver.waitForSelector({ text: '🦍' });
+
         await driver.waitForSelector({
           text: 'Aggressive',
         });
 
         // update estimates to medium
-        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-medium"] > span:first-child',
         );
-        await driver.waitForSelector({ text: '🦊' });
+
         await driver.waitForSelector({
           text: 'Market',
         });
 
         // update estimates to low
-        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-low"] > span:first-child',
         );
-        await driver.waitForSelector({ text: '🐢' });
+
         await driver.waitForSelector({
-          text: 'Low',
+          text: 'Slow',
         });
         await driver.waitForSelector('[data-testid="low-gas-fee-alert"]');
 
@@ -121,7 +121,7 @@ describe('Editing Confirm Transaction', function () {
         assert.equal(await transactionAmount.getText(), '1');
 
         // update estimates to high
-        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await driver.waitForSelector({
           text: 'sec',
           tag: 'span',
@@ -146,12 +146,12 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
-          text: '0.00085 ETH',
+          css: '.currency-display-component__text',
+          text: '0.00085',
         });
         await driver.waitForSelector({
-          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
-          text: '1.00085 ETH',
+          css: '.currency-display-component__suffix',
+          text: 'ETH',
         });
 
         // confirms the transaction
@@ -208,12 +208,11 @@ describe('Editing Confirm Transaction', function () {
         // check transaction in extension popup
         const windowHandles = await getWindowHandles(driver, 3);
         await driver.switchToWindow(windowHandles.popup);
-        await driver.waitForSelector({ text: '🌐' });
         await driver.waitForSelector({
           text: 'Site suggested',
         });
 
-        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
         await driver.waitForSelector({
           text: 'sec',
           tag: 'span',
@@ -229,14 +228,10 @@ describe('Editing Confirm Transaction', function () {
         assert.equal(await transactionAmount.getText(), '0');
 
         // has correct updated value on the confirm screen the transaction
-        const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
-        );
-        const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '0.00021');
-
-        const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '0.00021');
+        await driver.waitForSelector({
+          css: '.currency-display-component__text',
+          text: '0.00021',
+        });
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

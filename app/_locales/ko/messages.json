@@ -1655,33 +1655,13 @@
     "message": "$1 시간",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 분",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 분",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "약 $1 후",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "아마도 < $1 후",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 초",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 초",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "거의 < $1 이내",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "가스 사용됨"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "예상 가스비"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "예상치"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "가스 요금 자세히 알아보기"

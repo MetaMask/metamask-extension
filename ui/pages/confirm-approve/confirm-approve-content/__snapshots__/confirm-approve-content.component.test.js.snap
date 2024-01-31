@@ -82,17 +82,6 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           >
             Transaction fee
           </div>
-          <div
-            class="mm-box mm-box--width-1/6"
-          >
-            <a
-              class="button btn-link confirm-approve-content__small-blue-text"
-              role="button"
-              tabindex="0"
-            >
-              Edit
-            </a>
-          </div>
         </div>
         <div
           class="confirm-approve-content__card-content"
@@ -120,6 +109,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
         </div>
       </div>
       <div
@@ -267,17 +263,6 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           >
             Transaction fee
           </div>
-          <div
-            class="mm-box mm-box--width-1/6"
-          >
-            <a
-              class="button btn-link confirm-approve-content__small-blue-text"
-              role="button"
-              tabindex="0"
-            >
-              Edit
-            </a>
-          </div>
         </div>
         <div
           class="confirm-approve-content__card-content"
@@ -305,6 +290,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
         </div>
       </div>
       <div
@@ -452,17 +444,6 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           >
             Transaction fee
           </div>
-          <div
-            class="mm-box mm-box--width-1/6"
-          >
-            <a
-              class="button btn-link confirm-approve-content__small-blue-text"
-              role="button"
-              tabindex="0"
-            >
-              Edit
-            </a>
-          </div>
         </div>
         <div
           class="confirm-approve-content__card-content"
@@ -490,6 +471,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
         </div>
       </div>
       <div
@@ -637,17 +625,6 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           >
             Transaction fee
           </div>
-          <div
-            class="mm-box mm-box--width-1/6"
-          >
-            <a
-              class="button btn-link confirm-approve-content__small-blue-text"
-              role="button"
-              tabindex="0"
-            >
-              Edit
-            </a>
-          </div>
         </div>
         <div
           class="confirm-approve-content__card-content"
@@ -675,6 +652,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
         </div>
       </div>
       <div

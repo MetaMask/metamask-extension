@@ -1655,33 +1655,13 @@
     "message": "$1時間",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1分",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "おそらく$1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "$1未満の可能性が高い",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "$1未満の可能性が非常に高い",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "ガス使用量"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "見積もり"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "ガス代に関する詳細"

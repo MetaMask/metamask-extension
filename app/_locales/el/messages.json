@@ -1655,33 +1655,13 @@
     "message": "$1 ώρες",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 λεπτά",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 λεπτά",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Ίσως σε $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Πιθανό σε < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 δευτερόλεπτα",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 δευτ",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Πολύ πιθανό σε < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Τέλος συναλλαγής που χρησιμοποιήθηκε"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Εκτιμώμενο τέλος συναλλαγής"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "εκτιμώμενο"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Μάθετε περισσότερα για τα τέλη συναλλαγών"

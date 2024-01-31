@@ -1655,33 +1655,13 @@
     "message": "$1 jam",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 menit",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 mnt",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Mungkin dalam $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Kemungkinan dalam < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 detik",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 dtk",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Sangat mungkin dalam < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas yang digunakan"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimasi biaya gas"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "estimasi"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Pelajari selengkapnya seputar biaya gas"
