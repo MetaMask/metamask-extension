@@ -210,14 +210,15 @@ export function isHardwareWallet(state) {
 }
 
 /**
- * Checks if the current account is a Snap account.
+ * Checks if the account supports smart transactions.
  *
  * @param {object} state - The state object.
  * @returns {boolean}
  */
-export function isAccountSnap(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Snap'));
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
 }
 
 /**
