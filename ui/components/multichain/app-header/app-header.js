@@ -320,6 +320,7 @@ export const AppHeader = ({ location }) => {
                       title={copied ? t('addressCopied') : null}
                     >
                       <ButtonBase
+                        className="multichain-app-header__address-copy-button"
                         onClick={() => handleCopy(checksummedCurrentAddress)}
                         size={ButtonBaseSize.Sm}
                         backgroundColor={BackgroundColor.transparent}

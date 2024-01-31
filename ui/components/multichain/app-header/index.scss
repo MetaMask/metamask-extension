@@ -38,6 +38,14 @@
     }
   }
 
+  &__address-copy-button {
+    &:not([disabled]):hover,
+    &:not([disabled]):focus {
+      box-shadow: none;
+      background: var(--color-background-default-hover);
+    }
+  }
+
   &__lock-contents {
     flex-flow: row nowrap;
     height: 68px;
