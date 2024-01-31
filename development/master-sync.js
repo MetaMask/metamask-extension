@@ -44,7 +44,6 @@ async function runGitCommands() {
       }
     }
 
-    // Add your Git commands here
     await exec('git fetch');
     console.log('Executed: git fetch');
 
