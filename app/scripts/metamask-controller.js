@@ -563,6 +563,9 @@ export default class MetamaskController extends EventEmitter {
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
       ),
+      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
+        this.assetsContractController,
+      ),
       config: {
         provider: this.provider,
         selectedAddress:
