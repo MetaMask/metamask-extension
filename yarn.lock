@@ -5138,38 +5138,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@21.0.1-preview.56c80981":
-  version: 21.0.1-preview.56c80981
-  resolution: "@metamask-previews/transaction-controller@npm:21.0.1-preview.56c80981"
-  dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@metamask/approval-controller": "npm:^5.1.2"
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.2"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^13.0.0"
-    "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^17.2.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    eth-method-registry: "npm:^3.0.0"
-    ethereumjs-util: "npm:^7.0.10"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    nonce-tracker: "npm:^3.0.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/approval-controller": ^5.1.2
-    "@metamask/gas-fee-controller": ^13.0.0
-    "@metamask/network-controller": ^17.2.0
-    babel-runtime: ^6.26.0
-  checksum: 92dc06b0a514e41363bc5a669a0dd5ea671a7750546d046a3ff7e430f0cae6fc89df5a8bb651b107e79bb3d6f7dfc018f6eee917032b016b09cc98f781e3ebfc
-  languageName: node
-  linkType: hard
-
 "@metamask/transaction-controller@npm:^20.0.0":
   version: 20.0.0
   resolution: "@metamask/transaction-controller@npm:20.0.0"
@@ -5199,6 +5167,38 @@ __metadata:
     "@metamask/network-controller": ^17.1.0
     babel-runtime: ^6.26.0
   checksum: 3ccdbb1f0afa5b680f9c0c6b79f645a28fbba163a61da027465f845952027bf1a7f0b8a9a96ae2d44aaaa6ef01e901e3cc4fa8762e25910c6be327cc0ff6ec5a
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@npm:^21.1.0":
+  version: 21.1.0
+  resolution: "@metamask/transaction-controller@npm:21.1.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@metamask/approval-controller": "npm:^5.1.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/gas-fee-controller": "npm:^13.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^17.2.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    eth-method-registry: "npm:^3.0.0"
+    ethereumjs-util: "npm:^7.0.10"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    nonce-tracker: "npm:^3.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^5.1.2
+    "@metamask/gas-fee-controller": ^13.0.0
+    "@metamask/network-controller": ^17.2.0
+    babel-runtime: ^6.26.0
+  checksum: 5dbe811870fb0775d017470ec4529fbf46969f072527e3ac7ce18370faafffda32056eeec02ff8b56ed35463aec8ceaeb667c64362db90529faf4b8e2c9c2631
   languageName: node
   linkType: hard
 
@@ -22513,27 +22513,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-sha3@npm:0.5.5":
-  version: 0.5.5
-  resolution: "js-sha3@npm:0.5.5"
-  checksum: 9ce8bfabdba2cfb94b911125fc278e2f46cc01b6590c98833d9361199e2c2b4bca0427d04da6aa083f05c2c3982029200964a3d6e417b0c126c80f2e32c2d5eb
-  languageName: node
-  linkType: hard
-
-"js-sha3@npm:0.8.0, js-sha3@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "js-sha3@npm:0.8.0"
-  checksum: a49ac6d3a6bfd7091472a28ab82a94c7fb8544cc584ee1906486536ba1cb4073a166f8c7bb2b0565eade23c5b3a7b8f7816231e0309ab5c549b737632377a20c
-  languageName: node
-  linkType: hard
-
-"js-sha3@npm:^0.5.7":
-  version: 0.5.7
-  resolution: "js-sha3@npm:0.5.7"
-  checksum: 32885c7edb50fca04017bacada8e5315c072d21d3d35e071e9640fc5577e200076a4718e0b2f33d86ab704accb68d2ade44f1e2ca424cc73a5929b9129dab948
-  languageName: node
-  linkType: hard
-
 "js-sha3@npm:^0.9.2":
   version: 0.9.3
   resolution: "js-sha3@npm:0.9.3"
@@ -24700,7 +24679,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^1.4.0"
     "@metamask/snaps-utils": "npm:^5.2.0"
     "@metamask/test-dapp": "npm:^7.3.1"
-    "@metamask/transaction-controller": "npm:^21.0.1"
+    "@metamask/transaction-controller": "npm:^21.1.0"
     "@metamask/user-operation-controller": "npm:^1.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
@@ -26017,12 +25996,19 @@ __metadata:
   linkType: hard
 
 "multicodec@npm:^3.0.1":
-  version: 3.1.0
-  resolution: "multicodec@npm:3.1.0"
+  version: 3.2.1
+  resolution: "multicodec@npm:3.2.1"
   dependencies:
-    uint8arrays: "npm:^2.1.5"
+    uint8arrays: "npm:^3.0.0"
     varint: "npm:^6.0.0"
-  checksum: d8a593c6ed5a46ea0e39255a9ad12459b05e36a0a96db7e2773770b9d3e16120f6708b4c9b5b727f1c7f6b8ab1582f78a323736f40caf9051df5966ec884c623
+  checksum: 5a2f4418ec8b45e623b745e96a4e4b6e1cf6538f8cda8b6139c9b0fdf385db3b59c5e99e28ca5af144cb0953df0d567a86e781783446e32a654313e2ac746f0f
+  languageName: node
+  linkType: hard
+
+"multiformats@npm:^9.4.2":
+  version: 9.9.0
+  resolution: "multiformats@npm:9.9.0"
+  checksum: ad55c7d480d22f4258a68fd88aa2aab744fe0cb1e68d732fc886f67d858b37e3aa6c2cec12b2960ead7730d43be690931485238569952d8a3d7f90fdc726c652
   languageName: node
   linkType: hard
 
@@ -33739,12 +33725,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uint8arrays@npm:^2.1.3, uint8arrays@npm:^2.1.5":
+"uint8arrays@npm:^2.1.3":
   version: 2.1.5
   resolution: "uint8arrays@npm:2.1.5"
   dependencies:
     multibase: "npm:^4.0.1"
   checksum: 521a120ad21250004a95330d0501c87344c5072376b5d5d9ef642721f7913cc1880b823715e5d8829307a9dda73c3064283cb3a7442f0e85fef781cfca4f0334
+  languageName: node
+  linkType: hard
+
+"uint8arrays@npm:^3.0.0":
+  version: 3.1.1
+  resolution: "uint8arrays@npm:3.1.1"
+  dependencies:
+    multiformats: "npm:^9.4.2"
+  checksum: 536e70273c040484aa7d522031a9dbca1fe8c06eb58a3ace1064ba68825b4e2764d4a0b604a1c451e7b8be0986dc94f23a419cfe9334bd116716074a2d29b33d
   languageName: node
   linkType: hard
 
