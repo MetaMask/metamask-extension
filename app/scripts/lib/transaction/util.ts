@@ -85,7 +85,7 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-console.log('addDappTransaction', request)
+  console.log('addDappTransaction', request);
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const { securityAlertResponse } = dappRequest;
@@ -234,13 +234,17 @@ async function addTransactionOrUserOperation(
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const { transactionController, transactionOptions, transactionParams, networkClientId } =
-    request;
+  const {
+    transactionController,
+    transactionOptions,
+    transactionParams,
+    networkClientId,
+  } = request;
   const { result, transactionMeta } =
-    await transactionController.addTransaction(
-      transactionParams,
-      {...transactionOptions, networkClientId}
-    );
+    await transactionController.addTransaction(transactionParams, {
+      ...transactionOptions,
+      networkClientId,
+    });
 
   return {
     transactionMeta,
