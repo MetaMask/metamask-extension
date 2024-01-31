@@ -426,7 +426,7 @@
     "@storybook/react": "^7.4.6",
     "@storybook/react-webpack5": "^7.4.6",
     "@storybook/storybook-deployer": "^2.8.16",
-    "@storybook/test-runner": "^0.10.0",
+    "@storybook/test-runner": "^0.14.1",
     "@storybook/theming": "^7.4.6",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^10.4.8",
@@ -655,7 +655,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
-      "@metamask/ethjs-query>babel-runtime>core-js": false
+      "@metamask/ethjs-query>babel-runtime>core-js": false,
+      "@storybook/test-runner>@swc/core": false
     }
   },
   "packageManager": "yarn@4.0.2"
