@@ -22,6 +22,7 @@
     "warning": null,
     "customTokenAmount": "10"
   },
+  "confirm": {},
   "confirmTransaction": {
     "txData": {
       "txParams": {
@@ -30,7 +31,6 @@
       }
     }
   },
-  "confirm": {},
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
