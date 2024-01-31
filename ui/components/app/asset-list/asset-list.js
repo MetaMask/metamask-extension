@@ -130,6 +130,7 @@ const AssetList = ({ onClickAsset }) => {
     if (shouldShowBuy) {
       trackEvent({
         event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
         properties: {
           chain_id: currentNetwork.chainId,
           locale: currentLocale,
@@ -141,6 +142,7 @@ const AssetList = ({ onClickAsset }) => {
     if (shouldShowReceive) {
       trackEvent({
         event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
         properties: {
           chain_id: currentNetwork.chainId,
           locale: currentLocale,
