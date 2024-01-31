@@ -2,19 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Popover from '../../../ui/popover';
 import {
   IconColor,
   Display,
   FlexDirection,
-  FontWeight,
   JustifyContent,
   TextColor,
   TextVariant,
+  AlignItems,
+  TextAlign,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
-import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Icon, IconName, Box, Text, Button } from '../../../component-library';
+import {
+  Icon,
+  IconName,
+  Box,
+  Text,
+  ButtonVariant,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalBody,
+  ModalHeader,
+  AvatarAccount,
+  AvatarAccountSize,
+  IconSize,
+} from '../../../component-library';
 
 const SignatureRequestOriginalWarning = ({
   senderAddress,
@@ -25,87 +39,80 @@ const SignatureRequestOriginalWarning = ({
   const t = useI18nContext();
 
   return (
-    <Popover className="signature-request-warning__content">
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        padding={4}
-        className="signature-request-warning__content__header"
-      >
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.errorDefault}
-          className="signature-request-warning__content__header__warning-icon"
-        />
-        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
-          {t('yourFundsMayBeAtRisk')}
-        </Text>
-      </Box>
-      <Box
-        display={Display.Flex}
-        padding={4}
-        justifyContent={JustifyContent.spaceBetween}
-        className="signature-request-warning__content__account"
-      >
-        <Box display={Display.Flex}>
-          <Identicon address={senderAddress} diameter={32} />
-          <Text
-            variant={TextVariant.bodyMd}
-            as="h5"
-            marginLeft={2}
-            className="signature-request-warning__content__account-name"
-          >
-            <b>{name}</b> {` (${shortenAddress(senderAddress)})`}
+    <Modal isOpen className="signature-request-warning__content">
+      <ModalContent>
+        <ModalHeader
+          display={Display.Flex}
+          childrenWrapperProps={{
+            display: Display.Flex,
+            alignItems: AlignItems.center,
+            justifyContent: JustifyContent.center,
+            flexDirection: FlexDirection.Column,
+            gap: 4,
+            width: BlockSize.Full,
+          }}
+        >
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Xl}
+          />
+          <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+            {t('yourFundsMayBeAtRisk')}
           </Text>
-        </Box>
-      </Box>
-
-      <Text
-        color={TextColor.textAlternative}
-        margin={4}
-        marginTop={4}
-        marginBottom={4}
-        variant={TextVariant.bodySm}
-        as="h6"
-      >
-        {t('signatureRequestWarning', [
-          <a
-            href="https://consensys.io/blog/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask"
-            target="_blank"
-            type="link"
-            key="non_custodial_link"
-            rel="noopener noreferrer"
-            style={{ color: 'var(--color-primary-default)' }}
+        </ModalHeader>
+        <ModalBody
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+        >
+          <Box
+            display={Display.Flex}
+            gap={4}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
-            {t('learnMoreUpperCase')}
-          </a>,
-        ])}
-      </Text>
-
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.spaceBetween}
-        padding={4}
-        className="signature-request-warning__footer"
-      >
-        <Button
-          className="signature-request-warning__footer__sign-button"
-          type="danger-primary"
-          data-testid="signature-warning-sign-button"
-          onClick={onSubmit}
-        >
-          {t('sign')}
-        </Button>
-        <Button
-          className="signature-request-warning__footer__reject-button"
-          type="secondary"
-          onClick={onCancel}
-        >
-          {t('reject')}
-        </Button>
-      </Box>
-    </Popover>
+            <AvatarAccount
+              address={senderAddress}
+              size={AvatarAccountSize.Lg}
+            />
+            <Text
+              variant={TextVariant.bodyMd}
+              className="signature-request-warning__content__account-name"
+            >
+              <b>{name}</b> {` (${shortenAddress(senderAddress)})`}
+            </Text>
+          </Box>
+          <Text color={TextColor.textAlternative}>
+            {t('signatureRequestWarning', [
+              <a
+                href="https://consensys.io/blog/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask"
+                target="_blank"
+                type="link"
+                key="non_custodial_link"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--color-primary-default)' }}
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          </Text>
+        </ModalBody>
+        <ModalFooter
+          onSubmit={onSubmit}
+          submitButtonProps={{
+            danger: true,
+            children: t('sign'),
+            'data-testid': 'signature-warning-sign-button',
+          }}
+          onCancel={onCancel}
+          cancelButtonProps={{
+            variant: ButtonVariant.Secondary,
+            children: t('reject'),
+          }}
+        />
+      </ModalContent>
+    </Modal>
   );
 };
 

@@ -11,7 +11,10 @@ import {
   BannerAlert,
 } from '../../../component-library';
 import { PageContainerFooter } from '../../../ui/page-container';
-import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import {
+  INSUFFICIENT_FUNDS_ERROR_KEY,
+  IS_SIGNING_OR_SUBMITTING,
+} from '../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../helpers/constants/design-system';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
@@ -185,6 +188,9 @@ export default class ConfirmPageContainerContent extends Component {
     const showInsuffienctFundsError =
       (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
+    const showIsSigningOrSubmittingError =
+      errorKey === IS_SIGNING_OR_SUBMITTING;
+
     return (
       <div
         className={classnames('confirm-page-container-content', {
@@ -212,6 +218,7 @@ export default class ConfirmPageContainerContent extends Component {
         {this.renderContent()}
         {!supportsEIP1559 &&
           !showInsuffienctFundsError &&
+          !showIsSigningOrSubmittingError &&
           (errorKey || errorMessage) && (
             <BannerAlert
               severity={Severity.Danger}
@@ -248,6 +255,15 @@ export default class ConfirmPageContainerContent extends Component {
                     networkName,
                   ])
             }
+          />
+        )}
+        {showIsSigningOrSubmittingError && (
+          <BannerAlert
+            severity={Severity.Danger}
+            description={t(errorKey)}
+            marginBottom={4}
+            marginLeft={4}
+            marginRight={4}
           />
         )}
         <PageContainerFooter
