@@ -97,15 +97,16 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
+  /** Data we pass to Blockaid false reporting portal. As far as I know, there are no documents that exist that specifies these key values */
   const reportData = {
     domain: origin ?? msgParams?.origin,
     jsonRpcMethod: type,
     jsonRpcParams: JSON.stringify(txParams ?? msgParams),
     blockNumber: block,
     chain: NETWORK_TO_NAME_MAP[chainId],
-    classification: reason,
+    classification: isFailedResultType ? 'error' : reason,
     blockaidVersion: BlockaidPackage.version,
-    resultType,
+    resultType: isFailedResultType ? 'Error' : resultType,
     reproduce: JSON.stringify(features),
   };
 
