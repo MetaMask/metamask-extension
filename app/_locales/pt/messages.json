@@ -647,10 +647,6 @@
   "chainIdExistsErrorMsg": {
     "message": "Esse ID da cadeia é usado pela rede $1."
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "A rede com ID de cadeia $1 pode usar um símbolo de moeda ($2) diferente do que você inseriu. Por favor, verifique antes de continuar.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chooseYourNetwork": {
     "message": "Escolha sua rede"
   },
