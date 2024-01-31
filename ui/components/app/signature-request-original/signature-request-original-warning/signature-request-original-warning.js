@@ -91,7 +91,7 @@ const SignatureRequestOriginalWarning = ({
       >
         <Button
           className="signature-request-warning__footer__sign-button"
-          type="danger-primary"
+          danger
           data-testid="signature-warning-sign-button"
           onClick={onSubmit}
         >
