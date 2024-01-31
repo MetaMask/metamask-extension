@@ -2474,6 +2474,7 @@ export function getCurrentTransactionUUID(state) {
  * @type {Selector<DraftTransaction>}
  */
 export function getCurrentDraftTransaction(state) {
+  //console.log(name, state, state[name]);
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
 }
 

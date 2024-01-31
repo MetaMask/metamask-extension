@@ -2,6 +2,7 @@ import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { NetworkType } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   renderWithProvider,
@@ -75,23 +76,7 @@ jest.mock('../../../../ducks/send/send', () => {
   };
 });
 
-const render = (props = {}, state = {}) => {
-  const store = configureStore({
-    ...mockState,
-    send: {
-      ...mockState.send,
-      currentTransactionUUID: 'uuid',
-      draftTransactions: {
-        uuid: {
-          asset: { type: AssetType.native },
-          amount: {},
-        },
-      },
-    },
-    ...state,
-  });
-  return renderWithProvider(<SendPage {...props} />, store);
-};
+
 
 describe('SendPage', () => {
   describe('render and initialization', () => {
@@ -127,6 +112,24 @@ describe('SendPage', () => {
           fast: '2',
         },
         selectedAddress: '0x0',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
         keyrings: [
           {
             type: KeyringType.hdKeyTree,
@@ -287,6 +290,7 @@ describe('SendPage', () => {
         ...mockSendState,
         send: {
           ...mockSendState.send,
+          currentTransactionUUID: '1-tx',
           draftTransactions: {
             '1-tx': {
               ...mockSendState.send.draftTransactions['1-tx'],
@@ -308,7 +312,12 @@ describe('SendPage', () => {
         },
       };
 
-      const { queryByTestId } = render({}, knownRecipientWarningState);
+      const sendStateStore = configureMockStore([thunk])(knownRecipientWarningState);
+
+      const { queryByTestId } = renderWithProvider(
+        <SendPage />,
+        sendStateStore,
+      );
 
       const sendWarning = queryByTestId('send-warning');
       await waitFor(() => {
