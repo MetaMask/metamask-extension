@@ -347,9 +347,7 @@ describe('Send ETH', function () {
 
             // Identify the transaction in the transactions list
             await driver.waitForSelector(
-              process.env.MULTICHAIN
-                ? '[data-testid="token-balance-overview-currency-display"]'
-                : '[data-testid="eth-overview__primary-currency"]',
+              '[data-testid="eth-overview__primary-currency"]',
             );
 
             await driver.clickElement('[data-testid="home__activity-tab"]');

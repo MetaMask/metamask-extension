@@ -34,8 +34,6 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
-  SelectActionModal,
-  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -172,8 +170,6 @@ export default class Routes extends Component {
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
-    isSelectActionModalOpen: PropTypes.bool.isRequired,
-    hideSelectActionModal: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -520,25 +516,6 @@ export default class Routes extends Component {
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
   }
 
-  showFooter() {
-    if (Boolean(process.env.MULTICHAIN) === false) {
-      return false;
-    }
-
-    const { location } = this.props;
-    const isHomePage = Boolean(
-      matchPath(location.pathname, { path: DEFAULT_ROUTE, exact: true }),
-    );
-    const isConnectionsPage = Boolean(
-      matchPath(location.pathname, { path: CONNECTIONS, exact: true }),
-    );
-    const isAssetPage = Boolean(
-      matchPath(location.pathname, { path: ASSET_ROUTE, exact: false }),
-    );
-
-    return isAssetPage || isHomePage || isConnectionsPage;
-  }
-
   showOnboardingHeader() {
     const { location } = this.props;
 
@@ -580,14 +557,12 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
-      isSelectActionModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
-      hideSelectActionModal,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -666,9 +641,6 @@ export default class Routes extends Component {
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
-        {isSelectActionModalOpen ? (
-          <SelectActionModal onClose={() => hideSelectActionModal()} />
-        ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
@@ -684,7 +656,6 @@ export default class Routes extends Component {
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
-        {this.showFooter() && <AppFooter location={location} />}
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );
