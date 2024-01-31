@@ -42,8 +42,11 @@ import {
 } from '../../../../shared/constants/transaction';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { getPricePrecision, localizeLargeNumber } from './util';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { MINUTE } from '../../../../shared/constants/time';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import AssetChart from './asset-chart';
+import { getPricePrecision, localizeLargeNumber } from './util';
 
 const renderRow = (leftColumn: string, rightColumn: ReactNode) => (
   <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -72,6 +75,7 @@ const AssetV2 = ({
     name?: string;
     image: string;
     balance: string;
+    fiatValue?: string;
   };
 }) => {
   const t = useI18nContext();
@@ -81,22 +85,25 @@ const AssetV2 = ({
 
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
-  const [spotPrices, setSpotPrices] = useState<any>();
 
-  const { type, symbol, name, image, balance } = asset;
+  const [marketData, setMarketData] = useState<any>();
+
+  const { type, symbol, name, image, balance, fiatValue } = asset;
   const address =
     type === AssetType.token
       ? asset.address
       : '0x0000000000000000000000000000000000000000';
 
-  // TODO: consider exposing this fetch through a controller
+  // TODO: expose call via TokenRatesController
   useEffect(() => {
-    setSpotPrices(undefined);
-    fetch(
-      `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?tokenAddresses=${address}&vsCurrency=${currency}&includeMarketData=true`,
-    )
-      .then((resp) => (resp.status === 200 ? resp.json() : null))
-      .then((data) => setSpotPrices(data?.[address.toLowerCase()]));
+    setMarketData(undefined);
+    fetchWithCache({
+      url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
+      cacheOptions: { cacheRefreshTime: Number(MINUTE) },
+      functionName: 'GetAssetMarketData',
+    })
+      .catch(() => null)
+      .then((data) => setMarketData(data?.[address.toLowerCase()]));
   }, [chainId, address, currency]);
 
   return (
@@ -112,15 +119,16 @@ const AssetV2 = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         padding={4}
-        paddingTop={9}
+        paddingTop={7}
         gap={6}
         style={{ boxShadow: '0px -15px 15px -15px gray inset' }} // todo dark theme?
       >
         <Box>
-          <Text variant={TextVariant.headingMd} paddingBottom={4}>
+          <Text variant={TextVariant.headingMd} paddingBottom={2}>
             {t('yourBalance')}
           </Text>
           <Box
+            padding={2}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
@@ -131,12 +139,12 @@ const AssetV2 = ({
               </Text>
             </Box>
             <Box>
-              {/* <Text
+              <Text
                 variant={TextVariant.bodyLgMedium}
                 textAlign={TextAlign.Right}
               >
-                $123
-              </Text> */}
+                {fiatValue}
+              </Text>
               <Text
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
@@ -205,11 +213,11 @@ const AssetV2 = ({
               renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
           </Box>
         )}
-        {(spotPrices?.marketCap > 0 ||
-          spotPrices?.totalVolume > 0 ||
-          spotPrices?.circulatingSupply > 0 ||
-          spotPrices?.allTimeHigh > 0 ||
-          spotPrices?.allTimeLow > 0) && (
+        {(marketData?.marketCap > 0 ||
+          marketData?.totalVolume > 0 ||
+          marketData?.circulatingSupply > 0 ||
+          marketData?.allTimeHigh > 0 ||
+          marketData?.allTimeLow > 0) && (
           <Box>
             <Text variant={TextVariant.headingMd} paddingBottom={4}>
               {t('marketDetails')}
@@ -219,52 +227,52 @@ const AssetV2 = ({
               flexDirection={FlexDirection.Column}
               gap={2}
             >
-              {spotPrices?.marketCap > 0 &&
+              {marketData?.marketCap > 0 &&
                 renderRow(
                   t('marketCap'),
-                  <Text>{localizeLargeNumber(t, spotPrices.marketCap)}</Text>,
+                  <Text>{localizeLargeNumber(t, marketData.marketCap)}</Text>,
                 )}
-              {spotPrices?.totalVolume > 0 &&
+              {marketData?.totalVolume > 0 &&
                 renderRow(
                   t('totalVolume'),
-                  <Text>{localizeLargeNumber(t, spotPrices.totalVolume)}</Text>,
+                  <Text>{localizeLargeNumber(t, marketData.totalVolume)}</Text>,
                 )}
-              {spotPrices?.totalVolume > 0 &&
-                spotPrices?.marketCap > 0 &&
+              {marketData?.totalVolume > 0 &&
+                marketData?.marketCap > 0 &&
                 renderRow(
                   `${t('volume')} / ${t('marketCap')}`,
                   <Text>
                     {(
-                      spotPrices.totalVolume / spotPrices.marketCap
+                      marketData.totalVolume / marketData.marketCap
                     ).toPrecision(4)}
                   </Text>,
                 )}
-              {spotPrices?.circulatingSupply > 0 &&
+              {marketData?.circulatingSupply > 0 &&
                 renderRow(
                   t('circulatingSupply'),
                   <Text>
-                    {localizeLargeNumber(t, spotPrices.circulatingSupply)}
+                    {localizeLargeNumber(t, marketData.circulatingSupply)}
                   </Text>,
                 )}
-              {spotPrices?.allTimeHigh > 0 &&
+              {marketData?.allTimeHigh > 0 &&
                 renderRow(
                   t('allTimeHigh'),
                   <Text>
                     {formatCurrency(
-                      spotPrices.allTimeHigh,
+                      marketData.allTimeHigh,
                       currency,
-                      getPricePrecision(spotPrices.allTimeHigh),
+                      getPricePrecision(marketData.allTimeHigh),
                     )}
                   </Text>,
                 )}
-              {spotPrices?.allTimeLow > 0 &&
+              {marketData?.allTimeLow > 0 &&
                 renderRow(
                   t('allTimeLow'),
                   <Text>
                     {formatCurrency(
-                      spotPrices.allTimeLow,
+                      marketData.allTimeLow,
                       currency,
-                      getPricePrecision(spotPrices.allTimeLow),
+                      getPricePrecision(marketData.allTimeLow),
                     )}
                   </Text>,
                 )}

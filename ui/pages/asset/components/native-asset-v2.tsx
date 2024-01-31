@@ -25,6 +25,7 @@ const NativeAssetV2 = () => {
         symbol: nativeCurrency,
         image,
         balance: displayBalance[1].value,
+        fiatValue: 'todo'
       }}
     />
   );

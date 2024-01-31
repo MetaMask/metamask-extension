@@ -9,6 +9,7 @@ import {
   TimeScale,
   Filler,
   ScriptableContext,
+  ChartData,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import CrosshairPlugin from 'chartjs-plugin-crosshair';
@@ -16,6 +17,7 @@ import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -38,12 +40,14 @@ import {
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { MINUTE } from '../../../../shared/constants/time';
 import { getPricePrecision } from './util';
+import { isWidthDown } from '@material-ui/core';
 
 /** Time range units supported by the price API */
 type TimeRange = `${number}D` | `${number}M` | `${number}Y`;
 
-// TODO: Make these into legit icons
 const chartUp = (
   <svg
     width="12"
@@ -89,6 +93,13 @@ const chartDown = (
   </svg>
 );
 
+const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+});
+
 Chart.register(
   TimeScale,
   LinearScale,
@@ -104,15 +115,8 @@ Chart.register(
   },
 );
 
-const dateFormatter = Intl.DateTimeFormat(navigator.language, {
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-});
-
 const chartOptions = {
-  aspectRatio: 1.3,
+  aspectRatio: 1.8,
   fill: true,
   layout: { autoPadding: false },
   elements: {
@@ -147,69 +151,55 @@ const AssetChart = ({ address }: { address: string }) => {
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
 
-  const chartRef = useRef<Chart<'line', number[], Date>>(null);
-  const [prices, setPrices] = useState<any>();
+  const chartRef = useRef<Chart<'line', number[], Date>>();
   const [timeRange, setTimeRange] = useState<TimeRange>('1D');
-  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | undefined>();
+  const [data, setData] = useState<ChartData<'line', number[], Date>>();
 
   // TODO: consider exposing this fetch through a controller
   useEffect(() => {
-    setHoveredIndex(0); // todo why zero?
-    setPrices(undefined);
-    fetch(
-      // todo or use the historic-price-graph api instead?  see how they re implemented in backend
-      `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-    )
-      .then((resp) => (resp.status === 200 ? resp.json() : { prices: [] }))
-      .then((data) => {
-        setPrices(data.prices);
-        setHoveredIndex(data.prices.length - 1);
+    setData(undefined);
+    fetchWithCache({
+      url: `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
+      cacheOptions: { cacheRefreshTime: Number(0) }, // TODO: MINUTE
+      functionName: 'GetAssetHistoricalPrices',
+    })
+      .catch(() => ({ prices: [] }))
+      .then(({ prices }) => {
+        const up = prices?.[prices?.length - 1]?.[1] - prices?.[0]?.[1] >= 0;
+        setData({
+          labels: prices?.map((item: any) => new Date(item[0])),
+          datasets: [
+            {
+              data: prices?.map((item: any) => item[1]),
+              borderColor: '#0376c9',// () => (up ? '#28A745' : '#D73847'),
+              backgroundColor: ({ chart }) => {
+                const g = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
+                g.addColorStop(0,'#0376c94C');
+                g.addColorStop(1, '#D9D9D900');
+                return g;
+              },
+            },
+          ],
+        });
       });
   }, [chainId, address, currency, timeRange]);
 
-  // Calculate data that changes on hover
-  let priceDelta, pricePercent;
-  if (prices?.length > 0) {
-    const firstPrice = prices[0][1];
-    const hoveredPrice = prices[hoveredIndex][1];
-    priceDelta = hoveredPrice - firstPrice;
-    pricePercent = 100 * ((hoveredPrice - firstPrice) / firstPrice);
+  // Calculate what changes on hover
+  const prices = data?.datasets?.[0]?.data;
+  let hoveredPrice, priceDelta;
+  if (prices && prices.length > 0) {
+    hoveredPrice = prices[hoveredIndex ?? prices.length - 1];
+    priceDelta = hoveredPrice - prices[0]; // todo??
   }
-
-  const up = priceDelta >= 0;
-  const data = useMemo(
-    () => ({
-      labels: prices?.map((item: any) => new Date(item[0])),
-      datasets: [
-        {
-          data: prices?.map((item: any) => item[1]),
-          borderColor: up ? '#28A745' : '#D73847',
-          backgroundColor: (context: ScriptableContext<'line'>) => {
-            const gradient = context.chart.ctx.createLinearGradient(
-              0,
-              0,
-              0,
-              context.chart.height,
-            );
-            gradient.addColorStop(
-              0,
-              up ? 'rgba(40, 167, 69, 0.30)' : 'rgba(229, 0, 0, 0.30)',
-            );
-            gradient.addColorStop(1, 'rgba(217, 217, 217, 0.00)');
-            return gradient;
-          },
-        },
-      ],
-    }),
-    [prices, up],
-  );
-
-  // todo: can we only generate labels and datasets on time range change
-  // and only change colors on `up` change?
 
   // background --background-default-pressed ???
   const getButton = (label: string, range: TimeRange) => {
-    const opts = { onClick: () => setTimeRange(range) };
+    const opts = {
+      onClick: () => setTimeRange(range),
+      variant: TextVariant.bodySmMedium,
+      className: 'time-range-button',
+    };
     return range === timeRange ? (
       <ButtonPrimary {...opts} size={ButtonPrimarySize.Sm}>
         {label}
@@ -219,6 +209,8 @@ const AssetChart = ({ address }: { address: string }) => {
         {...opts}
         size={ButtonSecondarySize.Sm}
         borderColor={BorderColor.transparent}
+        color={TextColor.textAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         {label}
       </ButtonSecondary>
@@ -228,15 +220,16 @@ const AssetChart = ({ address }: { address: string }) => {
   return (
     <Box>
       <Text paddingLeft={4} variant={TextVariant.headingLg}>
-        {prices?.length > 0 &&
-          formatCurrency(
-            prices[hoveredIndex][1],
-            currency,
-            getPricePrecision(prices[hoveredIndex][1]),
-          )}
+        {hoveredPrice
+          ? formatCurrency(
+              `${hoveredPrice}`,
+              currency,
+              getPricePrecision(hoveredPrice),
+            )
+          : '\u00A0'}
       </Text>
       <Box paddingLeft={4} paddingBottom={4}>
-        {priceDelta !== undefined && pricePercent !== undefined ? (
+        {prices !== undefined && priceDelta && data?.labels ? (
           <>
             {priceDelta >= 0 ? chartUp : chartDown}
             <Text
@@ -256,89 +249,98 @@ const AssetChart = ({ address }: { address: string }) => {
                 getPricePrecision(priceDelta),
               )}{' '}
               ({priceDelta >= 0 ? '+' : ''}
-              {pricePercent.toFixed(2)}%)
+              {(100 * (priceDelta / prices[0])).toFixed(2)}%)
             </Text>
             <Text
               display={Display.InlineBlock}
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
             >
-              {dateFormatter.format(prices[hoveredIndex][0])}
+              {shortDateFormatter.format(
+                data.labels[hoveredIndex ?? data.labels.length - 1],
+              )}
             </Text>
           </>
         ) : (
           // Placeholder to take up same amount of room during loading
-          <Text>{'\u00A0'}</Text>
+          <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
         )}
       </Box>
-      {(function () {
-        if (prices?.length > 0) {
-          return (
-            <Line
-              ref={chartRef}
-              data={data}
-              onMouseMove={(e) => {
+      {prices && prices.length > 0 &&
+        <>
+          <Line
+            ref={chartRef}
+            data={data}
+            onMouseMove={(e) => {
+              chartRef.current &&
                 setHoveredIndex(
                   Math.min(
-                    prices?.length - 1,
+                    prices.length - 1,
                     Math.round(
                       (e.nativeEvent.offsetX / chartRef.current.width) *
-                        prices?.length,
+                        prices.length,
                     ),
                   ),
                 );
-              }}
-              onMouseOut={() => setHoveredIndex(prices?.length - 1)}
-              options={chartOptions}
-              updateMode="none"
-            />
-          );
-        }
-        return prices?.length === 0 ? (
+            }}
+            onMouseOut={() => setHoveredIndex(undefined)}
+            options={chartOptions}
+            updateMode="none"
+          />
           <Box
-            style={{ height: `${100 / chartOptions.aspectRatio}vw` }}
             display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            gap={1}
-            borderRadius={BorderRadius.LG}
-            marginLeft={4}
-            marginRight={4}
-            backgroundColor={BackgroundColor.backgroundAlternative}
+            justifyContent={JustifyContent.spaceEvenly}
+            marginTop={2}
           >
-            <Icon name={IconName.Info} size={IconSize.Xl} />
-            <Text>{t('noChartData')}</Text>
-            <Text>{t('couldNotFetchDataForToken')}</Text>
+            {getButton(t('oneDayAbbreviation'), '1D')}
+            {getButton(t('oneWeekAbbreviation'), '7D')}
+            {getButton(t('oneMonthAbbreviation'), '1M')}
+            {getButton(t('threeMonthsAbbreviation'), '3M')}
+            {getButton(t('oneYearAbbreviation'), '1Y')}
+            {getButton(t('all'), '1000Y')}
           </Box>
-        ) : (
-          // TODO: using the chart but making the background a diff color while no data might work too?
-          //
-          // TODO: This box is a skeleton for the chart while data is fetching. It (and the box above)
-          // should be the same height as the chart, which maintains `aspectRatio`. This skeleton
-          // maintains the same aspect ratio, but against the viewport. This works in popup mode
-          // but not in fullscreen mode. We really want height relative to the parent's width, not vw.
-          <Box
-            style={{ height: `${100 / chartOptions.aspectRatio}vw` }}
-            borderRadius={BorderRadius.LG}
-            marginLeft={4}
-            marginRight={4}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-          ></Box>
-        );
-      })()}
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceEvenly}
-        marginTop={2}
-      >
-        {getButton(t('oneDayAbbreviation'), '1D')}
-        {getButton(t('oneWeekAbbreviation'), '7D')}
-        {getButton(t('oneMonthAbbreviation'), '1M')}
-        {getButton(t('threeMonthsAbbreviation'), '3M')}
-        {getButton(t('oneYearAbbreviation'), '1Y')}
-        {getButton(t('all'), '1000Y')}
-      </Box>
+        </>
+      }
+      {
+        prices === undefined &&
+        <Box display={Display.Grid} width={BlockSize.Full}>
+          <Box  backgroundColor={BackgroundColor.backgroundAlternative} style={{aspectRatio: `${chartOptions.aspectRatio}`}}>
+
+          </Box>
+        </Box>
+        // return prices?.length === 0 ? (
+        //   <Box
+        //     style={{ height: `${100 / chartOptions.aspectRatio}vw` }}
+        //     display={Display.Flex}
+        //     flexDirection={FlexDirection.Column}
+        //     alignItems={AlignItems.center}
+        //     justifyContent={JustifyContent.center}
+        //     gap={1}
+        //     borderRadius={BorderRadius.LG}
+        //     marginLeft={4}
+        //     marginRight={4}
+        //     backgroundColor={BackgroundColor.backgroundAlternative}
+        //   >
+        //     <Icon name={IconName.Info} size={IconSize.Xl} />
+        //     <Text>{t('noChartData')}</Text>
+        //     <Text>{t('couldNotFetchDataForToken')}</Text>
+        //   </Box>
+        // ) : (
+        //   // TODO: using the chart but making the background a diff color while no data might work too?
+        //   //
+        //   // TODO: This box is a skeleton for the chart while data is fetching. It (and the box above)
+        //   // should be the same height as the chart, which maintains `aspectRatio`. This skeleton
+        //   // maintains the same aspect ratio, but against the viewport. This works in popup mode
+        //   // but not in fullscreen mode. We really want height relative to the parent's width, not vw.
+        //   <Box
+        //     style={{ height: `${100 / chartOptions.aspectRatio}vw` }}
+        //     borderRadius={BorderRadius.LG}
+        //     marginLeft={4}
+        //     marginRight={4}
+        //     backgroundColor={BackgroundColor.backgroundAlternative}
+        //   ></Box>
+        // );
+      }
     </Box>
   );
 };
