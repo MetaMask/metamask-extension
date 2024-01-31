@@ -17,12 +17,12 @@ export function useDisplayName(
   variation?: string,
 ): string | null {
   const nameEntry = useName(value, type, variation);
-  if (nameEntry?.name) {
-    return nameEntry.name;
-  }
   const contractName = useSelector((state) =>
     (getMemoizedMetadataContractName as any)(state, value),
   );
+  if (nameEntry?.name) {
+    return nameEntry.name;
+  }
   if (contractName) {
     return contractName;
   }
