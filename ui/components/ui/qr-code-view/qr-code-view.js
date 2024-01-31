@@ -4,7 +4,7 @@ import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { AddressCopyButton } from '../../multichain/address-copy-button';
+import { AddressCopyButton } from '../../multichain';
 import Box from '../box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
