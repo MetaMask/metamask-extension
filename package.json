@@ -96,6 +96,7 @@
     "lavamoat:build": "lavamoat development/build/index.js --policy lavamoat/build-system/policy.json --policyOverride lavamoat/build-system/policy-override.json",
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
+    "lavamoat:debug:webapp": "WRITE_AUTO_POLICY_DEBUG=1 yarn lavamoat:webapp:auto",
     "lavamoat:webapp:auto": "node ./development/generate-lavamoat-policies.js --devMode=true",
     "lavamoat:webapp:auto:ci": "node ./development/generate-lavamoat-policies.js --parallel=false",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:webapp:auto",
