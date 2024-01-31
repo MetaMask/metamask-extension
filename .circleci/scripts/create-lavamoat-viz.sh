@@ -12,7 +12,7 @@ mkdir -p "${BUILD_DEST}"
 
 # generate lavamoat debug configs
 yarn lavamoat:debug:build
-yarn lavamoat:debug:webapp
+yarn lavamoat:debug:webapp --parallel=false
 
 # generate entries for all present policy dirs under lavamoat/browserify
 # static entry for build-system
