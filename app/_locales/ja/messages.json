@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFTを追加"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snapsでアカウントのセキュリティを確保する方法をご覧ください"
-  },
   "addSuggestedNFTs": {
     "message": "推奨されたNFTを追加"
   },
@@ -589,12 +586,6 @@
   "bridge": {
     "message": "ブリッジ"
   },
-  "bridgeDescription": {
-    "message": "別のネットワークからトークンを転送します"
-  },
-  "bridgeDisabled": {
-    "message": "ブリッジはこのネットワークで利用できません"
-  },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
@@ -830,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "接続リクエスト"
-  },
-  "connections": {
-    "message": "接続"
   },
   "contactUs": {
     "message": "お問い合わせ"
@@ -1655,42 +1643,19 @@
     "message": "$1時間",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1分",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "おそらく$1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "$1未満の可能性が高い",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "$1未満の可能性が非常に高い",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "ガス使用量"
   },
   "general": {
     "message": "一般"
-  },
-  "getStarted": {
-    "message": "開始"
   },
   "globalTitle": {
     "message": "グローバルメニュー"
@@ -3168,10 +3133,6 @@
   "portfolioDashboard": {
     "message": "Portfolioダッシュボード"
   },
-  "preferredLedgerConnectionType": {
-    "message": "優先Ledger接続タイプ",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "スワップを準備しています..."
   },
@@ -3493,9 +3454,6 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
-  "searchResults": {
-    "message": "検索結果"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -3602,9 +3560,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutionalで使用するカストディアンアカウントを選択します。"
   },
-  "selectAnAction": {
-    "message": "アクションを選択してください"
-  },
   "selectHdPath": {
     "message": "HDパスを選択"
   },
@@ -3628,9 +3583,6 @@
   },
   "sendBugReport": {
     "message": "バグの報告をお送りください。"
-  },
-  "sendDescription": {
-    "message": "仮想通貨を任意のアカウントに送金します"
   },
   "sendSpecifiedTokens": {
     "message": "$1を送金",
@@ -3763,9 +3715,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "snapConfigure": {
-    "message": "構成"
-  },
   "snapConnectionWarning": {
     "message": "$1が$2への接続を要求しています。このWebサイトが信頼できる場合にのみ続行してください。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3774,49 +3723,8 @@
     "message": "このコンテンツは$1からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask Snapで新規アカウントのセキュリティを確保する方法を選択してください。"
-  },
-  "snapCreateAccountTitle": {
-    "message": "$1アカウントの作成",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "By MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "監査"
-  },
-  "snapDetailDeveloper": {
-    "message": "開発者"
-  },
-  "snapDetailLastUpdated": {
-    "message": "更新済み"
-  },
-  "snapDetailManageSnap": {
-    "message": "snapの管理"
-  },
-  "snapDetailTags": {
-    "message": "タグ"
-  },
-  "snapDetailVersion": {
-    "message": "バージョン"
-  },
   "snapDetailWebsite": {
     "message": "Webサイト"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "スナップアカウントの作成"
-  },
-  "snapDetailsInstalled": {
-    "message": "インストール済み"
-  },
-  "snapInstall": {
-    "message": "snapをインストール"
   },
   "snapInstallRequest": {
     "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
@@ -3835,9 +3743,6 @@
   "snapInstallationErrorTitle": {
     "message": "インストールに失敗しました",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "監査済み"
   },
   "snapResultError": {
     "message": "エラー"
@@ -4028,9 +3933,6 @@
   "stake": {
     "message": "ステーク"
   },
-  "stakeDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
   },
@@ -4216,14 +4118,8 @@
   "swapDecentralizedExchange": {
     "message": "分散型取引所"
   },
-  "swapDescription": {
-    "message": "トークンのスワップや取引を行います"
-  },
   "swapDirectContract": {
     "message": "ダイレクトコントラクト"
-  },
-  "swapDisabled": {
-    "message": "このネットワークではスワップが利用できません"
   },
   "swapEditLimit": {
     "message": "限度額を編集"
@@ -4782,9 +4678,6 @@
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "見積もり"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "ガス代に関する詳細"
   },
@@ -4999,10 +4892,6 @@
   },
   "verifyContractDetails": {
     "message": "サードパーティの詳細を確認"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "トークンの10進数は$1にあります",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "このトークンを$1で検証",

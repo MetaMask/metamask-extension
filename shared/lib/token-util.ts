@@ -1,4 +1,4 @@
-import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -32,6 +32,23 @@ export async function fetchTokenBalance(
   const tokenContract = new Contract(address, abiERC20, ethersProvider);
   const tokenBalancePromise = tokenContract
     ? tokenContract.balanceOf(userAddress)
+    : Promise.resolve();
+  return await tokenBalancePromise;
+}
+
+export async function fetchERC1155Balance(
+  address: string,
+  userAddress: string,
+  tokenId: string,
+  provider: any,
+): Promise<any> {
+  if (!userAddress || !tokenId) {
+    return null;
+  }
+  const ethersProvider = new Web3Provider(provider);
+  const tokenContract = new Contract(address, abiERC1155, ethersProvider);
+  const tokenBalancePromise = tokenContract
+    ? tokenContract.balanceOf(userAddress, tokenId)
     : Promise.resolve();
   return await tokenBalancePromise;
 }

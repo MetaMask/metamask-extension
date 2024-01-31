@@ -135,6 +135,8 @@ test.describe('MMI extension', () => {
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
     );
 
+    await mainMenuPage.closeDeprecatedNetworksBanner();
+
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
     expect(
       JSON.stringify(accountNamesWithCustodian) ===

@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Textarea should render correctly 1`] = `
+<div>
+  <textarea
+    class="mm-box mm-text mm-textarea mm-textarea--resize-vertical mm-text--body-md mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    resize="vertical"
+  />
+</div>
+`;

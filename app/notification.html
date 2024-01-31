@@ -3,10 +3,15 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
+
+    {{ @if (it.isTest) }}
     <title>MetaMask Dialog</title>
-    {{@if(it.isMMI)}}
+    {{ #elif (it.isMMI) }}
     <title>MetaMask Institutional</title>
+    {{ #else }}
+    <title>MetaMask</title>
     {{/if}}
+
     <style>
       #app-content {
         display: flex;

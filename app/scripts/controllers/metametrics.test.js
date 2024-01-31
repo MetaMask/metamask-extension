@@ -1024,6 +1024,12 @@ describe('MetaMetricsController', function () {
           },
           'network-configuration-id-3': { chainId: '0xaf' },
         },
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1031,6 +1037,7 @@ describe('MetaMetricsController', function () {
         securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
         security_providers: [],
         names: {
@@ -1086,6 +1093,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
+        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1113,10 +1121,17 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
       });
 
@@ -1136,10 +1151,18 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+            mock3: {},
+          },
+        },
         identities: [{}, {}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: false,
         desktopEnabled: false,
       });
 
@@ -1148,6 +1171,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
         [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
+        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: false,
       });
     });
 
@@ -1165,10 +1189,17 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
       });
 
@@ -1184,10 +1215,17 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
       });
 

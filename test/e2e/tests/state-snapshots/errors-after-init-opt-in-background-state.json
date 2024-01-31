@@ -1,8 +1,9 @@
 {
-  "AccountTracker": {
-    "accounts": "object",
-    "accountsByChainId": "object"
+  "AccountOrderController": {
+    "pinnedAccountList": {},
+    "hiddenAccountList": {}
   },
+  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -33,6 +34,8 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showProductTour": true,
+    "showNetworkBanner": true,
+    "showAccountBanner": true,
     "trezorModel": null,
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
@@ -47,17 +50,16 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       }
-    }
+    },
+    "currentCurrency": "usd"
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -69,8 +71,8 @@
   },
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
-    "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
+    "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -85,10 +87,11 @@
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
+    "previousUserTraits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "previousUserTraits": "object"
+    "segmentApiCalls": "object"
   },
+  "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "providerConfig": {
@@ -109,7 +112,7 @@
     "networkConfigurations": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -124,11 +127,8 @@
     "onboardingTabs": "object"
   },
   "PPOMController": {
-    "versionInfo": {},
     "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    },
+    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
@@ -143,12 +143,12 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "useRequestQueue": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
+    "useRequestQueue": false,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -162,9 +162,11 @@
     "forgottenPassword": false,
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": true
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
@@ -174,12 +176,11 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
+    "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": {
-      "metamask": "networkConfigurationId"
-    },
+    "domains": { "metamask": "networkConfigurationId" },
     "perDomainNetwork": "boolean"
   },
   "SignatureController": {
@@ -250,8 +251,9 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
-    "transactions": "object"
-  }
+    "transactions": "object",
+    "lastFetchedBlockNumbers": "object"
+  },
+  "UserOperationController": { "userOperations": "object" }
 }

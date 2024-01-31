@@ -39,7 +39,6 @@ interface AppState {
   };
   showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
-  showSelectActionModal: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -76,6 +75,7 @@ interface AppState {
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
+  newTokensImportedError: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
@@ -115,7 +115,6 @@ const initialState: AppState = {
   },
   showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
-  showSelectActionModal: false,
   accountDetail: {
     privateKey: '',
   },
@@ -151,6 +150,7 @@ const initialState: AppState = {
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
+  newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
@@ -223,18 +223,6 @@ export default function reduceApp(
       return {
         ...appState,
         importTokensModalOpen: false,
-      };
-
-    case actionConstants.SELECT_ACTION_MODAL_OPEN:
-      return {
-        ...appState,
-        showSelectActionModal: true,
-      };
-
-    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
-      return {
-        ...appState,
-        showSelectActionModal: false,
       };
 
     // alert methods
@@ -434,6 +422,12 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImported: action.payload,
+      };
+
+    case actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR:
+      return {
+        ...appState,
+        newTokensImportedError: action.payload,
       };
 
     case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:

@@ -11,6 +11,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
 } from '..';
 
 import { ModalContent } from './modal-content';
@@ -61,13 +62,14 @@ export const DefaultStory: StoryFn<typeof ModalContent> = (args) => {
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
         <ModalContent {...args}>
-          <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
-          <ModalBody padding={0}>
-            <Text marginBottom={4}>Modal Content</Text>
+          <ModalHeader>Modal Header</ModalHeader>
+          <ModalBody>
+            <Text>Modal Content</Text>
           </ModalBody>
-          <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
-            Close
-          </Button>
+          <ModalFooter
+            onSubmit={handleOnClick}
+            submitButtonProps={{ children: 'Close' }}
+          />
         </ModalContent>
       </Modal>
     </>
@@ -91,21 +93,19 @@ export const Children: StoryFn<typeof ModalContent> = (args) => {
           <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
           <ModalBody>
             <Text marginBottom={4}>
-              The ModalContent with ModalHeader and Text components as children
+              The ModalContent with ModalHeader, ModalBody, ModalFooter as
+              children
             </Text>
-            <Button
-              marginBottom={4}
-              variant={ButtonVariant.Primary}
-              onClick={handleOnClick}
-            >
-              Close
-            </Button>
             <LoremIpsum />
             <LoremIpsum />
             <LoremIpsum />
             <LoremIpsum />
             <LoremIpsum />
           </ModalBody>
+          <ModalFooter
+            onSubmit={handleOnClick}
+            submitButtonProps={{ children: 'Close' }}
+          />
         </ModalContent>
       </Modal>
     </>
@@ -179,9 +179,10 @@ export const Size: StoryFn<typeof ModalContent> = (args) => {
                 )}
               </Text>
             </ModalBody>
-            <Button onClick={() => setCurrentSize(null)} block>
-              Close
-            </Button>
+            <ModalFooter
+              onSubmit={() => setCurrentSize(null)}
+              submitButtonProps={{ children: 'Close' }}
+            />
           </ModalContent>
         </Modal>
       )}

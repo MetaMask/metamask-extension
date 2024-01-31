@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Ajouter des NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Découvrez les différentes options disponibles pour sécuriser votre compte avec lMetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Ajouter les NFT suggérés"
   },
@@ -589,12 +586,6 @@
   "bridge": {
     "message": "Pont"
   },
-  "bridgeDescription": {
-    "message": "Transférez des jetons provenant de différents réseaux"
-  },
-  "bridgeDisabled": {
-    "message": "La passerelle n’est pas disponible sur ce réseau"
-  },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
   },
@@ -830,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "Demande de connexion"
-  },
-  "connections": {
-    "message": "Connexions"
   },
   "contactUs": {
     "message": "Nous contacter"
@@ -1655,33 +1643,13 @@
     "message": "$1 h",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutes",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Peut-être dans $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Probablement dans < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 secondes",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Très probablement dans < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gaz utilisé"
@@ -1689,8 +1657,8 @@
   "general": {
     "message": "Général"
   },
-  "getStarted": {
-    "message": "Commencer"
+  "genericExplorerView": {
+    "message": "Afficher le compte sur $1"
   },
   "globalTitle": {
     "message": "Menu global"
@@ -3168,10 +3136,6 @@
   "portfolioDashboard": {
     "message": "Tableau de bord du portefeuille"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Type de connexion préférée au Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Préparation du swap..."
   },
@@ -3493,9 +3457,6 @@
   "searchAccounts": {
     "message": "Rechercher des comptes"
   },
-  "searchResults": {
-    "message": "Résultats de la recherche"
-  },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
   },
@@ -3602,9 +3563,6 @@
   "selectAnAccountHelp": {
     "message": "Sélectionnez les comptes de dépôt que vous voulez utiliser dans MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Sélectionner une action"
-  },
   "selectHdPath": {
     "message": "Sélectionner le chemin HD"
   },
@@ -3628,9 +3586,6 @@
   },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
-  },
-  "sendDescription": {
-    "message": "Transférez des crypto-actifs vers n’importe quel compte"
   },
   "sendSpecifiedTokens": {
     "message": "Envoyer $1",
@@ -3763,9 +3718,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
-  "snapConfigure": {
-    "message": "Configurer"
-  },
   "snapConnectionWarning": {
     "message": "$1 veut se connecter à $2. Ne continuez que si vous avez confiance en ce site web.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3774,49 +3726,8 @@
     "message": "Ce contenu provient de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Choisissez comment vous voulez sécuriser votre nouveau compte à l’aide de MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Créer un compte $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Conçu par MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Audit"
-  },
-  "snapDetailDeveloper": {
-    "message": "Développeur"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Mis à jour"
-  },
-  "snapDetailManageSnap": {
-    "message": "Gérer ce snap"
-  },
-  "snapDetailTags": {
-    "message": "Tags"
-  },
-  "snapDetailVersion": {
-    "message": "Version"
-  },
   "snapDetailWebsite": {
     "message": "Site web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Créer un compte snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Installé"
-  },
-  "snapInstall": {
-    "message": "Installer Snap"
   },
   "snapInstallRequest": {
     "message": "L’installation de $1 lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $1.",
@@ -3835,9 +3746,6 @@
   "snapInstallationErrorTitle": {
     "message": "L’installation a échoué",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Audité"
   },
   "snapResultError": {
     "message": "Erreur"
@@ -4028,9 +3936,6 @@
   "stake": {
     "message": "Staker"
   },
-  "stakeDescription": {
-    "message": "Conservez vos crypto-actifs et dégagez des bénéfices potentiels"
-  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
@@ -4216,14 +4121,8 @@
   "swapDecentralizedExchange": {
     "message": "Échange décentralisé"
   },
-  "swapDescription": {
-    "message": "Échangez vos jetons"
-  },
   "swapDirectContract": {
     "message": "Contrat direct"
-  },
-  "swapDisabled": {
-    "message": "Impossible d’effectuer un échange sur ce réseau"
   },
   "swapEditLimit": {
     "message": "Modifier la limite"
@@ -4782,9 +4681,6 @@
   "transactionDetailGasHeading": {
     "message": "Frais de carburant estimés"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimé"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "En savoir plus sur les frais de carburant"
   },
@@ -4999,10 +4895,6 @@
   },
   "verifyContractDetails": {
     "message": "Vérifier les informations relatives aux tiers"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Décimale de jeton disponible sur $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Vérifier ce jeton sur $1",

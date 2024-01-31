@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Добавить NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Откройте для себя варианты обеспечения безопасности своего счета с помощью MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Добавить рекомендованные NFT"
   },
@@ -589,12 +586,6 @@
   "bridge": {
     "message": "Мост"
   },
-  "bridgeDescription": {
-    "message": "Передавайте токены из разных сетей"
-  },
-  "bridgeDisabled": {
-    "message": "В этой сети недоступен мост"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
@@ -830,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "Запрос подключения"
-  },
-  "connections": {
-    "message": "Связи"
   },
   "contactUs": {
     "message": "Свяжитесь с нами"
@@ -1655,42 +1643,19 @@
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 минут(-ы)",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 мин.",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Может быть, через $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Вероятно, через < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 секунд(-ы)",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 сек.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Весьма вероятно, через < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Использовано газа"
   },
   "general": {
     "message": "Общие"
-  },
-  "getStarted": {
-    "message": "Начало работы"
   },
   "globalTitle": {
     "message": "Глобальное меню"
@@ -3168,10 +3133,6 @@
   "portfolioDashboard": {
     "message": "Панель инструментов Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Предпочтительный тип подключения к Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Подготовка свопа..."
   },
@@ -3493,9 +3454,6 @@
   "searchAccounts": {
     "message": "Поиск счетов"
   },
-  "searchResults": {
-    "message": "Результаты поиска"
-  },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },
@@ -3602,9 +3560,6 @@
   "selectAnAccountHelp": {
     "message": "Выберите депозитарные счета для использования в MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Выберите аукцион"
-  },
   "selectHdPath": {
     "message": "Выберите путь HD"
   },
@@ -3628,9 +3583,6 @@
   },
   "sendBugReport": {
     "message": "Отправьте нам отчет об ошибке."
-  },
-  "sendDescription": {
-    "message": "Отправляйте криптовалюту на любой счет"
   },
   "sendSpecifiedTokens": {
     "message": "Отправить $1",
@@ -3763,9 +3715,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "snapConfigure": {
-    "message": "Настроить"
-  },
   "snapConnectionWarning": {
     "message": "$1 хочет подключиться к $2. Продолжайте, только если вы доверяете этому сайту.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3774,49 +3723,8 @@
     "message": "Этот контент поступает от $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Выберите способ защиты вашего нового счета с помощью MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Создать новый счет $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "От MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Аудит"
-  },
-  "snapDetailDeveloper": {
-    "message": "Разработчик"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Обновлено"
-  },
-  "snapDetailManageSnap": {
-    "message": "Управление snap"
-  },
-  "snapDetailTags": {
-    "message": "Теги"
-  },
-  "snapDetailVersion": {
-    "message": "Версия"
-  },
   "snapDetailWebsite": {
     "message": "Веб-сайт"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Создать счет Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Установлена"
-  },
-  "snapInstall": {
-    "message": "Установить snap"
   },
   "snapInstallRequest": {
     "message": "Установка $1 дает ему следующие разрешения. Продолжайте, только если доверяете $1.",
@@ -3835,9 +3743,6 @@
   "snapInstallationErrorTitle": {
     "message": "Ошибка установки",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Проверена"
   },
   "snapResultError": {
     "message": "Ошибка"
@@ -4028,9 +3933,6 @@
   "stake": {
     "message": "Выполнить стейкинг"
   },
-  "stakeDescription": {
-    "message": "Держите криптовалюту и зарабатывайте потенциально прибыль"
-  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
   },
@@ -4216,14 +4118,8 @@
   "swapDecentralizedExchange": {
     "message": "Децентрализованная биржа"
   },
-  "swapDescription": {
-    "message": "Выполняйте своп токенов и торгуйте ими"
-  },
   "swapDirectContract": {
     "message": "Прямой контракт"
-  },
-  "swapDisabled": {
-    "message": "В этой сети недоступен своп"
   },
   "swapEditLimit": {
     "message": "Изменить лимит"
@@ -4782,9 +4678,6 @@
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "примерная"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Подробнее о плате за газ"
   },
@@ -4999,10 +4892,6 @@
   },
   "verifyContractDetails": {
     "message": "Проверьте информацию о третьей стороне"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Число десятичных знаков токена можно найти на $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Проверить этот токен на $1",

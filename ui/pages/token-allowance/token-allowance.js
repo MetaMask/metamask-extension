@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -61,9 +61,16 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
+
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
+
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
@@ -72,6 +79,7 @@ import SecurityProviderBannerMessage from '../../components/app/security-provide
 import { Icon, IconName, Text } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
+import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -205,6 +213,22 @@ export default function TokenAllowance({
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
 
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const onClickSupportLink = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Confirm Screen',
+        origin: txData?.origin,
+        external_link_clicked: 'security_alert_support_link',
+      },
+    });
+  }, [trackEvent, txData?.origin]);
+  ///: END:ONLY_INCLUDE_IF
+
   const customNonceMerge = (transactionData) =>
     customNonceValue
       ? {
@@ -282,13 +306,13 @@ export default function TokenAllowance({
     );
   };
 
-  const handleNextNonce = () => {
+  const handleNextNonce = useCallback(() => {
     dispatch(getNextNonce());
-  };
+  }, [getNextNonce, dispatch]);
 
   useEffect(() => {
-    handleNextNonce();
-  }, [dispatch]);
+    dispatch(getNextNonce());
+  }, [getNextNonce, dispatch]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
@@ -377,8 +401,9 @@ export default function TokenAllowance({
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
+          txData={txData}
           margin={4}
+          onClickSupportLink={onClickSupportLink}
         />
         ///: END:ONLY_INCLUDE_IF
       }
@@ -534,6 +559,13 @@ export default function TokenAllowance({
           />
         </Box>
       )}
+      <Box marginRight={4} marginLeft={4}>
+        <FeeDetailsComponent
+          useCurrencyRateCheck={useCurrencyRateCheck}
+          txData={txData}
+          hideGasDetails={isFirstPage}
+        />
+      </Box>
       {useNonceField && (
         <Box marginTop={4} marginRight={4} marginLeft={4}>
           <CustomNonce

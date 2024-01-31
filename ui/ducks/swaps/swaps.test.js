@@ -421,7 +421,9 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.keyrings[0].type = 'Trezor Hardware';
+      state.metamask.internalAccounts.accounts[
+        state.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = 'Trezor Hardware';
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
