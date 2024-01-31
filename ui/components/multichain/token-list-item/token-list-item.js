@@ -156,6 +156,7 @@ export const TokenListItem = ({
         >
           <Box
             display={Display.Flex}
+            flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
             gap={1}
           >
@@ -212,12 +213,37 @@ export const TokenListItem = ({
               </Text>
             )}
           </Box>
-          <Text
-            color={TextColor.textAlternative}
-            data-testid="multichain-token-list-item-value"
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            gap={1}
           >
-            {primary} {tokenSymbol}{' '}
-          </Text>
+            <Box width={BlockSize.OneThird}>
+              {/* bottom left */}
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+                data-testid="multichain-token-list-item-token-name" //
+                ellipsis
+              >
+                {tokenTitle}
+              </Text>
+            </Box>
+            <Box style={{ overflow: 'hidden' }} width={BlockSize.TwoThirds}>
+              {/* bottom right */}
+              <Text
+                data-testid="multichain-token-list-item-value"
+                color={TextColor.textAlternative}
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                textAlign={TextAlign.End}
+              >
+                {primary} {tokenSymbol}{' '}
+              </Text>
+            </Box>
+          </Box>
         </Box>
       </Box>
       {showScamWarningModal ? (
@@ -272,7 +298,7 @@ TokenListItem.propTypes = {
    */
   title: PropTypes.string,
   /**
-   * tokenImage represnts the image of the token icon
+   * tokenImage represents the image of the token icon
    */
   tokenImage: PropTypes.string,
   /**
