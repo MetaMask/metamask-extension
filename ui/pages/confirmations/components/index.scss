@@ -12,6 +12,7 @@
 @import 'confirm-page-container/index';
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 @import 'confirm/header/header.scss';
+@import 'confirm/nav/nav.scss';
 ///: END:ONLY_INCLUDE_IF
 @import 'contract-details-modal/index';
 @import 'custom-nonce/index';

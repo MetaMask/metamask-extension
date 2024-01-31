@@ -1,5 +1,5 @@
 import React from 'react';
-import { Footer } from '.';
+import Footer from './footer';
 
 const Story = {
   title: 'Confirmations/Components/Confirm/Footer',

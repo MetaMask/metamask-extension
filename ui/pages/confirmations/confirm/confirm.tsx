@@ -8,6 +8,7 @@ import { Header } from '../components/confirm/header';
 import { MMISignatureMismatchBanner } from '../components/confirm/mmi-signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
 import { Info } from '../components/confirm/info';
+import { Nav } from '../components/confirm/nav';
 import { SignatureMessage } from '../components/confirm/signature-message';
 import { Title } from '../components/confirm/title';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
@@ -19,6 +20,7 @@ const Confirm = () => {
 
   return (
     <Page>
+      <Nav />
       <Header />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

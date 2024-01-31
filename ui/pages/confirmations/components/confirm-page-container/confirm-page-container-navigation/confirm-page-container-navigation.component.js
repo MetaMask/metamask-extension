@@ -36,9 +36,12 @@ const ConfirmPageContainerNavigation = () => {
     ...enumUnapprovedEncryptMsgsKey,
   ];
 
-  const enumUnapprovedTxs = Object.keys(unconfirmedTransactions).filter(
-    (key) => enumDecryptAndEncryptMsgs.includes(key) === false,
-  );
+  const enumUnapprovedTxs = Object.keys(unconfirmedTransactions)
+    .sort(
+      (a1, a2) =>
+        unconfirmedTransactions[a1].time - unconfirmedTransactions[a2].time,
+    )
+    .filter((key) => enumDecryptAndEncryptMsgs.includes(key) === false);
 
   const currentPosition = enumUnapprovedTxs.indexOf(id);
 
