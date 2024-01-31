@@ -34,7 +34,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import TokenBalance from '../../ui/token-balance';
-import { getSelectedIdentity } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 import MaxClearButton from './max-clear-button';
 import AssetPicker from './asset-picker/asset-picker';
 
@@ -98,7 +98,7 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
 export const AssetPickerAmount = () => {
   const t = useI18nContext();
   const { asset, amount } = useSelector(getCurrentDraftTransaction);
-  const selectedAccount = useSelector(getSelectedIdentity);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const { error } = amount;
 
