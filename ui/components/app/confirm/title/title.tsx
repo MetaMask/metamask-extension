@@ -21,6 +21,7 @@ const typeToDescTKey: Partial<Record<TransactionType, string>> = {
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
+  console.log('===================', currentConfirmation);
 
   if (!currentConfirmation) {
     return null;
