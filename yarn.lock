@@ -9204,10 +9204,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^20.4.2":
-  version: 20.8.2
-  resolution: "@types/node@npm:20.8.2"
-  checksum: 61bd39870625d8afcbb4f21d6a0c3a9681f6d508dc6b06f2497e9ad3ec942092a120bcfdbc1757a8e4017308449bc2a9b9865b2b9840b158878a4e8cc0804a3c
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^20, @types/node@npm:^20.4.2":
+  version: 20.11.13
+  resolution: "@types/node@npm:20.11.13"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: ffe143dd5e52d0d29f5bcea165b752c5355eaff8b6b933441108b540419e14c0c7e0e7912783e914125ab957e30db93f9c827e8dd437ec7e5f03def995e9a5e6
   languageName: node
   linkType: hard
 
@@ -9218,7 +9220,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18, @types/node@npm:^18.0.0":
+"@types/node@npm:^18.0.0":
   version: 18.18.9
   resolution: "@types/node@npm:18.18.9"
   dependencies:
@@ -24727,7 +24729,7 @@ __metadata:
     "@types/jest": "npm:^29.1.2"
     "@types/madge": "npm:^5.0.0"
     "@types/mocha": "npm:^10.0.3"
-    "@types/node": "npm:^18"
+    "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
     "@types/pump": "npm:^1.1.1"
     "@types/react": "npm:^16.9.53"
