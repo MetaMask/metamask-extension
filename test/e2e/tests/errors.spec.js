@@ -837,6 +837,8 @@ describe('Sentry errors', function () {
         // the "resetState" method
         swapsFeatureFlags: true,
       },
+      // TODO not sure why this is missing
+      perDomainNetwork: false,
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
@@ -854,7 +856,6 @@ describe('Sentry errors', function () {
         const fullUiState = await driver.executeScript(() =>
           window.stateHooks?.getCleanAppState?.(),
         );
-
         const extraMaskProperties = getMissingProperties(
           SENTRY_UI_STATE.metamask,
           fullUiState.metamask,
