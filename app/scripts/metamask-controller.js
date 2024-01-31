@@ -1435,7 +1435,14 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController = new TransactionController(
       {
-        blockTracker: this.blockTracker,
+        blockTracker: {
+          on: (...args) => console.log('blockTracker.on', ...args),
+          once: (...args) => console.log('blockTracker.once', ...args),
+          addListener: (...args) => console.log('blockTracker.addListener', ...args),
+          removeListener: (...args) => console.log('blockTracker.removeListener', ...args),
+          removeAllListeners: (...args) => console.log('blockTracker.removeAllListeners', ...args),
+          getLatestBlock: async () => '0x0'
+        },
         cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
@@ -1480,7 +1487,7 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        provider: this.provider,
+        provider: {},
         enableMultichain: true,
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
@@ -1516,6 +1523,7 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.TransactionController,
     );
+    console.log(this.txController.state)
 
     this._addTransactionControllerListeners();
 
