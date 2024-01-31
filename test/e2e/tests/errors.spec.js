@@ -837,8 +837,6 @@ describe('Sentry errors', function () {
         // the "resetState" method
         swapsFeatureFlags: true,
       },
-      // TODO not sure why this is missing
-      perDomainNetwork: false,
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
