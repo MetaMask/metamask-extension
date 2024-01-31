@@ -139,10 +139,10 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
+        });
       });
 
       it('returns transaction meta', async () => {
@@ -388,6 +388,7 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
           securityAlertResponse: {
             reason: 'loading',
             result_type: 'validation_in_progress',
@@ -418,10 +419,10 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
+        });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
@@ -484,10 +485,10 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
+        });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
@@ -504,10 +505,10 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
+        });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
@@ -526,6 +527,7 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
           method: DAPP_REQUEST_MOCK.method,
           requireApproval: true,
           securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
