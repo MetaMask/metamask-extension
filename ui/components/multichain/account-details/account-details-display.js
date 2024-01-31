@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
-import QrView from '../../ui/qr-code';
+import QrCodeView from '../../ui/qr-code-view';
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
@@ -70,7 +70,7 @@ export const AccountDetailsDisplay = ({
         }}
         accounts={accounts}
       />
-      <QrView Qr={{ data: address }} />
+      <QrCodeView Qr={{ data: address }} />
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
           block

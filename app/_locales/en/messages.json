@@ -634,12 +634,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Transfer tokens from different networks"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge is not available in this network"
-  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -657,12 +651,6 @@
   },
   "buyAndSell": {
     "message": "Buy & Sell"
-  },
-  "buyAndSellDescription": {
-    "message": "Buy crypto or sell your crypto for cash"
-  },
-  "buyAndSellDisabled": {
-    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
@@ -792,6 +780,12 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmTitleDescSignature": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleSignature": {
+    "message": "Signature request"
+  },
   "confirmed": {
     "message": "Confirmed"
   },
@@ -915,9 +909,6 @@
   },
   "connectionRequest": {
     "message": "Connection request"
-  },
-  "connections": {
-    "message": "Connections"
   },
   "contactUs": {
     "message": "Contact us"
@@ -1916,7 +1907,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-
   "hideToken": {
     "message": "Hide token"
   },
@@ -4105,9 +4095,6 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
-  "selectActionButton": {
-    "message": "Select action"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4122,9 +4109,6 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
-  "selectAnAction": {
-    "message": "Select an action"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
@@ -4155,9 +4139,6 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
-  },
-  "sendDescription": {
-    "message": "Send crypto to any account"
   },
   "sendNoContactsConversionText": {
     "message": "click here"
@@ -4643,9 +4624,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Stake your crypto to earn rewards"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4843,14 +4821,8 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDescription": {
-    "message": "Swap and trade your tokens"
-  },
   "swapDirectContract": {
     "message": "Direct contract"
-  },
-  "swapDisabled": {
-    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"
