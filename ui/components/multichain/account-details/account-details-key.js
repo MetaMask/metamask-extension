@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { LavaDome as LavaDomeReact } from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
@@ -6,6 +6,8 @@ import {
   Box,
   ButtonIcon,
   ButtonPrimary,
+  HelpText,
+  HelpTextSeverity,
   IconName,
   Text,
 } from '../../component-library';
@@ -27,6 +29,7 @@ const inTest = Boolean(process.env.IN_TEST);
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const t = useI18nContext();
 
+  const [showSelectionDisabledWarning, setShowSelectionDisabledWarning] = useState(false);
   const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
 
   return (
@@ -53,13 +56,21 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
         >
-          <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
+          <span onClick={() => setShowSelectionDisabledWarning(true)}>
+            <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
+          </span>
         </Text>
         <ButtonIcon
-          onClick={() => handlePrivateKeyCopy(privateKey)}
+          onClick={() =>
+            setShowSelectionDisabledWarning(false) ||
+            handlePrivateKeyCopy(privateKey)
+          }
           iconName={privateKeyCopied ? IconName.CopySuccess : IconName.Copy}
         />
       </Box>
+      {showSelectionDisabledWarning && <HelpText marginTop={2} severity={HelpTextSeverity.Danger}>
+        For your safety, selecting this text isn't available right now.
+      </HelpText>}
       <BannerAlert severity={Severity.Danger} marginTop={4}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
