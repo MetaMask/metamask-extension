@@ -234,12 +234,12 @@ async function addTransactionOrUserOperation(
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const { transactionController, transactionOptions, transactionParams } =
+  const { transactionController, transactionOptions, transactionParams, networkClientId } =
     request;
   const { result, transactionMeta } =
     await transactionController.addTransaction(
       transactionParams,
-      transactionOptions,
+      {...transactionOptions, networkClientId}
     );
 
   return {
