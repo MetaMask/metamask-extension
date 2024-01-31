@@ -21,10 +21,10 @@ export default class MMIController extends EventEmitter {
     super();
 
     this.opts = opts;
+    this.messenger = opts.messenger;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
     this.securityProviderRequest = opts.securityProviderRequest;
-    this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
@@ -36,7 +36,6 @@ export default class MMIController extends EventEmitter {
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
-    this.accountsController = opts.accountsController;
     this.platform = opts.platform;
     this.extension = opts.extension;
 
@@ -232,11 +231,11 @@ export default class MMIController extends EventEmitter {
 
     const newAccounts = Object.keys(accounts);
 
-    // Check if any address is already added
-    const identities = Object.keys(
-      this.preferencesController.store.getState().identities,
-    );
-    if (newAccounts.some((address) => identities.indexOf(address) !== -1)) {
+    if (
+      newAccounts.some((address) =>
+        this.messenger.call('AccountsController:getAccountByAddress', address),
+      )
+    ) {
       throw new Error('Cannot import duplicate accounts');
     }
 
@@ -291,7 +290,6 @@ export default class MMIController extends EventEmitter {
 
     const allAccounts = await this.keyringController.getAccounts();
 
-    this.preferencesController.setAddresses(allAccounts);
     const accountsToTrack = [
       ...new Set(oldAccounts.concat(allAccounts.map((a) => a.toLowerCase()))),
     ];
@@ -321,9 +319,15 @@ export default class MMIController extends EventEmitter {
         // If the label is defined
         if (label) {
           // Set the label for the address
-          this.preferencesController.setAccountLabel(address, label);
-          const account = this.accountsController.getAccountByAddress(address);
-          this.accountsController.setAccountName(account.id, label);
+          const account = this.messenger.call(
+            'AccountsController:getAccountByAddress',
+            address,
+          );
+          this.messenger.call(
+            'AccountsController:setAccountName',
+            account.id,
+            label,
+          );
         }
       }
     });
@@ -368,7 +372,9 @@ export default class MMIController extends EventEmitter {
   ) {
     let currentCustodyType;
     if (!custodianType) {
-      const address = this.preferencesController.getSelectedAddress();
+      const { address } = this.messenger.call(
+        'AccountsController:getSelectedAccount',
+      );
       currentCustodyType = this.custodyController.getCustodyTypeByAddress(
         toChecksumHexAddress(address),
       );
@@ -459,14 +465,16 @@ export default class MMIController extends EventEmitter {
 
   // Based on a custodian name, get all the tokens associated with that custodian
   async getCustodianJWTList(custodianEnvName) {
-    console.log('getCustodianJWTList', custodianEnvName);
-
-    const { identities } = this.preferencesController.store.getState();
+    const internalAccounts = this.messenger.call(
+      'AccountsController:listAccounts',
+    );
 
     const { mmiConfiguration } =
       this.mmiConfigurationController.store.getState();
 
-    const addresses = Object.keys(identities);
+    const addresses = internalAccounts.map(
+      (internalAccount) => internalAccount.address,
+    );
     const tokenList = [];
 
     const { custodians } = mmiConfiguration;
@@ -559,7 +567,17 @@ export default class MMIController extends EventEmitter {
   async handleMmiDashboardData() {
     await this.appStateController.getUnlockPromise(true);
     const keyringAccounts = await this.keyringController.getAccounts();
-    const { identities } = this.preferencesController.store.getState();
+
+    // TEMP: Convert internal accounts to match identities format
+    // TODO: Convert handleMmiPortfolio to use internal accounts
+    const internalAccounts = this.messenger
+      .call('AccountsController:listAccounts')
+      .map((internalAccount) => {
+        return {
+          address: internalAccount.address,
+          name: internalAccount.metadata.name,
+        };
+      });
     const { metaMetricsId } = this.metaMetricsController.store.getState();
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
@@ -577,7 +595,7 @@ export default class MMIController extends EventEmitter {
 
     return handleMmiPortfolio({
       keyringAccounts,
-      identities,
+      identities: internalAccounts,
       metaMetricsId,
       networks,
       getAccountDetails,
@@ -629,9 +647,19 @@ export default class MMIController extends EventEmitter {
   async setAccountAndNetwork(origin, address, chainId) {
     await this.appStateController.getUnlockPromise(true);
     const addressToLowerCase = address.toLowerCase();
-    const selectedAddress = this.preferencesController.getSelectedAddress();
+    const { address: selectedAddress } = this.messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+
     if (selectedAddress.toLowerCase() !== addressToLowerCase) {
-      this.preferencesController.setSelectedAddress(addressToLowerCase);
+      const internalAccount = this.messenger.call(
+        'AccountsController:getAccountByAddress',
+        addressToLowerCase,
+      );
+      this.messenger.call(
+        'AccountsController:setSelectedAccount',
+        internalAccount.id,
+      );
     }
     const selectedChainId = parseInt(
       this.networkController.state.providerConfig.chainId,
