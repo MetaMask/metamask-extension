@@ -314,44 +314,42 @@ export const AppHeader = ({ location }) => {
                     disabled={disableAccountPicker}
                     labelProps={{ fontWeight: FontWeight.Bold }}
                   />
-                  {process.env.MULTICHAIN ? (
-                    <Tooltip
-                      position="left"
-                      title={copied ? t('addressCopied') : null}
+                  <Tooltip
+                    position="left"
+                    title={copied ? t('addressCopied') : null}
+                  >
+                    <ButtonBase
+                      className="multichain-app-header__address-copy-button"
+                      onClick={() => handleCopy(checksummedCurrentAddress)}
+                      size={ButtonBaseSize.Sm}
+                      backgroundColor={BackgroundColor.transparent}
+                      borderRadius={BorderRadius.LG}
+                      endIconName={
+                        copied ? IconName.CopySuccess : IconName.Copy
+                      }
+                      endIconProps={{
+                        color: IconColor.iconAlternative,
+                        size: Size.SM,
+                      }}
+                      ellipsis
+                      textProps={{
+                        display: Display.Flex,
+                        alignItems: AlignItems.center,
+                        gap: 2,
+                      }}
+                      style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                      data-testid="app-header-copy-button"
                     >
-                      <ButtonBase
-                        className="multichain-app-header__address-copy-button"
-                        onClick={() => handleCopy(checksummedCurrentAddress)}
-                        size={ButtonBaseSize.Sm}
-                        backgroundColor={BackgroundColor.transparent}
-                        borderRadius={BorderRadius.LG}
-                        endIconName={
-                          copied ? IconName.CopySuccess : IconName.Copy
-                        }
-                        endIconProps={{
-                          color: IconColor.iconAlternative,
-                          size: Size.SM,
-                        }}
+                      <Text
+                        color={TextColor.textAlternative}
+                        variant={TextVariant.bodySm}
                         ellipsis
-                        textProps={{
-                          display: Display.Flex,
-                          alignItems: AlignItems.center,
-                          gap: 2,
-                        }}
-                        style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-                        data-testid="app-header-copy-button"
+                        as="span"
                       >
-                        <Text
-                          color={TextColor.textAlternative}
-                          variant={TextVariant.bodySm}
-                          ellipsis
-                          as="span"
-                        >
-                          {shortenedAddress}
-                        </Text>
-                      </ButtonBase>
-                    </Tooltip>
-                  ) : null}
+                        {shortenedAddress}
+                      </Text>
+                    </ButtonBase>
+                  </Tooltip>
                 </Box>
               ) : null}
               <Box
