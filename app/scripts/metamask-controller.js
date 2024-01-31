@@ -1486,9 +1486,17 @@ export default class MetamaskController extends EventEmitter {
         },
         provider: this.provider,
         enableMultichain: true,
-        findNetworkClientIdByChainId: this.networkController.findNetworkClientIdByChainId.bind(this.networkController),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(this.networkController),
-        getNetworkClientRegistry: this.networkController.getNetworkClientRegistry.bind(this.networkController),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
