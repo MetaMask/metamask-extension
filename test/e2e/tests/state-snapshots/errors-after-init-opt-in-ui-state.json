@@ -160,7 +160,6 @@
     "allNfts": "object",
     "ignoredNfts": "object",
     "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean",
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",

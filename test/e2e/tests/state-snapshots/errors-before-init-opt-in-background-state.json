@@ -115,7 +115,7 @@
     },
     "SelectedNetworkController": {
       "domains": {},
-      "perDomainNetwork": "boolean"
+      "perDomainNetwork": false
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {
