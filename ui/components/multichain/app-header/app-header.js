@@ -91,9 +91,9 @@ export const AppHeader = ({ location }) => {
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
-  const shortenedAddress = internalAccount && shortenAddress(
-    toChecksumHexAddress(internalAccount.address),
-  );
+  const shortenedAddress =
+    internalAccount &&
+    shortenAddress(toChecksumHexAddress(internalAccount.address));
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
