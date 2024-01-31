@@ -26005,17 +26005,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multiformats@npm:^9.4.2":
+"multiformats@npm:^9.4.2, multiformats@npm:^9.5.2":
   version: 9.9.0
   resolution: "multiformats@npm:9.9.0"
   checksum: ad55c7d480d22f4258a68fd88aa2aab744fe0cb1e68d732fc886f67d858b37e3aa6c2cec12b2960ead7730d43be690931485238569952d8a3d7f90fdc726c652
-  languageName: node
-  linkType: hard
-
-"multiformats@npm:^9.5.2":
-  version: 9.5.2
-  resolution: "multiformats@npm:9.5.2"
-  checksum: 2cac9c251c7d7e1d8a6d9db6025c5c9adfbc39c0bb3cb6f2a2f7ebce959bf1c529b73895d620bcb655da65ede8c5ce3596c401330938436877eed4ae53e88d32
   languageName: node
   linkType: hard
 
