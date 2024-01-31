@@ -26,7 +26,7 @@ import { ConnectionListItem } from './connection-list-item';
 
 const TABS_THRESHOLD = 5;
 
-export const AllConnections = () => {
+export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   let totalConnections = 0;
@@ -120,7 +120,7 @@ export const AllConnections = () => {
 
   return (
     <Page
-      data-testid="all-connections"
+      data-testid="permissions-page"
       header={
         <Header
           backgroundColor={BackgroundColor.backgroundDefault}
@@ -140,22 +140,22 @@ export const AllConnections = () => {
             variant={TextVariant.headingMd}
             textAlign={TextAlign.Center}
           >
-            {t('allConnections')}
+            {t('permissions')}
           </Text>
         </Header>
       }
     >
       {shouldShowTabsView ? (
-        <Tabs tabsClassName="all-connections__tabs">
+        <Tabs tabsClassName="permissions-page__tabs">
           <Tab
-            data-testid="all-connections-sites-tab"
+            data-testid="permissions-page-sites-tab"
             name={t('sites')}
             tabKey="sites"
           >
             {renderConnectionsList(sitesConnectionsList)}
           </Tab>
           <Tab
-            data-testid="all-connections-snaps-tab"
+            data-testid="permissions-page-snaps-tab"
             name={t('snaps')}
             tabKey="snaps"
           >

@@ -352,9 +352,6 @@
   "alerts": {
     "message": "Alerts"
   },
-  "allConnections": {
-    "message": "All Connections"
-  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
