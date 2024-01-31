@@ -225,7 +225,6 @@ describe('Send Page', () => {
           currentTransactionUUID: null,
         },
       };
-
       const store = configureMockStore(middleware)(modifiedStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       // Ensure that the send flow renders on the add recipient screen when

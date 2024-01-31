@@ -22,7 +22,6 @@ import {
 } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import configureStore from '../../../../store/store';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -75,8 +74,6 @@ jest.mock('../../../../ducks/send/send', () => {
     resetSendState: () => mockResetSendState,
   };
 });
-
-
 
 describe('SendPage', () => {
   describe('render and initialization', () => {
@@ -312,7 +309,9 @@ describe('SendPage', () => {
         },
       };
 
-      const sendStateStore = configureMockStore([thunk])(knownRecipientWarningState);
+      const sendStateStore = configureMockStore([thunk])(
+        knownRecipientWarningState,
+      );
 
       const { queryByTestId } = renderWithProvider(
         <SendPage />,
