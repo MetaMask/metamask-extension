@@ -4185,7 +4185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:^7.0.0":
+"@metamask/eth-sig-util@npm:^7.0.0, @metamask/eth-sig-util@npm:^7.0.1":
   version: 7.0.1
   resolution: "@metamask/eth-sig-util@npm:7.0.1"
   dependencies:
@@ -4542,18 +4542,18 @@ __metadata:
   linkType: hard
 
 "@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.5":
-  version: 7.3.5
-  resolution: "@metamask/message-manager@npm:7.3.5"
+  version: 7.3.8
+  resolution: "@metamask/message-manager@npm:7.3.8"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/eth-sig-util": "npm:^7.0.0"
-    "@metamask/utils": "npm:^8.1.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/eth-sig-util": "npm:^7.0.1"
+    "@metamask/utils": "npm:^8.3.0"
     "@types/uuid": "npm:^8.3.0"
     ethereumjs-util: "npm:^7.0.10"
     jsonschema: "npm:^1.2.4"
     uuid: "npm:^8.3.2"
-  checksum: 6ee9214847d24228dcb2efe25ef1f40c82dd021780ff3e4bcc03d3703eb03ffdbc92f4a85e8276a499215dec994a4aa6bc6e0ab8a1cdfffcf36ba54f604dfd2a
+  checksum: 0aa94422751e405b542af1f2b6a6f89aa61c991a9a9312b2a4d5a2bbb007aae84bda2dae2e084206003bbfe75f06bd170820d88c9a39492a0f8f0e9edcb4afe3
   languageName: node
   linkType: hard
 
@@ -5170,9 +5170,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^21.0.1":
-  version: 21.0.1
-  resolution: "@metamask/transaction-controller@npm:21.0.1"
+"@metamask/transaction-controller@npm:^21.1.0":
+  version: 21.1.0
+  resolution: "@metamask/transaction-controller@npm:21.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5198,7 +5198,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
     babel-runtime: ^6.26.0
-  checksum: ee4f0ebc2da7f4638deade2b410358fdf6ff0f26f044f2a3f445610a2f001319f3f55d07e4433ed19b8ad12940998c1fe413c96d4a6c8da29bb7f3d1252e3f68
+  checksum: 5dbe811870fb0775d017470ec4529fbf46969f072527e3ac7ce18370faafffda32056eeec02ff8b56ed35463aec8ceaeb667c64362db90529faf4b8e2c9c2631
   languageName: node
   linkType: hard
 
@@ -24679,7 +24679,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^1.4.0"
     "@metamask/snaps-utils": "npm:^5.2.0"
     "@metamask/test-dapp": "npm:^7.3.1"
-    "@metamask/transaction-controller": "npm:^21.0.1"
+    "@metamask/transaction-controller": "npm:^21.1.0"
     "@metamask/user-operation-controller": "npm:^1.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"

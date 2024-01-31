@@ -297,7 +297,7 @@
     "@metamask/snaps-rpc-methods": "^5.0.0",
     "@metamask/snaps-sdk": "^1.4.0",
     "@metamask/snaps-utils": "^5.2.0",
-    "@metamask/transaction-controller": "^21.0.1",
+    "@metamask/transaction-controller": "^21.1.0",
     "@metamask/user-operation-controller": "^1.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
