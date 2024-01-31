@@ -231,6 +231,7 @@ export default class MMIController extends EventEmitter {
 
     const newAccounts = Object.keys(accounts);
 
+    // Check if any address is already added
     if (
       newAccounts.some((address) =>
         this.messenger.call('AccountsController:getAccountByAddress', address),
@@ -501,8 +502,9 @@ export default class MMIController extends EventEmitter {
           continue;
         }
 
-        const custodyAccountDetails =
-          this.custodyController.getAccountDetails(address);
+        const custodyAccountDetails = this.custodyController.getAccountDetails(
+          toChecksumHexAddress(address),
+        );
 
         if (
           !custodyAccountDetails ||
