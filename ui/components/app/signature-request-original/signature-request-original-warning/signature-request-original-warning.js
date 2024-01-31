@@ -28,6 +28,7 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   IconSize,
+  ModalOverlay,
 } from '../../../component-library';
 
 const SignatureRequestOriginalWarning = ({
@@ -40,6 +41,7 @@ const SignatureRequestOriginalWarning = ({
 
   return (
     <Modal isOpen className="signature-request-warning__content">
+      <ModalOverlay />
       <ModalContent>
         <ModalHeader
           display={Display.Flex}
