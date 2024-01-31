@@ -20,9 +20,9 @@
     "@ensdomains/content-hash>cids": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>multicodec": true,
         "@ensdomains/content-hash>cids>multihashes": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec": true
       }
     },
     "@ensdomains/content-hash>cids>multibase": {
@@ -34,17 +34,11 @@
         "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true
       }
     },
-    "@ensdomains/content-hash>cids>multicodec": {
-      "packages": {
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multicodec>varint": true
-      }
-    },
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>multihashes>varint": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multihashes>varint": true
       }
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
@@ -53,7 +47,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ensdomains/content-hash>cids>multibase": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>js-base64": {
@@ -76,15 +70,13 @@
       }
     },
     "@ensdomains/content-hash>multicodec>uint8arrays": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multibase": true,
-        "@ensdomains/content-hash>multihashes>web-encoding": true
-      }
-    },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multibase": {
-      "packages": {
-        "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true,
-        "@ensdomains/content-hash>multihashes>web-encoding": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>multihashes": {
@@ -264,15 +256,7 @@
     "@ethersproject/abi>@ethersproject/keccak256": {
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/keccak256>js-sha3": true
-      }
-    },
-    "@ethersproject/abi>@ethersproject/keccak256>js-sha3": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>process": true
+        "@metamask/ethjs>js-sha3": true
       }
     },
     "@ethersproject/abi>@ethersproject/logger": {
@@ -844,7 +828,8 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
-        "console.warn": true
+        "console.warn": true,
+        "crypto.subtle.digest": true
       }
     },
     "@metamask/base-controller": {
@@ -1289,20 +1274,12 @@
     },
     "@metamask/ethjs-contract": {
       "packages": {
-        "@metamask/ethjs-contract>js-sha3": true,
         "@metamask/ethjs-query>babel-runtime": true,
         "@metamask/ethjs>@metamask/ethjs-filter": true,
         "@metamask/ethjs>@metamask/ethjs-util": true,
         "@metamask/ethjs>ethjs-abi": true,
+        "@metamask/ethjs>js-sha3": true,
         "promise-to-callback": true
-      }
-    },
-    "@metamask/ethjs-contract>js-sha3": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>process": true
       }
     },
     "@metamask/ethjs-query": {
@@ -1380,15 +1357,10 @@
     },
     "@metamask/ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/ethjs>ethjs-abi>js-sha3": true,
+        "@metamask/ethjs>js-sha3": true,
         "@metamask/ethjs>number-to-bn": true,
         "bn.js": true,
         "browserify>buffer": true
-      }
-    },
-    "@metamask/ethjs>ethjs-abi>js-sha3": {
-      "packages": {
-        "browserify>process": true
       }
     },
     "@metamask/ethjs>js-sha3": {
@@ -3182,9 +3154,9 @@
         "name": "write"
       },
       "packages": {
+        "@metamask/ethjs>js-sha3": true,
         "browserify>buffer": true,
-        "eth-ens-namehash>idna-uts46-hx": true,
-        "eth-ens-namehash>js-sha3": true
+        "eth-ens-namehash>idna-uts46-hx": true
       }
     },
     "eth-ens-namehash>idna-uts46-hx": {
@@ -3193,11 +3165,6 @@
       },
       "packages": {
         "browserify>punycode": true
-      }
-    },
-    "eth-ens-namehash>js-sha3": {
-      "packages": {
-        "browserify>process": true
       }
     },
     "eth-json-rpc-filters": {
@@ -3320,7 +3287,7 @@
       "packages": {
         "@ethereumjs/common>crc-32": true,
         "@ethersproject/abi": true,
-        "@ethersproject/abi>@ethersproject/keccak256>js-sha3": true,
+        "@metamask/ethjs>js-sha3": true,
         "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -3428,7 +3395,7 @@
         "intToBuffer": true
       },
       "packages": {
-        "@ethersproject/abi>@ethersproject/keccak256>js-sha3": true,
+        "@metamask/ethjs>js-sha3": true,
         "bn.js": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true
       }
