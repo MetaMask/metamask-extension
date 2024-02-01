@@ -19,7 +19,7 @@ jest.mock('zlib', () => ({
 
 const mockUpdateTransactionEventFragment = jest.fn();
 
-jest.mock('../../../../hooks/useTransactionEventFragment', () => {
+jest.mock('../../../hooks/useTransactionEventFragment', () => {
   return {
     useTransactionEventFragment: () => {
       return {
