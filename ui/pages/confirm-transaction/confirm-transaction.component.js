@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 
@@ -51,6 +51,38 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import Confirm from '../confirm/confirm';
 ///: END:ONLY_INCLUDE_IF
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
+
+const usePolling = (
+  callback,
+  startPollingByNetworkClientId,
+  stopPollingByPollingToken,
+  networkClientId,
+  options = {},
+) => {
+  const pollTokenRef = useRef(null);
+  useEffect(() => {
+    // Start polling when the component mounts
+    pollTokenRef.current = startPollingByNetworkClientId(
+      networkClientId,
+      options,
+    );
+    // eslint-disable-next-line node/callback-return
+    const cleanup = callback(pollTokenRef.current);
+    // Return a cleanup function to stop polling when the component unmounts
+    return () => {
+      if (pollTokenRef.current) {
+        stopPollingByPollingToken(pollTokenRef.current);
+        cleanup(pollTokenRef.current);
+      }
+    };
+  }, [
+    callback,
+    startPollingByNetworkClientId,
+    stopPollingByPollingToken,
+    networkClientId,
+    options,
+  ]);
+};
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
@@ -118,18 +150,31 @@ const ConfirmTransaction = () => {
     }
   }, [pollingToken]);
 
+  usePolling(
+    (pt) => {
+      addPollingTokenToAppState(pt);
+      return (_pt) => {
+        removePollingTokenFromAppState(_pt);
+      };
+    },
+    getGasFeeEstimatesAndStartPolling,
+    disconnectGasFeeEstimatePoller,
+    'mainnet',
+    {},
+  );
+
   useEffect(() => {
     setIsMounted(true);
 
-    getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
-      if (isMounted) {
-        setPollingToken(_pollingToken);
-        addPollingTokenToAppState(_pollingToken);
-      } else {
-        disconnectGasFeeEstimatePoller(_pollingToken);
-        removePollingTokenFromAppState(_pollingToken);
-      }
-    });
+    // getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
+    //   if (isMounted) {
+    //     setPollingToken(_pollingToken);
+    //     addPollingTokenToAppState(_pollingToken);
+    //   } else {
+    //     disconnectGasFeeEstimatePoller(_pollingToken);
+    //     removePollingTokenFromAppState(_pollingToken);
+    //   }
+    // });
 
     window.addEventListener('beforeunload', _beforeUnload);
 
