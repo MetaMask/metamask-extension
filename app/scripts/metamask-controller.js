@@ -1440,14 +1440,19 @@ export default class MetamaskController extends EventEmitter {
     this.txController = new TransactionController(
       {
         blockTracker: {
-          on: (...args) => console.log('blockTracker.on', ...args),
-          once: (...args) => console.log('blockTracker.once', ...args),
-          addListener: (...args) =>
-            console.log('blockTracker.addListener', ...args),
-          removeListener: (...args) =>
-            console.log('blockTracker.removeListener', ...args),
-          removeAllListeners: (...args) =>
-            console.log('blockTracker.removeAllListeners', ...args),
+          // on: (...args) => console.log('blockTracker.on', ...args),
+          // once: (...args) => console.log('blockTracker.once', ...args),
+          // addListener: (...args) =>
+          //   console.log('blockTracker.addListener', ...args),
+          // removeListener: (...args) =>
+          //   console.log('blockTracker.removeListener', ...args),
+          // removeAllListeners: (...args) =>
+          //   console.log('blockTracker.removeAllListeners', ...args),
+          on: (...args) => {},
+          once: (...args) => {},
+          addListener: (...args) => {},
+          removeListener: (...args) => {},
+          removeAllListeners: (...args) => {},
           getLatestBlock: async () => '0x0',
         },
         provider: {
