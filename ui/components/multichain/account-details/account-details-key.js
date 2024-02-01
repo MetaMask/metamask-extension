@@ -64,7 +64,8 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
             setShowDisableSelectWarn(false) || handlePrivateKeyCopy(privateKey)
           }
           iconName={privateKeyCopied ? IconName.CopySuccess : IconName.Copy}
-         ariaLabel={t('copyPrivateKey')}/>
+          ariaLabel={t('copyPrivateKey')}
+        />
       </Box>
       {showSelectDisableWarn && (
         <HelpText marginTop={2} severity={HelpTextSeverity.Danger}>
