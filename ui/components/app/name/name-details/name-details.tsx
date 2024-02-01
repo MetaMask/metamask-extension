@@ -180,7 +180,6 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
-  const isUnrecognizedUnsaved = !displayName;
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
