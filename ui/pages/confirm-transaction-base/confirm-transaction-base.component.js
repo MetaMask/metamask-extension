@@ -153,6 +153,8 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
+    useMaxValue: PropTypes.bool,
+    maxValue: PropTypes.string,
   };
 
   state = {
@@ -180,6 +182,8 @@ export default class ConfirmTransactionBase extends Component {
       tryReverseResolveAddress,
       isEthGasPrice,
       setDefaultHomeActiveTabName,
+      hexMaximumTransactionFee,
+      useMaxValue,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
@@ -187,6 +191,7 @@ export default class ConfirmTransactionBase extends Component {
       toAddress: prevToAddress,
       transactionStatus: prevTxStatus,
       isEthGasPrice: prevIsEthGasPrice,
+      hexMaximumTransactionFee: prevHexMaximumTransactionFee,
     } = prevProps;
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
@@ -231,6 +236,13 @@ export default class ConfirmTransactionBase extends Component {
           ethGasPriceWarning: '',
         });
       }
+    }
+
+    if (
+      hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
+      useMaxValue
+    ) {
+      this.updateValueToMax();
     }
   }
 
@@ -311,6 +323,18 @@ export default class ConfirmTransactionBase extends Component {
 
   setUserAcknowledgedGasMissing() {
     this.setState({ userAcknowledgedGasMissing: true });
+  }
+
+  updateValueToMax() {
+    const { maxValue: value, txData, updateTransaction } = this.props;
+
+    updateTransaction({
+      ...txData,
+      txParams: {
+        ...txData.txParams,
+        value,
+      },
+    });
   }
 
   renderDetails() {
