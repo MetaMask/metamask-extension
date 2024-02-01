@@ -94,4 +94,4 @@ When tests finish on the pipeline, you can find the same logs that you use local
 ![CircleCI Job Actifact detail](resources/circleci-artifact-screnshot.png)
 
 ## Contact MMI team
-If you encounter any problems while working on these e2e tests, you can write into the Consensys Slack channel `metamask-mmi-collab`.
+If you encounter any problems while working on these e2e tests, you can write into the Consensys Slack channel `contact-mmi-team`.
