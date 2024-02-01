@@ -47,7 +47,7 @@ export default function Name({
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const name = useDisplayName(value, type);
+  const { name, hasPetname } = useDisplayName(value, type);
 
   useEffect(() => {
     if (internal) {
@@ -83,7 +83,8 @@ export default function Name({
       <div
         className={classnames({
           name: true,
-          name__saved: hasName,
+          name__saved: hasPetname,
+          name__recognized_unsaved: !hasPetname && hasName,
           name__missing: !hasName,
         })}
         onClick={handleClick}

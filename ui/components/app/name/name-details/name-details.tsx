@@ -52,6 +52,7 @@ import {
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { I18nContext } from '../../../../contexts/i18n';
+import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
@@ -166,7 +167,11 @@ export default function NameDetails({
   value,
 }: NameDetailsProps) {
   const chainId = useSelector(getCurrentChainId);
-  const { name: savedName, sourceId: savedSourceId } = useName(value, type);
+  const { name: savedPetname, sourceId: savedSourceId } = useName(value, type);
+  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName(
+    value,
+    type,
+  );
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
   const [openMetricSent, setOpenMetricSent] = useState(false);
@@ -174,7 +179,8 @@ export default function NameDetails({
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const hasSavedName = Boolean(savedName);
+  const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
+  const isUnrecognizedUnsaved = !displayName;
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
@@ -189,10 +195,12 @@ export default function NameDetails({
   ];
 
   useEffect(() => {
-    setName(savedName ?? '');
+    setName(savedPetname ?? '');
     setSelectedSourceId(savedSourceId ?? undefined);
-    setSelectedSourceName(savedSourceId ? savedName ?? undefined : undefined);
-  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
+    setSelectedSourceName(
+      savedSourceId ? savedPetname ?? undefined : undefined,
+    );
+  }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
     () => generateComboOptions(proposedNames, nameSources),
@@ -204,7 +212,7 @@ export default function NameDetails({
       initialSources,
       name,
       proposedNameOptions,
-      savedName,
+      savedName: savedPetname,
       savedSourceId,
       selectedSourceId,
       type,
@@ -262,13 +270,23 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
+  const [title, instructions] = (() => {
+    if (hasSavedPetname) {
+      return [t('nameModalTitleSaved'), t('nameInstructionsSaved')];
+    }
+    if (isRecognizedUnsaved) {
+      return [t('nameModalTitleRecognized'), t('nameInstructionsRecognized')];
+    }
+    return [t('nameModalTitleNew'), t('nameInstructionsNew')];
+  })();
+
   return (
     <Box>
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={handleClose} onBack={handleClose}>
-            {hasSavedName ? t('nameModalTitleSaved') : t('nameModalTitleNew')}
+            {title}
           </ModalHeader>
           <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
             <Name
@@ -279,9 +297,7 @@ export default function NameDetails({
             />
           </div>
           <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-            {hasSavedName
-              ? t('nameInstructionsSaved')
-              : t('nameInstructionsNew')}
+            {instructions}
           </Text>
           {/* @ts-ignore */}
           <FormTextField
@@ -320,11 +336,11 @@ export default function NameDetails({
           </Label>
           <Button
             variant={ButtonVariant.Primary}
-            startIconName={hasSavedName ? undefined : IconName.Save}
+            startIconName={hasSavedPetname ? undefined : IconName.Save}
             width={BlockSize.Full}
             onClick={handleSaveClick}
           >
-            {hasSavedName ? t('ok') : t('save')}
+            {hasSavedPetname ? t('ok') : t('save')}
           </Button>
         </ModalContent>
       </Modal>

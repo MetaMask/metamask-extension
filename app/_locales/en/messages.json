@@ -2512,11 +2512,15 @@
     "description": "Label above address field in name component modal."
   },
   "nameInstructionsNew": {
-    "message": "You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.",
+    "message": "If you know this address, you can give it a nickname to make it easier to recognize in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
   },
+  "nameInstructionsRecognized": {
+    "message": "This address has a default nickname, but you can edit it or explore other suggestions.",
+    "description": "Instruction text in name component modal when value is recognized but not saved."
+  },
   "nameInstructionsSaved": {
-    "message": "Interactions with this address will always be identified using this personal display name.",
+    "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
   "nameLabel": {
@@ -2526,6 +2530,10 @@
   "nameModalTitleNew": {
     "message": "Unknown address",
     "description": "Title of the modal created by the name component when value is not recognised."
+  },
+  "nameModalTitleRecognized": {
+    "message": "Recognized address",
+    "description": "Title of the modal created by the name component when value is recognized but not saved."
   },
   "nameModalTitleSaved": {
     "message": "Saved address",
