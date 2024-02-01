@@ -5187,9 +5187,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} address - The hex string address for the transaction
    * @returns {Promise<number>}
    */
-  async getPendingNonce(address) {
+  async getPendingNonce(address, networkClientId) {
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
+      networkClientId
     );
 
     const pendingNonce = nonceDetails.params.highestSuggested;
@@ -5204,8 +5205,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} address - The hex string address for the transaction
    * @returns {Promise<number>}
    */
-  async getNextNonce(address) {
-    const nonceLock = await this.txController.getNonceLock(address);
+  async getNextNonce(address, networkClientId) {
+    const nonceLock = await this.txController.getNonceLock(address, networkClientId);
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
   }

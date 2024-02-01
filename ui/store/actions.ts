@@ -51,6 +51,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
+  getSelectedNetworkClientId,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -4064,10 +4065,12 @@ export function getNextNonce(): ThunkAction<
 > {
   return async (dispatch, getState) => {
     const { address } = getSelectedInternalAccount(getState());
+    const networkClientId = getSelectedNetworkClientId(getState())
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
         address,
+        networkClientId
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
