@@ -3,10 +3,14 @@ import React from 'react';
 import syncConfirmPath from '../../hooks/confirm/syncConfirmPath';
 import setCurrentConfirmation from '../../hooks/confirm/setCurrentConfirmation';
 import { Box } from '../../components/component-library';
+import { ConfirmTitle } from '../../components/app/confirm/title';
 import { Footer } from '../../components/app/confirm/footer';
 import { Header } from '../../components/app/confirm/header';
-import { ConfirmTitle } from '../../components/app/confirm/title';
-import { BlockSize } from '../../helpers/constants/design-system';
+import { SenderInfo } from '../../components/app/confirm/sender-info';
+import {
+  BackgroundColor,
+  BlockSize,
+} from '../../helpers/constants/design-system';
 
 const Confirm = () => {
   setCurrentConfirmation();
@@ -15,8 +19,14 @@ const Confirm = () => {
   return (
     <Box height={BlockSize.Full} width={BlockSize.Full}>
       <Header />
-      <ConfirmTitle />
-      <Box>CONFIRMATION PAGE BODY TO COME HERE</Box>
+      <Box
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        paddingInline={4}
+      >
+        <ConfirmTitle />
+        <SenderInfo />
+        <Box>CONFIRMATION PAGE BODY TO COME HERE</Box>
+      </Box>
       <Footer />
     </Box>
   );

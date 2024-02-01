@@ -17,16 +17,20 @@ import {
   ConfirmInfoRowValueDouble,
   ConfirmInfoRowValueDoubleProps,
   ConfirmInfoRowVariant,
+  ConfirmInfoRowUrlProps,
+  ConfirmInfoRowUrl,
 } from './row';
 
 export enum ConfirmInfoRowType {
   Address = 'address',
   Divider = 'divider',
   ValueDouble = 'value-double',
+  UrlType = 'url',
 }
 
 type ConfirmInfoTypeProps =
   | ConfirmInfoRowAddressProps
+  | ConfirmInfoRowUrlProps
   | ConfirmInfoRowValueDoubleProps;
 
 const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
@@ -35,6 +39,9 @@ const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
   },
   [ConfirmInfoRowType.Divider]: () => {
     return <ConfirmInfoRowDivider />;
+  },
+  [ConfirmInfoRowType.UrlType]: ({ url }: ConfirmInfoRowUrlProps) => {
+    return <ConfirmInfoRowUrl url={url} />;
   },
   [ConfirmInfoRowType.ValueDouble]: ({
     left,
