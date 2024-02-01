@@ -236,6 +236,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
+    "@lavamoat/lavadome-react": "0.0.10",
     "@lavamoat/snow": "^2.0.1",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.18",
@@ -404,6 +405,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
     "@lavamoat/allow-scripts": "^3.0.1",
+    "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.0.2",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/build-utils": "^1.0.0",
@@ -451,7 +453,7 @@
     "@types/jest": "^29.1.2",
     "@types/madge": "^5.0.0",
     "@types/mocha": "^10.0.3",
-    "@types/node": "^18",
+    "@types/node": "^20",
     "@types/pify": "^5.0.1",
     "@types/pump": "^1.1.1",
     "@types/react": "^16.9.53",
@@ -592,8 +594,8 @@
     "yargs": "^17.0.1"
   },
   "engines": {
-    "node": ">= 18",
-    "yarn": "^4.0.0-rc.48"
+    "node": ">= 20",
+    "yarn": "^4.0.2"
   },
   "lavamoat": {
     "allowScripts": {

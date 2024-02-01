@@ -3302,6 +3302,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/lavadome-core@npm:0.0.10, @lavamoat/lavadome-core@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "@lavamoat/lavadome-core@npm:0.0.10"
+  checksum: 79011976d5643112b3930210d56f933a575102ff200338c1436c102f5f0f3f6efea9cd44ef673f5859e0832980b83ad7a2162d95db299f5877e8a408cf16bd6c
+  languageName: node
+  linkType: hard
+
+"@lavamoat/lavadome-react@npm:0.0.10":
+  version: 0.0.10
+  resolution: "@lavamoat/lavadome-react@npm:0.0.10"
+  dependencies:
+    "@lavamoat/lavadome-core": "npm:^0.0.10"
+  peerDependencies:
+    react: ^16.12.0
+    react-dom: ^16.12.0
+  checksum: cac64b7bd75d4796bffd13e529f864c41e2e1cfde281ad68ca500dc13af5d0bef5293abdc45a95e4e42251bc848d1e0beda907450672acc7fe69c323ca9d1c4d
+  languageName: node
+  linkType: hard
+
 "@lavamoat/lavapack@npm:^6.0.2":
   version: 6.0.2
   resolution: "@lavamoat/lavapack@npm:6.0.2"
@@ -9188,10 +9207,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^20.4.2":
-  version: 20.8.2
-  resolution: "@types/node@npm:20.8.2"
-  checksum: 61bd39870625d8afcbb4f21d6a0c3a9681f6d508dc6b06f2497e9ad3ec942092a120bcfdbc1757a8e4017308449bc2a9b9865b2b9840b158878a4e8cc0804a3c
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^20, @types/node@npm:^20.4.2":
+  version: 20.11.13
+  resolution: "@types/node@npm:20.11.13"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: ffe143dd5e52d0d29f5bcea165b752c5355eaff8b6b933441108b540419e14c0c7e0e7912783e914125ab957e30db93f9c827e8dd437ec7e5f03def995e9a5e6
   languageName: node
   linkType: hard
 
@@ -9202,7 +9223,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18, @types/node@npm:^18.0.0":
+"@types/node@npm:^18.0.0":
   version: 18.18.9
   resolution: "@types/node@npm:18.18.9"
   dependencies:
@@ -24219,6 +24240,8 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.1"
+    "@lavamoat/lavadome-core": "npm:0.0.10"
+    "@lavamoat/lavadome-react": "npm:0.0.10"
     "@lavamoat/lavapack": "npm:^6.0.2"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
@@ -24340,7 +24363,7 @@ __metadata:
     "@types/jest": "npm:^29.1.2"
     "@types/madge": "npm:^5.0.0"
     "@types/mocha": "npm:^10.0.3"
-    "@types/node": "npm:^18"
+    "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
     "@types/pump": "npm:^1.1.1"
     "@types/react": "npm:^16.9.53"
