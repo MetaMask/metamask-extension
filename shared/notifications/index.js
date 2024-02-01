@@ -9,6 +9,7 @@ export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
 export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
 export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
+export const NOTIFICATION_PETNAMES = 30;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -177,6 +178,14 @@ export const UI_NOTIFICATIONS = {
     date: null,
   },
   ///: END:ONLY_INCLUDE_IF
+  [NOTIFICATION_PETNAMES]: {
+    id: Number(NOTIFICATION_PETNAMES),
+    date: null,
+    image: {
+      src: 'images/introducing-petnames.png',
+      width: '100%',
+    },
+  },
 };
 
 export const getTranslatedUINotifications = (
