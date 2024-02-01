@@ -56,6 +56,19 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
+export const getApprovedAndSignedTransactions = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+
+    return currentNetworkTransactions.filter((transaction) =>
+      [TransactionStatus.approved, TransactionStatus.signed].includes(
+        transaction.status,
+      ),
+    );
+  },
+  (transactions) => transactions,
+);
+
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
     const { incomingTransactionsPreferences } = state.metamask;

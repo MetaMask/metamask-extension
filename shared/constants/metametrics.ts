@@ -467,9 +467,7 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   PetnameAddressCount = 'petname_addresses_count',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -592,7 +590,6 @@ export enum MetaMetricsEventName {
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
-  StakingEntryPointClicked = 'Stake Button Clicked',
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',

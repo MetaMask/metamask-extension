@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Köprü"
   },
-  "bridgeDescription": {
-    "message": "Farklı ağlardan tokenleri transfer et"
-  },
-  "bridgeDisabled": {
-    "message": "Köprü bu ağda kullanılamaz"
-  },
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -827,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
-  },
-  "connections": {
-    "message": "Bağlantılar"
   },
   "contactUs": {
     "message": "Bize ulaşın"
@@ -3569,9 +3560,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutional'da kullanılacak saklayıcı kurum hesaplarını seçin."
   },
-  "selectAnAction": {
-    "message": "Bir eylem seçin"
-  },
   "selectHdPath": {
     "message": "HD yolunu seç"
   },
@@ -3595,9 +3583,6 @@
   },
   "sendBugReport": {
     "message": "Bize bir hata raporu gönder."
-  },
-  "sendDescription": {
-    "message": "Dilediğiniz hesaba kripto gönderin"
   },
   "sendSpecifiedTokens": {
     "message": "$1 Gönder",
@@ -3948,9 +3933,6 @@
   "stake": {
     "message": "Pay"
   },
-  "stakeDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
   },
@@ -4136,14 +4118,8 @@
   "swapDecentralizedExchange": {
     "message": "Merkeziyetsiz borsa"
   },
-  "swapDescription": {
-    "message": "Tokenlerinizle swap ve ticaret yapın"
-  },
   "swapDirectContract": {
     "message": "Doğrudan sözleşme"
-  },
-  "swapDisabled": {
-    "message": "Swap bu ağda kullanılamaz"
   },
   "swapEditLimit": {
     "message": "Limiti düzenle"

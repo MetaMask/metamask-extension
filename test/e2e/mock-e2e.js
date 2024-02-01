@@ -102,6 +102,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
     )
+    .withJsonBodyIncluding({
+      method: 'eth_chainId',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,

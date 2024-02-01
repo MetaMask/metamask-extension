@@ -14,7 +14,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerPetnamesDisabled()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -59,7 +61,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerPetnamesDisabled()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -109,7 +113,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerPetnamesDisabled()
+          .withTokensControllerERC20()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
@@ -171,7 +178,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerPetnamesDisabled()
+          .withTokensControllerERC20()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
