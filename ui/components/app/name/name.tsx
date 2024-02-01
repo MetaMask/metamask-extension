@@ -11,6 +11,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
+import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
 
 export interface NameProps {
@@ -73,7 +74,6 @@ export default function Name({
 
   const formattedValue = formatValue(value, type);
   const hasName = Boolean(name);
-  const iconName = hasName ? IconName.Save : IconName.Warning;
 
   return (
     <div>
@@ -88,7 +88,15 @@ export default function Name({
         })}
         onClick={handleClick}
       >
-        <Icon name={iconName} className="name__icon" size={IconSize.Lg} />
+        {hasName ? (
+          <Identicon address={value} diameter={18} />
+        ) : (
+          <Icon
+            name={IconName.Question}
+            className="name__icon"
+            size={IconSize.Lg}
+          />
+        )}
         {hasName ? (
           <Text className="name__name" variant={TextVariant.bodyMd}>
             {name}
