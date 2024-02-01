@@ -39,7 +39,7 @@ docker image rm $IMAGE_NAME
 
 # Remove files copied the building the image
 echo "Removing playwright.config.ts..."
-rm test/e2e/playwright/mmi/playwright/playwright.config.ts
+rm test/e2e/playwright/mmi/playwright.config.ts
 echo "Removing mmi dist/chrome from test dir..."
 rm -rf test/e2e/playwright/mmi/dist
 
