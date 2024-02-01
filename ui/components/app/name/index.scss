@@ -16,7 +16,7 @@
   }
 
   &__missing &__icon {
-    color: var(--color-warning-default);
+    color: var(--color-error-default);
   }
 
   &__saved &__icon {
@@ -31,7 +31,7 @@
   }
 
   &__value {
-    color: var(--color-warning-default);
+    color: var(--color-error-default);
   }
 
   &__name {
