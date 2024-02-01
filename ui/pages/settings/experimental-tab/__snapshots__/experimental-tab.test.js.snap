@@ -12,12 +12,12 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         class="settings-page__content-item"
       >
         <span>
-          Petnames
+          Allow nicknames
         </span>
         <div
           class="settings-page__content-description"
         >
-          This allows you to assign a name to any address. This name will be visible to you only.
+          This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible.
         </div>
       </div>
       <div
