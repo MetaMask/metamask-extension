@@ -45,6 +45,7 @@ import {
   ModalOverlay,
   Text,
   BannerBase,
+  IconName,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
@@ -96,18 +97,25 @@ export const NetworkListMenu = ({ onClose }) => {
       return nonTestNetworks;
     }
 
-    // Reorder nonTestNetworks based on the order of chainIds in orderedNetworksList
-    const sortedNetworkList = orderedNetworksList
-      .map((chainId) =>
-        nonTestNetworks.find((network) => network.chainId === chainId),
-      )
-      .filter(Boolean);
+    // Create a mapping of chainId to index in orderedNetworksList
+    const orderedIndexMap = {};
+    orderedNetworksList.forEach((network, index) => {
+      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
+    });
 
-    return sortedNetworkList;
+    // Sort nonTestNetworks based on the order in orderedNetworksList
+    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
+      const keyA = `${a.chainId}_${a.rpcUrl}`;
+      const keyB = `${b.chainId}_${b.rpcUrl}`;
+      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
+    });
+
+    return sortedNonTestNetworks;
   };
 
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);
+
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
@@ -124,13 +132,20 @@ export const NetworkListMenu = ({ onClose }) => {
     if (!result.destination) {
       return;
     }
+
     const newItems = [...items];
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
-    setItems(newItems);
-    const orderedArray = newItems.map((obj) => obj.chainId);
+
+    // Convert the updated array back to NetworksInfo format
+    const orderedArray = newItems.map((obj) => ({
+      networkId: obj.chainId, // Assuming chainId is the networkId
+      networkRpcUrl: obj.rpcUrl,
+    }));
 
     dispatch(updateNetworksList(orderedArray));
+
+    setItems(newItems);
   };
 
   let searchResults =
@@ -161,7 +176,9 @@ export const NetworkListMenu = ({ onClose }) => {
         return null;
       }
 
-      const isCurrentNetwork = currentNetwork.id === network.id;
+      const isCurrentNetwork =
+        currentNetwork.id === network.id &&
+        currentNetwork.rpcUrl === network.rpcUrl;
 
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
@@ -410,6 +427,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               disabled={!isUnlocked}
+              startIconName={IconName.Add}
               block
               onClick={() => {
                 if (isFullScreen) {

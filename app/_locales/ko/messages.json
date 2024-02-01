@@ -586,12 +586,6 @@
   "bridge": {
     "message": "브리지"
   },
-  "bridgeDescription": {
-    "message": "다양한 네트워크에서 토큰 전송"
-  },
-  "bridgeDisabled": {
-    "message": "이 네트워크에서는 브릿지를 사용할 수 없습니다"
-  },
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
@@ -827,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "연결 요청"
-  },
-  "connections": {
-    "message": "연결"
   },
   "contactUs": {
     "message": "문의하기"
@@ -3569,9 +3560,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutional에서 사용할 수탁 계정을 선택하세요."
   },
-  "selectAnAction": {
-    "message": "작업 선택"
-  },
   "selectHdPath": {
     "message": "HD 경로 선택"
   },
@@ -3595,9 +3583,6 @@
   },
   "sendBugReport": {
     "message": "버그 리포트 전송"
-  },
-  "sendDescription": {
-    "message": "모든 계정으로 암호화폐 보내기"
   },
   "sendSpecifiedTokens": {
     "message": "$1 보내기",
@@ -3948,9 +3933,6 @@
   "stake": {
     "message": "스테이크"
   },
-  "stakeDescription": {
-    "message": "암호화폐를 보유하고 잠재적인 수익을 얻으세요"
-  },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
@@ -4136,14 +4118,8 @@
   "swapDecentralizedExchange": {
     "message": "분산형 교환"
   },
-  "swapDescription": {
-    "message": "토큰 스왑 및 거래"
-  },
   "swapDirectContract": {
     "message": "직접 계약"
-  },
-  "swapDisabled": {
-    "message": "이 네트워크에서는 스왑할 수 없습니다"
   },
   "swapEditLimit": {
     "message": "한도 편집"

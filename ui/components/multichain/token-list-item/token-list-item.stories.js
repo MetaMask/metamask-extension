@@ -34,7 +34,7 @@ export default {
   args: {
     secondary: '$9.80 USD',
     primary: '88.0068',
-    tokenImage: './images/eth_logo.png',
+    tokenImage: './images/eth_logo.svg',
     tokenSymbol: CURRENCY_SYMBOLS.ETH,
     title: 'Ethereum',
     isOriginalTokenSymbol: true,
@@ -64,9 +64,6 @@ DefaultStory.decorators = [
     </Provider>
   ),
 ];
-DefaultStory.args = {
-  isStakeable: true,
-};
 
 export const ChaosStory = (args) => (
   <div

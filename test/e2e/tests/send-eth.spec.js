@@ -7,6 +7,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
+  editGasfeeForm,
   WINDOW_TITLES,
   defaultGanacheOptions,
 } = require('../helpers');
@@ -208,14 +209,16 @@ describe('Send ETH', function () {
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
-          await driver.findVisibleElement('.modal');
+          await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
           // cancel action will close the dialog and shut down camera initialization
           await driver.waitForSelector({
             css: '.qr-scanner__error',
             text: "We couldn't access your camera. Please give it another try.",
           });
           await driver.clickElement({ text: 'Cancel', tag: 'button' });
-          await driver.waitForElementNotPresent('.modal');
+          await driver.waitForElementNotPresent(
+            '[data-testid="qr-scanner-modal"]',
+          );
         },
       );
     });
@@ -256,14 +259,9 @@ describe('Send ETH', function () {
             });
             await driver.waitForSelector({
               text: '0.00021 ETH',
+              tag: 'h1',
             });
-            const inputs = await driver.findElements('input[type="number"]');
-            const gasPriceInput = inputs[1];
-            await gasPriceInput.fill('100');
-            await driver.waitForSelector({
-              text: '0.0021 ETH',
-            });
-            await driver.clickElement({ text: 'Save', tag: 'button' });
+            await editGasfeeForm(driver, '21000', '100');
             await driver.waitForSelector({
               css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
               text: '0.0021 ETH',
@@ -349,9 +347,7 @@ describe('Send ETH', function () {
 
             // Identify the transaction in the transactions list
             await driver.waitForSelector(
-              process.env.MULTICHAIN
-                ? '[data-testid="token-balance-overview-currency-display"]'
-                : '[data-testid="eth-overview__primary-currency"]',
+              '[data-testid="eth-overview__primary-currency"]',
             );
 
             await driver.clickElement('[data-testid="home__activity-tab"]');
@@ -401,6 +397,7 @@ describe('Send ETH', function () {
                   sendHexData: true,
                 },
               })
+              .withPreferencesControllerPetnamesDisabled()
               .build(),
             ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),

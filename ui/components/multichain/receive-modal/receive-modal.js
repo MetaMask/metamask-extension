@@ -9,10 +9,10 @@ import {
   Modal,
   ModalOverlay,
   Text,
+  ModalContent,
+  ModalHeader,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
-import QrView from '../../ui/qr-code';
+import QrCodeView from '../../ui/qr-code-view';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
 import {
@@ -66,7 +66,7 @@ export const ReceiveModal = ({ address, onClose }) => {
           alignItems={AlignItems.center}
           flexDirection={FlexDirection.Column}
         >
-          <QrView Qr={{ data: address }} />
+          <QrCodeView Qr={{ data: address }} />
         </Box>
       </ModalContent>
     </Modal>
