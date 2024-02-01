@@ -12,8 +12,8 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
-  getSelectedAddress,
-  getSelectedIdentity,
+  getSelectedInternalAccount,
+  getInternalAccounts,
 } from '../../../../selectors';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
@@ -33,9 +33,20 @@ const UnconnectedAccountAlert = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
+  const internalAccounts = useSelector(getInternalAccounts);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const internalAccountsMap = new Map(
+    internalAccounts.map((acc) => [acc.address, acc]),
+  );
+
+  const connectedAccountsWithName = connectedAccounts.map((account) => ({
+    ...account,
+    name: internalAccountsMap.get(account.address)?.metadata.name,
+  }));
+
   const origin = useSelector(getOriginOfCurrentTab);
-  const selectedIdentity = useSelector(getSelectedIdentity);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
+  const { address: selectedAddress } = account;
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
   const onClose = async () => {
@@ -98,11 +109,16 @@ const UnconnectedAccountAlert = () => {
       footer={footer}
     >
       <ConnectedAccountsList
-        accountToConnect={selectedIdentity}
+        accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccounts}
+        connectedAccounts={connectedAccountsWithName}
         selectedAddress={selectedAddress}
-        setSelectedAddress={(address) => dispatch(switchToAccount(address))}
+        setSelectedAddress={(address) => {
+          const { id: accountId } = internalAccounts.find(
+            (internalAccount) => internalAccount.address === address,
+          );
+          dispatch(switchToAccount(accountId));
+        }}
         shouldRenderListOptions={false}
       />
     </Popover>

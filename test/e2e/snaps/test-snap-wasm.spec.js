@@ -19,7 +19,7 @@ describe('Test Snap WASM', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page and connect to wasm snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const snapButton = await driver.findElement('#connectwasm');

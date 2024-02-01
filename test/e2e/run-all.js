@@ -9,8 +9,9 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [
-  'petnames.spec.js',
   'test-snap-txinsights-v2.spec.js',
+  'test-snap-namelookup.spec.js',
+  'test-snap-homepage.spec.js',
 ];
 
 const getTestPathsForTestDir = async (testDir) => {
@@ -92,6 +93,10 @@ async function main() {
             description: `run json-rpc specific e2e tests`,
             type: 'boolean',
           })
+          .option('multi-provider', {
+            description: `run multi injected provider e2e tests`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -127,6 +132,7 @@ async function main() {
     buildType,
     updateSnapshot,
     updatePrivacySnapshot,
+    multiProvider,
   } = argv;
 
   let testPaths;
@@ -147,6 +153,21 @@ async function main() {
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (multiProvider) {
+    // Copy dist/ to folder
+    fs.cp(
+      path.resolve('dist/chrome'),
+      path.resolve('dist/chrome2'),
+      { recursive: true },
+      (err) => {
+        if (err) {
+          throw err;
+        }
+      },
+    );
+
+    const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');

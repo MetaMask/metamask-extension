@@ -19,7 +19,7 @@ describe('Test Snap networkAccess', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect to network-access snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const dialogButton = await driver.findElement('#connectnetwork-access');

@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Ponte"
   },
-  "bridgeDescription": {
-    "message": "Transfira tokens de redes diferentes"
-  },
-  "bridgeDisabled": {
-    "message": "A ponte não está disponível nesta rede"
-  },
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
@@ -827,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "Solicitação de conexão"
-  },
-  "connections": {
-    "message": "Conexões"
   },
   "contactUs": {
     "message": "Fale conosco"
@@ -3573,9 +3564,6 @@
   "selectAnAccountHelp": {
     "message": "Selecione as contas custodiantes para usar no MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Selecione uma ação"
-  },
   "selectHdPath": {
     "message": "Selecione o caminho do disco rígido"
   },
@@ -3599,9 +3587,6 @@
   },
   "sendBugReport": {
     "message": "Envie-nos um relatório de bugs."
-  },
-  "sendDescription": {
-    "message": "Envie criptoativos para qualquer conta"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -3952,9 +3937,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Segure seus criptoativos e ganhe lucros em potencial"
-  },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."
   },
@@ -4140,14 +4122,8 @@
   "swapDecentralizedExchange": {
     "message": "Corretora descentralizada"
   },
-  "swapDescription": {
-    "message": "Troque e negocie seus tokens"
-  },
   "swapDirectContract": {
     "message": "Contrato direto"
-  },
-  "swapDisabled": {
-    "message": "A troca não está disponível nesta rede"
   },
   "swapEditLimit": {
     "message": "Editar limite"

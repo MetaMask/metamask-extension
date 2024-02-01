@@ -23,7 +23,7 @@ describe('Test Snap TxInsights', function () {
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
-        // find and scroll to the bip32 test and connect
+        // find and scroll to the transaction-insights test and connect
         const snapButton1 = await driver.findElement(
           '#connecttransaction-insights',
         );

@@ -176,6 +176,11 @@ function defaultFixture() {
           23: {
             date: null,
             id: 23,
+            isShown: true,
+          },
+          30: {
+            date: null,
+            id: 30,
             isShown: false,
           },
           ///: END:ONLY_INCLUDE_IF
@@ -186,6 +191,7 @@ function defaultFixture() {
       },
       AccountOrderController: {
         pinnedAccountList: [],
+        hiddenAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -294,9 +300,11 @@ function defaultFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          petnamesEnabled: true,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -415,9 +423,11 @@ function onboardingFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          petnamesEnabled: true,
         },
         theme: 'light',
         useBlockie: false,
@@ -818,6 +828,14 @@ class FixtureBuilder {
         },
       },
       selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withPreferencesControllerPetnamesDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: false,
+      },
     });
   }
 

@@ -1,9 +1,4 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  useCallback,
-  useContext,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -15,9 +10,6 @@ import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import SimulationErrorMessage from '../../ui/simulation-error-message';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-///: END:ONLY_INCLUDE_IF
 
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -27,18 +19,13 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
   tokenSymbol,
   txData,
+  isUsingPaymaster,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -68,32 +55,11 @@ const TransactionAlerts = ({
     hasProperTxType &&
     (currentTokenAmount === '0x0' || currentTokenAmount === '0');
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const onClickSupportLink = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        action: 'Confirm Screen',
-        origin: txData?.origin,
-        external_link_clicked: 'security_alert_support_link',
-      },
-    });
-  }, []);
-  ///: END:ONLY_INCLUDE_IF
-
   return (
     <div className="transaction-alerts">
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          onClickSupportLink={onClickSupportLink}
-          txData={txData}
-        />
+        <BlockaidBannerAlert txData={txData} />
         ///: END:ONLY_INCLUDE_IF
       }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
@@ -150,6 +116,11 @@ const TransactionAlerts = ({
           {t('sendingZeroAmount', [currentTokenSymbol])}
         </BannerAlert>
       )}
+      {isUsingPaymaster && (
+        <BannerAlert data-testid="paymaster-alert" severity={SEVERITIES.INFO}>
+          {t('paymasterInUse')}
+        </BannerAlert>
+      )}
     </div>
   );
 };
@@ -159,6 +130,7 @@ TransactionAlerts.propTypes = {
   setUserAcknowledgedGasMissing: PropTypes.func,
   tokenSymbol: PropTypes.string,
   txData: PropTypes.object,
+  isUsingPaymaster: PropTypes.bool,
 };
 
 export default TransactionAlerts;

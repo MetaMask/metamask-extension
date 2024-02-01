@@ -23,6 +23,10 @@ import {
 } from '../../../shared/constants/network';
 import { domainInitialState } from '../../ducks/domains';
 
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 const middleware = [thunk];
@@ -38,6 +42,7 @@ setBackgroundConnection({
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
+const mockMaliciousToAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const mockTxParamsToAddressConcat = '0x85c16...DD65e';
 
 const mockParsedTxDataToAddressWithout0x =
@@ -223,6 +228,57 @@ describe('Confirm Transaction Base', () => {
     );
     expect(queryByText('Layer 1 fees')).not.toBeInTheDocument();
     expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
+  });
+
+  it('should render only total fee details if simulation fails', () => {
+    mockedStore.send.hasSimulationError = true;
+    const store = configureMockStore(middleware)(mockedStore);
+    const { queryByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    expect(queryByText('Total')).toBeInTheDocument();
+    expect(queryByText('Amount + gas fee')).toBeInTheDocument();
+
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
+  });
+
+  it('renders blockaid security alert if recipient is a malicious address', () => {
+    const newMockedStore = {
+      ...mockedStore,
+      send: {
+        ...mockedStore.send,
+        hasSimulationError: false,
+      },
+      confirmTransaction: {
+        ...mockedStore.confirmTransaction,
+        txData: {
+          ...mockedStore.confirmTransaction.txData,
+          txParams: {
+            ...mockedStore.confirmTransaction.txData.txParams,
+            to: mockMaliciousToAddress,
+          },
+          securityAlertResponse: {
+            reason: BlockaidReason.maliciousDomain,
+            result_type: BlockaidResultType.Malicious,
+            features: [],
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(newMockedStore);
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    const securityProviderBanner = getByTestId(
+      'security-provider-banner-alert',
+    );
+    expect(securityProviderBanner).toBeInTheDocument();
   });
 
   it('should contain L1 L2 fee details for optimism', () => {

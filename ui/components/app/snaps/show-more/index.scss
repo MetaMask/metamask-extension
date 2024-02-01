@@ -10,7 +10,7 @@
   }
 
   &__button {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-default) 33%);
+    background: linear-gradient(90deg, transparent 0%, var(--color-background-default) 33%);
     vertical-align: baseline;
   }
 }

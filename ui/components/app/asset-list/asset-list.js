@@ -16,7 +16,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
-  getSelectedAddress,
+  getSelectedAccount,
   getPreferences,
 } from '../../../selectors';
 import {
@@ -35,7 +35,6 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  BalanceOverview,
   AssetListConversionButton,
 } from '../../multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -51,6 +50,7 @@ import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -68,7 +68,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -104,9 +104,12 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
+  const { tokensWithBalances, totalFiatBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
-
+  tokensWithBalances.forEach((token) => {
+    // token.string is the balance displayed in the TokenList UI
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+  });
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
@@ -118,9 +121,6 @@ const AssetList = ({ onClickAsset }) => {
 
   return (
     <>
-      {process.env.MULTICHAIN ? (
-        <BalanceOverview balance={totalWeiBalance} loading={loading} />
-      ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
@@ -157,12 +157,16 @@ const AssetList = ({ onClickAsset }) => {
             ) : null
             ///: END:ONLY_INCLUDE_IF
           }
-          {shouldShowReceive ? (
-            <AssetListConversionButton
-              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
-              onClick={() => setShowReceiveModal(true)}
-            />
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            shouldShowReceive ? (
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
+                onClick={() => setShowReceiveModal(true)}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           {showReceiveModal ? (
             <ReceiveModal
               address={selectedAddress}

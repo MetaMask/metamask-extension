@@ -2,10 +2,10 @@ import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
+  KnownOrigins,
 } from '../../shared/constants/offscreen-communication';
 import { CallbackProcessor } from './callback-processor';
 
-const LEDGER_FRAME_ORIGIN_URL = 'https://metamask.github.io';
 const LEDGER_FRAME_TARGET = 'LEDGER-IFRAME';
 
 /**
@@ -21,7 +21,7 @@ const iframe = document.querySelector('iframe');
 // This listener receives action responses from the live ledger iframe
 // Then forwards the response to the offscreen bridge
 window.addEventListener('message', ({ origin, data, source }) => {
-  if (origin !== LEDGER_FRAME_ORIGIN_URL || source !== iframe?.contentWindow) {
+  if (origin !== KnownOrigins.ledger || source !== iframe?.contentWindow) {
     return;
   }
 
@@ -85,7 +85,7 @@ chrome.runtime.onMessage.addListener(
     // It has already been checked that they are not null above, so the
     // optional chaining here is for compiler typechecking only. This avoids
     // overriding our non-null assertion rule.
-    iframe?.contentWindow?.postMessage(iframeMsg, LEDGER_FRAME_ORIGIN_URL);
+    iframe?.contentWindow?.postMessage(iframeMsg, KnownOrigins.ledger);
 
     // This keeps sendResponse function valid after return
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage

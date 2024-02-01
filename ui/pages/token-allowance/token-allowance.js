@@ -61,9 +61,11 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
+
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
+
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
@@ -534,10 +536,9 @@ export default function TokenAllowance({
       )}
       <Box marginRight={4} marginLeft={4}>
         <FeeDetailsComponent
-          supportsEIP1559={supportsEIP1559}
           useCurrencyRateCheck={useCurrencyRateCheck}
           txData={txData}
-          shouldShow={!isFirstPage}
+          hideGasDetails={isFirstPage}
         />
       </Box>
       {useNonceField && (

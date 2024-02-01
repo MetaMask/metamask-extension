@@ -32,11 +32,26 @@ function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
+    await driver.wait(until.elementIsVisible(element));
+
+    // Try 2 ways to clear input fields, first try with clear() method
+    // Use keyboard simulation if the input field is not empty
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
+    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
+    if ((await element.getProperty('value')) !== '') {
+      await driver.driver
+        .actions()
+        .click(element)
+        .keyDown(driver.Key.MODIFIER)
+        .sendKeys('a')
+        .keyUp(driver.Key.MODIFIER)
+        .perform();
+    }
     await element.sendKeys(input);
   };
+
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
@@ -52,6 +67,36 @@ function wrapElementWithAPI(element, driver) {
     const locator = driver.buildLocator(rawLocator);
     const newElement = await element.findElement(locator);
     return wrapElementWithAPI(newElement, driver);
+  };
+
+  // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
+  if (!element.originalClick) {
+    element.originalClick = element.click;
+  }
+
+  // This special click() method waits for the loading overlay to disappear before clicking
+  element.click = async () => {
+    try {
+      await element.originalClick();
+    } catch (e) {
+      if (e.name === 'ElementClickInterceptedError') {
+        if (e.message.includes('<div class="mm-box loading-overlay">')) {
+          // Wait for the loading overlay to disappear and try again
+          await driver.wait(
+            until.elementIsNotPresent(By.css('.loading-overlay')),
+          );
+        }
+        if (e.message.includes('<div class="modal__backdrop">')) {
+          // Wait for the modal to disappear and try again
+          await driver.wait(
+            until.elementIsNotPresent(By.css('.modal__backdrop')),
+          );
+        }
+        await element.originalClick();
+      } else {
+        throw e; // If the error is not related to the loading overlay or modal backdrop, throw it
+      }
+    }
   };
 
   return element;
@@ -168,8 +213,16 @@ class Driver {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  async wait(condition, timeout = this.timeout) {
-    await this.driver.wait(condition, timeout);
+  async wait(condition, timeout = this.timeout, catchError = false) {
+    try {
+      await this.driver.wait(condition, timeout);
+    } catch (e) {
+      if (!catchError) {
+        throw e;
+      }
+
+      console.log('Caught error waiting for condition:', e);
+    }
   }
 
   async waitForSelector(
@@ -451,6 +504,11 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
+  }
+
   async switchToWindowWithTitle(
     title,
     initialWindowHandles,
@@ -526,16 +584,13 @@ class Driver {
   // Error handling
 
   async verboseReportOnFailure(title, error) {
-    if (process.env.CIRCLECI) {
-      console.error(
-        `Failure in ${title}, for more information see the artifacts tab in CI\n`,
-      );
-    } else {
-      console.error(
-        `Failure in ${title}, for more information see the test-artifacts folder\n`,
-      );
-    }
+    console.error(
+      `Failure on testcase: '${title}', for more information see the ${
+        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+      }\n`,
+    );
     console.error(`${error}\n`);
+
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
@@ -578,11 +633,11 @@ class Driver {
   }
 
   async checkBrowserForExceptions(failOnConsoleError) {
-    const { exceptions } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogException(cdpConnection, (exception) => {
+
+    this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
-      exceptions.push(description);
+      this.exceptions.push(description);
       logBrowserError(failOnConsoleError, description);
     });
   }
@@ -597,48 +652,80 @@ class Driver {
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
     ];
 
-    const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogEvent(cdpConnection, (event) => {
+
+    this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
         const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
         );
 
-        // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
         if (eventDescriptions.length !== 0) {
+          // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
+          // Update: as of January 2024, this code path may never happen
           const [eventDescription] = eventDescriptions;
           const ignore = ignoredErrorMessages.some((message) =>
             eventDescription?.description.includes(message),
           );
           if (!ignore) {
-            errors.push(eventDescription?.description);
-            logBrowserError(failOnConsoleError, eventDescription?.description);
+            const isWarning = logBrowserError(
+              failOnConsoleError,
+              eventDescription?.description,
+            );
+
+            if (!isWarning) {
+              this.errors.push(eventDescription?.description);
+            }
           }
         } else if (event.args.length !== 0) {
-          // Extract the values from the array
-          const values = event.args.map((a) => a.value);
+          const newError = this.#getErrorFromEvent(event);
 
-          // The values are in the "printf" form of [message, ...substitutions]
-          // so use sprintf to parse
-          logBrowserError(failOnConsoleError, sprintf(...values));
+          const isWarning = logBrowserError(failOnConsoleError, newError);
+
+          if (!isWarning) {
+            this.errors.push(newError);
+          }
         }
       }
     });
   }
+
+  #getErrorFromEvent(event) {
+    // Extract the values from the array
+    const values = event.args.map((a) => a.value);
+
+    if (values[0].includes('%s')) {
+      // The values are in the "printf" form of [message, ...substitutions]
+      // so use sprintf to parse
+      return sprintf(...values);
+    }
+
+    return values.join(' ');
+  }
+
+  summarizeErrorsAndExceptions() {
+    return this.errors.concat(this.exceptions).join('\n');
+  }
 }
 
 function logBrowserError(failOnConsoleError, errorMessage) {
+  let isWarning = false;
+
   console.error('\n----Received an error from Chrome----');
   console.error(errorMessage);
   console.error('---------End of Chrome error---------');
+  console.error(
+    `-----failOnConsoleError is ${failOnConsoleError ? 'true-' : 'false'}-----`,
+  );
 
-  if (failOnConsoleError) {
-    console.error('-----failOnConsoleError is true------\n');
-    throw new Error(errorMessage);
-  } else {
-    console.error('-----failOnConsoleError is false-----\n');
+  if (errorMessage.startsWith('Warning:')) {
+    console.error("----We will ignore this 'Warning'----");
+    isWarning = true;
   }
+
+  console.error('\n');
+
+  return isWarning;
 }
 
 function collectMetrics() {

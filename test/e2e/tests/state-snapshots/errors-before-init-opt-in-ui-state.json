@@ -10,7 +10,10 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": { "orderedNetworkList": {} },
-    "AccountOrderController": { "pinnedAccountList": {} },
+    "AccountOrderController": {
+      "pinnedAccountList": {},
+      "hiddenAccountList": {}
+    },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
@@ -93,9 +96,11 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
+        "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "useNativeCurrencyAsPrimaryCurrency": true
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "petnamesEnabled": true
       },
       "selectedAddress": "string",
       "theme": "light",

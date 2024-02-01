@@ -1,3 +1,5 @@
+const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
+
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'goerli.infura.io',
@@ -100,6 +102,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
     )
+    .withJsonBodyIncluding({
+      method: 'eth_chainId',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -158,9 +163,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/gasPrices`,
-    )
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -190,9 +193,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/suggestedGasFees`,
-    )
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -485,10 +486,12 @@ async function mockLensNameProvider(server) {
     '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826': 'test.lens',
     '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb': 'test2.lens',
     '0xcccccccccccccccccccccccccccccccccccccccc': 'test3.lens',
+    '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb': 'test4.lens',
   };
 
-  await server.forPost('https://api.lens.dev').thenCallback((request) => {
-    const address = request.body?.json?.variables?.address;
+  await server.forPost('https://api.lens.dev').thenCallback(async (request) => {
+    const json = await request.body?.getJson();
+    const address = json?.variables?.address;
     const handle = handlesByAddress[address];
 
     return {

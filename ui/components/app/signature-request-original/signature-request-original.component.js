@@ -43,9 +43,11 @@ import {
   Text,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
+
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
+
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 

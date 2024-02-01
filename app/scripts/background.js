@@ -15,7 +15,7 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { isObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -466,6 +466,12 @@ function emitDappViewedMetricEvent(
   connectSitePermissions,
   preferencesController,
 ) {
+  // A dapp may have other permissions than eth_accounts.
+  // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
+  if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
+    return;
+  }
+
   const numberOfTotalAccounts = Object.keys(
     preferencesController.store.getState().identities,
   ).length;

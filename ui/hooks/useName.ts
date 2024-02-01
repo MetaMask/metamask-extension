@@ -1,4 +1,8 @@
-import { NameEntry, NameType } from '@metamask/name-controller';
+import {
+  FALLBACK_VARIATION,
+  NameEntry,
+  NameType,
+} from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getCurrentChainId, getNames } from '../selectors';
@@ -33,11 +37,26 @@ export function useName(
   const normalizedValue = normalizeValue(value, type);
   const typeVariationKey = getVariationKey(type, chainId);
   const variationKey = variation ?? typeVariationKey;
-  const nameEntry = names[type]?.[normalizedValue]?.[variationKey];
+  const variationsToNameEntries = names[type]?.[normalizedValue] ?? {};
 
+  const variationEntry = variationsToNameEntries[variationKey];
+  const fallbackEntry = variationsToNameEntries[FALLBACK_VARIATION];
+
+  const entry =
+    !variationEntry?.name && fallbackEntry
+      ? fallbackEntry
+      : variationEntry ?? {};
+
+  const {
+    name = null,
+    sourceId = null,
+    origin = null,
+    proposedNames = {},
+  } = entry;
   return {
-    name: nameEntry?.name ?? null,
-    sourceId: nameEntry?.sourceId ?? null,
-    proposedNames: nameEntry?.proposedNames ?? {},
+    name,
+    sourceId,
+    proposedNames,
+    origin,
   };
 }

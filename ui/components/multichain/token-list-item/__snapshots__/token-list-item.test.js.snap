@@ -28,7 +28,7 @@ exports[`TokenListItem should render correctly 1`] = `
             <img
               alt="Ethereum Mainnet logo"
               class="mm-avatar-network__network-image"
-              src="./images/eth_logo.png"
+              src="./images/eth_logo.svg"
             />
           </div>
         </div>
@@ -38,12 +38,12 @@ exports[`TokenListItem should render correctly 1`] = `
         style="flex-grow: 1; overflow: hidden;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--justify-content-space-between"
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
           <div
             class="mm-box mm-box--width-1/3"
           >
-            <p
+            <span
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             />
           </div>
@@ -52,13 +52,30 @@ exports[`TokenListItem should render correctly 1`] = `
             data-testid="multichain-token-list-item-secondary-value"
           />
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
-          data-testid="multichain-token-list-item-value"
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
-           
-           
-        </p>
+          <div
+            class="mm-box mm-box--width-1/3"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-alternative"
+              data-testid="multichain-token-list-item-token-name"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--width-2/3"
+            style="overflow: hidden;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-alternative"
+              data-testid="multichain-token-list-item-value"
+            >
+               
+               
+            </p>
+          </div>
+        </div>
       </div>
     </a>
   </div>

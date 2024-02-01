@@ -10,7 +10,10 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": { "orderedNetworkList": {} },
-    "AccountOrderController": { "pinnedAccountList": {} },
+    "AccountOrderController": {
+      "pinnedAccountList": {},
+      "hiddenAccountList": {}
+    },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
@@ -93,20 +96,22 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
+        "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "useNativeCurrencyAsPrimaryCurrency": true
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "petnamesEnabled": true
       },
       "selectedAddress": "string",
       "theme": "light",
       "useBlockie": false,
-      "useRequestQueue": false,
       "useNftDetection": false,
       "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
-      "useMultiAccountBalanceChecker": true
+      "useMultiAccountBalanceChecker": true,
+      "useRequestQueue": false
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {
@@ -124,9 +129,7 @@
       "ignoredTokens": "object",
       "tokens": "object"
     },
-    "TransactionController": {
-      "transactions": "object"
-    },
+    "TransactionController": { "transactions": "object" },
     "config": "object",
     "firstTimeInfo": "object"
   }

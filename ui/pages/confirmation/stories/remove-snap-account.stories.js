@@ -23,7 +23,7 @@ export default {
     },
   },
   args: {
-    publicAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+    publicAddress: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
   },
 };
 

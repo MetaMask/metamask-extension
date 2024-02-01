@@ -808,6 +808,41 @@ describe('Selectors', () => {
     expect(isDesktopEnabled).toBeFalsy();
   });
 
+  describe('#getPetnamesEnabled', () => {
+    function createMockStateWithPetnamesEnabled(petnamesEnabled) {
+      return { metamask: { preferences: { petnamesEnabled } } };
+    }
+
+    describe('usePetnamesEnabled', () => {
+      const tests = [
+        {
+          petnamesEnabled: true,
+          expectedResult: true,
+        },
+        {
+          petnamesEnabled: false,
+          expectedResult: false,
+        },
+        {
+          // Petnames is enabled by default.
+          petnamesEnabled: undefined,
+          expectedResult: true,
+        },
+      ];
+
+      tests.forEach(({ petnamesEnabled, expectedResult }) => {
+        it(`should return ${String(
+          expectedResult,
+        )} when petnames preference is ${String(petnamesEnabled)}`, () => {
+          const result = selectors.getPetnamesEnabled(
+            createMockStateWithPetnamesEnabled(petnamesEnabled),
+          );
+          expect(result).toBe(expectedResult);
+        });
+      });
+    });
+  });
+
   it('#getIsBridgeChain', () => {
     mockState.metamask.providerConfig.chainId = '0xa';
     const isOptimismSupported = selectors.getIsBridgeChain(mockState);
@@ -990,34 +1025,131 @@ describe('Selectors', () => {
         balance: '0x0',
         name: 'Test Account 2',
         pinned: true,
+        hidden: false,
       },
       {
         address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
         balance: '0x0',
         name: 'Test Account 3',
         pinned: true,
+        hidden: false,
       },
       {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         name: 'Test Account',
         balance: '0x0',
         pinned: false,
+        hidden: false,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         name: 'Test Ledger 1',
         balance: '0x0',
         pinned: false,
+        hidden: false,
       },
       {
         name: 'Custody test',
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
+        hidden: false,
       },
     ];
     expect(
       selectors.getUpdatedAndSortedAccounts(pinnedAccountState),
     ).toStrictEqual(expectedResult);
+  });
+});
+
+describe('#getKeyringSnapAccounts', () => {
+  it('returns an empty array if no keyring snap accounts exist', () => {
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            1: {
+              address: '0x123456789',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            2: {
+              address: '0x987654321',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'Simple Key Pair',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([]);
+  });
+
+  it('returns an array of keyring snap accounts', () => {
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            'mock-id-1': {
+              address: '0x123456789',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'Ledger',
+                },
+              },
+            },
+            'mock-id-2': {
+              address: '0x987654321',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+            'mock-id-3': {
+              address: '0xabcdef123',
+              metadata: {
+                name: 'Account 3',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([
+      {
+        address: '0x987654321',
+        metadata: {
+          name: 'Account 2',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+      },
+      {
+        address: '0xabcdef123',
+        metadata: {
+          name: 'Account 3',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+      },
+    ]);
   });
 });

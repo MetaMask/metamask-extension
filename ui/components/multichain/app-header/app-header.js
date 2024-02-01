@@ -72,7 +72,7 @@ export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
-  const menuRef = useRef(false);
+  const menuRef = useRef(null);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isHomePage = location.pathname === DEFAULT_ROUTE;
@@ -96,6 +96,8 @@ export const AppHeader = ({ location }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
+
+  // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);

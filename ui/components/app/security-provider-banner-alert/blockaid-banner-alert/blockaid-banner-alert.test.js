@@ -1,19 +1,31 @@
 import React from 'react';
-import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
+import * as Sentry from '@sentry/browser';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
+import configureStore from '../../../../store/store';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
-jest.mock('./blockaid-banner-utils', () => ({
-  getReportUrl: jest
-    .fn()
-    .mockReturnValue(
-      'https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom',
-    ),
+jest.mock('@sentry/browser');
+jest.mock('zlib', () => ({
+  gzipSync: (val) => val,
 }));
+
+const mockUpdateTransactionEventFragment = jest.fn();
+
+jest.mock('../../../../hooks/useTransactionEventFragment', () => {
+  return {
+    useTransactionEventFragment: () => {
+      return {
+        updateTransactionEventFragment: mockUpdateTransactionEventFragment,
+      };
+    },
+  };
+});
 
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
@@ -28,19 +40,20 @@ const mockSecurityAlertResponse = {
 
 describe('Blockaid Banner Alert', () => {
   it('should not render when securityAlertResponse is not present', () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: undefined,
         }}
       />,
+      configureStore(),
     );
 
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
   it(`should not render when securityAlertResponse.result_type is '${BlockaidResultType.Benign}'`, () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -49,13 +62,14 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
+      configureStore(),
     );
 
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
   it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -64,6 +78,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
+      configureStore(),
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -74,12 +89,13 @@ describe('Blockaid Banner Alert', () => {
   });
 
   it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: mockSecurityAlertResponse,
         }}
       />,
+      configureStore(),
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -90,7 +106,7 @@ describe('Blockaid Banner Alert', () => {
   });
 
   it(`should render '${Severity.Danger}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Malicious}`, () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -99,6 +115,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
+      configureStore(),
     );
     const dangerBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-danger',
@@ -109,19 +126,20 @@ describe('Blockaid Banner Alert', () => {
   });
 
   it('should render title, "This is a deceptive request"', () => {
-    const { getByText } = renderWithLocalization(
+    const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: mockSecurityAlertResponse,
         }}
       />,
+      configureStore(),
     );
 
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
   it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.failed}"`, () => {
-    const { getByText } = renderWithLocalization(
+    const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -130,13 +148,14 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
+      configureStore(),
     );
 
     expect(getByText('Request may not be safe')).toBeInTheDocument();
   });
 
   it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.rawSignatureFarming}"`, () => {
-    const { getByText } = renderWithLocalization(
+    const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -145,6 +164,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
+      configureStore(),
     );
 
     expect(getByText('This is a suspicious request')).toBeInTheDocument();
@@ -156,7 +176,7 @@ describe('Blockaid Banner Alert', () => {
       'Operator is untrusted according to previous activity',
     ];
 
-    const { container, getByText } = renderWithLocalization(
+    const { container, getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -165,6 +185,7 @@ describe('Blockaid Banner Alert', () => {
           },
         }}
       />,
+      configureStore(),
     );
 
     expect(container).toMatchSnapshot();
@@ -175,13 +196,14 @@ describe('Blockaid Banner Alert', () => {
   });
 
   it('should render details section even when features is not provided', () => {
-    const { container } = renderWithLocalization(
+    const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: mockSecurityAlertResponse,
           features: undefined,
         }}
       />,
+      configureStore(),
     );
 
     expect(container).toMatchSnapshot();
@@ -189,13 +211,14 @@ describe('Blockaid Banner Alert', () => {
   });
 
   it('should render link to report url', () => {
-    const { container, getByText, getByRole } = renderWithLocalization(
+    const { container, getByText, getByRole } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: mockSecurityAlertResponse,
           features: undefined,
         }}
       />,
+      configureStore(),
     );
 
     expect(container).toMatchSnapshot();
@@ -203,6 +226,23 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
     expect(getByText('Report an issue')).toBeInTheDocument();
     expect(getByRole('link', { name: 'Report an issue' })).toBeInTheDocument();
+  });
+
+  it('should pass required data in Report an issue URL', () => {
+    const { getByRole } = renderWithProvider(
+      <BlockaidBannerAlert
+        txData={{
+          securityAlertResponse: mockSecurityAlertResponse,
+          features: undefined,
+        }}
+      />,
+      configureStore(),
+    );
+
+    const elm = getByRole('link', { name: 'Report an issue' });
+    expect(elm.href).toBe(
+      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22classification%22%3A%22set_approval_for_all%22%2C%22blockaidVersion%22%3A%221.4.0%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
+    );
   });
 
   describe('when rendering description', () => {
@@ -235,7 +275,7 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams will take all your assets.',
     }).forEach(([reason, expectedDescription]) => {
       it(`should render for '${reason}' correctly`, () => {
-        const { getByText } = renderWithLocalization(
+        const { getByText } = renderWithProvider(
           <BlockaidBannerAlert
             txData={{
               securityAlertResponse: {
@@ -244,10 +284,68 @@ describe('Blockaid Banner Alert', () => {
               },
             }}
           />,
+          configureStore(),
         );
 
         expect(getByText(expectedDescription)).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('when reason does not map to a description', () => {
+    it('renders the "other" description translation and logs a Sentry exception', () => {
+      const stubOtherDescription =
+        'If you approve this request, you might lose your assets.';
+      const { getByText } = renderWithProvider(
+        <BlockaidBannerAlert
+          txData={{
+            securityAlertResponse: {
+              ...mockSecurityAlertResponse,
+              reason: 'unmappedReason',
+            },
+          }}
+        />,
+        configureStore(),
+      );
+
+      expect(getByText(stubOtherDescription)).toBeInTheDocument();
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when clicking "See details" > "Report an issue"', () => {
+    it('calls updateTransactionEventFragment to add "external_link_clicked" prop to metric', () => {
+      const stubScrollIntoView = jest.fn();
+      const originalScrollIntoView =
+        window.HTMLElement.prototype.scrollIntoView;
+      window.HTMLElement.prototype.scrollIntoView = stubScrollIntoView;
+
+      renderWithProvider(
+        <BlockaidBannerAlert
+          txData={{
+            id: '1',
+            securityAlertResponse: {
+              ...mockSecurityAlertResponse,
+              reason: 'unmappedReason',
+            },
+          }}
+        />,
+        configureStore(),
+      );
+
+      fireEvent.click(screen.queryByText('See details'));
+      fireEvent.click(screen.queryByText('Report an issue'));
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+        {
+          properties: {
+            external_link_clicked: 'security_alert_support_link',
+          },
+        },
+        '1',
+      );
+      window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
   });
 });
