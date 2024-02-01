@@ -1714,9 +1714,10 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-          this.txController.nonceTracker,
-        ),
+        getNonceLock: (...args) => {
+          console.log('smtx', ...args)
+          return this.txController.nonceTracker.getNonceLock(...args)
+        },
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
         provider: this.provider,
@@ -1909,7 +1910,10 @@ export default class MetamaskController extends EventEmitter {
         this.decryptMessageController.newRequestDecryptMessage.bind(
           this.decryptMessageController,
         ),
-      getPendingNonce: this.getPendingNonce.bind(this),
+      getPendingNonce: (...args) => {
+        console.log('mm middleware getPendingNonce')
+        return this.getPendingNonce(...args)
+      },
       getPendingTransactionByHash: (hash) =>
         this.txController.state.transactions.find(
           (meta) =>
@@ -3010,7 +3014,10 @@ export default class MetamaskController extends EventEmitter {
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
-      getNextNonce: this.getNextNonce.bind(this),
+      getNextNonce: (...args) =>{
+       console.log('mm action', ...args)
+       return this.getNextNonce(...args)
+      },
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
           this.getAddTransactionRequest({
@@ -5194,6 +5201,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number>}
    */
   async getPendingNonce(address, networkClientId) {
+    console.log('mm getPendingNonce',address, networkClientId)
+    if(!networkClientId) {
+      debugger
+    }
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
       networkClientId,
@@ -5202,6 +5213,7 @@ export default class MetamaskController extends EventEmitter {
     const pendingNonce = nonceDetails.params.highestSuggested;
 
     releaseLock();
+    console.log('mm getPendingNonce release')
     return pendingNonce;
   }
 
@@ -5213,11 +5225,16 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number>}
    */
   async getNextNonce(address, networkClientId) {
+    console.log('mm getNextNonce',address, networkClientId)
+    if(!networkClientId) {
+      debugger
+    }
     const nonceLock = await this.txController.getNonceLock(
       address,
       networkClientId,
     );
     nonceLock.releaseLock();
+    console.log('mm getNextNonce release')
     return nonceLock.nextNonce;
   }
 
