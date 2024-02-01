@@ -927,6 +927,7 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         '7087d1d7-f0e8-4c0f-a903-6d9daa392baf': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -935,6 +936,7 @@ class FixtureBuilder {
           },
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
@@ -982,6 +984,7 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         '6eab4240-3762-4581-abc5-cd91eab6964e': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -990,6 +993,7 @@ class FixtureBuilder {
           },
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
@@ -1037,6 +1041,7 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         'c15eee26-11d6-4914-a70e-36ef9a3bcacb': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -1045,6 +1050,7 @@ class FixtureBuilder {
           },
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
@@ -1092,6 +1098,7 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         'dfa9e5ad-d069-46b1-976e-a23734971d87': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
@@ -1100,6 +1107,7 @@ class FixtureBuilder {
           },
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
@@ -1154,9 +1162,11 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
@@ -1186,6 +1196,7 @@ class FixtureBuilder {
           loadingDefaults: false,
           origin: 'metamask',
           primaryTransaction: {
+            networkClientId: 'networkConfigurationId',
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
@@ -1220,9 +1231,11 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
@@ -1254,6 +1267,7 @@ class FixtureBuilder {
           loadingDefaults: false,
           origin: 'metamask',
           primaryTransaction: {
+            networkClientId: 'networkConfigurationId',
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
@@ -1292,9 +1306,11 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         '13a01e77-a368-4bb9-aba9-e7435580e3b9': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
@@ -1335,6 +1351,7 @@ class FixtureBuilder {
           loadingDefaults: false,
           origin: 'metamask',
           primaryTransaction: {
+            networkClientId: 'networkConfigurationId',
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
@@ -1373,9 +1390,11 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         '0c9342ce-ef3f-4cab-9425-8e57144256a6': {
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           history: [
             {
+              networkClientId: 'networkConfigurationId',
               chainId: CHAIN_IDS.LOCALHOST,
               id: '0c9342ce-ef3f-4cab-9425-8e57144256a6',
               loadingDefaults: true,
@@ -1524,6 +1543,7 @@ class FixtureBuilder {
       transactions: {
         '8a13fd36-fdad-48ae-8b6a-c8991026d550': {
           blockNumber: '1',
+          networkClientId: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
           id: '8a13fd36-fdad-48ae-8b6a-c8991026d550',
