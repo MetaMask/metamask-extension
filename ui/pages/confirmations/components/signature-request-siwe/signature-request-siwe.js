@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -47,12 +40,6 @@ import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-pa
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { getBlockaidMetricsParams } from '../../../../helpers/utils/metrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
 
@@ -69,40 +56,6 @@ export default function SignatureRequestSIWE({ txData }) {
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
-
-  useEffect(() => {
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          action: 'Sign Request',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onClickSupportLink = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        action: 'Sign Request SIWE',
-        origin: txData?.origin,
-        external_link_clicked: 'security_alert_support_link',
-      },
-    });
-  }, [trackEvent, txData?.origin]);
-  ///: END:ONLY_INCLUDE_IF
 
   const {
     msgParams: {
@@ -180,11 +133,7 @@ export default function SignatureRequestSIWE({ txData }) {
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          txData={txData}
-          margin={4}
-          onClickSupportLink={onClickSupportLink}
-        />
+        <BlockaidBannerAlert txData={txData} margin={4} />
         ///: END:ONLY_INCLUDE_IF
       }
       {showSecurityProviderBanner && (

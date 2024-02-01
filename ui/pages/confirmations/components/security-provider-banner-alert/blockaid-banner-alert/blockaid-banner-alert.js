@@ -15,6 +15,7 @@ import {
   SecurityProvider,
 } from '../../../../../../shared/constants/security-provider';
 import { Text } from '../../../../../components/component-library';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 import { getReportUrl } from './blockaid-banner-utils';
@@ -56,6 +57,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     txData;
 
   const t = useContext(I18nContext);
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   if (!securityAlertResponse) {
     return null;
@@ -115,6 +117,17 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const reportUrl = getReportUrl(encodedData);
 
+  const onClickSupportLink = () => {
+    updateTransactionEventFragment(
+      {
+        properties: {
+          external_link_clicked: 'security_alert_support_link',
+        },
+      },
+      txData.id,
+    );
+  };
+
   return (
     <SecurityProviderBannerAlert
       description={description}
@@ -123,6 +136,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
       severity={severity}
       title={title}
       reportUrl={reportUrl}
+      onClickSupportLink={onClickSupportLink}
       {...props}
     />
   );
