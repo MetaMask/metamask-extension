@@ -3983,21 +3983,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "@metamask/controller-utils@npm:6.1.0"
-  dependencies:
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.2.1"
-    "@metamask/utils": "npm:^8.2.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    ethereumjs-util: "npm:^7.0.10"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: b90150d6de7920787fecf96b08e81963dd93b4a191de4ec05ab076c53ad247db072722705d08b91b2dbb6da91f9e3c5667167742ea8115c1c1b8a9c1739c624c
-  languageName: node
-  linkType: hard
-
 "@metamask/controller-utils@npm:^8.0.1, @metamask/controller-utils@npm:^8.0.2":
   version: 8.0.2
   resolution: "@metamask/controller-utils@npm:8.0.2"
@@ -4433,7 +4418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0, @metamask/json-rpc-engine@npm:^7.3.0, @metamask/json-rpc-engine@npm:^7.3.1, @metamask/json-rpc-engine@npm:^7.3.2":
+"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0, @metamask/json-rpc-engine@npm:^7.3.1, @metamask/json-rpc-engine@npm:^7.3.2":
   version: 7.3.2
   resolution: "@metamask/json-rpc-engine@npm:7.3.2"
   dependencies:
@@ -4811,22 +4796,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/queued-request-controller@npm:0.2.0"
+"@metamask/queued-request-controller@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/queued-request-controller@npm:0.3.0"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.0"
-    "@metamask/controller-utils": "npm:^6.0.0"
-    "@metamask/json-rpc-engine": "npm:^7.3.0"
-    "@metamask/network-controller": "npm:^17.0.0"
+    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/controller-utils": "npm:^8.0.1"
+    "@metamask/json-rpc-engine": "npm:^7.3.1"
     "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/selected-network-controller": "npm:^4.0.0"
     "@metamask/swappable-obj-proxy": "npm:^2.1.0"
     "@metamask/utils": "npm:^8.2.0"
   peerDependencies:
-    "@metamask/network-controller": ^17.0.0
-    "@metamask/selected-network-controller": ^4.0.0
-  checksum: b6a4e1c006f792f5a23698839a727b619131dff48a530ed95349d28c54883fe1547e99d30ede0d9ed0c85a78455dc739a6ed5e70f2ed199e7ea8d9ca53858e9e
+    "@metamask/approval-controller": ^5.1.1
+    "@metamask/network-controller": ^17.1.0
+    "@metamask/selected-network-controller": ^6.0.0
+  checksum: 47988f3999f8ab45dfbbc8fde796ce4c8ebc405abb79bc165dc1faf777db6190942e220df76e0a7d0355d8de5a635cc41089fc75825eb4b6047ebf1c85b44e6a
   languageName: node
   linkType: hard
 
@@ -4872,20 +4856,6 @@ __metadata:
     "@noble/hashes": "npm:~1.1.1"
     "@scure/base": "npm:~1.1.0"
   checksum: 80ef3762f03d829702d7720655e50883e0f280e23f2777038968764876d4204df0c93ecdd08d7b579aa95ca86ca8d273a40a36079021d665a92f9c068368dfc3
-  languageName: node
-  linkType: hard
-
-"@metamask/selected-network-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/selected-network-controller@npm:4.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^7.3.0"
-    "@metamask/network-controller": "npm:^17.0.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-  peerDependencies:
-    "@metamask/network-controller": ^17.0.0
-  checksum: 904d2b14e49f060a9c3828dde40bf00853c4e754937aaae2773a7f2bf6195f4d716cecf3b156725f9e76e2b317c24b39c6479bbe0a16f3b9b431fccda594a4dc
   languageName: node
   linkType: hard
 
@@ -24630,7 +24600,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^7.0.0"
     "@metamask/ppom-validator": "npm:^0.22.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^0.2.0"
+    "@metamask/queued-request-controller": "npm:^0.3.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
