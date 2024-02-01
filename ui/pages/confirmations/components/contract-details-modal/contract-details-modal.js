@@ -214,11 +214,13 @@ export default function ContractDetailsModal({
           alignItems={AlignItems.center}
           className="contract-details-modal__content__contract"
         >
-          <Identicon
-            className="contract-details-modal__content__contract__identicon"
-            diameter={24}
-            address={toAddress}
-          />
+          {!petnamesEnabled && (
+            <Identicon
+              className="contract-details-modal__content__contract__identicon"
+              diameter={24}
+              address={toAddress}
+            />
+          )}
           <Box data-testid="recipient">
             {petnamesEnabled ? (
               <Text variant={TextVariant.bodyMd} as="h5">
