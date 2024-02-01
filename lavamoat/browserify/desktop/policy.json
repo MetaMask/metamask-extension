@@ -514,6 +514,18 @@
         "watchify>xtend": true
       }
     },
+    "@lavamoat/lavadome-react": {
+      "globals": {
+        "Document.prototype": true,
+        "Element.prototype": true,
+        "Node.prototype": true,
+        "console.warn": true,
+        "document": true
+      },
+      "packages": {
+        "react": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "Image": true,
