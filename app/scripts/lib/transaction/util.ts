@@ -83,6 +83,10 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
+  updateSecurityAlertResponseByTxId: (
+    reqId: string | undefined,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void,
 ): Promise<TransactionMeta> {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const {
@@ -109,13 +113,22 @@ export async function addTransaction(
         ],
       };
 
-      const securityAlertResponse = await ppomController.usePPOM(
-        async (ppom) => {
-          return ppom.validateJsonRpc(ppomRequest);
-        },
-      );
+      ppomController.usePPOM(async (ppom) => {
+        try {
+          const securityAlertResponse = ppom.validateJsonRpc(ppomRequest);
+          updateSecurityAlertResponseByTxId(
+            transactionOptions.actionId,
+            securityAlertResponse,
+          );
+        } catch (e) {
+          captureException(e);
+        }
+      });
 
-      request.transactionOptions.securityAlertResponse = securityAlertResponse;
+      request.transactionOptions.securityAlertResponse = {
+        reason: 'loading',
+        result_type: 'validation_in_progress',
+      };
     } catch (e) {
       captureException(e);
     }

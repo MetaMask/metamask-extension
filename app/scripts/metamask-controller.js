@@ -2986,6 +2986,7 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
+          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -2997,6 +2998,7 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
+          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
@@ -4251,6 +4253,24 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  async updateSecurityAlertResponseByTxId(reqId, securityAlertResponse) {
+    let foundTransaction = false;
+
+    while (!foundTransaction) {
+      foundTransaction = this.txController.state.transactions.find(
+        (meta) => meta.actionId === reqId,
+      );
+      if (!foundTransaction) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+
+    this.txController.updateSecurityAlertResponse(
+      foundTransaction.id,
+      securityAlertResponse,
+    );
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -4643,6 +4663,7 @@ export default class MetamaskController extends EventEmitter {
         this.ppomController,
         this.preferencesController,
         this.networkController,
+        this.updateSecurityAlertResponseByTxId.bind(this),
       ),
     );
     ///: END:ONLY_INCLUDE_IF

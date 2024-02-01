@@ -8,6 +8,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PreferencesController } from '../../controllers/preferences';
+import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
@@ -44,12 +45,17 @@ export const SUPPORTED_CHAIN_IDS: string[] = [
  * @param ppomController - Instance of PPOMController.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
+ * @param updateSecurityAlertResponseByTxId
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
+  updateSecurityAlertResponseByTxId: (
+    reqId: string,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void,
 ) {
   return async (req: any, _res: any, next: () => void) => {
     try {
@@ -62,11 +68,25 @@ export function createPPOMMiddleware(
         SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         // eslint-disable-next-line require-atomic-updates
-        req.securityAlertResponse = await ppomController.usePPOM(
-          async (ppom: PPOM) => {
-            return ppom.validateJsonRpc(req);
-          },
-        );
+        ppomController.usePPOM(async (ppom: PPOM) => {
+          try {
+            const securityAlertResponse = await ppom.validateJsonRpc(req);
+            updateSecurityAlertResponseByTxId(req.id, securityAlertResponse);
+          } catch (error: any) {
+            sentry?.captureException(error);
+            console.error('Error validating JSON RPC using PPOM: ', error);
+            req.securityAlertResponse = {
+              result_type: BlockaidResultType.Failed,
+              reason: BlockaidReason.failed,
+              description:
+                'Validating the confirmation failed by throwing error.',
+            };
+          }
+        });
+        req.securityAlertResponse = {
+          reason: 'loading',
+          result_type: 'validation_in_progress',
+        };
       }
     } catch (error: any) {
       sentry?.captureException(error);
