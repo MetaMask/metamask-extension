@@ -156,6 +156,7 @@ export default class MetaMetricsController {
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
+      previousUserTraits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -790,7 +791,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.identities,
+        metamaskState.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
         this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
@@ -818,10 +819,8 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.SecurityProviders]: securityProvider
         ? [securityProvider]
         : [],
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
-      ///: END:ONLY_INCLUDE_IF
     };
 
     if (!previousUserTraits) {

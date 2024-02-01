@@ -8,8 +8,7 @@ export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
 export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
-export const NOTIFICATION_STAKING_PORTFOLIO = 29;
-export const NOTIFICATION_BLOCKAID_DEFAULT = 30;
+export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -171,14 +170,6 @@ export const UI_NOTIFICATIONS = {
   [NOTIFICATION_U2F_LEDGER_LIVE]: {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
     date: null,
-  },
-  [NOTIFICATION_STAKING_PORTFOLIO]: {
-    id: Number(NOTIFICATION_STAKING_PORTFOLIO),
-    date: null,
-    image: {
-      src: 'images/portfolio-stake-notification-light-mode.png',
-      width: '100%',
-    },
   },
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   [NOTIFICATION_BLOCKAID_DEFAULT]: {
@@ -477,17 +468,6 @@ export const getTranslatedUINotifications = (
           )
         : '',
     },
-    [NOTIFICATION_STAKING_PORTFOLIO]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO],
-      title: t('notificationsStakingPortfolioTitle'),
-      description: [t('notificationsStakingPortfolioDescription')],
-      actionText: t('notificationsStakingPortfolioActionText'),
-      date: UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date),
-          )
-        : '',
-    },
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT],
@@ -495,9 +475,8 @@ export const getTranslatedUINotifications = (
       description: [
         t('notificationsBlockaidDefaultDescriptionOne'),
         t('notificationsBlockaidDefaultDescriptionTwo'),
-        t('notificationsBlockaidDefaultDescriptionThree'),
       ],
-      actionText: t('notificationsBlockaidDefaultDescriptionThreeActionText'),
+      actionText: t('notificationsBlockaidDefaultDescriptionActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),

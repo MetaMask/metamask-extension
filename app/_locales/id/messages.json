@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Transfer token dari jaringan yang berbeda"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge tidak tersedia di jaringan ini"
-  },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
   },
@@ -827,9 +821,6 @@
   },
   "connectionRequest": {
     "message": "Permintaan koneksi"
-  },
-  "connections": {
-    "message": "Koneksi"
   },
   "contactUs": {
     "message": "Hubungi kami"
@@ -3569,9 +3560,6 @@
   "selectAnAccountHelp": {
     "message": "Pilih akun kustodian untuk digunakan di MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Pilih tindakan"
-  },
   "selectHdPath": {
     "message": "Pilih path HD"
   },
@@ -3595,9 +3583,6 @@
   },
   "sendBugReport": {
     "message": "Kirimi kami laporan bug."
-  },
-  "sendDescription": {
-    "message": "Kirim kripto ke akun mana pun"
   },
   "sendSpecifiedTokens": {
     "message": "Kirim $1",
@@ -3948,9 +3933,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
   "stateLogError": {
     "message": "Terjadi kesalahan pada log status pengambilan."
   },
@@ -4136,14 +4118,8 @@
   "swapDecentralizedExchange": {
     "message": "Bursa terdesentralisasi"
   },
-  "swapDescription": {
-    "message": "Tukar dan perdagangkan token Anda"
-  },
   "swapDirectContract": {
     "message": "Kontrak langsung"
-  },
-  "swapDisabled": {
-    "message": "Pertukaran tidak tersedia di jaringan ini"
   },
   "swapEditLimit": {
     "message": "Edit batas"

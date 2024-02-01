@@ -7,7 +7,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import PreferencesController from '../../controllers/preferences';
+import { PreferencesController } from '../../controllers/preferences';
 
 const { sentry } = global as any;
 
@@ -21,6 +21,16 @@ const ConfirmationMethods = Object.freeze([
   'eth_signTypedData_v4',
   'personal_sign',
 ]);
+
+export const SUPPORTED_CHAIN_IDS: string[] = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.AVALANCHE,
+  CHAIN_IDS.LINEA_MAINNET,
+];
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -49,7 +59,7 @@ export function createPPOMMiddleware(
       if (
         securityAlertsEnabled &&
         ConfirmationMethods.includes(req.method) &&
-        chainId === CHAIN_IDS.MAINNET
+        SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         // eslint-disable-next-line require-atomic-updates
         req.securityAlertResponse = await ppomController.usePPOM(
