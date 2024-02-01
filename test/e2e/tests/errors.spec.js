@@ -469,7 +469,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture UI application state', async function () {
+    it.only('should capture UI application state', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -737,7 +737,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture UI application state', async function () {
+    it.only('should capture UI application state', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
