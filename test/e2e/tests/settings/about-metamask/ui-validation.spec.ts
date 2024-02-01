@@ -29,7 +29,7 @@ async function switchToAboutView(driver: Driver) {
 }
 
 describe('Setting - About MetaMask :', function (this: Suite) {
-  it('validate the view', async function () {
+  it('validate the view @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
