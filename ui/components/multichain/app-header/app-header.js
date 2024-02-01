@@ -316,7 +316,7 @@ export const AppHeader = ({ location }) => {
                   />
                   <Tooltip
                     position="left"
-                    title={copied ? t('addressCopied') : null}
+                    title={copied ? t('addressCopied') : t('copyToClipboard')}
                   >
                     <ButtonBase
                       className="multichain-app-header__address-copy-button"

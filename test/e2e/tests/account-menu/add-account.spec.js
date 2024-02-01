@@ -75,12 +75,7 @@ describe('Add account', function () {
 
         // Check address of 1st account
         await waitForAccountRendered(driver);
-        await driver.findElement({
-          css: process.env.MULTICHAIN
-            ? '.multichain-account-picker-container p'
-            : '.multichain-address-copy-button',
-          text: shortenAddress(firstAccount),
-        });
+        await driver.findElement('[data-testid="app-header-copy-button"]');
 
         // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -95,12 +90,7 @@ describe('Add account', function () {
 
         // Check address of 2nd account
         await waitForAccountRendered(driver);
-        await driver.findElement({
-          css: process.env.MULTICHAIN
-            ? '.multichain-account-picker-container p'
-            : '.multichain-address-copy-button',
-          text: shortenAddress(secondAccount),
-        });
+        await driver.findElement('[data-testid="app-header-copy-button"]');
 
         // Log into the account with balance(account 1)
         // and transfer some balance to 2nd account
@@ -149,12 +139,7 @@ describe('Add account', function () {
         }
 
         // Check address of 1st account
-        await driver.findElement({
-          css: process.env.MULTICHAIN
-            ? '.multichain-account-picker-container p'
-            : '.multichain-address-copy-button',
-          text: shortenAddress(firstAccount),
-        });
+        await driver.findElement('[data-testid="app-header-copy-button"]');
 
         // Check address of 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -163,12 +148,7 @@ describe('Add account', function () {
           text: 'Account 2',
         });
 
-        await driver.findElement({
-          css: process.env.MULTICHAIN
-            ? '.multichain-account-picker-container p'
-            : '.multichain-address-copy-button',
-          text: shortenAddress(secondAccount),
-        });
+        await driver.findElement('[data-testid="app-header-copy-button"]');
       },
     );
   });

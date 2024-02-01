@@ -71,10 +71,7 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="account-details-modal"]',
         );
         // shows the correct account address
-        await driver.findElement({
-          css: '.multichain-address-copy-button',
-          text: '0x0Cc52...7afD3',
-        });
+        await driver.findElement('[data-testid="app-header-copy-button"]');
 
         await driver.clickElement('button[aria-label="Close"]');
         await driver.waitForElementNotPresent(

@@ -292,25 +292,34 @@ exports[`App Header should match snapshot 1`] = `
           />
         </button>
         <div>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-app-header__address-copy-button mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
-            data-testid="app-header-copy-button"
-            style="height: auto;"
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="Copy to clipboard"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
           >
-            <span
-              class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-app-header__address-copy-button mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+              data-testid="app-header-copy-button"
+              style="height: auto;"
             >
               <span
-                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+                class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
               >
-                0x0DCD5...3E7bc
+                <span
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+                >
+                  0x0DCD5...3E7bc
+                </span>
               </span>
-            </span>
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/copy.svg');"
-            />
-          </button>
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/copy.svg');"
+              />
+            </button>
+          </div>
         </div>
       </div>
       <div
