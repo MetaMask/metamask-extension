@@ -503,5 +503,19 @@ export const getTranslatedUINotifications = (
             },
     },
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_PETNAMES],
+      title: t('notificationsPetnamesTitle'),
+      description: [
+        t('notificationsPetnamesDescriptionOne'),
+        t('notificationsPetnamesDescriptionTwo'),
+      ],
+      actionText: t('notificationsPetnamesActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_PETNAMES].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
+          )
+        : '',
+    },
   };
 };

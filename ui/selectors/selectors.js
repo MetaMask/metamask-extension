@@ -93,6 +93,7 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
@@ -1231,6 +1232,7 @@ function getAllowedAnnouncementIds(state) {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: true,
   };
 }
 
@@ -1257,7 +1259,7 @@ export function getSortedAnnouncementsToShow(state) {
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
   const announcementsToShow = announcements.filter(
     (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
+      allowedAnnouncementIds[announcement.id],
   );
   const announcementsSortedByDate = announcementsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),
