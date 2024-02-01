@@ -228,7 +228,10 @@ import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import {
+  createPPOMMiddleware,
+  SIGNING_METHODS,
+} from './lib/ppom/ppom-middleware';
 import * as PPOMModule from './lib/ppom/ppom';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -4253,22 +4256,40 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  async updateSecurityAlertResponseByTxId(reqId, securityAlertResponse) {
-    let foundTransaction = false;
+  async updateSecurityAlertResponseByTxId(req, securityAlertResponse) {
+    let foundConfirmation = false;
 
-    while (!foundTransaction) {
-      foundTransaction = this.txController.state.transactions.find(
-        (meta) => meta.actionId === reqId,
-      );
-      if (!foundTransaction) {
+    while (!foundConfirmation) {
+      if (SIGNING_METHODS.includes(req.method)) {
+        foundConfirmation = Object.values(
+          this.signatureController.messages,
+        ).find(
+          (message) =>
+            message.securityAlertResponse?.securityAlertId ===
+            req.securityAlertResponse.securityAlertId,
+        );
+      } else {
+        foundConfirmation = this.txController.state.transactions.find(
+          (meta) =>
+            meta.securityAlertResponse?.securityAlertId ===
+            req.securityAlertResponse.securityAlertId,
+        );
+      }
+      if (!foundConfirmation) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
 
-    this.txController.updateSecurityAlertResponse(
-      foundTransaction.id,
-      securityAlertResponse,
-    );
+    if (SIGNING_METHODS.includes(req.method)) {
+      this.appStateController.addSignatureSecurityAlertResponse(
+        securityAlertResponse,
+      );
+    } else {
+      this.txController.updateSecurityAlertResponse(
+        foundConfirmation.id,
+        securityAlertResponse,
+      );
+    }
   }
 
   //=============================================================================
@@ -4663,6 +4684,7 @@ export default class MetamaskController extends EventEmitter {
         this.ppomController,
         this.preferencesController,
         this.networkController,
+        this.appStateController,
         this.updateSecurityAlertResponseByTxId.bind(this),
       ),
     );

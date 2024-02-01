@@ -60,7 +60,10 @@ function BlockaidBannerAlert({ txData, ...props }) {
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  if (!securityAlertResponse) {
+  if (
+    !securityAlertResponse ||
+    Object.keys(securityAlertResponse).length === 0
+  ) {
     return null;
   } else if (securityAlertResponse.reason === 'loading') {
     return <LoadingIndicator isLoading />;

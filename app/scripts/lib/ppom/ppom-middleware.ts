@@ -1,6 +1,7 @@
 import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
+import { v4 as uuid } from 'uuid';
 
 import {
   BlockaidReason,
@@ -12,15 +13,19 @@ import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
-const ConfirmationMethods = Object.freeze([
-  'eth_sendRawTransaction',
-  'eth_sendTransaction',
+export const SIGNING_METHODS = Object.freeze([
   'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
+]);
+
+const CONFIRMATION_METHODS = Object.freeze([
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  ...SIGNING_METHODS,
 ]);
 
 export const SUPPORTED_CHAIN_IDS: string[] = [
@@ -45,6 +50,7 @@ export const SUPPORTED_CHAIN_IDS: string[] = [
  * @param ppomController - Instance of PPOMController.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
+ * @param appStateController
  * @param updateSecurityAlertResponseByTxId
  * @returns PPOMMiddleware function.
  */
@@ -52,8 +58,9 @@ export function createPPOMMiddleware(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
+  appStateController: any,
   updateSecurityAlertResponseByTxId: (
-    reqId: string,
+    req: any,
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
 ) {
@@ -64,14 +71,17 @@ export function createPPOMMiddleware(
       const { chainId } = networkController.state.providerConfig;
       if (
         securityAlertsEnabled &&
-        ConfirmationMethods.includes(req.method) &&
+        CONFIRMATION_METHODS.includes(req.method) &&
         SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         // eslint-disable-next-line require-atomic-updates
+        const securityAlertId = uuid();
+
         ppomController.usePPOM(async (ppom: PPOM) => {
           try {
             const securityAlertResponse = await ppom.validateJsonRpc(req);
-            updateSecurityAlertResponseByTxId(req.id, securityAlertResponse);
+            securityAlertResponse.securityAlertId = securityAlertId;
+            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
           } catch (error: any) {
             sentry?.captureException(error);
             console.error('Error validating JSON RPC using PPOM: ', error);
@@ -83,10 +93,23 @@ export function createPPOMMiddleware(
             };
           }
         });
-        req.securityAlertResponse = {
-          reason: 'loading',
-          result_type: 'validation_in_progress',
-        };
+
+        if (SIGNING_METHODS.includes(req.method)) {
+          req.securityAlertResponse = {
+            securityAlertId,
+          };
+          appStateController.addSignatureSecurityAlertResponse({
+            reason: 'loading',
+            result_type: 'validation_in_progress',
+            securityAlertId,
+          });
+        } else {
+          req.securityAlertResponse = {
+            reason: 'loading',
+            result_type: 'validation_in_progress',
+            securityAlertId,
+          };
+        }
       }
     } catch (error: any) {
       sentry?.captureException(error);

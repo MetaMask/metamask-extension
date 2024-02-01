@@ -65,6 +65,7 @@ export default class AppStateController extends EventEmitter {
         '0x539': true,
       },
       surveyLinkLastClickedOrClosed: null,
+      signatureSecurityAlertResponses: {},
     });
     this.timer = null;
 
@@ -441,8 +442,19 @@ export default class AppStateController extends EventEmitter {
       },
     });
   }
-
   ///: END:ONLY_INCLUDE_IF
+
+  addSignatureSecurityAlertResponse(securityAlertResponse) {
+    const currentState = this.store.getState();
+    const { signatureSecurityAlertResponses } = currentState; //
+    this.store.updateState({
+      signatureSecurityAlertResponses: {
+        ...signatureSecurityAlertResponses,
+        [securityAlertResponse.securityAlertId]: securityAlertResponse,
+      },
+    });
+  }
+
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *

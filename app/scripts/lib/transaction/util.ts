@@ -38,6 +38,7 @@ export type SecurityAlertResponse = {
   features?: string[];
   result_type: string;
   providerRequestsCount?: Record<string, number>;
+  securityAlertId?: string;
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
