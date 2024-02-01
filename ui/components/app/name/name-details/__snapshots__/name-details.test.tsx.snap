@@ -137,7 +137,7 @@ exports[`NameDetails renders proposed names 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-4 mm-box--justify-content-space-between mm-box--color-text-default"
           >
-            Interactions with this address will always be identified using this personal display name.
+            You've added a nickname for this address before. You can edit or view other suggested nicknames.
           </p>
           <div
             class="box mm-form-text-field mm-form-text-field--disabled name-details__address box--margin-bottom-4 box--display-flex box--flex-direction-column"
@@ -174,7 +174,7 @@ exports[`NameDetails renders proposed names 1`] = `
           <label
             class="mm-box mm-text mm-label name-details__display-name mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--color-text-default"
           >
-            Display name
+            Nickname
             <div
               class="form-combo-field"
             >
@@ -189,7 +189,7 @@ exports[`NameDetails renders proposed names 1`] = `
                       autocomplete="off"
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
-                      placeholder="Set a personal display name..."
+                      placeholder="Set a nickname..."
                       type="text"
                       value="TestName"
                     />
@@ -356,7 +356,7 @@ exports[`NameDetails renders with no saved name 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-4 mm-box--justify-content-space-between mm-box--color-text-default"
           >
-            You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.
+            If you know this address, you can give it a nickname to make it easier to recognize in the future.
           </p>
           <div
             class="box mm-form-text-field mm-form-text-field--disabled name-details__address box--margin-bottom-4 box--display-flex box--flex-direction-column"
@@ -393,7 +393,7 @@ exports[`NameDetails renders with no saved name 1`] = `
           <label
             class="mm-box mm-text mm-label name-details__display-name mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--color-text-default"
           >
-            Display name
+            Nickname
             <div
               class="form-combo-field"
             >
@@ -408,7 +408,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                       autocomplete="off"
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
-                      placeholder="Set a personal display name..."
+                      placeholder="Set a nickname..."
                       type="text"
                       value=""
                     />
@@ -584,7 +584,7 @@ exports[`NameDetails renders with saved name 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-4 mm-box--justify-content-space-between mm-box--color-text-default"
           >
-            Interactions with this address will always be identified using this personal display name.
+            You've added a nickname for this address before. You can edit or view other suggested nicknames.
           </p>
           <div
             class="box mm-form-text-field mm-form-text-field--disabled name-details__address box--margin-bottom-4 box--display-flex box--flex-direction-column"
@@ -621,7 +621,7 @@ exports[`NameDetails renders with saved name 1`] = `
           <label
             class="mm-box mm-text mm-label name-details__display-name mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--color-text-default"
           >
-            Display name
+            Nickname
             <div
               class="form-combo-field"
             >
@@ -636,7 +636,7 @@ exports[`NameDetails renders with saved name 1`] = `
                       autocomplete="off"
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
-                      placeholder="Set a personal display name..."
+                      placeholder="Set a nickname..."
                       type="text"
                       value="TestName"
                     />
