@@ -181,24 +181,38 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     );
   });
 
-  it('does not delete entry when account identity is deleted', () => {
-    const preferencesController = createPreferencesControllerMock(
-      createPreferencesStateWithIdentity(ADDRESS_MOCK, NAME_MOCK),
+  describe('shouldSyncPetname', () => {
+    it.each([
+      {
+        origin: NameOrigin.ACCOUNT_IDENTITY,
+        expectedReturn: true,
+      },
+      {
+        origin: NameOrigin.API,
+        expectedReturn: false,
+      },
+    ])(
+      'returns $expectedReturn if origin is $origin',
+      ({ origin, expectedReturn }) => {
+        class TestBridge extends AccountIdentitiesPetnamesBridge {
+          public shouldSyncPetname(entry: PetnameEntry): boolean {
+            return super.shouldSyncPetname(entry);
+          }
+        }
+        const preferencesController = createPreferencesControllerMock(
+          EMPTY_PREFERENCES_STATE,
+        );
+        const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+        const bridge = new TestBridge({
+          preferencesController,
+          nameController,
+          messenger: {} as any,
+        });
+        bridge.init();
+        expect(bridge.shouldSyncPetname({ origin } as PetnameEntry)).toBe(
+          expectedReturn,
+        );
+      },
     );
-    const nameController = createNameControllerMock(
-      createNameStateWithPetname(ADDRESS_MOCK, NAME_MOCK),
-    );
-    const bridge = new AccountIdentitiesPetnamesBridge({
-      preferencesController,
-      nameController,
-      messenger: {} as any,
-    });
-    bridge.init();
-
-    preferencesController.updateMockStateAndTriggerListener(
-      EMPTY_PREFERENCES_STATE,
-    );
-
-    expect(nameController.setName).not.toHaveBeenCalled();
   });
 });
