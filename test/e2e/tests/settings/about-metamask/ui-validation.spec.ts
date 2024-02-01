@@ -28,8 +28,8 @@ async function switchToAboutView(driver: Driver) {
   await driver.clickElement(selectors.aboutDiv);
 }
 
-describe('Setting - About MetaMask :', function (this: Suite) {
-  it('validate the view @no-mmi', async function () {
+describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
+  it('validate the view', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
