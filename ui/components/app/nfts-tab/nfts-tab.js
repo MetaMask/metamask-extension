@@ -32,7 +32,10 @@ import { AssetListConversionButton } from '../../multichain';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 export default function NftsTab() {
