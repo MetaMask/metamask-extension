@@ -182,29 +182,37 @@ describe('AccountIdentitiesPetnamesBridge', () => {
   });
 
   describe('shouldSyncPetname', () => {
-    it('returns true iff entry is from ACCOUNT_IDENTITY origin', () => {
-      class TestBridge extends AccountIdentitiesPetnamesBridge {
-        public shouldSyncPetname(entry: PetnameEntry): boolean {
-          return super.shouldSyncPetname(entry);
+    it.each([
+      {
+        origin: NameOrigin.ACCOUNT_IDENTITY,
+        expectedReturn: true,
+      },
+      {
+        origin: NameOrigin.API,
+        expectedReturn: false,
+      },
+    ])(
+      'returns $expectedReturn if origin is $origin',
+      ({ origin, expectedReturn }) => {
+        class TestBridge extends AccountIdentitiesPetnamesBridge {
+          public shouldSyncPetname(entry: PetnameEntry): boolean {
+            return super.shouldSyncPetname(entry);
+          }
         }
-      }
-      const preferencesController = createPreferencesControllerMock(
-        EMPTY_PREFERENCES_STATE,
-      );
-      const nameController = createNameControllerMock(EMPTY_NAME_STATE);
-      const bridge = new TestBridge({
-        preferencesController,
-        nameController,
-        messenger: {} as any,
-      });
-      bridge.init();
-      Object.values(NameOrigin).forEach((origin) => {
-        expect(
-          bridge.shouldSyncPetname({
-            origin,
-          } as any),
-        ).toBe(origin === NameOrigin.ACCOUNT_IDENTITY);
-      });
-    });
+        const preferencesController = createPreferencesControllerMock(
+          EMPTY_PREFERENCES_STATE,
+        );
+        const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+        const bridge = new TestBridge({
+          preferencesController,
+          nameController,
+          messenger: {} as any,
+        });
+        bridge.init();
+        expect(bridge.shouldSyncPetname({ origin } as PetnameEntry)).toBe(
+          expectedReturn,
+        );
+      },
+    );
   });
 });
