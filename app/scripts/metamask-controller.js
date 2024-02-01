@@ -1450,6 +1450,10 @@ export default class MetamaskController extends EventEmitter {
             console.log('blockTracker.removeAllListeners', ...args),
           getLatestBlock: async () => '0x0',
         },
+        provider: {
+          send: (...args) => console.log('provider.send', ...args),
+          sendAsync: (...args) => console.log('provider.sendAsync', ...args),
+        },
         cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
@@ -1494,7 +1498,6 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        provider: {},
         enableMultichain: true,
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
