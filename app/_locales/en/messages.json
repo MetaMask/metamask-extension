@@ -983,6 +983,9 @@
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
   },
+  "copyPrivateKey": {
+    "message": "Copy private key"
+  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
