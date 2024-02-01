@@ -707,6 +707,9 @@ export const fetchTokenExchangeRates = async (
 };
 
 export const hexToText = (hex) => {
+  if (!hex) {
+    return hex;
+  }
   try {
     const stripped = stripHexPrefix(hex);
     const buff = Buffer.from(stripped, 'hex');

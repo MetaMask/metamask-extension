@@ -18,7 +18,6 @@ export const ConfirmInfoRowText = ({ text }: ConfirmInfoRowTextProps) => {
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
       style={{
-        // TODO: Box should support this
         columnGap: '8px',
       }}
     >

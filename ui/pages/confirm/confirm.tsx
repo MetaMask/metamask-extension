@@ -7,7 +7,6 @@ import { SignatureMessage } from '../../components/app/confirm/signature-message
 import { ConfirmTitle } from '../../components/app/confirm/title';
 import { Box } from '../../components/component-library';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
