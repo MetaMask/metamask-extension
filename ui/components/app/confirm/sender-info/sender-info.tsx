@@ -6,8 +6,8 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import { currentConfirmationSelector } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../selectors';
 import { Box } from '../../../component-library';
 import {
   ConfirmInfo,

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+
 import { TransactionType } from '@metamask/transaction-controller';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
-
 import SenderInfo from './sender-info';
 
 const store = configureStore({

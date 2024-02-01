@@ -1,24 +1,25 @@
 import React from 'react';
+
 import { captureException } from '@sentry/browser';
 
-import { Box } from '../../../component-library';
 import {
   BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
+import { Box } from '../../../component-library';
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowProps,
   ConfirmInfoRowAddress,
   ConfirmInfoRowAddressProps,
   ConfirmInfoRowDivider,
+  ConfirmInfoRowProps,
+  ConfirmInfoRowUrl,
+  ConfirmInfoRowUrlProps,
   ConfirmInfoRowValueDouble,
   ConfirmInfoRowValueDoubleProps,
   ConfirmInfoRowVariant,
-  ConfirmInfoRowUrlProps,
-  ConfirmInfoRowUrl,
 } from './row';
 
 export enum ConfirmInfoRowType {
