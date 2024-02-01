@@ -55,10 +55,9 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           data-testid="account-details-key"
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
+          onClick={() => setShowDisableSelectWarn(true)}
         >
-          <span onClick={() => setShowDisableSelectWarn(true)}>
-            <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
-          </span>
+          <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
         </Text>
         <ButtonIcon
           onClick={() =>
