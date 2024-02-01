@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 
@@ -50,48 +50,13 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 import Confirm from '../confirm/confirm';
 ///: END:ONLY_INCLUDE_IF
+import usePolling from '../../hooks/usePolling';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
-
-const usePolling = (
-  callback,
-  startPollingByNetworkClientId,
-  stopPollingByPollingToken,
-  networkClientId,
-  options = {},
-) => {
-  const pollTokenRef = useRef(null);
-  useEffect(() => {
-    // Start polling when the component mounts
-    pollTokenRef.current = startPollingByNetworkClientId(
-      networkClientId,
-      options,
-    );
-    // eslint-disable-next-line node/callback-return
-    const cleanup = callback(pollTokenRef.current);
-    // Return a cleanup function to stop polling when the component unmounts
-    return () => {
-      if (pollTokenRef.current) {
-        stopPollingByPollingToken(pollTokenRef.current);
-        cleanup(pollTokenRef.current);
-      }
-    };
-  }, [
-    callback,
-    startPollingByNetworkClientId,
-    stopPollingByPollingToken,
-    networkClientId,
-    options,
-  ]);
-};
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
-
-  const [isMounted, setIsMounted] = useState(false);
-  const [pollingToken, setPollingToken] = useState();
-
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
 
@@ -141,15 +106,6 @@ const ConfirmTransaction = () => {
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
 
-  const _beforeUnload = useCallback(() => {
-    setIsMounted(false);
-
-    if (pollingToken) {
-      disconnectGasFeeEstimatePoller(pollingToken);
-      removePollingTokenFromAppState(pollingToken);
-    }
-  }, [pollingToken]);
-
   usePolling(
     (pt) => {
       addPollingTokenToAppState(pt);
@@ -164,20 +120,6 @@ const ConfirmTransaction = () => {
   );
 
   useEffect(() => {
-    setIsMounted(true);
-
-    // getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
-    //   if (isMounted) {
-    //     setPollingToken(_pollingToken);
-    //     addPollingTokenToAppState(_pollingToken);
-    //   } else {
-    //     disconnectGasFeeEstimatePoller(_pollingToken);
-    //     removePollingTokenFromAppState(_pollingToken);
-    //   }
-    // });
-
-    window.addEventListener('beforeunload', _beforeUnload);
-
     if (!totalUnapproved && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
@@ -192,11 +134,6 @@ const ConfirmTransaction = () => {
         dispatch(setTransactionToConfirm(txId));
       }
     }
-
-    return () => {
-      _beforeUnload();
-      window.removeEventListener('beforeunload', _beforeUnload);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
