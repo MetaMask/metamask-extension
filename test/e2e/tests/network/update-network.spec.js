@@ -151,7 +151,6 @@ describe('Update Network:', function () {
           true,
           'Information symbol did not appear for chain id',
         );
-        // validate the text that appears
       },
     );
   });
