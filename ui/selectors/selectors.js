@@ -350,22 +350,29 @@ export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
-export function getInternalAccountsSortedByKeyring(state) {
-  const accounts = getInternalAccounts(state);
+export const getInternalAccountsSortedByKeyring = createSelector(
+  getMetaMaskKeyrings,
+  getMetaMaskAccounts,
+  (keyrings, accounts) => {
+    // keep existing keyring order
+    const keyringOrder = keyrings.map(({ type }) => type);
 
-  return accounts.sort((previousAccount, currentAccount) => {
-    // sort accounts by keyring type in alphabetical order
-    const previousKeyringType = previousAccount.metadata.keyring.type;
-    const currentKeyringType = currentAccount.metadata.keyring.type;
-    if (previousKeyringType < currentKeyringType) {
-      return -1;
-    }
-    if (previousKeyringType > currentKeyringType) {
-      return 1;
-    }
-    return 0;
-  });
-}
+    // sort accounts based on this order
+    return Object.values(accounts).sort((accountA, accountB) => {
+      const keyringA = accountA.metadata.keyring.type;
+      const keyringB = accountB.metadata.keyring.type;
+
+      const indexA = keyringOrder.indexOf(keyringA);
+      const indexB = keyringOrder.indexOf(keyringB);
+
+      if (indexA === indexB) {
+        return accountA.metadata.name.localeCompare(accountB.metadata.name);
+      }
+
+      return indexA - indexB;
+    });
+  },
+);
 
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;

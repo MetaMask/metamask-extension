@@ -1066,29 +1066,7 @@ describe('Selectors', () => {
         pinned: true,
         hidden: false,
       },
-      {
-        id: '694225f4-d30b-4e77-a900-c8bbce735b42',
-        metadata: {
-          name: 'Test Account 4',
-          keyring: {
-            type: 'Custody test',
-          },
-        },
-        options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
-        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-        balance: '0x0',
-        pinned: false,
-        hidden: false,
-      },
+
       {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -1131,6 +1109,29 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        balance: '0x0',
+        pinned: false,
+        hidden: false,
+      },
+      {
+        id: '694225f4-d30b-4e77-a900-c8bbce735b42',
+        metadata: {
+          name: 'Test Account 4',
+          keyring: {
+            type: 'Custody test',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
         hidden: false,
