@@ -128,19 +128,13 @@ export function RecipientWithAddress({
     );
   }
 
-  const displayName = petnamesEnabled ? (
-    <Name
-      value={checksummedRecipientAddress}
-      type={NameType.ETHEREUM_ADDRESS}
-    />
-  ) : (
+  const displayName =
     (recipientName ||
       recipientNickname ||
       recipientMetadataName ||
       recipientEns ||
       shortenAddress(checksummedRecipientAddress)) ??
-    (!addressOnly && t('newContract'))
-  );
+    (!addressOnly && t('newContract'));
 
   return (
     <>
@@ -158,9 +152,11 @@ export function RecipientWithAddress({
           }
         }}
       >
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksummedRecipientAddress} diameter={24} />
-        </div>
+        {!petnamesEnabled && (
+          <div className="sender-to-recipient__sender-icon">
+            <Identicon address={checksummedRecipientAddress} diameter={24} />
+          </div>
+        )}
         <Tooltip
           position="bottom"
           disabled={!recipientName}
@@ -169,12 +165,19 @@ export function RecipientWithAddress({
           containerClassName="sender-to-recipient__tooltip-container"
           onHidden={() => setAddressCopied(false)}
         >
-          <div
-            className="sender-to-recipient__name"
-            data-testid="sender-to-recipient__name"
-          >
-            {displayName}
-          </div>
+          {petnamesEnabled ? (
+            <Name
+              value={checksummedRecipientAddress}
+              type={NameType.ETHEREUM_ADDRESS}
+            />
+          ) : (
+            <div
+              className="sender-to-recipient__name"
+              data-testid="sender-to-recipient__name"
+            >
+              {displayName}
+            </div>
+          )}
         </Tooltip>
       </div>
       {showNicknamePopovers && !petnamesEnabled ? (
