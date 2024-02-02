@@ -182,7 +182,7 @@ export const UI_NOTIFICATIONS = {
     id: Number(NOTIFICATION_PETNAMES),
     date: null,
     image: {
-      src: 'images/introducing-petnames.png',
+      src: 'images/petnames-whatsnew-banner.svg',
       width: '100%',
     },
   },
