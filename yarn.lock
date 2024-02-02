@@ -8311,15 +8311,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/autoprefixer@npm:^10.2.0":
-  version: 10.2.0
-  resolution: "@types/autoprefixer@npm:10.2.0"
-  dependencies:
-    autoprefixer: "npm:*"
-  checksum: 74d301d170f9f5d6ab113d38defaebf3aeddfb5ac25b3cb71485e08fc504e271a9544aee9dd74a0057a7904ae072e33d4fffb08aa80c165eaee120555eb98e47
-  languageName: node
-  linkType: hard
-
 "@types/babel-core@npm:*":
   version: 6.25.7
   resolution: "@types/babel-core@npm:6.25.7"
@@ -11178,7 +11169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:*, autoprefixer@npm:^10.2.6, autoprefixer@npm:^10.4.16":
+"autoprefixer@npm:^10.2.6, autoprefixer@npm:^10.4.16":
   version: 10.4.16
   resolution: "autoprefixer@npm:10.4.16"
   dependencies:
@@ -24093,7 +24084,6 @@ __metadata:
     "@testing-library/user-event": "npm:^14.4.3"
     "@trezor/connect-web": "npm:9.0.11"
     "@tsconfig/node16": "npm:^1.0.3"
-    "@types/autoprefixer": "npm:^10.2.0"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
     "@types/currency-formatter": "npm:^1.5.1"
