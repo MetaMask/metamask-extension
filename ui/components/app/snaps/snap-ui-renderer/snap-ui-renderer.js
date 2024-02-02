@@ -1,114 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
-import { useSelector } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { debounce } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  OverflowWrap,
-  TextVariant,
-  BorderColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Box from '../../../ui/box';
+
 import { getSnapName } from '../../../../helpers/utils/util';
-import { getTargetSubjectMetadata } from '../../../../selectors';
-import { Text } from '../../../component-library';
+import { getInterface, getTargetSubjectMetadata } from '../../../../selectors';
+import { Box, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-
-export const UI_MAPPING = {
-  panel: (props, elementKey) => ({
-    element: 'Box',
-    children: props.children.map((element) =>
-      // eslint-disable-next-line no-use-before-define
-      mapToTemplate(element, elementKey),
-    ),
-    props: {
-      display: DISPLAY.FLEX,
-      flexDirection: FLEX_DIRECTION.COLUMN,
-      className: 'snap-ui-renderer__panel',
-      color: TextColor.textDefault,
-    },
-  }),
-  heading: (props) => ({
-    element: 'Text',
-    children: props.value,
-    props: {
-      variant: TextVariant.headingSm,
-      overflowWrap: OverflowWrap.Anywhere,
-      marginTop: 1,
-      marginBottom: 1,
-    },
-  }),
-  text: (props) => ({
-    element: 'SnapUIMarkdown',
-    children: props.value,
-    props: {
-      markdown: props.markdown,
-    },
-  }),
-  spinner: () => ({
-    element: 'Spinner',
-    props: {
-      className: 'snap-ui-renderer__spinner',
-    },
-  }),
-  divider: () => ({
-    element: 'Box',
-    props: {
-      className: 'snap-ui-renderer__divider',
-      backgroundColor: BorderColor.borderDefault,
-      marginTop: 1,
-      marginBottom: 1,
-    },
-  }),
-  copyable: (props) => ({
-    element: 'Copyable',
-    props: {
-      text: props.value,
-      sensitive: props.sensitive,
-      marginTop: 1,
-      marginBottom: 1,
-    },
-  }),
-  image: (props) => ({
-    element: 'SnapUIImage',
-    props: {
-      value: props.value,
-    },
-  }),
-  row: (props, elementKey) => ({
-    element: 'ConfirmInfoRow',
-    // eslint-disable-next-line no-use-before-define
-    children: [mapToTemplate(props.value, elementKey)],
-    props: {
-      label: props.label,
-      variant: props.variant,
-      style: {
-        // We do this to cause an overhang with certain confirmation row variants
-        marginLeft: '-8px',
-        marginRight: '-8px',
-      },
-    },
-  }),
-  address: (props) => ({
-    element: 'ConfirmInfoRowAddress',
-    props: {
-      address: props.value,
-    },
-  }),
-};
+import {
+  deleteInterface,
+  handleSnapRequest,
+  updateInterfaceState,
+} from '../../../../store/actions';
+import { COMPONENT_MAPPING } from './components';
 
 // TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.
-export const mapToTemplate = (data, elementKeyIndex) => {
-  const { type } = data;
-  elementKeyIndex.value += 1;
-  const indexKey = `snap_ui_element_${type}__${elementKeyIndex.value}`;
-  const mapped = UI_MAPPING[type](data, elementKeyIndex);
+export const mapToTemplate = (params) => {
+  const { type } = params.element;
+  params.elementKeyIndex.value += 1;
+  const indexKey = `snap_ui_element_${type}__${params.elementKeyIndex.value}`;
+  const mapped = COMPONENT_MAPPING[type](params);
   return { ...mapped, key: indexKey };
 };
 
@@ -119,10 +37,11 @@ export const SnapUIRenderer = ({
   isCollapsable = false,
   isCollapsed = false,
   isLoading = false,
-  data,
   onClick,
   boxProps,
+  interfaceId,
 }) => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -130,7 +49,73 @@ export const SnapUIRenderer = ({
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  if (isLoading) {
+  const interfaceData = useSelector((state) =>
+    getInterface(state, interfaceId),
+  );
+
+  const [internalState, setInternalState] = useState(
+    interfaceData?.interfaceState ?? {},
+  );
+
+  // We delete the interface on unmount because it means the UI has been unloaded.
+  useEffect(() => {
+    return () =>
+      interfaceId && dispatch(dispatch(deleteInterface(interfaceId)));
+  }, []);
+
+  const snapRequestDebounced = debounce(
+    (params) =>
+      handleSnapRequest({
+        snapId,
+        origin: '',
+        handler: 'onUserInput',
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: params.value
+              ? {
+                  type: params.eventType,
+                  name: params.componentName,
+                  value: params.value,
+                }
+              : { type: params.eventType, name: params.componentName },
+            id: interfaceId,
+          },
+        },
+      }),
+    200,
+  );
+
+  const updateStateDebounced = debounce(
+    (state) => dispatch(updateInterfaceState(interfaceId, state)),
+    200,
+  );
+
+  const handleEvent = ({ eventType, componentName, parentForm, value }) => {
+    if (eventType) {
+      updateStateDebounced.flush();
+
+      snapRequestDebounced({ value, eventType, componentName });
+    }
+
+    if (!eventType) {
+      const state = parentForm
+        ? {
+            ...internalState,
+            [parentForm]: {
+              ...internalState[parentForm],
+              [componentName]: value,
+            },
+          }
+        : { ...internalState, [componentName]: value };
+
+      setInternalState(state);
+      updateStateDebounced(state);
+    }
+  };
+
+  if (isLoading || !interfaceData) {
     return (
       <SnapDelineator
         snapName={snapName}
@@ -144,7 +129,7 @@ export const SnapUIRenderer = ({
     );
   }
 
-  if (!isComponent(data)) {
+  if (!isComponent(interfaceData.content)) {
     return (
       <SnapDelineator
         isCollapsable={isCollapsable}
@@ -163,7 +148,13 @@ export const SnapUIRenderer = ({
   }
 
   const elementKeyIndex = { value: 0 };
-  const sections = mapToTemplate(data, elementKeyIndex);
+  const sections = mapToTemplate({
+    element: interfaceData.content,
+    elementKeyIndex,
+    snapId,
+    state: internalState,
+    handleEvent,
+  });
 
   return (
     <SnapDelineator
@@ -184,10 +175,10 @@ export const SnapUIRenderer = ({
 SnapUIRenderer.propTypes = {
   snapId: PropTypes.string,
   delineatorType: PropTypes.string,
-  data: PropTypes.object,
   isCollapsable: PropTypes.bool,
   isCollapsed: PropTypes.bool,
   isLoading: PropTypes.bool,
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
+  interfaceId: PropTypes.string,
 };
