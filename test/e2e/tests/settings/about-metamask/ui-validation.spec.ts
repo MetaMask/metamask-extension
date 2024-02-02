@@ -9,7 +9,7 @@ import {
 import { Driver } from '../../../webdriver/driver';
 
 const selectors = {
-  accountOptionsMenu: '[data-testid="account-options-menu-button"]',
+  accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   settingsDiv: { text: 'Settings', tag: 'div' },
   aboutDiv: { text: 'About', tag: 'div' },
   metaMaskLabelText: { text: 'MetaMask Version', tag: 'div' },
@@ -24,7 +24,7 @@ const selectors = {
 };
 
 async function switchToAboutView(driver: Driver) {
-  await driver.clickElement(selectors.accountOptionsMenu);
+  await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsDiv);
   await driver.clickElement(selectors.aboutDiv);
 }
