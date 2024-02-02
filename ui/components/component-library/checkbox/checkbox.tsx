@@ -51,6 +51,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
         className={classnames('mm-checkbox', className, {
           'mm-checkbox--disabled': Boolean(isDisabled),
         })}
+        as="label"
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
         ref={ref}
