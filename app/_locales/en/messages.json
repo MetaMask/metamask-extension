@@ -2540,7 +2540,7 @@
     "description": "Title of the modal created by the name component when value is saved."
   },
   "nameSetPlaceholder": {
-    "message": "Set a nickname...",
+    "message": "Pick something descriptive",
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {

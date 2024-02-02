@@ -339,7 +339,7 @@ export default function NameDetails({
             width={BlockSize.Full}
             onClick={handleSaveClick}
           >
-            {hasSavedPetname ? t('ok') : t('save')}
+            {t('save')}
           </Button>
         </ModalContent>
       </Modal>
