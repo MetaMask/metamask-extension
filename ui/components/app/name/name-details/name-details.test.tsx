@@ -86,11 +86,10 @@ async function saveName(
   component: ReturnType<typeof renderWithProvider>,
   sourceId: string | null,
   name: string | null,
-  hasName: boolean,
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Set a nickname...');
-  const saveButton = getByText(hasName ? 'Ok' : 'Save', { exact: false });
+  const nameInput = getByPlaceholderText('Pick something descriptive');
+  const saveButton = getByText('Save');
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -163,7 +162,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Set a nickname...');
+    const nameInput = getByPlaceholderText('Pick something descriptive');
 
     await act(async () => {
       fireEvent.click(nameInput);
@@ -182,7 +181,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, null, SAVED_NAME_MOCK, false);
+    await saveName(component, null, SAVED_NAME_MOCK);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -204,7 +203,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, SOURCE_ID_MOCK, null, false);
+    await saveName(component, SOURCE_ID_MOCK, null);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -226,7 +225,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, null, '', true);
+    await saveName(component, null, '');
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -248,7 +247,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, null, SAVED_NAME_2_MOCK, true);
+    await saveName(component, null, SAVED_NAME_2_MOCK);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -353,7 +352,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveName(component, SOURCE_ID_MOCK, null, false);
+      await saveName(component, SOURCE_ID_MOCK, null);
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameCreated,
@@ -380,7 +379,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveName(component, SOURCE_ID_2_MOCK, null, true);
+      await saveName(component, SOURCE_ID_2_MOCK, null);
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameUpdated,
@@ -408,7 +407,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveName(component, null, '', true);
+      await saveName(component, null, '');
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameDeleted,

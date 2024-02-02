@@ -335,7 +335,7 @@ export default function NameDetails({
           </Label>
           <Button
             variant={ButtonVariant.Primary}
-            startIconName={hasSavedPetname ? undefined : IconName.Save}
+            startIconName={IconName.Save}
             width={BlockSize.Full}
             onClick={handleSaveClick}
           >

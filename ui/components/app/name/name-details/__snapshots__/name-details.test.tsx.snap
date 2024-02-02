@@ -189,7 +189,7 @@ exports[`NameDetails renders proposed names 1`] = `
                       autocomplete="off"
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
-                      placeholder="Set a nickname..."
+                      placeholder="Pick something descriptive"
                       type="text"
                       value="TestName"
                     />
@@ -245,7 +245,11 @@ exports[`NameDetails renders proposed names 1`] = `
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
-            Ok
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/save.svg');"
+            />
+            Save
           </button>
         </section>
       </div>
@@ -408,7 +412,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                       autocomplete="off"
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
-                      placeholder="Set a nickname..."
+                      placeholder="Pick something descriptive"
                       type="text"
                       value=""
                     />
@@ -636,7 +640,7 @@ exports[`NameDetails renders with saved name 1`] = `
                       autocomplete="off"
                       class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                       focused="true"
-                      placeholder="Set a nickname..."
+                      placeholder="Pick something descriptive"
                       type="text"
                       value="TestName"
                     />
@@ -657,7 +661,11 @@ exports[`NameDetails renders with saved name 1`] = `
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
-            Ok
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/save.svg');"
+            />
+            Save
           </button>
         </section>
       </div>
