@@ -19,7 +19,7 @@ const mockPersonalSign = {
 };
 
 describe('SenderInfo', () => {
-  it('should render origin for personal sign request', () => {
+  it('renders origin for personal sign request', () => {
     const mockState = {
       confirm: {
         currentConfirmation: mockPersonalSign,
