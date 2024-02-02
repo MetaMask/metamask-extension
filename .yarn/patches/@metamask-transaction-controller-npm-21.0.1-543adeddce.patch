@@ -1,0 +1,1360 @@
+diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
+index 470ed9065fa18ab5ce5b0c5fb3d3101faa6263d1..c9400c196854c82d20c33d2b802027ac833698fc 100644
+--- a/dist/TransactionController.d.ts
++++ b/dist/TransactionController.d.ts
+@@ -103,6 +103,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+     private readonly registry;
+     private readonly provider;
+     private readonly mutex;
++    private readonly gasFeeFlows;
+     private readonly getSavedGasFees;
+     private readonly getNetworkState;
+     private readonly getCurrentAccountEIP1559Compatibility;
+@@ -117,6 +118,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+     private readonly pendingTransactionTracker;
+     private readonly cancelMultiplier;
+     private readonly speedUpMultiplier;
++    private readonly signAbortCallbacks;
+     private readonly afterSign;
+     private readonly beforeApproveOnInit;
+     private readonly beforeCheckPendingTransaction;
+@@ -478,6 +480,12 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+      * Removes unapproved transactions from state.
+      */
+     clearUnapprovedTransactions(): void;
++    /**
++     * Stop the signing process for a specific transaction.
++     * Throws an error causing the transaction status to be set to failed.
++     * @param transactionId - The ID of the transaction to stop signing.
++     */
++    abortTransactionSigning(transactionId: string): void;
+     private addMetadata;
+     private updateGasProperties;
+     private getCurrentChainTransactionsByStatus;
+@@ -596,6 +604,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+     private getNonceTrackerTransactions;
+     private onConfirmedTransaction;
+     private updatePostBalance;
++    private getGasFeeFlows;
+ }
+ export {};
+ //# sourceMappingURL=TransactionController.d.ts.map
+\ No newline at end of file
+diff --git a/dist/TransactionController.js b/dist/TransactionController.js
+index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799ded4055f7 100644
+--- a/dist/TransactionController.js
++++ b/dist/TransactionController.js
+@@ -26,7 +26,11 @@ const events_1 = require("events");
+ const lodash_1 = require("lodash");
+ const nonce_tracker_1 = require("nonce-tracker");
+ const uuid_1 = require("uuid");
++const DefaultGasFeeFlow_1 = require("./gas-flows/DefaultGasFeeFlow");
++const LineaGasFeeFlow_1 = require("./gas-flows/LineaGasFeeFlow");
++const TestGasFeeFlow_1 = require("./gas-flows/TestGasFeeFlow");
+ const EtherscanRemoteTransactionSource_1 = require("./helpers/EtherscanRemoteTransactionSource");
++const GasFeePoller_1 = require("./helpers/GasFeePoller");
+ const IncomingTransactionHelper_1 = require("./helpers/IncomingTransactionHelper");
+ const PendingTransactionTracker_1 = require("./helpers/PendingTransactionTracker");
+ const logger_1 = require("./logger");
+@@ -100,6 +104,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         super(config, state);
+         this.inProcessOfSigning = new Set();
+         this.mutex = new async_mutex_1.Mutex();
++        this.signAbortCallbacks = new Map();
+         /**
+          * EventEmitter instance used to listen to specific transactional events
+          */
+@@ -191,6 +196,18 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             },
+         });
+         this.addPendingTransactionTrackerListeners();
++        this.gasFeeFlows = this.getGasFeeFlows();
++        const gasFeePoller = new GasFeePoller_1.GasFeePoller({
++            gasFeeFlows: this.gasFeeFlows,
++            getEthQuery: () => this.ethQuery,
++            getGasFeeControllerEstimates: this.getGasFeeEstimates,
++            getProviderConfig: () => this.getNetworkState().providerConfig,
++            getTransactions: () => this.state.transactions,
++            onStateChange: (listener) => {
++                this.subscribe(listener);
++            },
++        });
++        gasFeePoller.hub.on('transaction-updated', this.updateTransaction.bind(this));
+         onNetworkStateChange(() => {
+             (0, logger_1.projectLogger)('Detected network change', this.getChainId());
+             this.onBootCleanup();
+@@ -1034,6 +1051,23 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         const transactions = this.state.transactions.filter(({ status }) => status !== types_1.TransactionStatus.unapproved);
+         this.update({ transactions: this.trimTransactionsForState(transactions) });
+     }
++    /**
++     * Stop the signing process for a specific transaction.
++     * Throws an error causing the transaction status to be set to failed.
++     * @param transactionId - The ID of the transaction to stop signing.
++     */
++    abortTransactionSigning(transactionId) {
++        const transactionMeta = this.getTransaction(transactionId);
++        if (!transactionMeta) {
++            throw new Error(`Cannot abort signing as no transaction metadata found`);
++        }
++        const abortCallback = this.signAbortCallbacks.get(transactionId);
++        if (!abortCallback) {
++            throw new Error(`Cannot abort signing as transaction is not waiting for signing`);
++        }
++        abortCallback();
++        this.signAbortCallbacks.delete(transactionId);
++    }
+     addMetadata(transactionMeta) {
+         const { transactions } = this.state;
+         transactions.push(transactionMeta);
+@@ -1052,8 +1086,9 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             yield (0, gas_fees_1.updateGasFees)({
+                 eip1559: isEIP1559Compatible,
+                 ethQuery: this.ethQuery,
++                gasFeeFlows: this.gasFeeFlows,
++                getGasFeeEstimates: this.getGasFeeEstimates,
+                 getSavedGasFees: this.getSavedGasFees.bind(this, chainId),
+-                getGasFeeEstimates: this.getGasFeeEstimates.bind(this),
+                 txMeta: transactionMeta,
+             });
+         });
+@@ -1547,12 +1582,16 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         this.pendingTransactionTracker.hub.on('transaction-updated', this.updateTransaction.bind(this));
+     }
+     signTransaction(transactionMeta, txParams) {
+-        var _a;
+         return __awaiter(this, void 0, void 0, function* () {
+             (0, logger_1.projectLogger)('Signing transaction', txParams);
+             const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
+             this.inProcessOfSigning.add(transactionMeta.id);
+-            const signedTx = yield ((_a = this.sign) === null || _a === void 0 ? void 0 : _a.call(this, unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)));
++            const signedTx = yield new Promise((resolve, reject) => {
++                var _a;
++                (_a = this.sign) === null || _a === void 0 ? void 0 : _a.call(this, unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)).then(resolve, reject);
++                this.signAbortCallbacks.set(transactionMeta.id, () => reject(new Error('Signing aborted by user')));
++            });
++            this.signAbortCallbacks.delete(transactionMeta.id);
+             if (!signedTx) {
+                 (0, logger_1.projectLogger)('Skipping signed status as no signed transaction');
+                 return undefined;
+@@ -1616,6 +1655,13 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             }
+         });
+     }
++    getGasFeeFlows() {
++        return [
++            new LineaGasFeeFlow_1.LineaGasFeeFlow(),
++            new TestGasFeeFlow_1.TestGasFeeFlow(),
++            new DefaultGasFeeFlow_1.DefaultGasFeeFlow(),
++        ];
++    }
+ }
+ exports.TransactionController = TransactionController;
+ //# sourceMappingURL=TransactionController.js.map
+\ No newline at end of file
+diff --git a/dist/gas/AbstractGasFlow.d.ts b/dist/gas/AbstractGasFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..fa097a86860782ba2db396bce78d55437a941b4c
+--- /dev/null
++++ b/dist/gas/AbstractGasFlow.d.ts
+@@ -0,0 +1,19 @@
++import type EthQuery from '@metamask/eth-query';
++import type { ProviderConfig } from '@metamask/network-controller';
++import type { TransactionMeta } from '../types';
++export declare type GasFlowRequest = {
++    eip1559: boolean;
++    ethQuery: EthQuery;
++    providerConfig: ProviderConfig;
++    txMeta: TransactionMeta;
++};
++export declare type GasFlowResponse = {
++    gas: string;
++    maxFeePerGas?: string;
++    maxPriorityFeePerGas?: string;
++    gasPrice?: string;
++};
++export declare abstract class AbstractGasFlow {
++    abstract getSuggestedGas(request: GasFlowRequest): Promise<GasFlowResponse>;
++}
++//# sourceMappingURL=AbstractGasFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas/AbstractGasFlow.js b/dist/gas/AbstractGasFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..3f99c476c84ea41446f50f6c07ec53e5135a862a
+--- /dev/null
++++ b/dist/gas/AbstractGasFlow.js
+@@ -0,0 +1,7 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.AbstractGasFlow = void 0;
++class AbstractGasFlow {
++}
++exports.AbstractGasFlow = AbstractGasFlow;
++//# sourceMappingURL=AbstractGasFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas/flows/DefaultGasFlow.d.ts b/dist/gas/flows/DefaultGasFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..0fc8fe0d52a88f348702761034ef0c3832ef84f0
+--- /dev/null
++++ b/dist/gas/flows/DefaultGasFlow.d.ts
+@@ -0,0 +1,15 @@
++/// <reference types="debug" />
++import { type GasFeeState } from '@metamask/gas-fee-controller';
++import type { GasFlowRequest, GasFlowResponse } from '../AbstractGasFlow';
++import { AbstractGasFlow } from '../AbstractGasFlow';
++export declare const log: import("debug").Debugger;
++export declare const FIXED_GAS = "0x5208";
++export declare const DEFAULT_GAS_MULTIPLIER = 1.5;
++export declare class DefaultGasFlow extends AbstractGasFlow {
++    #private;
++    constructor({ getGasFeeControllerEstimates, }: {
++        getGasFeeControllerEstimates: () => Promise<GasFeeState>;
++    });
++    getSuggestedGas(request: GasFlowRequest): Promise<GasFlowResponse>;
++}
++//# sourceMappingURL=DefaultGasFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas/flows/DefaultGasFlow.js b/dist/gas/flows/DefaultGasFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..77ac8c54ca1b0cb988c080e83d0b5725264d5adf
+--- /dev/null
++++ b/dist/gas/flows/DefaultGasFlow.js
+@@ -0,0 +1,176 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var _DefaultGasFlow_instances, _DefaultGasFlow_getGasFeeControllerEstimates, _DefaultGasFlow_getGas, _DefaultGasFlow_getGasFees, _DefaultGasFlow_estimateGas, _DefaultGasFlow_addGasBuffer, _DefaultGasFlow_requiresFixedGas, _DefaultGasFlow_getCode, _DefaultGasFlow_getLatestBlock, _DefaultGasFlow_gweiDecimalToWeiHex;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.DefaultGasFlow = exports.DEFAULT_GAS_MULTIPLIER = exports.FIXED_GAS = exports.log = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
++const ethereumjs_util_1 = require("ethereumjs-util");
++const constants_1 = require("../../constants");
++const logger_1 = require("../../logger");
++const AbstractGasFlow_1 = require("../AbstractGasFlow");
++exports.log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'gas-flow-default');
++exports.FIXED_GAS = '0x5208';
++exports.DEFAULT_GAS_MULTIPLIER = 1.5;
++class DefaultGasFlow extends AbstractGasFlow_1.AbstractGasFlow {
++    constructor({ getGasFeeControllerEstimates, }) {
++        super();
++        _DefaultGasFlow_instances.add(this);
++        _DefaultGasFlow_getGasFeeControllerEstimates.set(this, void 0);
++        __classPrivateFieldSet(this, _DefaultGasFlow_getGasFeeControllerEstimates, getGasFeeControllerEstimates, "f");
++    }
++    getSuggestedGas(request) {
++        return __awaiter(this, void 0, void 0, function* () {
++            const gas = yield __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_getGas).call(this, request);
++            const suggestedGasFees = yield __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_getGasFees).call(this, request);
++            return Object.assign({ gas }, suggestedGasFees);
++        });
++    }
++}
++exports.DefaultGasFlow = DefaultGasFlow;
++_DefaultGasFlow_getGasFeeControllerEstimates = new WeakMap(), _DefaultGasFlow_instances = new WeakSet(), _DefaultGasFlow_getGas = function _DefaultGasFlow_getGas(request) {
++    var _a;
++    return __awaiter(this, void 0, void 0, function* () {
++        const { txMeta, providerConfig } = request;
++        if (yield __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_requiresFixedGas).call(this, request)) {
++            (0, exports.log)('Using fixed value', exports.FIXED_GAS);
++            return exports.FIXED_GAS;
++        }
++        const { blockGasLimit, estimatedGas } = yield __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_estimateGas).call(this, txMeta.txParams, request.ethQuery);
++        if (providerConfig.type === controller_utils_1.NetworkType.rpc) {
++            (0, exports.log)('Using original estimate as custom network');
++            return estimatedGas;
++        }
++        const bufferMultiplier = (_a = constants_1.GAS_BUFFER_CHAIN_OVERRIDES[providerConfig.chainId]) !== null && _a !== void 0 ? _a : exports.DEFAULT_GAS_MULTIPLIER;
++        const bufferedGas = __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_addGasBuffer).call(this, estimatedGas, blockGasLimit, bufferMultiplier);
++        return bufferedGas;
++    });
++}, _DefaultGasFlow_getGasFees = function _DefaultGasFlow_getGasFees(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { eip1559, ethQuery } = request;
++        try {
++            const { gasFeeEstimates, gasEstimateType } = yield __classPrivateFieldGet(this, _DefaultGasFlow_getGasFeeControllerEstimates, "f").call(this);
++            if (eip1559 && gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
++                const { medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {}, } = gasFeeEstimates;
++                if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
++                    return {
++                        maxFeePerGas: __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_gweiDecimalToWeiHex).call(this, suggestedMaxFeePerGas),
++                        maxPriorityFeePerGas: __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_gweiDecimalToWeiHex).call(this, suggestedMaxPriorityFeePerGas),
++                    };
++                }
++            }
++            if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.LEGACY) {
++                // The LEGACY type includes low, medium and high estimates of
++                // gas price values.
++                return {
++                    gasPrice: __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_gweiDecimalToWeiHex).call(this, gasFeeEstimates.medium),
++                };
++            }
++            if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
++                // The ETH_GASPRICE type just includes a single gas price property,
++                // which we can assume was retrieved from eth_gasPrice
++                return {
++                    gasPrice: __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_gweiDecimalToWeiHex).call(this, gasFeeEstimates.gasPrice),
++                };
++            }
++        }
++        catch (error) {
++            (0, exports.log)('Failed to get suggested gas fees', error);
++        }
++        const gasPriceDecimal = (yield (0, controller_utils_1.query)(ethQuery, 'gasPrice'));
++        const gasPrice = gasPriceDecimal
++            ? (0, ethereumjs_util_1.addHexPrefix)(gasPriceDecimal.toString(16))
++            : undefined;
++        return { gasPrice };
++    });
++}, _DefaultGasFlow_estimateGas = function _DefaultGasFlow_estimateGas(txParams, ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const request = Object.assign({}, txParams);
++        const { data, value } = request;
++        const { gasLimit: gasLimitHex, number: blockNumber } = yield __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_getLatestBlock).call(this, ethQuery);
++        const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimitHex);
++        request.data = data ? (0, ethereumjs_util_1.addHexPrefix)(data) : data;
++        request.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
++        request.value = value || '0x0';
++        let estimatedGas = request.gas;
++        let simulationFails;
++        try {
++            estimatedGas = yield (0, controller_utils_1.query)(ethQuery, 'estimateGas', [request]);
++            // TODO: Replace `any` with type
++            // eslint-disable-next-line @typescript-eslint/no-explicit-any
++        }
++        catch (error) {
++            simulationFails = {
++                reason: error.message,
++                errorKey: error.errorKey,
++                debug: {
++                    blockNumber,
++                    blockGasLimit: gasLimitHex,
++                },
++            };
++            (0, exports.log)('Estimation failed', Object.assign(Object.assign({}, simulationFails), { fallback: estimatedGas }));
++        }
++        return {
++            blockGasLimit: gasLimitHex,
++            estimatedGas,
++            simulationFails,
++        };
++    });
++}, _DefaultGasFlow_addGasBuffer = function _DefaultGasFlow_addGasBuffer(estimatedGas, blockGasLimit, multiplier) {
++    const estimatedGasBN = (0, controller_utils_1.hexToBN)(estimatedGas);
++    const maxGasBN = (0, controller_utils_1.hexToBN)(blockGasLimit).muln(0.9);
++    const paddedGasBN = estimatedGasBN.muln(multiplier);
++    if (estimatedGasBN.gt(maxGasBN)) {
++        const estimatedGasHex = (0, ethereumjs_util_1.addHexPrefix)(estimatedGas);
++        (0, exports.log)('Using estimated value', estimatedGasHex);
++        return estimatedGasHex;
++    }
++    if (paddedGasBN.lt(maxGasBN)) {
++        const paddedHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN));
++        (0, exports.log)('Using padded estimate', paddedHex, multiplier);
++        return paddedHex;
++    }
++    const maxHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN));
++    (0, exports.log)('Using 90% of block gas limit', maxHex);
++    return maxHex;
++}, _DefaultGasFlow_requiresFixedGas = function _DefaultGasFlow_requiresFixedGas({ ethQuery, txMeta, providerConfig, }) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
++        const { txParams: { to, data }, } = txMeta;
++        if (isCustomNetwork || !to || data) {
++            return false;
++        }
++        const code = yield __classPrivateFieldGet(this, _DefaultGasFlow_instances, "m", _DefaultGasFlow_getCode).call(this, ethQuery, to);
++        return !code || code === '0x';
++    });
++}, _DefaultGasFlow_getCode = function _DefaultGasFlow_getCode(ethQuery, address) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(ethQuery, 'getCode', [address]);
++    });
++}, _DefaultGasFlow_getLatestBlock = function _DefaultGasFlow_getLatestBlock(ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        return yield (0, controller_utils_1.query)(ethQuery, 'getBlockByNumber', ['latest', false]);
++    });
++}, _DefaultGasFlow_gweiDecimalToWeiHex = function _DefaultGasFlow_gweiDecimalToWeiHex(value) {
++    return (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(value));
++};
++//# sourceMappingURL=DefaultGasFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/AbstractGasFlow.d.ts b/dist/gas-flows/AbstractGasFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..54184779871e7e78b304135d4f70eaf4a87b2f6a
+--- /dev/null
++++ b/dist/gas-flows/AbstractGasFlow.d.ts
+@@ -0,0 +1,27 @@
++import type EthQuery from '@metamask/eth-query';
++import type { ProviderConfig } from '@metamask/network-controller';
++import type { TransactionMeta } from '../types';
++export declare type GasFlowRequest = {
++    eip1559: boolean;
++    ethQuery: EthQuery;
++    providerConfig: ProviderConfig;
++    txMeta: TransactionMeta;
++};
++export declare type GasFlowFeeLevelResponse = {
++    maxFeePerGas?: string;
++    maxPriorityFeePerGas?: string;
++    gasPrice?: string;
++};
++export declare type GasFlowResponse = {
++    gas: string;
++    gasFees: {
++        low: GasFlowFeeLevelResponse;
++        medium: GasFlowFeeLevelResponse;
++        high: GasFlowFeeLevelResponse;
++    };
++};
++export declare abstract class AbstractGasFlow {
++    abstract matchesTransaction(transactionMeta: TransactionMeta): boolean;
++    abstract getSuggestedGas(request: GasFlowRequest): Promise<GasFlowResponse>;
++}
++//# sourceMappingURL=AbstractGasFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/AbstractGasFlow.js b/dist/gas-flows/AbstractGasFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..3f99c476c84ea41446f50f6c07ec53e5135a862a
+--- /dev/null
++++ b/dist/gas-flows/AbstractGasFlow.js
+@@ -0,0 +1,7 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.AbstractGasFlow = void 0;
++class AbstractGasFlow {
++}
++exports.AbstractGasFlow = AbstractGasFlow;
++//# sourceMappingURL=AbstractGasFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/DefaultGasFeeFlow.d.ts b/dist/gas-flows/DefaultGasFeeFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..6e7aaf4641cec9aabf16a2a1767841ddc6a3a2bf
+--- /dev/null
++++ b/dist/gas-flows/DefaultGasFeeFlow.d.ts
+@@ -0,0 +1,7 @@
++import type { GasFeeFlow, GasFeeFlowRequest, GasFeeFlowResponse, TransactionMeta } from '../types';
++export declare class DefaultGasFeeFlow implements GasFeeFlow {
++    #private;
++    matchesTransaction(_transactionMeta: TransactionMeta): boolean;
++    getGasFees(request: GasFeeFlowRequest): Promise<GasFeeFlowResponse>;
++}
++//# sourceMappingURL=DefaultGasFeeFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/DefaultGasFeeFlow.js b/dist/gas-flows/DefaultGasFeeFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..458963c5e1c094ae0d2973dd1dac48b6faa9079f
+--- /dev/null
++++ b/dist/gas-flows/DefaultGasFeeFlow.js
+@@ -0,0 +1,60 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var _DefaultGasFeeFlow_instances, _DefaultGasFeeFlow_getFeeMarketGasFees, _DefaultGasFeeFlow_getLegacyGasFees, _DefaultGasFeeFlow_gweiDecimalToWeiHex;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.DefaultGasFeeFlow = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
++const utils_1 = require("@metamask/utils");
++const logger_1 = require("../logger");
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'default-gas-fee-flow');
++class DefaultGasFeeFlow {
++    constructor() {
++        _DefaultGasFeeFlow_instances.add(this);
++    }
++    matchesTransaction(_transactionMeta) {
++        return true;
++    }
++    getGasFees(request) {
++        return __awaiter(this, void 0, void 0, function* () {
++            const { getGasFeeControllerEstimates } = request;
++            const response = yield getGasFeeControllerEstimates();
++            if (response.gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
++                return __classPrivateFieldGet(this, _DefaultGasFeeFlow_instances, "m", _DefaultGasFeeFlow_getFeeMarketGasFees).call(this, response.gasFeeEstimates);
++            }
++            else if (response.gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.LEGACY) {
++                return __classPrivateFieldGet(this, _DefaultGasFeeFlow_instances, "m", _DefaultGasFeeFlow_getLegacyGasFees).call(this, response.gasFeeEstimates);
++            }
++            throw new Error('No gas fee estimates available');
++        });
++    }
++}
++exports.DefaultGasFeeFlow = DefaultGasFeeFlow;
++_DefaultGasFeeFlow_instances = new WeakSet(), _DefaultGasFeeFlow_getFeeMarketGasFees = function _DefaultGasFeeFlow_getFeeMarketGasFees(gasFeeEstimates) {
++    log('Using fee market estimates', gasFeeEstimates);
++    return ['low', 'medium', 'high'].reduce((result, level) => (Object.assign(Object.assign({}, result), { [level]: {
++            maxFeePerGas: (0, controller_utils_1.toHex)(__classPrivateFieldGet(this, _DefaultGasFeeFlow_instances, "m", _DefaultGasFeeFlow_gweiDecimalToWeiHex).call(this, gasFeeEstimates[level].suggestedMaxFeePerGas)),
++            maxPriorityFeePerGas: (0, controller_utils_1.toHex)(__classPrivateFieldGet(this, _DefaultGasFeeFlow_instances, "m", _DefaultGasFeeFlow_gweiDecimalToWeiHex).call(this, gasFeeEstimates[level].suggestedMaxPriorityFeePerGas)),
++        } })), {});
++}, _DefaultGasFeeFlow_getLegacyGasFees = function _DefaultGasFeeFlow_getLegacyGasFees(gasFeeEstimates) {
++    log('Using legacy estimates', gasFeeEstimates);
++    return ['low', 'medium', 'high'].reduce((result, level) => (Object.assign(Object.assign({}, result), { [level]: {
++            gasPrice: __classPrivateFieldGet(this, _DefaultGasFeeFlow_instances, "m", _DefaultGasFeeFlow_gweiDecimalToWeiHex).call(this, gasFeeEstimates[level]),
++        } })), {});
++}, _DefaultGasFeeFlow_gweiDecimalToWeiHex = function _DefaultGasFeeFlow_gweiDecimalToWeiHex(value) {
++    return (0, controller_utils_1.toHex)((0, controller_utils_1.gweiDecToWEIBN)(value));
++};
++//# sourceMappingURL=DefaultGasFeeFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/DefaultGasFlow.d.ts b/dist/gas-flows/DefaultGasFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..675a7b289d59d9758e473ff54741e74e9c9d7d82
+--- /dev/null
++++ b/dist/gas-flows/DefaultGasFlow.d.ts
+@@ -0,0 +1 @@
++//# sourceMappingURL=DefaultGasFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/DefaultGasFlow.js b/dist/gas-flows/DefaultGasFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..bd27989f25f3f5c38bdab936cac317dd72baf176
+--- /dev/null
++++ b/dist/gas-flows/DefaultGasFlow.js
+@@ -0,0 +1,197 @@
++"use strict";
++// import {
++//   BNToHex,
++//   NetworkType,
++//   fractionBN,
++//   gweiDecToWEIBN,
++//   hexToBN,
++//   query,
++//   toHex,
++// } from '@metamask/controller-utils';
++// import type EthQuery from '@metamask/eth-query';
++// import {
++//   GAS_ESTIMATE_TYPES,
++//   type GasFeeState,
++// } from '@metamask/gas-fee-controller';
++// import { addHexPrefix } from 'ethereumjs-util';
++// import { GAS_BUFFER_CHAIN_OVERRIDES } from '../constants';
++// import { createModuleLogger, projectLogger } from '../logger';
++// import type { TransactionMeta, TransactionParams } from '../types';
++// import type { GasFlowRequest, GasFlowResponse } from './AbstractGasFlow';
++// import { AbstractGasFlow } from './AbstractGasFlow';
++// export const log = createModuleLogger(projectLogger, 'gas-flow-default');
++// export const FIXED_GAS = '0x5208';
++// export const DEFAULT_GAS_MULTIPLIER = 1.5;
++// export class DefaultGasFlow extends AbstractGasFlow {
++//   #getGasFeeControllerEstimates: () => Promise<GasFeeState>;
++//   constructor({
++//     getGasFeeControllerEstimates,
++//   }: {
++//     getGasFeeControllerEstimates: () => Promise<GasFeeState>;
++//   }) {
++//     super();
++//     this.#getGasFeeControllerEstimates = getGasFeeControllerEstimates;
++//   }
++//   matchesTransaction(_transactionMeta: TransactionMeta): boolean {
++//     return true;
++//   }
++//   async getSuggestedGas(request: GasFlowRequest): Promise<GasFlowResponse> {
++//     const gas = await this.#getGas(request);
++//     const suggestedGasFees = await this.#getGasFees(request);
++//     return { gas, ...suggestedGasFees };
++//   }
++//   async #getGas(request: GasFlowRequest): Promise<string> {
++//     const { txMeta, providerConfig } = request;
++//     if (await this.#requiresFixedGas(request)) {
++//       log('Using fixed value', FIXED_GAS);
++//       return FIXED_GAS;
++//     }
++//     const { blockGasLimit, estimatedGas } = await this.#estimateGas(
++//       txMeta.txParams,
++//       request.ethQuery,
++//     );
++//     if (providerConfig.type === NetworkType.rpc) {
++//       log('Using original estimate as custom network');
++//       return estimatedGas;
++//     }
++//     const bufferMultiplier =
++//       GAS_BUFFER_CHAIN_OVERRIDES[
++//         providerConfig.chainId as keyof typeof GAS_BUFFER_CHAIN_OVERRIDES
++//       ] ?? DEFAULT_GAS_MULTIPLIER;
++//     const bufferedGas = this.#addGasBuffer(
++//       estimatedGas,
++//       blockGasLimit,
++//       bufferMultiplier,
++//     );
++//     return bufferedGas;
++//   }
++//   async #getGasFees(request: GasFlowRequest): Promise<{
++//     maxFeePerGas?: string | undefined;
++//     maxPriorityFeePerGas?: string | undefined;
++//     gasPrice?: string | undefined;
++//   }> {
++//     const { eip1559, ethQuery } = request;
++//     try {
++//       const { gasFeeEstimates, gasEstimateType } =
++//         await this.#getGasFeeControllerEstimates();
++//       if (eip1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
++//         const {
++//           medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {},
++//         } = gasFeeEstimates;
++//         if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
++//           return {
++//             maxFeePerGas: this.#gweiDecimalToWeiHex(suggestedMaxFeePerGas),
++//             maxPriorityFeePerGas: this.#gweiDecimalToWeiHex(
++//               suggestedMaxPriorityFeePerGas,
++//             ),
++//           };
++//         }
++//       }
++//       if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
++//         // The LEGACY type includes low, medium and high estimates of
++//         // gas price values.
++//         return {
++//           gasPrice: this.#gweiDecimalToWeiHex(gasFeeEstimates.medium),
++//         };
++//       }
++//       if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
++//         // The ETH_GASPRICE type just includes a single gas price property,
++//         // which we can assume was retrieved from eth_gasPrice
++//         return {
++//           gasPrice: this.#gweiDecimalToWeiHex(gasFeeEstimates.gasPrice),
++//         };
++//       }
++//     } catch (error) {
++//       log('Failed to get suggested gas fees', error);
++//     }
++//     const gasPriceDecimal = (await query(ethQuery, 'gasPrice')) as number;
++//     const gasPrice = gasPriceDecimal
++//       ? addHexPrefix(gasPriceDecimal.toString(16))
++//       : undefined;
++//     return { gasPrice };
++//   }
++//   async #estimateGas(txParams: TransactionParams, ethQuery: EthQuery) {
++//     const request = { ...txParams };
++//     const { data, value } = request;
++//     const { gasLimit: gasLimitHex, number: blockNumber } =
++//       await this.#getLatestBlock(ethQuery);
++//     const gasLimitBN = hexToBN(gasLimitHex);
++//     request.data = data ? addHexPrefix(data) : data;
++//     request.gas = BNToHex(fractionBN(gasLimitBN, 19, 20));
++//     request.value = value || '0x0';
++//     let estimatedGas = request.gas;
++//     let simulationFails;
++//     try {
++//       estimatedGas = await query(ethQuery, 'estimateGas', [request]);
++//       // TODO: Replace `any` with type
++//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
++//     } catch (error: any) {
++//       simulationFails = {
++//         reason: error.message,
++//         errorKey: error.errorKey,
++//         debug: {
++//           blockNumber,
++//           blockGasLimit: gasLimitHex,
++//         },
++//       };
++//       log('Estimation failed', { ...simulationFails, fallback: estimatedGas });
++//     }
++//     return {
++//       blockGasLimit: gasLimitHex,
++//       estimatedGas,
++//       simulationFails,
++//     };
++//   }
++//   #addGasBuffer(
++//     estimatedGas: string,
++//     blockGasLimit: string,
++//     multiplier: number,
++//   ) {
++//     const estimatedGasBN = hexToBN(estimatedGas);
++//     const maxGasBN = hexToBN(blockGasLimit).muln(0.9);
++//     const paddedGasBN = estimatedGasBN.muln(multiplier);
++//     if (estimatedGasBN.gt(maxGasBN)) {
++//       const estimatedGasHex = addHexPrefix(estimatedGas);
++//       log('Using estimated value', estimatedGasHex);
++//       return estimatedGasHex;
++//     }
++//     if (paddedGasBN.lt(maxGasBN)) {
++//       const paddedHex = addHexPrefix(BNToHex(paddedGasBN));
++//       log('Using padded estimate', paddedHex, multiplier);
++//       return paddedHex;
++//     }
++//     const maxHex = addHexPrefix(BNToHex(maxGasBN));
++//     log('Using 90% of block gas limit', maxHex);
++//     return maxHex;
++//   }
++//   async #requiresFixedGas({
++//     ethQuery,
++//     txMeta,
++//     providerConfig,
++//   }: GasFlowRequest): Promise<boolean> {
++//     const isCustomNetwork = providerConfig.type === NetworkType.rpc;
++//     const {
++//       txParams: { to, data },
++//     } = txMeta;
++//     if (isCustomNetwork || !to || data) {
++//       return false;
++//     }
++//     const code = await this.#getCode(ethQuery, to);
++//     return !code || code === '0x';
++//   }
++//   async #getCode(
++//     ethQuery: EthQuery,
++//     address: string,
++//   ): Promise<string | undefined> {
++//     return await query(ethQuery, 'getCode', [address]);
++//   }
++//   async #getLatestBlock(
++//     ethQuery: EthQuery,
++//   ): Promise<{ gasLimit: string; number: string }> {
++//     return await query(ethQuery, 'getBlockByNumber', ['latest', false]);
++//   }
++//   #gweiDecimalToWeiHex(value: string) {
++//     return toHex(gweiDecToWEIBN(value));
++//   }
++// }
++//# sourceMappingURL=DefaultGasFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/LineaGasFeeFlow.d.ts b/dist/gas-flows/LineaGasFeeFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..fe063d6a511923ae5220c77351fedfaefa233ace
+--- /dev/null
++++ b/dist/gas-flows/LineaGasFeeFlow.d.ts
+@@ -0,0 +1,6 @@
++import type { GasFeeFlow, GasFeeFlowRequest, GasFeeFlowResponse, TransactionMeta } from '../types';
++export declare class LineaGasFeeFlow implements GasFeeFlow {
++    matchesTransaction(transactionMeta: TransactionMeta): boolean;
++    getGasFees(request: GasFeeFlowRequest): Promise<GasFeeFlowResponse>;
++}
++//# sourceMappingURL=LineaGasFeeFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/LineaGasFeeFlow.js b/dist/gas-flows/LineaGasFeeFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..ab2d15d44609caf3041c2a68bcb22b12a7862336
+--- /dev/null
++++ b/dist/gas-flows/LineaGasFeeFlow.js
+@@ -0,0 +1,78 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.LineaGasFeeFlow = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
++const utils_1 = require("@metamask/utils");
++const logger_1 = require("../logger");
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'linea-gas-fee-flow');
++const LINEA_CHAIN_IDS = [
++    controller_utils_1.ChainId['linea-mainnet'],
++    controller_utils_1.ChainId['linea-goerli'],
++];
++const BASE_FEE_MULTIPLIERS = {
++    low: 1,
++    medium: 1.35,
++    high: 1.7,
++};
++class LineaGasFeeFlow {
++    matchesTransaction(transactionMeta) {
++        return LINEA_CHAIN_IDS.includes(transactionMeta.chainId);
++    }
++    getGasFees(request) {
++        return __awaiter(this, void 0, void 0, function* () {
++            const { ethQuery, getGasFeeControllerEstimates } = request;
++            const lineaResponse = yield (0, controller_utils_1.query)(ethQuery, 'linea_estimateGas', [
++                {
++                    from: request.transactionMeta.txParams.from,
++                    to: request.transactionMeta.txParams.to,
++                    value: request.transactionMeta.txParams.value,
++                    input: request.transactionMeta.txParams.data,
++                },
++            ]);
++            log('Got Linea response', lineaResponse);
++            const baseFeeLowDecimal = (0, controller_utils_1.hexToBN)(lineaResponse.baseFeePerGas);
++            const baseFeeMediumDecimal = baseFeeLowDecimal.muln(BASE_FEE_MULTIPLIERS.medium);
++            const baseFeeHighDecimal = baseFeeLowDecimal.muln(BASE_FEE_MULTIPLIERS.high);
++            const gasFeeEstimates = yield getGasFeeControllerEstimates();
++            log('Got estimates from gas fee controller', gasFeeEstimates);
++            if (gasFeeEstimates.gasEstimateType !== gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
++                throw new Error('No gas fee estimates available');
++            }
++            const { low, medium, high } = gasFeeEstimates.gasFeeEstimates;
++            const mediumPriorityIncrease = (0, controller_utils_1.gweiDecToWEIBN)(medium.suggestedMaxFeePerGas).sub((0, controller_utils_1.gweiDecToWEIBN)(low.suggestedMaxPriorityFeePerGas));
++            const highPriorityIncrease = (0, controller_utils_1.gweiDecToWEIBN)(high.suggestedMaxFeePerGas).sub((0, controller_utils_1.gweiDecToWEIBN)(medium.suggestedMaxPriorityFeePerGas));
++            const priorityFeeLow = (0, controller_utils_1.hexToBN)(lineaResponse.priorityFeePerGas);
++            const priorityFeeMedium = priorityFeeLow.add(mediumPriorityIncrease);
++            const priorityFeeHigh = priorityFeeMedium.add(highPriorityIncrease);
++            const maxFeeLow = baseFeeLowDecimal.add(priorityFeeLow);
++            const maxFeeMedium = baseFeeMediumDecimal.add(priorityFeeMedium);
++            const maxFeeHigh = baseFeeHighDecimal.add(priorityFeeHigh);
++            return {
++                low: {
++                    maxFeePerGas: (0, controller_utils_1.toHex)(maxFeeLow),
++                    maxPriorityFeePerGas: (0, controller_utils_1.toHex)(priorityFeeLow),
++                },
++                medium: {
++                    maxFeePerGas: (0, controller_utils_1.toHex)(maxFeeMedium),
++                    maxPriorityFeePerGas: (0, controller_utils_1.toHex)(priorityFeeMedium),
++                },
++                high: {
++                    maxFeePerGas: (0, controller_utils_1.toHex)(maxFeeHigh),
++                    maxPriorityFeePerGas: (0, controller_utils_1.toHex)(priorityFeeHigh),
++                },
++            };
++        });
++    }
++}
++exports.LineaGasFeeFlow = LineaGasFeeFlow;
++//# sourceMappingURL=LineaGasFeeFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/TestGasFeeFlow.d.ts b/dist/gas-flows/TestGasFeeFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..775672bd4ef3f3167047e28050c058a627d1255e
+--- /dev/null
++++ b/dist/gas-flows/TestGasFeeFlow.d.ts
+@@ -0,0 +1,7 @@
++import type { GasFeeFlow, GasFeeFlowRequest, GasFeeFlowResponse, TransactionMeta } from '../types';
++export declare class TestGasFeeFlow implements GasFeeFlow {
++    #private;
++    matchesTransaction(transactionMeta: TransactionMeta): boolean;
++    getGasFees(request: GasFeeFlowRequest): Promise<GasFeeFlowResponse>;
++}
++//# sourceMappingURL=TestGasFeeFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/TestGasFeeFlow.js b/dist/gas-flows/TestGasFeeFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..6b91f11f991ad3b03d97d4f27e72ef023cca0faa
+--- /dev/null
++++ b/dist/gas-flows/TestGasFeeFlow.js
+@@ -0,0 +1,56 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var _TestGasFeeFlow_increment;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.TestGasFeeFlow = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const LEVEL_MULTIPLIERS = {
++    low: 0,
++    medium: 1,
++    high: 2,
++};
++class TestGasFeeFlow {
++    constructor() {
++        _TestGasFeeFlow_increment.set(this, 0);
++    }
++    matchesTransaction(transactionMeta) {
++        return transactionMeta.chainId === controller_utils_1.ChainId.sepolia;
++    }
++    getGasFees(request) {
++        return __awaiter(this, void 0, void 0, function* () {
++            const { transactionMeta } = request;
++            __classPrivateFieldSet(this, _TestGasFeeFlow_increment, __classPrivateFieldGet(this, _TestGasFeeFlow_increment, "f") + 1, "f");
++            const gas = (0, controller_utils_1.hexToBN)(transactionMeta.txParams.gas).toNumber();
++            return ['low', 'medium', 'high'].reduce((result, level) => {
++                const maxFeePerGas = Math.floor(((__classPrivateFieldGet(this, _TestGasFeeFlow_increment, "f") + LEVEL_MULTIPLIERS[level]) * 10e10) / gas);
++                const maxPriorityFeePerGas = Math.floor(maxFeePerGas * 0.2);
++                return Object.assign(Object.assign({}, result), { [level]: {
++                        maxFeePerGas: (0, controller_utils_1.toHex)(maxFeePerGas),
++                        maxPriorityFeePerGas: (0, controller_utils_1.toHex)(maxPriorityFeePerGas),
++                    } });
++            }, {});
++        });
++    }
++}
++exports.TestGasFeeFlow = TestGasFeeFlow;
++_TestGasFeeFlow_increment = new WeakMap();
++//# sourceMappingURL=TestGasFeeFlow.js.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/TestGasFlow.d.ts b/dist/gas-flows/TestGasFlow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..28157abe1f4bfee93fc54f29a2a471f295563eab
+--- /dev/null
++++ b/dist/gas-flows/TestGasFlow.d.ts
+@@ -0,0 +1,9 @@
++import type { TransactionMeta } from '../types';
++import type { GasFlowRequest, GasFlowResponse } from './AbstractGasFlow';
++import { AbstractGasFlow } from './AbstractGasFlow';
++export declare class TestGasFlow extends AbstractGasFlow {
++    #private;
++    matchesTransaction(_transactionMeta: TransactionMeta): boolean;
++    getSuggestedGas(_request: GasFlowRequest): Promise<GasFlowResponse>;
++}
++//# sourceMappingURL=TestGasFlow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/gas-flows/TestGasFlow.js b/dist/gas-flows/TestGasFlow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..c154323971d2aecceeb8e138b66c69bf3049e789
+--- /dev/null
++++ b/dist/gas-flows/TestGasFlow.js
+@@ -0,0 +1,57 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var _TestGasFlow_increment;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.TestGasFlow = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++const AbstractGasFlow_1 = require("./AbstractGasFlow");
++const LEVEL_MULTIPLIERS = {
++    low: 1,
++    medium: 1.5,
++    high: 2,
++};
++class TestGasFlow extends AbstractGasFlow_1.AbstractGasFlow {
++    constructor() {
++        super(...arguments);
++        _TestGasFlow_increment.set(this, 0);
++    }
++    matchesTransaction(_transactionMeta) {
++        return true;
++    }
++    getSuggestedGas(_request) {
++        return __awaiter(this, void 0, void 0, function* () {
++            __classPrivateFieldSet(this, _TestGasFlow_increment, __classPrivateFieldGet(this, _TestGasFlow_increment, "f") + 1, "f");
++            const gas = (0, controller_utils_1.toHex)(1000 + __classPrivateFieldGet(this, _TestGasFlow_increment, "f"));
++            const gasFees = ['low', 'medium', 'high'].reduce((result, level) => (Object.assign(Object.assign({}, result), { [level]: {
++                    maxPriorityFeePerGas: (0, controller_utils_1.toHex)(Math.floor(__classPrivateFieldGet(this, _TestGasFlow_increment, "f") * 0.2 * LEVEL_MULTIPLIERS[level])),
++                    maxFeePerGas: (0, controller_utils_1.toHex)(Math.floor(__classPrivateFieldGet(this, _TestGasFlow_increment, "f") * LEVEL_MULTIPLIERS[level])),
++                } })), {});
++            return {
++                gas,
++                gasFees,
++            };
++        });
++    }
++}
++exports.TestGasFlow = TestGasFlow;
++_TestGasFlow_increment = new WeakMap();
++//# sourceMappingURL=TestGasFlow.js.map
+\ No newline at end of file
+diff --git a/dist/helpers/GasFeePoller.d.ts b/dist/helpers/GasFeePoller.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..c68bfa02a61b9ddeb896894dbb0864f2058149f0
+--- /dev/null
++++ b/dist/helpers/GasFeePoller.d.ts
+@@ -0,0 +1,20 @@
++/// <reference types="node" />
++import type EthQuery from '@metamask/eth-query';
++import type { GasFeeState } from '@metamask/gas-fee-controller';
++import type { ProviderConfig } from '@metamask/network-controller';
++import EventEmitter from 'events';
++import type { GasFeeFlow } from '../types';
++import { type TransactionMeta } from '../types';
++export declare class GasFeePoller {
++    #private;
++    hub: EventEmitter;
++    constructor({ gasFeeFlows, getEthQuery, getGasFeeControllerEstimates, getProviderConfig, getTransactions, onStateChange, }: {
++        gasFeeFlows: GasFeeFlow[];
++        getEthQuery: () => EthQuery;
++        getGasFeeControllerEstimates: () => Promise<GasFeeState>;
++        getProviderConfig: () => ProviderConfig;
++        getTransactions: () => TransactionMeta[];
++        onStateChange: (listener: () => void) => void;
++    });
++}
++//# sourceMappingURL=GasFeePoller.d.ts.map
+\ No newline at end of file
+diff --git a/dist/helpers/GasFeePoller.js b/dist/helpers/GasFeePoller.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e37868db564b
+--- /dev/null
++++ b/dist/helpers/GasFeePoller.js
+@@ -0,0 +1,117 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++var _GasFeePoller_instances, _GasFeePoller_gasFeeFlows, _GasFeePoller_getEthQuery, _GasFeePoller_getGasFeeControllerEstimates, _GasFeePoller_getProviderConfig, _GasFeePoller_getTransactions, _GasFeePoller_interval, _GasFeePoller_running, _GasFeePoller_start, _GasFeePoller_stop, _GasFeePoller_updateTransactionSuggestedFees, _GasFeePoller_updateTransactionSugesstedFees, _GasFeePoller_getUnapprovedTransactions;
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.GasFeePoller = void 0;
++const utils_1 = require("@metamask/utils");
++const events_1 = __importDefault(require("events"));
++const logger_1 = require("../logger");
++const types_1 = require("../types");
++const gas_flow_1 = require("../utils/gas-flow");
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas-fee-poller');
++const POLLING_INTERVAL_MILLISECONDS = 10000;
++class GasFeePoller {
++    constructor({ gasFeeFlows, getEthQuery, getGasFeeControllerEstimates, getProviderConfig, getTransactions, onStateChange, }) {
++        _GasFeePoller_instances.add(this);
++        this.hub = new events_1.default();
++        _GasFeePoller_gasFeeFlows.set(this, void 0);
++        _GasFeePoller_getEthQuery.set(this, void 0);
++        _GasFeePoller_getGasFeeControllerEstimates.set(this, void 0);
++        _GasFeePoller_getProviderConfig.set(this, void 0);
++        _GasFeePoller_getTransactions.set(this, void 0);
++        _GasFeePoller_interval.set(this, void 0);
++        _GasFeePoller_running.set(this, false);
++        __classPrivateFieldSet(this, _GasFeePoller_gasFeeFlows, gasFeeFlows, "f");
++        __classPrivateFieldSet(this, _GasFeePoller_getEthQuery, getEthQuery, "f");
++        __classPrivateFieldSet(this, _GasFeePoller_getGasFeeControllerEstimates, getGasFeeControllerEstimates, "f");
++        __classPrivateFieldSet(this, _GasFeePoller_getProviderConfig, getProviderConfig, "f");
++        __classPrivateFieldSet(this, _GasFeePoller_getTransactions, getTransactions, "f");
++        onStateChange(() => {
++            const unapprovedTransactions = __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_getUnapprovedTransactions).call(this);
++            if (unapprovedTransactions.length) {
++                __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_start).call(this);
++            }
++            else {
++                __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_stop).call(this);
++            }
++        });
++    }
++}
++exports.GasFeePoller = GasFeePoller;
++_GasFeePoller_gasFeeFlows = new WeakMap(), _GasFeePoller_getEthQuery = new WeakMap(), _GasFeePoller_getGasFeeControllerEstimates = new WeakMap(), _GasFeePoller_getProviderConfig = new WeakMap(), _GasFeePoller_getTransactions = new WeakMap(), _GasFeePoller_interval = new WeakMap(), _GasFeePoller_running = new WeakMap(), _GasFeePoller_instances = new WeakSet(), _GasFeePoller_start = function _GasFeePoller_start() {
++    if (__classPrivateFieldGet(this, _GasFeePoller_running, "f")) {
++        return;
++    }
++    __classPrivateFieldSet(this, _GasFeePoller_interval, setInterval(() => __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_updateTransactionSuggestedFees).call(this), POLLING_INTERVAL_MILLISECONDS), "f");
++    __classPrivateFieldSet(this, _GasFeePoller_running, true, "f");
++    log('Started polling');
++}, _GasFeePoller_stop = function _GasFeePoller_stop() {
++    if (!__classPrivateFieldGet(this, _GasFeePoller_running, "f")) {
++        return;
++    }
++    clearInterval(__classPrivateFieldGet(this, _GasFeePoller_interval, "f"));
++    __classPrivateFieldSet(this, _GasFeePoller_interval, undefined, "f");
++    __classPrivateFieldSet(this, _GasFeePoller_running, false, "f");
++    log('Stopped polling');
++}, _GasFeePoller_updateTransactionSuggestedFees = function _GasFeePoller_updateTransactionSuggestedFees() {
++    return __awaiter(this, void 0, void 0, function* () {
++        const unapprovedTransactions = __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_getUnapprovedTransactions).call(this);
++        log('Updating suggested gas fees', {
++            count: unapprovedTransactions.length,
++        });
++        const ethQuery = __classPrivateFieldGet(this, _GasFeePoller_getEthQuery, "f").call(this);
++        for (const transactionMeta of unapprovedTransactions) {
++            yield __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_updateTransactionSugesstedFees).call(this, transactionMeta, ethQuery);
++        }
++    });
++}, _GasFeePoller_updateTransactionSugesstedFees = function _GasFeePoller_updateTransactionSugesstedFees(transactionMeta, ethQuery) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const gasFeeFlow = (0, gas_flow_1.getGasFeeFlow)(transactionMeta, __classPrivateFieldGet(this, _GasFeePoller_gasFeeFlows, "f"));
++        const request = {
++            ethQuery,
++            getGasFeeControllerEstimates: __classPrivateFieldGet(this, _GasFeePoller_getGasFeeControllerEstimates, "f"),
++            isEIP1559: false,
++            transactionMeta,
++        };
++        try {
++            const response = yield gasFeeFlow.getGasFees(request);
++            transactionMeta.suggestedGasFees = response;
++        }
++        catch (error) {
++            log('Failed to get suggested gas fees', transactionMeta.id, error);
++            return;
++        }
++        this.hub.emit('transaction-updated', transactionMeta, 'GasFeePoller - Suggested gas fees updated');
++        log('Updated suggested gas fees', {
++            transaction: transactionMeta.id,
++            suggestedGasFees: transactionMeta.suggestedGasFees,
++        });
++    });
++}, _GasFeePoller_getUnapprovedTransactions = function _GasFeePoller_getUnapprovedTransactions() {
++    const currentChainId = __classPrivateFieldGet(this, _GasFeePoller_getProviderConfig, "f").call(this).chainId;
++    return __classPrivateFieldGet(this, _GasFeePoller_getTransactions, "f").call(this).filter((tx) => tx.chainId === currentChainId &&
++        tx.status === types_1.TransactionStatus.unapproved);
++};
++//# sourceMappingURL=GasFeePoller.js.map
+\ No newline at end of file
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index d80d057d48112d9047fc6fe419c132c44a53c509..f52bf20b933dcf9cf0b2e119c8b64b0ff50ae4d3 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -1,4 +1,6 @@
+ import type { AccessList } from '@ethereumjs/tx';
++import EthQuery from '@metamask/eth-query';
++import { GasFeeState } from '@metamask/gas-fee-controller';
+ import type { Hex } from '@metamask/utils';
+ import type { Operation } from 'fast-json-patch';
+ export declare type Events = {
+@@ -285,6 +287,23 @@ declare type TransactionMetaBase = {
+      * The time the transaction was submitted to the network, in Unix epoch time (ms).
+      */
+     submittedTime?: number;
++    suggestedGasFees?: {
++        low: {
++            maxFeePerGas?: string;
++            maxPriorityFeePerGas?: string;
++            gasPrice?: string;
++        };
++        medium: {
++            maxFeePerGas?: string;
++            maxPriorityFeePerGas?: string;
++            gasPrice?: string;
++        };
++        high: {
++            maxFeePerGas?: string;
++            maxPriorityFeePerGas?: string;
++            gasPrice?: string;
++        };
++    };
+     /**
+      * The symbol of the token being swapped.
+      */
+@@ -799,5 +818,25 @@ export declare type SecurityAlertResponse = {
+     result_type: string;
+     providerRequestsCount?: Record<string, number>;
+ };
++export declare type GasFeeFlowRequest = {
++    ethQuery: EthQuery;
++    isEIP1559: boolean;
++    getGasFeeControllerEstimates: () => Promise<GasFeeState>;
++    transactionMeta: TransactionMeta;
++};
++export declare type GasFeeFlowLevelResponse = {
++    maxFeePerGas?: string;
++    maxPriorityFeePerGas?: string;
++    gasPrice?: string;
++};
++export declare type GasFeeFlowResponse = {
++    low: GasFeeFlowLevelResponse;
++    medium: GasFeeFlowLevelResponse;
++    high: GasFeeFlowLevelResponse;
++};
++export declare type GasFeeFlow = {
++    matchesTransaction(transactionMeta: TransactionMeta): boolean;
++    getGasFees: (request: GasFeeFlowRequest) => Promise<GasFeeFlowResponse>;
++};
+ export {};
+ //# sourceMappingURL=types.d.ts.map
+\ No newline at end of file
+diff --git a/dist/utils/gas-fees.d.ts b/dist/utils/gas-fees.d.ts
+index 9ed9fddd65c4f6504aa018c793d6a4915873b4bc..d56efaf88d075149917d81d45d595b61cc91be34 100644
+--- a/dist/utils/gas-fees.d.ts
++++ b/dist/utils/gas-fees.d.ts
+@@ -1,9 +1,10 @@
+ import type EthQuery from '@metamask/eth-query';
+ import type { GasFeeState } from '@metamask/gas-fee-controller';
+-import type { SavedGasFees, TransactionParams, TransactionMeta } from '../types';
++import type { SavedGasFees, TransactionParams, TransactionMeta, GasFeeFlow } from '../types';
+ export declare type UpdateGasFeesRequest = {
+     eip1559: boolean;
+     ethQuery: EthQuery;
++    gasFeeFlows: GasFeeFlow[];
+     getSavedGasFees: () => SavedGasFees | undefined;
+     getGasFeeEstimates: () => Promise<GasFeeState>;
+     txMeta: TransactionMeta;
+@@ -14,18 +15,6 @@ export declare type GetGasFeeRequest = UpdateGasFeesRequest & {
+     suggestedGasFees: Awaited<ReturnType<typeof getSuggestedGasFees>>;
+ };
+ export declare function updateGasFees(request: UpdateGasFeesRequest): Promise<void>;
+-declare function getSuggestedGasFees(request: UpdateGasFeesRequest): Promise<{
+-    maxFeePerGas?: undefined;
+-    maxPriorityFeePerGas?: undefined;
+-    gasPrice?: undefined;
+-} | {
+-    maxFeePerGas: `0x${string}`;
+-    maxPriorityFeePerGas: `0x${string}`;
+-    gasPrice?: undefined;
+-} | {
+-    gasPrice: string | undefined;
+-    maxFeePerGas?: undefined;
+-    maxPriorityFeePerGas?: undefined;
+-}>;
++declare function getSuggestedGasFees(request: UpdateGasFeesRequest): Promise<import("../types").GasFeeFlowLevelResponse>;
+ export {};
+ //# sourceMappingURL=gas-fees.d.ts.map
+\ No newline at end of file
+diff --git a/dist/utils/gas-fees.js b/dist/utils/gas-fees.js
+index 823fa99ce6763695231177916fd41a20b1c31fdb..7b1fc49f2fd2427af14dac93e6a08f2dd323c3cd 100644
+--- a/dist/utils/gas-fees.js
++++ b/dist/utils/gas-fees.js
+@@ -12,11 +12,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.updateGasFees = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+-const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
+ const utils_1 = require("@metamask/utils");
+ const ethereumjs_util_1 = require("ethereumjs-util");
+ const logger_1 = require("../logger");
+ const types_1 = require("../types");
++const gas_flow_1 = require("./gas-flow");
+ const swaps_1 = require("./swaps");
+ const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas-fees');
+ function updateGasFees(request) {
+@@ -27,8 +27,8 @@ function updateGasFees(request) {
+         const savedGasFees = isSwap ? undefined : request.getSavedGasFees();
+         const suggestedGasFees = yield getSuggestedGasFees(request);
+         log('Suggested gas fees', suggestedGasFees);
+-        const getGasFeeRequest = Object.assign(Object.assign({}, request), { savedGasFees,
+-            initialParams,
++        const getGasFeeRequest = Object.assign(Object.assign({}, request), { initialParams,
++            savedGasFees,
+             suggestedGasFees });
+         txMeta.txParams.maxFeePerGas = getMaxFeePerGas(getGasFeeRequest);
+         txMeta.txParams.maxPriorityFeePerGas =
+@@ -163,38 +163,22 @@ function updateDefaultGasEstimates(txMeta) {
+ }
+ function getSuggestedGasFees(request) {
+     return __awaiter(this, void 0, void 0, function* () {
+-        const { eip1559, ethQuery, getGasFeeEstimates, txMeta } = request;
++        const { eip1559, ethQuery, gasFeeFlows, getGasFeeEstimates, txMeta } = request;
+         if ((!eip1559 && txMeta.txParams.gasPrice) ||
+             (eip1559 &&
+                 txMeta.txParams.maxFeePerGas &&
+                 txMeta.txParams.maxPriorityFeePerGas)) {
+             return {};
+         }
++        const gasFeeFlow = (0, gas_flow_1.getGasFeeFlow)(txMeta, gasFeeFlows);
+         try {
+-            const { gasFeeEstimates, gasEstimateType } = yield getGasFeeEstimates();
+-            if (eip1559 && gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
+-                const { medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {}, } = gasFeeEstimates;
+-                if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
+-                    return {
+-                        maxFeePerGas: gweiDecimalToWeiHex(suggestedMaxFeePerGas),
+-                        maxPriorityFeePerGas: gweiDecimalToWeiHex(suggestedMaxPriorityFeePerGas),
+-                    };
+-                }
+-            }
+-            if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.LEGACY) {
+-                // The LEGACY type includes low, medium and high estimates of
+-                // gas price values.
+-                return {
+-                    gasPrice: gweiDecimalToWeiHex(gasFeeEstimates.medium),
+-                };
+-            }
+-            if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+-                // The ETH_GASPRICE type just includes a single gas price property,
+-                // which we can assume was retrieved from eth_gasPrice
+-                return {
+-                    gasPrice: gweiDecimalToWeiHex(gasFeeEstimates.gasPrice),
+-                };
+-            }
++            const { medium } = yield gasFeeFlow.getGasFees({
++                ethQuery,
++                isEIP1559: false,
++                getGasFeeControllerEstimates: getGasFeeEstimates,
++                transactionMeta: txMeta,
++            });
++            return medium;
+         }
+         catch (error) {
+             log('Failed to get suggested gas fees', error);
+diff --git a/dist/utils/gas-flow.d.ts b/dist/utils/gas-flow.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..f67d4a5b961196408630329d00da044ecfa69d93
+--- /dev/null
++++ b/dist/utils/gas-flow.d.ts
+@@ -0,0 +1,10 @@
++import type { GasFeeFlow, TransactionMeta } from '../types';
++/**
++ * Returns the first gas fee flow that matches the transaction.
++ *
++ * @param transactionMeta - The transaction metadata to find a gas fee flow for.
++ * @param gasFeeFlows - The gas fee flows to search.
++ * @returns The first gas fee flow that matches the transaction, or undefined if none match.
++ */
++export declare function getGasFeeFlow(transactionMeta: TransactionMeta, gasFeeFlows: GasFeeFlow[]): GasFeeFlow | undefined;
++//# sourceMappingURL=gas-flow.d.ts.map
+\ No newline at end of file
+diff --git a/dist/utils/gas-flow.js b/dist/utils/gas-flow.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..ab4fff497e49f93d4fb17a389c9e91a2f3d9ed7c
+--- /dev/null
++++ b/dist/utils/gas-flow.js
+@@ -0,0 +1,15 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.getGasFeeFlow = void 0;
++/**
++ * Returns the first gas fee flow that matches the transaction.
++ *
++ * @param transactionMeta - The transaction metadata to find a gas fee flow for.
++ * @param gasFeeFlows - The gas fee flows to search.
++ * @returns The first gas fee flow that matches the transaction, or undefined if none match.
++ */
++function getGasFeeFlow(transactionMeta, gasFeeFlows) {
++    return gasFeeFlows.find((gasFeeFlow) => gasFeeFlow.matchesTransaction(transactionMeta));
++}
++exports.getGasFeeFlow = getGasFeeFlow;
++//# sourceMappingURL=gas-flow.js.map
+\ No newline at end of file
