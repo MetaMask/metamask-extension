@@ -75,6 +75,5 @@
     "*://*.eth/",
     "notifications"
   ],
-  "short_name": "__MSG_appName__",
-  "web_accessible_resources": ["inpage.js"]
+  "short_name": "__MSG_appName__"
 }
