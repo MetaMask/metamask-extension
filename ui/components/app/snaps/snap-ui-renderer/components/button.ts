@@ -1,4 +1,4 @@
-import { Button, ButtonTypes, UserInputEventTypes } from '@metamask/snaps-sdk';
+import { Button, ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import { MouseEvent } from 'react';
 import { UiComponent } from './types';
 
@@ -9,11 +9,11 @@ export const button: UiComponent<Button> = ({ element, handleEvent }) => ({
     marginBottom: 1,
     block: true,
     onClick: (event: MouseEvent<HTMLElement>) => {
-      if (element.buttonType === ButtonTypes.Button) {
+      if (element.buttonType === ButtonType.Button) {
         event.preventDefault();
       }
       handleEvent({
-        eventType: UserInputEventTypes.ButtonClickEvent,
+        eventType: UserInputEventType.ButtonClickEvent,
         componentName: element.name,
       });
     },

@@ -47,11 +47,11 @@ export const SnapInsight = ({
   ///: END:ONLY_INCLUDE_IF
 }) => {
   const t = useI18nContext();
-  let error, content;
+  let error, interfaceId;
   let isLoading = loading;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   error = data?.error;
-  content = data?.response?.content;
+  interfaceId = data?.response?.id;
   const dispatch = useDispatch();
   useEffect(() => {
     const trackInsightUsage = async () => {
@@ -68,7 +68,7 @@ export const SnapInsight = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
   error = insights.data?.[0]?.error;
-  content = insights.data?.[0]?.response?.content;
+  interfaceId = insights.data?.[0]?.response?.id;
   isLoading = insights.loading;
   ///: END:ONLY_INCLUDE_IF
 
@@ -78,7 +78,7 @@ export const SnapInsight = ({
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  const hasNoData = !error && !isLoading && !content;
+  const hasNoData = !error && !isLoading && !interfaceId;
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -97,10 +97,10 @@ export const SnapInsight = ({
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {isLoading || content ? (
+          {isLoading || interfaceId ? (
             <SnapUIRenderer
               snapId={snapId}
-              data={content}
+              interfaceId={interfaceId}
               delineatorType={DelineatorType.Insights}
               isLoading={isLoading}
             />

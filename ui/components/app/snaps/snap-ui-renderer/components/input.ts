@@ -24,7 +24,7 @@ export const input: UiComponent<Input> = ({
       handleEvent({
         componentName: element.name,
         parentForm,
-        value: event.target.value,
+        value: event.target.value ?? null,
       }),
   },
 });

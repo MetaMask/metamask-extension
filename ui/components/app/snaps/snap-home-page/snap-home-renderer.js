@@ -21,7 +21,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
   const snapName = getSnapName(snapId, targetSubjectMetadata);
   const { data, error, loading } = useSnapHome({ snapId });
 
-  const content = !loading && !error && data?.content;
+  const interfaceId = !loading && !error && data?.id;
 
   return (
     <Box>
@@ -33,8 +33,12 @@ export const SnapHomeRenderer = ({ snapId }) => {
           <Copyable text={error.message} />
         </SnapDelineator>
       )}
-      {(content || loading) && (
-        <SnapUIRenderer snapId={snapId} data={content} isLoading={loading} />
+      {(interfaceId || loading) && (
+        <SnapUIRenderer
+          snapId={snapId}
+          interfaceId={interfaceId}
+          isLoading={loading}
+        />
       )}
     </Box>
   );

@@ -1,4 +1,4 @@
-import { Form, UserInputEventTypes } from '@metamask/snaps-sdk';
+import { Form, UserInputEventType } from '@metamask/snaps-sdk';
 import { FormEvent } from 'react';
 import { mapToTemplate } from '../snap-ui-renderer';
 import { UiComponent } from './types';
@@ -25,9 +25,9 @@ export const form: UiComponent<Form> = ({
     onSubmit: (event: FormEvent<HTMLElement>) => {
       event.preventDefault();
       handleEvent({
-        eventType: UserInputEventTypes.FormSubmitEvent,
+        eventType: UserInputEventType.FormSubmitEvent,
         componentName: element.name,
-        value: state[element.name],
+        value: state[element.name] ?? null,
       });
     },
   },

@@ -22,7 +22,7 @@ export type UIComponentParams<T extends Component> = {
     eventType?: UserInputEventType;
     componentName?: string;
     parentForm?: string;
-    value?: Record<string, string> | string;
+    value?: Record<string, string | null> | string | null;
   }) => void;
 };
 

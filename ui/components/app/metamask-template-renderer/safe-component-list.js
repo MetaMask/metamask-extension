@@ -22,6 +22,9 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIImage } from '../snaps/snap-ui-image';
+import { SnapUIRenderer } from '../snaps/snap-ui-renderer/snap-ui-renderer';
+import { FormTextField } from '../../component-library/form-text-field';
+import { Button as DSButton } from '../../component-library/button';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -59,6 +62,7 @@ export const safeComponentList = {
   Typography,
   UrlIcon,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  SnapUIRenderer,
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,
@@ -66,6 +70,9 @@ export const safeComponentList = {
   Spinner,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
+  FormTextField,
+  DSButton,
+  form: 'form',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,

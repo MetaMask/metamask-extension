@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-sdk';
+import { UserInputEventType, isComponent } from '@metamask/snaps-sdk';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
@@ -57,10 +57,11 @@ export const SnapUIRenderer = ({
     interfaceData?.interfaceState ?? {},
   );
 
+  console.log(UserInputEventType);
+
   // We delete the interface on unmount because it means the UI has been unloaded.
   useEffect(() => {
-    return () =>
-      interfaceId && dispatch(dispatch(deleteInterface(interfaceId)));
+    return () => interfaceId && dispatch(deleteInterface(interfaceId));
   }, []);
 
   const snapRequestDebounced = debounce(

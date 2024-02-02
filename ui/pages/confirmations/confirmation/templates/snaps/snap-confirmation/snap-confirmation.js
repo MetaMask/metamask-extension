@@ -1,12 +1,8 @@
-import { mapToTemplate } from '../../../../../../components/app/snaps/snap-ui-renderer';
-import { DelineatorType } from '../../../../../../helpers/constants/snaps';
-
 function getValues(pendingApproval, t, actions) {
   const {
-    snapName,
-    requestData: { content },
+    origin,
+    requestData: { id },
   } = pendingApproval;
-  const elementKeyIndex = { value: 0 };
 
   return {
     content: [
@@ -19,20 +15,11 @@ function getValues(pendingApproval, t, actions) {
           marginRight: 4,
         },
         children: {
-          element: 'SnapDelineator',
-          key: 'snap-delineator',
+          element: 'SnapUIRenderer',
+          key: 'snap-ui-renderer',
           props: {
-            type: DelineatorType.Content,
-            snapName,
-          },
-          // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
-          children: {
-            element: 'Box',
-            key: 'snap-ui-content',
-            children: mapToTemplate(content, elementKeyIndex),
-            props: {
-              className: 'snap-ui-renderer__content',
-            },
+            snapId: origin,
+            interfaceId: id,
           },
         },
       },

@@ -23,9 +23,6 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getTargetSubjectMetadata,
-  ///: END:ONLY_INCLUDE_IF
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
@@ -37,8 +34,7 @@ import Callout from '../../../components/ui/callout';
 import { Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import { getSnapName } from '../../../helpers/utils/util';
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
@@ -238,9 +234,6 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, pendingConfirmation?.origin),
-  );
 
   const SNAP_DIALOG_TYPE = [
     ApprovalType.SnapDialogAlert,
@@ -258,12 +251,6 @@ export default function ConfirmationPage({
   ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   let useSnapHeader = isSnapDialog;
-
-  // When pendingConfirmation is undefined, this will also be undefined
-  const snapName =
-    isSnapDialog &&
-    targetSubjectMetadata &&
-    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
   ///: END:ONLY_INCLUDE_IF
 
   const INPUT_STATE_CONFIRMATIONS = [
@@ -288,12 +275,7 @@ export default function ConfirmationPage({
   const templatedValues = useMemo(() => {
     return pendingConfirmation
       ? getTemplateValues(
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-            snapName: isSnapDialog && snapName,
-            ///: END:ONLY_INCLUDE_IF
-            ...pendingConfirmation,
-          },
+          pendingConfirmation,
           t,
           dispatch,
           history,
@@ -308,10 +290,6 @@ export default function ConfirmationPage({
     history,
     matchedChain,
     currencySymbolWarning,
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
-    isSnapDialog,
-    snapName,
-    ///: END:ONLY_INCLUDE_IF
   ]);
 
   useEffect(() => {
