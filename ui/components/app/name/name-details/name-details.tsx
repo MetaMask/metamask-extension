@@ -284,7 +284,7 @@ export default function NameDetails({
 
   return (
     <Box>
-      <Modal isOpen onClose={handleClose}>
+      <Modal isOpen onClose={handleClose} className="name-details">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={handleClose}>{title}</ModalHeader>

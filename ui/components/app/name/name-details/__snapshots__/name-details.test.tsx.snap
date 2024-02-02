@@ -11,7 +11,7 @@ exports[`NameDetails renders proposed names 1`] = `
     />
   </div>
   <div
-    class="mm-modal"
+    class="mm-modal name-details"
   >
     <div
       aria-hidden="true"
@@ -270,7 +270,7 @@ exports[`NameDetails renders with no saved name 1`] = `
     />
   </div>
   <div
-    class="mm-modal"
+    class="mm-modal name-details"
   >
     <div
       aria-hidden="true"
@@ -454,7 +454,7 @@ exports[`NameDetails renders with saved name 1`] = `
     />
   </div>
   <div
-    class="mm-modal"
+    class="mm-modal name-details"
   >
     <div
       aria-hidden="true"
