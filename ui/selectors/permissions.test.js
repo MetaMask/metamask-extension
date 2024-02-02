@@ -361,21 +361,6 @@ describe('selectors', () => {
     it('should return connected accounts sorted by last selected, then by keyring controller order', () => {
       expect(getOrderedConnectedAccountsForActiveTab(mockState)).toStrictEqual([
         {
-          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-          balance: '0x0',
-          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          metadata: {
-            name: 'Really Long Name That Should Be Truncated',
-            lastActive: 1586359844192,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [...Object.values(EthMethod)],
-          type: EthAccountType.Eoa,
-        },
-        {
           address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
           balance: '0x0',
           id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
@@ -429,6 +414,21 @@ describe('selectors', () => {
           id: 'f9305241-c50f-4725-ad0f-cbd3f24ac7ab',
           metadata: {
             name: 'Account 4',
+            lastActive: 1586359844192,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        {
+          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          balance: '0x0',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Really Long Name That Should Be Truncated',
             lastActive: 1586359844192,
             keyring: {
               type: 'HD Key Tree',
