@@ -284,11 +284,11 @@ export default function NameDetails({
 
   return (
     <Box>
-      <Modal isOpen onClose={handleClose} className="name-details">
+      <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={handleClose}>{title}</ModalHeader>
-          <ModalBody>
+          <ModalBody className="name-details__modal-body">
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >

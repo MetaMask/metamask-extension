@@ -11,7 +11,7 @@ exports[`NameDetails renders proposed names 1`] = `
     />
   </div>
   <div
-    class="mm-modal name-details"
+    class="mm-modal"
   >
     <div
       aria-hidden="true"
@@ -61,7 +61,7 @@ exports[`NameDetails renders proposed names 1`] = `
             </div>
           </header>
           <div
-            class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4"
+            class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
@@ -270,7 +270,7 @@ exports[`NameDetails renders with no saved name 1`] = `
     />
   </div>
   <div
-    class="mm-modal name-details"
+    class="mm-modal"
   >
     <div
       aria-hidden="true"
@@ -320,7 +320,7 @@ exports[`NameDetails renders with no saved name 1`] = `
             </div>
           </header>
           <div
-            class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4"
+            class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
@@ -454,7 +454,7 @@ exports[`NameDetails renders with saved name 1`] = `
     />
   </div>
   <div
-    class="mm-modal name-details"
+    class="mm-modal"
   >
     <div
       aria-hidden="true"
@@ -504,7 +504,7 @@ exports[`NameDetails renders with saved name 1`] = `
             </div>
           </header>
           <div
-            class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4"
+            class="mm-box mm-modal-body name-details__modal-body mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <div
               style="text-align: center; margin-bottom: 16px; margin-top: 8px;"
