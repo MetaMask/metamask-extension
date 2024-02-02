@@ -139,4 +139,23 @@ describe('PriorityfeeInput', () => {
       screen.queryByText('Priority fee must be greater than 0.'),
     ).not.toBeInTheDocument();
   });
+
+  describe('updatePriorityFee', () => {
+    it('updates base fee correctly', () => {
+      const { getByTestId } = render(<PriorityfeeInput />);
+      const input = getByTestId('priority-fee-input');
+
+      fireEvent.change(input, { target: { value: '1' } });
+
+      expect(input.value).toBe('1');
+    });
+    it('handles small numbers', () => {
+      const { getByTestId } = render(<PriorityfeeInput />);
+      const input = getByTestId('priority-fee-input');
+
+      fireEvent.change(input, { target: { value: 0.0000000001 } });
+
+      expect(input.value).toBe('0.0000000001');
+    });
+  });
 });

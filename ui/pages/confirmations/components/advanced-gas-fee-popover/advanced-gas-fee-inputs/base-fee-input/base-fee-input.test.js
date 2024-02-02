@@ -147,4 +147,23 @@ describe('BaseFeeInput', () => {
       screen.queryByText('Max base fee is higher than necessary'),
     ).toBeInTheDocument();
   });
+
+  describe('updateBaseFee', () => {
+    it('updates base fee correctly', () => {
+      const { getByTestId } = render(<BaseFeeInput />);
+      const input = getByTestId('base-fee-input');
+
+      fireEvent.change(input, { target: { value: '1' } });
+
+      expect(input.value).toBe('1');
+    });
+    it('handles small numbers', () => {
+      const { getByTestId } = render(<BaseFeeInput />);
+      const input = getByTestId('base-fee-input');
+
+      fireEvent.change(input, { target: { value: 0.0000000001 } });
+
+      expect(input.value).toBe('0.0000000001');
+    });
+  });
 });
