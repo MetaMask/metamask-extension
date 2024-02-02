@@ -4644,6 +4644,18 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
+    // this should be handled inside selectedNetworkController
+    const selectedNetworkClientIdForDomain =
+      this.selectedNetworkController.getNetworkClientIdForDomain(origin);
+
+    if (selectedNetworkClientIdForDomain === undefined) {
+      this.selectedNetworkController.setNetworkClientIdForDomain(
+        origin,
+        this.networkController.state.selectedNetworkClientId,
+      );
+    }
+    // end of things that belong in selectedNetworkController
+
     const proxyClient =
       this.selectedNetworkController.getProviderAndBlockTracker(origin);
 
