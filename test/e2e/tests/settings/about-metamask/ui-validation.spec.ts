@@ -18,8 +18,9 @@ const selectors = {
     text: 'MetaMask is designed and built around the world.',
     tag: 'div',
   },
-  headingText: { text: 'About', tag: 'h4' },
-  buttonAddressCopy: '[data-testid="address-copy-button-text"]',
+  titleText: { text: 'About', tag: 'h4' },
+  closeButton: '.mm-box button[aria-label="Close"]',
+  walletOverview: '.wallet-overview__balance',
 };
 
 async function switchToAboutView(driver: Driver) {
@@ -34,7 +35,6 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -44,41 +44,41 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
         await switchToAboutView(driver);
 
         // Validating the heading text
-        const isHeadingText = await driver.isElementPresent(
-          selectors.headingText,
+        const isTitlePresent = await driver.isElementPresent(
+          selectors.titleText,
         );
         assert.equal(
-          isHeadingText,
+          isTitlePresent,
           true,
-          'Meta Mask heading text is not present in the about view section',
+          'Meta Mask title is not present in the about view section',
         );
 
         // Validating the header label
-        const isHeaderMetaMaskLabel = await driver.isElementPresent(
+        const isMetaMaskLabelPresent = await driver.isElementPresent(
           selectors.metaMaskLabelText,
         );
         assert.equal(
-          isHeaderMetaMaskLabel,
+          isMetaMaskLabelPresent,
           true,
           'Meta Mask label is not present in the about view section',
         );
 
         // verify the version number in the about view section to the fixture builder version as 11.7.3
-        const validationMetaMaskVersion = await driver.isElementPresent(
+        const metaMaskVersionPresent = await driver.isElementPresent(
           selectors.metaMaskVersion,
         );
         assert.equal(
-          validationMetaMaskVersion,
+          metaMaskVersionPresent,
           true,
           'Meta Mask version is not present in the about view section',
         );
 
         // Validating the header text
-        const isHeaderText = await driver.isElementPresent(
+        const isHeaderTextPresent = await driver.isElementPresent(
           selectors.headerText,
         );
         assert.equal(
-          isHeaderText,
+          isHeaderTextPresent,
           true,
           'Meta Mask header text is not present in the about view section',
         );
@@ -91,7 +91,6 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -101,18 +100,18 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
         await switchToAboutView(driver);
 
         // click on `close` button
-        await driver.clickElement('.mm-box button[aria-label="Close"]');
+        await driver.clickElement(selectors.closeButton);
 
         // wait for the wallet-overview__balance to load
-        await driver.isElementPresent('.wallet-overview__balance');
+        await driver.waitForSelector(selectors.walletOverview);
 
         // Validate the navigate to the wallet overview page
-        const isWalletOverview = await driver.isElementPresent(
-          selectors.buttonAddressCopy,
+        const isWalletOverviewPresent = await driver.isElementPresent(
+          selectors.walletOverview,
         );
 
         assert.equal(
-          isWalletOverview,
+          isWalletOverviewPresent,
           true,
           'Wallet overview page is not present',
         );
