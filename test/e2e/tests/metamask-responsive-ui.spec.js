@@ -18,7 +18,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -89,7 +88,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();

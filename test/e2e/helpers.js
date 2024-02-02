@@ -37,7 +37,7 @@ async function withFixtures(options, testSuite) {
     driverOptions,
     dappOptions,
     title,
-    failOnConsoleError = true,
+    ignoredConsoleErrors = [],
     dappPath = undefined,
     dappPaths,
     testSpecificMock = function () {
@@ -125,8 +125,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(failOnConsoleError);
-      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
 
     let driverProxy;
@@ -160,7 +160,7 @@ async function withFixtures(options, testSuite) {
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
-    if (errorsAndExceptions && failOnConsoleError) {
+    if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
     }
 
