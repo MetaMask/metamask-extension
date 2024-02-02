@@ -12,12 +12,13 @@ To prepare your environment for the MMI E2E test suite, follow these steps:
 
 2. Generate a specific MMI build:
 
-    2.1. Add the `.metamaskrc` file to the root directory. This file is necessary for generating the build and points to the development environments. Make sure you add values given by the team.
+   2.1. Add the `.metamaskrc` file to the root directory. This file is necessary for generating the build and points to the development environments. Make sure you add values given by the team.
 
-    2.2. Use the following script to generate the build:
-    ```
-    yarn dist:mmi
-    ```
+   2.2. Use the following script to generate the build:
+
+   ```
+   yarn dist:mmi
+   ```
 
 ## Running the Tests
 
@@ -35,10 +36,11 @@ From the root of the project, you can use the following scripts to run the tests
   ```
   yarn test:e2e:mmi:visual
   ```
-> Note: If you run the tests for first time, you may need to install the browser dependency (Playwright will inform you in case you need):
-> ```
-> yarn playwright install chromium
->```
+  > Note: If you run the tests for first time, you may need to install the browser dependency (Playwright will inform you in case you need):
+  >
+  > ```
+  > yarn playwright install chromium
+  > ```
 
 In some cases, you will need to update the visual screenshot. For that, you have the next scripts:
 
@@ -52,17 +54,21 @@ In some cases, you will need to update the visual screenshot. For that, you have
 If you're interested in [debugging tests](https://playwright.dev/docs/debug), we suggest installing the Visual Studio plugin. This will allow you to run each test individually, providing a more streamlined debugging process.
 
 For those who simply want to run tests locally to ensure no MMI functionality has been compromised, you can adjust the environment variable in your .env file:
+
 ```
 HEADLESS=true
 ```
+
 By doing this, all tests will run in headless mode. This allows you to continue with other tasks while the tests are running, optimizing your workflow.
 
 #### Lavamoat
 
 Due to the constraints imposed by Lavamoat, certain visual details that could be beneficial during a debugging session are not displayed in the Playwright logs. To overcome this, you can create a local, Lavamoat-free build that allows Playwright to access and display all available browser information. To create this specialized build, execute the following command:
+
 ```
 yarn build:mmi:debug
 ```
+
 After the build is complete, you can proceed to run the tests as usual.
 
 ## Visual Tests
@@ -80,6 +86,7 @@ Running visual tests requires the generation of a Docker image. This ensures tha
 ## Reports
 
 Test reports are generated in the public folder. To obtain comprehensive, readable reports with direct access to `traces.zip`, run the following script:
+
 ```
 yarn test:e2e:pw:report
 ```
@@ -95,4 +102,4 @@ When tests finish on the pipeline, you can find the same logs that you use local
 
 ## Contact MMI team
 
-If you encounter any problems while working on these e2e tests, you can write into the Consensys Slack channel `metamask-mmi-collab`.
+If you encounter any problems while working on these e2e tests, you can write into the Consensys Slack channel `#contact-mmi-team`.

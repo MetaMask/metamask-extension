@@ -25,9 +25,19 @@ export class SwapPage {
 
   readonly tokenQty: Locator;
 
-  readonly footerButton: Locator;
+  readonly fetchQuoteButton: Locator;
+
+  readonly swapTokenButton: Locator;
 
   readonly backButton: Locator;
+
+  readonly switchTokensButton: Locator;
+
+  readonly importTokensButton: Locator;
+
+  readonly closeButton: Locator;
+
+  readonly importButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -43,6 +53,11 @@ export class SwapPage {
       'prepare-swap-page-swap-from',
     );
     this.swapToDropDown = this.page.getByTestId('prepare-swap-page-swap-to');
+    this.switchTokensButton = this.page.getByTestId(
+      'prepare-swap-page-switch-tokens',
+    );
+    this.importTokensButton = this.page.getByText('Import tokens').first();
+    this.importButton = this.page.getByText('Import (');
     this.tokenSearch = this.page.locator(
       '[id="list-with-search__text-search"]',
     );
@@ -52,8 +67,10 @@ export class SwapPage {
     this.tokenQty = this.page.getByTestId(
       'prepare-swap-page-from-token-amount',
     );
-    this.footerButton = this.page.getByTestId('page-container-footer-next');
-    this.backButton = this.page.locator('[title="Cancel"]');
+    this.fetchQuoteButton = this.page.getByText('Fetch quote');
+    this.swapTokenButton = this.page.getByText('Swap');
+    this.closeButton = this.page.getByText('Close');
+    this.backButton = this.page.getByText('Cancel');
   }
 
   async fetchQuote(options) {
@@ -74,15 +91,33 @@ export class SwapPage {
     }
     await this.tokenQty.fill(options.qty);
     await this.swapToDropDown.click();
+    await this.page.waitForTimeout(2000);
     await this.tokenSearch.fill(options.to);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(1000);
     await this.tokenList.first().click();
-    await this.page.waitForSelector('text=/New quotes in 0:24/');
+    await this.page.waitForSelector('text=/New quotes in 0:26/');
   }
 
   async swap() {
-    await this.footerButton.click(); // Swap button
+    const swapAnywayButton = await this.page.$('text=/Swap anyway/');
+    if (swapAnywayButton) {
+      // Click only if it is present
+      await swapAnywayButton.click();
+    }
+    await this.swapTokenButton.last().click(); // Swap button
     await this.page.waitForTimeout(1000);
+  }
+
+  async switchTokens() {
+    await this.switchTokensButton.click();
+    await this.page.waitForTimeout(2000);
+    await this.page.waitForSelector('text=/New quotes in 0:26/');
+  }
+
+  async importTokens() {
+    await this.importTokensButton.click();
+    await this.page.waitForTimeout(500);
+    await this.importButton.click();
   }
 
   async gotBack() {
@@ -91,7 +126,7 @@ export class SwapPage {
 
   async waitForTransactionToComplete() {
     await this.page.waitForSelector('text=/Transaction complete/');
-    await this.footerButton.click(); // Close button
+    await this.closeButton.click(); // Close button
   }
 
   async waitForInsufficentBalance() {
