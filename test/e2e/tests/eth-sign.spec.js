@@ -74,7 +74,7 @@ describe('Eth sign', function () {
         await approveEthSign(
           driver,
           '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
+          '[data-testid="signature-warning-sign-button"]',
         );
         // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
@@ -142,14 +142,14 @@ describe('Eth sign', function () {
         await approveEthSign(
           driver,
           '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
+          '[data-testid="signature-warning-sign-button"]',
         );
 
         // Confirm second eth sign
         await approveEthSign(
           driver,
           '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
+          '[data-testid="signature-warning-sign-button"]',
         );
 
         // Switch to the Dapp

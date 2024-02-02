@@ -2117,6 +2117,20 @@ export function clearPendingTokens(): Action {
   };
 }
 
+export function abortTransactionSigning(
+  transactionId: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('abortTransactionSigning', [
+        transactionId,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
 export function createCancelTransaction(
   txId: string,
   customGasSettings: CustomGasSettings,
@@ -3339,6 +3353,11 @@ export function setSwapsFeatureFlags(
   };
 }
 
+type Quotes = [
+  { destinationAmount: string; decimals: number; aggregator: string },
+  string,
+];
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3355,19 +3374,9 @@ export function fetchAndSetQuotes(
     accountBalance: string;
     chainId: string;
   },
-): ThunkAction<
-  Promise<
-    [
-      { destinationAmount: string; decimals: number; aggregator: string },
-      string,
-    ]
-  >,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<Quotes>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const [quotes, selectedAggId] = await submitRequestToBackground(
+    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
       'fetchAndSetQuotes',
       [fetchParams, fetchParamsMetaData],
     );

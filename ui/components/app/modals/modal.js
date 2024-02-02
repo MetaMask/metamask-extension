@@ -113,6 +113,7 @@ const custodyConfirmModalStyle = {
 const MODALS = {
   ONBOARDING_ADD_NETWORK: {
     contents: <AddNetworkModal />,
+    testId: 'add-network-modal',
     ...accountModalStyle,
   },
   NEW_ACCOUNT: {
@@ -144,6 +145,7 @@ const MODALS = {
 
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
+    testId: 'hide-token-confirmation-modal',
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -264,6 +266,7 @@ const MODALS = {
 
   QR_SCANNER: {
     contents: <QRScanner />,
+    testId: 'qr-scanner-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -423,7 +426,7 @@ class Modal extends Component {
 
   render() {
     const modal = MODALS[this.props.modalState.name || 'DEFAULT'];
-    const { contents: children, disableBackdropClick = false } = modal;
+    const { contents: children, disableBackdropClick = false, testId } = modal;
     const modalStyle =
       modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
     const contentStyle = modal.contentStyle || {};
@@ -451,6 +454,7 @@ class Modal extends Component {
         contentStyle={contentStyle}
         backdropStyle={BACKDROPSTYLE}
         closeOnClick={!disableBackdropClick}
+        testId={testId}
       >
         {children}
       </FadeModal>

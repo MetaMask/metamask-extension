@@ -63,6 +63,7 @@ describe('Actions', () => {
     background.signMessage = sinon.stub();
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
+    background.abortTransactionSigning = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -2107,6 +2108,23 @@ describe('Actions', () => {
       );
 
       expect(expectedAction.value.id).toStrictEqual(txId);
+    });
+  });
+
+  describe('abortTransactionSigning', () => {
+    it('submits request to background', async () => {
+      const transactionIdMock = '123-456';
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      store.dispatch(actions.abortTransactionSigning(transactionIdMock));
+
+      expect(background.abortTransactionSigning.callCount).toStrictEqual(1);
+      expect(background.abortTransactionSigning.getCall(0).args).toStrictEqual([
+        transactionIdMock,
+        expect.any(Function),
+      ]);
     });
   });
 
