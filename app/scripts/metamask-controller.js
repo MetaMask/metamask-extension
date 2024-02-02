@@ -523,7 +523,7 @@ export default class MetamaskController extends EventEmitter {
 
     // couples the useRequestQueue featureflag with the perDomainNetwork feature flag
     this.selectedNetworkController.setPerDomainNetwork(
-      this.preferencesController.store.useRequestQueue,
+      this.preferencesController.store.getState().useRequestQueue,
     );
     this.preferencesController.store.subscribe(({ useRequestQueue }) => {
       if (

@@ -225,7 +225,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
   },
-  SelectedNetworkController: { domains: true, perDomainNetwork: true },
+  SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,
