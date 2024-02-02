@@ -34,6 +34,7 @@ const UPDATE_TRANSACTION_AMOUNTS = createActionType(
 const UPDATE_TRANSACTION_FEES = createActionType('UPDATE_TRANSACTION_FEES');
 const UPDATE_TRANSACTION_TOTALS = createActionType('UPDATE_TRANSACTION_TOTALS');
 const UPDATE_NONCE = createActionType('UPDATE_NONCE');
+const SET_MAX_VALUE_MODE = createActionType('SET_MAX_VALUE_MODE');
 
 // Initial state
 const initState = {
@@ -50,10 +51,12 @@ const initState = {
   hexTransactionFee: '',
   hexTransactionTotal: '',
   nonce: '',
+  maxValueMode: {},
 };
 
 // Reducer
 export default function reducer(state = initState, action = {}) {
+  // console.log({ state });
   switch (action.type) {
     case UPDATE_TX_DATA:
       return {
@@ -119,7 +122,18 @@ export default function reducer(state = initState, action = {}) {
         nonce: action.payload,
       };
     case CLEAR_CONFIRM_TRANSACTION:
-      return initState;
+      return {
+        ...initState,
+        maxValueMode: state.maxValueMode,
+      };
+    case SET_MAX_VALUE_MODE:
+      return {
+        ...state,
+        maxValueMode: {
+          ...state.maxValueMode,
+          [action.payload.transactionId]: action.payload.enabled,
+        },
+      };
     default:
       return state;
   }
@@ -306,5 +320,15 @@ export function setTransactionToConfirm(transactionId) {
 export function clearConfirmTransaction() {
   return {
     type: CLEAR_CONFIRM_TRANSACTION,
+  };
+}
+
+export function setMaxValueMode(transactionId, enabled) {
+  return {
+    type: SET_MAX_VALUE_MODE,
+    payload: {
+      transactionId,
+      enabled,
+    },
   };
 }
