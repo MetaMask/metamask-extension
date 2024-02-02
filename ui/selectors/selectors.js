@@ -1259,7 +1259,7 @@ export function getSortedAnnouncementsToShow(state) {
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
   const announcementsToShow = announcements.filter(
     (announcement) =>
-      allowedAnnouncementIds[announcement.id],
+      !announcement.isShown && allowedAnnouncementIds[announcement.id],
   );
   const announcementsSortedByDate = announcementsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),

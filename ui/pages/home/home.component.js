@@ -779,7 +779,7 @@ export default class Home extends PureComponent {
     const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    const showWhatsNew = true ||
+    const showWhatsNew =
       completedOnboarding &&
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       announcementsToShow &&
