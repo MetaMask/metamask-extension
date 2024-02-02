@@ -980,6 +980,9 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
+  "copyPrivateKey": {
+    "message": "Copy private key"
+  },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
   },
