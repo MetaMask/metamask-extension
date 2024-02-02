@@ -22,7 +22,6 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIImage } from '../snaps/snap-ui-image';
-import { SnapUIRenderer } from '../snaps/snap-ui-renderer/snap-ui-renderer';
 import { FormTextField } from '../../component-library/form-text-field';
 import { Button as DSButton } from '../../component-library/button';
 ///: END:ONLY_INCLUDE_IF
@@ -62,7 +61,6 @@ export const safeComponentList = {
   Typography,
   UrlIcon,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  SnapUIRenderer,
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,

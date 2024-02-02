@@ -12,6 +12,7 @@ export const input: UiComponent<Input> = ({
   props: {
     className: 'snap-ui-renderer__input',
     marginBottom: 1,
+    marginTop: 1,
     value: parentForm
       ? // @ts-expect-error wtf
         state?.[parentForm]?.[element.name] ?? ''

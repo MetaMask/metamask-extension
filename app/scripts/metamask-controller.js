@@ -2269,11 +2269,11 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapController:getSnapState',
           ),
-          showDialog: (origin, type, content, placeholder) =>
+          showDialog: (origin, type, id, placeholder) =>
             this.approvalController.addAndShowApprovalRequest({
               origin,
               type: SNAP_DIALOG_TYPES[type],
-              requestData: { content, placeholder },
+              requestData: { id, placeholder },
             }),
           showNativeNotification: (origin, args) =>
             this.controllerMessenger.call(

@@ -6,6 +6,7 @@ export const button: UiComponent<Button> = ({ element, handleEvent }) => ({
   element: 'DSButton',
   props: {
     className: 'snap-ui-renderer__button',
+    marginTop: 1,
     marginBottom: 1,
     block: true,
     onClick: (event: MouseEvent<HTMLElement>) => {

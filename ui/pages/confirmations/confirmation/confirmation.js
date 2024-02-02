@@ -35,11 +35,12 @@ import { Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
+import { SnapUIRenderer } from '../../components/app/snaps/snap-ui-renderer';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
-import { DAY } from '../../../../shared/constants/time';
+import { DAY } from '../../../shared/constants/time';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -462,7 +463,22 @@ export default function ConfirmationPage({
           )
           ///: END:ONLY_INCLUDE_IF
         }
-        <MetaMaskTemplateRenderer sections={templatedValues.content} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          isSnapDialog ? (
+            <Box marginRight={4} marginLeft={4} marginTop={4}>
+              <SnapUIRenderer
+                snapId={pendingConfirmation?.origin}
+                interfaceId={pendingConfirmation?.requestData.id}
+              />
+            </Box>
+          ) : (
+            ///: END:ONLY_INCLUDE_IF
+            <MetaMaskTemplateRenderer sections={templatedValues.content} />
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
         {showWarningModal && (
           <ConfirmationWarningModal
             onSubmit={async () => {
