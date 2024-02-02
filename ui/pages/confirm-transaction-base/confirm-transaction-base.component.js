@@ -244,7 +244,7 @@ export default class ConfirmTransactionBase extends Component {
       hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
       useMaxValue
     ) {
-      console.log("updateValueToMax");
+      console.log('updateValueToMax');
       this.updateValueToMax();
     }
   }
