@@ -23,15 +23,18 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
+  FormTextField,
   IconName,
   Label,
   Modal,
+  ModalContent,
+  ModalHeader,
   ModalOverlay,
   Text,
+  ModalBody,
+  ModalFooter,
+  ButtonSize,
 } from '../../../component-library';
-import { FormTextField } from '../../../component-library/form-text-field/deprecated';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   AlignItems,
   BlockSize,
@@ -284,63 +287,70 @@ export default function NameDetails({
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleClose} onBack={handleClose}>
-            {title}
-          </ModalHeader>
-          <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
-            <Name
-              value={value}
-              type={NameType.ETHEREUM_ADDRESS}
-              disableEdit
-              internal
-            />
-          </div>
-          <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-            {instructions}
-          </Text>
-          {/* @ts-ignore */}
-          <FormTextField
-            id="address"
-            className="name-details__address"
-            label={t('nameAddressLabel')}
-            value={formattedValue}
-            marginBottom={4}
-            disabled
-            endAccessory={
-              <ButtonIcon
-                display={Display.Flex}
-                iconName={copiedAddress ? IconName.CopySuccess : IconName.Copy}
-                size={ButtonIconSize.Sm}
-                onClick={handleCopyClick}
-                color={IconColor.iconMuted}
-                ariaLabel={t('copyAddress')}
+          <ModalHeader onClose={handleClose}>{title}</ModalHeader>
+          <ModalBody>
+            <div
+              style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
+            >
+              <Name
+                value={value}
+                type={NameType.ETHEREUM_ADDRESS}
+                disableEdit
+                internal
               />
-            }
-          />
-          <Label
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            marginBottom={2}
-            className="name-details__display-name"
-          >
-            {t('nameLabel')}
-            <FormComboField
-              hideDropdownIfNoOptions
-              value={name}
-              options={proposedNameOptions}
-              placeholder={t('nameSetPlaceholder')}
-              onChange={handleNameChange}
-              onOptionClick={handleProposedNameClick}
+            </div>
+            <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
+              {instructions}
+            </Text>
+            {/* @ts-ignore */}
+            <FormTextField
+              id="address"
+              className="name-details__address"
+              label={t('nameAddressLabel')}
+              value={formattedValue}
+              marginBottom={4}
+              disabled
+              endAccessory={
+                <ButtonIcon
+                  display={Display.Flex}
+                  iconName={
+                    copiedAddress ? IconName.CopySuccess : IconName.Copy
+                  }
+                  size={ButtonIconSize.Sm}
+                  onClick={handleCopyClick}
+                  color={IconColor.iconMuted}
+                  ariaLabel={t('copyAddress')}
+                />
+              }
             />
-          </Label>
-          <Button
-            variant={ButtonVariant.Primary}
-            startIconName={IconName.Save}
-            width={BlockSize.Full}
-            onClick={handleSaveClick}
-          >
-            {t('save')}
-          </Button>
+            <Label
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexStart}
+              marginBottom={2}
+              className="name-details__display-name"
+            >
+              {t('nameLabel')}
+              <FormComboField
+                hideDropdownIfNoOptions
+                value={name}
+                options={proposedNameOptions}
+                placeholder={t('nameSetPlaceholder')}
+                onChange={handleNameChange}
+                onOptionClick={handleProposedNameClick}
+              />
+            </Label>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant={ButtonVariant.Primary}
+              startIconName={IconName.Save}
+              width={BlockSize.Full}
+              onClick={handleSaveClick}
+              size={ButtonSize.Lg}
+            >
+              {t('save')}
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>
