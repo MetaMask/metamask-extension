@@ -106,7 +106,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     chain: NETWORK_TO_NAME_MAP[chainId],
     classification: isFailedResultType ? 'error' : reason,
     blockaidVersion: BlockaidPackage.version,
-    resultType: isFailedResultType ? 'Error' : resultType,
+    resultType: isFailedResultType ? BlockaidResultType.Errored : resultType,
     reproduce: JSON.stringify(features),
   };
 

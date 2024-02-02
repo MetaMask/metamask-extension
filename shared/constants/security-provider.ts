@@ -55,6 +55,7 @@ export enum BlockaidResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',
   Benign = 'Benign',
+  Errored = 'Error',
 
   // MetaMask defined result types
   Failed = 'Failed',
