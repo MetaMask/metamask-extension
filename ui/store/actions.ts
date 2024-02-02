@@ -4790,12 +4790,34 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   };
 }
 
+/**
+ * Update the state of a given Snap interface.
+ *
+ * @param id - The Snap interface ID.
+ * @param state - The interface state.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
 export function updateInterfaceState(
   id: string,
   state: InterfaceState,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground<void>('updateInterfaceState', [id, state]);
+    forceUpdateMetamaskState(dispatch);
+  }) as any;
+}
+
+/**
+ * Delete the Snap interface from state.
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function deleteInterface(
+  id: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('deleteInterface', [id]);
     forceUpdateMetamaskState(dispatch);
   }) as any;
 }
