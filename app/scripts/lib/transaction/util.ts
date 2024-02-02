@@ -84,10 +84,12 @@ export async function addDappTransaction(
 
 export async function addTransaction(
   request: AddTransactionRequest,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   updateSecurityAlertResponseByTxId: (
     reqId: string | undefined,
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
+  ///: END:ONLY_INCLUDE_IF
 ): Promise<TransactionMeta> {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const {

@@ -8,19 +8,11 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
-
-export const SIGNING_METHODS = Object.freeze([
-  'eth_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v1',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'personal_sign',
-]);
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',

@@ -380,8 +380,8 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: 'testReason',
-            result_type: 'testResultType',
+            reason: 'loading',
+            result_type: 'validation_in_progress',
           },
         });
 

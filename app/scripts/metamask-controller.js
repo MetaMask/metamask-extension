@@ -143,7 +143,11 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import { AssetType, TokenStandard } from '../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+  SIGNING_METHODS,
+} from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -228,10 +232,7 @@ import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  createPPOMMiddleware,
-  SIGNING_METHODS,
-} from './lib/ppom/ppom-middleware';
+import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import * as PPOMModule from './lib/ppom/ppom';
 ///: END:ONLY_INCLUDE_IF
 import {
