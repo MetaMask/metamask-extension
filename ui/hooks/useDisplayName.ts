@@ -11,7 +11,7 @@ import { useName } from './useName';
  * @param variation
  * @returns An object with two properties:
  * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
- * - `hasPetname` {boolean} - True iff there is a petname for the given address.
+ * - `hasPetname` {boolean} - True if there is a petname for the given address.
  */
 export function useDisplayName(
   value: string,

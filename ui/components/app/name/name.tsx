@@ -73,7 +73,7 @@ export default function Name({
   }, [setModalOpen]);
 
   const formattedValue = formatValue(value, type);
-  const hasName = Boolean(name);
+  const hasDisplayName = Boolean(name);
 
   return (
     <div>
@@ -84,12 +84,12 @@ export default function Name({
         className={classnames({
           name: true,
           name__saved: hasPetname,
-          name__recognized_unsaved: !hasPetname && hasName,
-          name__missing: !hasName,
+          name__recognized_unsaved: !hasPetname && hasDisplayName,
+          name__missing: !hasDisplayName,
         })}
         onClick={handleClick}
       >
-        {hasName ? (
+        {hasDisplayName ? (
           <Identicon address={value} diameter={18} />
         ) : (
           <Icon
@@ -98,7 +98,7 @@ export default function Name({
             size={IconSize.Lg}
           />
         )}
-        {hasName ? (
+        {hasDisplayName ? (
           <Text className="name__name" variant={TextVariant.bodyMd}>
             {name}
           </Text>
