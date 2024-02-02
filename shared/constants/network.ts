@@ -139,6 +139,8 @@ export const CHAIN_IDS = {
   LINEA_GOERLI: '0xe704',
   LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
+  MODE: '0x868b',
+  MODE_TESTNET: '0x397',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
@@ -239,6 +241,7 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const MODE_DISPLAY_NAME = 'Mode';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -348,6 +351,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   OASYS_MAINNET: 'OAS',
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
+  MODE: 'ETH',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -410,6 +414,7 @@ export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
 export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
+export const MODE_IMAGE_URL = './images/mode.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -620,6 +625,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
+  [CHAINLIST_CHAIN_IDS_MAP.MODE]: CHAINLIST_CURRENCY_SYMBOLS_MAP.MODE,
 } as const;
 
 export const CHAIN_ID_TO_TYPE_MAP = {
@@ -701,6 +707,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.VELAS_EVM_MAINNET]: VELAS_EVM_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZKATANA]: ZKATANA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.MODE]: MODE_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -812,6 +819,10 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
+  [CHAIN_IDS.MODE]: {
+    domain: 'mode.network',
+    subdomain: 'explorer',
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -857,6 +868,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
+    | typeof CHAIN_IDS.MODE
+    | typeof CHAIN_IDS.MODE_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -1010,6 +1023,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://basescan.org',
       imageUrl: BASE_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.MODE,
+    nickname: MODE_DISPLAY_NAME,
+    rpcUrl: `https://mainnet.mode.network`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.mode.network',
+      imageUrl: MODE_IMAGE_URL,
     },
   },
 ];
