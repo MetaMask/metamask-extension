@@ -9,8 +9,8 @@ import {
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
 
+import type { PolymorphicRef, TextProps } from '..';
 import { Box, Icon, IconName, Text } from '..';
 
 import { CheckboxProps, CheckboxComponent } from './checkbox.types';
@@ -32,7 +32,6 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
       title,
       name,
       label,
-      as: _as, // ignore, `as` in props is not a valid property on `Text`
       ...props
     }: CheckboxProps<C>,
     ref?: PolymorphicRef<C>,
@@ -52,12 +51,11 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
         className={classnames('mm-checkbox', className, {
           'mm-checkbox--disabled': Boolean(isDisabled),
         })}
-        as="label"
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
         ref={ref}
         htmlFor={id}
-        {...props}
+        {...(props as TextProps<C>)}
       >
         <span className="mm-checkbox__input-wrapper">
           <Box

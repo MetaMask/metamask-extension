@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
 import { Box } from '..';
-import type { PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '..';
 
 import {
   BadgeWrapperPosition,
@@ -22,7 +22,6 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       positionObj,
       anchorElementShape = BadgeWrapperAnchorElementShape.circular,
       className = '',
-      as: _as, // ignore, `as` in props is not a valid property on `Box`
       ...props
     }: BadgeWrapperProps<C>,
     ref?: PolymorphicRef<C>,
@@ -31,7 +30,7 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       className={classnames('mm-badge-wrapper', className)}
       ref={ref}
       display={Display.InlineBlock}
-      {...props}
+      {...(props as BoxProps<C>)}
     >
       {/* Generally the AvatarAccount or AvatarToken */}
       {children}
