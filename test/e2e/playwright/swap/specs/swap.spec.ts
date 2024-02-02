@@ -1,9 +1,9 @@
 import { test } from '@playwright/test';
 
-import { ChromeExtensionPage } from '../support/extension-page';
-import { SignUpPage } from '../support/signup-page';
-import { NetworkController } from '../support/network-controller-page';
-import { SwapPage } from '../support/swap-page';
+import { ChromeExtensionPage } from '../pageObjects/extension-page';
+import { SignUpPage } from '../pageObjects/signup-page';
+import { NetworkController } from '../pageObjects/network-controller-page';
+import { SwapPage } from '../pageObjects/swap-page';
 
 let swapPage, networkController;
 
@@ -42,7 +42,7 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
 });
 
 test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC', async () => {
-  await swapPage.fetchQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
+  await swapPage.fetchQuote({ from: 'WETH', to: 'ETH', qty: '.001' });
   await swapPage.switchTokens();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
