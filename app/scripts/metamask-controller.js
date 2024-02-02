@@ -81,12 +81,11 @@ import {
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
-} from '@metamask/snaps-controllers';
-import {
-  createSnapsMethodMiddleware,
+  SnapInterfaceController,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-} from '@metamask/snaps-rpc-methods';
+} from '@metamask/snaps-controllers';
+import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -1283,6 +1282,7 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [],
       allowedActions: [],
     });
+
     this.snapsRegistry = new JsonSnapsRegistry({
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
@@ -1294,6 +1294,20 @@ export default class MetamaskController extends EventEmitter {
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
+    });
+
+    const snapInterfaceControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'SnapInterfaceController',
+        allowedActions: [
+          'PhishingController:maybeUpdateState',
+          'PhishingController:testOrigin',
+        ],
+      });
+
+    this.snapInterfaceController = new SnapInterfaceController({
+      state: initState.SnapInterfaceController,
+      messenger: snapInterfaceControllerMessenger,
     });
 
     ///: END:ONLY_INCLUDE_IF
