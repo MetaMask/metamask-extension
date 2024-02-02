@@ -51,28 +51,6 @@ let extensionMux,
   pageMux,
   pageChannel;
 
-/**
- * Injects a script tag into the current document
- *
- * @param {string} src - Path to code to be executed in the current document.
- * @example injectScript(chrome.extension.getURL('inpage.js'))
- */
-function injectScript(src) {
-  try {
-    const script = document.createElement("script");
-    // A script that has been injected into the DOM is executed asynchronously
-    // by default, but we need inpage.js to block so `window.ethereum` is
-    // available before the page's own scripts load.
-    script.async = false
-    script.src = src;
-    document.documentElement.prepend(script);
-    // Immediately remove the script so we don't modify the DOM. Modifiying the
-    // DOM could break some websites that rely on specific DOM structures.
-    script.remove();
-  } catch (error) {
-    console.error("MetaMask: Provider injection failed.", error);
-  }
-}
 
 /**
  * PHISHING STREAM LOGIC
@@ -540,9 +518,6 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
-    if (!isManifestV3) {
-      injectScript(chrome.extension.getURL('inpage.js'))
-    }
     initStreams();
 
     // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
