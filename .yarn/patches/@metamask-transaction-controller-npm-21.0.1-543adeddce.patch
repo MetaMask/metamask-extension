@@ -41,7 +41,7 @@ index 470ed9065fa18ab5ce5b0c5fb3d3101faa6263d1..c9400c196854c82d20c33d2b802027ac
  //# sourceMappingURL=TransactionController.d.ts.map
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799ded4055f7 100644
+index 890cd7037609021a855937360b58f724c08cf274..114ff61883e23ca84da95839ce4bf8aea0f4de23 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
 @@ -26,7 +26,11 @@ const events_1 = require("events");
@@ -64,13 +64,14 @@ index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799d
          /**
           * EventEmitter instance used to listen to specific transactional events
           */
-@@ -191,6 +196,18 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -191,6 +196,19 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
              },
          });
          this.addPendingTransactionTrackerListeners();
 +        this.gasFeeFlows = this.getGasFeeFlows();
 +        const gasFeePoller = new GasFeePoller_1.GasFeePoller({
-+            gasFeeFlows: this.gasFeeFlows,
++            // Default gas fee polling is not yet supported by the clients
++            gasFeeFlows: this.gasFeeFlows.slice(0, -1),
 +            getEthQuery: () => this.ethQuery,
 +            getGasFeeControllerEstimates: this.getGasFeeEstimates,
 +            getProviderConfig: () => this.getNetworkState().providerConfig,
@@ -83,7 +84,7 @@ index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799d
          onNetworkStateChange(() => {
              (0, logger_1.projectLogger)('Detected network change', this.getChainId());
              this.onBootCleanup();
-@@ -1034,6 +1051,23 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -1034,6 +1052,23 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
          const transactions = this.state.transactions.filter(({ status }) => status !== types_1.TransactionStatus.unapproved);
          this.update({ transactions: this.trimTransactionsForState(transactions) });
      }
@@ -107,7 +108,7 @@ index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799d
      addMetadata(transactionMeta) {
          const { transactions } = this.state;
          transactions.push(transactionMeta);
-@@ -1052,8 +1086,9 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -1052,8 +1087,9 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
              yield (0, gas_fees_1.updateGasFees)({
                  eip1559: isEIP1559Compatible,
                  ethQuery: this.ethQuery,
@@ -118,7 +119,7 @@ index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799d
                  txMeta: transactionMeta,
              });
          });
-@@ -1547,12 +1582,16 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -1547,12 +1583,16 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
          this.pendingTransactionTracker.hub.on('transaction-updated', this.updateTransaction.bind(this));
      }
      signTransaction(transactionMeta, txParams) {
@@ -137,7 +138,7 @@ index 890cd7037609021a855937360b58f724c08cf274..70b93af59614747c016e2909aa47799d
              if (!signedTx) {
                  (0, logger_1.projectLogger)('Skipping signed status as no signed transaction');
                  return undefined;
-@@ -1616,6 +1655,13 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+@@ -1616,6 +1656,13 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
              }
          });
      }
@@ -1022,10 +1023,10 @@ index 0000000000000000000000000000000000000000..c68bfa02a61b9ddeb896894dbb0864f2
 \ No newline at end of file
 diff --git a/dist/helpers/GasFeePoller.js b/dist/helpers/GasFeePoller.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e37868db564b
+index 0000000000000000000000000000000000000000..ebc41f850b176ea66c839740fd92056f24b90695
 --- /dev/null
 +++ b/dist/helpers/GasFeePoller.js
-@@ -0,0 +1,117 @@
+@@ -0,0 +1,139 @@
 +"use strict";
 +var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
 +    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1050,7 +1051,7 @@ index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e378
 +var __importDefault = (this && this.__importDefault) || function (mod) {
 +    return (mod && mod.__esModule) ? mod : { "default": mod };
 +};
-+var _GasFeePoller_instances, _GasFeePoller_gasFeeFlows, _GasFeePoller_getEthQuery, _GasFeePoller_getGasFeeControllerEstimates, _GasFeePoller_getProviderConfig, _GasFeePoller_getTransactions, _GasFeePoller_interval, _GasFeePoller_running, _GasFeePoller_start, _GasFeePoller_stop, _GasFeePoller_updateTransactionSuggestedFees, _GasFeePoller_updateTransactionSugesstedFees, _GasFeePoller_getUnapprovedTransactions;
++var _GasFeePoller_instances, _GasFeePoller_gasFeeFlows, _GasFeePoller_getEthQuery, _GasFeePoller_getGasFeeControllerEstimates, _GasFeePoller_getProviderConfig, _GasFeePoller_getTransactions, _GasFeePoller_timeout, _GasFeePoller_running, _GasFeePoller_start, _GasFeePoller_stop, _GasFeePoller_onTimeout, _GasFeePoller_updateUnapprovedTransactions, _GasFeePoller_updateTransactionSuggestedFees, _GasFeePoller_getUnapprovedTransactions;
 +Object.defineProperty(exports, "__esModule", { value: true });
 +exports.GasFeePoller = void 0;
 +const utils_1 = require("@metamask/utils");
@@ -1059,7 +1060,8 @@ index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e378
 +const types_1 = require("../types");
 +const gas_flow_1 = require("../utils/gas-flow");
 +const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas-fee-poller');
-+const POLLING_INTERVAL_MILLISECONDS = 10000;
++const INTERVAL_MILLISECONDS = 10000;
++const LEVELS = ['low', 'medium', 'high'];
 +class GasFeePoller {
 +    constructor({ gasFeeFlows, getEthQuery, getGasFeeControllerEstimates, getProviderConfig, getTransactions, onStateChange, }) {
 +        _GasFeePoller_instances.add(this);
@@ -1069,7 +1071,7 @@ index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e378
 +        _GasFeePoller_getGasFeeControllerEstimates.set(this, void 0);
 +        _GasFeePoller_getProviderConfig.set(this, void 0);
 +        _GasFeePoller_getTransactions.set(this, void 0);
-+        _GasFeePoller_interval.set(this, void 0);
++        _GasFeePoller_timeout.set(this, void 0);
 +        _GasFeePoller_running.set(this, false);
 +        __classPrivateFieldSet(this, _GasFeePoller_gasFeeFlows, gasFeeFlows, "f");
 +        __classPrivateFieldSet(this, _GasFeePoller_getEthQuery, getEthQuery, "f");
@@ -1088,35 +1090,48 @@ index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e378
 +    }
 +}
 +exports.GasFeePoller = GasFeePoller;
-+_GasFeePoller_gasFeeFlows = new WeakMap(), _GasFeePoller_getEthQuery = new WeakMap(), _GasFeePoller_getGasFeeControllerEstimates = new WeakMap(), _GasFeePoller_getProviderConfig = new WeakMap(), _GasFeePoller_getTransactions = new WeakMap(), _GasFeePoller_interval = new WeakMap(), _GasFeePoller_running = new WeakMap(), _GasFeePoller_instances = new WeakSet(), _GasFeePoller_start = function _GasFeePoller_start() {
++_GasFeePoller_gasFeeFlows = new WeakMap(), _GasFeePoller_getEthQuery = new WeakMap(), _GasFeePoller_getGasFeeControllerEstimates = new WeakMap(), _GasFeePoller_getProviderConfig = new WeakMap(), _GasFeePoller_getTransactions = new WeakMap(), _GasFeePoller_timeout = new WeakMap(), _GasFeePoller_running = new WeakMap(), _GasFeePoller_instances = new WeakSet(), _GasFeePoller_start = function _GasFeePoller_start() {
 +    if (__classPrivateFieldGet(this, _GasFeePoller_running, "f")) {
 +        return;
 +    }
-+    __classPrivateFieldSet(this, _GasFeePoller_interval, setInterval(() => __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_updateTransactionSuggestedFees).call(this), POLLING_INTERVAL_MILLISECONDS), "f");
++    // Intentionally not awaiting since this starts the timeout chain.
++    // eslint-disable-next-line @typescript-eslint/no-floating-promises
++    __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_onTimeout).call(this);
 +    __classPrivateFieldSet(this, _GasFeePoller_running, true, "f");
 +    log('Started polling');
 +}, _GasFeePoller_stop = function _GasFeePoller_stop() {
 +    if (!__classPrivateFieldGet(this, _GasFeePoller_running, "f")) {
 +        return;
 +    }
-+    clearInterval(__classPrivateFieldGet(this, _GasFeePoller_interval, "f"));
-+    __classPrivateFieldSet(this, _GasFeePoller_interval, undefined, "f");
++    clearTimeout(__classPrivateFieldGet(this, _GasFeePoller_timeout, "f"));
++    __classPrivateFieldSet(this, _GasFeePoller_timeout, undefined, "f");
 +    __classPrivateFieldSet(this, _GasFeePoller_running, false, "f");
 +    log('Stopped polling');
-+}, _GasFeePoller_updateTransactionSuggestedFees = function _GasFeePoller_updateTransactionSuggestedFees() {
++}, _GasFeePoller_onTimeout = function _GasFeePoller_onTimeout() {
++    return __awaiter(this, void 0, void 0, function* () {
++        yield __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_updateUnapprovedTransactions).call(this);
++        // eslint-disable-next-line @typescript-eslint/no-misused-promises
++        __classPrivateFieldSet(this, _GasFeePoller_timeout, setTimeout(() => __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_onTimeout).call(this), INTERVAL_MILLISECONDS), "f");
++    });
++}, _GasFeePoller_updateUnapprovedTransactions = function _GasFeePoller_updateUnapprovedTransactions() {
 +    return __awaiter(this, void 0, void 0, function* () {
 +        const unapprovedTransactions = __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_getUnapprovedTransactions).call(this);
-+        log('Updating suggested gas fees', {
++        log('Found unapproved transactions', {
 +            count: unapprovedTransactions.length,
 +        });
 +        const ethQuery = __classPrivateFieldGet(this, _GasFeePoller_getEthQuery, "f").call(this);
 +        for (const transactionMeta of unapprovedTransactions) {
-+            yield __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_updateTransactionSugesstedFees).call(this, transactionMeta, ethQuery);
++            yield __classPrivateFieldGet(this, _GasFeePoller_instances, "m", _GasFeePoller_updateTransactionSuggestedFees).call(this, transactionMeta, ethQuery);
 +        }
 +    });
-+}, _GasFeePoller_updateTransactionSugesstedFees = function _GasFeePoller_updateTransactionSugesstedFees(transactionMeta, ethQuery) {
++}, _GasFeePoller_updateTransactionSuggestedFees = function _GasFeePoller_updateTransactionSuggestedFees(transactionMeta, ethQuery) {
 +    return __awaiter(this, void 0, void 0, function* () {
 +        const gasFeeFlow = (0, gas_flow_1.getGasFeeFlow)(transactionMeta, __classPrivateFieldGet(this, _GasFeePoller_gasFeeFlows, "f"));
++        if (!gasFeeFlow) {
++            log('Skipping update as no gas fee flow found', transactionMeta.id);
++            return;
++        }
++        log('Found gas fee flow', gasFeeFlow.constructor.name, transactionMeta.id);
 +        const request = {
 +            ethQuery,
 +            getGasFeeControllerEstimates: __classPrivateFieldGet(this, _GasFeePoller_getGasFeeControllerEstimates, "f"),
@@ -1132,9 +1147,17 @@ index 0000000000000000000000000000000000000000..2faef2bf6a95f0ef736824c60076e378
 +            return;
 +        }
 +        this.hub.emit('transaction-updated', transactionMeta, 'GasFeePoller - Suggested gas fees updated');
-+        log('Updated suggested gas fees', {
-+            transaction: transactionMeta.id,
++        const debugSummary = LEVELS.map((level) => {
++            var _a, _b;
++            const value = (_b = (_a = transactionMeta.suggestedGasFees) === null || _a === void 0 ? void 0 : _a[level]) === null || _b === void 0 ? void 0 : _b.maxFeePerGas;
++            if (!value) {
++                return 'Missing';
++            }
++            return `${value} (${parseInt(value, 16)})`;
++        }).join(' | ');
++        log('Updated suggested gas fees', debugSummary, {
 +            suggestedGasFees: transactionMeta.suggestedGasFees,
++            transaction: transactionMeta.id,
 +        });
 +    });
 +}, _GasFeePoller_getUnapprovedTransactions = function _GasFeePoller_getUnapprovedTransactions() {
