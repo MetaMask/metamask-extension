@@ -34,6 +34,23 @@
     }
   }
 
+  &__progress {
+    width: 110px;
+    height: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: var(--color-border-muted);
+    margin: 6px auto 0;
+
+    &::before {
+      content: "";
+      display: block;
+      height: 100%;
+      width: var(--progress);
+      background-color: var(--color-primary-default);
+    }
+  }
+
   &__status {
     @include H6;
 

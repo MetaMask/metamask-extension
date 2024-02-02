@@ -64,11 +64,6 @@ import { isSuspiciousResponse } from '../../../shared/modules/security-provider.
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
@@ -212,22 +207,6 @@ export default function TokenAllowance({
 
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const onClickSupportLink = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        action: 'Confirm Screen',
-        origin: txData?.origin,
-        external_link_clicked: 'security_alert_support_link',
-      },
-    });
-  }, [trackEvent, txData?.origin]);
-  ///: END:ONLY_INCLUDE_IF
 
   const customNonceMerge = (transactionData) =>
     customNonceValue
@@ -400,11 +379,7 @@ export default function TokenAllowance({
       />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          txData={txData}
-          margin={4}
-          onClickSupportLink={onClickSupportLink}
-        />
+        <BlockaidBannerAlert txData={txData} margin={4} />
         ///: END:ONLY_INCLUDE_IF
       }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (

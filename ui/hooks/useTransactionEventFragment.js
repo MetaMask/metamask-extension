@@ -18,14 +18,16 @@ export const useTransactionEventFragment = () => {
   );
 
   const updateTransactionEventFragment = useCallback(
-    async (params) => {
-      if (!transaction || !transaction.id) {
+    async (params, _transactionId) => {
+      const transactionId = _transactionId || transaction?.id;
+
+      if (!transactionId) {
         return;
       }
       if (!fragment) {
-        await createTransactionEventFragment(transaction.id);
+        await createTransactionEventFragment(transactionId);
       }
-      updateEventFragment(`transaction-added-${transaction.id}`, params);
+      updateEventFragment(`transaction-added-${transactionId}`, params);
     },
     [fragment, transaction],
   );

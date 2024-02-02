@@ -16,7 +16,6 @@ import {
   getSwapsDefaultToken,
   getSelectedAccount,
   getPreferences,
-  getIsMainnet,
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -34,7 +33,6 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  BalanceOverview,
   AssetListConversionButton,
 } from '../../multichain';
 
@@ -57,7 +55,6 @@ const AssetList = ({ onClickAsset }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const chainId = useSelector(getCurrentChainId);
-  const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
@@ -104,7 +101,7 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
+  const { tokensWithBalances, totalFiatBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
@@ -117,17 +114,8 @@ const AssetList = ({ onClickAsset }) => {
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  let isStakeable = isMainnet;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
-
   return (
     <>
-      {process.env.MULTICHAIN ? (
-        <BalanceOverview balance={totalWeiBalance} loading={loading} />
-      ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
@@ -206,7 +194,6 @@ const AssetList = ({ onClickAsset }) => {
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
-        isStakeable={isStakeable}
       />
       <TokenList
         tokens={tokensWithBalances}
