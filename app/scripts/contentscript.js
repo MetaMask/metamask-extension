@@ -51,7 +51,6 @@ let extensionMux,
   pageMux,
   pageChannel;
 
-
 /**
  * PHISHING STREAM LOGIC
  */
