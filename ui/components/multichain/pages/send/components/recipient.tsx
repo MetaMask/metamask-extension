@@ -22,7 +22,7 @@ import { getAddressBookEntry } from '../../../../../selectors';
 import Confusable from '../../../../ui/confusable';
 import { Tab, Tabs } from '../../../../ui/tabs';
 import { AddressListItem } from '../../../address-list-item';
-import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
+import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
@@ -98,13 +98,17 @@ export const SendPageRecipient = () => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
-            <SendPageYourAccount />
+            <SendPageYourAccounts />
           </Tab>
         }
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          <Tab tabKey={CONTACTS_TAB_KEY} name={t('contacts')}>
+          <Tab
+            tabKey={CONTACTS_TAB_KEY}
+            name={t('contacts')}
+            data-testid="send-contacts-tab"
+          >
             <SendPageAddressBook />
           </Tab>
         }
@@ -116,14 +120,20 @@ export const SendPageRecipient = () => {
     <>
       {showErrorBanner ? (
         <SendPageRow>
-          <BannerAlert severity={BannerAlertSeverity.Danger}>
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            data-testid="send-recipient-error"
+          >
             {t(domainError ?? recipient.error)}
           </BannerAlert>
         </SendPageRow>
       ) : null}
       {showWarningBanner ? (
         <SendPageRow>
-          <BannerAlert severity={BannerAlertSeverity.Warning}>
+          <BannerAlert
+            severity={BannerAlertSeverity.Warning}
+            data-testid="send-recipient-warning"
+          >
             {t(domainWarning ?? recipient.warning)}
           </BannerAlert>
         </SendPageRow>
