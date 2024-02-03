@@ -76,10 +76,7 @@ async function buildScssPipeline(src, dest, devMode) {
       gulp.src(src),
       devMode && sourcemaps.init(),
       sass().on('error', sass.logError),
-      postcss([
-        autoprefixer(),
-        rtlcss()
-      ]),
+      postcss([autoprefixer(), rtlcss()]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),
