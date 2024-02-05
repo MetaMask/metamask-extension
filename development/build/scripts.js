@@ -494,7 +494,9 @@ function createScriptTasks({
         // and so `yarn source-map-explorer` can't handle it. It's also not
         // useful anyway, as inpage.js is injected as a `script.textContent`,
         // and not tracked in Sentry or browsers devtools anyway.
-        unlinkSync(path.join(__dirname, `../../dist/sourcemaps/${inpage}.js.map`));
+        unlinkSync(
+          path.join(__dirname, `../../dist/sourcemaps/${inpage}.js.map`),
+        );
       },
       createNormalBundle({
         buildTarget,
