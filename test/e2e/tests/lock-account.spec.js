@@ -27,16 +27,10 @@ describe('Lock and unlock', function () {
         await lockButton.click();
         await unlockWallet(driver);
 
-        const walletBalance = process.env.MULTICHAIN
-          ? await driver.findElement(
-              '.token-balance-overview__secondary-balance',
-            )
-          : await driver.findElement('.eth-overview__primary-balance');
-        assert.equal(
-          '$42,500.00',
-          (await walletBalance.getText()).split(/\s/u),
-          true,
+        const walletBalance = await driver.findElement(
+          '.eth-overview__primary-balance',
         );
+        assert.equal(await walletBalance.getText(), '$42,500.00\nUSD');
       },
     );
   });

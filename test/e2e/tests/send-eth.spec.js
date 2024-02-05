@@ -161,11 +161,9 @@ describe('Send ETH', function () {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
+          await unlockWallet(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
-          if (process.env.MULTICHAIN) {
-            return;
-          }
+          await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or ENS name"]',
             contractAddress,
@@ -179,7 +177,10 @@ describe('Send ETH', function () {
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          await locateAccountBalanceDOM(driver, ganacheServer);
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.equal(await balance.getText(), '$42,496.38\nUSD');
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
@@ -203,11 +204,13 @@ describe('Send ETH', function () {
           if (process.env.MULTICHAIN) {
             return;
           }
-
+          await unlockWallet(driver);
           const balance = await driver.findElement(
             '[data-testid="eth-overview__primary-currency"]',
           );
-          assert.equal(await balance.getText(), '$42,496.43\nUSD');
+          await driver.isElementPresent('.loading-overlay__spinner');
+          await driver.waitForElementNotPresent('.loading-overlay__spinner');
+          assert.equal(await balance.getText(), '$42,500.00\nUSD');
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
@@ -405,10 +408,14 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
+            await unlockWallet(driver);
             const balance = await driver.findElement(
               '[data-testid="eth-overview__primary-currency"]',
             );
-            assert.equal(await balance.getText(), '$42,496.43\nUSD');
+
+            await driver.isElementPresent('.loading-overlay__spinner');
+            await driver.waitForElementNotPresent('.loading-overlay__spinner');
+            assert.equal(await balance.getText(), '$42,500.00\nUSD');
 
             await openActionMenuAndStartSendFlow(driver);
             if (process.env.MULTICHAIN) {
