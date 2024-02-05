@@ -702,8 +702,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
+    "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -979,6 +978,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyPrivateKey": {
+    "message": "Copy private key"
   },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
@@ -2199,6 +2201,9 @@
   "ipfsToggleModalSettings": {
     "message": "Settings > Security and privacy"
   },
+  "isSigningOrSubmitting": {
+    "message": "A previous transaction is still being signed or submitted"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -3131,18 +3136,6 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
-  },
-  "notificationsStakingPortfolioActionText": {
-    "message": "Got it",
-    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioDescription": {
-    "message": "Now you can stake ETH and manage your rewards all in one place.",
-    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioTitle": {
-    "message": "Stake smarter in Portfolio",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -4271,6 +4264,9 @@
   },
   "signin": {
     "message": "Sign-In"
+  },
+  "signing": {
+    "message": "Signing"
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
