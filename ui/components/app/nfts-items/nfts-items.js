@@ -222,8 +222,11 @@ export default function NftsItems({
               const nftImageURL = imageOriginal?.startsWith('ipfs')
                 ? nftImage
                 : image;
-              const nftSrcUrl = imageOriginal ?? image;
-              const isIpfsURL = (nftSrcUrl ?? tokenURI)?.startsWith('ipfs:');
+              const isIpfsURL = (
+                imageOriginal ??
+                image ??
+                tokenURI
+              )?.startsWith('ipfs:');
               const handleImageClick = () => {
                 if (isModal) {
                   return onSendNft(nft);
