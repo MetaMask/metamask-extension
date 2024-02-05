@@ -44,7 +44,7 @@ async function editNetworkDetails(
   const inputTextFieldToEdit: WebElement =
     getAllInputElements[indexOfInputField];
   await inputTextFieldToEdit.clear();
-  await inputTextFieldToEdit.fill(inputValue);
+  await inputTextFieldToEdit.sendKeys(inputValue);
 }
 
 async function navigateToEditNetwork(driver: Driver): Promise<void> {
