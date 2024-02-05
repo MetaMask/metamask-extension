@@ -108,7 +108,7 @@ describe('AccountDetails', () => {
     );
 
     const hook = queryByText(textHook);
-    const rootNode = hook.parentElement.querySelector('span span');
+    const rootNode = hook.parentElement.querySelector('span');
     expect(LavaDomeDebug.getTextByRoot(rootNode)).toContain(samplePrivateKey);
   });
 

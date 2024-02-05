@@ -449,7 +449,7 @@
     "@types/jest": "^29.1.2",
     "@types/madge": "^5.0.0",
     "@types/mocha": "^10.0.3",
-    "@types/node": "^18",
+    "@types/node": "^20",
     "@types/pify": "^5.0.1",
     "@types/pump": "^1.1.1",
     "@types/react": "^16.9.53",
@@ -590,8 +590,8 @@
     "yargs": "^17.0.1"
   },
   "engines": {
-    "node": ">= 18",
-    "yarn": "^4.0.0-rc.48"
+    "node": ">= 20",
+    "yarn": "^4.0.2"
   },
   "lavamoat": {
     "allowScripts": {
