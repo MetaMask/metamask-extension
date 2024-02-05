@@ -39,7 +39,7 @@ test.describe('MMI dapps', () => {
     page,
     context,
   }) => {
-    await dappsTest(page, context, 'showMeTheMoneyButton_goerli');
+    await dappsTest(page, context, 'showMeTheMoneyButton_sepolia');
   });
 
   test('MMI connects to dapp, clicks "Approve tokens" button and confirm from custody', async ({
@@ -53,6 +53,6 @@ test.describe('MMI dapps', () => {
     page,
     context,
   }) => {
-    await dappsTest(page, context, 'useSuperPowers_goerli');
+    await dappsTest(page, context, 'useSuperPowers_sepolia');
   });
 });
