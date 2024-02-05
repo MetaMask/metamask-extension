@@ -16,7 +16,10 @@ const middleware = [thunk];
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
+  disconnectGasFeeEstimatePoller: jest.fn(),
   promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
