@@ -453,9 +453,7 @@ const NetworksForm = ({
             formTickerSymbol.toLowerCase()
           ) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
-            warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              returnedTickerSymbol,
-            ]);
+            warningMessage = t('chainListReturnedDifferentTickerSymbol');
             setSuggestedTicker(returnedTickerSymbol);
           }
         }
