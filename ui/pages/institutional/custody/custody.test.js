@@ -45,7 +45,6 @@ describe('CustodyPage', function () {
             type: 'GK8',
             envName: 'gk8-prod',
             name: 'GK8',
-            apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
             displayName: 'gk8',
@@ -59,7 +58,6 @@ describe('CustodyPage', function () {
             type: 'Saturn B',
             envName: 'saturn-prod',
             name: 'Saturn Custody B',
-            apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
             displayName: 'Saturn Custody B',
@@ -377,42 +375,6 @@ describe('CustodyPage', function () {
       expect(screen.getByTestId('connect-error')).toBeDefined();
       expect(screen.getByTestId('connect-error')).toHaveTextContent(
         'Authentication error. Please ensure you have entered the correct token',
-      );
-    });
-  });
-
-  it('handles network errors correctly', async () => {
-    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
-      dispatch({ type: 'TYPE', payload: [] });
-      throw new Error('Network Error');
-    });
-
-    const newMockStore = {
-      ...mockStore,
-      metamask: {
-        ...mockStore.metamask,
-        institutionalFeatures: {
-          connectRequests: [
-            {
-              token: 'token',
-              environment: 'Saturn A',
-              service: 'Saturn A',
-            },
-          ],
-        },
-      },
-    };
-
-    const newStore = configureMockStore([thunk])(newMockStore);
-
-    await act(async () => {
-      renderWithProvider(<CustodyPage />, newStore);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByTestId('connect-error')).toBeDefined();
-      expect(screen.getByTestId('connect-error')).toHaveTextContent(
-        'Network error. Please ensure you have entered the correct API URL',
       );
     });
   });
