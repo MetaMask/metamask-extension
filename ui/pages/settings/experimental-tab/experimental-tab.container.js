@@ -54,7 +54,7 @@ const mapDispatchToProps = (dispatch) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     setAddSnapAccountEnabled: (val) => setAddSnapAccountEnabled(val),
     ///: END:ONLY_INCLUDE_IF
-    setUseRequestQueue: (val) => dispatch(setUseRequestQueue(val)),
+    setUseRequestQueue: (val) => setUseRequestQueue(val),
     setPetnamesEnabled: (value) => {
       return dispatch(setPetnamesEnabled(value));
     },
