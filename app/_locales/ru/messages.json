@@ -647,10 +647,6 @@
   "chainIdExistsErrorMsg": {
     "message": "Этот ID блокчейна в настоящее время используется сетью $1."
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Сеть с ID блокчейна $1 может использовать другой символ валюты ($2), чем тот, который вы ввели. Подтвердите, прежде чем продолжить.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chooseYourNetwork": {
     "message": "Выберите свою сеть"
   },

@@ -647,10 +647,6 @@
   "chainIdExistsErrorMsg": {
     "message": "Αυτό το αναγνωριστικό αλυσίδας χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Το δίκτυο με αναγνωριστικό αλυσίδας $1 ενδέχεται να χρησιμοποιεί διαφορετικό σύμβολο νομίσματος ($2) από αυτό που έχετε εισαγάγει. Παρακαλούμε επιβεβαιώστε το πριν συνεχίσετε.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chooseYourNetwork": {
     "message": "Επιλέξτε το δίκτυό σας"
   },

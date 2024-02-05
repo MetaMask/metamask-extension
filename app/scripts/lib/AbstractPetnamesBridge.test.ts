@@ -1,4 +1,5 @@
 import {
+  FALLBACK_VARIATION,
   NameController,
   NameControllerState,
   NameOrigin,
@@ -13,9 +14,13 @@ import {
 
 const ADDRESS_MIXEDCASE_MOCK = '0xAbc';
 const ADDRESS_LOWERCASE_MOCK = ADDRESS_MIXEDCASE_MOCK.toLowerCase();
-const NAME_MOCK = 'name1';
+const NAME1_MOCK = 'name1';
+const NAME2_MOCK = 'name2';
 const CHAIN_ID_MOCK = '0x1';
 const ORIGIN_MOCK = NameOrigin.ADDRESS_BOOK;
+
+const NON_PARTICIPANT_ORIGIN_MOCK = NameOrigin.API;
+const PARTICIPANT_ORIGIN_MOCK = NameOrigin.ACCOUNT_IDENTITY;
 
 const NO_SOURCE_ENTRIES: PetnameEntry[] = [];
 
@@ -75,6 +80,8 @@ class TestPetnamesBridge extends AbstractPetnamesBridge {
   updateSourceEntry = jest.fn();
 
   onSourceChange = jest.fn();
+
+  shouldSyncPetname = jest.fn((_: PetnameEntry) => true);
 }
 
 function createNameControllerMock(state: NameControllerState) {
@@ -139,7 +146,7 @@ describe('AbstractPetnamesBridge', () => {
 
       const PETNAME_ENTRY = createPetnameEntry(
         ADDRESS_LOWERCASE_MOCK,
-        NAME_MOCK,
+        NAME1_MOCK,
       );
       bridge.getSourceEntries.mockReturnValue([PETNAME_ENTRY]);
 
@@ -152,7 +159,7 @@ describe('AbstractPetnamesBridge', () => {
 
     it('updates entry when Source entry is updated', () => {
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createNameState(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -178,7 +185,7 @@ describe('AbstractPetnamesBridge', () => {
 
     it('deletes entry when Source entry is deleted if two-way bridge', () => {
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createNameState(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -204,7 +211,7 @@ describe('AbstractPetnamesBridge', () => {
 
     it('uses lowercase values when comparing ethereumAddresses', () => {
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createNameState(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -215,7 +222,7 @@ describe('AbstractPetnamesBridge', () => {
 
       const PETNAME_ENTRY = createPetnameEntry(
         ADDRESS_MIXEDCASE_MOCK,
-        NAME_MOCK,
+        NAME1_MOCK,
       );
       bridge.getSourceEntries.mockReturnValue([PETNAME_ENTRY]);
 
@@ -227,30 +234,61 @@ describe('AbstractPetnamesBridge', () => {
       expect(nameController.setName).not.toHaveBeenCalled();
     });
 
-    it('should not delete Petname entry when Source entry is deleted if not two-way bridge', () => {
-      const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
-      );
-      const bridge = new TestPetnamesBridge({
-        isTwoWay: false,
-        nameController,
-        messenger,
+    describe('shouldSyncPetname', () => {
+      it('masks certain Petname entries from being deleted', () => {
+        const nameController = createNameControllerMock({
+          ...EMPTY_NAME_STATE,
+          names: {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_LOWERCASE_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  origin: NON_PARTICIPANT_ORIGIN_MOCK,
+                  name: NAME1_MOCK,
+                  sourceId: null,
+                  proposedNames: {},
+                },
+                [FALLBACK_VARIATION]: {
+                  origin: PARTICIPANT_ORIGIN_MOCK,
+                  name: NAME2_MOCK,
+                  sourceId: null,
+                  proposedNames: {},
+                },
+              },
+            },
+          },
+        });
+        const bridge = new TestPetnamesBridge({
+          isTwoWay: true,
+          nameController,
+          messenger,
+        });
+        bridge.shouldSyncPetname.mockImplementation(
+          (entry: PetnameEntry) => entry.origin === PARTICIPANT_ORIGIN_MOCK,
+        );
+        bridge.init();
+
+        bridge.getSourceEntries.mockReturnValue(NO_SOURCE_ENTRIES);
+
+        const sourceListener = bridge.onSourceChange.mock.calls[0][0];
+        sourceListener();
+
+        // Only the entry with the PARTICIPANT_ORIGIN_MOCK should be deleted.
+        expect(nameController.setName).toHaveBeenCalledTimes(1);
+        expect(nameController.setName).toHaveBeenCalledWith({
+          value: ADDRESS_LOWERCASE_MOCK,
+          variation: FALLBACK_VARIATION,
+          type: NameType.ETHEREUM_ADDRESS,
+          // Name is set to null. sourceId and origin should not be set.
+          name: null,
+        });
       });
-      bridge.init();
-
-      bridge.getSourceEntries.mockReturnValue(NO_SOURCE_ENTRIES);
-
-      const sourceListener = bridge.onSourceChange.mock.calls[0][0];
-      sourceListener();
-
-      expect(nameController.setName).not.toHaveBeenCalled();
     });
   });
 
   describe('synchronize Petnames->Source (two-way bridge only)', () => {
     it('should throw an error when updateSourceEntry is not overridden', () => {
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createNameState(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
       const bridge = new (class extends AbstractPetnamesBridge {
         // NOTE: updateSourceEntry is not overridden for this test class.
@@ -277,7 +315,7 @@ describe('AbstractPetnamesBridge', () => {
 
     it('calls updateSourceEntry with ADDED entry when Petnames entry is added', () => {
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createNameState(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -295,13 +333,13 @@ describe('AbstractPetnamesBridge', () => {
       expect(bridge.updateSourceEntry).toHaveBeenCalledTimes(1);
       expect(bridge.updateSourceEntry).toHaveBeenCalledWith(
         ChangeType.ADDED,
-        createPetnameEntry(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createPetnameEntry(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
     });
 
     it('calls updateSourceEntry with UPDATED entry when Petnames entry is updated', () => {
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createNameState(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -311,7 +349,7 @@ describe('AbstractPetnamesBridge', () => {
       bridge.init();
 
       bridge.getSourceEntries.mockReturnValue([
-        createPetnameEntry(ADDRESS_LOWERCASE_MOCK, NAME_MOCK),
+        createPetnameEntry(ADDRESS_LOWERCASE_MOCK, NAME1_MOCK),
       ]);
 
       const UPDATED_NAME = 'updatedName';
@@ -342,7 +380,7 @@ describe('AbstractPetnamesBridge', () => {
 
       const PETNAME_ENTRY_WITH_NAME_1 = createPetnameEntry(
         ADDRESS_LOWERCASE_MOCK,
-        NAME_MOCK,
+        NAME1_MOCK,
       );
       bridge.getSourceEntries.mockReturnValue([PETNAME_ENTRY_WITH_NAME_1]);
 
@@ -355,6 +393,62 @@ describe('AbstractPetnamesBridge', () => {
         ChangeType.DELETED,
         PETNAME_ENTRY_WITH_NAME_1,
       );
+    });
+
+    describe('shouldSyncPetname', () => {
+      it('masks certain Petname entries from being added to the Source', () => {
+        const nameController = createNameControllerMock({
+          ...EMPTY_NAME_STATE,
+          names: {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_LOWERCASE_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  origin: NON_PARTICIPANT_ORIGIN_MOCK,
+                  name: NAME1_MOCK,
+                  sourceId: null,
+                  proposedNames: {},
+                },
+                [FALLBACK_VARIATION]: {
+                  origin: PARTICIPANT_ORIGIN_MOCK,
+                  name: NAME2_MOCK,
+                  sourceId: null,
+                  proposedNames: {},
+                },
+              },
+            },
+          },
+        });
+        const bridge = new TestPetnamesBridge({
+          isTwoWay: true,
+          nameController,
+          messenger,
+        });
+        bridge.shouldSyncPetname.mockImplementation(
+          (entry: PetnameEntry) => entry.origin === PARTICIPANT_ORIGIN_MOCK,
+        );
+        bridge.init();
+
+        bridge.getSourceEntries.mockReturnValue(NO_SOURCE_ENTRIES);
+
+        bridge.getSourceEntries.mockReturnValue(NO_SOURCE_ENTRIES);
+
+        const petnamesListener = messenger.subscribe.mock
+          .calls[0][1] as () => void;
+        petnamesListener();
+
+        // Only the entry with the PARTICIPANT_ORIGIN_MOCK should be added.
+        expect(bridge.updateSourceEntry).toHaveBeenCalledTimes(1);
+        expect(bridge.updateSourceEntry).toHaveBeenCalledWith(
+          ChangeType.ADDED,
+          {
+            value: ADDRESS_LOWERCASE_MOCK,
+            name: NAME2_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: FALLBACK_VARIATION,
+            origin: PARTICIPANT_ORIGIN_MOCK,
+          },
+        );
+      });
     });
   });
 });

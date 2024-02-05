@@ -647,10 +647,6 @@
   "chainIdExistsErrorMsg": {
     "message": "यह चेन ID वर्तमान में $1 नेटवर्क द्वारा इस्तेमाल की जाती है।"
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "चेन ID $1 वाला नेटवर्क आपके द्वारा एंटर किए गए करेंसी सिंबल ($2) से अलग करेंसी चिह्न का इस्तेमाल कर सकता है। कृपया जारी रखने से पहले वेरीफ़ाई करें।",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chooseYourNetwork": {
     "message": "अपना नेटवर्क चुनें"
   },
