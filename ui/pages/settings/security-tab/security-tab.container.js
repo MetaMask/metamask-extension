@@ -15,12 +15,16 @@ import {
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
+  ///: END:ONLY_INCLUDE_IF
   setTransactionSecurityCheckEnabled,
 } from '../../../store/actions';
 import {
   getAllNetworks,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   getIsSecurityAlertsEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getIsTransactionSecurityCheckEnabled,
   getPetnamesEnabled,
 } from '../../../selectors';
@@ -71,7 +75,6 @@ const mapStateToProps = (state) => {
     petnamesEnabled,
     transactionSecurityCheckEnabled:
       getIsTransactionSecurityCheckEnabled(state),
-
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
