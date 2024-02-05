@@ -572,7 +572,7 @@ export default class MMIController extends EventEmitter {
     const networks = [
       ...networkConfigurations,
       { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
+      { chainId: CHAIN_IDS.SEPOLIA },
     ];
 
     return handleMmiPortfolio({
