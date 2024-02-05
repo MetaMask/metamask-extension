@@ -475,19 +475,21 @@ function createScriptTasks({
         // MV3 injects inpage into the tab's main world, but in MV2 we need
         // to do it manually:
         if (process.env.ENABLE_MV3) {
-          return;
+          throw new Error("uh, why is mv3 enabled?");
         }
         // stringify inpage.js into itself, and then make it inject itself into the page
-        const inpagePath = path.join(
-          __dirname,
-          '../../',
-          `dist/chrome/${inpage}.js`,
-        );
-        const textContent = JSON.stringify(readFileSync(inpagePath, 'utf8'))
-          .replace(/\u2028/gu, '\\u2028')
-          .replace(/\u2029/gu, '\\u2029');
-        const html = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
-        writeFileSync(inpagePath, html, 'utf8');
+        browserPlatforms.forEach((browser) => {
+          const inpagePath = path.join(
+            __dirname,
+            '../../',
+            `dist/${browser}/${inpage}.js`,
+          );
+          const textContent = JSON.stringify(readFileSync(inpagePath, 'utf8'))
+            .replace(/\u2028/gu, '\\u2028')
+            .replace(/\u2029/gu, '\\u2029');
+          const html = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
+          writeFileSync(inpagePath, html, 'utf8');
+        });
       },
       createNormalBundle({
         buildTarget,
