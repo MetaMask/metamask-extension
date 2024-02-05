@@ -68,7 +68,7 @@ const PriorityFeeInput = () => {
     ) {
       return advancedGasFeeValues.priorityFee;
     }
-    return maxPriorityFeePerGas;
+    return new Numeric(maxPriorityFeePerGas, 10).toString();
   });
 
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);

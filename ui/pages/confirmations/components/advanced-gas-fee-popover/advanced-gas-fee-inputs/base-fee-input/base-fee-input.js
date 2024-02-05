@@ -74,7 +74,7 @@ const BaseFeeInput = () => {
       return advancedGasFeeValues.maxBaseFee;
     }
 
-    return maxFeePerGas;
+    return new Numeric(maxFeePerGas, 10)?.toString();
   });
 
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
