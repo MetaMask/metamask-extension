@@ -43,25 +43,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
-      const existingState = reduxStore.getState();
-      const inputState = data.params[0];
-
-      // Generate patches for changes to keys in the metamask state object
-      const [nextState, patches] = produceWithPatches(
-        existingState.metamask,
-        (draft) => {
-          const keys = Object.keys(inputState);
-          for (const key of keys) {
-            if (!isEqual(draft[key], inputState[key])) {
-              draft[key] = inputState[key];
-            }
-          }
-        },
-      );
-
-      if (patches.length > 0) {
-        reduxStore.dispatch(actions.updateMetamaskState(nextState, patches));
-      }
+      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(

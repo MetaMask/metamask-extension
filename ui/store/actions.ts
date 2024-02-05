@@ -27,7 +27,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
-import { Patch } from 'immer';
+import { produceWithPatches } from 'immer';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1545,13 +1545,26 @@ export function unlockSucceeded(message?: string) {
 }
 
 export function updateMetamaskState(
-  newState: MetaMaskReduxState['metamask'],
-  patches?: Patch[],
+  rawNewState: MetaMaskReduxState['metamask'],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
     const state = getState();
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
+
+    // Generate patches for changes to keys in the metamask state object
+    const [newState, patches] = produceWithPatches(currentState, (draft) => {
+      const keys = Object.keys(rawNewState);
+      for (const key of keys) {
+        if (!isEqual(draft[key], rawNewState[key])) {
+          draft[key] = rawNewState[key];
+        }
+      }
+    });
+
+    if (patches.length === 0) {
+      return;
+    }
 
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
@@ -1620,17 +1633,10 @@ export function updateMetamaskState(
         },
       });
     }
-    if (patches) {
-      dispatch({
-        type: actionConstants.PATCH_METAMASK_STATE,
-        value: patches,
-      });
-    } else {
-      dispatch({
-        type: actionConstants.UPDATE_METAMASK_STATE,
-        value: newState,
-      });
-    }
+    dispatch({
+      type: actionConstants.PATCH_METAMASK_STATE,
+      value: patches,
+    });
     if (providerConfig.chainId !== newProviderConfig.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
