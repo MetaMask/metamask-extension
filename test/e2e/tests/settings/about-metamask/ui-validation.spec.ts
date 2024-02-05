@@ -82,23 +82,6 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
           true,
           'Meta Mask header text is not present in the about view section',
         );
-      },
-    );
-  });
-
-  it('close button', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-
-        // navigate to settings and click on about view
-        await switchToAboutView(driver);
-
         // click on `close` button
         await driver.clickElement(selectors.closeButton);
 
