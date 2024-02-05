@@ -22,7 +22,7 @@ const dappsTest = async (
 
   // Sign and submit
   const statusName = await client.submitTransactionById(custodianTxId);
-  if (buttonId === 'useSuperPowers_goerli') {
+  if (buttonId === 'useSuperPowers_sepolia') {
     await mainPage.checkLastTransactionStatus(/Failed/iu);
   } else {
     await mainPage.checkLastTransactionStatus(statusName);
