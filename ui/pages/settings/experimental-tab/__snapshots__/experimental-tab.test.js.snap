@@ -24,7 +24,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         class="settings-page__content-item-col"
       >
         <label
-          class="toggle-button toggle-button--off request-queue-toggle"
+          class="toggle-button toggle-button--off petnames-toggle"
           tabindex="0"
         >
           <div

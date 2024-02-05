@@ -135,7 +135,7 @@
     "permissionActivityLog": "object",
     "subjectMetadata": "object",
     "announcements": "object",
-    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},

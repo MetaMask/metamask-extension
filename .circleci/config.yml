@@ -3,27 +3,30 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:18.18-browsers
+      - image: cimg/node:20.11-browsers
     environment:
+      FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=3072
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:18.18-browsers
+      - image: cimg/node:20.11-browsers
     resource_class: medium+
     environment:
+      FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=4096
   node-browsers-large:
     docker:
-      - image: cimg/node:18.18-browsers
+      - image: cimg/node:20.11-browsers
     resource_class: large
     environment:
+      FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=4096
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.39.0-jammy
+      - image: mcr.microsoft.com/playwright:v1.41.1-jammy
 
 orbs:
   gh: circleci/github-cli@2.0
