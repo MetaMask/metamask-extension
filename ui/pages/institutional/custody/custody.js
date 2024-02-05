@@ -84,7 +84,6 @@ const CustodyPage = () => {
   const [currentJwt, setCurrentJwt] = useState('');
   const [selectError, setSelectError] = useState('');
   const [jwtList, setJwtList] = useState([]);
-  const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
@@ -138,7 +137,6 @@ const CustodyPage = () => {
         setSelectedCustodianName(custodian.envName);
         setSelectedCustodianDisplayName(custodian.displayName);
         setSelectedCustodianImage(custodian.iconUrl);
-        setApiUrl(custodian.apiUrl);
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
@@ -235,10 +233,6 @@ const CustodyPage = () => {
           }
         }
 
-        if (/Network Error/u.test(error.message)) {
-          return 'Network error. Please ensure you have entered the correct API URL';
-        }
-
         return error.message;
       };
 
@@ -266,7 +260,6 @@ const CustodyPage = () => {
             token,
             environment: custodianName, // this is the env name
             service: custodianType,
-            apiUrl: custodianApiUrl,
           } = connectRequest;
 
           const custodianToken =
@@ -275,7 +268,6 @@ const CustodyPage = () => {
           setCurrentJwt(custodianToken);
           setSelectedCustodianType(custodianType);
           setSelectedCustodianName(custodianName || custodianType);
-          setApiUrl(custodianApiUrl);
           setConnectError('');
 
           const accountsValue = await dispatch(
@@ -294,7 +286,6 @@ const CustodyPage = () => {
             event: MetaMetricsEventName.CustodianConnected,
             properties: {
               custodian: custodianName,
-              apiUrl,
               rpc: Boolean(connectRequest),
             },
           });
@@ -347,7 +338,6 @@ const CustodyPage = () => {
     setSelectedCustodianType('');
     setSelectedCustodianImage(null);
     setSelectedCustodianDisplayName('');
-    setApiUrl('');
     setCurrentJwt('');
     setConnectError('');
     setSelectError('');
@@ -493,11 +483,6 @@ const CustodyPage = () => {
                 currentJwt={currentJwt}
                 onJwtChange={(jwt) => setCurrentJwt(jwt)}
                 jwtInputText={t('pasteJWTToken')}
-                apiUrl={apiUrl}
-                urlInputText={t('custodyApiUrl', [
-                  selectedCustodianDisplayName,
-                ])}
-                onUrlChange={(url) => setApiUrl(url)}
               />
             </Box>
           </Box>
@@ -538,7 +523,6 @@ const CustodyPage = () => {
                         event: MetaMetricsEventName.CustodianConnected,
                         properties: {
                           custodian: selectedCustodianName,
-                          apiUrl,
                           rpc: Boolean(connectRequest),
                         },
                       });
@@ -632,7 +616,6 @@ const CustodyPage = () => {
             setSelectedCustodianType(null);
             setSelectedAccounts({});
             setCurrentJwt('');
-            setApiUrl('');
             setAddNewTokenClicked(false);
 
             history.push(DEFAULT_ROUTE);
