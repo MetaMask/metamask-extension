@@ -54,4 +54,11 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge {
   protected onSourceChange(listener: () => void): void {
     this.#preferencesController.store.subscribe(listener);
   }
+
+  /**
+   * @override
+   */
+  protected shouldSyncPetname(targetEntry: PetnameEntry): boolean {
+    return targetEntry.origin === NameOrigin.ACCOUNT_IDENTITY;
+  }
 }

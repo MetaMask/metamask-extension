@@ -45,10 +45,6 @@ import {
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 
@@ -161,20 +157,6 @@ export default class SignatureRequestOriginal extends Component {
       rows = [{ name: this.context.t('message'), value: data }];
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    const onClickSupportLink = () => {
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.ExternalLinkClicked,
-        properties: {
-          action: 'Sign Request',
-          origin: txData?.origin,
-          external_link_clicked: 'security_alert_support_link',
-        },
-      });
-    };
-    ///: END:ONLY_INCLUDE_IF
-
     const targetSubjectMetadata = txData.msgParams.origin
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
@@ -183,11 +165,7 @@ export default class SignatureRequestOriginal extends Component {
       <div className="request-signature__body">
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            margin={4}
-            onClickSupportLink={onClickSupportLink}
-          />
+          <BlockaidBannerAlert txData={txData} margin={4} />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
