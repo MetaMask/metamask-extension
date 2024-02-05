@@ -7,13 +7,14 @@ import {
   withFixtures,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import packageJson from '../../../../../package.json';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   settingsDiv: { text: 'Settings', tag: 'div' },
   aboutDiv: { text: 'About', tag: 'div' },
   metaMaskLabelText: { text: 'MetaMask Version', tag: 'div' },
-  metaMaskVersion: { text: '11.7.3', tag: 'div' },
+  metaMaskVersion: '.info-tab__version-number',
   headerText: {
     text: 'MetaMask is designed and built around the world.',
     tag: 'div',
@@ -64,13 +65,15 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
         );
 
         // verify the version number in the about view section to the fixture builder version as 11.7.3
-        const metaMaskVersionPresent = await driver.isElementPresent(
+        const metaMaskVersion = await driver.findElement(
           selectors.metaMaskVersion,
         );
+        const getVersionNumber = await metaMaskVersion.getText();
+        const { version } = packageJson;
         assert.equal(
-          metaMaskVersionPresent,
-          true,
-          'Meta Mask version is not present in the about view section',
+          getVersionNumber,
+          version,
+          'Meta Mask version is incorrect in the about view section',
         );
 
         // Validating the header text
