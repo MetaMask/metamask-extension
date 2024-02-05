@@ -65,17 +65,17 @@ describe('Update Network:', function (this: Suite) {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
         await driver.clickElement(selectors.ethereumNetwork);
-        // Validate the Delete button is disabled
+        // Validate the Delete button is not visible
         const deleteButtonDisabled = await driver.isElementPresentAndVisible(
           selectors.deleteButton,
         );
         assert.equal(deleteButtonDisabled, false, 'Delete button is enabled');
-        // Validate the Cancel button is disabled
+        // Validate the Cancel button is not visible
         const cancelButtonDisabled = await driver.isElementPresentAndVisible(
           selectors.cancelButton,
         );
         assert.equal(cancelButtonDisabled, false, 'Cancel button is enabled');
-        // Validate the Save button is disabled
+        // Validate the Save button is not visible
         const saveButtonDisabled = await driver.isElementPresentAndVisible(
           selectors.saveButton,
         );
@@ -111,7 +111,7 @@ describe('Update Network:', function (this: Suite) {
     );
   });
 
-  it('error message for invalid rpc url format', async function () {
+  it('error message for invalid rpc url format and information symbol appears', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -139,21 +139,6 @@ describe('Update Network:', function (this: Suite) {
         const saveButtonEnable = await driver.findElement(selectors.saveButton);
         const saveButtonDisabled = await saveButtonEnable.isEnabled();
         assert.equal(saveButtonDisabled, false, 'Save button is enabled');
-      },
-    );
-  });
-
-  it('information symbol “i” appears for chain id', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await navigateToEditNetwork(driver);
 
         const informationSymbolAppears = await driver.isElementPresent(
           testIdSelector.informationSymbol,
