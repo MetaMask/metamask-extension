@@ -138,7 +138,7 @@ export default class ExperimentalTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            className="request-queue-toggle"
+            className="petnames-toggle"
             value={petnamesEnabled}
             onToggle={(value) => setPetnamesEnabled(!value)}
             offLabel={t('off')}
