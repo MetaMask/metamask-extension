@@ -2,7 +2,7 @@
 
 const { callbackify } = require('util');
 const path = require('path');
-const { writeFileSync, readFileSync } = require('fs');
+const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const EventEmitter = require('events');
 const assert = require('assert');
 const gulp = require('gulp');
@@ -490,6 +490,11 @@ function createScriptTasks({
           const html = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
           writeFileSync(inpagePath, html, 'utf8');
         });
+        // delete the inpage.js source map, as it no longer represents inpage.js
+        // and so `yarn source-map-explorer` can't handle it. It's also not
+        // useful anyway, as inpage.js is injected as a `script.textContent`,
+        // and not tracked in Sentry or browsers devtools anyway.
+        unlinkSync(path.join(__dirname, `../../dist/sourcemaps/${inpage}.js.map`));
       },
       createNormalBundle({
         buildTarget,
