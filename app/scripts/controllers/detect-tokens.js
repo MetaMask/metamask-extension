@@ -188,10 +188,10 @@ export default class DetectTokensController extends StaticIntervalPollingControl
         tokensToDetect.push(tokenAddress);
       }
     }
-    const sliceOfTokensToDetect = [];
-    for (let i = 0, size = 1000; i < tokensToDetect.length; i += size) {
-      sliceOfTokensToDetect.push(tokensToDetect.slice(i, i + size));
-    }
+    const sliceOfTokensToDetect = [
+      tokensToDetect.slice(0, 1000),
+      tokensToDetect.slice(1000, tokensToDetect.length - 1),
+    ];
     for (const tokensSlice of sliceOfTokensToDetect) {
       let result;
       try {
