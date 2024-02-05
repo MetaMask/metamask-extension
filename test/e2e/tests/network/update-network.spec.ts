@@ -1,75 +1,85 @@
-const { strict: assert } = require('assert');
-const {
+import { strict as assert } from 'assert';
+import { WebElement } from 'selenium-webdriver';
+import { Suite } from 'mocha';
+import FixtureBuilder from '../../fixture-builder';
+import {
   defaultGanacheOptions,
-  withFixtures,
   unlockWallet,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+  withFixtures,
+} from '../../helpers';
+import { Driver } from '../../webdriver/driver';
 
-const selectors = {
+interface Selector {
+  text?: string;
+  tag?: string;
+}
+const testIdSelector: { [key: string]: string } = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
+  informationSymbol: '[data-testid="info-tooltip"]',
+  inputText: 'input[type="text"]',
+};
+
+const selectors: { [key: string]: Selector } = {
   settingsOption: { text: 'Settings', tag: 'div' },
   networkOption: { text: 'Networks', tag: 'div' },
   ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
-  appHeaderLogo: '[data-testid="app-header-logo"]',
   deleteButton: { text: 'Delete', tag: 'button' },
   cancelButton: { text: 'Cancel', tag: 'button' },
   saveButton: { text: 'Save', tag: 'button' },
-  networkText: { text: 'Localhost 8545', tag: 'input' },
-  informationSymbol: '[data-testid="info-tooltip"]',
-  inputText: 'input[type="text"]',
-  updatedNameDropDown: { tag: 'span', text: 'Update Network' },
+  updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
   errorMessageInvalidUrl: {
     tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
-  errorMessageInvalidChainId: {
-    tag: 'h6',
-    text: 'Could not fetch chain ID. Is your RPC URL correct?',
-  },
 };
 
-const editNetworkDetails = async (driver, indexOfInputField, inputValue) => {
-  const getAllInputText = await driver.findElements(selectors.inputText);
-  const inputTextFieldToEdit = getAllInputText[indexOfInputField];
+async function editNetworkDetails(
+  driver: Driver,
+  indexOfInputField: number,
+  inputValue: string,
+): Promise<void> {
+  const getAllInputElements: WebElement[] = (await driver.findElements(
+    testIdSelector.inputText,
+  )) as WebElement[];
+  const inputTextFieldToEdit: WebElement =
+    getAllInputElements[indexOfInputField];
   await inputTextFieldToEdit.clear();
   await inputTextFieldToEdit.fill(inputValue);
-};
+}
 
-async function navigateToEditNetwork(driver) {
-  await driver.clickElement(selectors.accountOptionsMenuButton);
+async function navigateToEditNetwork(driver: Driver): Promise<void> {
+  await driver.clickElement(testIdSelector.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
 }
-
-describe('Update Network:', function () {
+describe('Update Network:', function (this: Suite) {
   it('default network should not be edited', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
         await driver.clickElement(selectors.ethereumNetwork);
         // Validate the Delete button is disabled
-        const deleteButtonVisible = await driver.isElementPresentAndVisible(
+        const deleteButtonDisabled = await driver.isElementPresentAndVisible(
           selectors.deleteButton,
         );
-        assert.equal(deleteButtonVisible, false, 'Delete button is visible');
+        assert.equal(deleteButtonDisabled, false, 'Delete button is enabled');
         // Validate the Cancel button is disabled
-        const cancelButtonVisible = await driver.isElementPresentAndVisible(
+        const cancelButtonDisabled = await driver.isElementPresentAndVisible(
           selectors.cancelButton,
         );
-        assert.equal(cancelButtonVisible, false, 'Cancel button is visible');
+        assert.equal(cancelButtonDisabled, false, 'Cancel button is enabled');
         // Validate the Save button is disabled
-        const saveButtonVisible = await driver.isElementPresentAndVisible(
+        const saveButtonDisabled = await driver.isElementPresentAndVisible(
           selectors.saveButton,
         );
-        assert.equal(saveButtonVisible, false, 'Save button is visible');
+        assert.equal(saveButtonDisabled, false, 'Save button is enabled');
       },
     );
   });
@@ -79,20 +89,21 @@ describe('Update Network:', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
         await editNetworkDetails(driver, 2, 'Update Network');
         await driver.clickElement(selectors.saveButton);
 
-        const updatedNetworkName = await driver.findElement(
-          selectors.updatedNameDropDown,
+        const networkName = await driver.findElement(
+          selectors.updatedNetworkDropDown,
         );
+        const updatedNetworkName = await networkName.getText();
         assert.equal(
-          await updatedNetworkName.getText(),
+          updatedNetworkName,
           'Update Network',
           'Network name is not updated',
         );
@@ -105,10 +116,10 @@ describe('Update Network:', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
         await editNetworkDetails(driver, 3, 'test');
@@ -126,7 +137,8 @@ describe('Update Network:', function () {
 
         // Validate the Save button is disabled
         const saveButtonEnable = await driver.findElement(selectors.saveButton);
-        assert.equal(await saveButtonEnable.isEnabled(), false);
+        const saveButtonDisabled = await saveButtonEnable.isEnabled();
+        assert.equal(saveButtonDisabled, false, 'Save button is enabled');
       },
     );
   });
@@ -136,15 +148,15 @@ describe('Update Network:', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
 
         const informationSymbolAppears = await driver.isElementPresent(
-          selectors.informationSymbol,
+          testIdSelector.informationSymbol,
         );
         assert.equal(
           informationSymbolAppears,
