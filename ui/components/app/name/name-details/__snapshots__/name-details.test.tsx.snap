@@ -177,7 +177,7 @@ exports[`NameDetails renders proposed names 1`] = `
                         autocomplete="off"
                         class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                         focused="true"
-                        placeholder="Pick something descriptive"
+                        placeholder="Choose something descriptive"
                         type="text"
                         value="TestName"
                       />
@@ -396,7 +396,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                         autocomplete="off"
                         class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                         focused="true"
-                        placeholder="Pick something descriptive"
+                        placeholder="Choose something descriptive"
                         type="text"
                         value=""
                       />
@@ -620,7 +620,7 @@ exports[`NameDetails renders with saved name 1`] = `
                         autocomplete="off"
                         class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                         focused="true"
-                        placeholder="Pick something descriptive"
+                        placeholder="Choose something descriptive"
                         type="text"
                         value="TestName"
                       />
