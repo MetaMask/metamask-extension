@@ -56,7 +56,6 @@ const initState = {
 
 // Reducer
 export default function reducer(state = initState, action = {}) {
-  // console.log({ state });
   switch (action.type) {
     case UPDATE_TX_DATA:
       return {

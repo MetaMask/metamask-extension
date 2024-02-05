@@ -2383,7 +2383,7 @@ export function signTransaction() {
         ),
       );
 
-      const { id } = await dispatch(
+      const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           sendFlowHistory: draftTransaction.history,
           type: transactionType,
@@ -2392,7 +2392,7 @@ export function signTransaction() {
 
       dispatch(
         setMaxValueMode(
-          id,
+          transactionId,
           amountMode === AMOUNT_MODES.MAX &&
             draftTransaction.asset.type === AssetType.native,
         ),
