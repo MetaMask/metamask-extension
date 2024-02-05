@@ -796,18 +796,11 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
       minimumFractionDigits: 2,
     },
   );
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement(`[data-testid="home__asset-tab"]`);
-    await driver.findElement({
-      css: '[data-testid="token-balance-overview-currency-display"]',
-      text: `$ ${balance} USD`,
-    });
-  } else {
-    await driver.findElement({
-      css: '[data-testid="eth-overview__primary-currency"]',
-      text: `$ ${balance} USD`,
-    });
-  }
+
+  await driver.findElement({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `$ ${balance} USD`,
+  });
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';

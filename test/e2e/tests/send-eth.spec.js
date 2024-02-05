@@ -3,7 +3,6 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const {
   withFixtures,
   openDapp,
-  locateAccountBalanceDOM,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -157,7 +156,7 @@ describe('Send ETH', function () {
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry, ganacheServer }) => {
+        async ({ driver, contractRegistry }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
