@@ -54,7 +54,7 @@ describe('Add hide token', function () {
 
         await driver.clickElement({ text: 'Tokens', tag: 'button' });
 
-        await driver.clickElement({ text: 'TST', tag: 'span' });
+        await driver.clickElement({ text: 'TST', tag: 'p' });
 
         await driver.clickElement('[data-testid="asset-options__button"]');
 
