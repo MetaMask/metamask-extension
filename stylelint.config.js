@@ -122,6 +122,7 @@ module.exports = {
     // custom rules
 
     // 'color-named': 'never',
+    'color-no-hex': [true, { severity: 'warning' }],
     // 'font-family-name-quotes': 'always-where-recommended',
     // 'font-weight-notation': 'numeric',
     // 'function-url-quotes': 'always',
