@@ -1,6 +1,6 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import { clone } from 'lodash';
+import { clone, isEqual } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
@@ -28,6 +28,7 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
+import { produceWithPatches } from 'immer';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -42,7 +43,25 @@ export const updateBackgroundConnection = (backgroundConnection) => {
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+      const existingState = reduxStore.getState();
+      const inputState = data.params[0];
+
+      // Generate patches for changes to keys in the metamask state object
+      const [nextState, patches] = produceWithPatches(
+        existingState.metamask,
+        (draft) => {
+          const keys = Object.keys(inputState);
+          for (const key of keys) {
+            if (!isEqual(draft[key], inputState[key])) {
+              draft[key] = inputState[key];
+            }
+          }
+        },
+      );
+
+      if (patches.length > 0) {
+        reduxStore.dispatch(actions.updateMetamaskState(nextState, patches));
+      }
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(

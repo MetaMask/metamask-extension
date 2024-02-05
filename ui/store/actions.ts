@@ -114,6 +114,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { Patch } from 'immer';
 
 type CustomGasSettings = {
   gas?: string;
@@ -1545,6 +1546,7 @@ export function unlockSucceeded(message?: string) {
 
 export function updateMetamaskState(
   newState: MetaMaskReduxState['metamask'],
+  patches?: Patch[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch, getState) => {
     const state = getState();
@@ -1618,10 +1620,17 @@ export function updateMetamaskState(
         },
       });
     }
-    dispatch({
-      type: actionConstants.UPDATE_METAMASK_STATE,
-      value: newState,
-    });
+    if (patches) {
+      dispatch({
+        type: actionConstants.PATCH_METAMASK_STATE,
+        value: patches,
+      });
+    } else {
+      dispatch({
+        type: actionConstants.UPDATE_METAMASK_STATE,
+        value: newState,
+      });
+    }
     if (providerConfig.chainId !== newProviderConfig.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,

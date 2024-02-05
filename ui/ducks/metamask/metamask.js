@@ -18,6 +18,7 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { applyPatches } from 'immer';
 
 const initialState = {
   isInitialized: false,
@@ -83,6 +84,9 @@ export default function reduceMetamask(state = initialState, action) {
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
+
+    case actionConstants.PATCH_METAMASK_STATE:
+      return applyPatches(state, action.value);
 
     case actionConstants.LOCK_METAMASK:
       return {
