@@ -12,7 +12,6 @@ import {
   Point,
   ChartEvent,
 } from 'chart.js';
-// import CrosshairPlugin from 'chartjs-plugin-crosshair';
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
