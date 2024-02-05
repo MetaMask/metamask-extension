@@ -5,15 +5,25 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IF
 
-import { Text, Box } from '../../../components/component-library';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
+  Text,
+  ///: END:ONLY_INCLUDE_IF
+  Box,
+} from '../../../components/component-library';
+
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
   TextColor,
   TextVariant,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
