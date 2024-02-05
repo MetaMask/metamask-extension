@@ -475,7 +475,7 @@ function createScriptTasks({
         // MV3 injects inpage into the tab's main world, but in MV2 we need
         // to do it manually:
         if (process.env.ENABLE_MV3) {
-          throw new Error("uh, why is mv3 enabled?");
+          return;
         }
         // stringify inpage.js into itself, and then make it inject itself into the page
         browserPlatforms.forEach((browser) => {
