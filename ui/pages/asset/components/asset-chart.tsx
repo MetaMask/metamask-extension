@@ -139,7 +139,7 @@ const AssetChart = ({
     // TODO: Consider exposing HTTP request through a controller
     fetchWithCache({
       url: `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-      cacheOptions: { cacheRefreshTime: MINUTE }, // todo minute
+      cacheOptions: { cacheRefreshTime: MINUTE },
       functionName: 'GetAssetHistoricalPrices',
     })
       .catch(() => ({}))
