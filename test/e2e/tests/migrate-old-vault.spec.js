@@ -29,11 +29,9 @@ describe('Migrate vault with old encryption', function () {
         await unlock(driver);
         await lock(driver);
         await unlock(driver);
-        const walletBalance = process.env.MULTICHAIN
-          ? await driver.findElement(
-              '.token-balance-overview__secondary-balance',
-            )
-          : await driver.findElement('.eth-overview__primary-balance');
+        const walletBalance = await driver.findElement(
+          '.eth-overview__primary-balance',
+        );
 
         assert.equal(/^25\s*ETH$/u.test(await walletBalance.getText()), true);
       },

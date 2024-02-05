@@ -8,7 +8,7 @@ import {
 describe('confirm selectors', () => {
   const mockedState = {
     confirm: {
-      currentConfirmation: { dummy: 'dummy' },
+      currentConfirmation: { id: '1', type: 'contractInteraction' },
     },
     metamask: {
       pendingApprovals: {

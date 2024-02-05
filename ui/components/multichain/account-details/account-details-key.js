@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { LavaDome as LavaDomeReact } from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
   Box,
   ButtonIcon,
   ButtonPrimary,
+  HelpText,
+  HelpTextSeverity,
   IconName,
   Text,
 } from '../../component-library';
@@ -21,9 +24,12 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
+const inTest = Boolean(process.env.IN_TEST);
+
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const t = useI18nContext();
 
+  const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
   const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
 
   return (
@@ -49,14 +55,23 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           data-testid="account-details-key"
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
+          onClick={() => setShowDisableSelectWarn(true)}
         >
-          {privateKey}
+          <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
         </Text>
         <ButtonIcon
-          onClick={() => handlePrivateKeyCopy(privateKey)}
+          onClick={() =>
+            setShowDisableSelectWarn(false) || handlePrivateKeyCopy(privateKey)
+          }
           iconName={privateKeyCopied ? IconName.CopySuccess : IconName.Copy}
+          ariaLabel={t('copyPrivateKey')}
         />
       </Box>
+      {showSelectDisableWarn && (
+        <HelpText marginTop={2} severity={HelpTextSeverity.Danger}>
+          For your safety, selecting this text is not available right now.
+        </HelpText>
+      )}
       <BannerAlert severity={Severity.Danger} marginTop={4}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>

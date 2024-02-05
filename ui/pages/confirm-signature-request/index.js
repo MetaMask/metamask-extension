@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
@@ -21,10 +21,14 @@ import {
   getTargetSubjectMetadata,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  getMemoizedUnapprovedMessages,
+  getMemoizedUnapprovedPersonalMessages,
+  getMemoizedUnapprovedTypedMessages,
+  getMemoizedCurrentChainId,
+  getMemoizedTxId,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getSendTo } from '../../ducks/send';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
@@ -54,18 +58,20 @@ const ConfirmTxScreen = ({ match }) => {
     getTotalUnapprovedSignatureRequestCount,
   );
   const sendTo = useSelector(getSendTo);
-  const {
-    identities,
-    currentCurrency,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTypedMessages,
-    blockGasLimit,
-  } = useSelector((state) => state.metamask);
+  const { identities, currentCurrency, blockGasLimit } = useSelector(
+    (state) => state.metamask,
+  );
+  const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
+  const unapprovedPersonalMsgs = useSelector(
+    getMemoizedUnapprovedPersonalMessages,
+  );
+  const unapprovedTypedMessages = useSelector(
+    getMemoizedUnapprovedTypedMessages,
+  );
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
-  const { chainId } = useSelector(getProviderConfig);
-  const { txId: index } = useSelector((state) => state.appState);
+  const chainId = useSelector(getMemoizedCurrentChainId);
+  const index = useSelector(getMemoizedTxId);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
@@ -159,9 +165,9 @@ const ConfirmTxScreen = ({ match }) => {
     [],
   );
 
-  const getTxData = useCallback(() => {
-    const { params: { id: transactionId } = {} } = match;
+  const { params: { id: txIdFromPath } = {} } = match;
 
+  const txData = useMemo(() => {
     const unconfTxList = txHelper(
       unapprovedTxs || {},
       unapprovedMsgs,
@@ -174,21 +180,19 @@ const ConfirmTxScreen = ({ match }) => {
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
 
-    const unconfirmedTx = transactionId
-      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
+    const unconfirmedTx = txIdFromPath
+      ? unconfTxList.find(({ id }) => `${id}` === txIdFromPath)
       : unconfTxList[index];
-    return cloneDeep(unconfirmedTx);
+    return unconfirmedTx ? cloneDeep(unconfirmedTx) : {};
   }, [
     chainId,
     index,
-    match,
+    txIdFromPath,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTxs,
     unapprovedTypedMessages,
   ]);
-
-  const txData = useMemo(() => getTxData() || {}, [getTxData]);
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, txData.msgParams?.origin),
