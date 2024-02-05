@@ -236,7 +236,7 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const { name } = useSelector((state) =>
     getSnapMetadata(state, pendingConfirmation?.origin),
   );
