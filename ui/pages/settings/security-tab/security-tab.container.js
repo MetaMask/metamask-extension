@@ -15,8 +15,15 @@ import {
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
+  setSecurityAlertsEnabled,
+  setTransactionSecurityCheckEnabled,
 } from '../../../store/actions';
-import { getAllNetworks, getPetnamesEnabled } from '../../../selectors';
+import {
+  getAllNetworks,
+  getIsSecurityAlertsEnabled,
+  getIsTransactionSecurityCheckEnabled,
+  getPetnamesEnabled,
+} from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -62,6 +69,12 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalNameSources,
     petnamesEnabled,
+    transactionSecurityCheckEnabled:
+      getIsTransactionSecurityCheckEnabled(state),
+
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -89,6 +102,11 @@ const mapDispatchToProps = (dispatch) => {
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
+    setTransactionSecurityCheckEnabled: (value) =>
+      dispatch(setTransactionSecurityCheckEnabled(value)),
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
