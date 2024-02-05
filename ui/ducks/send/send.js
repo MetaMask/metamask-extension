@@ -2390,7 +2390,7 @@ export function signTransaction() {
         }),
       );
 
-      dispatch(
+      await dispatch(
         setMaxValueMode(
           transactionId,
           amountMode === AMOUNT_MODES.MAX &&
