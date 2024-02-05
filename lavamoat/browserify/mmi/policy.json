@@ -20,9 +20,9 @@
     "@ensdomains/content-hash>cids": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
+        "@ensdomains/content-hash>cids>multicodec": true,
         "@ensdomains/content-hash>cids>multihashes": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multicodec": true
+        "@ensdomains/content-hash>cids>uint8arrays": true
       }
     },
     "@ensdomains/content-hash>cids>multibase": {
@@ -34,11 +34,35 @@
         "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true
       }
     },
+    "@ensdomains/content-hash>cids>multicodec": {
+      "packages": {
+        "@ensdomains/content-hash>cids>multicodec>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec>varint": true
+      }
+    },
+    "@ensdomains/content-hash>cids>multicodec>uint8arrays": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ensdomains/content-hash>cids>multicodec>uint8arrays>multiformats": true
+      }
+    },
+    "@ensdomains/content-hash>cids>multicodec>uint8arrays>multiformats": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "console.warn": true,
+        "crypto.subtle.digest": true
+      }
+    },
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multihashes>varint": true
+        "@ensdomains/content-hash>cids>multihashes>varint": true,
+        "@ensdomains/content-hash>cids>uint8arrays": true
       }
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
@@ -47,7 +71,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/assets-controllers>multiformats": true
+        "@ensdomains/content-hash>cids>multibase": true
       }
     },
     "@ensdomains/content-hash>js-base64": {
@@ -70,13 +94,15 @@
       }
     },
     "@ensdomains/content-hash>multicodec>uint8arrays": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
       "packages": {
-        "@metamask/assets-controllers>multiformats": true
+        "@ensdomains/content-hash>multicodec>uint8arrays>multibase": true,
+        "@ensdomains/content-hash>multihashes>web-encoding": true
+      }
+    },
+    "@ensdomains/content-hash>multicodec>uint8arrays>multibase": {
+      "packages": {
+        "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true,
+        "@ensdomains/content-hash>multihashes>web-encoding": true
       }
     },
     "@ensdomains/content-hash>multihashes": {
@@ -869,7 +895,7 @@
       "packages": {
         "@metamask/address-book-controller>@metamask/controller-utils>@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
@@ -972,8 +998,7 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
-        "console.warn": true,
-        "crypto.subtle.digest": true
+        "console.warn": true
       }
     },
     "@metamask/base-controller": {
@@ -1578,12 +1603,6 @@
         "immer": true
       }
     },
-    "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": {
-      "packages": {
-        "@metamask/ethjs>number-to-bn": true,
-        "bn.js": true
-      }
-    },
     "@metamask/logo": {
       "globals": {
         "addEventListener": true,
@@ -1600,14 +1619,45 @@
     },
     "@metamask/message-manager": {
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/message-manager>@metamask/base-controller": true,
+        "@metamask/message-manager>@metamask/controller-utils": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "browserify>buffer": true,
         "ethereumjs-util": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/message-manager>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/message-manager>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true
+      }
+    },
+    "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": {
+      "packages": {
+        "@metamask/ethjs>number-to-bn": true,
+        "bn.js": true
       }
     },
     "@metamask/message-manager>@metamask/eth-sig-util": {
@@ -1985,7 +2035,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
@@ -2030,7 +2080,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
@@ -3084,6 +3134,55 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "chart.js": {
+      "globals": {
+        "$animations": true,
+        "Intl.NumberFormat": true,
+        "MutationObserver": true,
+        "OffscreenCanvas": true,
+        "Path2D": true,
+        "ResizeObserver": true,
+        "active": true,
+        "addEventListener": true,
+        "circumference": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "dataElementType": true,
+        "datasetElementType": true,
+        "defaultRoutes": true,
+        "defaults": true,
+        "descriptors": true,
+        "devicePixelRatio": true,
+        "document": true,
+        "endAngle": true,
+        "fullCircles": true,
+        "id": true,
+        "innerRadius": true,
+        "new": true,
+        "options": true,
+        "outerRadius": true,
+        "overrides": true,
+        "parsed": true,
+        "pixelMargin": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true,
+        "startAngle": true,
+        "stop": true,
+        "target": true,
+        "x": true,
+        "y": true
+      },
+      "packages": {
+        "chart.js>@kurkle/color": true
+      }
+    },
+    "chart.js>@kurkle/color": {
+      "globals": {
+        "define": true
+      }
+    },
     "classnames": {
       "globals": {
         "classNames": "write",
@@ -4047,6 +4146,15 @@
     },
     "react-beautiful-dnd>use-memo-one": {
       "packages": {
+        "react": true
+      }
+    },
+    "react-chartjs-2": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "chart.js": true,
         "react": true
       }
     },
