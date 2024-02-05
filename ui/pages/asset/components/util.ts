@@ -1,3 +1,11 @@
+/** Formats a datetime in a short human readable format like TODO*/
+export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+});
+
 /**
  * Formats a potentially large number to the nearest unit.
  * e.g. 1T for trillions, 2.3B for billions, 4.56M for millions, 7,890 for thousands, etc.

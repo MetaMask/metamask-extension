@@ -49,7 +49,8 @@ const fetchWithCache = async ({
       `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`,
     );
   }
-  const responseJson = await response.json();
+  const responseJson =
+    response.status === 204 ? undefined : await response.json();
   const cacheEntry = {
     cachedResponse: responseJson,
     cachedTime: currentTime,

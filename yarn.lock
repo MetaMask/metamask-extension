@@ -8657,24 +8657,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chart.js@npm:*":
-  version: 2.9.41
-  resolution: "@types/chart.js@npm:2.9.41"
-  dependencies:
-    moment: "npm:^2.10.2"
-  checksum: 302b251633bb469410c0a8bd3e9b30fdc08c14f9d92998095ae3849a1c3069f61e70df530e6598e6416b3abd13d15dd4eb4c45914300a679ce4c8dee21847301
-  languageName: node
-  linkType: hard
-
-"@types/chartjs-plugin-crosshair@npm:^1.1.4":
-  version: 1.1.4
-  resolution: "@types/chartjs-plugin-crosshair@npm:1.1.4"
-  dependencies:
-    "@types/chart.js": "npm:*"
-  checksum: c437693ffedb9da6b4fa472c3cb7575bce8235ab9b3c2dd1ef00dc043882cf76bbf1c4ade89f0a52c6a8ace09cab0932a73583c2c5a4974b408b9b110ecf2ab5
-  languageName: node
-  linkType: hard
-
 "@types/color-name@npm:^1.1.1":
   version: 1.1.1
   resolution: "@types/color-name@npm:1.1.1"
@@ -13007,25 +12989,6 @@ __metadata:
   dependencies:
     "@kurkle/color": "npm:^0.3.0"
   checksum: bb58247349ed04b6a38c4c4b45d953d87dab40ecd70dd796da302cbcebf866dfc1ecf7bd32d95ecb44b89dccf9a4cfc6ff84f74ba69b024be9b5bd19b2930fbc
-  languageName: node
-  linkType: hard
-
-"chartjs-adapter-moment@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "chartjs-adapter-moment@npm:1.0.1"
-  peerDependencies:
-    chart.js: ">=3.0.0"
-    moment: ^2.10.2
-  checksum: 98e3726e3d049d1e206e20adbf22da86ba16bd69a7570b8ea8ea945bba3645c44a012b638b06d765e1a6564121cb8bb3fd0b233014b5a40ca4910b79985ee180
-  languageName: node
-  linkType: hard
-
-"chartjs-plugin-crosshair@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "chartjs-plugin-crosshair@npm:2.0.0"
-  peerDependencies:
-    chart.js: ^4.0.1
-  checksum: f07105c2995c80d7a011a9e97765b97f1fbb1db7eab514381d0a50df665239fdc86219b920299e5363347a7857cbfef957499548df27ab756531415461b77d72
   languageName: node
   linkType: hard
 
@@ -24352,7 +24315,6 @@ __metadata:
     "@tsconfig/node16": "npm:^1.0.3"
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
-    "@types/chartjs-plugin-crosshair": "npm:^1.1.4"
     "@types/currency-formatter": "npm:^1.5.1"
     "@types/end-of-stream": "npm:^1.4.1"
     "@types/fs-extra": "npm:^9.0.13"
@@ -24401,8 +24363,6 @@ __metadata:
     browserify: "npm:^17.0.0"
     chalk: "npm:^4.1.2"
     chart.js: "npm:^4.4.1"
-    chartjs-adapter-moment: "npm:^1.0.1"
-    chartjs-plugin-crosshair: "npm:^2.0.0"
     chokidar: "npm:^3.5.3"
     classnames: "npm:^2.2.6"
     concurrently: "npm:^7.6.0"
@@ -24498,7 +24458,6 @@ __metadata:
     mocha: "npm:^10.2.0"
     mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^3.10.1"
-    moment: "npm:^2.30.1"
     nanoid: "npm:^2.1.6"
     nock: "npm:^13.2.9"
     node-fetch: "npm:^2.6.1"
@@ -25556,13 +25515,6 @@ __metadata:
   version: 1.0.1
   resolution: "module-not-found-error@npm:1.0.1"
   checksum: ebd65339d4d5980dd55cd32dbf112ec02b8e33f30866312b94caeee4783322259f18cf2270e9d2e600df3bd1876c35612b87f5c2525c21885fb1f83e85a9b9b0
-  languageName: node
-  linkType: hard
-
-"moment@npm:^2.10.2, moment@npm:^2.30.1":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 

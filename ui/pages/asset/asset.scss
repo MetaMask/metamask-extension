@@ -34,4 +34,17 @@
 
 .time-range-button {
   height:24px;
+
+  &:hover {
+    background-color: transparent !important;
+    color: var(--color-text-alternative) !important;
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default) !important;
+  }
+  &:active {
+    border-color: transparent;
+  }
+  &__selected {
+    background-color: var(--color-background-default-pressed);
+  }
 }
+

@@ -1,9 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import 'chartjs-adapter-moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ReactNode } from 'react-markdown';
-import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getCurrentCurrency,
+  getPreferences,
+} from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
@@ -44,7 +47,6 @@ import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../../shared/constants/time';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import AssetChart from './asset-chart';
 import { getPricePrecision, localizeLargeNumber } from './util';
 
@@ -69,13 +71,14 @@ const AssetV2 = ({
         type: AssetType.token;
         address: string;
         decimals: number;
+        aggregators?: [];
       }
   ) & {
     symbol: string;
     name?: string;
     image: string;
-    balance: string;
-    fiatValue?: string;
+    balanceDisplay?: string;
+    fiatDisplay?: string;
   };
 }) => {
   const t = useI18nContext();
@@ -83,23 +86,25 @@ const AssetV2 = ({
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
 
   const [marketData, setMarketData] = useState<any>();
 
-  const { type, symbol, name, image, balance, fiatValue } = asset;
+  const { type, symbol, name, image, balanceDisplay, fiatDisplay } = asset;
   const address =
     type === AssetType.token
       ? asset.address
       : '0x0000000000000000000000000000000000000000';
 
-  // TODO: expose call via TokenRatesController
   useEffect(() => {
     setMarketData(undefined);
+
+    // TODO: Consider exposing HTTP request through a controller
     fetchWithCache({
       url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
-      cacheOptions: { cacheRefreshTime: Number(MINUTE) },
+      cacheOptions: { cacheRefreshTime: MINUTE },
       functionName: 'GetAssetMarketData',
     })
       .catch(() => null)
@@ -114,21 +119,23 @@ const AssetV2 = ({
           {name ? `${name} (${symbol})` : symbol}
         </Text>
       </Box>
-      <AssetChart address={address} />
+      <AssetChart address={address} currentPrice={marketData?.price} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         padding={4}
-        paddingTop={7}
+        paddingTop={6}
         gap={6}
-        style={{ boxShadow: '0px -15px 15px -15px gray inset' }} // todo dark theme?
+        // todo this shadow on dark theme
+        style={{ boxShadow: '0px -15px 15px -15px gray inset' }}
       >
         <Box>
           <Text variant={TextVariant.headingMd} paddingBottom={2}>
             {t('yourBalance')}
           </Text>
           <Box
-            padding={2}
+            paddingTop={1}
+            paddingBottom={2}
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
@@ -143,14 +150,18 @@ const AssetV2 = ({
                 variant={TextVariant.bodyLgMedium}
                 textAlign={TextAlign.Right}
               >
-                {fiatValue}
+                {useNativeCurrencyAsPrimaryCurrency
+                  ? balanceDisplay
+                  : fiatDisplay}
               </Text>
               <Text
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
                 textAlign={TextAlign.Right}
               >
-                {balance} {symbol}
+                {useNativeCurrencyAsPrimaryCurrency
+                  ? fiatDisplay
+                  : balanceDisplay}
               </Text>
             </Box>
           </Box>
@@ -209,8 +220,25 @@ const AssetV2 = ({
               t('contractAddress'),
               <AddressCopyButton address={address} shorten />,
             )}
-            {asset.decimals !== undefined &&
-              renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+            >
+              {asset.decimals !== undefined &&
+                renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
+              {asset.aggregators !== undefined && (
+                <Box>
+                  <Text
+                    color={TextColor.textAlternative}
+                    variant={TextVariant.bodyMdMedium}
+                  >
+                    {'Token list'} {/* TODO localize */}
+                  </Text>
+                  <Text>{asset.aggregators?.join(', ')}</Text>
+                </Box>
+              )}
+            </Box>
           </Box>
         )}
         {(marketData?.marketCap > 0 ||
@@ -279,8 +307,8 @@ const AssetV2 = ({
             </Box>
           </Box>
         )}
-        <Text variant={TextVariant.headingMd}>{t('yourActivity')}</Text>
         {/* TODO: Transaction history */}
+        {/* <Text variant={TextVariant.headingMd}>{t('yourActivity')}</Text> */}
       </Box>
       <Box
         padding={4}
@@ -288,25 +316,26 @@ const AssetV2 = ({
         style={{
           position: 'sticky',
           bottom: 0,
+          // todo shadow on dark theme
           boxShadow: 'lightgrey 0px 0px 12px 0px',
-        }} // todo dark theme?
+        }}
       >
         <Box display={Display.Flex} gap={4}>
           <ButtonSecondary
             size={ButtonSecondarySize.Md}
             padding={5}
             width={BlockSize.Full}
-            onClick={async () => {}}
           >
             {t('buy')}
+            {/* TODO: Implement buy onClick */}
           </ButtonSecondary>
           <ButtonPrimary
             size={ButtonPrimarySize.Md}
             padding={5}
             width={BlockSize.Full}
-            onClick={async () => {}}
           >
             {t('swap')}
+            {/* TODO: Implement swap onClick */}
           </ButtonPrimary>
         </Box>
       </Box>

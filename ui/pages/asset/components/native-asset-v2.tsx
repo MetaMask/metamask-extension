@@ -1,21 +1,38 @@
 import React from 'react';
-import 'chartjs-adapter-moment';
 import { useSelector } from 'react-redux';
 import {
+  getCurrentCurrency,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
+  getShouldShowFiat,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import AssetV2 from './asset-v2';
 
 const NativeAssetV2 = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
-  const image = useSelector(getNativeCurrencyImage);
   const balance = useSelector(getSelectedAccountCachedBalance);
-  const displayBalance = useCurrencyDisplay(balance, {
+  const image = useSelector(getNativeCurrencyImage);
+  const showFiat = useSelector(getShouldShowFiat);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const { chainId, ticker, type } = useSelector(getProviderConfig);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+    type,
+  );
+
+  const [balanceDisplay] = useCurrencyDisplay(balance, {
     currency: nativeCurrency,
+  });
+  const [fiatDisplay] = useCurrencyDisplay(balance, {
+    currency: currentCurrency,
   });
 
   return (
@@ -24,8 +41,9 @@ const NativeAssetV2 = () => {
         type: AssetType.native,
         symbol: nativeCurrency,
         image,
-        balance: displayBalance[1].value,
-        fiatValue: 'todo'
+        balanceDisplay,
+        fiatDisplay:
+          showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
       }}
     />
   );

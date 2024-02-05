@@ -1,5 +1,4 @@
 import React from 'react';
-import 'chartjs-adapter-moment';
 import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { getTokenList } from '../../../selectors';
@@ -10,34 +9,32 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import AssetV2 from './asset-v2';
 
 const TokenAssetV2 = ({ token }: { token: Token }) => {
+  const { address, symbol } = token;
   const tokenList = useSelector(getTokenList);
-  const tokenData = Object.values(tokenList).find(
-    (listToken) =>
-      listToken.symbol === token.symbol &&
-      isEqualCaseInsensitive(listToken.address, token.address),
-  );
+  const { name, iconUrl, aggregators } =
+    Object.values(tokenList).find(
+      (t) => t.symbol === symbol && isEqualCaseInsensitive(t.address, address),
+    ) ?? {};
 
-  const { tokensWithBalances }: { tokensWithBalances: any[] } = useTokenTracker(
-    { tokens: [token], address: undefined },
-  );
-  const fiatValue = useTokenFiatAmount(
-    token.address,
-    tokensWithBalances?.[0]?.string,
-    token.symbol,
-    {},
-    false,
-  );
+  const { tokensWithBalances }: { tokensWithBalances: { string: string }[] } =
+    useTokenTracker({ tokens: [token], address: undefined });
+
+  const balance = tokensWithBalances?.[0]?.string;
+  const fiatDisplay = useTokenFiatAmount(address, balance, symbol, {}, false);
+
   return (
     <AssetV2
       asset={{
         type: AssetType.token,
-        address: token.address,
-        symbol: token.symbol,
-        name: tokenData?.name,
+        address,
+        symbol,
+        name,
         decimals: token.decimals,
-        image: tokenData?.iconUrl,
-        balance: tokensWithBalances?.[0]?.string,
-        fiatValue,
+        image: iconUrl,
+        balanceDisplay:
+          balance === undefined ? undefined : `${balance} ${symbol ?? ''}`,
+        fiatDisplay,
+        aggregators,
       }}
     />
   );
