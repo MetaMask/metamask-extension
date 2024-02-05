@@ -1,4 +1,5 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { applyPatches } from 'immer';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -18,7 +19,6 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { applyPatches } from 'immer';
 
 const initialState = {
   isInitialized: false,

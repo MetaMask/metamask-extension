@@ -27,6 +27,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
+import { Patch } from 'immer';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -114,7 +115,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { Patch } from 'immer';
 
 type CustomGasSettings = {
   gas?: string;

@@ -5,6 +5,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
+import { produceWithPatches } from 'immer';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
@@ -28,7 +29,6 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
-import { produceWithPatches } from 'immer';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
