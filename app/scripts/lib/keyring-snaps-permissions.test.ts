@@ -14,6 +14,7 @@ describe('keyringSnapPermissionsBuilder', () => {
     messenger: {
       registerActionHandler: jest.fn(),
       publish: jest.fn(),
+      registerInitialEventPayload: jest.fn(),
     } as any,
     state: {},
   });
