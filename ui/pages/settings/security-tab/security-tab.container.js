@@ -4,6 +4,7 @@ import { compose } from 'redux';
 import {
   setIncomingTransactionsPreferences,
   setIpfsGateway,
+  setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -91,6 +92,7 @@ const mapDispatchToProps = (dispatch) => {
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
     setIpfsGateway: (val) => dispatch(setIpfsGateway(val)),
+    setIsIpfsGatewayEnabled: (val) => dispatch(setIsIpfsGatewayEnabled(val)),
     setUseMultiAccountBalanceChecker: (val) =>
       dispatch(setUseMultiAccountBalanceChecker(val)),
     setUseAddressBarEnsResolution: (val) =>

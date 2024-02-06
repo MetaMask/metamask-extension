@@ -70,6 +70,7 @@ export default class SecurityTab extends PureComponent {
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
+    setIsIpfsGatewayEnabled: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
@@ -592,9 +593,11 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 if (value) {
                   // turning from true to false
+                  this.props.setIsIpfsGatewayEnabled(false);
                   this.props.setIpfsGateway('');
                 } else {
                   // turning from false to true
+                  this.props.setIsIpfsGatewayEnabled(true);
                   handleIpfsGatewayChange(this.state.ipfsGateway);
                 }
 
