@@ -61,9 +61,13 @@ const ConfirmTxScreen = ({ match }) => {
     getTotalUnapprovedSignatureRequestCount,
   );
   const sendTo = useSelector(getSendTo);
-  const { identities, currentCurrency, blockGasLimit } = useSelector(
-    (state) => state.metamask,
-  );
+
+  const {
+    identities,
+    currentCurrency,
+    blockGasLimit,
+    signatureSecurityAlertResponses,
+  } = useSelector((state) => state.metamask);
   const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
   const unapprovedPersonalMsgs = useSelector(
     getMemoizedUnapprovedPersonalMessages,
@@ -71,6 +75,7 @@ const ConfirmTxScreen = ({ match }) => {
   const unapprovedTypedMessages = useSelector(
     getMemoizedUnapprovedTypedMessages,
   );
+
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const chainId = useSelector(getMemoizedCurrentChainId);
@@ -200,6 +205,14 @@ const ConfirmTxScreen = ({ match }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const { warnings } = useSignatureInsights({ txData });
   ///: END:ONLY_INCLUDE_IF
+  const resolvedSecurityAlertResponse =
+    signatureSecurityAlertResponses?.[
+      txData.securityAlertResponse?.securityAlertId
+    ];
+
+  if (resolvedSecurityAlertResponse) {
+    txData.securityAlertResponse = resolvedSecurityAlertResponse;
+  }
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, txData.msgParams?.origin),

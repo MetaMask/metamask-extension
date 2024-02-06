@@ -47,7 +47,6 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -171,7 +170,6 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
