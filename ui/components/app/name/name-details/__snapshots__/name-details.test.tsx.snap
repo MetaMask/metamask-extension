@@ -204,12 +204,12 @@ exports[`NameDetails renders proposed names 1`] = `
                     <span
                       class="form-combo-field__option-primary"
                     >
-                      TestProposedName
+                      Maybe: TestProposedName
                     </span>
                     <span
                       class="form-combo-field__option-secondary"
                     >
-                      TestSourceId1
+                      Proposed by Etherium Name Service (ENS)
                     </span>
                   </div>
                   <div
@@ -219,12 +219,12 @@ exports[`NameDetails renders proposed names 1`] = `
                     <span
                       class="form-combo-field__option-primary"
                     >
-                      TestProposedName2
+                      Maybe: TestProposedName2
                     </span>
                     <span
                       class="form-combo-field__option-secondary"
                     >
-                      TestSourceId2
+                      Proposed by MetaMask
                     </span>
                   </div>
                 </div>

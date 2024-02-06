@@ -30,8 +30,8 @@ const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const CHAIN_ID_MOCK = '0x1';
 const SAVED_NAME_MOCK = 'TestName';
 const SAVED_NAME_2_MOCK = 'TestName2';
-const SOURCE_ID_MOCK = 'TestSourceId1';
-const SOURCE_ID_2_MOCK = 'TestSourceId2';
+const SOURCE_ID_MOCK = 'ens';
+const SOURCE_ID_2_MOCK = 'token';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 
@@ -82,10 +82,9 @@ const STATE_MOCK = {
   },
 };
 
-async function saveName(
+async function saveNameUsingDropdown(
   component: ReturnType<typeof renderWithProvider>,
-  sourceId: string | null,
-  name: string | null,
+  name: string,
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText('Choose something descriptive');
@@ -95,19 +94,32 @@ async function saveName(
     fireEvent.click(nameInput);
   });
 
-  if (sourceId) {
-    const providerOption = getByText(sourceId);
+  const proposedNameOption = getByText(`Maybe: ${name}`);
 
-    await act(async () => {
-      fireEvent.click(providerOption);
-    });
-  }
+  await act(async () => {
+    fireEvent.click(proposedNameOption);
+  });
 
-  if (name !== null) {
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: name } });
-    });
-  }
+  await act(async () => {
+    fireEvent.click(saveButton);
+  });
+}
+
+async function saveNameUsingTextField(
+  component: ReturnType<typeof renderWithProvider>,
+  name: string,
+) {
+  const { getByPlaceholderText, getByText } = component;
+  const nameInput = getByPlaceholderText('Choose something descriptive');
+  const saveButton = getByText('Save');
+
+  await act(async () => {
+    fireEvent.click(nameInput);
+  });
+
+  await act(async () => {
+    fireEvent.change(nameInput, { target: { value: name } });
+  });
 
   await act(async () => {
     fireEvent.click(saveButton);
@@ -181,7 +193,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, null, SAVED_NAME_MOCK);
+    await saveNameUsingTextField(component, SAVED_NAME_MOCK);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -203,7 +215,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, SOURCE_ID_MOCK, null);
+    await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -225,7 +237,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, null, '');
+    await saveNameUsingTextField(component, '');
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -247,7 +259,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveName(component, null, SAVED_NAME_2_MOCK);
+    await saveNameUsingTextField(component, SAVED_NAME_2_MOCK);
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -352,7 +364,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveName(component, SOURCE_ID_MOCK, null);
+      await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameCreated,
@@ -379,7 +391,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveName(component, SOURCE_ID_2_MOCK, null);
+      await saveNameUsingDropdown(component, PROPOSED_NAME_2_MOCK);
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameUpdated,
@@ -407,7 +419,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveName(component, null, '');
+      await saveNameUsingTextField(component, '');
 
       expect(trackEventMock).toHaveBeenCalledWith({
         event: MetaMetricsEventName.PetnameDeleted,
