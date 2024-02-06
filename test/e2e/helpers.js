@@ -715,10 +715,6 @@ const sendScreenToConfirmScreen = async (
   recipientAddress,
   quantity,
 ) => {
-  // TODO: Update Test when Multichain Send Flow is added
-  if (process.env.MULTICHAIN) {
-    return;
-  }
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
