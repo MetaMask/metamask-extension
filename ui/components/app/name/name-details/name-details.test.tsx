@@ -87,7 +87,7 @@ async function saveNameUsingDropdown(
   name: string,
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Choose something descriptive');
+  const nameInput = getByPlaceholderText('Choose a nickname...');
   const saveButton = getByText('Save');
 
   await act(async () => {
@@ -110,7 +110,7 @@ async function saveNameUsingTextField(
   name: string,
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Choose something descriptive');
+  const nameInput = getByPlaceholderText('Choose a nickname...');
   const saveButton = getByText('Save');
 
   await act(async () => {
@@ -174,7 +174,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Choose something descriptive');
+    const nameInput = getByPlaceholderText('Choose a nickname...');
 
     await act(async () => {
       fireEvent.click(nameInput);

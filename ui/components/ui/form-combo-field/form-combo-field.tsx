@@ -15,7 +15,7 @@ import { Display, IconColor } from '../../../helpers/constants/design-system';
 
 export interface FormComboFieldOption {
   value: string;
-  primaryLabel: string;
+  primaryLabel?: string;
   secondaryLabel?: string;
 }
 
@@ -37,7 +37,6 @@ export interface FormComboFieldProps<Option extends FormComboFieldOption> {
 
   /**
    * The options to display in the dropdown.
-   * An array of objects with a 'primaryLabel' and optionally a 'secondaryLabel' property.`
    */
   options: Option[];
 
@@ -66,7 +65,7 @@ function Option({
     [onClick, option],
   );
 
-  const { primaryLabel, secondaryLabel } = option;
+  const { primaryLabel, secondaryLabel, value } = option;
 
   return (
     <div
@@ -74,7 +73,9 @@ function Option({
       className="form-combo-field__option"
       onClick={handleClick}
     >
-      <span className="form-combo-field__option-primary">{primaryLabel}</span>
+      <span className="form-combo-field__option-primary">
+        {primaryLabel ?? value}
+      </span>
       {secondaryLabel ? (
         <span className="form-combo-field__option-secondary">
           {secondaryLabel}

@@ -2514,7 +2514,7 @@
     "description": "Label above address field in name component modal."
   },
   "nameInstructionsNew": {
-    "message": "If you know this address, you can give it a nickname to make it easier to recognize in the future.",
+    "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
   },
   "nameInstructionsRecognized": {
@@ -2562,7 +2562,7 @@
     "message": "MetaMask"
   },
   "nameSetPlaceholder": {
-    "message": "Choose something descriptive",
+    "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
