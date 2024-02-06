@@ -68,6 +68,7 @@ describe('Send ETH', function () {
           assert.equal(inputValue, '1');
 
           // Continue to next screen
+          await driver.findClickableElement({ text: 'Next', tag: 'button' });
           await driver.clickElement({ text: 'Next', tag: 'button' });
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -118,6 +119,7 @@ describe('Send ETH', function () {
           assert.equal(inputValue, '1');
 
           // Continue to next screen
+          await driver.findClickableElement({ text: 'Next', tag: 'button' });
           await driver.clickElement({ text: 'Next', tag: 'button' });
 
           await driver.delay(1000);
@@ -172,6 +174,7 @@ describe('Send ETH', function () {
           await inputAmount.fill('1');
 
           // Continue to next screen
+          await driver.findClickableElement({ text: 'Next', tag: 'button' });
           await driver.clickElement({ text: 'Next', tag: 'button' });
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
