@@ -106,7 +106,8 @@ export function useSignatureInsights({ txData }) {
     return () => {
       cancelled = true;
     };
-  }, [txData, snapIds, subjects]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [txData, JSON.stringify(snapIds), subjects]);
 
   return { data, loading, warnings };
 }
