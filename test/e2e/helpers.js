@@ -729,7 +729,7 @@ const sendScreenToConfirmScreen = async (
       tag: 'button',
       css: '[data-testid="page-container-footer-next"]',
     });
-  };
+  }
 };
 
 const sendTransaction = async (
