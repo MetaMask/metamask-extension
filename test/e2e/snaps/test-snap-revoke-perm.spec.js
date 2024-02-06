@@ -76,6 +76,10 @@ describe('Test Snap revoke permission', function () {
 
         // switch to metamask window and click through confirmations
         await switchToNotificationWindow(driver, 3);
+        await driver.waitForSelector({
+          text: 'Next',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
