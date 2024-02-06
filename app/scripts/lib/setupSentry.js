@@ -205,6 +205,7 @@ export const SENTRY_BACKGROUND_STATE = {
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
+    signatureSecurityAlertResponses: false,
     transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
