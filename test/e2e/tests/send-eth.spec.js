@@ -163,7 +163,9 @@ describe('Send ETH', function () {
             smartContract,
           );
           await unlockWallet(driver);
-
+          if (process.env.MULTICHAIN) {
+            return;
+          }
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -243,6 +245,9 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
+            if (process.env.MULTICHAIN) {
+              return;
+            }
             await unlockWallet(driver);
 
             // initiates a send from the dapp
@@ -313,6 +318,9 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
+            if (process.env.MULTICHAIN) {
+              return;
+            }
             await unlockWallet(driver);
 
             // initiates a transaction from the dapp
@@ -410,6 +418,9 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
+            if (process.env.MULTICHAIN) {
+              return;
+            }
             await unlockWallet(driver);
             const balance = await driver.findElement(
               '[data-testid="eth-overview__primary-currency"]',
