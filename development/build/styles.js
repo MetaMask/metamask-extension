@@ -1,11 +1,11 @@
 const pify = require('pify');
 const gulp = require('gulp');
-const autoprefixer = require('gulp-autoprefixer');
+const autoprefixer = require('autoprefixer');
 const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
-const rtlcss = require('gulp-rtlcss');
-const rename = require('gulp-rename');
+const rtlcss = require('postcss-rtlcss');
+const postcss = require('gulp-postcss');
 const pump = pify(require('pump'));
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
@@ -58,13 +58,12 @@ function createStyleTasks({ livereload }) {
     };
 
     async function buildScss() {
-      await buildScssPipeline(src, dest, devMode, false);
-      await buildScssPipeline(src, dest, devMode, true);
+      await buildScssPipeline(src, dest, devMode);
     }
   }
 }
 
-async function buildScssPipeline(src, dest, devMode, rtl) {
+async function buildScssPipeline(src, dest, devMode) {
   if (!sass) {
     // use our own compiler which runs sass in its own process
     // in order to not pollute the intrinsics
@@ -77,9 +76,7 @@ async function buildScssPipeline(src, dest, devMode, rtl) {
       gulp.src(src),
       devMode && sourcemaps.init(),
       sass().on('error', sass.logError),
-      autoprefixer(),
-      rtl && rtlcss(),
-      rtl && rename({ suffix: '-rtl' }),
+      postcss([autoprefixer(), rtlcss()]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),
