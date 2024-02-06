@@ -138,7 +138,9 @@ export class SnapsNameProvider implements NameProvider {
       const domains = result?.resolvedDomains;
 
       // TODO: Determine if this is what we want.
-      proposedNames = domains ? domains.map(domain => domain.resolvedDomain) : [];
+      proposedNames = domains
+        ? domains.map((domain) => domain.resolvedDomain)
+        : [];
     } catch (error) {
       log.error('Snap name provider request failed', {
         snapId: snap.id,
