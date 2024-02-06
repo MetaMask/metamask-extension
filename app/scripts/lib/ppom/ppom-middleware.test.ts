@@ -91,7 +91,7 @@ describe('PPOMMiddleware', () => {
     const usePPOM = async () => {
       throw new Error('some error');
     };
-    const middlewareFunction = createMiddleWare(usePPOM);
+    const middlewareFunction = createMiddleWare({ usePPOM });
     const req = {
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
