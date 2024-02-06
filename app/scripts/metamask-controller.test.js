@@ -1084,6 +1084,9 @@ describe('MetaMaskController', () => {
 
       beforeEach(() => {
         initializeMockMiddlewareLog();
+        metamaskController.preferencesController.setSecurityAlertsEnabled(
+          false,
+        );
       });
 
       afterAll(() => {
