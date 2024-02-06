@@ -67,6 +67,7 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
+    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showProductTour": true,
     "showNetworkBanner": true,
