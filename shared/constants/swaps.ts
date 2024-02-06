@@ -161,7 +161,7 @@ const POLYGON_DEFAULT_BLOCK_EXPLORER_URL = 'https://polygonscan.com/';
 const AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL = 'https://snowtrace.io/';
 const OPTIMISM_DEFAULT_BLOCK_EXPLORER_URL = 'https://optimistic.etherscan.io/';
 const ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL = 'https://arbiscan.io/';
-const ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.zksync.io/';
+const ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL = 'https://era.zksync.network/';
 const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
 
 export const SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL =

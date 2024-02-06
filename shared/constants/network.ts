@@ -993,7 +993,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcUrl: `https://mainnet.era.zksync.io`,
     ticker: CURRENCY_SYMBOLS.ETH,
     rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.zksync.io/',
+      blockExplorerUrl: 'https://era.zksync.network/',
       imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
     },
   },
