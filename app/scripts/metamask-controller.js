@@ -2978,6 +2978,7 @@ export default class MetamaskController extends EventEmitter {
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
+      estimateGasBuffered: this.estimateGasBuffered.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
@@ -4232,6 +4233,21 @@ export default class MetamaskController extends EventEmitter {
           return resolve(res.toString(16));
         },
       );
+    });
+  }
+
+  async estimateGasBuffered(transactionParams, multiplier) {
+    return new Promise(async (resolve, reject) => {
+      const estimatedGasResult = await this.txController.estimateGasBuffered(
+        transactionParams,
+        multiplier,
+      );
+
+      if (estimatedGasResult.simulationFails) {
+        reject(estimatedGasResult);
+      } else {
+        resolve(estimatedGasResult);
+      }
     });
   }
 

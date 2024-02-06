@@ -502,7 +502,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
   'send/computeEstimatedGasLimit',
   async (_, thunkApi) => {
     const state = thunkApi.getState();
-    const { send, metamask } = state;
+    const { send } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
     const unapprovedTxs = getUnapprovedTransactions(state);
@@ -536,8 +536,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       !transaction.userEditedGasLimit
     ) {
       const gasLimit = await estimateGasLimitForSend({
-        gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
@@ -617,14 +615,6 @@ export const initializeSendState = createAsyncThunk(
       );
     }
 
-    // Default gasPrice to 1 gwei if all estimation fails, this is only used
-    // for gasLimit estimation and won't be set directly in state. Instead, we
-    // will return the gasFeeEstimates and gasEstimateType so that the reducer
-    // can set the appropriate gas fees in state.
-    let gasPrice =
-      sendState.stage === SEND_STAGES.EDIT
-        ? draftTransaction.gas.gasPrice
-        : '0x1';
     let gasEstimatePollToken = null;
 
     // Instruct the background process that polling for gas prices should begin
@@ -635,25 +625,6 @@ export const initializeSendState = createAsyncThunk(
     const {
       metamask: { gasFeeEstimates, gasEstimateType },
     } = thunkApi.getState();
-
-    if (sendState.stage !== SEND_STAGES.EDIT) {
-      // Because we are only interested in getting a gasLimit estimation we only
-      // need to worry about gasPrice. So we use maxFeePerGas as gasPrice if we
-      // have a fee market estimation.
-      if (gasEstimateType === GasEstimateTypes.legacy) {
-        gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
-        gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GasEstimateTypes.feeMarket) {
-        gasPrice = getGasPriceInHexWei(
-          gasFeeEstimates.medium.suggestedMaxFeePerGas,
-        );
-      } else {
-        gasPrice = gasFeeEstimates.gasPrice
-          ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
-          : '0x0';
-      }
-    }
 
     // Set a basic gasLimit in the event that other estimation fails
     let { gasLimit } = draftTransaction.gas;
@@ -670,8 +641,6 @@ export const initializeSendState = createAsyncThunk(
       // Run our estimateGasLimit logic to get a more accurate estimation of
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
-        gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress:
           draftTransaction.fromAccount?.address ??
           sendState.selectedAccount.address ??

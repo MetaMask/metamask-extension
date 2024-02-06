@@ -10,6 +10,7 @@ import {
   TokenStandard,
 } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { getBlockGasLimit } from '../../../shared/modules/gas.utils';
 import {
   addGasBuffer,
   generateERC20TransferData,
@@ -18,41 +19,28 @@ import {
   getAssetTransferData,
 } from '../../pages/send/send.utils';
 import { getGasPriceInHexWei } from '../../selectors';
-import { estimateGas } from '../../store/actions';
+import { estimateGasBuffered } from '../../store/actions';
 import { Numeric } from '../../../shared/modules/Numeric';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
   value,
-  gasPrice,
   sendToken,
   to,
   data,
   isNonStandardEthChain,
   chainId,
   gasLimit,
-  ...options
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
 
-  // blockGasLimit may be a falsy, but defined, value when we receive it from
-  // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX. Some
-  // network implementations check the gas parameter supplied to
-  // eth_estimateGas for validity. For this reason, we set token sends
-  // blockGasLimit default to a higher number. Note that the current gasLimit
-  // on a BLOCK is 15,000,000 and will be 30,000,000 on mainnet after London.
-  // Meanwhile, MIN_GAS_LIMIT_HEX is 0x5208.
-  let blockGasLimit = MIN_GAS_LIMIT_HEX;
-  if (options.blockGasLimit) {
-    blockGasLimit = options.blockGasLimit;
-  } else if (sendToken) {
-    blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
-  }
-
-  // The parameters below will be sent to our background process to estimate
-  // how much gas will be used for a transaction. That background process is
-  // located in tx-gas-utils.js in the transaction controller folder.
-  const paramsForGasEstimate = { from: selectedAddress, value, gasPrice };
+  // The parameters below will be sent to TransactionController to estimate the
+  // gasLimit for a transaction.
+  const paramsForGasEstimate = {
+    from: selectedAddress,
+    to: sendToken ? sendToken.address : to,
+    value,
+  };
 
   if (sendToken) {
     if (!to) {
@@ -62,7 +50,6 @@ export async function estimateGasLimitForSend({
       // represented in the gas shared constants.
       return GAS_LIMITS.BASE_TOKEN_ESTIMATE;
     }
-    paramsForGasEstimate.value = '0x0';
 
     // We have to generate the erc20/erc721 contract call to transfer tokens in
     // order to get a proper estimate for gasLimit.
@@ -72,29 +59,20 @@ export async function estimateGasLimitForSend({
       toAddress: to,
       amount: value,
     });
-
-    paramsForGasEstimate.to = sendToken.address;
   } else {
     if (!data) {
       // eth.getCode will return the compiled smart contract code at the
       // address. If this returns 0x, 0x0 or a nullish value then the address
-      // is an externally owned account (NOT a contract account). For these
-      // types of transactions the gasLimit will always be 21,000 or 0x5208
+      // is an externally owned account (NOT a contract account).
       const { isContractAddress } = to
         ? await readAddressAsContract(global.eth, to)
         : {};
-      if (!isContractAddress && !isNonStandardEthChain) {
-        return GAS_LIMITS.SIMPLE;
-      } else if (!isContractAddress && isNonStandardEthChain) {
+      if (!isContractAddress && isNonStandardEthChain) {
         isSimpleSendOnNonStandardNetwork = true;
       }
     }
 
     paramsForGasEstimate.data = data;
-
-    if (to) {
-      paramsForGasEstimate.to = to;
-    }
 
     if (!value || value === '0') {
       // TODO: Figure out what's going on here. According to eth_estimateGas
@@ -103,15 +81,6 @@ export async function estimateGasLimitForSend({
       // https://github.com/MetaMask/metamask-extension/pull/6195
       paramsForGasEstimate.value = '0xff';
     }
-  }
-
-  if (!isSimpleSendOnNonStandardNetwork) {
-    // If we do not yet have a gasLimit, we must call into our background
-    // process to get an estimate for gasLimit based on known parameters.
-    paramsForGasEstimate.gas = new Numeric(blockGasLimit, 16)
-      .times(new Numeric(0.95, 10))
-      .round(0, BigNumber.ROUND_DOWN)
-      .toPrefixedHexString();
   }
 
   // The buffer multipler reduces transaction failures by ensuring that the
@@ -133,27 +102,25 @@ export async function estimateGasLimitForSend({
   }
 
   try {
-    // Call into the background process that will simulate transaction
-    // execution on the node and return an estimate of gasLimit
-    const estimatedGasLimit = await estimateGas(paramsForGasEstimate);
-
-    const estimateWithBuffer = addGasBuffer(
-      estimatedGasLimit,
-      blockGasLimit,
+    const { gas } = await estimateGasBuffered(
+      paramsForGasEstimate,
       bufferMultiplier,
     );
-    return addHexPrefix(estimateWithBuffer);
+    return gas;
   } catch (error) {
-    const simulationFailed =
-      error.message.includes('Transaction execution error.') ||
-      error.message.includes(
-        'gas required exceeds allowance or always failing transaction',
-      ) ||
-      (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
-        error.message.includes('gas required exceeds allowance'));
-    if (simulationFailed) {
+    // There could be more reasons, hence still need to check for simulationFails
+    if (error.simulationFails) {
+      const blockGasLimit = await getBlockGasLimit(global.eth);
+
+      let gas;
+      if (!isSimpleSendOnNonStandardNetwork) {
+        gas = new Numeric(blockGasLimit, 16)
+          .times(new Numeric(0.95, 10))
+          .round(0, BigNumber.ROUND_DOWN)
+          .toPrefixedHexString();
+      }
       const estimateWithBuffer = addGasBuffer(
-        paramsForGasEstimate?.gas ?? gasLimit,
+        gas ?? gasLimit,
         blockGasLimit,
         bufferMultiplier,
       );
