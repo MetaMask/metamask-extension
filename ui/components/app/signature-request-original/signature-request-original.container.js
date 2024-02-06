@@ -15,8 +15,6 @@ import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
 } from '../../../store/institutional/institution-background';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import {
   accountsWithSendEtherInfoSelector,
@@ -40,10 +38,6 @@ function mapStateToProps(state, ownProps) {
     msgParams: { from },
   } = ownProps.txData;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const envType = getEnvironmentType();
-  ///: END:ONLY_INCLUDE_IF
-
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
@@ -63,7 +57,6 @@ function mapStateToProps(state, ownProps) {
     messagesCount,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType: getAccountType(state),
-    isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedInternalAccount(state),
     ///: END:ONLY_INCLUDE_IF
   };
@@ -157,7 +150,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     messagesList,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
-    isNotification,
     ///: END:ONLY_INCLUDE_IF
     ...otherStateProps
   } = stateProps;
