@@ -16,6 +16,15 @@ import {
   addTransaction,
 } from './util';
 
+jest.mock('uuid', () => {
+  const actual = jest.requireActual('uuid');
+
+  return {
+    ...actual,
+    v4: jest.fn(),
+  };
+});
+
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
 };
@@ -380,8 +389,8 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: 'testReason',
-            result_type: 'testResultType',
+            reason: 'loading',
+            result_type: 'validation_in_progress',
           },
         });
 

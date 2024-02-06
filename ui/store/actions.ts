@@ -3240,6 +3240,19 @@ export function setIpfsGateway(
   };
 }
 
+export function setIsIpfsGatewayEnabled(
+  val: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setIsIpfsGatewayEnabled`);
+    callBackgroundMethod('setIsIpfsGatewayEnabled', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 export function setUseAddressBarEnsResolution(
   val: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
