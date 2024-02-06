@@ -3283,6 +3283,12 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // GasFeeController
+      gasFeeStartPollingByNetworkClientId:
+        gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
+
+      gasFeeStopPollingByPollingToken:
+        gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
+
       getGasFeeEstimatesAndStartPolling:
         gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
           gasFeeController,

@@ -15,8 +15,11 @@ import ConfirmTransaction from './confirm-transaction.component';
 const middleware = [thunk];
 
 setBackgroundConnection({
-  getGasFeeTimeEstimate: jest.fn(),
+  addPollingTokenFromAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn(),
+  gasFeeStartPollingByNetworkClientId: jest.fn(),
+  gasFeeStopPollingByPollingToken: jest.fn(),
   addPollingTokenToAppState: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
   disconnectGasFeeEstimatePoller: jest.fn(),

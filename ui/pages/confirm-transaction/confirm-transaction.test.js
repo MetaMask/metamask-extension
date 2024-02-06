@@ -215,7 +215,7 @@ describe('Confirmation Transaction Page', () => {
       const mockStore = configureMockStore(middleware)(mockState);
       const gasEstimationPollingSpy = jest.spyOn(
         Actions,
-        'getGasFeeEstimatesAndStartPolling',
+        'gasFeeStartPollingByNetworkClientId',
       );
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
@@ -225,6 +225,7 @@ describe('Confirmation Transaction Page', () => {
 
     it('should call setTransactionToConfirm if transaction id is provided', () => {
       const mockStore = configureMockStore(middleware)({ ...mockState });
+      jest.spyOn(Actions, 'gasFeeStartPollingByNetworkClientId');
       ConfirmTransactionDucks.setTransactionToConfirm.mockClear();
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
@@ -239,6 +240,7 @@ describe('Confirmation Transaction Page', () => {
         ...mockState,
         metamask: { ...mockState.metamask, transactions: [] },
       });
+      jest.spyOn(Actions, 'gasFeeStartPollingByNetworkClientId');
       jest.spyOn(ReactRouterDOM, 'useParams').mockImplementation(() => {
         return { id: null };
       });
@@ -254,6 +256,7 @@ describe('Confirmation Transaction Page', () => {
     describe('when unapproved transactions exist or a sendTo recipient exists', () => {
       it('should not call history.replace(mostRecentOverviewPage)', () => {
         const mockStore = configureMockStore(middleware)(mockState);
+        jest.spyOn(Actions, 'gasFeeStartPollingByNetworkClientId');
         const replaceSpy = jest.fn();
         jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
           return {
@@ -275,6 +278,7 @@ describe('Confirmation Transaction Page', () => {
             transactions: [],
           },
         });
+        jest.spyOn(Actions, 'gasFeeStartPollingByNetworkClientId');
         const replaceSpy = jest.fn();
         jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
           return {

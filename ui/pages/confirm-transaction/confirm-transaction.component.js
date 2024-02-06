@@ -39,12 +39,12 @@ import {
   use4ByteResolutionSelector,
 } from '../../selectors';
 import {
-  disconnectGasFeeEstimatePoller,
   getContractMethodData,
-  getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   setDefaultHomeActiveTabName,
+  gasFeeStartPollingByNetworkClientId,
+  gasFeeStopPollingByPollingToken,
 } from '../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
@@ -113,8 +113,8 @@ const ConfirmTransaction = () => {
         removePollingTokenFromAppState(_pt);
       };
     },
-    getGasFeeEstimatesAndStartPolling,
-    disconnectGasFeeEstimatePoller,
+    gasFeeStartPollingByNetworkClientId,
+    gasFeeStopPollingByPollingToken,
     'mainnet',
     {},
   );

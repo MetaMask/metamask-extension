@@ -24,6 +24,9 @@ export function submitRequestToBackground<R>(
   method: string,
   args?: any[],
 ): Promise<R> {
+  // if (!promisifiedBackground?.[method]) {
+  //   throw new Error(`Method ${method} not found`);
+  // }
   return promisifiedBackground?.[method](
     ...(args ?? []),
   ) as unknown as Promise<R>;

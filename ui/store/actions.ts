@@ -4190,6 +4190,31 @@ export function getGasFeeEstimatesAndStartPolling(): Promise<string> {
 }
 
 /**
+ * Informs the GasFeeController that the UI requiring gas fee polling
+ *
+ * @param networkClientId - unique identifier for the network client
+ * @returns polling token that can be used to stop polling
+ */
+export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
+  return submitRequestToBackground('gasFeeStartPollingByNetworkClientId', [
+    networkClientId,
+  ]);
+}
+
+/**
+ * Informs the GasFeeController that the UI no longer requires gas fee polling
+ * for the given network client.
+ * If all network clients unsubscribe the controller stops polling.
+ *
+ * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ */
+export function gasFeeStopPollingByPollingToken(pollingToken: string) {
+  return submitRequestToBackground('gasFeeStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+}
+
+/**
  * Informs the GasFeeController that a specific token is no longer requiring
  * gas fee estimates. If all tokens unsubscribe the controller stops polling.
  *
