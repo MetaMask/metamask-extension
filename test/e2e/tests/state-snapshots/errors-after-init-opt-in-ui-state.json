@@ -110,6 +110,7 @@
     "lostIdentities": "object",
     "forgottenPassword": false,
     "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
