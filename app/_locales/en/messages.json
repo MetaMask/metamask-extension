@@ -2529,6 +2529,10 @@
     "message": "Nickname",
     "description": "Label above name input field in name component modal."
   },
+  "nameModalMaybeProposedName": {
+    "message": "Maybe: $1",
+    "description": "$1 is the proposed name"
+  },
   "nameModalTitleNew": {
     "message": "Unknown address",
     "description": "Title of the modal created by the name component when value is not recognised."
@@ -2541,9 +2545,9 @@
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
-  "nameModalMaybeProposedName": {
-    "message": "Maybe: $1",
-    "description": "$1 is the proposed name"
+  "nameProviderProposedBy": {
+    "message": "Proposed by $1",
+    "description": "$1 is the name of the provider"
   },
   "nameProvider_ens": {
     "message": "Etherium Name Service (ENS)"
@@ -2556,10 +2560,6 @@
   },
   "nameProvider_token": {
     "message": "MetaMask"
-  },
-  "nameProviderProposedBy": {
-    "message": "Proposed by $1",
-    "description": "$1 is the name of the provider"
   },
   "nameSetPlaceholder": {
     "message": "Choose something descriptive",
