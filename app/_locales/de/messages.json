@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Token von verschiedenen Netzwerken übermitteln"
-  },
-  "bridgeDisabled": {
-    "message": "In diesem Netzwerk ist keine Brücke verfügbar"
-  },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Diese Chain-ID wird derzeit vom $1-Netzwerk verwendet."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Das Netzwerk mit der Chain-ID $1 verwendet möglicherweise ein anderes Währungssymbol ($2) als das, das Sie eingegeben haben. Bitte überprüfen Sie dies, bevor Sie fortfahren.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Wählen Sie Ihr Netzwerk"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Verbindungsanfrage"
-  },
-  "connections": {
-    "message": "Verbindungen"
   },
   "contactUs": {
     "message": "Kontaktaufnahme"
@@ -3566,9 +3553,6 @@
   "selectAnAccountHelp": {
     "message": "Wählen Sie die Verwahrungskonten zur Nutzung in MetaMask Institutional aus."
   },
-  "selectAnAction": {
-    "message": "Eine Aktion auswählen"
-  },
   "selectHdPath": {
     "message": "HD-Pfad auswählen"
   },
@@ -3592,9 +3576,6 @@
   },
   "sendBugReport": {
     "message": "Übermitteln Sie uns einen Fehlerbericht."
-  },
-  "sendDescription": {
-    "message": "Krypto an ein beliebiges Konto senden"
   },
   "sendSpecifiedTokens": {
     "message": "$1 senden",
@@ -3945,9 +3926,6 @@
   "stake": {
     "message": "Anteil"
   },
-  "stakeDescription": {
-    "message": "Halten Sie Ihre Kryptowährung und erzielen Sie potenzielle Gewinne"
-  },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
   },
@@ -4133,14 +4111,8 @@
   "swapDecentralizedExchange": {
     "message": "Dezentralisierter Austausch"
   },
-  "swapDescription": {
-    "message": "Token tauschen und handeln"
-  },
   "swapDirectContract": {
     "message": "Direkter Contract"
-  },
-  "swapDisabled": {
-    "message": "Handeln ist in diesem Netzwerk nicht verfügbar"
   },
   "swapEditLimit": {
     "message": "Limit bearbeiten"

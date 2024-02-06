@@ -20,7 +20,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getCurrentNetwork,
   getOpenSeaEnabled,
 } from '../../../selectors';
@@ -62,7 +62,7 @@ export default function NftsItems({
   const collectionsKeys = Object.keys(collections);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();

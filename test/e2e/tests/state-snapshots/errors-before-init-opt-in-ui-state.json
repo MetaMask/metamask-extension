@@ -99,7 +99,8 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "useNativeCurrencyAsPrimaryCurrency": true
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "petnamesEnabled": true
       },
       "selectedAddress": "string",
       "theme": "light",

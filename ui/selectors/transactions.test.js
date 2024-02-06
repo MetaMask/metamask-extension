@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
@@ -9,6 +10,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   submittedPendingTransactionsSelector,
   hasTransactionPendingApprovals,
+  getApprovedAndSignedTransactions,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -33,6 +35,24 @@ describe('Transaction Selectors', () => {
           },
           providerConfig: {
             chainId: '0x5',
+          },
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
         },
       };
@@ -115,6 +135,24 @@ describe('Transaction Selectors', () => {
           },
           featureFlags: {},
           selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           transactions: [
             {
               id: 0,
@@ -156,6 +194,21 @@ describe('Transaction Selectors', () => {
           },
           featureFlags: {},
           selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                address: '0xAddress',
+              },
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           transactions: [
             {
               id: 0,
@@ -231,6 +284,24 @@ describe('Transaction Selectors', () => {
             chainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           featureFlags: {},
           transactions: [tx1, tx2],
         },
@@ -317,6 +388,24 @@ describe('Transaction Selectors', () => {
           chainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xAddress',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
         featureFlags: {},
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
       },
@@ -455,5 +544,51 @@ describe('Transaction Selectors', () => {
         expect(result).toBe(true);
       },
     );
+  });
+
+  describe('getApprovedAndSignedTransactions', () => {
+    it('returns transactions with status of approved or signed on current network', () => {
+      const state = {
+        metamask: {
+          providerConfig: {
+            chainId: CHAIN_IDS.MAINNET,
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.submitted,
+            },
+            {
+              id: 2,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.unapproved,
+            },
+            {
+              id: 3,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.signed,
+            },
+            {
+              id: 4,
+              chainId: CHAIN_IDS.GOERLI,
+              status: TransactionStatus.signed,
+            },
+          ],
+        },
+      };
+
+      const results = getApprovedAndSignedTransactions(state);
+
+      expect(results).toStrictEqual([
+        state.metamask.transactions[0],
+        state.metamask.transactions[3],
+      ]);
+    });
   });
 });

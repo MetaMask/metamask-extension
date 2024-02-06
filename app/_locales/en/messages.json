@@ -617,7 +617,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -633,12 +633,6 @@
   },
   "bridge": {
     "message": "Bridge"
-  },
-  "bridgeDescription": {
-    "message": "Transfer tokens from different networks"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge is not available in this network"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -657,12 +651,6 @@
   },
   "buyAndSell": {
     "message": "Buy & Sell"
-  },
-  "buyAndSellDescription": {
-    "message": "Buy crypto or sell your crypto for cash"
-  },
-  "buyAndSellDisabled": {
-    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
@@ -714,8 +702,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
+    "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -791,6 +778,12 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmTitleDescSignature": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleSignature": {
+    "message": "Signature request"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -916,9 +909,6 @@
   "connectionRequest": {
     "message": "Connection request"
   },
-  "connections": {
-    "message": "Connections"
-  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -988,6 +978,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyPrivateKey": {
+    "message": "Copy private key"
   },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
@@ -1670,7 +1663,7 @@
     "message": "Suggest address names"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signature and transaction requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -1913,7 +1906,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-
   "hideToken": {
     "message": "Hide token"
   },
@@ -1994,6 +1986,9 @@
   },
   "ignoreTokenWarning": {
     "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
+  },
+  "imToken": {
+    "message": "imToken"
   },
   "import": {
     "message": "Import",
@@ -2203,6 +2198,9 @@
   "ipfsToggleModalSettings": {
     "message": "Settings > Security and privacy"
   },
+  "isSigningOrSubmitting": {
+    "message": "A previous transaction is still being signed or submitted"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2298,6 +2296,18 @@
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
+  },
+  "ledgerErrorConnectionIssue": {
+    "message": "Reconnect your ledger, open the ETH app and try again."
+  },
+  "ledgerErrorDevicedLocked": {
+    "message": "Your Ledger is locked. Unlock it then try again."
+  },
+  "ledgerErrorEthAppNotOpen": {
+    "message": "To solve the issue, open the ETH application on your device and retry."
+  },
+  "ledgerErrorTransactionDataNotPadded": {
+    "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -3067,14 +3077,11 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Stay safe from scams while still protecting your privacy with security alerts powered by Blockaid. This feature is now on by default for all MetaMask users."
-  },
-  "notificationsBlockaidDefaultDescriptionThree": {
-    "message": "Only on Ethereum Mainnet. More networks available soon."
-  },
-  "notificationsBlockaidDefaultDescriptionThreeActionText": {
+  "notificationsBlockaidDefaultDescriptionActionText": {
     "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -3126,18 +3133,6 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
-  },
-  "notificationsStakingPortfolioActionText": {
-    "message": "Got it",
-    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioDescription": {
-    "message": "Now you can stake ETH and manage your rewards all in one place.",
-    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioTitle": {
-    "message": "Stake smarter in Portfolio",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3617,6 +3612,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "petnamesEnabledToggle": {
+    "message": "Petnames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This allows you to assign a name to any address. This name will be visible to you only."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
@@ -4084,9 +4085,6 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
-  "selectActionButton": {
-    "message": "Select action"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4101,9 +4099,6 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
-  "selectAnAction": {
-    "message": "Select an action"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
@@ -4134,9 +4129,6 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
-  },
-  "sendDescription": {
-    "message": "Send crypto to any account"
   },
   "sendNoContactsConversionText": {
     "message": "click here"
@@ -4194,8 +4186,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"
@@ -4269,6 +4261,9 @@
   },
   "signin": {
     "message": "Sign-In"
+  },
+  "signing": {
+    "message": "Signing"
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
@@ -4622,9 +4617,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Stake your crypto to earn rewards"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4822,14 +4814,8 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDescription": {
-    "message": "Swap and trade your tokens"
-  },
   "swapDirectContract": {
     "message": "Direct contract"
-  },
-  "swapDisabled": {
-    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"
