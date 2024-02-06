@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { TransactionStatus } from '@metamask/transaction-controller';
@@ -23,6 +23,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { abortTransactionSigning } from '../../../store/actions';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -80,6 +81,7 @@ jest.mock('react', () => {
 
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  abortTransactionSigning: jest.fn(),
 }));
 
 jest.mock('../../../store/institutional/institution-background', () => ({
@@ -118,17 +120,17 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  beforeAll(() => {
+    useGasFeeEstimates.mockImplementation(
+      () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+    );
+  });
+
+  afterAll(() => {
+    useGasFeeEstimates.mockRestore();
+  });
+
   describe('ActivityListItem interactions', () => {
-    beforeAll(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-    });
-
-    afterAll(() => {
-      useGasFeeEstimates.mockRestore();
-    });
-
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
@@ -166,16 +168,6 @@ describe('TransactionListItem', () => {
   });
 
   describe('when account has insufficient balance to cover gas', () => {
-    beforeAll(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-    });
-
-    afterAll(() => {
-      useGasFeeEstimates.mockRestore();
-    });
-
     it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
@@ -225,7 +217,10 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+        },
       };
 
       const { getByTestId } = renderWithProvider(
@@ -247,9 +242,11 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
-        ...(transactionGroup.primaryTransaction.status =
-          TransactionStatus.signed),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+          status: TransactionStatus.signed,
+        },
       };
 
       const { getByTestId } = renderWithProvider(
@@ -270,9 +267,11 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
-        ...(transactionGroup.primaryTransaction.status =
-          TransactionStatus.rejected),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+          status: TransactionStatus.rejected,
+        },
       };
 
       const { getByTestId } = renderWithProvider(
@@ -295,7 +294,10 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+        },
       };
 
       const { queryByTestId } = renderWithProvider(
@@ -321,7 +323,10 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+        },
       };
 
       const { queryByTestId } = renderWithProvider(
@@ -332,5 +337,58 @@ describe('TransactionListItem', () => {
       const cancelButton = queryByTestId('cancel-button');
       expect(cancelButton).not.toBeInTheDocument();
     });
+  });
+
+  it('hides speed up button if status is approved', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        balance: '2AA1EFB94E0000',
+      }),
+    );
+
+    const transactionGroupSigning = {
+      ...transactionGroup,
+      primaryTransaction: {
+        ...transactionGroup.primaryTransaction,
+        status: TransactionStatus.approved,
+      },
+    };
+
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={transactionGroupSigning} />,
+    );
+
+    const speedUpButton = queryByTestId('speed-up-button');
+    expect(speedUpButton).not.toBeInTheDocument();
+  });
+
+  it('aborts transaction signing if cancel button clicked and status is approved', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        balance: '2AA1EFB94E0000',
+      }),
+    );
+
+    useDispatch.mockReturnValue(jest.fn());
+
+    const transactionGroupSigning = {
+      ...transactionGroup,
+      primaryTransaction: {
+        ...transactionGroup.primaryTransaction,
+        status: TransactionStatus.approved,
+      },
+    };
+
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={transactionGroupSigning} />,
+    );
+
+    const cancelButton = queryByTestId('cancel-button');
+    fireEvent.click(cancelButton);
+
+    expect(abortTransactionSigning).toHaveBeenCalledTimes(1);
+    expect(abortTransactionSigning).toHaveBeenCalledWith(
+      transactionGroupSigning.primaryTransaction.id,
+    );
   });
 });

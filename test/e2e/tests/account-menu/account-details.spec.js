@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -40,7 +41,7 @@ describe('Show account details', function () {
       '[data-testid="account-details-key"]',
     );
     const key = await keyContainer.getText();
-    return key;
+    return LavaDomeDebug.stripDistractionFromText(key);
   }
 
   it('should show the QR code for the account', async function () {

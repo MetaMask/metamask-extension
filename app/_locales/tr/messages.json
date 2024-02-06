@@ -647,10 +647,6 @@
   "chainIdExistsErrorMsg": {
     "message": "Bu Zincir Kimliği şu anda $1 ağı tarafından kullanılıyor."
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Zincir kimliği $1 olan ağ, girdiğin para biriminden farklı bir para birimi sembolü ($2) kullanabilir. Lütfen devam etmeden önce doğrula.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chooseYourNetwork": {
     "message": "Ağınızı seçin"
   },

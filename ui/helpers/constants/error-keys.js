@@ -7,3 +7,4 @@ export const GAS_PRICE_EXCESSIVE_ERROR_KEY = 'gasPriceExcessive';
 export const UNSENDABLE_ASSET_ERROR_KEY = 'unsendableAsset';
 export const INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY = 'insufficientFundsForGas';
 export const INVALID_ASSET_TYPE = 'invalidAssetType';
+export const IS_SIGNING_OR_SUBMITTING = 'isSigningOrSubmitting';

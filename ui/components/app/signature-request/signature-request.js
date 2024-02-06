@@ -1,11 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  useCallback,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   useDispatch,
   useSelector,
@@ -53,7 +46,7 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi,blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MetaMetricsEventName,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
@@ -152,21 +145,6 @@ const SignatureRequest = ({ txData }) => {
     return { sanitizedMessage, domain, primaryType };
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const onClickSupportLink = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        action: 'Sign Request',
-        type,
-        version,
-        external_link_clicked: 'security_alert_support_link',
-      },
-    });
-  }, [trackEvent, type, version]);
-  ///: END:ONLY_INCLUDE_IF
-
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (accountType === 'custody') {
@@ -231,7 +209,6 @@ const SignatureRequest = ({ txData }) => {
             marginLeft={4}
             marginRight={4}
             marginBottom={4}
-            onClickSupportLink={onClickSupportLink}
           />
           ///: END:ONLY_INCLUDE_IF
         }
