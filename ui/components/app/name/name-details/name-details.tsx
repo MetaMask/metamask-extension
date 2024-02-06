@@ -58,13 +58,6 @@ import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
-// The following lines avoid i18n "unused messages" lint error.
-// t('nameProvider_ens');
-// t('nameProvider_etherscan');
-// t('nameProvider_lens');
-// t('nameProvider_token');
-const getProviderLabel = (sourceId: string) => `nameProvider_${sourceId}`;
-
 export interface NameDetailsProps {
   onClose: () => void;
   sourcePriority?: string[];
@@ -86,6 +79,24 @@ function formatValue(value: string, type: NameType): string {
   }
 }
 
+// Provider source ids that have a localized name:
+const LOCALIZED_PROVIDERS = ['ens', 'etherscan', 'lens', 'token'];
+// The following lines avoid i18n "unused messages" lint error.
+// t('nameProvider_ens');
+// t('nameProvider_etherscan');
+// t('nameProvider_lens');
+// t('nameProvider_token');
+
+function getProviderLabel(
+  sourceId: string,
+  t: ReturnType<typeof useI18nContext>,
+) {
+  if (LOCALIZED_PROVIDERS.includes(sourceId)) {
+    return t(`nameProvider_${sourceId}`);
+  }
+  return sourceId;
+}
+
 function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
   t: ReturnType<typeof useI18nContext>,
@@ -105,7 +116,7 @@ function generateComboOptions(
         value: proposedName,
         primaryLabel: t('nameModalMaybeProposedName', [proposedName]),
         secondaryLabel: t('nameProviderProposedBy', [
-          t(getProviderLabel(sourceId)),
+          getProviderLabel(sourceId, t),
         ]),
         sourceId,
       }));
@@ -278,7 +289,7 @@ export default function NameDetails({
       setSelectedSourceId(option.sourceId);
       setSelectedSourceName(option.value);
     },
-    [setSelectedSourceId, setSelectedSourceName, setName],
+    [setSelectedSourceId, setSelectedSourceName],
   );
 
   const handleCopyClick = useCallback(() => {
