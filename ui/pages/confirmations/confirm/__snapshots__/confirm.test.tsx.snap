@@ -74,16 +74,6 @@ exports[`Confirm should match snapshot for personal signature 1`] = `
         </p>
       </div>
     </div>
-    <h2
-      class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
-    >
-      Signature request
-    </h2>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
-    >
-      Only sign this message if you fully understand the content and trust the requesting site
-    </p>
     <div
       class="mm-box"
     >
