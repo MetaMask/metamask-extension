@@ -58,6 +58,13 @@ import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
+// The following lines avoid i18n "unused messages" lint error.
+// t('nameProvider_ens');
+// t('nameProvider_etherscan');
+// t('nameProvider_lens');
+// t('nameProvider_token');
+const getProviderLabel = (sourceId: string) => `nameProvider_${sourceId}`;
+
 export interface NameDetailsProps {
   onClose: () => void;
   sourcePriority?: string[];
@@ -98,7 +105,7 @@ function generateComboOptions(
         value: proposedName,
         primaryLabel: t('nameModalMaybeProposedName', [proposedName]),
         secondaryLabel: t('nameProviderProposedBy', [
-          t(`nameProvider_${sourceId}`),
+          t(getProviderLabel(sourceId)),
         ]),
         sourceId,
       }));
@@ -187,6 +194,7 @@ export default function NameDetails({
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
   const t = useI18nContext();
+
   const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
   const formattedValue = formatValue(value, type);
 

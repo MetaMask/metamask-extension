@@ -209,7 +209,7 @@ exports[`NameDetails renders proposed names 1`] = `
                     <span
                       class="form-combo-field__option-secondary"
                     >
-                      Proposed by Etherium Name Service (ENS)
+                      Proposed by Ethereum Name Service (ENS)
                     </span>
                   </div>
                   <div
