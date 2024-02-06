@@ -1,12 +1,12 @@
 import React from 'react';
 
+import { Footer as ConfirmFooter } from '../../components/app/confirm/footer';
 import ScrollToBottom from '../../components/app/confirm/scroll-to-bottom';
+import { ConfirmTitle } from '../../components/app/confirm/title';
 import { Footer, Page } from '../../components/multichain/pages/page';
 import { BackgroundColor } from '../../helpers/constants/design-system';
-import { Header } from '../../components/app/confirm/header';
-import { Footer as ConfirmFooter } from '../../components/app/confirm/footer';
-import syncConfirmPath from '../../hooks/confirm/syncConfirmPath';
 import setCurrentConfirmation from '../../hooks/confirm/setCurrentConfirmation';
+import syncConfirmPath from '../../hooks/confirm/syncConfirmPath';
 
 const Confirm = () => {
   setCurrentConfirmation();
@@ -25,7 +25,7 @@ const Confirm = () => {
 
   return (
     <Page backgroundColor={BackgroundColor.backgroundAlternative}>
-      <Header />
+      <ConfirmTitle />
       <ScrollToBottom
         padding={4}
         hasScrolledToBottom={hasScrolledToBottom}
