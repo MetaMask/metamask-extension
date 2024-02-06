@@ -1,5 +1,4 @@
 import React from 'react';
-import Confusable from '../../ui/confusable';
 import { Box } from '../../component-library';
 import { AddressListItem } from '.';
 
