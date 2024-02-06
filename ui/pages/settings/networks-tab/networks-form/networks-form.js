@@ -605,7 +605,7 @@ const NetworksForm = ({
               },
             },
             {
-              setActive: true,
+              setActive: false,
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
