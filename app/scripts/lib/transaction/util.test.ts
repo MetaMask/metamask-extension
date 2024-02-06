@@ -16,6 +16,15 @@ import {
   addTransaction,
 } from './util';
 
+jest.mock('uuid', () => {
+  const actual = jest.requireActual('uuid');
+
+  return {
+    ...actual,
+    v4: jest.fn(),
+  };
+});
+
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
 };
