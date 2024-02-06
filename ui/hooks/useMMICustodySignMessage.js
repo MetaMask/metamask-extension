@@ -6,6 +6,7 @@ import {
   completedTx,
   showModal,
 } from '../store/actions';
+
 export function useMMICustodySignMessage() {
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
