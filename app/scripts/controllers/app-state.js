@@ -442,6 +442,20 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  /**
+   * Set the setCustodianDeepLink with the fromAddress and custodyId
+   *
+   * @param {object} opts
+   * @param opts.fromAddress
+   * @param opts.custodyId
+   * @returns {void}
+   */
+  setCustodianDeepLink({ fromAddress, custodyId }) {
+    this.store.updateState({
+      custodianDeepLink: { fromAddress, custodyId },
+    });
+  }
+
   ///: END:ONLY_INCLUDE_IF
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active

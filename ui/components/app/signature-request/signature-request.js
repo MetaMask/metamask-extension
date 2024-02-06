@@ -16,9 +16,6 @@ import {
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-///: END:ONLY_INCLUDE_IF
 import {
   resolvePendingApproval,
   completedTx,
@@ -88,11 +85,6 @@ import {
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-// eslint-disable-next-line import/order
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -132,9 +124,7 @@ const SignatureRequest = ({ txData }) => {
   // Used to show a warning if the signing account is not the selected account
   // Largely relevant for contract wallet custodians
   const selectedAccount = useSelector(getSelectedAccount);
-  const mmiActions = mmiActionsFactory();
   const accountType = useSelector(getAccountType);
-  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
   const allAccounts = useSelector(
     accountsWithSendEtherInfoSelector,
     shallowEqual,
@@ -223,37 +213,6 @@ const SignatureRequest = ({ txData }) => {
     domain: { verifyingContract },
     primaryType,
   } = parseMessage(data);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  useEffect(() => {
-    if (txData.custodyId) {
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId: undefined,
-        custodyId: txData.custodyId,
-        fromAddress: address,
-        isSignature: true,
-        closeNotification: isNotification,
-        onDeepLinkFetched: () => undefined,
-        onDeepLinkShown: () => {
-          trackEvent({
-            category: MetaMetricsEventCategory.MMI,
-            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
-          });
-        },
-        showCustodyConfirmLink,
-      });
-    }
-  }, [
-    dispatch,
-    mmiActions,
-    txData.custodyId,
-    address,
-    isNotification,
-    trackEvent,
-  ]);
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <div className="signature-request">

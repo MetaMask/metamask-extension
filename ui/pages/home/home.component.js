@@ -354,6 +354,12 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      custodianDeepLink,
+      showCustodianDeepLink,
+      cleanCustodianDeepLink,
+      accountType,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     const { notificationClosing } = this.state;
@@ -362,6 +368,28 @@ export default class Home extends PureComponent {
       closeNotificationPopup();
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
+    }
+
+    if (
+      accountType === 'custody' &&
+      custodianDeepLink &&
+      Object.keys(custodianDeepLink).length
+    ) {
+      const { custodyId, fromAddress } = custodianDeepLink;
+
+      showCustodianDeepLink({
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        isNotification,
+        onDeepLinkShown: () => {
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.MMI,
+            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
+          });
+          cleanCustodianDeepLink();
+        },
+      });
     }
   }
 

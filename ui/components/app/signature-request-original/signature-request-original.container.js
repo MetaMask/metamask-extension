@@ -11,13 +11,11 @@ import {
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/order
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -107,25 +105,6 @@ function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
     setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
-    showCustodianDeepLink: ({
-      custodyId,
-      fromAddress,
-      closeNotification,
-      onDeepLinkFetched,
-      onDeepLinkShown,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId: undefined,
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        closeNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-        showCustodyConfirmLink,
-      }),
     showTransactionsFailedModal: ({
       errorMessage,
       closeNotification,
@@ -197,14 +176,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       try {
         await dispatchProps.resolvePendingApproval(_msgData.id);
         dispatchProps.completedTx(_msgData.id);
-
-        dispatchProps.showCustodianDeepLink({
-          custodyId: null,
-          fromAddress: fromAccount.address,
-          closeNotification: isNotification,
-          onDeepLinkFetched: () => undefined,
-          onDeepLinkShown: () => undefined,
-        });
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
