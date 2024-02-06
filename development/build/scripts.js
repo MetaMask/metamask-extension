@@ -43,6 +43,7 @@ const {
   getBuildName,
   getBuildAppId,
   getBuildIcon,
+  makeSelfInjecting,
 } = require('./utils');
 
 const {
@@ -479,16 +480,9 @@ function createScriptTasks({
         }
         // stringify inpage.js into itself, and then make it inject itself into the page
         browserPlatforms.forEach((browser) => {
-          const inpagePath = path.join(
-            __dirname,
-            '../../',
-            `dist/${browser}/${inpage}.js`,
+          makeSelfInjecting(
+            path.join(__dirname, `../../dist/${browser}/${inpage}.js`),
           );
-          const textContent = JSON.stringify(readFileSync(inpagePath, 'utf8'))
-            .replace(/\u2028/gu, '\\u2028')
-            .replace(/\u2029/gu, '\\u2029');
-          const html = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
-          writeFileSync(inpagePath, html, 'utf8');
         });
         // delete the inpage.js source map, as it no longer represents inpage.js
         // and so `yarn source-map-explorer` can't handle it. It's also not
