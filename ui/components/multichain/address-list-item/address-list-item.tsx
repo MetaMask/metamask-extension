@@ -1,5 +1,4 @@
-import React, { ReactChild } from 'react';
-
+import React from 'react';
 import { useSelector } from 'react-redux';
 import Confusable from '../../ui/confusable';
 import {
@@ -72,7 +71,6 @@ export const AddressListItem = ({
           padding={0}
           width={BlockSize.Full}
           textAlign={TextAlign.Left}
-          ellipsis
           className="address-list-item__label"
         >
           {label ? <Confusable input={label} /> : shortenAddress(address)}

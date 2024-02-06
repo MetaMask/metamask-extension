@@ -19,7 +19,6 @@ import {
   Box,
 } from '../../../../component-library';
 import { getAddressBookEntry } from '../../../../../selectors';
-import Confusable from '../../../../ui/confusable';
 import { Tab, Tabs } from '../../../../ui/tabs';
 import { AddressListItem } from '../../../address-list-item';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';

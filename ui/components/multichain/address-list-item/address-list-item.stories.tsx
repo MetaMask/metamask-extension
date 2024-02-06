@@ -55,4 +55,4 @@ export const ConfusableStory = (args) => (
   </Box>
 );
 ConfusableStory.storyName = 'Confusable';
-ConfusableStory.args = { label: <Confusable input={LABEL} /> };
+ConfusableStory.args = { label: '👻.eth' };
