@@ -293,7 +293,7 @@ function getBuildIcon({ buildType }) {
  * the file is loaded. Useful for extensions to run scripts synchronously in the
  * "MAIN" world.
  *
- * @param {string} filePath The path to the file to convert to a self-injecting
+ * @param {string} filePath - The path to the file to convert to a self-injecting
  * script.
  */
 function makeSelfInjecting(filePath) {
