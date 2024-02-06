@@ -619,20 +619,20 @@ const NetworksForm = ({
             networkConfigurationId,
           }),
         );
-
-        trackEvent({
-          event: MetaMetricsEventName.CustomNetworkAdded,
-          category: MetaMetricsEventCategory.Network,
-          properties: {
-            block_explorer_url: blockExplorerUrl,
-            chain_id: prefixedChainId,
-            network_name: networkName,
-            source_connection_method:
-              MetaMetricsNetworkEventSource.CustomNetworkForm,
-            token_symbol: ticker,
-          },
-        });
       }
+      trackEvent({
+        event: MetaMetricsEventName.CustomNetworkAdded,
+        category: MetaMetricsEventCategory.Network,
+        properties: {
+          block_explorer_url: blockExplorerUrl,
+          chain_id: prefixedChainId,
+          network_name: networkName,
+          source_connection_method:
+            MetaMetricsNetworkEventSource.CustomNetworkForm,
+          token_symbol: ticker,
+        },
+      });
+
       submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
@@ -641,7 +641,7 @@ const NetworksForm = ({
   };
 
   const onCancel = () => {
-    if (addNewNetwork) {
+    if (addNewNetwork || setActiveOnSubmit) {
       dispatch(setSelectedNetworkConfigurationId(''));
       cancelCallback?.();
     } else {
@@ -661,7 +661,8 @@ const NetworksForm = ({
       }),
     );
   };
-  const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
+  const deletable =
+    !isCurrentRpcTarget && !viewOnly && !addNewNetwork && !setActiveOnSubmit;
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
