@@ -45,7 +45,9 @@ import {
   getShowSurveyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 
 import {

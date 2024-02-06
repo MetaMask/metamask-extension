@@ -374,6 +374,7 @@ export default class Home extends PureComponent {
       this.checkStatusAndNavigate();
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (
       accountType === 'custody' &&
       custodianDeepLink &&
@@ -395,6 +396,7 @@ export default class Home extends PureComponent {
         },
       });
     }
+    ///: END:ONLY_INCLUDE_IF
   }
 
   onRecoveryPhraseReminderClose = () => {
