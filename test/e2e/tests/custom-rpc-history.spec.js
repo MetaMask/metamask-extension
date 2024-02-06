@@ -63,7 +63,7 @@ describe('Custom RPC history', function () {
           '.networks-tab__add-network-form-footer .btn-primary',
         );
 
-        await driver.findElement({ text: networkName, tag: 'span' });
+        await driver.findElement({ text: networkName, tag: 'h6' });
       },
     );
   });
