@@ -22,14 +22,19 @@ describe('Test Snap revoke permission', function () {
 
         // navigate to test snaps page and connect to ethereum-provider snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const snapButton = await driver.findElement(
           '#connectethereum-provider',
         );
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectethereum-provider');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 3);
@@ -75,7 +80,10 @@ describe('Test Snap revoke permission', function () {
           text: 'Next',
           tag: 'button',
         });
-        await driver.delay(500);
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -94,9 +102,11 @@ describe('Test Snap revoke permission', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.delay(1000);
 
         // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -134,13 +144,15 @@ describe('Test Snap revoke permission', function () {
         await driver.clickElement('#sendEthproviderAccounts');
 
         // switch to metamask window and click through confirmations
-        await driver.delay(500);
         await switchToNotificationWindow(driver, 3);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
         });
-        await driver.delay(500);
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
