@@ -44,12 +44,7 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message';
 import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 
 import {
