@@ -1330,7 +1330,6 @@ function renderJavaScriptLoader({
   const requiredScripts = [
     './snow.js',
     './use-snow.js',
-    './globalthis.js',
     './sentry-install.js',
     ...securityScripts,
     ...jsBundles,
