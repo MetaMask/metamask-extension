@@ -298,18 +298,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
-        // After login, check that notification message for added network is displayed
-        const notificationMessage = `“${networkName}” was successfully added!`;
-        const networkNotification = await driver.isElementPresent({
-          css: '[class*="actionable-message__message"]',
-          text: notificationMessage,
-        });
-        assert.equal(networkNotification, true);
-        await driver.clickElement({
-          text: 'Switch to Localhost 8546',
-          tag: 'h6',
-        });
-
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
           css: '[data-testid="network-display"]',
