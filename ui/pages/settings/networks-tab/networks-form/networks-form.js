@@ -90,6 +90,7 @@ const prefixChainId = (chainId) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  setActiveOnSubmit = false,
   restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
@@ -605,7 +606,7 @@ const NetworksForm = ({
               },
             },
             {
-              setActive: false,
+              setActive: setActiveOnSubmit,
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
@@ -631,9 +632,8 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
-
-        submitCallback?.();
       }
+      submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
       throw error;
@@ -846,6 +846,7 @@ NetworksForm.propTypes = {
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
+  setActiveOnSubmit: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {
