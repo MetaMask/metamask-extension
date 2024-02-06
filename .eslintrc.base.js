@@ -12,6 +12,9 @@ module.exports = {
   },
 
   rules: {
+    // CHECKED: rule was updated so it causes a massive amount of changes so we have to turn it off now.
+    'jsdoc/check-line-alignment': 'off',
+
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',

@@ -29,34 +29,38 @@ const createEtcTasks = require('./etc');
 const { getBrowserVersionMap, getEnvironment } = require('./utils');
 const { getConfig } = require('./config');
 
-// Packages required dynamically via browserify configuration in dependencies
-// Required for LavaMoat policy generation
-require('loose-envify');
-require('@babel/preset-env');
-require('@babel/preset-react');
-require('@babel/preset-typescript');
-require('@babel/core');
-// TODO(WEBPACK): The 850 lines of eslint are too much to figure out. I've
-// already wasted half a day on these rules. I'm disabling them because its
-// really dumb to let linting hold back updating typescript. I really hate
-// our lint rules and think they are an enormous waste of engineering resources.
-// // ESLint-related
-// require('@babel/eslint-parser');
-// require('@babel/eslint-plugin');
-// require('@metamask/eslint-config');
-// require('@metamask/eslint-config-nodejs');
-// require('@typescript-eslint/parser');
-// require('eslint');
-// require('eslint-config-prettier');
-// require('eslint-import-resolver-node');
-// require('eslint-import-resolver-typescript');
-// require('eslint-plugin-import');
-// require('eslint-plugin-jsdoc');
-// require('eslint-plugin-node');
-// require('eslint-plugin-prettier');
-// require('eslint-plugin-react');
-// require('eslint-plugin-react-hooks');
-// require('eslint-plugin-jest');
+/* eslint-disable no-constant-condition, node/global-require */
+if (false) {
+  // Packages required dynamically via browserify/eslint configuration in
+  // dependencies. This is a workaround for LavaMoat's static analyzer used in
+  // policy generation. To avoid the case where we need to write policy
+  // overrides for these packages we can plop them here and they will be
+  // included in the policy. Neat!
+  require('loose-envify');
+  require('@babel/preset-env');
+  require('@babel/preset-react');
+  require('@babel/preset-typescript');
+  require('@babel/core');
+  // ESLint-related
+  require('@babel/eslint-parser');
+  require('@babel/eslint-plugin');
+  require('@metamask/eslint-config');
+  require('@metamask/eslint-config-nodejs');
+  // eslint-disable-next-line import/no-unresolved
+  require('@typescript-eslint/parser');
+  require('eslint');
+  require('eslint-config-prettier');
+  require('eslint-import-resolver-node');
+  require('eslint-import-resolver-typescript');
+  require('eslint-plugin-import');
+  require('eslint-plugin-jsdoc');
+  require('eslint-plugin-node');
+  require('eslint-plugin-prettier');
+  require('eslint-plugin-react');
+  require('eslint-plugin-react-hooks');
+  require('eslint-plugin-jest');
+}
+/* eslint-enable no-constant-condition, node/global-require */
 
 defineAndRunBuildTasks().catch((error) => {
   console.error(error.stack || error);
@@ -377,8 +381,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
   } = argv;
 
   // Manually default this to `false` for dev builds only.
-  // TODO(WEBPACK): our eslint rules are broken for latest versions of typescript.
-  const shouldLintFenceFiles = false; //lintFenceFiles ?? !/dev/iu.test(task);
+  const shouldLintFenceFiles = lintFenceFiles ?? !/dev/iu.test(task);
 
   const version = getVersion(buildType, buildVersion);
 

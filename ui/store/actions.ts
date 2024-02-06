@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck `redux-thunk` and `@reduxjs/toolkit` are not compatible with
 // TypeScript 5.3.3. We can't update them because we rely on an old version of
 // @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
