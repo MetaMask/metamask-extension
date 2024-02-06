@@ -9,7 +9,7 @@ import {
 } from '../../../../../ducks/send';
 import { SendPageRow } from '.';
 
-export const SendPageYourAccount = () => {
+export const SendPageYourAccounts = () => {
   const dispatch = useDispatch();
 
   // Your Accounts

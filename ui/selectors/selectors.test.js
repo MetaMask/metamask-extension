@@ -646,7 +646,7 @@ describe('Selectors', () => {
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
     const accountsWithSendEther =
       selectors.accountsWithSendEtherInfoSelector(mockState);
-    expect(accountsWithSendEther).toHaveLength(5);
+    expect(accountsWithSendEther).toHaveLength(6);
     expect(accountsWithSendEther[0].balance).toStrictEqual(
       '0x346ba7725f412cbfdb',
     );

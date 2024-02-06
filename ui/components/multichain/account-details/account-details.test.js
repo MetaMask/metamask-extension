@@ -1,3 +1,4 @@
+import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -96,16 +97,22 @@ describe('AccountDetails', () => {
 
   it('displays the private key when sent in props', () => {
     const samplePrivateKey = '8675309';
+    const textHook = 'FIND_ME';
 
     const { queryByText } = renderWithProvider(
-      <AccountDetailsKey
-        accountName="Account 1"
-        onClose={jest.fn()}
-        privateKey={samplePrivateKey}
-      />,
+      <div>
+        {textHook}
+        <AccountDetailsKey
+          accountName="Account 1"
+          onClose={jest.fn()}
+          privateKey={samplePrivateKey}
+        />
+      </div>,
     );
 
-    expect(queryByText(samplePrivateKey)).toBeInTheDocument();
+    const hook = queryByText(textHook);
+    const rootNode = hook.parentElement.querySelector('span');
+    expect(LavaDomeDebug.getTextByRoot(rootNode)).toContain(samplePrivateKey);
   });
 
   it('should call AccountDetails.onClose()', () => {

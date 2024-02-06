@@ -48,6 +48,7 @@ export const SendPageAccountPicker = () => {
           width: BlockSize.Full,
         }}
         width={BlockSize.Full}
+        data-testid="send-page-account-picker"
       />
       {showAccountPicker ? (
         <AccountListMenu

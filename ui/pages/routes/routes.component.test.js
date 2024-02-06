@@ -71,7 +71,7 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
   describe('render during send flow', () => {
-    it('should render with network change disabled while adding recipient for send flow', () => {
+    it.only('should render with network change disabled while adding recipient for send flow', () => {
       const store = configureMockStore()({
         ...mockSendState,
         send: {

@@ -377,13 +377,12 @@ describe('selectors', () => {
           type: EthAccountType.Eoa,
         },
         {
-          address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
           balance: '0x0',
-          id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           metadata: {
-            name: 'Account 2',
+            name: 'Really Long Name That Should Be Truncated',
             lastActive: 1586359844192,
-            lastSelected: 1586359844193,
             keyring: {
               type: 'HD Key Tree',
             },
@@ -424,12 +423,13 @@ describe('selectors', () => {
           type: EthAccountType.Eoa,
         },
         {
-          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
           balance: '0x0',
-          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          id: '15e69915-2a1a-4019-93b3-916e11fd432f',
           metadata: {
-            name: 'Really Long Name That Should Be Truncated',
+            name: 'Account 2',
             lastActive: 1586359844192,
+            lastSelected: 1586359844193,
             keyring: {
               type: 'HD Key Tree',
             },
