@@ -17,7 +17,6 @@ export function useMMICustodySignMessage() {
       try {
         await dispatch(resolvePendingApproval(_msgData.id));
         completedTx(_msgData.id);
-
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
       } catch (err) {
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
