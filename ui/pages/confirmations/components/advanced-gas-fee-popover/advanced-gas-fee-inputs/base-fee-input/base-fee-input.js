@@ -48,8 +48,13 @@ const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
 const BaseFeeInput = () => {
   const t = useI18nContext();
 
-  const { gasFeeEstimates, estimateUsed, maxFeePerGas, editGasMode } =
-    useGasFeeContext();
+  const {
+    gasFeeEstimates,
+    estimateUsed,
+    maxFeePerGas: maxBaseFeeNumber,
+    editGasMode,
+  } = useGasFeeContext();
+  const maxFeePerGas = new Numeric(maxBaseFeeNumber, 10).toString();
   const {
     gasLimit,
     maxPriorityFeePerGas,
@@ -74,7 +79,7 @@ const BaseFeeInput = () => {
       return advancedGasFeeValues.maxBaseFee;
     }
 
-    return new Numeric(maxFeePerGas, 10)?.toString();
+    return maxFeePerGas;
   });
 
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
