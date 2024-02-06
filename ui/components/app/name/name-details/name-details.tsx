@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import {
+  NameControllerState,
   NameEntry,
   NameType,
   UpdateProposedNamesResult,
@@ -90,16 +91,21 @@ const LOCALIZED_PROVIDERS = ['ens', 'etherscan', 'lens', 'token'];
 function getProviderLabel(
   sourceId: string,
   t: ReturnType<typeof useI18nContext>,
+  nameSources: NameControllerState['nameSources'],
 ) {
   if (LOCALIZED_PROVIDERS.includes(sourceId)) {
-    return t(`nameProvider_${sourceId}`);
+    // Use intermediate variable to avoid "Forbidden use of template strings
+    // in 't' function" error.
+    const messageKey = `nameProvider_${sourceId}`;
+    return t(messageKey);
   }
-  return sourceId;
+  return nameSources[sourceId]?.label ?? sourceId;
 }
 
 function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
   t: ReturnType<typeof useI18nContext>,
+  nameSources: NameControllerState['nameSources'],
 ): ProposedNameOption[] {
   const sourceIds = Object.keys(proposedNameEntries);
 
@@ -116,7 +122,7 @@ function generateComboOptions(
         value: proposedName,
         primaryLabel: t('nameModalMaybeProposedName', [proposedName]),
         secondaryLabel: t('nameProviderProposedBy', [
-          getProviderLabel(sourceId, t),
+          getProviderLabel(sourceId, t, nameSources),
         ]),
         sourceId,
       }));
@@ -229,7 +235,7 @@ export default function NameDetails({
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () => generateComboOptions(proposedNames, t),
+    () => generateComboOptions(proposedNames, t, nameSources),
     [proposedNames, nameSources],
   );
 

@@ -27,11 +27,12 @@ jest.useFakeTimers();
 
 const ADDRESS_NO_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
+const ADDRESS_RECOGNIZED_MOCK = '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d';
 const CHAIN_ID_MOCK = '0x1';
 const SAVED_NAME_MOCK = 'TestName';
 const SAVED_NAME_2_MOCK = 'TestName2';
 const SOURCE_ID_MOCK = 'ens';
-const SOURCE_ID_2_MOCK = 'token';
+const SOURCE_ID_2_MOCK = 'some_snap';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
 
@@ -39,6 +40,9 @@ const STATE_MOCK = {
   metamask: {
     providerConfig: {
       chainId: CHAIN_ID_MOCK,
+    },
+    nameSources: {
+      [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },
     names: {
       [NameType.ETHEREUM_ADDRESS]: {
@@ -77,6 +81,16 @@ const STATE_MOCK = {
             name: null,
           },
         },
+      },
+    },
+    useTokenDetection: true,
+    tokenList: {
+      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+        symbol: 'IUSD',
+        name: 'iZUMi Bond USD',
+        iconUrl:
+          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
       },
     },
   },
@@ -155,6 +169,19 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('renders with recognized name', () => {
+    const { baseElement } = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_RECOGNIZED_MOCK}
         onClose={() => undefined}
       />,
       store,
