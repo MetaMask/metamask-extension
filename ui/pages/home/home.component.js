@@ -200,6 +200,10 @@ export default class Home extends PureComponent {
     modalOpen: PropTypes.bool,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
+    showCustodianDeepLink: PropTypes.func,
+    cleanCustodianDeepLink: PropTypes.func,
+    custodianDeepLink: PropTypes.object,
+    accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
   };
 
