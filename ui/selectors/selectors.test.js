@@ -1114,6 +1114,33 @@ describe('Selectors', () => {
         hidden: false,
       },
       {
+        address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+        balance: '0x0',
+        hidden: false,
+        id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+        metadata: {
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          name: 'Snap Account 1',
+          snap: {
+            id: 'snap-id',
+            name: 'snap-name',
+          },
+        },
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        options: {},
+        pinned: false,
+        type: 'eip155:eoa',
+      },
+      {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
           name: 'Test Account 4',

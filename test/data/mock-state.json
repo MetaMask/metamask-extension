@@ -245,6 +245,30 @@
             "eth_signTypedData_v4"
           ],
           "type": "eip155:eoa"
+        },
+        "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3": {
+          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+          "id": "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3",
+          "metadata": {
+            "name": "Snap Account 1",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "snap-id",
+              "name": "snap-name"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
         }
       },
       "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"

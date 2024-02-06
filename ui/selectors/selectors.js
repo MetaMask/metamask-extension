@@ -355,22 +355,14 @@ export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskAccounts,
   (keyrings, accounts) => {
     // keep existing keyring order
-    const keyringOrder = keyrings.map(({ type }) => type);
+    const internalAccounts = keyrings
+      .map(({ accounts: addressesOfKeyring }) => addressesOfKeyring)
+      .flat()
+      .map((address) => {
+        return accounts[address];
+      });
 
-    // sort accounts based on this order
-    return Object.values(accounts).sort((accountA, accountB) => {
-      const keyringA = accountA.metadata.keyring.type;
-      const keyringB = accountB.metadata.keyring.type;
-
-      const indexA = keyringOrder.indexOf(keyringA);
-      const indexB = keyringOrder.indexOf(keyringB);
-
-      if (indexA === indexB) {
-        return accountA.metadata.name.localeCompare(accountB.metadata.name);
-      }
-
-      return indexA - indexB;
-    });
+    return internalAccounts;
   },
 );
 
