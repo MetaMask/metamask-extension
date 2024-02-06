@@ -31,4 +31,21 @@ describe('SenderInfo', () => {
     expect(getByText('Origin')).toBeInTheDocument();
     expect(getByText('https://metamask.github.io')).toBeInTheDocument();
   });
+
+  it('does not render if required data is not present in the transaction', () => {
+    const mockState = {
+      confirm: {
+        currentConfirmation: {
+          id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
+          status: 'unapproved',
+          time: new Date().getTime(),
+          type: 'json_request',
+        },
+      },
+    };
+    const mockStore = configureMockStore([])(mockState);
+    const { queryByText } = renderWithProvider(<ConfirmTitle />, mockStore);
+
+    expect(queryByText('Origin')).not.toBeInTheDocument();
+  });
 });
