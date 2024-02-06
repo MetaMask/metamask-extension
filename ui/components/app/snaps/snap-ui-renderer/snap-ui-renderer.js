@@ -11,7 +11,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { getSnapName } from '../../../../helpers/utils/util';
 import { getInterface, getTargetSubjectMetadata } from '../../../../selectors';
-import { Box, Text } from '../../../component-library';
+import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import {
@@ -21,7 +21,6 @@ import {
 } from '../../../../store/actions';
 import { COMPONENT_MAPPING } from './components';
 
-// TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.
 export const mapToTemplate = (params) => {
   const { type } = params.element;
   params.elementKeyIndex.value += 1;
@@ -37,6 +36,11 @@ export const SnapUIRenderer = ({
   isCollapsable = false,
   isCollapsed = false,
   isLoading = false,
+  isPrompt = false,
+  // This is a workaround while we have the prompt dialog type since we can't inject the SnapUIRenderer in the template renderer.
+  inputValue,
+  onInputChange,
+  placeholder,
   onClick,
   boxProps,
   interfaceId,
@@ -168,6 +172,13 @@ export const SnapUIRenderer = ({
     >
       <Box className="snap-ui-renderer__content">
         <MetaMaskTemplateRenderer sections={sections} />
+        {isPrompt && (
+          <FormTextField
+            value={inputValue}
+            onChange={onInputChange}
+            placeholder={placeholder}
+          />
+        )}
       </Box>
     </SnapDelineator>
   );
@@ -179,6 +190,10 @@ SnapUIRenderer.propTypes = {
   isCollapsable: PropTypes.bool,
   isCollapsed: PropTypes.bool,
   isLoading: PropTypes.bool,
+  isPrompt: PropTypes.bool,
+  inputValue: PropTypes.string,
+  onInputChange: PropTypes.func,
+  placeholder: PropTypes.string,
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   interfaceId: PropTypes.string,

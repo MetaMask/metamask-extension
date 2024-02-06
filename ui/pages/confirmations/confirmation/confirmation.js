@@ -251,6 +251,8 @@ export default function ConfirmationPage({
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  const isSnapPrompt =
+    pendingConfirmation?.type === ApprovalType.SnapDialogPrompt;
   let useSnapHeader = isSnapDialog;
   ///: END:ONLY_INCLUDE_IF
 
@@ -275,14 +277,10 @@ export default function ConfirmationPage({
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
     return pendingConfirmation
-      ? getTemplateValues(
-          pendingConfirmation,
-          t,
-          dispatch,
-          history,
-          setInputState,
-          { matchedChain, currencySymbolWarning },
-        )
+      ? getTemplateValues(pendingConfirmation, t, dispatch, history, {
+          matchedChain,
+          currencySymbolWarning,
+        })
       : {};
   }, [
     pendingConfirmation,
@@ -470,6 +468,12 @@ export default function ConfirmationPage({
               <SnapUIRenderer
                 snapId={pendingConfirmation?.origin}
                 interfaceId={pendingConfirmation?.requestData.id}
+                isPrompt={isSnapPrompt}
+                inputValue={inputStates[pendingConfirmation?.id]}
+                onInputChange={(value) =>
+                  setInputState(pendingConfirmation?.id, value)
+                }
+                placeholder={pendingConfirmation?.requestData.placeholder}
               />
             </Box>
           ) : (
