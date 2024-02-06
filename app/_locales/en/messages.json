@@ -2550,7 +2550,7 @@
     "description": "$1 is the name of the provider"
   },
   "nameProvider_ens": {
-    "message": "Etherium Name Service (ENS)"
+    "message": "Ethereum Name Service (ENS)"
   },
   "nameProvider_etherscan": {
     "message": "Etherscan"
