@@ -9,6 +9,7 @@ import {
   Severity,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -17,6 +18,7 @@ import {
 import { Text } from '../../../component-library';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import LoadingIndicator from '../../../ui/loading-indicator';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
@@ -56,16 +58,22 @@ function BlockaidBannerAlert({ txData, ...props }) {
     txData;
 
   const t = useContext(I18nContext);
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  if (!securityAlertResponse) {
+  if (
+    !securityAlertResponse ||
+    Object.keys(securityAlertResponse).length === 0
+  ) {
     return null;
+  } else if (securityAlertResponse.reason === 'loading') {
+    return <LoadingIndicator isLoading />;
   }
 
   const {
+    block,
+    features,
     reason,
     result_type: resultType,
-    features,
-    block,
   } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
@@ -97,32 +105,47 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
-  const reportData = {
-    domain: origin ?? msgParams?.origin,
-    jsonRpcMethod: type,
-    jsonRpcParams: JSON.stringify(txParams ?? msgParams),
-    blockNumber: block,
-    chain: NETWORK_TO_NAME_MAP[chainId],
-    classification: reason,
-    blockaidVersion: BlockaidPackage.version,
-    resultType,
-    reproduce: JSON.stringify(features),
+  /** Data we pass to Blockaid false reporting portal. As far as I know, there are no documents that exist that specifies these key values */
+  const reportUrl = (() => {
+    const reportData = {
+      blockNumber: block,
+      blockaidVersion: BlockaidPackage.version,
+      chain: NETWORK_TO_NAME_MAP[chainId],
+      classification: isFailedResultType ? 'error' : reason,
+      domain: origin ?? msgParams?.origin ?? txParams?.origin,
+      jsonRpcMethod: type,
+      jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+      resultType: isFailedResultType ? BlockaidResultType.Errored : resultType,
+      reproduce: JSON.stringify(features),
+    };
+
+    const jsonData = JSON.stringify(reportData);
+
+    const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+
+    return getReportUrl(encodedData);
+  })();
+
+  const onClickSupportLink = () => {
+    updateTransactionEventFragment(
+      {
+        properties: {
+          external_link_clicked: 'security_alert_support_link',
+        },
+      },
+      txData.id,
+    );
   };
-
-  const jsonData = JSON.stringify(reportData);
-
-  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
-
-  const reportUrl = getReportUrl(encodedData);
 
   return (
     <SecurityProviderBannerAlert
       description={description}
       details={details}
-      provider={isFailedResultType ? null : SecurityProvider.Blockaid}
+      provider={SecurityProvider.Blockaid}
+      reportUrl={reportUrl}
       severity={severity}
       title={title}
-      reportUrl={reportUrl}
+      onClickSupportLink={onClickSupportLink}
       {...props}
     />
   );

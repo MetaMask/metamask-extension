@@ -5,6 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
+  IS_SIGNING_OR_SUBMITTING,
   TRANSACTION_ERROR_KEY,
 } from '../../../../helpers/constants/error-keys';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -173,5 +174,18 @@ describe('Confirm Page Container Content', () => {
       store,
     );
     expect(getByRole('button', { name: 'Buy' })).toBeInTheDocument();
+  });
+
+  it('should show is signing or submitting error', () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent
+        {...props}
+        errorKey={IS_SIGNING_OR_SUBMITTING}
+      />,
+      store,
+    );
+    expect(
+      queryByText('A previous transaction is still being signed or submitted'),
+    ).toBeInTheDocument();
   });
 });

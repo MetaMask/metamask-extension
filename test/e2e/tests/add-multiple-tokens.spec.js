@@ -99,7 +99,7 @@ describe('Multiple ERC20 Watch Asset', function () {
 
         // Check all three tokens have been added to the token list.
         const addedTokens = await driver.findElements({
-          tag: 'span',
+          tag: 'p',
           text: 'TST',
         });
         assert.equal(addedTokens.length, 3);
