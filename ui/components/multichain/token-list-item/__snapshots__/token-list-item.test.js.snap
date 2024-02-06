@@ -43,7 +43,7 @@ exports[`TokenListItem should render correctly 1`] = `
           <div
             class="mm-box mm-box--width-1/3"
           >
-            <p
+            <span
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             />
           </div>

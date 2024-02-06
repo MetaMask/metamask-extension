@@ -7,14 +7,9 @@ import {
   useLocation,
   ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
-import {
-  Box,
-  IconName,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../component-library';
+import { Box, IconName, Modal, ModalOverlay } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { SelectActionModalItem } from '../select-action-modal-item';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';

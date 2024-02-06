@@ -27,11 +27,11 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -168,6 +168,7 @@ export const TokenListItem = ({
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >
                   <Text
+                    as="span"
                     fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
                     ellipsis
@@ -177,6 +178,7 @@ export const TokenListItem = ({
                 </Tooltip>
               ) : (
                 <Text
+                  as="span"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
@@ -185,6 +187,7 @@ export const TokenListItem = ({
                 </Text>
               )}
             </Box>
+
             {showScamWarning ? (
               <ButtonIcon
                 iconName={IconName.Danger}

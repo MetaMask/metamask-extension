@@ -48,11 +48,11 @@ exports[`Token Cell should match snapshot 1`] = `
           <div
             class="mm-box mm-box--width-1/3"
           >
-            <p
+            <span
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             >
               TEST
-            </p>
+            </span>
           </div>
           <p
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"

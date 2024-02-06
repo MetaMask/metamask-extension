@@ -42,6 +42,7 @@ import {
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
+  getIsSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IF
@@ -527,9 +528,6 @@ export function connectHardware(
 
     let accounts: { address: string }[];
     try {
-      if (deviceName === HardwareDeviceNames.ledger) {
-        await submitRequestToBackground('establishLedgerTransportPreference');
-      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
@@ -2464,6 +2462,13 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function setConfirmationExchangeRates(value: Record<string, any>) {
+  return {
+    type: actionConstants.SET_CONFIRMATION_EXCHANGE_RATES,
+    value,
+  };
+}
+
 export function showIpfsModal(): Action {
   return {
     type: actionConstants.SHOW_IPFS_MODAL_OPEN,
@@ -2475,6 +2480,7 @@ export function hideIpfsModal(): Action {
     type: actionConstants.SHOW_IPFS_MODAL_CLOSE,
   };
 }
+
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2487,6 +2493,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasTransactionPendingApprovals(state) &&
+      !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
       closeNotificationPopup();
@@ -2832,6 +2839,10 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
 
 export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
+}
+
+export function setShowExtensionInFullSizeView(value: boolean) {
+  return setPreference('showExtensionInFullSizeView', value);
 }
 
 export function setAutoLockTimeLimit(value: boolean) {
@@ -3594,6 +3605,34 @@ export function updateNetworksList(
   };
 }
 
+/**
+ * Updates the pinned accounts list
+ *
+ * @param pinnedAccountList
+ */
+export function updateAccountsList(
+  pinnedAccountList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
+  };
+}
+
+/**
+ * Hides account in the accounts list
+ *
+ * @param hiddenAccountList
+ */
+export function updateHiddenAccountsList(
+  hiddenAccountList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateHiddenAccountsList', [
+      hiddenAccountList,
+    ]);
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.
@@ -3763,6 +3802,15 @@ export function setNewTokensImported(
   return {
     type: actionConstants.SET_NEW_TOKENS_IMPORTED,
     payload: newTokensImported,
+  };
+}
+
+export function setNewTokensImportedError(
+  newTokensImportedError: string,
+): PayloadAction<string> {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR,
+    payload: newTokensImportedError,
   };
 }
 
@@ -4030,16 +4078,6 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
       [tabId: string]: boolean;
     }>('getOpenMetamaskTabsIds');
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
-  };
-}
-
-export function setLedgerTransportPreference(
-  value: LedgerTransportTypes,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setLedgerTransportPreference', [value]);
-    dispatch(hideLoadingIndication());
   };
 }
 
@@ -4469,6 +4507,14 @@ export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
 
+export function hideAccountBanner() {
+  return submitRequestToBackground('setShowAccountBanner', [false]);
+}
+
+export function hideNetworkBanner() {
+  return submitRequestToBackground('setShowNetworkBanner', [false]);
+}
+
 // TODO: codeword NOT_A_THUNK @brad-decker
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
@@ -4697,9 +4743,5 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,
   ]);
-}
-
-export async function updateSnapRegistry() {
-  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IF

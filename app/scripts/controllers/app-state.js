@@ -48,6 +48,8 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showProductTour: true,
+      showNetworkBanner: true,
+      showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
       // This key is only used for checking if the user had set advancedGasFee
@@ -63,6 +65,7 @@ export default class AppStateController extends EventEmitter {
         '0x539': true,
       },
       surveyLinkLastClickedOrClosed: null,
+      signatureSecurityAlertResponses: {},
     });
     this.timer = null;
 
@@ -371,6 +374,24 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the Network Banner should be shown
+   *
+   * @param showNetworkBanner
+   */
+  setShowNetworkBanner(showNetworkBanner) {
+    this.store.updateState({ showNetworkBanner });
+  }
+
+  /**
+   * Sets whether the Account Banner should be shown
+   *
+   * @param showAccountBanner
+   */
+  setShowAccountBanner(showAccountBanner) {
+    this.store.updateState({ showAccountBanner });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -421,8 +442,19 @@ export default class AppStateController extends EventEmitter {
       },
     });
   }
-
   ///: END:ONLY_INCLUDE_IF
+
+  addSignatureSecurityAlertResponse(securityAlertResponse) {
+    const currentState = this.store.getState();
+    const { signatureSecurityAlertResponses } = currentState;
+    this.store.updateState({
+      signatureSecurityAlertResponses: {
+        ...signatureSecurityAlertResponses,
+        [securityAlertResponse.securityAlertId]: securityAlertResponse,
+      },
+    });
+  }
+
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *
@@ -442,6 +474,10 @@ export default class AppStateController extends EventEmitter {
   }
 
   _requestApproval() {
+    // If we already have a pending request this is a no-op
+    if (this._approvalRequestId) {
+      return;
+    }
     this._approvalRequestId = uuid();
 
     this.messagingSystem
@@ -455,7 +491,8 @@ export default class AppStateController extends EventEmitter {
         true,
       )
       .catch(() => {
-        // Intentionally ignored as promise not currently used
+        // If the promise fails, we allow a new popup to be triggered
+        this._approvalRequestId = null;
       });
   }
 

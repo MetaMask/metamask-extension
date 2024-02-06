@@ -237,7 +237,6 @@ describe('DetectTokensController', function () {
 
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
-      allowedEvents: ['TokenListController:stateChange'],
     });
     tokenListController = new TokenListController({
       chainId: toHex(1),

@@ -113,7 +113,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
          
         * When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update 
         <a
-          href="https://consensys.net/blog/news/consensys-data-retention-update/"
+          href="https://consensys.io/blog/consensys-data-retention-update"
           rel="noopener noreferrer"
           target="_blank"
         >

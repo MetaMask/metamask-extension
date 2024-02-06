@@ -1,9 +1,8 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  switchToNotificationWindow,
   withFixtures,
-  openDapp,
+  connectToDapp,
   unlockWallet,
   getEventPayloads,
 } = require('../../helpers');
@@ -61,22 +60,7 @@ describe('Permissions Approved Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await openDapp(driver);
-
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await switchToNotificationWindow(driver);
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await connectToDapp(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {

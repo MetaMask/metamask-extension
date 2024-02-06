@@ -6,11 +6,10 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import TransactionList from '../../../components/app/transaction-list';
 import { EthOverview } from '../../../components/app/wallet-overview';
 import {
-  getSelectedIdentity,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getSelectedAddress,
   getIsCustomNetwork,
+  getSelectedInternalAccount,
 } from '../../../selectors/selectors';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -20,13 +19,12 @@ import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
 export default function NativeAsset({ nativeCurrency }) {
-  const selectedAccountName = useSelector(
-    (state) => getSelectedIdentity(state).name,
+  const { name: selectedAccountName, address } = useSelector(
+    getSelectedInternalAccount,
   );
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const address = useSelector(getSelectedAddress);
   const history = useHistory();
   const accountLink = getAccountLink(address, chainId, rpcPrefs);
   const trackEvent = useContext(MetaMetricsContext);

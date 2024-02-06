@@ -54,6 +54,10 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkOrderController: {
     orderedNetworkList: [],
   },
+  AccountOrderController: {
+    pinnedAccountList: [],
+    hiddenAccountList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -82,6 +86,8 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
     showProductTour: true,
+    showNetworkBanner: true,
+    showAccountBanner: true,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -89,9 +95,6 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  CachedBalancesController: {
-    cachedBalances: false,
   },
   CronjobController: {
     jobs: false,
@@ -194,6 +197,7 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
@@ -201,6 +205,7 @@ export const SENTRY_BACKGROUND_STATE = {
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
+    signatureSecurityAlertResponses: false,
     transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
@@ -336,6 +341,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,

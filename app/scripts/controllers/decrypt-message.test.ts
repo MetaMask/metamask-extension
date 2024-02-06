@@ -32,6 +32,7 @@ const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
     publish: jest.fn(),
+    registerInitialEventPayload: jest.fn(),
     call: jest.fn(),
   } as any as jest.Mocked<DecryptMessageControllerMessenger>);
 

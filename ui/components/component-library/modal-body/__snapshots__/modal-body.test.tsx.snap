@@ -3,7 +3,7 @@
 exports[`ModalBody should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-modal-body"
+    class="mm-box mm-modal-body mm-box--padding-right-4 mm-box--padding-left-4"
   />
 </div>
 `;
