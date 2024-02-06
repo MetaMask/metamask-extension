@@ -36,7 +36,7 @@ const renderExplicitAddress = (
   return (
     <AddressListItem
       address={address}
-      label={<Confusable input={nickname} />}
+      label={nickname}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -55,7 +55,7 @@ export const SendPageRecipient = () => {
   const dispatch = useDispatch();
 
   const recipient = useSelector(getRecipient);
-  const userInput = useSelector(getRecipientUserInput);
+  const userInput = useSelector(getRecipientUserInput) || '';
 
   const domainResolution = useSelector(getDomainResolution);
   const domainError = useSelector(getDomainError);
@@ -85,7 +85,7 @@ export const SendPageRecipient = () => {
   } else if (domainResolution && !recipient.error) {
     contents = renderExplicitAddress(
       domainResolution,
-      addressBookEntryName ?? userInput,
+      addressBookEntryName || userInput,
       'ENS resolution',
       dispatch,
     );
