@@ -446,7 +446,7 @@ export default class AppStateController extends EventEmitter {
 
   addSignatureSecurityAlertResponse(securityAlertResponse) {
     const currentState = this.store.getState();
-    const { signatureSecurityAlertResponses } = currentState; //
+    const { signatureSecurityAlertResponses } = currentState;
     this.store.updateState({
       signatureSecurityAlertResponses: {
         ...signatureSecurityAlertResponses,

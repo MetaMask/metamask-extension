@@ -169,8 +169,8 @@ export async function addTransaction(
       });
 
       request.transactionOptions.securityAlertResponse = {
-        reason: 'loading',
-        result_type: 'validation_in_progress',
+        reason: BlockaidResultType.Loading,
+        result_type: BlockaidReason.inProgress,
         securityAlertId,
       };
     } catch (e) {

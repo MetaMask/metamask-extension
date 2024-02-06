@@ -92,14 +92,14 @@ export function createPPOMMiddleware(
             securityAlertId,
           };
           appStateController.addSignatureSecurityAlertResponse({
-            reason: 'loading',
-            result_type: 'validation_in_progress',
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
             securityAlertId,
           });
         } else {
           req.securityAlertResponse = {
-            reason: 'loading',
-            result_type: 'validation_in_progress',
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
             securityAlertId,
           };
         }
