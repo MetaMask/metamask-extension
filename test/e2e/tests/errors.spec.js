@@ -364,6 +364,7 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+
           await matchesSnapshot({
             data: {
               ...appState.persistedState,
