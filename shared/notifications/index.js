@@ -511,11 +511,7 @@ export const getTranslatedUINotifications = (
         t('notificationsPetnamesDescriptionTwo'),
       ],
       actionText: t('notificationsPetnamesActionText'),
-      date: UI_NOTIFICATIONS[NOTIFICATION_PETNAMES].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
-          )
-        : '',
+      date: '',
     },
   };
 };

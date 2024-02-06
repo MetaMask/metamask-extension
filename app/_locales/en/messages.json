@@ -3141,13 +3141,13 @@
     "message": "Got it"
   },
   "notificationsPetnamesDescriptionOne": {
-    "message": "When making a transaction, you can now click on an address to see suggested nicknames or add your own."
+    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
   },
   "notificationsPetnamesDescriptionTwo": {
-    "message": "Nicknames help you recognize and remember addresses in the future."
+    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
   },
   "notificationsPetnamesTitle": {
-    "message": "Address nicknames are here!"
+    "message": "Suggested nicknames are here!"
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
