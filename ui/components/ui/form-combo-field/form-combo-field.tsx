@@ -14,11 +14,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import { Display, IconColor } from '../../../helpers/constants/design-system';
 
 export interface FormComboFieldOption {
+  value?: string;
   primaryLabel: string;
   secondaryLabel?: string;
 }
 
-export interface FormComboFieldProps {
+export interface FormComboFieldProps<Option extends FormComboFieldOption> {
   /** Whether to hide the 'no option' when there are no options to display. */
   hideDropdownIfNoOptions?: boolean;
 
@@ -32,13 +33,13 @@ export interface FormComboFieldProps {
   onChange?: (value: string) => void;
 
   /** Callback function to invoke when a dropdown option is clicked. */
-  onOptionClick?: (option: FormComboFieldOption) => void;
+  onOptionClick?: (option: Option) => void;
 
   /**
    * The options to display in the dropdown.
    * An array of objects with a 'primaryLabel' and optionally a 'secondaryLabel' property.`
    */
-  options: FormComboFieldOption[];
+  options: Option[];
 
   /** The placeholder text to display in the field when the value is empty. */
   placeholder?: string;
@@ -135,7 +136,7 @@ function Dropdown({
   );
 }
 
-export default function FormComboField({
+export default function FormComboField<Option extends FormComboFieldOption>({
   hideDropdownIfNoOptions = false,
   maxDropdownHeight,
   noOptionsText,
@@ -144,7 +145,7 @@ export default function FormComboField({
   options,
   placeholder,
   value,
-}: FormComboFieldProps) {
+}: FormComboFieldProps<Option>) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const valueRef = useRef<any>();
   const [valueWidth, setValueWidth] = useState(0);
@@ -176,7 +177,7 @@ export default function FormComboField({
       setDropdownVisible(false);
 
       if (option) {
-        handleChange({ target: { value: option.primaryLabel } });
+        handleChange({ target: { value: option.value } });
         onOptionClick?.(option);
       }
 

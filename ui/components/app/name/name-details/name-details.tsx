@@ -2,14 +2,12 @@
 
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import {
-  NameControllerState,
   NameEntry,
   NameType,
   UpdateProposedNamesResult,
@@ -54,8 +52,8 @@ import {
 } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
-import { I18nContext } from '../../../../contexts/i18n';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
@@ -66,6 +64,10 @@ export interface NameDetailsProps {
   type: NameType;
   value: string;
 }
+
+type ProposedNameOption = Required<FormComboFieldOption> & {
+  sourceId: string;
+};
 
 function formatValue(value: string, type: NameType): string {
   switch (type) {
@@ -79,22 +81,25 @@ function formatValue(value: string, type: NameType): string {
 
 function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
-  nameSources: NameControllerState['nameSources'],
-): FormComboFieldOption[] {
+  t: ReturnType<typeof useI18nContext>,
+): ProposedNameOption[] {
   const sourceIds = Object.keys(proposedNameEntries);
 
   const sourceIdsWithProposedNames = sourceIds.filter(
     (sourceId) => proposedNameEntries[sourceId]?.proposedNames?.length,
   );
 
-  const options = sourceIdsWithProposedNames
+  const options: ProposedNameOption[] = sourceIdsWithProposedNames
     .map((sourceId: string) => {
       const sourceProposedNames =
         proposedNameEntries[sourceId]?.proposedNames ?? [];
 
-      return sourceProposedNames.map((proposedName: any) => ({
-        primaryLabel: proposedName,
-        secondaryLabel: nameSources[sourceId]?.label ?? sourceId,
+      return sourceProposedNames.map((proposedName: string) => ({
+        value: proposedName,
+        primaryLabel: t('nameModalMaybeProposedName', [proposedName]),
+        secondaryLabel: t('nameProviderProposedBy', [
+          t(`nameProvider_${sourceId}`),
+        ]),
         sourceId,
       }));
     })
@@ -181,7 +186,7 @@ export default function NameDetails({
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
   const formattedValue = formatValue(value, type);
 
@@ -205,7 +210,7 @@ export default function NameDetails({
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () => generateComboOptions(proposedNames, nameSources),
+    () => generateComboOptions(proposedNames, t),
     [proposedNames, nameSources],
   );
 
@@ -257,15 +262,15 @@ export default function NameDetails({
         setSelectedSourceName(undefined);
       }
     },
-    [setName, selectedSourceId],
+    [setName, selectedSourceId, setSelectedSourceId, setSelectedSourceName],
   );
 
   const handleProposedNameClick = useCallback(
-    (option: any) => {
+    (option: ProposedNameOption) => {
       setSelectedSourceId(option.sourceId);
-      setSelectedSourceName(option.primaryLabel);
+      setSelectedSourceName(option.value);
     },
-    [setSelectedSourceId, setSelectedSourceName],
+    [setSelectedSourceId, setSelectedSourceName, setName],
   );
 
   const handleCopyClick = useCallback(() => {

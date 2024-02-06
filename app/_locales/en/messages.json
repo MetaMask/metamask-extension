@@ -2541,6 +2541,26 @@
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
+  "nameModalMaybeProposedName": {
+    "message": "Maybe: $1",
+    "description": "$1 is the proposed name"
+  },
+  "nameProvider_ens": {
+    "message": "Etherium Name Service (ENS)"
+  },
+  "nameProvider_etherscan": {
+    "message": "Etherscan"
+  },
+  "nameProvider_lens": {
+    "message": "Lens Protocol"
+  },
+  "nameProvider_token": {
+    "message": "MetaMask"
+  },
+  "nameProviderProposedBy": {
+    "message": "Proposed by $1",
+    "description": "$1 is the name of the provider"
+  },
   "nameSetPlaceholder": {
     "message": "Choose something descriptive",
     "description": "Placeholder text for name input field in name component modal."
