@@ -490,6 +490,11 @@ export const REJECT_NOTIFICATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTIFICATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
 
+/**
+ * The name of the event. Event definitions with corresponding properties can be found in the following document:
+ *
+ * @see {@link https://www.notion.so/f2997ab32326441793ff790ba5c60a6a?v=267d984721cd4a26be610b5caa3e25b7&pvs=4}
+ */
 export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
@@ -590,7 +595,6 @@ export enum MetaMetricsEventName {
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
-  StakingEntryPointClicked = 'Stake Button Clicked',
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
@@ -753,7 +757,9 @@ export enum MetaMetricsEventLocation {
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
+  FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  SecurityAlertFailed = 'security_alert_failed',
   Siwe = 'sign_in_with_ethereum',
 }
 

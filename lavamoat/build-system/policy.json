@@ -50,12 +50,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": true
-      }
-    },
-    "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "gulp-livereload>chalk>supports-color>has-flag": true
       }
     },
     "@babel/code-frame>chalk": {
@@ -91,12 +86,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "@babel/code-frame>chalk>supports-color>has-flag": true
-      }
-    },
-    "@babel/code-frame>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "gulp-livereload>chalk>supports-color>has-flag": true
       }
     },
     "@babel/core": {
@@ -3933,12 +3923,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": true
-      }
-    },
-    "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "gulp-livereload>chalk>supports-color>has-flag": true
       }
     },
     "gulp-rtlcss>rtlcss>postcss": {
@@ -6531,7 +6516,12 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
+        "mocha>supports-color>has-flag": true
+      }
+    },
+    "mocha>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "nock>debug": {
