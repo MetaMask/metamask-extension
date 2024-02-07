@@ -27,7 +27,7 @@ export interface AvatarFaviconStyleUtilityProps
   fallbackIconProps?: IconProps<'span'>;
   /**
    * The size of the AvatarFavicon
-   * Possible values could be 'AvatarFaviconSize.Xs' 16px, 'AvatarFaviconSize.Sm' 24px, 'AvatarFaviconSize.Md' 32px, 'AvatarFaviconSize.Lg' 40px, 'AvatarFaviconSize.Xs' 48px
+   * Possible values could be 'AvatarFaviconSize.Xs' 16px, 'AvatarFaviconSize.Sm' 24px, 'AvatarFaviconSize.Md' 32px, 'AvatarFaviconSize.Lg' 40px, 'AvatarFaviconSize.Xl' 48px
    * Defaults to AvatarFaviconSize.Md
    */
   size?: AvatarFaviconSize;
