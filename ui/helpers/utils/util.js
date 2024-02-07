@@ -25,13 +25,13 @@ import {
 } from '../../../shared/modules/hexstring-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SNAPS_METADATA } from 'shared/constants/snaps';
+///: END:ONLY_INCLUDE_IF
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,

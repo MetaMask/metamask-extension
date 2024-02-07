@@ -53,11 +53,11 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from 'shared/constants/keyring';
+///: END:ONLY_INCLUDE_IF
 import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
 import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 

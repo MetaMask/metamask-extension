@@ -79,6 +79,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from './institutional/institutional-home-footer';
+///: END:ONLY_INCLUDE_IF
 import { SECOND } from 'shared/constants/time';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -87,7 +88,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from 'shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
   isNotification,

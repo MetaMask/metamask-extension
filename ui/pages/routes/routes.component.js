@@ -98,9 +98,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop)
-///: END:ONLY_INCLUDE_IF
-
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
@@ -124,7 +121,9 @@ import {
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
 } from 'shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IF(desktop)
 import { EXTENSION_ERROR_PAGE_TYPES } from 'shared/constants/desktop';
+///: END:ONLY_INCLUDE_IF
 
 export default class Routes extends Component {
   static propTypes = {

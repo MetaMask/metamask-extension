@@ -30,13 +30,13 @@ import {
   TextVariant,
 } from '../constants/design-system';
 import { getSnapName } from './util';
+///: END:ONLY_INCLUDE_IF
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   EndowmentPermissions,
   ///: END:ONLY_INCLUDE_IF
 } from 'shared/constants/permissions';
-///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 

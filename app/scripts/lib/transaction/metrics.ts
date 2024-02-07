@@ -20,7 +20,9 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -39,8 +41,6 @@ import {
   MetaMetricsReferrerObject,
 } from 'shared/constants/metametrics';
 import { GasRecommendations } from 'shared/constants/gas';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-///: END:ONLY_INCLUDE_IF
 import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 export type TransactionMetricsRequest = {

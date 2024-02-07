@@ -5,8 +5,6 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-///: END:ONLY_INCLUDE_IF
 
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(desktop,keyring-snaps)
@@ -33,6 +31,8 @@ import {
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
