@@ -1169,6 +1169,7 @@ export const getSnapsMetadata = createDeepEqualSelector(
   (state, snapIds) => {
     return snapIds.reduce((snapsMetadata, snapId) => {
       snapsMetadata[snapId] = getSnapsMetadata(state, snapId);
+      return snapsMetadata;
     }, {});
   },
 );
