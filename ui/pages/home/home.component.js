@@ -200,6 +200,10 @@ export default class Home extends PureComponent {
     modalOpen: PropTypes.bool,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
+    showCustodianDeepLink: PropTypes.func,
+    cleanCustodianDeepLink: PropTypes.func,
+    custodianDeepLink: PropTypes.object,
+    accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
   };
 
@@ -354,6 +358,12 @@ export default class Home extends PureComponent {
       closeNotificationPopup,
       isNotification,
       hasAllowedPopupRedirectApprovals,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      custodianDeepLink,
+      showCustodianDeepLink,
+      cleanCustodianDeepLink,
+      accountType,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     const { notificationClosing } = this.state;
@@ -363,6 +373,30 @@ export default class Home extends PureComponent {
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    if (
+      accountType === 'custody' &&
+      custodianDeepLink &&
+      Object.keys(custodianDeepLink).length
+    ) {
+      const { custodyId, fromAddress } = custodianDeepLink;
+
+      showCustodianDeepLink({
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        isNotification,
+        onDeepLinkShown: () => {
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.MMI,
+            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
+          });
+          cleanCustodianDeepLink();
+        },
+      });
+    }
+    ///: END:ONLY_INCLUDE_IF
   }
 
   onRecoveryPhraseReminderClose = () => {
