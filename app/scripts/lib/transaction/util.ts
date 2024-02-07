@@ -109,6 +109,11 @@ export async function addDappTransaction(
   return (await waitForHash()) as string;
 }
 
+const PPOM_EXCLUDED_TRANSACTION_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+];
+
 export async function addTransaction(
   request: AddTransactionRequest,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -127,7 +132,11 @@ export async function addTransaction(
     chainId,
   } = request;
 
-  if (securityAlertsEnabled && SUPPORTED_CHAIN_IDS.includes(chainId)) {
+  if (
+    securityAlertsEnabled &&
+    SUPPORTED_CHAIN_IDS.includes(chainId) &&
+    !PPOM_EXCLUDED_TRANSACTION_TYPES.includes(transactionOptions.type)
+  ) {
     try {
       const ppomRequest = {
         method: 'eth_sendTransaction',
