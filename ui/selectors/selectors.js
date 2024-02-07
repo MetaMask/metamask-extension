@@ -207,6 +207,18 @@ export function isHardwareWallet(state) {
 }
 
 /**
+ * Checks if the account supports smart transactions.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
+}
+
+/**
  * Get a HW wallet type, e.g. "Ledger Hardware"
  *
  * @param {object} state
