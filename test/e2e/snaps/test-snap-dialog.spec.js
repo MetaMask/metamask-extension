@@ -72,7 +72,6 @@ describe('Test Snap Dialog', function () {
 
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');
-        // await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -185,7 +184,6 @@ describe('Test Snap Dialog', function () {
 
         // click prompt button
         await driver.clickElement('#sendPromptButton');
-        // await driver.delay(500);
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);

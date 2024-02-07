@@ -89,7 +89,6 @@ describe('Test Snap update via snaps component', function () {
         // switch to the original MM tab
         const extensionPage = windowHandles[0];
         await driver.switchToWindow(extensionPage);
-        // await driver.delay(1000);
 
         // click on the global action menu
         await driver.waitForSelector(

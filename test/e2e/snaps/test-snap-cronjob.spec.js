@@ -30,7 +30,6 @@ describe('Test Snap Cronjob', function () {
         const snapButton = await driver.findElement('#connectcronjobs');
         await driver.scrollToElement(snapButton);
         await driver.delay(500);
-        // await driver.waitForSelector('#connectcronjobs');
         await driver.clickElement('#connectcronjobs');
 
         // switch to metamask extension and click connect

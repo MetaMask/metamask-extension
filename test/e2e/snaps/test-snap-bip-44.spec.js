@@ -82,10 +82,8 @@ describe('Test Snap bip-44', function () {
 
         // enter a message to sign
         await driver.pasteIntoField('#bip44Message', '1234');
-        // await driver.delay(500);
         const snapButton3 = await driver.findElement('#signBip44Message');
         await driver.scrollToElement(snapButton3);
-        // await driver.delay(500);
         await driver.waitForSelector('#signBip44Message');
         await driver.clickElement('#signBip44Message');
 

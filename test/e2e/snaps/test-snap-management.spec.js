@@ -79,7 +79,6 @@ describe('Test Snap Management', function () {
           text: 'Snaps',
           tag: 'div',
         });
-        // await driver.delay(1000);
 
         // try to disable the snap
         await driver.waitForSelector({
