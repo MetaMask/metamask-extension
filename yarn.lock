@@ -3630,15 +3630,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@metamask/approval-controller@npm:5.1.1"
+"@metamask/approval-controller@npm:^5.1.1, @metamask/approval-controller@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "@metamask/approval-controller@npm:5.1.2"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/base-controller": "npm:^4.1.1"
     "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/utils": "npm:^8.3.0"
     nanoid: "npm:^3.1.31"
-  checksum: a75a0bfa3ecdae427ec44a575163fd4ff2bb6c8232020bd2cd83b85dd35e84f2a7955028d46d4565efeb9b6d10274a73fcb887e4af1ec5df37c731decc70078c
+  checksum: 827ff7b40f15cd8c20378fb008d664cbd319667cbcb9440166b30889bd154c61367078aa8646c66de1d0f02e6c72aa279c197e6431804fd97226299bbfaeb4ba
   languageName: node
   linkType: hard
 
@@ -4282,7 +4282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:12.2.0":
+"@metamask/keyring-controller@npm:12.2.0, @metamask/keyring-controller@npm:^12.2.0":
   version: 12.2.0
   resolution: "@metamask/keyring-controller@npm:12.2.0"
   dependencies:
@@ -4318,14 +4318,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logging-controller@npm:^1.0.1, @metamask/logging-controller@npm:^1.0.3":
-  version: 1.0.4
-  resolution: "@metamask/logging-controller@npm:1.0.4"
+"@metamask/logging-controller@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@metamask/logging-controller@npm:2.0.2"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
     uuid: "npm:^8.3.2"
-  checksum: 8b119a11e302ca43b0d7b90e4462426a53aee48bafdac308cab70a64f06e639209c9fb72868ed026d1730938a239ce2bdf6702e3c1cc5ec3e58ea8ed6bd30adf
+  checksum: 0b387edf5db404670b3904eccbbfee5dbe86663ce7ca24f0b4ec61c7d93893d64d60185de1019f871093e1ae98f4c2355fd215a1952702f9d2460d7e02557a3d
   languageName: node
   linkType: hard
 
@@ -4339,7 +4339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.5, @metamask/message-manager@npm:^7.3.8":
+"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.8":
   version: 7.3.8
   resolution: "@metamask/message-manager@npm:7.3.8"
   dependencies:
@@ -4696,45 +4696,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/signature-controller@npm:6.1.2"
+"@metamask/signature-controller@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/signature-controller@npm:12.0.0"
   dependencies:
-    "@metamask/approval-controller": "npm:^4.0.0"
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/logging-controller": "npm:^1.0.3"
-    "@metamask/message-manager": "npm:^7.3.5"
-    "@metamask/utils": "npm:^8.1.0"
-    eth-rpc-errors: "npm:^4.0.2"
+    "@metamask/approval-controller": "npm:^5.1.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/keyring-controller": "npm:^12.2.0"
+    "@metamask/logging-controller": "npm:^2.0.2"
+    "@metamask/message-manager": "npm:^7.3.8"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.3.0"
     ethereumjs-util: "npm:^7.0.10"
-    immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/approval-controller": ^4.0.0
-    "@metamask/logging-controller": ^1.0.3
-  checksum: c90440b9926510db0b397761bb4bdd245c1f2d11719ace069abb1198a51ec56f211304f77a914a1478a71bf7311c06fe38ed7eb03ca48125d6ed7c79fe94fb23
-  languageName: node
-  linkType: hard
-
-"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch":
-  version: 6.1.2
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch::version=6.1.2&hash=fd2be3"
-  dependencies:
-    "@metamask/approval-controller": "npm:^4.0.0"
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/logging-controller": "npm:^1.0.3"
-    "@metamask/message-manager": "npm:^7.3.5"
-    "@metamask/utils": "npm:^8.1.0"
-    eth-rpc-errors: "npm:^4.0.2"
-    ethereumjs-util: "npm:^7.0.10"
-    immer: "npm:^9.0.6"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/approval-controller": ^4.0.0
-    "@metamask/logging-controller": ^1.0.3
-  checksum: 0a8ca6302925fc235e274c4fda16c85d78362b3ae63ce30f10d64c3cfc5daa5b3532e05864e840f9b0d90c1c66b1b4f973f1b9202f13f511428d8ac8d2e23054
+    "@metamask/approval-controller": ^5.1.2
+    "@metamask/keyring-controller": ^12.2.0
+    "@metamask/logging-controller": ^2.0.2
+  checksum: 5f766c5487693e33189e73ae5712a7d7b019761510975803e4ff30aa23a8594189555668f336b7527b72c017a82c599be97781b3a5d726b8a7a82e497d11fc72
   languageName: node
   linkType: hard
 
@@ -24002,7 +23982,7 @@ __metadata:
     "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A10.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-10.0.0-247993ca9a.patch"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
-    "@metamask/approval-controller": "npm:^5.1.1"
+    "@metamask/approval-controller": "npm:^5.1.2"
     "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.1.0"
@@ -24033,7 +24013,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch"
-    "@metamask/logging-controller": "npm:^1.0.1"
+    "@metamask/logging-controller": "npm:^2.0.2"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
@@ -24053,7 +24033,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^6.0.0"
-    "@metamask/signature-controller": "npm:^6.1.2"
+    "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^4.1.0"
     "@metamask/snaps-rpc-methods": "npm:^5.0.0"
