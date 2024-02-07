@@ -132,10 +132,14 @@ export async function addTransaction(
     chainId,
   } = request;
 
+  const typeIsExcludedFromPPOM =
+    transactionOptions.type &&
+    PPOM_EXCLUDED_TRANSACTION_TYPES.includes(transactionOptions.type);
+
   if (
     securityAlertsEnabled &&
     SUPPORTED_CHAIN_IDS.includes(chainId) &&
-    !PPOM_EXCLUDED_TRANSACTION_TYPES.includes(transactionOptions.type)
+    !typeIsExcludedFromPPOM
   ) {
     try {
       const ppomRequest = {
