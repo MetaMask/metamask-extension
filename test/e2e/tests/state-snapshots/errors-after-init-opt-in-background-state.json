@@ -32,6 +32,7 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
+    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showProductTour": true,
     "showNetworkBanner": true,
@@ -111,7 +112,7 @@
     "networkConfigurations": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",

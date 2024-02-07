@@ -144,7 +144,11 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import { AssetType, TokenStandard } from '../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+  SIGNING_METHODS,
+} from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -567,6 +571,9 @@ export default class MetamaskController extends EventEmitter {
         ),
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
+      ),
+      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
+        this.assetsContractController,
       ),
       config: {
         provider: this.provider,
@@ -4253,6 +4260,42 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  async updateSecurityAlertResponseByTxId(req, securityAlertResponse) {
+    let foundConfirmation = false;
+
+    while (!foundConfirmation) {
+      if (SIGNING_METHODS.includes(req.method)) {
+        foundConfirmation = Object.values(
+          this.signatureController.messages,
+        ).find(
+          (message) =>
+            message.securityAlertResponse?.securityAlertId ===
+            req.securityAlertResponse.securityAlertId,
+        );
+      } else {
+        foundConfirmation = this.txController.state.transactions.find(
+          (meta) =>
+            meta.securityAlertResponse?.securityAlertId ===
+            req.securityAlertResponse.securityAlertId,
+        );
+      }
+      if (!foundConfirmation) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+
+    if (SIGNING_METHODS.includes(req.method)) {
+      this.appStateController.addSignatureSecurityAlertResponse(
+        securityAlertResponse,
+      );
+    } else {
+      this.txController.updateSecurityAlertResponse(
+        foundConfirmation.id,
+        securityAlertResponse,
+      );
+    }
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -4645,6 +4688,8 @@ export default class MetamaskController extends EventEmitter {
         this.ppomController,
         this.preferencesController,
         this.networkController,
+        this.appStateController,
+        this.updateSecurityAlertResponseByTxId.bind(this),
       ),
     );
     ///: END:ONLY_INCLUDE_IF

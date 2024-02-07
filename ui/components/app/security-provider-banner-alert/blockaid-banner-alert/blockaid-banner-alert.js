@@ -17,6 +17,7 @@ import {
 import { Text } from '../../../component-library';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import LoadingIndicator from '../../../ui/loading-indicator';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
@@ -57,8 +58,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const t = useContext(I18nContext);
 
-  if (!securityAlertResponse) {
+  if (
+    !securityAlertResponse ||
+    Object.keys(securityAlertResponse).length === 0
+  ) {
     return null;
+  } else if (securityAlertResponse.reason === 'loading') {
+    return <LoadingIndicator isLoading />;
   }
 
   const {

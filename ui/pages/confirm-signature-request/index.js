@@ -54,6 +54,7 @@ const ConfirmTxScreen = ({ match }) => {
     getTotalUnapprovedSignatureRequestCount,
   );
   const sendTo = useSelector(getSendTo);
+
   const {
     identities,
     currentCurrency,
@@ -61,7 +62,9 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
     blockGasLimit,
+    signatureSecurityAlertResponses,
   } = useSelector((state) => state.metamask);
+
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const { chainId } = useSelector(getProviderConfig);
@@ -189,6 +192,15 @@ const ConfirmTxScreen = ({ match }) => {
   ]);
 
   const txData = useMemo(() => getTxData() || {}, [getTxData]);
+
+  const resolvedSecurityAlertResponse =
+    signatureSecurityAlertResponses?.[
+      txData.securityAlertResponse?.securityAlertId
+    ];
+
+  if (resolvedSecurityAlertResponse) {
+    txData.securityAlertResponse = resolvedSecurityAlertResponse;
+  }
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, txData.msgParams?.origin),
