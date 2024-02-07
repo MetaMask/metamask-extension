@@ -18,13 +18,13 @@ import {
   ThreeStepProgressBar,
   threeStepStages,
 } from '../../../components/app/step-progress-bar';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Icon, IconName } from '../../../components/component-library';
 import RecoveryPhraseChips from './recovery-phrase-chips';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();

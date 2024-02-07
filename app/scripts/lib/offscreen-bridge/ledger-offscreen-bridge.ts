@@ -3,7 +3,7 @@ import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
-} from '../../../../shared/constants/offscreen-communication';
+} from 'shared/constants/offscreen-communication';
 
 /**
  * This class is used as a custom bridge for the Ledger connection. Every

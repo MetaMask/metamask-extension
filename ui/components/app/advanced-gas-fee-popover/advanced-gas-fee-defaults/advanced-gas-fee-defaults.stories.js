@@ -5,8 +5,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 const store = configureStore({
   ...mockState,

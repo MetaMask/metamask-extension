@@ -9,7 +9,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 
 export default function ViewOnBlockExplorer({
   blockExplorerUrl,

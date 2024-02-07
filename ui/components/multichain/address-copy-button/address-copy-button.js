@@ -25,7 +25,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
+import { MINUTE } from 'shared/constants/time';
 
 export const AddressCopyButton = ({
   address,

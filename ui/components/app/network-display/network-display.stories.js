@@ -1,13 +1,10 @@
 import React from 'react';
 
-import {
-  BUILT_IN_NETWORKS,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
 import { Severity, Size } from '../../../helpers/constants/design-system';
 
 import { BannerAlert } from '../../component-library/banner-alert';
 import NetworkDisplay from '.';
+import { BUILT_IN_NETWORKS, NETWORK_TYPES } from 'shared/constants/network';
 
 export default {
   title: 'Components/App/NetworkDisplay',

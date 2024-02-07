@@ -8,11 +8,11 @@ import {
   createSwapsMockStore,
   screen,
 } from '../../../../test/jest';
+import SlippageNotificationModal from './slippage-notification-modal';
 import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
-} from '../../../../shared/constants/swaps';
-import SlippageNotificationModal from './slippage-notification-modal';
+} from 'shared/constants/swaps';
 
 const middleware = [thunk];
 

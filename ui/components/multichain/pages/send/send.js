@@ -25,7 +25,6 @@ import {
   signTransaction,
   startNewDraftTransaction,
 } from '../../../../ducks/send';
-import { AssetType } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
@@ -33,7 +32,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
@@ -42,6 +40,8 @@ import {
   SendPageRecipient,
   SendPageRecipientInput,
 } from './components';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { AssetType } from 'shared/constants/transaction';
 
 export const SendPage = () => {
   const t = useContext(I18nContext);

@@ -15,8 +15,8 @@ import { Icon, IconName, Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
 import { ShowMore } from '../show-more';
-import { SECOND } from '../../../../../shared/constants/time';
 import { useTimeout } from '../../../../hooks/useTimeout';
+import { SECOND } from 'shared/constants/time';
 
 export const Copyable = ({
   text,

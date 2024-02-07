@@ -15,14 +15,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
-  Slippage,
-  SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL,
-} from '../../../../shared/constants/swaps';
-import {
   Text,
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
+import {
+  Slippage,
+  SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL,
+} from 'shared/constants/swaps';
 
 export default function SlippageButtons({
   onSelect,

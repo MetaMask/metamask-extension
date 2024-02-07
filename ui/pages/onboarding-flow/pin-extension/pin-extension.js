@@ -34,11 +34,11 @@ import { Text } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
+import OnboardingPinBillboard from './pin-billboard';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import OnboardingPinBillboard from './pin-billboard';
+} from 'shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingPinExtension() {

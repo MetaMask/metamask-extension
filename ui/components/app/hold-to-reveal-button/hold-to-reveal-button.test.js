@@ -4,13 +4,13 @@ import configureMockState from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import HoldToRevealButton from './hold-to-reveal-button';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import HoldToRevealButton from './hold-to-reveal-button';
+} from 'shared/constants/metametrics';
 
 const mockTrackEvent = jest.fn();
 

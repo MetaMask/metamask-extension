@@ -24,7 +24,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AURORA_ETH_DISPLAY_NAME } from '../../../../shared/constants/network';
+import { AURORA_ETH_DISPLAY_NAME } from 'shared/constants/network';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 

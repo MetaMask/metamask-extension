@@ -16,12 +16,12 @@ import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
 } from '../../../store/actions';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import {
   Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { IPFS_DEFAULT_GATEWAY_URL } from 'shared/constants/network';
 
 export const ToggleIpfsModal = ({ onClose }) => {
   const t = useI18nContext();

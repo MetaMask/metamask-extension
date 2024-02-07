@@ -18,26 +18,26 @@ import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 // eslint-disable-next-line import/no-duplicates
 import { isStrictHexString } from '@metamask/utils';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
 } from '../../../shared/modules/hexstring-utils';
-import {
-  TRUNCATED_ADDRESS_START_CHARS,
-  TRUNCATED_NAME_CHAR_LIMIT,
-  TRUNCATED_ADDRESS_END_CHARS,
-} from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { SNAPS_METADATA } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+import { SNAPS_METADATA } from 'shared/constants/snaps';
+import {
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from 'shared/constants/labels';
+import { CHAIN_IDS, NETWORK_TYPES } from 'shared/constants/network';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {

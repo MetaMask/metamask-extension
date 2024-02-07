@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { EditGasModes, GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -16,6 +15,7 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+import { EditGasModes, GasEstimateTypes } from 'shared/constants/gas';
 
 /**
  * @typedef {object} GasEstimatesReturnType

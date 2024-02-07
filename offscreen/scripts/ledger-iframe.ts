@@ -1,10 +1,10 @@
+import { CallbackProcessor } from './callback-processor';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
   KnownOrigins,
-} from '../../shared/constants/offscreen-communication';
-import { CallbackProcessor } from './callback-processor';
+} from 'shared/constants/offscreen-communication';
 
 const LEDGER_FRAME_TARGET = 'LEDGER-IFRAME';
 

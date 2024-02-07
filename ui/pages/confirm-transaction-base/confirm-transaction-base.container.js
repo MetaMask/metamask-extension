@@ -8,7 +8,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
-import { CHAIN_ID_TO_RPC_URL_MAP } from '../../../shared/constants/network';
 
 ///: END:ONLY_INCLUDE_IF
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -81,7 +80,6 @@ import {
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
-import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
 // eslint-disable-next-line import/no-duplicates
 import { getIsUsingPaymaster } from '../../selectors/account-abstraction';
@@ -90,7 +88,6 @@ import { getIsUsingPaymaster } from '../../selectors/account-abstraction';
 // eslint-disable-next-line import/no-duplicates
 import { getAccountType } from '../../selectors/selectors';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
   getIsCustodianPublishesTransactionSupported,
@@ -101,6 +98,9 @@ import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from 'shared/constants/app';
+import { CUSTOM_GAS_ESTIMATE } from 'shared/constants/gas';
+import { CHAIN_ID_TO_RPC_URL_MAP } from 'shared/constants/network';
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>

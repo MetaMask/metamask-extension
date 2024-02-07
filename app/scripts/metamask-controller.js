@@ -143,50 +143,7 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import {
-  AssetType,
-  TokenStandard,
-  SIGNING_METHODS,
-} from '../../shared/constants/transaction';
-import {
-  GAS_API_BASE_URL,
-  GAS_DEV_API_BASE_URL,
-  SWAPS_CLIENT_ID,
-} from '../../shared/constants/swaps';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-  TEST_NETWORK_TICKER_MAP,
-  NetworkStatus,
-} from '../../shared/constants/network';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-} from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  EndowmentPermissions,
-  ExcludedSnapPermissions,
-  ExcludedSnapEndowments,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { MILLISECOND, SECOND } from '../../shared/constants/time';
-import {
-  ORIGIN_METAMASK,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  SNAP_DIALOG_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-  POLLING_TOKEN_ENVIRONMENT_TYPES,
-} from '../../shared/constants/app';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../shared/constants/metametrics';
-import { LOG_EVENT } from '../../shared/constants/logs';
 
 import {
   getTokenIdParam,
@@ -195,7 +152,7 @@ import {
 } from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+import { STATIC_MAINNET_TOKEN_LIST } from 'shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
@@ -297,6 +254,49 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+import { LOG_EVENT } from 'shared/constants/logs';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import {
+  ORIGIN_METAMASK,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  SNAP_DIALOG_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from 'shared/constants/app';
+import { MILLISECOND, SECOND } from 'shared/constants/time';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  EndowmentPermissions,
+  ExcludedSnapPermissions,
+  ExcludedSnapEndowments,
+  ///: END:ONLY_INCLUDE_IF
+} from 'shared/constants/permissions';
+import { KeyringType } from 'shared/constants/keyring';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+} from 'shared/constants/hardware-wallets';
+import {
+  CHAIN_IDS,
+  NETWORK_TYPES,
+  TEST_NETWORK_TICKER_MAP,
+  NetworkStatus,
+} from 'shared/constants/network';
+import {
+  GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
+} from 'shared/constants/swaps';
+import {
+  AssetType,
+  TokenStandard,
+  SIGNING_METHODS,
+} from 'shared/constants/transaction';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

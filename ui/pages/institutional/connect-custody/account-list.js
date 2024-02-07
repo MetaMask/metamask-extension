@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CustodyLabels from '../../../components/institutional/custody-labels';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../../components/ui/tooltip';
 import {
@@ -28,6 +26,8 @@ import {
   Text,
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from 'shared/constants/swaps';
 
 const getButtonLinkHref = (account) => {
   const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];

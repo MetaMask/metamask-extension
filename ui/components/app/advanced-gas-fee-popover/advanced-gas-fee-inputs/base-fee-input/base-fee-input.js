@@ -2,10 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
-import {
-  EditGasModes,
-  PriorityLevels,
-} from '../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
@@ -19,6 +15,7 @@ import FormField from '../../../../ui/form-field';
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {

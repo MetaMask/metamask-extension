@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
@@ -37,6 +32,11 @@ import { AddressCopyButton } from '../address-copy-button';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();

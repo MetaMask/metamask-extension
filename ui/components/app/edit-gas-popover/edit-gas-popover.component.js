@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
-import {
-  EditGasModes,
-  GAS_LIMITS,
-  CUSTOM_GAS_ESTIMATE,
-  GasRecommendations,
-} from '../../../../shared/constants/gas';
 
 import {
   Modal,
@@ -37,6 +31,12 @@ import {
   decimalToHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
+import {
+  EditGasModes,
+  GAS_LIMITS,
+  CUSTOM_GAS_ESTIMATE,
+  GasRecommendations,
+} from 'shared/constants/gas';
 
 export default function EditGasPopover({
   popoverTitle = '',

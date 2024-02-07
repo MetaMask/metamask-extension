@@ -1,12 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import {
-  MetaMetricsEventAccountImportType,
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { Box, ButtonLink, Label, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -24,6 +18,12 @@ import * as actions from '../../../store/actions';
 // Subviews
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
+import {
+  MetaMetricsEventAccountImportType,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();

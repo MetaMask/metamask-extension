@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { MILLISECOND } from '../../../../shared/constants/time';
+import { MILLISECOND } from 'shared/constants/time';
 
 function Alert(props) {
   const [visible, setVisible] = useState(false);

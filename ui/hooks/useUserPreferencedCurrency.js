@@ -7,7 +7,7 @@ import {
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
-import { EtherDenomination } from '../../shared/constants/common';
+import { EtherDenomination } from 'shared/constants/common';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency

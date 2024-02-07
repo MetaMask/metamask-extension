@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../shared/constants/transaction';
 import { Box } from '../../../../components/component-library';
 import UnitInput from '../../../../components/ui/unit-input';
 import AmountMaxButton from './amount-max-button';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 
 export default class SendAmountRow extends Component {
   static propTypes = {

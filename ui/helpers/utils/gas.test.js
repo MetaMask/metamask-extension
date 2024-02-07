@@ -1,9 +1,8 @@
-import { PriorityLevels } from '../../../shared/constants/gas';
-
 import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
   formatGasFeeOrFeeRange,
 } from './gas';
+import { PriorityLevels } from 'shared/constants/gas';
 
 describe('Gas utils', () => {
   describe('gasEstimateGreaterThanGasUsedPlusTenPercent', () => {

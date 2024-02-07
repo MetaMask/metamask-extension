@@ -2,7 +2,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getAddressBookEntryOrAccountName } from '../../selectors';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -28,6 +27,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',

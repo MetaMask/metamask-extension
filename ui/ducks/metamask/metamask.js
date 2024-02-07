@@ -1,11 +1,4 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
-import { AlertTypes } from '../../../shared/constants/alerts';
-import {
-  GasEstimateTypes,
-  NetworkCongestionThresholds,
-} from '../../../shared/constants/gas';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -18,6 +11,13 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from 'shared/constants/preferences';
+import { KeyringType } from 'shared/constants/keyring';
+import {
+  GasEstimateTypes,
+  NetworkCongestionThresholds,
+} from 'shared/constants/gas';
+import { AlertTypes } from 'shared/constants/alerts';
 
 const initialState = {
   isInitialized: false,

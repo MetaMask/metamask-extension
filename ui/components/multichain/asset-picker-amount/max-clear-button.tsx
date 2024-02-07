@@ -6,11 +6,11 @@ import {
   toggleSendMaxMode,
 } from '../../../ducks/send';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { ButtonLink } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { AssetType } from '../../../../shared/constants/transaction';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { AssetType } from 'shared/constants/transaction';
 
 // A button that updates the send amount to max balance or 0.
 export default function MaxClearButton({ asset }: { asset: Asset }) {

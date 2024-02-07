@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider, MOCKS, fireEvent } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
   checkNetworkAndAccountSupports1559,
@@ -17,6 +16,7 @@ import {
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../helpers/constants/transactions';
 
 import FeeCard from '.';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),

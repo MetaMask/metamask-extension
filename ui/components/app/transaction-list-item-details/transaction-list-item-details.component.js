@@ -16,11 +16,11 @@ import Popover from '../../ui/popover';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
-import { SECOND } from '../../../../shared/constants/time';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { SECOND } from 'shared/constants/time';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {

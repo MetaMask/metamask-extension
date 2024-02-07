@@ -1,6 +1,6 @@
 import { cloneDeep, uniq } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { getRpcUrl } from '../../../shared/constants/network';
+import { getRpcUrl } from 'shared/constants/network';
 
 const version = 74;
 

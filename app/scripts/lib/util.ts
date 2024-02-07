@@ -6,6 +6,7 @@ import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -16,9 +17,8 @@ import {
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
-} from '../../../shared/constants/app';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+} from 'shared/constants/app';
+import { CHAIN_IDS, TEST_CHAINS } from 'shared/constants/network';
 
 /**
  * @see {@link getEnvironmentType}

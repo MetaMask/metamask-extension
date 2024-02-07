@@ -1,6 +1,6 @@
 import { mapToTemplate } from '../../../../../components/app/snaps/snap-ui-renderer';
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { DelineatorType } from '../../../../../helpers/constants/snaps';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 function getValues(pendingApproval, t, actions, _history, setInputState) {
   const {

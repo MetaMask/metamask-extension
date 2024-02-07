@@ -3,12 +3,12 @@ import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SECOND } from '../../../../shared/constants/time';
 import EnhancedReader from './enhanced-reader';
+import { SECOND } from 'shared/constants/time';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',

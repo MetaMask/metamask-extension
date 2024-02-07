@@ -15,7 +15,7 @@ import {
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
+} from 'shared/constants/network';
 
 const getNetworkDetails = (network) => {
   return {

@@ -16,15 +16,15 @@ import {
 import { renderWithProvider } from '../../../../test/jest';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { abortTransactionSigning } from '../../../store/actions';
 import TransactionListItem from '.';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GasEstimateTypes.feeMarket,

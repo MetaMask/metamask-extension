@@ -1,10 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import {
-  EditGasModes,
-  GasEstimateTypes,
-} from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -15,8 +11,9 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
 import AdvancedGasFeeInputs from '../advanced-gas-fee-inputs';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { EditGasModes, GasEstimateTypes } from 'shared/constants/gas';
 
 const TEXT_SELECTOR = 'Save these values as my default for the Goerli network.';
 

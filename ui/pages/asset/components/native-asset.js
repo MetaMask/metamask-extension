@@ -14,9 +14,9 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default function NativeAsset({ nativeCurrency }) {
   const { name: selectedAccountName, address } = useSelector(

@@ -21,12 +21,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
-  Slippage,
-  SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_NEGATIVE_ERROR,
-  SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL,
-} from '../../../../shared/constants/swaps';
-import {
   BannerAlert,
   Modal,
   ModalOverlay,
@@ -38,6 +32,12 @@ import { ModalContent } from '../../../components/component-library/modal-conten
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
+import {
+  Slippage,
+  SLIPPAGE_VERY_HIGH_ERROR,
+  SLIPPAGE_NEGATIVE_ERROR,
+  SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL,
+} from 'shared/constants/swaps';
 
 export default function TransactionSettings({
   onSelect,

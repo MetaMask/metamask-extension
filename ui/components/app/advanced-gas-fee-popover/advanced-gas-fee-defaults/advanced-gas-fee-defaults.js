@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { capitalize } from 'lodash';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import { EditGasModes } from '../../../../../shared/constants/gas';
 
 import {
   Display,
@@ -19,6 +18,7 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Checkbox, Box } from '../../../component-library';
+import { EditGasModes } from 'shared/constants/gas';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();

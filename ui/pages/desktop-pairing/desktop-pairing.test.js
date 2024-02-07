@@ -6,9 +6,9 @@ import actions from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest';
 import mockState from '../../../test/data/mock-state.json';
-import { SECOND } from '../../../shared/constants/time';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import DesktopPairingPage from '.';
+import { SECOND } from 'shared/constants/time';
 
 const mockHideLoadingIndication = jest.fn();
 const mockShowLoadingIndication = jest.fn();

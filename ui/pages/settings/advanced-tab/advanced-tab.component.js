@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
@@ -28,6 +23,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from 'shared/constants/preferences';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 

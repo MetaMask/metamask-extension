@@ -2,12 +2,12 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import TransactionBreakdown from '.';
 import {
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   CHAIN_IDS,
-} from '../../../../shared/constants/network';
-import TransactionBreakdown from '.';
+} from 'shared/constants/network';
 
 function getActualDataFrom(transactionBreakdownRows) {
   return transactionBreakdownRows.map((transactionBreakdownRow) => {

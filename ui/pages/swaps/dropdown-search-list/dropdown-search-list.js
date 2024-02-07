@@ -26,7 +26,6 @@ import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../helpers/utils/util';
 import {
   getSmartTransactionsOptInStatus,
@@ -34,7 +33,8 @@ import {
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from 'shared/constants/swaps';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default function DropdownSearchList({
   searchListClassName,

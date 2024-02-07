@@ -4,9 +4,9 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { getEnvironmentType } from '../lib/util';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../translate';
+import { ENVIRONMENT_TYPE_BACKGROUND } from 'shared/constants/app';
 
 export default class ExtensionPlatform {
   //

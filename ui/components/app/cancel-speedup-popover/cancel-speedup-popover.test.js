@@ -2,10 +2,6 @@ import React from 'react';
 import { act, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 
-import {
-  EditGasModes,
-  GasEstimateTypes,
-} from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
@@ -17,6 +13,7 @@ import {
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
 import CancelSpeedupPopover from './cancel-speedup-popover';
+import { EditGasModes, GasEstimateTypes } from 'shared/constants/gas';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';
 const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN = new BigNumber(

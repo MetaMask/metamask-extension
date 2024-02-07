@@ -8,9 +8,9 @@ import {
 } from '../ducks/metamask/metamask';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
-import { EtherDenomination } from '../../shared/constants/common';
+import { TEST_NETWORK_TICKER_MAP } from 'shared/constants/network';
+import { EtherDenomination } from 'shared/constants/common';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay

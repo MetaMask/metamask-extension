@@ -24,12 +24,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+} from 'shared/constants/metametrics';
 
 export const AccountDetailsDisplay = ({
   accounts,

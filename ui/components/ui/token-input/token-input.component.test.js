@@ -3,12 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import TokenInput from '.';
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
-} from '../../../../shared/constants/network';
-import TokenInput from '.';
+} from 'shared/constants/network';
 
 describe('TokenInput Component', () => {
   const props = {

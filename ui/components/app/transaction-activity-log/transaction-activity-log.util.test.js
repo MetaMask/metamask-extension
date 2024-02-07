@@ -2,11 +2,11 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import {
   combineTransactionHistories,
   getActivities,
 } from './transaction-activity-log.util';
+import { GAS_LIMITS } from 'shared/constants/gas';
 
 describe('TransactionActivityLog utils', () => {
   describe('combineTransactionHistories', () => {

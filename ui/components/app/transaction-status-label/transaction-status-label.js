@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
+import { TransactionGroupStatus } from 'shared/constants/transaction';
 
 const QUEUED_PSEUDO_STATUS = 'queued';
 const SIGNING_PSUEDO_STATUS = 'signing';

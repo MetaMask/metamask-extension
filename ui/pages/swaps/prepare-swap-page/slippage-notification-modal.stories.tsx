@@ -3,8 +3,8 @@ import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
 import { BUTTON_VARIANT, Button } from '../../../components/component-library';
-import { SLIPPAGE_HIGH_ERROR } from '../../../../shared/constants/swaps';
 import SlippageNotificationModal from './slippage-notification-modal';
+import { SLIPPAGE_HIGH_ERROR } from 'shared/constants/swaps';
 
 export default {
   title: 'Pages/Swaps/SlippageNotificationModal',

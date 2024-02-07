@@ -44,8 +44,6 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message';
 import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 
 import {
   TextAlign,
@@ -81,6 +79,8 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from 'shared/constants/security-provider';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 const SignatureRequest = ({ txData }) => {
   const trackEvent = useContext(MetaMetricsContext);

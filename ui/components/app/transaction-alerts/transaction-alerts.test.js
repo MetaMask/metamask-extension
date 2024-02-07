@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import { renderWithProvider } from '../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -10,6 +9,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as txUtil from '../../../../shared/modules/transaction.utils';
 import * as metamaskControllerUtils from '../../../../shared/lib/metamask-controller-utils';
 import TransactionAlerts from './transaction-alerts';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from 'shared/constants/security-provider';
 
 jest.mock('../../../selectors/transactions', () => {
   return {

@@ -3,8 +3,8 @@ import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import log from 'loglevel';
 import PropTypes from 'prop-types';
-import { MILLISECOND } from '../../../../shared/constants/time';
 import Spinner from '../../ui/spinner';
+import { MILLISECOND } from 'shared/constants/time';
 
 const EnhancedReader = ({ handleScan }) => {
   const [canplay, setCanplay] = useState(false);

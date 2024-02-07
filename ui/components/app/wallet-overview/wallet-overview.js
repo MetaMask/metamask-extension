@@ -8,8 +8,8 @@ import { AddressCopyButton } from '../../multichain';
 import Box from '../../ui/box/box';
 import { IconName, Tag } from '../../component-library';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { KeyringType } from 'shared/constants/keyring';
 
 const WalletOverview = ({
   balance,

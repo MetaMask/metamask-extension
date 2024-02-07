@@ -14,8 +14,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { Text } from '../../component-library';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from 'shared/constants/network';
 
 export default function NetworkAccountBalanceHeader({
   networkName,

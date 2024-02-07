@@ -20,9 +20,9 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default function LoadingSwapsQuotes({
   aggregatorMetadata,

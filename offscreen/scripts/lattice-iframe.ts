@@ -1,7 +1,7 @@
 import {
   KnownOrigins,
   OffscreenCommunicationTarget,
-} from '../../shared/constants/offscreen-communication';
+} from 'shared/constants/offscreen-communication';
 
 /**
  * The main element of the eth-lattice-keyring library that is impacted by MV3

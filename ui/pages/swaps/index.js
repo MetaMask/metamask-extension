@@ -70,13 +70,6 @@ import {
   PREPARE_SWAP_ROUTE,
   SWAPS_NOTIFICATION_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  SWAP_FAILED_ERROR,
-  CONTRACT_DATA_DISABLED_ERROR,
-  OFFLINE_FOR_MAINTENANCE,
-} from '../../../shared/constants/swaps';
 
 import {
   resetBackgroundSwapsState,
@@ -88,7 +81,6 @@ import {
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';
@@ -112,6 +104,14 @@ import BuildQuote from './build-quote';
 import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
 import ViewQuote from './view-quote';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import {
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  SWAP_FAILED_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
+  OFFLINE_FOR_MAINTENANCE,
+} from 'shared/constants/swaps';
 
 export default function Swap() {
   const t = useContext(I18nContext);

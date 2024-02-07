@@ -3,10 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import mockState from '../../../../test/data/mock-state.json';
 
 import GasTiming from '.';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 jest.mock('../../../store/actions.ts', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),

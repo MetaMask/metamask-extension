@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 export const SINGLE_CALL_BALANCES_ADDRESSES = {
   [CHAIN_IDS.MAINNET]: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',

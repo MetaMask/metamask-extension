@@ -1,12 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../../../../shared/constants/network';
-import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
+} from 'shared/constants/network';
 
 describe('CancelTransactionGasFee Component', () => {
   const mockState = {

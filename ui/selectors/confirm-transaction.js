@@ -14,10 +14,6 @@ import {
   getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
-  GasEstimateTypes,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../shared/constants/gas';
-import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
@@ -34,6 +30,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getUnapprovedTransactions,
 } from '.';
+import { GasEstimateTypes, CUSTOM_GAS_ESTIMATE } from 'shared/constants/gas';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;

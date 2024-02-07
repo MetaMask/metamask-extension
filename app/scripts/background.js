@@ -22,6 +22,16 @@ import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
+import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { maskObject } from '../../shared/modules/object.utils';
+import migrations from './migrations';
+import Migrator from './lib/migrator';
+import ExtensionPlatform from './platforms/extension';
+import LocalStore from './lib/local-store';
+import ReadOnlyNetworkStore from './lib/network-store';
+import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
+import createStreamSink from './lib/createStreamSink';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -32,25 +42,15 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
-} from '../../shared/constants/app';
+} from 'shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
-} from '../../shared/constants/metametrics';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
-import migrations from './migrations';
-import Migrator from './lib/migrator';
-import ExtensionPlatform from './platforms/extension';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
+} from 'shared/constants/metametrics';
 
-import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';

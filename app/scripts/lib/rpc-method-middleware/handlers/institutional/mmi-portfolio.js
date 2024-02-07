@@ -1,5 +1,5 @@
 import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const mmiPortfolio = {
   methodNames: [MESSAGE_TYPE.MMI_PORTFOLIO],

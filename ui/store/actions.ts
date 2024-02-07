@@ -29,11 +29,6 @@ import {
 import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ORIGIN_METAMASK,
-  POLLING_TOKEN_ENVIRONMENT_TYPES,
-} from '../../shared/constants/app';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
@@ -67,21 +62,6 @@ import {
   getUnconnectedAccountAlertEnabledness,
 } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-  LEDGER_USB_VENDOR_ID,
-} from '../../shared/constants/hardware-wallets';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
-  MetaMetricsPageObject,
-  MetaMetricsPageOptions,
-  MetaMetricsPagePayload,
-  MetaMetricsReferrerObject,
-} from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -92,14 +72,10 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
-import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
-import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
-import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -114,6 +90,30 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { ThemeType } from 'shared/constants/preferences';
+import { EtherDenomination } from 'shared/constants/common';
+import { NetworkType, RPCDefinition } from 'shared/constants/network';
+import { TxGasFees, PriorityLevels } from 'shared/constants/gas';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventFragment,
+  MetaMetricsEventOptions,
+  MetaMetricsEventPayload,
+  MetaMetricsPageObject,
+  MetaMetricsPageOptions,
+  MetaMetricsPagePayload,
+  MetaMetricsReferrerObject,
+} from 'shared/constants/metametrics';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  LEDGER_USB_VENDOR_ID,
+} from 'shared/constants/hardware-wallets';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from 'shared/constants/app';
 
 type CustomGasSettings = {
   gas?: string;

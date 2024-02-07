@@ -31,7 +31,6 @@ import {
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
 import { getNfts, getTokens } from '../ducks/metamask/metamask';
-import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
@@ -43,6 +42,7 @@ import { useTokenDisplayValue } from './useTokenDisplayValue';
 import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
+import { TransactionGroupCategory } from 'shared/constants/transaction';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:

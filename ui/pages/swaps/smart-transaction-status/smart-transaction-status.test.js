@@ -7,8 +7,8 @@ import {
   createSwapsMockStore,
   fireEvent,
 } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import SmartTransactionStatusLabel from '.';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const middleware = [thunk];
 setBackgroundConnection({

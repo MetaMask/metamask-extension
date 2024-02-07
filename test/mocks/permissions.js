@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze-strict';
-import { CaveatTypes } from '../../shared/constants/permissions';
+import { CaveatTypes } from 'shared/constants/permissions';
 
 /**
  * This file contains mocks for the PermissionLogController tests.

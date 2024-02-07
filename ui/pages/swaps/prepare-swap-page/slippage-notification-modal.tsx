@@ -15,11 +15,11 @@ import {
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
+import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
-} from '../../../../shared/constants/swaps';
-import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
+} from 'shared/constants/swaps';
 
 interface Props {
   isOpen: boolean;

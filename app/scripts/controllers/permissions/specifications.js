@@ -6,10 +6,7 @@ import {
 import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snaps-controllers';
 import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { CaveatTypes, RestrictedMethods } from 'shared/constants/permissions';
 
 /**
  * This file contains the specifications of the permissions and caveats

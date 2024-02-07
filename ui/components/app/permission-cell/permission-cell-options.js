@@ -10,8 +10,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Popover from '../../ui/popover/popover.component';
-import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
 import { revokeDynamicSnapPermissions } from '../../../store/actions';
+import { DynamicSnapPermissions } from 'shared/constants/snaps/permissions';
 
 export const PermissionCellOptions = ({
   snapId,

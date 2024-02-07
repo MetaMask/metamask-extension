@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
@@ -37,11 +36,12 @@ import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { TokenStandard } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
+import { TokenStandard } from 'shared/constants/transaction';
+import { EditGasModes } from 'shared/constants/gas';
 
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);

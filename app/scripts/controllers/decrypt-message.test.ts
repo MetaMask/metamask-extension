@@ -1,11 +1,11 @@
 import { DecryptMessageManager } from '@metamask/message-manager';
 import { AbstractMessage } from '@metamask/message-manager/dist/AbstractMessageManager';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import DecryptMessageController, {
   DecryptMessageControllerMessenger,
   DecryptMessageControllerOptions,
   getDefaultState,
 } from './decrypt-message';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 const messageIdMock = '12345';
 const messageMock = {

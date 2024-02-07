@@ -18,11 +18,11 @@ import {
   Checkbox,
   Text,
 } from '../../component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+} from 'shared/constants/metametrics';
 
 export default function TermsOfUsePopup({ onAccept }) {
   const t = useContext(I18nContext);

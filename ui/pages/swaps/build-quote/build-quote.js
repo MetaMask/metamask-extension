@@ -72,17 +72,6 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLinkType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  TokenBucketPriority,
-  MAX_ALLOWED_SLIPPAGE,
-} from '../../../../shared/constants/swaps';
 
 import {
   resetSwapsPostFetchState,
@@ -104,6 +93,17 @@ import {
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
+import {
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  TokenBucketPriority,
+  MAX_ALLOWED_SLIPPAGE,
+} from 'shared/constants/swaps';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },

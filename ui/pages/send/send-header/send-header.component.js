@@ -11,7 +11,7 @@ import {
   resetSendState,
   SEND_STAGES,
 } from '../../../ducks/send';
-import { AssetType } from '../../../../shared/constants/transaction';
+import { AssetType } from 'shared/constants/transaction';
 
 export default function SendHeader() {
   const history = useHistory();

@@ -9,11 +9,6 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLinkType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
 import {
   getBlockExplorerLinkText,
@@ -22,6 +17,11 @@ import {
 } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export const ViewExplorerMenuItem = ({
   metricsLocation,

@@ -10,7 +10,7 @@ import {
   getMemoizedAddressBook,
 } from '../../../../../../selectors';
 import NicknamePopovers from '../../../../modals/nickname-popovers';
-import { COPY_OPTIONS } from '../../../../../../../shared/constants/copy';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 const Address = ({
   checksummedRecipientAddress,

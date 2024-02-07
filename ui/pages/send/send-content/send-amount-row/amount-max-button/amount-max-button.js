@@ -8,7 +8,7 @@ import {
 } from '../../../../../ducks/send';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default function AmountMaxButton() {
   const isDraftTransactionInvalid = useSelector(isSendFormInvalid);

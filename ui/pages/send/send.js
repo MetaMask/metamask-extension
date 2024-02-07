@@ -19,13 +19,13 @@ import { isCustomPriceExcessive } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { AssetType } from '../../../shared/constants/transaction';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
 import SendFooter from './send-footer';
 import DomainInput from './send-content/add-recipient/domain-input';
+import { AssetType } from 'shared/constants/transaction';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 const sendSliceIsCustomPriceExcessive = (state) =>
   isCustomPriceExcessive(state, true);

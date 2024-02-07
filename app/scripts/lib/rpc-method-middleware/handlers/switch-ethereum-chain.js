@@ -1,18 +1,18 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../../shared/modules/network.utils';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
   BUILT_IN_INFURA_NETWORKS,
-} from '../../../../../shared/constants/network';
-import {
-  isPrefixedFormattedHexString,
-  isSafeChainId,
-} from '../../../../../shared/modules/network.utils';
+} from 'shared/constants/network';
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],

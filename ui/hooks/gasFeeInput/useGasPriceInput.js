@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { isEqual } from 'lodash';
 
-import {
-  GasEstimateTypes,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../../shared/constants/gas';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
 import { feeParamsAreCustom } from './utils';
+import { GasEstimateTypes, CUSTOM_GAS_ESTIMATE } from 'shared/constants/gas';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
   if (gasEstimateType === GasEstimateTypes.legacy) {

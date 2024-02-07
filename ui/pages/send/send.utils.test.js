@@ -1,6 +1,5 @@
 import { rawEncode } from 'ethereumjs-abi';
 
-import { TokenStandard } from '../../../shared/constants/transaction';
 import {
   generateERC20TransferData,
   isBalanceSufficient,
@@ -11,6 +10,7 @@ import {
   getAssetTransferData,
   generateERC721TransferData,
 } from './send.utils';
+import { TokenStandard } from 'shared/constants/transaction';
 
 jest.mock('ethereumjs-abi', () => ({
   rawEncode: jest.fn().mockReturnValue(16, 1100),

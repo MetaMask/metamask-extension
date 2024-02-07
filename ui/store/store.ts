@@ -6,8 +6,8 @@ import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 import rootReducer from '../ducks';
-import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
-import type { NetworkStatus } from '../../shared/constants/network';
+import { LedgerTransportTypes } from 'shared/constants/hardware-wallets';
+import type { NetworkStatus } from 'shared/constants/network';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file

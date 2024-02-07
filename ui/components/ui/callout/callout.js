@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { Severity, TextColor } from '../../../helpers/constants/design-system';
-import { MILLISECOND } from '../../../../shared/constants/time';
 import { ButtonIcon, IconName, IconSize, Text } from '../../component-library';
+import { MILLISECOND } from 'shared/constants/time';
 
 /**
  * @deprecated `<Callout />` has been deprecated in favor of the `<BannerAlert />`

@@ -3,11 +3,6 @@ import { useDispatch } from 'react-redux';
 
 import BigNumber from 'bignumber.js';
 import {
-  EditGasModes,
-  PriorityLevels,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../../shared/constants/gas';
-import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
 } from '../../helpers/utils/gas';
@@ -23,6 +18,11 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
+import {
+  EditGasModes,
+  PriorityLevels,
+  CUSTOM_GAS_ESTIMATE,
+} from 'shared/constants/gas';
 
 /**
  * @typedef {object} TransactionFunctionsReturnType

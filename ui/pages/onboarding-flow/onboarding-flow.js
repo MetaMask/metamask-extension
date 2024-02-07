@@ -33,10 +33,6 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
@@ -54,6 +50,10 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 

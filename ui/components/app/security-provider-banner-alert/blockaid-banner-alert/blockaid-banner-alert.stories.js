@@ -1,9 +1,9 @@
 import React from 'react';
+import BlockaidBannerAlert from '.';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
-import BlockaidBannerAlert from '.';
+} from 'shared/constants/security-provider';
 
 const mockFeatures = [
   'Operator is an EOA',

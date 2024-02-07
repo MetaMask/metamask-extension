@@ -65,10 +65,16 @@ import {
   getSelectedNetworkClientId,
 } from '../../selectors';
 
+import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../shared/modules/Numeric';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -77,19 +83,13 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   Slippage,
-} from '../../../shared/constants/swaps';
+} from 'shared/constants/swaps';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
   SmartTransactionStatus,
-} from '../../../shared/constants/transaction';
-import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-} from '../../../shared/lib/transactions-controller-utils';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { Numeric } from '../../../shared/modules/Numeric';
+} from 'shared/constants/transaction';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
+import { EtherDenomination } from 'shared/constants/common';
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',

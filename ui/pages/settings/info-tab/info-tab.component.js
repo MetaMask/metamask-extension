@@ -16,16 +16,16 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CONSENSYS_PRIVACY_LINK,
   ///: END:ONLY_INCLUDE_IF
   SUPPORT_LINK,
 } from '../../../../shared/lib/ui-utils';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default class InfoTab extends PureComponent {
   state = {

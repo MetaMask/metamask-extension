@@ -9,7 +9,7 @@ import {
   getSwapsQuoteRefreshTime,
   getSwapsQuotePrefetchingRefreshTime,
 } from '../../../ducks/swaps/swaps';
-import { SECOND } from '../../../../shared/constants/time';
+import { SECOND } from 'shared/constants/time';
 
 // Return the mm:ss start time of the countdown timer.
 // If time has elapsed between `timeStarted` the time current time,

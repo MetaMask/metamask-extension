@@ -1,17 +1,17 @@
-import {
-  GOERLI_DISPLAY_NAME,
-  LINEA_GOERLI_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
 import { BackgroundColor } from '../constants/design-system';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import {
   getAccountLabel,
   getAccountNameErrorMessage,
   getAvatarNetworkColor,
 } from './accounts';
+import {
+  GOERLI_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from 'shared/constants/network';
+import { KeyringType } from 'shared/constants/keyring';
+import { HardwareKeyringNames } from 'shared/constants/hardware-wallets';
 
 const mockAccounts = [{ name: 'Account 1' }, { name: 'Account 2' }];
 

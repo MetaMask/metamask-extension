@@ -31,11 +31,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { setDisabledRpcMethodPreference } from '../../../../store/actions';
 import { getDisabledRpcMethodPreferences } from '../../../../selectors';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+} from 'shared/constants/metametrics';
 
 const EthSignModal = ({ hideModal }) => {
   const [isEthSignChecked, setIsEthSignChecked] = useState(false);

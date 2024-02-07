@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import migration64 from './064';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TransactionType.simpleSend
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Severity } from '../../../helpers/constants/design-system';
 import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
-import { SecurityProvider } from '../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from './security-provider-banner-alert';
+import { SecurityProvider } from 'shared/constants/security-provider';
 
 const mockPlainText =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sapien tellus, elementum sit ' +

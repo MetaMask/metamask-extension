@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getTheme } from '../selectors';
-import { ThemeType } from '../../shared/constants/preferences';
+import { ThemeType } from 'shared/constants/preferences';
 
 /**
  * List of valid themes. Should return an array with only the values ThemeType.light and ThemeType.dark

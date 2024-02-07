@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import Box from '../../ui/box';
@@ -18,6 +17,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { Text } from '../../component-library';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 const EditGasFeePopover = () => {
   const { balanceError, editGasMode } = useGasFeeContext();

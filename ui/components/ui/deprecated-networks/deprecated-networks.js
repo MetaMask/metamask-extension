@@ -10,10 +10,7 @@ import {
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box, ButtonLink } from '../../component-library';
-import {
-  CHAIN_IDS,
-  DEPRECATED_NETWORKS,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS, DEPRECATED_NETWORKS } from 'shared/constants/network';
 
 export default function DeprecatedNetworks() {
   const currentChainID = useSelector(getCurrentChainId);

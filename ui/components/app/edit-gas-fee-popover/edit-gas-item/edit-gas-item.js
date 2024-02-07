@@ -2,10 +2,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import {
-  EditGasModes,
-  PriorityLevels,
-} from '../../../../../shared/constants/gas';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 ///: END:ONLY_INCLUDE_IF
@@ -21,6 +17,7 @@ import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-disp
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 const getTitleAndIcon = (priorityLevel, editGasMode) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

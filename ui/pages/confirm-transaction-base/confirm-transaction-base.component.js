@@ -19,7 +19,6 @@ import UserPreferencedCurrencyDisplay from '../../components/app/user-preference
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
   getTransactionTypeTitle,
@@ -44,7 +43,6 @@ import {
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   addHexes,
   hexToDecimal,
@@ -56,10 +54,12 @@ import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { KeyringType } from '../../../shared/constants/keyring';
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
 import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
+import { KeyringType } from 'shared/constants/keyring';
+import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {

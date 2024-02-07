@@ -16,6 +16,7 @@ import {
   Text,
 } from '../../../components/component-library';
 
+import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -27,8 +28,7 @@ import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
-} from '../../../../shared/constants/swaps';
-import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
+} from 'shared/constants/swaps';
 
 export default function SwapsBannerAlert({
   swapsErrorKey,

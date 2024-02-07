@@ -3,11 +3,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  MetaMetricsEventName,
-  MetaMetricsTokenEventSource,
-} from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import {
@@ -54,6 +49,11 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
+import { AssetType } from 'shared/constants/transaction';
+import {
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from 'shared/constants/metametrics';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();

@@ -2,11 +2,6 @@ import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import HoldToRevealModal from '../../components/app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   BUTTON_SIZES,
@@ -38,6 +33,11 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';

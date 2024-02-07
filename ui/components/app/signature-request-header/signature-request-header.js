@@ -19,11 +19,11 @@ import {
   getAccountByAddress,
   getNetworkNameFromProviderType,
 } from '../../../helpers/utils/util';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
+import { EtherDenomination } from 'shared/constants/common';
 
 const SignatureRequestHeader = ({ txData }) => {
   const t = useI18nContext();

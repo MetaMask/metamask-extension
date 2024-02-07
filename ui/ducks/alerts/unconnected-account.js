@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { captureException } from '@sentry/browser';
 
-import { AlertTypes } from '../../../shared/constants/alerts';
 import * as actionConstants from '../../store/actionConstants';
 import {
   addPermittedAccount,
@@ -15,6 +14,7 @@ import {
   getSelectedInternalAccount,
 } from '../../selectors';
 import { ALERT_STATE } from './enums';
+import { AlertTypes } from 'shared/constants/alerts';
 
 // Constants
 

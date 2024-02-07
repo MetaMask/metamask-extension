@@ -10,7 +10,6 @@ import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Name from '../../app/name/name';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
 import { Icon, IconName } from '../../component-library';
 import { usePetnamesEnabled } from '../../../hooks/usePetnamesEnabled';
@@ -19,6 +18,7 @@ import {
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',

@@ -3,11 +3,11 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import ConnectHardwareForm from '.';
 import {
   LedgerTransportTypes,
   HardwareDeviceNames,
-} from '../../../../shared/constants/hardware-wallets';
-import ConnectHardwareForm from '.';
+} from 'shared/constants/hardware-wallets';
 
 const mockConnectHardware = jest.fn();
 const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);

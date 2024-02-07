@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.

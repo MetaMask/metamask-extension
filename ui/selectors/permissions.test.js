@@ -1,10 +1,10 @@
-import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
   getOrderedConnectedAccountsForActiveTab,
   getPermissionsForActiveTab,
 } from './permissions';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 describe('selectors', () => {
   describe('getConnectedSubjectsForSelectedAddress', () => {

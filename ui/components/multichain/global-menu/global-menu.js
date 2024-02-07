@@ -25,18 +25,12 @@ import {
 
 import { MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 ///: END:ONLY_INCLUDE_IF
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -70,6 +64,12 @@ import {
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
 
 const METRICS_LOCATION = 'Global Menu';
 

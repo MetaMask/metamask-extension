@@ -2,13 +2,12 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../.storybook/test-data';
 import configureStore from '../../store/store';
+import TokenAllowance from './token-allowance';
 import {
   BlockaidReason,
   BlockaidResultType,
   SECURITY_PROVIDER_MESSAGE_SEVERITY,
-} from '../../../shared/constants/security-provider';
-
-import TokenAllowance from './token-allowance';
+} from 'shared/constants/security-provider';
 
 const defaultArgs = {
   origin: 'https://metamask.github.io',

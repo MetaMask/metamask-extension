@@ -7,11 +7,11 @@ import { setAccountDetailsAddress } from '../../../store/actions';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { IconName, Text } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+} from 'shared/constants/metametrics';
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,

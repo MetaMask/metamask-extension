@@ -12,15 +12,15 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
 import type { BoxProps } from '../../component-library/box';
 import type { ImportTokenLinkProps } from './import-token-link.types';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
   className = '',

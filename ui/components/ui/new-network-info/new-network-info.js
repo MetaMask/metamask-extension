@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { I18nContext } from '../../../contexts/i18n';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
@@ -20,6 +19,7 @@ import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { PickerNetwork, Text, Box } from '../../component-library';
 import Button from '../button';
 import Popover from '../popover';
+import { TOKEN_API_METASWAP_CODEFI_URL } from 'shared/constants/tokens';
 
 export default function NewNetworkInfo() {
   const t = useContext(I18nContext);

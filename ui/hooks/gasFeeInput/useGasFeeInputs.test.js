@@ -5,10 +5,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  GasRecommendations,
-  EditGasModes,
-} from '../../../shared/constants/gas';
 
 import { ETH, PRIMARY } from '../../helpers/constants/common';
 
@@ -24,6 +20,7 @@ import {
   configureLegacy,
   generateUseSelectorRouter,
 } from './test-utils';
+import { GasRecommendations, EditGasModes } from 'shared/constants/gas';
 
 jest.mock('../useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),

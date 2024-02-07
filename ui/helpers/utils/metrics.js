@@ -2,8 +2,8 @@
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../shared/constants/security-provider';
-import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
+} from 'shared/constants/security-provider';
+import { MetaMetricsEventUiCustomization } from 'shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
 export function getMethodName(camelCase) {

@@ -5,8 +5,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { DECIMAL_REGEX } from '../../../../shared/constants/tokens';
 import { Text } from '../../component-library';
+import { DECIMAL_REGEX } from 'shared/constants/tokens';
 
 export default function NumericInput({
   detailText = '',

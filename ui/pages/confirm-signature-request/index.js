@@ -27,8 +27,8 @@ import {
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../selectors';
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getSendTo } from '../../ducks/send';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const signatureSelect = (txData, targetSubjectMetadata) => {
   const {

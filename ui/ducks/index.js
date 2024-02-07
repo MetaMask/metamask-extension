@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { AlertTypes } from '../../shared/constants/alerts';
 import confirmReducer from './confirm/confirm';
 import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
@@ -11,6 +10,7 @@ import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
 import swapsReducer from './swaps/swaps';
 import historyReducer from './history/history';
+import { AlertTypes } from 'shared/constants/alerts';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,

@@ -1,6 +1,6 @@
 import React from 'react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FeeCard from './fee-card';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const containerStyle = {
   width: '300px',

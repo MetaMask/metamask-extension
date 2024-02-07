@@ -11,7 +11,6 @@ import {
   decimalToHex,
   getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
-import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
@@ -100,10 +99,6 @@ import {
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
@@ -113,13 +108,15 @@ import {
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
+import { EtherDenomination } from 'shared/constants/common';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
+import { GasEstimateTypes, GAS_LIMITS } from 'shared/constants/gas';
 // typedef import statements
 /**
  * @typedef {(

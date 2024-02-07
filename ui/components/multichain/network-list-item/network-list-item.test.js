@@ -1,11 +1,11 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { NetworkListItem } from '.';
 import {
   MATIC_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
-import { NetworkListItem } from '.';
+} from 'shared/constants/network';
 
 const DEFAULT_PROPS = {
   name: POLYGON_DISPLAY_NAME,

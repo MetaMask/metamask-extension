@@ -3,15 +3,15 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { renderWithProvider } from '../../../../test/jest/rendering';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import EthOverview from './eth-overview';
+import { KeyringType } from 'shared/constants/keyring';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import { KeyringType } from '../../../../shared/constants/keyring';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import EthOverview from './eth-overview';
+} from 'shared/constants/network';
 
 // Mock BUYABLE_CHAINS_MAP
 jest.mock('../../../../shared/constants/network', () => ({

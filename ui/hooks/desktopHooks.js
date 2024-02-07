@@ -1,6 +1,6 @@
 import { DESKTOP_HOOK_TYPES } from '@metamask/desktop/dist/constants';
 import { DESKTOP_ERROR_ROUTE } from '../helpers/constants/routes';
-import { EXTENSION_ERROR_PAGE_TYPES } from '../../shared/constants/desktop';
+import { EXTENSION_ERROR_PAGE_TYPES } from 'shared/constants/desktop';
 
 const registerOnDesktopDisconnect = (history) => {
   return (request) => {

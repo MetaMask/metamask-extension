@@ -5,11 +5,6 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsTokenEventSource,
-} from '../../../../../shared/constants/metametrics';
-import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
 } from '../../../../selectors';
@@ -18,6 +13,11 @@ import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from 'shared/constants/metametrics';
 
 const DetectedTokenSelectionPopover = ({
   tokensListDetected,

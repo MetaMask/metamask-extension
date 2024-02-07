@@ -1,8 +1,5 @@
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
 import { getPermissionBackgroundApiMethods } from './background-api';
+import { CaveatTypes, RestrictedMethods } from 'shared/constants/permissions';
 
 describe('permission background API methods', () => {
   describe('addPermittedAccount', () => {

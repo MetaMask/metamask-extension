@@ -2,17 +2,17 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { toHex } from '@metamask/controller-utils';
 import { NameType } from '@metamask/name-controller';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
+import waitUntilCalled from '../../../test/lib/wait-until-called';
+import * as Utils from '../lib/util';
+import MetaMetricsController from './metametrics';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from 'shared/constants/network';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsUserTrait,
-} from '../../../shared/constants/metametrics';
-import waitUntilCalled from '../../../test/lib/wait-until-called';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
-import * as Utils from '../lib/util';
-import MetaMetricsController from './metametrics';
+} from 'shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_BACKGROUND } from 'shared/constants/app';
 
 const segment = createSegmentMock(2, 10000);
 

@@ -14,11 +14,9 @@ import {
   FLEX_DIRECTION,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import {
@@ -41,12 +39,14 @@ import {
   addHexes,
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import useRamps from '../../../hooks/experiences/useRamps';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import useRamps from '../../../hooks/experiences/useRamps';
+} from 'shared/constants/metametrics';
+import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
+import { TokenStandard } from 'shared/constants/transaction';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);

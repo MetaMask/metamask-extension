@@ -47,21 +47,21 @@ import {
 } from '../../../selectors';
 import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
 import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   CONNECT_HARDWARE_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { HiddenAccountList } from './hidden-account-list';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const ACTION_MODES = {
   // Displays the search box and account list

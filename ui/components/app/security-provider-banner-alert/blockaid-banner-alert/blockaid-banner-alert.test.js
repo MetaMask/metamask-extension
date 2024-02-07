@@ -4,11 +4,11 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
 import configureStore from '../../../../store/store';
+import BlockaidBannerAlert from '.';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../../shared/constants/security-provider';
-import BlockaidBannerAlert from '.';
+} from 'shared/constants/security-provider';
 
 jest.mock('@sentry/browser');
 jest.mock('zlib', () => ({

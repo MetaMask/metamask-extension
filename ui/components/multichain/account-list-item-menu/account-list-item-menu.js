@@ -30,10 +30,6 @@ import {
   Text,
 } from '../../component-library';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
@@ -41,6 +37,10 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const METRICS_LOCATION = 'Account Options';
 

@@ -3,10 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
@@ -44,6 +40,10 @@ import {
 } from '../../../store/actions';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function PrivacySettings() {
   const t = useI18nContext();

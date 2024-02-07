@@ -1,11 +1,11 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import {
   LOG_IGNORE_METHODS,
   LOG_LIMIT,
   LOG_METHOD_TYPES,
   WALLET_PREFIX,
 } from './enums';
+import { CaveatTypes } from 'shared/constants/permissions';
 
 /**
  * Controller with middleware for logging requests and responses to restricted

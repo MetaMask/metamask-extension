@@ -15,11 +15,6 @@ import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
 import log from 'loglevel';
 import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_POPUP,
-  PLATFORM_FIREFOX,
-} from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
@@ -33,6 +28,11 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_FIREFOX,
+} from 'shared/constants/app';
 
 const container = document.getElementById('app-content');
 

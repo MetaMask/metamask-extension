@@ -1,16 +1,16 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
-} from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
+} from 'shared/constants/metametrics';
+import { SECOND } from 'shared/constants/time';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../shared/constants/security-provider';
-import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
+} from 'shared/constants/security-provider';
 
 const trackEvent = jest.fn();
 const metricsState = { participateInMetaMetrics: null };

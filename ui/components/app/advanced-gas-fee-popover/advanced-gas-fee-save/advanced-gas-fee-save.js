@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -9,6 +8,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Button from '../../../ui/button';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
+import { PriorityLevels } from 'shared/constants/gas';
 
 const AdvancedGasFeeSaveButton = () => {
   const { closeModal } = useTransactionModalContext();

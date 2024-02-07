@@ -8,9 +8,9 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { TransactionGroupStatus } from 'shared/constants/transaction';
 
 /**
  * @typedef EthersContractCall

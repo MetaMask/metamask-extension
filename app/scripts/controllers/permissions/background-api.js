@@ -1,8 +1,5 @@
 import nanoid from 'nanoid';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
+import { CaveatTypes, RestrictedMethods } from 'shared/constants/permissions';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
   return {

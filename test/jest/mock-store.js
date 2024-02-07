@@ -1,8 +1,8 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
-import { KeyringType } from '../../shared/constants/keyring';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { KeyringType } from 'shared/constants/keyring';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {

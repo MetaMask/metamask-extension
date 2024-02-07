@@ -6,9 +6,9 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import { I18nContext } from '../../../../.storybook/i18n';
 import { BannerAlert, ButtonLink, Text } from '../../component-library';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from 'shared/constants/security-provider';
 
 export default function SecurityProviderBannerMessage({
   securityProviderResponse,

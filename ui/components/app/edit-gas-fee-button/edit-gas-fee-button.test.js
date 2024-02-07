@@ -2,11 +2,6 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import {
-  EditGasModes,
-  GasEstimateTypes,
-  PriorityLevels,
-} from '../../../../shared/constants/gas';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../test/jest';
@@ -15,6 +10,11 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 
 import EditGasFeeButton from './edit-gas-fee-button';
+import {
+  EditGasModes,
+  GasEstimateTypes,
+  PriorityLevels,
+} from 'shared/constants/gas';
 
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),

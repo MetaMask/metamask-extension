@@ -11,12 +11,6 @@ import {
 import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import classnames from 'classnames';
-import {
-  RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  EndowmentPermissions,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
@@ -36,6 +30,12 @@ import {
   TextVariant,
 } from '../constants/design-system';
 import { getSnapName } from './util';
+import {
+  RestrictedMethods,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  EndowmentPermissions,
+  ///: END:ONLY_INCLUDE_IF
+} from 'shared/constants/permissions';
 ///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');

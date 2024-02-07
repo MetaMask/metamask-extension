@@ -1,11 +1,11 @@
 'use strict';
 
+import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_FIREFOX,
-} from '../../../shared/constants/app';
-import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util';
+} from 'shared/constants/app';
 
 class WebcamUtils {
   static async checkStatus() {

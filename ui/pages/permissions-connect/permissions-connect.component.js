@@ -6,8 +6,6 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import {
@@ -26,6 +24,8 @@ import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
+import { MILLISECOND } from 'shared/constants/time';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from 'shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;

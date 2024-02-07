@@ -1,9 +1,5 @@
 import { constant, times, uniq, zip } from 'lodash';
 import BigNumber from 'bignumber.js';
-import {
-  GasRecommendations,
-  EditGasModes,
-} from '../../../shared/constants/gas';
 import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
@@ -11,6 +7,7 @@ import {
   isNullish,
   roundToDecimalPlacesRemovingExtraZeroes,
 } from './util';
+import { GasRecommendations, EditGasModes } from 'shared/constants/gas';
 
 const TEN_PERCENT_NUMERIC = new Numeric(1.1, 10);
 

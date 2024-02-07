@@ -1,17 +1,13 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
-  GasRecommendations,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../../shared/constants/gas';
-
-import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
   configureEIP1559,
   configureLegacy,
 } from './test-utils';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
+import { GasRecommendations, CUSTOM_GAS_ESTIMATE } from 'shared/constants/gas';
 
 jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),

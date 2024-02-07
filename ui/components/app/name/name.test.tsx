@@ -3,11 +3,11 @@ import { NameType } from '@metamask/name-controller';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import Name from './name';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import Name from './name';
+} from 'shared/constants/metametrics';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

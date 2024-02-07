@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   Color,
   TextColor,
@@ -16,6 +15,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();

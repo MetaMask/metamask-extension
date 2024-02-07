@@ -4,9 +4,9 @@ import thunk from 'redux-thunk';
 
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import swapsReducer, * as swaps from './swaps';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const middleware = [thunk];
 

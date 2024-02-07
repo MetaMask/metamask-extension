@@ -1,6 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
-import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   Severity,
   TypographyVariant,
@@ -14,6 +13,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
+import { infuraProjectId } from 'shared/constants/network';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',

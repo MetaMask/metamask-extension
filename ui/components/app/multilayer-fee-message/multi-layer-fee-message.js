@@ -8,9 +8,9 @@ import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL
 import { SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
 import { sumHexes } from '../../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { getUseCurrencyRateCheck } from '../../../selectors';
+import { EtherDenomination } from 'shared/constants/common';
 
 export default function MultilayerFeeMessage({
   transaction,

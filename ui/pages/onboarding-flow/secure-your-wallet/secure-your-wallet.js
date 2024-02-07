@@ -22,10 +22,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   Box,
   Button,
   BUTTON_VARIANT,
@@ -33,6 +29,10 @@ import {
   Text,
 } from '../../../components/component-library';
 import SkipSRPBackup from './skip-srp-backup-popover';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function SecureYourWallet() {
   const history = useHistory();

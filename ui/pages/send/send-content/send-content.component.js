@@ -8,13 +8,13 @@ import {
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
 import SendGasRow from './send-gas-row';
+import { AssetType } from 'shared/constants/transaction';
 
 export default class SendContent extends Component {
   static contextTypes = {

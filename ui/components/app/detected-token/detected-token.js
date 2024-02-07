@@ -15,18 +15,15 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
+import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
+import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
-} from '../../../../shared/constants/metametrics';
-import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
-import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
+} from 'shared/constants/metametrics';
 
 const sortingBasedOnTokenSelection = (tokensDetected) => {
   return (

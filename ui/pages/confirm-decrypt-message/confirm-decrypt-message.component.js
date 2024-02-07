@@ -9,15 +9,15 @@ import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
 import { Icon, IconName } from '../../components/component-library';
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
-import { COPY_OPTIONS } from '../../../shared/constants/copy';
+import { EtherDenomination } from 'shared/constants/common';
+import { SECOND } from 'shared/constants/time';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {

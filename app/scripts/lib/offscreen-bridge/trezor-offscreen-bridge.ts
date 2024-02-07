@@ -15,7 +15,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
   TrezorAction,
-} from '../../../../shared/constants/offscreen-communication';
+} from 'shared/constants/offscreen-communication';
 
 /**
  * This class is used as a custom bridge for the Trezor connection. Every

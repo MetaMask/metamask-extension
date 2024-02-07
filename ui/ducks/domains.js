@@ -12,10 +12,6 @@ import {
 } from '../selectors';
 import { handleSnapRequest } from '../store/actions';
 import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP,
-} from '../../shared/constants/network';
-import {
   CONFUSING_ENS_ERROR,
   ENS_ILLEGAL_CHARACTER,
   ENS_NOT_FOUND_ON_NETWORK,
@@ -31,6 +27,10 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP,
+} from 'shared/constants/network';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';

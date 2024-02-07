@@ -7,11 +7,6 @@ import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 import {
   getCurrentChainId,
@@ -39,15 +34,6 @@ import {
   getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
-import {
-  QUOTES_EXPIRED_ERROR,
-  SWAP_FAILED_ERROR,
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  CONTRACT_DATA_DISABLED_ERROR,
-  OFFLINE_FOR_MAINTENANCE,
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-} from '../../../../shared/constants/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
@@ -66,6 +52,20 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
+import {
+  QUOTES_EXPIRED_ERROR,
+  SWAP_FAILED_ERROR,
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
+  OFFLINE_FOR_MAINTENANCE,
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+} from 'shared/constants/swaps';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function AwaitingSwap({
   swapComplete,

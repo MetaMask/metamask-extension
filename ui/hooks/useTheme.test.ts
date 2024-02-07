@@ -1,6 +1,6 @@
-import { ThemeType } from '../../shared/constants/preferences';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { useTheme } from './useTheme';
+import { ThemeType } from 'shared/constants/preferences';
 
 jest.mock('../selectors', () => ({
   getTheme: jest.fn(),

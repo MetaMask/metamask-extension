@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { getKnownMethodData } from '../selectors';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 import { getTransactionTypeTitle } from '../helpers/utils/transactions.util';
 import { getMethodName } from '../helpers/utils/metrics';
 
 import { useI18nContext } from './useI18nContext';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 export const useTransactionFunctionType = (txData = {}) => {
   const t = useI18nContext();

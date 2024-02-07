@@ -1,6 +1,6 @@
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const watchAsset = {
   methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],

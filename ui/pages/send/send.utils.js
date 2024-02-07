@@ -1,13 +1,13 @@
 import abi from 'ethereumjs-abi';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { TokenStandard } from '../../../shared/constants/transaction';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
   NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE,
 } from './send.constants';
+import { TokenStandard } from 'shared/constants/transaction';
 
 export {
   addGasBuffer,

@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  CUSTOM_GAS_ESTIMATE,
-  GasRecommendations,
-  EditGasModes,
-  PriorityLevels,
-} from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
@@ -18,13 +12,19 @@ import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
 import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 import { useGasEstimates } from './useGasEstimates';
 import { useTransactionFunctions } from './useTransactionFunctions';
+import { EtherDenomination } from 'shared/constants/common';
+import {
+  CUSTOM_GAS_ESTIMATE,
+  GasRecommendations,
+  EditGasModes,
+  PriorityLevels,
+} from 'shared/constants/gas';
 
 /**
  * In EIP_1559_V2 implementation as used by useGasfeeInputContext() the use of this hook is evolved.

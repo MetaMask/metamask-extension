@@ -11,16 +11,6 @@ import {
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { SECOND } from '../../../../shared/constants/time';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-} from '../../../../shared/constants/hardware-wallets';
-import {
   BUTTON_VARIANT,
   BUTTON_SIZES,
   Button,
@@ -30,6 +20,16 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+} from 'shared/constants/hardware-wallets';
+import { SECOND } from 'shared/constants/time';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const U2F_ERROR = 'U2F';
 const LEDGER_ERRORS_CODES = {

@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ButtonLink, IconName } from '../../../components/component-library';
+import { Display, Size } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ButtonLink, IconName } from '../../../components/component-library';
-import { Display, Size } from '../../../helpers/constants/design-system';
+} from 'shared/constants/metametrics';
 
 const InstitutionalHomeFooter = ({ activitySupportDisplayStyle }) => {
   const t = useI18nContext();

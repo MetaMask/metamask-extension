@@ -1,6 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const mmiSetAccountAndNetwork = {
   methodNames: [MESSAGE_TYPE.MMI_SET_ACCOUNT_AND_NETWORK],

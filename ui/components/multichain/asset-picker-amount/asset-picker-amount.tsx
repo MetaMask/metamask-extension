@@ -21,7 +21,6 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 
-import { AssetType } from '../../../../shared/constants/transaction';
 import UserPreferencedCurrencyInput from '../../app/user-preferenced-currency-input/user-preferenced-currency-input.container';
 import UserPreferencedTokenInput from '../../app/user-preferenced-token-input/user-preferenced-token-input.component';
 import {
@@ -37,6 +36,7 @@ import TokenBalance from '../../ui/token-balance';
 import { getSelectedIdentity } from '../../../selectors';
 import MaxClearButton from './max-clear-button';
 import AssetPicker from './asset-picker/asset-picker';
+import { AssetType } from 'shared/constants/transaction';
 
 const renderCurrencyInput = (asset: Asset, amount: Amount) => {
   const dispatch = useDispatch();

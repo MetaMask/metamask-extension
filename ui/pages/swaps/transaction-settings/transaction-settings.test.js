@@ -7,8 +7,8 @@ import {
   fireEvent,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import { Slippage } from '../../../../shared/constants/swaps';
 import TransactionSettings from './transaction-settings';
+import { Slippage } from 'shared/constants/swaps';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');

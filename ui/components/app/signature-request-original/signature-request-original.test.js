@@ -3,8 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
@@ -15,6 +13,8 @@ import {
 } from '../../../store/actions';
 import { shortenAddress } from '../../../helpers/utils/util';
 import SignatureRequestOriginal from '.';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from 'shared/constants/security-provider';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 jest.mock('../../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),

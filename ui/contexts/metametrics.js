@@ -17,10 +17,10 @@ import { captureException, captureMessage } from '@sentry/browser';
 import { omit } from 'lodash';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
-import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
+import { MetaMetricsContextProp } from 'shared/constants/metametrics';
 
 // type imports
 /**

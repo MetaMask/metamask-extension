@@ -7,7 +7,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
   isEIP1559Transaction,
@@ -17,10 +16,20 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import {
+  calcGasTotal,
+  getSwapsTokensReceivedFromTxMeta,
+  TRANSACTION_ENVELOPE_TYPE_NAMES,
+} from '../../../../shared/lib/transactions-controller-utils';
+import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
+import {
+  getSnapAndHardwareInfoForMetrics,
+  type SnapAndHardwareMessenger,
+} from '../snap-keyring/metrics';
+import {
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
-} from '../../../../shared/constants/transaction';
+} from 'shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
@@ -28,20 +37,11 @@ import {
   MetaMetricsEventUiCustomization,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
-} from '../../../../shared/constants/metametrics';
-import { GasRecommendations } from '../../../../shared/constants/gas';
-import {
-  calcGasTotal,
-  getSwapsTokensReceivedFromTxMeta,
-  TRANSACTION_ENVELOPE_TYPE_NAMES,
-} from '../../../../shared/lib/transactions-controller-utils';
+} from 'shared/constants/metametrics';
+import { GasRecommendations } from 'shared/constants/gas';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
-import {
-  getSnapAndHardwareInfoForMetrics,
-  type SnapAndHardwareMessenger,
-} from '../snap-keyring/metrics';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (

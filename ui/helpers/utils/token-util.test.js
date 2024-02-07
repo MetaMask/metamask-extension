@@ -1,7 +1,7 @@
-import { TokenStandard } from '../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { getAssetDetails } from './token-util';
+import { TokenStandard } from 'shared/constants/transaction';
 
 jest.mock('../../../shared/modules/transaction.utils', () => ({
   parseStandardTokenTransactionData: jest.fn(),

@@ -19,10 +19,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -42,6 +38,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();

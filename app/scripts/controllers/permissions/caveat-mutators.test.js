@@ -1,6 +1,6 @@
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { CaveatMutatorFactories } from './caveat-mutators';
+import { CaveatTypes } from 'shared/constants/permissions';
 
 describe('caveat mutators', () => {
   describe('restrictReturnedAccounts', () => {

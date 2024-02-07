@@ -1,14 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import {
-  NETWORK_TO_NAME_MAP,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
-
 import { currentConfirmationSelector, getAllNetworks } from '../../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 import { useI18nContext } from '../useI18nContext';
+import { NETWORK_TO_NAME_MAP, NETWORK_TYPES } from 'shared/constants/network';
 
 type KeyOfNetworkName = keyof typeof NETWORK_TO_NAME_MAP;
 

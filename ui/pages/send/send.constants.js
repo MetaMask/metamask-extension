@@ -1,6 +1,6 @@
-import { MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
+import { MIN_GAS_LIMIT_HEX } from 'shared/constants/gas';
+import { EtherDenomination } from 'shared/constants/common';
 
 const MIN_GAS_PRICE_DEC = '0';
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC, 10).toString(16);

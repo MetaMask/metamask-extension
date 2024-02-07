@@ -28,17 +28,17 @@ import {
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import {
-  MAX_TOKEN_ALLOWANCE_AMOUNT,
-  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
-  DECIMAL_REGEX,
-} from '../../../../shared/constants/tokens';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { estimateGas } from '../../../store/actions';
 import { getCustomTxParamsData } from '../../../pages/confirm-approve/confirm-approve.util';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
+  DECIMAL_REGEX,
+} from 'shared/constants/tokens';
 
 export default function CustomSpendingCap({
   txParams,

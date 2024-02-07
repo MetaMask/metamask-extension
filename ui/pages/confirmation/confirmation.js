@@ -41,15 +41,15 @@ import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-hea
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IF
-import { DAY } from '../../../shared/constants/time';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from 'shared/constants/app';
+///: END:ONLY_INCLUDE_IF
+import { DAY } from 'shared/constants/time';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.

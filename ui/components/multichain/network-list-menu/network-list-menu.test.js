@@ -3,12 +3,12 @@ import React from 'react';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { NetworkListMenu } from '.';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
-import { NetworkListMenu } from '.';
+} from 'shared/constants/network';
 
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();

@@ -1,20 +1,17 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import {
-  EditGasModes,
-  PriorityLevels,
-} from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
+import EditGasItem from './edit-gas-item';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
-import EditGasItem from './edit-gas-item';
+} from 'shared/constants/network';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),

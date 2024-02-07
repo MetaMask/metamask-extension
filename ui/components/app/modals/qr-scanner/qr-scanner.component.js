@@ -10,8 +10,8 @@ import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 import Spinner from '../../../ui/spinner';
 
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
-import { SECOND } from '../../../../../shared/constants/time';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
+import { SECOND } from 'shared/constants/time';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',

@@ -8,7 +8,7 @@ import { getWeiHexFromDecimalValue } from '../../../../shared/modules/conversion
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
+import { EtherDenomination } from 'shared/constants/common';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted

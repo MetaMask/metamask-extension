@@ -2,9 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { DraftTransaction } from '../../../ducks/send';
-import { AssetType } from '../../../../shared/constants/transaction';
 import mockState from '../../../../test/data/mock-state.json';
 import { AssetPickerAmount } from './asset-picker-amount';
+import { AssetType } from 'shared/constants/transaction';
 
 const storybook = {
   title: 'Components/Multichain/AssetPickerAmount',

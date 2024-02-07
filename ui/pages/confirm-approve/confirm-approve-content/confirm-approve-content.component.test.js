@@ -2,9 +2,9 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import ConfirmApproveContent from '.';
+import { TokenStandard } from 'shared/constants/transaction';
+import { BlockaidResultType } from 'shared/constants/security-provider';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({

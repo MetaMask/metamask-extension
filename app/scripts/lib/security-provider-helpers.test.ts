@@ -1,8 +1,8 @@
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   RequestData,
   securityProviderCheck,
 } from './security-provider-helpers';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 describe('securityProviderCheck', () => {
   let fetchSpy: jest.SpyInstance;

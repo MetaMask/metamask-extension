@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -33,6 +32,7 @@ import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
 import RejectTransactions from './reject-transactions';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',

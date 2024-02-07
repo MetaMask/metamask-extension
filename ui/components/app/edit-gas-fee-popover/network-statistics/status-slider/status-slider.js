@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { NetworkCongestionThresholds } from '../../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { NetworkStabilityTooltip } from '../tooltips';
+import { NetworkCongestionThresholds } from 'shared/constants/gas';
 
 const GRADIENT_COLORS = [
   '#037DD6',

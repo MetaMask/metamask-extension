@@ -2,6 +2,11 @@ import { strict as assert } from 'assert';
 import browser from 'webextension-polyfill';
 import sinon from 'sinon';
 import {
+  checkForMultipleVersionsRunning,
+  onMessageReceived,
+} from './detect-multiple-instances';
+import * as util from './lib/util';
+import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
   METAMASK_BETA_CHROME_ID,
@@ -9,12 +14,7 @@ import {
   METAMASK_FLASK_CHROME_ID,
   METAMASK_MMI_PROD_CHROME_ID,
   METAMASK_MMI_BETA_CHROME_ID,
-} from '../../shared/constants/app';
-import {
-  checkForMultipleVersionsRunning,
-  onMessageReceived,
-} from './detect-multiple-instances';
-import * as util from './lib/util';
+} from 'shared/constants/app';
 
 describe('multiple instances running detector', function () {
   const PING_MESSAGE = 'isRunning';

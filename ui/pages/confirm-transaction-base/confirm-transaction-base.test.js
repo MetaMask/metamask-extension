@@ -14,20 +14,20 @@ import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { KeyringType } from '../../../shared/constants/keyring';
+import { domainInitialState } from '../../ducks/domains';
+import ConfirmTransactionBase from './confirm-transaction-base.container';
+import { GasEstimateTypes } from 'shared/constants/gas';
+import { KeyringType } from 'shared/constants/keyring';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../shared/constants/network';
-import { domainInitialState } from '../../ducks/domains';
+} from 'shared/constants/network';
 
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../shared/constants/security-provider';
-import ConfirmTransactionBase from './confirm-transaction-base.container';
+} from 'shared/constants/security-provider';
 
 const middleware = [thunk];
 

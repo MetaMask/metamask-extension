@@ -1,5 +1,5 @@
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import migration66 from './066';
+import { LedgerTransportTypes } from 'shared/constants/hardware-wallets';
 
 describe('migration #66', () => {
   beforeEach(() => {

@@ -1,9 +1,9 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
-import { KeyringType } from '../shared/constants/keyring';
+import { KeyringType } from 'shared/constants/keyring';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../shared/constants/network';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const state = {
   invalidCustomNetwork: {

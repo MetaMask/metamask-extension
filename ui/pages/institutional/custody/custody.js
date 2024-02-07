@@ -47,14 +47,14 @@ import { getMMIConfiguration } from '../../../selectors/institutional/selectors'
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedAddress } from '../../../store/actions';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const GK8_DISPLAY_NAME = 'gk8';
 

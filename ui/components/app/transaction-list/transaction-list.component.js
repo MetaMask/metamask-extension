@@ -12,7 +12,6 @@ import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
 import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
-import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Box, Text } from '../../component-library';
 import {
@@ -20,6 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from 'shared/constants/swaps';
 
 const PAGE_INCREMENT = 10;
 

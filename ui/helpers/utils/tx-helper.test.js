@@ -1,5 +1,5 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import txHelper from './tx-helper';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 describe('txHelper', () => {
   it('always shows the oldest tx first', () => {

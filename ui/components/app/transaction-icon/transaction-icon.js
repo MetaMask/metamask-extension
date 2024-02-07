@@ -2,16 +2,16 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import {
-  TransactionGroupCategory,
-  TransactionGroupStatus,
-} from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
 import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';
 import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
+import {
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+} from 'shared/constants/transaction';
 
 const ICON_MAP = {
   [TransactionGroupCategory.approval]: IconName.Check,

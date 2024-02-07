@@ -12,7 +12,6 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import Chip from '../../../components/ui/chip';
-import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -26,12 +25,13 @@ import {
   Box,
   Text,
 } from '../../../components/component-library';
+import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
+import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
+} from 'shared/constants/metametrics';
+import { BUILT_IN_NETWORKS } from 'shared/constants/network';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);

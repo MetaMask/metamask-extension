@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import {
   getGasEstimateType,
   getIsGasEstimatesLoading,
 } from '../../../../ducks/metamask/metamask';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 export const useCustomTimeEstimate = ({
   gasFeeEstimates,

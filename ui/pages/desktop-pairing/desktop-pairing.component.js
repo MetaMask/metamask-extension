@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { SECOND } from '../../../shared/constants/time';
 import { I18nContext } from '../../contexts/i18n';
 import IconDesktopPairing from '../../components/ui/icon/icon-desktop-pairing';
 import {
@@ -17,6 +16,7 @@ import Box from '../../components/ui/box/box';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Tooltip from '../../components/ui/tooltip';
 import { Button, Text } from '../../components/component-library';
+import { SECOND } from 'shared/constants/time';
 
 export default function DesktopPairingPage({
   generateDesktopOtp,

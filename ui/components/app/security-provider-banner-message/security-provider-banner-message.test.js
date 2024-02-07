@@ -2,8 +2,8 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import SecurityProviderBannerMessage from './security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from 'shared/constants/security-provider';
 
 describe('Security Provider Banner Message', () => {
   const store = configureMockStore()({});

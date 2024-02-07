@@ -5,15 +5,15 @@ import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { SECOND } from '../../../../shared/constants/time';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CustodyLabels from '../../institutional/custody-labels/custody-labels';
 ///: END:ONLY_INCLUDE_IF
 import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
+import { SECOND } from 'shared/constants/time';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 class SelectedAccount extends Component {
   state = {

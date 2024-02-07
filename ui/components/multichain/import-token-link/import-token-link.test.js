@@ -3,8 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { detectNewTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ImportTokenLink } from '.';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const mockPushHistory = jest.fn();
 

@@ -99,17 +99,8 @@ import {
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
-import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
 ///: END:ONLY_INCLUDE_IF
 
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/constants/app';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
@@ -117,7 +108,6 @@ import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
-import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -125,6 +115,16 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 ///: END:ONLY_INCLUDE_IF
 
 import { SendPage } from '../../components/multichain/pages/send';
+import { ThemeType } from 'shared/constants/preferences';
+import { NETWORK_TYPES } from 'shared/constants/network';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+} from 'shared/constants/app';
+import { EXTENSION_ERROR_PAGE_TYPES } from 'shared/constants/desktop';
 
 export default class Routes extends Component {
   static propTypes = {

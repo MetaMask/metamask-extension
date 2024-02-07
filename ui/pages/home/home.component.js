@@ -1,13 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  MetaMetricsContextProp,
-  ///: END:ONLY_INCLUDE_IF
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
 import NftsTab from '../../components/app/nfts-tab';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -40,7 +33,6 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
-import { SECOND } from '../../../shared/constants/time';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -87,6 +79,14 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from './institutional/institutional-home-footer';
+import { SECOND } from 'shared/constants/time';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  MetaMetricsContextProp,
+  ///: END:ONLY_INCLUDE_IF
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
