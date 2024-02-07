@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { getTargetSubjectMetadata } from '../../../../selectors';
@@ -10,9 +10,11 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { Copyable } from '../copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { deleteInterface } from '../../../../store/actions';
 import { useSnapHome } from './useSnapHome';
 
 export const SnapHomeRenderer = ({ snapId }) => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -22,6 +24,10 @@ export const SnapHomeRenderer = ({ snapId }) => {
   const { data, error, loading } = useSnapHome({ snapId });
 
   const interfaceId = !loading && !error && data?.id;
+
+  useEffect(() => {
+    return () => interfaceId && dispatch(deleteInterface(interfaceId));
+  }, []);
 
   return (
     <Box>

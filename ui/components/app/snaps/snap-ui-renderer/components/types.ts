@@ -26,10 +26,10 @@ export type UIComponentParams<T extends Component> = {
   }) => void;
 };
 
-export type UiComponent<T extends Component> = (
+export type UIComponent<T extends Component> = (
   params: UIComponentParams<T>,
 ) => {
   element: string;
   props?: Record<string, unknown>;
-  children?: UiComponent<any> | UiComponent<any>[] | string;
+  children?: UIComponent<any> | UIComponent<any>[] | string;
 };

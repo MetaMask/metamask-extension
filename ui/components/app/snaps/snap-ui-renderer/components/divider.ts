@@ -1,8 +1,8 @@
 import { Divider } from '@metamask/snaps-sdk';
 import { BorderColor } from '../../../../../helpers/constants/design-system';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const divider: UiComponent<Divider> = () => ({
+export const divider: UIComponent<Divider> = () => ({
   element: 'Box',
   props: {
     className: 'snap-ui-renderer__divider',

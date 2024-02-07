@@ -1,7 +1,7 @@
 import { Spinner } from '@metamask/snaps-sdk';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const spinner: UiComponent<Spinner> = () => ({
+export const spinner: UIComponent<Spinner> = () => ({
   element: 'Spinner',
   props: {
     className: 'snap-ui-renderer__spinner',

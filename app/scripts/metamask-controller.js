@@ -1302,8 +1302,8 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.getRestricted({
         name: 'SnapInterfaceController',
         allowedActions: [
-          'PhishingController:maybeUpdateState',
-          'PhishingController:testOrigin',
+          `${this.phishingController.name}:maybeUpdateState`,
+          `${this.phishingController.name}PhishingController:testOrigin`,
         ],
       });
 

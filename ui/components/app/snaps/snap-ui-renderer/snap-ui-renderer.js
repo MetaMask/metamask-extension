@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
 
@@ -15,7 +15,6 @@ import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import {
-  deleteInterface,
   handleSnapRequest,
   updateInterfaceState,
 } from '../../../../store/actions';
@@ -60,11 +59,6 @@ export const SnapUIRenderer = ({
   const [internalState, setInternalState] = useState(
     interfaceData?.interfaceState ?? {},
   );
-
-  // We delete the interface on unmount because it means the UI has been unloaded.
-  useEffect(() => {
-    return () => interfaceId && dispatch(deleteInterface(interfaceId));
-  }, []);
 
   const snapRequestDebounced = debounce(
     (params) =>

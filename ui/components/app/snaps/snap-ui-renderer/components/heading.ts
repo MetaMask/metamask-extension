@@ -4,9 +4,9 @@ import {
   OverflowWrap,
   TypographyVariant,
 } from '../../../../../helpers/constants/design-system';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const heading: UiComponent<Heading> = ({ element }) => ({
+export const heading: UIComponent<Heading> = ({ element }) => ({
   element: 'Typography',
   children: element.value,
   props: {

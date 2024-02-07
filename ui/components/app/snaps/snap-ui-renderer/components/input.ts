@@ -1,8 +1,8 @@
 import { Input } from '@metamask/snaps-sdk';
 import { ChangeEvent } from 'react';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const input: UiComponent<Input> = ({
+export const input: UIComponent<Input> = ({
   element,
   state,
   parentForm,

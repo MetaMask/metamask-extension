@@ -79,6 +79,7 @@ export const SnapInsight = ({
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const hasNoData = !error && !isLoading && !interfaceId;
+
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}

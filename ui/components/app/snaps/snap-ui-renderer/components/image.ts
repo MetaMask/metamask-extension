@@ -1,7 +1,7 @@
 import { Image } from '@metamask/snaps-sdk';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const image: UiComponent<Image> = ({ element }) => ({
+export const image: UIComponent<Image> = ({ element }) => ({
   element: 'SnapUIImage',
   props: {
     value: element.value,

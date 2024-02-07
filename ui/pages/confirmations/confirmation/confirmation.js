@@ -248,6 +248,12 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
   ];
+
+  const SNAP_CUSTOM_UI_DIALOG = [
+    ApprovalType.SnapDialogAlert,
+    ApprovalType.SnapDialogConfirmation,
+    ApprovalType.SnapDialogPrompt,
+  ];
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -258,6 +264,9 @@ export default function ConfirmationPage({
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
+    pendingConfirmation?.type,
+  );
   const isSnapPrompt =
     pendingConfirmation?.type === ApprovalType.SnapDialogPrompt;
   let useSnapHeader = isSnapDialog;
@@ -491,7 +500,7 @@ export default function ConfirmationPage({
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          isSnapDialog ? (
+          isSnapCustomUIDialog ? (
             <Box marginRight={4} marginLeft={4} marginTop={4}>
               <SnapUIRenderer
                 snapId={pendingConfirmation?.origin}

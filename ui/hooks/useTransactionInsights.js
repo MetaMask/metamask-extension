@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { SeverityLevel } from '@metamask/snaps-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -13,6 +13,7 @@ import {
   getSubjectMetadataDeepEqual,
 } from '../selectors';
 import { getSnapName } from '../helpers/utils/util';
+import { deleteInterface } from '../store/actions';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -26,6 +27,7 @@ const isAllowedTransactionTypes = (transactionType) =>
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
+  const dispatch = useDispatch();
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
@@ -58,6 +60,15 @@ const useTransactionInsights = ({ txData }) => {
       setSelectedInsightSnapId(insightSnapIds[0]);
     }
   }, [insightSnapIds, selectedInsightSnapId, setSelectedInsightSnapId]);
+
+  useEffect(() => {
+    return () => {
+      data?.map(
+        ({ response }) =>
+          response?.id && dispatch(deleteInterface(response.id)),
+      );
+    };
+  }, []);
 
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;

@@ -5,9 +5,9 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const panel: UiComponent<Panel> = ({ element, ...params }) => ({
+export const panel: UIComponent<Panel> = ({ element, ...params }) => ({
   element: 'Box',
   children: element.children.map((children) =>
     mapToTemplate({ ...params, element: children }),

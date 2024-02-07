@@ -1,9 +1,9 @@
 import { Form, UserInputEventType } from '@metamask/snaps-sdk';
 import { FormEvent } from 'react';
 import { mapToTemplate } from '../snap-ui-renderer';
-import { UiComponent } from './types';
+import { UIComponent } from './types';
 
-export const form: UiComponent<Form> = ({
+export const form: UIComponent<Form> = ({
   element,
   handleEvent,
   state,
