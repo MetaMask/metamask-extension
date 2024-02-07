@@ -2147,7 +2147,7 @@ export function createCancelTransaction(
         [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
-            // dispatch(displayWarning(err));
+            dispatch(displayWarning(err));
             reject(err);
             return;
           }
