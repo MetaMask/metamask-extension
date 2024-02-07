@@ -32,7 +32,6 @@ describe('State logs', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await createDownloadFolder(downloadsFolder);

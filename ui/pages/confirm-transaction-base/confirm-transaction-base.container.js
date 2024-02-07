@@ -99,6 +99,7 @@ import { showCustodyConfirmLink } from '../../store/institutional/institution-ac
 ///: END:ONLY_INCLUDE_IF
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
+import { subtractHexes } from '../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -190,11 +191,18 @@ const mapStateToProps = (state, ownProps) => {
     checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction(txParams);
 
   const {
-    hexTransactionAmount,
+    hexTransactionAmount: initialHexTransactionAmount,
     hexMaximumTransactionFee,
     hexMinimumTransactionFee,
     gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
+
+  const useMaxValue = state.confirmTransaction.maxValueMode?.[txId] ?? false;
+  const maxValue = subtractHexes(balance, hexMaximumTransactionFee);
+
+  const hexTransactionAmount = useMaxValue
+    ? maxValue
+    : initialHexTransactionAmount;
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) => unapprovedTxs[key].chainId === chainId)
@@ -202,7 +210,7 @@ const mapStateToProps = (state, ownProps) => {
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 
   const insufficientBalance = !isBalanceSufficient({
-    amount,
+    hexTransactionAmount,
     gasTotal: calcGasTotal(gasLimit, gasPrice),
     balance,
     conversionRate,
@@ -210,12 +218,20 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  const fullTxData = getFullTxData(
+  const initialTxData = getFullTxData(
     state,
     txId,
     TransactionStatus.unapproved,
     customTxParamsData,
   );
+
+  const fullTxData = {
+    ...initialTxData,
+    txParams: {
+      ...txData.txParams,
+      value: hexTransactionAmount,
+    },
+  };
 
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
@@ -305,6 +321,8 @@ const mapStateToProps = (state, ownProps) => {
     keyringForAccount: keyring,
     isUsingPaymaster,
     isSigningOrSubmitting,
+    useMaxValue,
+    maxValue,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
