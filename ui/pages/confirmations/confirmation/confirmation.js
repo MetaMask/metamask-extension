@@ -14,6 +14,7 @@ import log from 'loglevel';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
+import { SnapUIRenderer } from '../../components/app/snaps/snap-ui-renderer';
 ///: END:ONLY_INCLUDE_IF
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
