@@ -46,7 +46,7 @@ async function navigateToEditNetwork(driver: Driver) {
   await driver.clickElement(selectors.networkOption);
 }
 describe('Update Network:', function (this: Suite) {
-  it('validate network name is updated', async function () {
+  it('name is updated and validate the ui elements', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -59,7 +59,7 @@ describe('Update Network:', function (this: Suite) {
         await navigateToEditNetwork(driver);
         await editNetworkDetails(driver, 2, 'Update Network');
         await driver.clickElement(selectors.saveButton);
-
+        //Validate the network name is updated
         const networkName = await driver.findElement(
           selectors.updatedNetworkDropDown,
         );
@@ -92,6 +92,7 @@ describe('Update Network:', function (this: Suite) {
         const informationSymbolAppears = await driver.isElementPresent(
           selectors.informationSymbol,
         );
+        //Validate the information symbol appears for chain id
         assert.equal(
           informationSymbolAppears,
           true,
@@ -99,21 +100,10 @@ describe('Update Network:', function (this: Suite) {
         );
 
         await driver.clickElement(selectors.ethereumNetwork);
-        // Validate the Delete button is not visible
-        const deleteButtonVisible = await driver.isElementPresentAndVisible(
-          selectors.deleteButton,
-        );
-        assert.equal(deleteButtonVisible, false, 'Delete button is visible');
-        // Validate the Cancel button is not visible
-        const cancelButtonVisible = await driver.isElementPresentAndVisible(
-          selectors.cancelButton,
-        );
-        assert.equal(cancelButtonVisible, false, 'Cancel button is visible');
-        // Validate the Save button is not visible
-        const saveButtonVisible = await driver.isElementPresentAndVisible(
-          selectors.saveButton,
-        );
-        assert.equal(saveButtonVisible, false, 'Save button is visible');
+        // Validate the Save,Cancel Delete button is not present
+        await driver.assertElementNotPresent(selectors.deleteButton);
+        await driver.assertElementNotPresent(selectors.cancelButton);
+        await driver.assertElementNotPresent(selectors.saveButton);
       },
     );
   });
