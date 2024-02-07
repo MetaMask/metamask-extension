@@ -18,7 +18,7 @@ export default function AccountListItem({
     metadata: { name },
     address,
     balance,
-  } = account || {};
+  } = account;
 
   let showDefaultMismatchWarning = true;
 
