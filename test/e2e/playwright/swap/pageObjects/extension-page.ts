@@ -1,5 +1,5 @@
 import path from 'path';
-import { type Locator, type Page, chromium } from '@playwright/test';
+import { type Page, chromium } from '@playwright/test';
 
 const wait = (n) => new Promise((resolve) => setTimeout(resolve, n));
 
@@ -18,10 +18,10 @@ export class ChromeExtensionPage {
     };
 
     const context = await chromium.launchPersistentContext('', launchOptions);
-    // let the extension load on the second page on the browser
+    // let the extension load on the second tab of the browser
     await wait(2000);
 
     const pages = context.pages();
-    return pages[1]; // return the second page
+    return pages[1]; // return the page object of the second tab
   }
 }
