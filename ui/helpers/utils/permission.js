@@ -134,6 +134,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             >
               {friendlyName}
             </Text>,
+            getSnapNameComponent(targetSubjectMetadata),
           ]),
         };
       }

@@ -93,6 +93,7 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
@@ -206,6 +207,18 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
   return Boolean(keyring?.type?.includes('Hardware'));
+}
+
+/**
+ * Checks if the account supports smart transactions.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
 }
 
 /**
@@ -1088,6 +1101,31 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
   },
 );
 
+export const getMemoizedCurrentChainId = createDeepEqualSelector(
+  getCurrentChainId,
+  (chainId) => chainId,
+);
+
+export const getMemoizedTxId = createDeepEqualSelector(
+  (state) => state.appState.txId,
+  (txId) => txId,
+);
+
+export const getMemoizedUnapprovedMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedMsgs,
+  (unapprovedMsgs) => unapprovedMsgs,
+);
+
+export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedPersonalMsgs,
+  (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
+);
+
+export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedTypedMessages,
+  (unapprovedTypedMessages) => unapprovedTypedMessages,
+);
+
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -1239,6 +1277,7 @@ function getAllowedAnnouncementIds(state) {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: true,
   };
 }
 

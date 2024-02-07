@@ -37,7 +37,7 @@ async function withFixtures(options, testSuite) {
     driverOptions,
     dappOptions,
     title,
-    failOnConsoleError = true,
+    ignoredConsoleErrors = [],
     dappPath = undefined,
     dappPaths,
     testSpecificMock = function () {
@@ -125,8 +125,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(failOnConsoleError);
-      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
 
     let driverProxy;
@@ -160,7 +160,7 @@ async function withFixtures(options, testSuite) {
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
-    if (errorsAndExceptions && failOnConsoleError) {
+    if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
     }
 
@@ -710,6 +710,28 @@ const openActionMenuAndStartSendFlow = async (driver) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
+const sendScreenToConfirmScreen = async (
+  driver,
+  recipientAddress,
+  quantity,
+) => {
+  await openActionMenuAndStartSendFlow(driver);
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+  } else {
+    await driver.clickElement({
+      text: 'Next',
+      tag: 'button',
+      css: '[data-testid="page-container-footer-next"]',
+    });
+  }
+};
+
 const sendTransaction = async (
   driver,
   recipientAddress,
@@ -1011,6 +1033,7 @@ module.exports = {
   multipleGanacheOptions,
   defaultGanacheOptions,
   sendTransaction,
+  sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
