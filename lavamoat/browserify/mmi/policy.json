@@ -1354,24 +1354,11 @@
     "@metamask/ethjs-contract": {
       "packages": {
         "@babel/runtime": true,
-        "@metamask/ethjs-contract>@metamask/ethjs-filter": true,
-        "@metamask/ethjs-contract>@metamask/ethjs-util": true,
+        "@metamask/ethjs>@metamask/ethjs-filter": true,
+        "@metamask/ethjs>@metamask/ethjs-util": true,
         "@metamask/ethjs>ethjs-abi": true,
         "@metamask/ethjs>js-sha3": true,
         "promise-to-callback": true
-      }
-    },
-    "@metamask/ethjs-contract>@metamask/ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      }
-    },
-    "@metamask/ethjs-contract>@metamask/ethjs-util": {
-      "packages": {
-        "@metamask/ethjs>@metamask/ethjs-util>is-hex-prefixed": true,
-        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
-        "browserify>buffer": true
       }
     },
     "@metamask/ethjs-query": {
@@ -1386,17 +1373,10 @@
     },
     "@metamask/ethjs-query>@metamask/ethjs-format": {
       "packages": {
-        "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/ethjs-util": true,
         "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
+        "@metamask/ethjs>@metamask/ethjs-util": true,
         "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
         "@metamask/ethjs>@metamask/number-to-bn": true
-      }
-    },
-    "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/ethjs-util": {
-      "packages": {
-        "@metamask/ethjs>@metamask/ethjs-util>is-hex-prefixed": true,
-        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
-        "browserify>buffer": true
       }
     },
     "@metamask/ethjs-query>@metamask/ethjs-rpc": {
@@ -2333,10 +2313,10 @@
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/transaction-controller>eth-method-registry": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true,
-        "eth-method-registry": true,
         "ethereumjs-util": true,
         "fast-json-patch": true,
         "lodash": true,
@@ -2363,6 +2343,81 @@
     "@metamask/transaction-controller>babel-runtime>regenerator-runtime": {
       "globals": {
         "regeneratorRuntime": "write"
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry": {
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/ethjs>ethjs-abi": true,
+        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
+        "@metamask/ethjs>js-sha3": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-query": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": true,
+        "bn.js": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract": {
+      "packages": {
+        "@metamask/ethjs>ethjs-abi": true,
+        "@metamask/ethjs>js-sha3": true,
+        "@metamask/transaction-controller>babel-runtime": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http": {
+      "packages": {
+        "@metamask/ethjs>@metamask/ethjs-provider-http>xhr2": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-format": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-format": {
+      "packages": {
+        "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
+        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
+        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-rpc": {
+      "packages": {
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": {
+      "packages": {
+        "@metamask/ethjs>@metamask/ethjs-util>is-hex-prefixed": true,
+        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
+        "browserify>buffer": true
       }
     },
     "@metamask/transaction-controller>nonce-tracker": {
@@ -3513,77 +3568,8 @@
     },
     "eth-method-registry": {
       "packages": {
-        "eth-method-registry>@metamask/ethjs": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/ethjs>ethjs-abi": true,
-        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
-        "@metamask/ethjs>js-sha3": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-query": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract": {
-      "packages": {
-        "@metamask/ethjs>ethjs-abi": true,
-        "@metamask/ethjs>js-sha3": true,
-        "@metamask/transaction-controller>babel-runtime": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": true,
-        "promise-to-callback": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http": {
-      "packages": {
-        "@metamask/ethjs>@metamask/ethjs-provider-http>xhr2": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-query": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-format": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-rpc": true,
-        "promise-to-callback": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-format": {
-      "packages": {
-        "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
-        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
-        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
-        "eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-query>@metamask/ethjs-rpc": {
-      "packages": {
-        "promise-to-callback": true
-      }
-    },
-    "eth-method-registry>@metamask/ethjs>@metamask/ethjs-util": {
-      "packages": {
-        "@metamask/ethjs>@metamask/ethjs-util>is-hex-prefixed": true,
-        "@metamask/ethjs>@metamask/ethjs-util>strip-hex-prefix": true,
-        "browserify>buffer": true
+        "@metamask/ethjs-contract": true,
+        "@metamask/ethjs-query": true
       }
     },
     "eth-rpc-errors": {
