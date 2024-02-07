@@ -59,7 +59,8 @@ describe('Update Network:', function (this: Suite) {
         await navigateToEditNetwork(driver);
         await editNetworkDetails(driver, 2, 'Update Network');
         await driver.clickElement(selectors.saveButton);
-        //Validate the network name is updated
+
+        // Validate the network name is updated
         const networkName = await driver.findElement(
           selectors.updatedNetworkDropDown,
         );
@@ -77,7 +78,6 @@ describe('Update Network:', function (this: Suite) {
         const errorMessage = await driver.isElementPresent(
           selectors.errorMessageInvalidUrl,
         );
-
         assert.equal(
           errorMessage,
           true,
@@ -89,10 +89,10 @@ describe('Update Network:', function (this: Suite) {
         const saveButtonEnabled = await saveButton.isEnabled();
         assert.equal(saveButtonEnabled, false, 'Save button is enabled');
 
+        // Validate the information symbol appears for chain id
         const informationSymbolAppears = await driver.isElementPresent(
           selectors.informationSymbol,
         );
-        //Validate the information symbol appears for chain id
         assert.equal(
           informationSymbolAppears,
           true,
@@ -100,6 +100,7 @@ describe('Update Network:', function (this: Suite) {
         );
 
         await driver.clickElement(selectors.ethereumNetwork);
+
         // Validate the Save,Cancel Delete button is not present
         await driver.assertElementNotPresent(selectors.deleteButton);
         await driver.assertElementNotPresent(selectors.cancelButton);
