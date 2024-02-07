@@ -86,6 +86,7 @@ export const AccountDetails = ({ address }) => {
               attemptingExport &&
               (() => {
                 dispatch(hideWarning());
+                setPrivateKey('');
                 setAttemptingExport(false);
               })
             }
