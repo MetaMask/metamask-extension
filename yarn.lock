@@ -5243,20 +5243,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^1.2.0, @metamask/snaps-sdk@npm:^1.3.1, @metamask/snaps-sdk@npm:^1.3.2, @metamask/snaps-sdk@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@metamask/snaps-sdk@npm:1.4.0"
-  dependencies:
-    "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/providers": "npm:^14.0.2"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.3.0"
-    is-svg: "npm:^4.4.0"
-    superstruct: "npm:^1.0.3"
-  checksum: 08c2a2de2166cf97b31122c4ce486d92c9b14a5524c1e59da28f93ae79f9d8b1ecf645fd487e9c5a619a83cd710f83f5ad195bbdcf665858696f94f3f977149c
-  languageName: node
-  linkType: hard
-
 "@metamask/snaps-sdk@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/snaps-sdk@npm:2.0.0"
