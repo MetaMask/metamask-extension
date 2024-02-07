@@ -9,17 +9,10 @@ import {
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
-interface Selector {
-  text?: string;
-  tag?: string;
-}
-const testIdSelector: { [key: string]: string } = {
+const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',
   inputText: 'input[type="text"]',
-};
-
-const selectors: { [key: string]: Selector } = {
   settingsOption: { text: 'Settings', tag: 'div' },
   networkOption: { text: 'Networks', tag: 'div' },
   ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
@@ -37,9 +30,9 @@ async function editNetworkDetails(
   driver: Driver,
   indexOfInputField: number,
   inputValue: string,
-): Promise<void> {
+) {
   const getAllInputElements: WebElement[] = (await driver.findElements(
-    testIdSelector.inputText,
+    selectors.inputText,
   )) as WebElement[];
   const inputTextFieldToEdit: WebElement =
     getAllInputElements[indexOfInputField];
@@ -47,43 +40,12 @@ async function editNetworkDetails(
   await inputTextFieldToEdit.sendKeys(inputValue);
 }
 
-async function navigateToEditNetwork(driver: Driver): Promise<void> {
-  await driver.clickElement(testIdSelector.accountOptionsMenuButton);
+async function navigateToEditNetwork(driver: Driver) {
+  await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
 }
 describe('Update Network:', function (this: Suite) {
-  it('default network should not be edited', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
-        await navigateToEditNetwork(driver);
-        await driver.clickElement(selectors.ethereumNetwork);
-        // Validate the Delete button is not visible
-        const deleteButtonDisabled = await driver.isElementPresentAndVisible(
-          selectors.deleteButton,
-        );
-        assert.equal(deleteButtonDisabled, false, 'Delete button is enabled');
-        // Validate the Cancel button is not visible
-        const cancelButtonDisabled = await driver.isElementPresentAndVisible(
-          selectors.cancelButton,
-        );
-        assert.equal(cancelButtonDisabled, false, 'Cancel button is enabled');
-        // Validate the Save button is not visible
-        const saveButtonDisabled = await driver.isElementPresentAndVisible(
-          selectors.saveButton,
-        );
-        assert.equal(saveButtonDisabled, false, 'Save button is enabled');
-      },
-    );
-  });
-
   it('validate network name is updated', async function () {
     await withFixtures(
       {
@@ -107,20 +69,7 @@ describe('Update Network:', function (this: Suite) {
           'Update Network',
           'Network name is not updated',
         );
-      },
-    );
-  });
 
-  it('error message for invalid rpc url format and information symbol appears', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
-
-      async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
         await navigateToEditNetwork(driver);
         await editNetworkDetails(driver, 3, 'test');
 
@@ -136,18 +85,35 @@ describe('Update Network:', function (this: Suite) {
         );
 
         // Validate the Save button is disabled
-        const saveButtonEnable = await driver.findElement(selectors.saveButton);
-        const saveButtonDisabled = await saveButtonEnable.isEnabled();
-        assert.equal(saveButtonDisabled, false, 'Save button is enabled');
+        const saveButton = await driver.findElement(selectors.saveButton);
+        const saveButtonEnabled = await saveButton.isEnabled();
+        assert.equal(saveButtonEnabled, false, 'Save button is enabled');
 
         const informationSymbolAppears = await driver.isElementPresent(
-          testIdSelector.informationSymbol,
+          selectors.informationSymbol,
         );
         assert.equal(
           informationSymbolAppears,
           true,
           'Information symbol did not appear for chain id',
         );
+
+        await driver.clickElement(selectors.ethereumNetwork);
+        // Validate the Delete button is not visible
+        const deleteButtonVisible = await driver.isElementPresentAndVisible(
+          selectors.deleteButton,
+        );
+        assert.equal(deleteButtonVisible, false, 'Delete button is visible');
+        // Validate the Cancel button is not visible
+        const cancelButtonVisible = await driver.isElementPresentAndVisible(
+          selectors.cancelButton,
+        );
+        assert.equal(cancelButtonVisible, false, 'Cancel button is visible');
+        // Validate the Save button is not visible
+        const saveButtonVisible = await driver.isElementPresentAndVisible(
+          selectors.saveButton,
+        );
+        assert.equal(saveButtonVisible, false, 'Save button is visible');
       },
     );
   });
