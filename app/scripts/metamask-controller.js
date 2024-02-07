@@ -3155,6 +3155,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.showInteractiveReplacementTokenBanner.bind(
           appStateController,
         ),
+      setCustodianDeepLink:
+        appStateController.setCustodianDeepLink.bind(appStateController),
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -4932,7 +4934,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         getIsLocked: () => {
-          return !this.appStateController.isUnlocked;
+          return !this.appStateController.isUnlocked();
         },
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
