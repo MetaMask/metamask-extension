@@ -9,7 +9,6 @@ describe('Add snap account experimental settings', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();

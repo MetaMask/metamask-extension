@@ -18,6 +18,7 @@ import { Text } from '../../../../../components/component-library';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import LoadingIndicator from '../../../ui/loading-indicator';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
@@ -59,8 +60,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  if (!securityAlertResponse) {
+  if (
+    !securityAlertResponse ||
+    Object.keys(securityAlertResponse).length === 0
+  ) {
     return null;
+  } else if (securityAlertResponse.reason === 'loading') {
+    return <LoadingIndicator isLoading />;
   }
 
   const {
@@ -90,6 +96,8 @@ function BlockaidBannerAlert({ txData, ...props }) {
     </Text>
   ) : null;
 
+  const isFailedResultType = resultType === BlockaidResultType.Failed;
+
   const severity =
     resultType === BlockaidResultType.Malicious
       ? Severity.Danger
@@ -97,16 +105,17 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
+  /** Data we pass to Blockaid false reporting portal. As far as I know, there are no documents that exist that specifies these key values */
   const reportUrl = (() => {
     const reportData = {
       blockNumber: block,
       blockaidVersion: BlockaidPackage.version,
       chain: NETWORK_TO_NAME_MAP[chainId],
-      classification: reason,
+      classification: isFailedResultType ? 'error' : reason,
       domain: origin ?? msgParams?.origin ?? txParams?.origin,
       jsonRpcMethod: type,
       jsonRpcParams: JSON.stringify(txParams ?? msgParams),
-      resultType,
+      resultType: isFailedResultType ? BlockaidResultType.Errored : resultType,
       reproduce: JSON.stringify(features),
     };
 
