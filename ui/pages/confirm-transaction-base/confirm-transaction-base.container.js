@@ -98,9 +98,13 @@ import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { ENVIRONMENT_TYPE_NOTIFICATION } from 'shared/constants/app';
+///: END:ONLY_INCLUDE_IF
 import { CUSTOM_GAS_ESTIMATE } from 'shared/constants/gas';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { CHAIN_ID_TO_RPC_URL_MAP } from 'shared/constants/network';
+///: END:ONLY_INCLUDE_IF
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
