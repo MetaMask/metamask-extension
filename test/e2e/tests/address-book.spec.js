@@ -103,8 +103,10 @@ describe('Address Book', function () {
           await driver.clickElement({
             text: 'Test Name 1',
             css: '.address-list-item__label',
-          })
-        } else { await driver.clickElement({ text: 'Test Name 1', tag: 'p' }) }
+          });
+        } else {
+          await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        }
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         const inputUsername = await driver.findElement('#nickname');
