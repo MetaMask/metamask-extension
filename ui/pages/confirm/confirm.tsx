@@ -12,25 +12,10 @@ const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
 
-  const [hasScrolledToBottom, setHasScrolledToBottom] = React.useState(false);
-
-  // TODO: use this to show/hide footer confirm button
-  // const [isConfirmable, setIsConfirmable] = React.useState(false);
-  // useEffect(() => {
-  //   if (isConfirmable || !hasScrolledToBottom) {
-  //     return;
-  //   }
-  //   setIsConfirmable(true);
-  // }, [hasScrolledToBottom]);
-
   return (
     <Page backgroundColor={BackgroundColor.backgroundAlternative}>
       <ConfirmTitle />
-      <ScrollToBottom
-        padding={4}
-        hasScrolledToBottom={hasScrolledToBottom}
-        setHasScrolledToBottom={setHasScrolledToBottom}
-      >
+      <ScrollToBottom padding={4}>
         {/* todo: replace with ConfirmInfo content */}
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel
         suscipit tortor. Curabitur vulputate felis nibh, vel pellentesque erat

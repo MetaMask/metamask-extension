@@ -1,17 +1,35 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import * as ConfirmDucks from '../../../../ducks/confirm/confirm';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
 
+const mockUseScrollRequiredResult = {
+  hasScrolledToBottom: false,
+  isScrollable: false,
+  isScrolledToBottom: false,
+  onScroll: jest.fn(),
+  scrollToBottom: jest.fn(),
+  ref: { current: null },
+};
+
+const mockedUseScrollRequiredResult = jest.mocked(mockUseScrollRequiredResult);
+
+jest.mock('../../../../hooks/useScrollRequired', () => ({
+  useScrollRequired: () => mockedUseScrollRequiredResult,
+}));
+
 describe('ScrollToBottom', () => {
   describe('when content is not scrollable', () => {
     it('renders without button', () => {
-      const { container, getByText } = render(
+      const { container, getByText } = renderWithProvider(
         <ScrollToBottom>
           <div>foo</div>
           <div>bar</div>
         </ScrollToBottom>,
+        configureMockStore([])(),
       );
 
       expect(getByText('foo')).toBeInTheDocument();
@@ -19,54 +37,78 @@ describe('ScrollToBottom', () => {
       expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
     });
 
-    it('sets hasViewedContent to true when passed as a param', () => {
-      const mockSetHasScrolledToBottom = jest.fn();
-
-      render(
-        <ScrollToBottom setHasScrolledToBottom={mockSetHasScrolledToBottom}>
-          foobar
-        </ScrollToBottom>,
+    it('sets isScrollToBottomNeeded to false', () => {
+      const updateSpy = jest.spyOn(ConfirmDucks, 'updateCurrentConfirmation');
+      renderWithProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        configureMockStore([])(),
       );
 
-      expect(mockSetHasScrolledToBottom).toHaveBeenCalledWith(true);
+      expect(updateSpy).toHaveBeenCalledWith({
+        isScrollToBottomNeeded: false,
+      });
     });
   });
 
-  /**
-   * skipping these tests
-   *
-   * although these are important tests, we're unable to test the button because our test suite doesn't
-   * support rendering on a screen. Thus, isScrollable logic doesn't work in the test. Thus, the button
-   * is never rendered in the unit tests. We'll test these in e2e tests.
-   */
-  // describe('when content is scrollable', () => {
-  // it('renders with button if content is scrollable', async () => {
-  //   const { container, getByText } = await render(
-  //     <div style={{ height: '100px', width: '280px' }}>
-  //       <ScrollToBottom>
-  //         <div style={{ height: '100px' }}>foo</div>
-  //         <div style={{ height: '100px' }}>bar</div>
-  //       </ScrollToBottom>
-  //     </div>,
-  //   );
+  describe('when content is scrollable', () => {
+    beforeEach(() => {
+      mockedUseScrollRequiredResult.isScrollable = true;
+    });
 
-  //   expect(getByText('foo')).toBeInTheDocument();
-  //   expect(getByText('bar')).toBeInTheDocument();
-  //   expect(container.querySelector(buttonSelector)).toBeInTheDocument();
-  // });
+    it('renders with button', () => {
+      const { container, getByText } = renderWithProvider(
+        <div>
+          <ScrollToBottom>
+            <div>foo</div>
+            <div>bar</div>
+          </ScrollToBottom>
+        </div>,
+        configureMockStore([])(),
+      );
 
-  //   it('scrolls to bottom and hides button when button is clicked', () => {
-  //     const { container } = render(
-  //       <ScrollToBottom>
-  //         <div>Child 1</div>
-  //         <div>Child 2</div>
-  //       </ScrollToBottom>,
-  //     );
+      expect(getByText('foo')).toBeInTheDocument();
+      expect(getByText('bar')).toBeInTheDocument();
+      expect(container.querySelector(buttonSelector)).toBeInTheDocument();
+    });
 
-  //     const button = container.querySelector(buttonSelector);
-  //     button ? fireEvent.click(button) : expect(false);
+    it('sets isScrollToBottomNeeded to true', () => {
+      const updateSpy = jest.spyOn(ConfirmDucks, 'updateCurrentConfirmation');
+      renderWithProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        configureMockStore([])(),
+      );
 
-  //     expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
-  //   });
-  // });
+      expect(updateSpy).toHaveBeenCalledWith({
+        isScrollToBottomNeeded: true,
+      });
+    });
+
+    describe('when user has scrolled to the bottom', () => {
+      beforeEach(() => {
+        mockedUseScrollRequiredResult.isScrolledToBottom = true;
+      });
+
+      it('hides the button', () => {
+        const { container } = renderWithProvider(
+          <ScrollToBottom>foobar</ScrollToBottom>,
+          configureMockStore([])(),
+        );
+
+        expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
+      });
+
+      it('sets isScrollToBottomNeeded to false', () => {
+        const updateSpy = jest.spyOn(ConfirmDucks, 'updateCurrentConfirmation');
+        const { container } = renderWithProvider(
+          <ScrollToBottom>foobar</ScrollToBottom>,
+          configureMockStore([])(),
+        );
+
+        expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
+        expect(updateSpy).toHaveBeenCalledWith({
+          isScrollToBottomNeeded: true,
+        });
+      });
+    });
+  });
 });

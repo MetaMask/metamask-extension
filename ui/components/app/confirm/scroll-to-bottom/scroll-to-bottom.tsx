@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   Box,
@@ -17,29 +18,18 @@ import {
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import { updateCurrentConfirmation } from '../../../../ducks/confirm/confirm';
 
 interface ContentProps extends StyleUtilityProps {
   /**
    * Elements that go in the page content section
    */
   children: React.ReactNode | React.ReactNode[];
-  /**
-   * Optional prop used to pass useScrollRequired's hasScrolledToBottom state up to the parent
-   */
-  hasScrolledToBottom?: boolean;
-  /**
-   * Optional setter function for hasScrolledToBottom
-   */
-  setHasScrolledToBottom?: Dispatch<SetStateAction<boolean>>;
 }
 
-const ScrollToBottom = ({
-  children,
-  hasScrolledToBottom: hasScrolledToBottomProp,
-  setHasScrolledToBottom: setHasScrolledToBottomProp,
-  ...props
-}: ContentProps) => {
+const ScrollToBottom = ({ children, ...props }: ContentProps) => {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
   const {
     hasScrolledToBottom,
@@ -51,10 +41,12 @@ const ScrollToBottom = ({
   } = useScrollRequired([]);
 
   useEffect(() => {
-    if (hasScrolledToBottom && setHasScrolledToBottomProp) {
-      setHasScrolledToBottomProp(true);
-    }
-  }, [hasScrolledToBottom]);
+    dispatch(
+      updateCurrentConfirmation({
+        isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
+      }),
+    );
+  }, [isScrollable, hasScrolledToBottom]);
 
   return (
     <Box

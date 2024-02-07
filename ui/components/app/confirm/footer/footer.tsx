@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -11,9 +12,12 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../selectors';
 
 const Footer = () => {
   const t = useI18nContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+
   return (
     <Box
       display={Display.Flex}
@@ -34,6 +38,7 @@ const Footer = () => {
         size={ButtonSize.Lg}
         block
         data-testid="confirm-footer-confirm-button"
+        disabled={currentConfirmation?.isScrollToBottomNeeded}
       >
         {t('confirm')}
       </Button>

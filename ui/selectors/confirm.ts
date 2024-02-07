@@ -7,6 +7,7 @@ import { getPendingApprovals } from './approvals';
 type Confirmation = {
   chainId?: string;
   id: string;
+  isScrollToBottomNeeded?: boolean;
   msgParams?: {
     from: string;
   };
