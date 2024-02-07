@@ -51,7 +51,6 @@ const config: PlaywrightTestConfig = {
     {
       name: 'mmi',
       testMatch: '/playwright/mmi/specs/**.spec.ts',
-      testIgnore: '/playwright/mmi/specs/visual.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
