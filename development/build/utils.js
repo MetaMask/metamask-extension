@@ -290,7 +290,7 @@ function getBuildIcon({ buildType }) {
 /**
  * Takes the given JavaScript file at `filePath` and replaces its contents with
  * a script that injects the original file contents into the document in which
- * the file is loaded. Useful for extensions to run scripts synchronously in the
+ * the file is loaded. Useful for MV2 extensions to run scripts synchronously in the
  * "MAIN" world.
  *
  * @param {string} filePath - The path to the file to convert to a self-injecting
