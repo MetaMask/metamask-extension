@@ -294,7 +294,7 @@
     "@metamask/snaps-rpc-methods": "^4.1.0",
     "@metamask/snaps-sdk": "^1.3.2",
     "@metamask/snaps-utils": "^5.1.2",
-    "@metamask/transaction-controller": "^19.0.0",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A19.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-19.0.0-4a98d488b2.patch",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
