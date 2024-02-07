@@ -26,6 +26,11 @@ describe('Onboarding Create Password', () => {
     metamask: {
       identities: {},
       selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+      metaMetricsId: '0x00000000',
     },
   };
 
@@ -390,6 +395,40 @@ describe('Onboarding Create Password', () => {
           ONBOARDING_COMPLETION_ROUTE,
         );
       });
+    });
+  });
+
+  describe('Analytics IFrame', () => {
+    it('should inject iframe when participating in metametrics', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          participateInMetaMetrics: true,
+        },
+      };
+      const mockStore = configureMockStore()(state);
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword />,
+        mockStore,
+      );
+      expect(queryByTestId('create-password-iframe')).toBeInTheDocument();
+    });
+
+    it('should not inject iframe when participating in metametrics', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          participateInMetaMetrics: false,
+        },
+      };
+      const mockStore = configureMockStore()(state);
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword />,
+        mockStore,
+      );
+      expect(queryByTestId('create-password-iframe')).not.toBeInTheDocument();
     });
   });
 });

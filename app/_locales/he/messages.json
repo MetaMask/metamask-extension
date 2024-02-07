@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "העתק כתובת ללוח"
   },
-  "copyPrivateKey": {
-    "message": "זה המפתח הפרטי שלך (נא להקיש כדי להעתיק)"
-  },
   "copyToClipboard": {
     "message": "העתק ללוח"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
   },
-  "deleteNetworkDescription": {
-    "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "שם ENS לא נמצא ברשת הנוכחית. נסה/י לעבור לרשת אתריום הראשית."
-  },
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
-  },
-  "enterPassword": {
-    "message": "יש להזין ססמה"
   },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "הרחב תצוגה"
-  },
-  "exportPrivateKey": {
-    "message": "יצא/י מפתח פרטי"
   },
   "failed": {
     "message": "נכשל"
@@ -621,12 +606,6 @@
   "search": {
     "message": "חפש"
   },
-  "searchResults": {
-    "message": "תוצאות חיפוש"
-  },
-  "searchTokens": {
-    "message": "חיפוש טוקנים"
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -665,9 +644,6 @@
   },
   "showHexDataDescription": {
     "message": "בחר/י בזה כדי להציג את שדה הנתונים ההקסדצימאלים על מסך השליחה"
-  },
-  "showPrivateKeys": {
-    "message": "הצג מפתחות פרטיים"
   },
   "sigRequest": {
     "message": "בקשת חתימה"
@@ -789,9 +765,6 @@
   "tryAgain": {
     "message": "ניסיון חוזר"
   },
-  "typePassword": {
-    "message": "נא להקליד את סיסמת MetaMask שלך"
-  },
   "unapproved": {
     "message": "לא אושר"
   },
@@ -800,12 +773,6 @@
   },
   "unknown": {
     "message": "לא ידוע"
-  },
-  "unknownCameraError": {
-    "message": "אירעה שגיאה במהלך הניסיון לקבל גישה למצלמה שלך. נא לנסות שוב..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "אופס! משהו השתבש...."
   },
   "unknownNetwork": {
     "message": "רשת פרטית לא ידועה"

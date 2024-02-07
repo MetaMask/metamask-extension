@@ -14,6 +14,8 @@ import {
   AVALANCHE,
   OPTIMISM,
   ARBITRUM,
+  ZKSYNC_ERA,
+  LINEA,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -48,7 +50,7 @@ describe('Swaps Util', () => {
     beforeEach(() => {
       nock('https://swap.metaswap.codefi.network')
         .persist()
-        .get('/networks/1/tokens')
+        .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
     });
 
@@ -258,6 +260,14 @@ describe('Swaps Util', () => {
     it('returns "arbitrum" for Arbitrum chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.ARBITRUM)).toBe(ARBITRUM);
     });
+
+    it('returns "zksync" for zkSync Era chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.ZKSYNC_ERA)).toBe(ZKSYNC_ERA);
+    });
+
+    it('returns "linea" for Linea chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.LINEA_MAINNET)).toBe(LINEA);
+    });
   });
 
   describe('getSwapsLivenessForNetwork', () => {
@@ -399,6 +409,12 @@ describe('Swaps Util', () => {
     it('gets swaps value for display', () => {
       expect(formatSwapsValueForDisplay('39.6493201125465000000')).toBe(
         '39.6493201125',
+      );
+    });
+
+    it('gets swaps value for display when the value contains three dots', () => {
+      expect(formatSwapsValueForDisplay('33680099000000000000...')).toBe(
+        '33680099000000000000...',
       );
     });
   });

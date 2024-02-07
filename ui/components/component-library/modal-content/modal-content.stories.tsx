@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
-import Box from '../../ui/box';
+import { Display, FlexWrap } from '../../../helpers/constants/design-system';
 
-import { DISPLAY } from '../../../helpers/constants/design-system';
-
-import { BUTTON_VARIANT, Button, Text, Modal, ModalHeader } from '..';
+import {
+  Box,
+  ButtonVariant,
+  Button,
+  Text,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '..';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
@@ -21,12 +28,14 @@ export default {
     },
   },
   argTypes: {
+    children: { control: 'text' },
     size: {
       control: 'select',
       options: Object.values(ModalContentSize),
     },
+    modalDialogProps: { control: 'object' },
   },
-} as ComponentMeta<typeof ModalContent>;
+} as Meta<typeof ModalContent>;
 
 const LoremIpsum = () => (
   <Text marginBottom={4}>
@@ -41,23 +50,26 @@ const LoremIpsum = () => (
   </Text>
 );
 
-export const DefaultStory: ComponentStory<typeof ModalContent> = (args) => {
+export const DefaultStory: StoryFn<typeof ModalContent> = (args) => {
   const [show, setShow] = useState(false);
   const handleOnClick = () => {
     setShow(!show);
   };
   return (
     <>
-      <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
         Open
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
         <ModalContent {...args}>
-          <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
-          <Text marginBottom={4}>Modal Content</Text>
-          <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
-            Close
-          </Button>
+          <ModalHeader>Modal Header</ModalHeader>
+          <ModalBody>
+            <Text>Modal Content</Text>
+          </ModalBody>
+          <ModalFooter
+            onSubmit={handleOnClick}
+            submitButtonProps={{ children: 'Close' }}
+          />
         </ModalContent>
       </Modal>
     </>
@@ -66,34 +78,34 @@ export const DefaultStory: ComponentStory<typeof ModalContent> = (args) => {
 
 DefaultStory.storyName = 'Default';
 
-export const Children: ComponentStory<typeof ModalContent> = (args) => {
+export const Children: StoryFn<typeof ModalContent> = (args) => {
   const [show, setShow] = useState(false);
   const handleOnClick = () => {
     setShow(!show);
   };
   return (
     <>
-      <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
         Open
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
         <ModalContent {...args}>
           <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
-          <Text marginBottom={4}>
-            The ModalContent with ModalHeader and Text components as children
-          </Text>
-          <Button
-            marginBottom={4}
-            variant={BUTTON_VARIANT.PRIMARY}
-            onClick={handleOnClick}
-          >
-            Close
-          </Button>
-          <LoremIpsum />
-          <LoremIpsum />
-          <LoremIpsum />
-          <LoremIpsum />
-          <LoremIpsum />
+          <ModalBody>
+            <Text marginBottom={4}>
+              The ModalContent with ModalHeader, ModalBody, ModalFooter as
+              children
+            </Text>
+            <LoremIpsum />
+            <LoremIpsum />
+            <LoremIpsum />
+            <LoremIpsum />
+            <LoremIpsum />
+          </ModalBody>
+          <ModalFooter
+            onSubmit={handleOnClick}
+            submitButtonProps={{ children: 'Close' }}
+          />
         </ModalContent>
       </Modal>
     </>
@@ -102,66 +114,78 @@ export const Children: ComponentStory<typeof ModalContent> = (args) => {
 
 enum ModalContentSizeStoryOption {
   Sm = 'sm',
+  Md = 'md',
+  Lg = 'lg',
   ClassName = 'className',
 }
 
-export const Size: ComponentStory<typeof ModalContent> = (args) => {
-  const [show, setShow] = useState({
-    sm: false,
-    className: false,
-  });
+export const Size: StoryFn<typeof ModalContent> = (args) => {
+  const [currentSize, setCurrentSize] =
+    useState<ModalContentSizeStoryOption | null>(null);
+
   const handleOnClick = (size: ModalContentSizeStoryOption) => {
-    setShow({ ...show, [size]: !show[size] });
+    setCurrentSize(currentSize === size ? null : size);
+  };
+
+  const getSize = (size: ModalContentSizeStoryOption) => {
+    switch (size) {
+      case ModalContentSizeStoryOption.Sm:
+        return ModalContentSize.Sm;
+      case ModalContentSizeStoryOption.Md:
+        return ModalContentSize.Md;
+      case ModalContentSizeStoryOption.Lg:
+        return ModalContentSize.Lg;
+      default:
+        return ModalContentSize.Sm;
+    }
   };
 
   return (
     <>
-      <Box display={DISPLAY.FLEX} gap={4}>
-        <Button
-          variant={BUTTON_VARIANT.SECONDARY}
-          onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
-        >
-          Show sm size
-        </Button>
-        <Button
-          variant={BUTTON_VARIANT.SECONDARY}
-          onClick={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
-        >
-          Show className
-        </Button>
-      </Box>
-
-      <Modal
-        isOpen={show.sm}
-        onClose={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
-      >
-        <ModalContent {...args}>
-          <Text marginBottom={4}>
-            ModalContentSize.Sm default and only size 360px max-width
-          </Text>
-          <Button onClick={() => setShow({ ...show, sm: false })}>Close</Button>
-        </ModalContent>
-      </Modal>
-
-      <Modal
-        isOpen={show.className}
-        onClose={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
-      >
-        <ModalContent
-          {...args}
-          modalDialogProps={{
-            style: { maxWidth: 800 },
-          }}
-        >
-          <Text marginBottom={4}>
-            Using modalDialogProps and adding a className setting a max width
-            (max-width: 800px)
-          </Text>
-          <Button onClick={() => setShow({ ...show, className: false })}>
-            Close
+      <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={4}>
+        {Object.values(ModalContentSizeStoryOption).map((size) => (
+          <Button
+            key={size}
+            variant={ButtonVariant.Secondary}
+            onClick={() => handleOnClick(size)}
+          >
+            {`Show ${size} size`}
           </Button>
-        </ModalContent>
-      </Modal>
+        ))}
+      </Box>
+      {currentSize && (
+        <Modal isOpen={true} onClose={() => setCurrentSize(null)}>
+          <ModalContent
+            {...args}
+            size={getSize(currentSize)}
+            modalDialogProps={
+              currentSize === ModalContentSizeStoryOption.ClassName
+                ? { className: 'max-width-800' }
+                : {}
+            }
+          >
+            <ModalHeader marginBottom={4} onClose={() => setCurrentSize(null)}>
+              {`ModalContent size: ${currentSize}`}
+            </ModalHeader>
+            <ModalBody>
+              <Text marginBottom={4}>
+                {currentSize === ModalContentSizeStoryOption.ClassName ? (
+                  <>
+                    This ModalContent has size set using modalDialogProps and
+                    adding a className setting a max width (max-width: 800px){' '}
+                  </>
+                ) : (
+                  <>This ModalContent is using size: {currentSize}</>
+                )}
+              </Text>
+            </ModalBody>
+            <ModalFooter
+              onSubmit={() => setCurrentSize(null)}
+              submitButtonProps={{ children: 'Close' }}
+            />
+          </ModalContent>
+        </Modal>
+      )}
     </>
   );
 };

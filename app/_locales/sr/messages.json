@@ -172,9 +172,6 @@
   "copyAddress": {
     "message": "Kopirajte adresu u ostavu"
   },
-  "copyPrivateKey": {
-    "message": "Ovo je vaš privatni ključ (kliknite kako biste ga kopirali)"
-  },
   "copyToClipboard": {
     "message": "Копирај у меморију"
   },
@@ -211,9 +208,6 @@
   "deleteNetwork": {
     "message": "Da li želite da obrišete mrežu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Da li ste sigurni da želite da izbrišete ovu mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -235,14 +229,8 @@
   "editContact": {
     "message": "Izmeni kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS ime nije nađeno na trenutnoj mreži. Probajte da se prebacite na glavnu Ethereum mrežu."
-  },
   "ensRegistrationError": {
     "message": "Greška u registraciji ENS imena."
-  },
-  "enterPassword": {
-    "message": "Unesite lozinku"
   },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
@@ -255,9 +243,6 @@
   },
   "expandView": {
     "message": "Proširite prikaz"
-  },
-  "exportPrivateKey": {
-    "message": "Izvezite privatni ključ"
   },
   "failed": {
     "message": "Neuspešno"
@@ -615,12 +600,6 @@
   "search": {
     "message": "Претражи"
   },
-  "searchResults": {
-    "message": "Rezultati pretrage"
-  },
-  "searchTokens": {
-    "message": "Pretražite tokene"
-  },
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
   },
@@ -659,9 +638,6 @@
   },
   "showHexDataDescription": {
     "message": "Izaberite ovo da bi se pokazalo polje sa hex podacima na „Pošalji” ekranu "
-  },
-  "showPrivateKeys": {
-    "message": "Prikažite privatne ključeve"
   },
   "sigRequest": {
     "message": "Zahtev za potpisom"
@@ -780,9 +756,6 @@
   "tryAgain": {
     "message": "Пробај поново"
   },
-  "typePassword": {
-    "message": "Ukucajte svoju MetaMask šifru"
-  },
   "unapproved": {
     "message": "Neodobren"
   },
@@ -791,12 +764,6 @@
   },
   "unknown": {
     "message": "Непознато"
-  },
-  "unknownCameraError": {
-    "message": "Došlo je do greške prilikom pristupanja vašoj kameri. Pokušajte ponovo..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Nešto nije u redu..."
   },
   "unknownNetwork": {
     "message": "Nepoznata privatna mreža"

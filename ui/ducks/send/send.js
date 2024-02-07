@@ -4,12 +4,17 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  TransactionEnvelopeType,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   decimalToHex,
   getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
+  FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -17,11 +22,13 @@ import {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
+  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
 } from '../../pages/send/send.constants';
 
 import {
   isBalanceSufficient,
+  isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
 } from '../../pages/send/send.utils';
 import {
@@ -38,7 +45,9 @@ import {
   getIsMultiLayerFeeNetwork,
   getEnsResolutionByAddress,
   getSelectedAccount,
-  getSelectedAddress,
+  getSelectedInternalAccount,
+  getSelectedInternalAccountWithBalance,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -80,7 +89,6 @@ import {
   getGasEstimateType,
   getProviderConfig,
   getTokens,
-  getUnapprovedTxs,
 } from '../metamask/metamask';
 
 import { resetDomainResolution } from '../domains';
@@ -95,8 +103,6 @@ import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fe
 import {
   AssetType,
   TokenStandard,
-  TransactionEnvelopeType,
-  TransactionType,
 } from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -499,11 +505,12 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const { send, metamask } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
-    const unapprovedTxs = getUnapprovedTxs(state);
+    const unapprovedTxs = getUnapprovedTransactions(state);
     const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+    const selectedAccount = getSelectedInternalAccountWithBalance(state);
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
@@ -531,7 +538,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress: metamask.selectedAddress,
+        selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -667,7 +674,8 @@ export const initializeSendState = createAsyncThunk(
         blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress:
           draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address,
+          sendState.selectedAccount.address ??
+          account.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -677,6 +685,7 @@ export const initializeSendState = createAsyncThunk(
       });
       gasLimit = estimatedGasLimit || gasLimit;
     }
+
     // We have to keep the gas slice in sync with the send slice state
     // so that it'll be initialized correctly if the gas modal is opened.
     await thunkApi.dispatch(setCustomGasLimit(gasLimit));
@@ -827,6 +836,7 @@ const slice = createSlice({
     calculateGasTotal: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
       // otherwise use gasPrice
       if (
@@ -964,6 +974,7 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+        slice.caseReducers.updateUserInputHexData(state, { payload: '' });
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
@@ -1283,6 +1294,29 @@ const slice = createSlice({
             decimals: draftTransaction.asset.details.decimals,
           }):
           draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
+          break;
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
+        // than the amount of token the user is attempting to send.
+        case draftTransaction.asset.type === AssetType.NFT &&
+          draftTransaction.asset.details.standard === TokenStandard.ERC1155 &&
+          !isERC1155BalanceSufficient({
+            tokenBalance: draftTransaction.asset.details.balance ?? '0x0',
+            amount: draftTransaction.amount.value,
+          }):
+          draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
+          break;
+        // if the amount of tokens is negative or equal to zero, set error to NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
+        case amountValue.lessThanOrEqualTo() &&
+          draftTransaction.asset.type === AssetType.NFT &&
+          draftTransaction.asset.details.standard === TokenStandard.ERC1155:
+          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
+          break;
+
+        // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
+        case amountValue.isFloat() &&
+          draftTransaction.asset.type === AssetType.NFT &&
+          draftTransaction.asset.details.standard === TokenStandard.ERC1155:
+          draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
           break;
         // if the amount is negative, set error to NEGATIVE_ETH_ERROR
         // TODO: change this to NEGATIVE_ERROR and remove the currency bias.
@@ -1636,6 +1670,19 @@ const slice = createSlice({
             if (draftTransaction?.asset.type === AssetType.native) {
               draftTransaction.asset.balance = action.payload.account.balance;
             }
+
+            // If selected account was changed and selected asset is a token then
+            // reset asset to native asset
+            if (draftTransaction?.asset.type === AssetType.token) {
+              draftTransaction.asset.type =
+                draftTransactionInitialState.asset.type;
+              draftTransaction.asset.error =
+                draftTransactionInitialState.asset.error;
+              draftTransaction.asset.details =
+                draftTransactionInitialState.asset.details;
+              draftTransaction.asset.balance = action.payload.account.balance;
+            }
+
             slice.caseReducers.validateAmountField(state);
             slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
@@ -1731,7 +1778,7 @@ export function editExistingTransaction(assetType, transactionId) {
   return async (dispatch, getState) => {
     await dispatch(actions.clearPreviousDrafts());
     const state = getState();
-    const unapprovedTransactions = getUnapprovedTxs(state);
+    const unapprovedTransactions = getUnapprovedTransactions(state);
     const transaction = unapprovedTransactions[transactionId];
     const account = getTargetAccount(state, transaction.txParams.from);
 
@@ -1908,7 +1955,7 @@ export function updateRecipientUserInput(userInput) {
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
@@ -2030,10 +2077,10 @@ export function updateSendAsset(
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
-      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
 
       await dispatch(
@@ -2078,6 +2125,7 @@ export function updateSendAsset(
           providedDetails.tokenId,
         )),
       };
+
       await dispatch(hideLoadingIndication());
 
       const asset = {
@@ -2096,11 +2144,6 @@ export function updateSendAsset(
             `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
           ),
         );
-      } else if (
-        details.standard === TokenStandard.ERC1155 &&
-        type === AssetType.NFT
-      ) {
-        throw new Error('Sends of ERC1155 tokens are not currently supported');
       } else if (
         details.standard === TokenStandard.ERC1155 ||
         details.standard === TokenStandard.ERC721
@@ -2274,7 +2317,7 @@ export function signTransaction() {
       // We first must grab the previous transaction object from state and then
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
-      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = cloneDeep(unapprovedTxs[draftTransaction.id]);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
@@ -2320,10 +2363,17 @@ export function signTransaction() {
           : TransactionType.simpleSend;
 
       if (draftTransaction.asset.type !== AssetType.native) {
-        transactionType =
-          draftTransaction.asset.type === AssetType.NFT
-            ? TransactionType.tokenMethodTransferFrom
-            : TransactionType.tokenMethodTransfer;
+        if (draftTransaction.asset.type === AssetType.NFT) {
+          if (
+            draftTransaction.asset.details.standard === TokenStandard.ERC721
+          ) {
+            transactionType = TransactionType.tokenMethodTransferFrom;
+          } else {
+            transactionType = TransactionType.tokenMethodSafeTransferFrom;
+          }
+        } else {
+          transactionType = TransactionType.tokenMethodTransfer;
+        }
       }
       await dispatch(
         addHistoryEntry(

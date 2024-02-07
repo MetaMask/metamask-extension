@@ -13,7 +13,6 @@ import {
   OverflowWrap,
   FlexDirection,
   Display,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,7 +25,7 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getIpfsGateway,
-  getSelectedIdentity,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getNftContracts } from '../../../ducks/metamask/metamask';
@@ -67,7 +66,6 @@ export default function NftDetails({ nft }) {
     standard,
     isCurrentlyOwned,
     lastSale,
-    imageThumbnail,
   } = nft;
   const t = useI18nContext();
   const history = useHistory();
@@ -82,12 +80,14 @@ export default function NftDetails({ nft }) {
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
     isEqualCaseInsensitive(contractAddress, address),
   )?.name;
-  const selectedAccountName = useSelector(
-    (state) => getSelectedIdentity(state).name,
-  );
+  const {
+    metadata: { name: selectedAccountName },
+  } = useSelector(getSelectedInternalAccount);
   const nftImageAlt = getNftImageAlt(nft);
+  const nftSrcUrl = imageOriginal ?? image;
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
-  const isDataURI = nftImageURL.startsWith('data:');
+  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+  const isImageHosted = image?.startsWith('https:');
 
   const formattedTimestamp = formatDate(
     new Date(lastSale?.event_timestamp).getTime(),
@@ -124,7 +124,8 @@ export default function NftDetails({ nft }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== TokenStandard.ERC721;
+  const sendDisabled =
+    standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
@@ -142,11 +143,7 @@ export default function NftDetails({ nft }) {
       return <div style={{ height: '30px' }} />;
     }
     return (
-      <Box
-        display={Display.Flex}
-        width={inPopUp ? BlockSize.Full : BlockSize.Half}
-        margin={inPopUp ? [4, 0] : null}
-      >
+      <Box display={Display.Flex} margin={inPopUp ? [4, 0] : null}>
         <Button
           type="primary"
           onClick={onSend}
@@ -188,17 +185,21 @@ export default function NftDetails({ nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={image ? nftImageURL : ''}
+              nftImageURL={nftImageURL}
+              src={isImageHosted ? image : nftImageURL}
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
+              isIpfsURL={isIpfsURL}
+              clickable
             />
           </Box>
           <Box
             flexDirection={FlexDirection.Column}
             className="nft-details__info"
+            marginTop={4}
             justifyContent={JustifyContent.spaceBetween}
           >
             <div>
@@ -306,72 +307,6 @@ export default function NftDetails({ nft }) {
                 </Box>
               </Box>
             </>
-          ) : null}
-          <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodySmBold}
-              as="h6"
-              marginBottom={4}
-              marginRight={2}
-              className="nft-details__link-title"
-            >
-              {t('source')}
-            </Text>
-            <Text
-              variant={TextVariant.bodySm}
-              as="h6"
-              marginBottom={4}
-              className="nft-details__image-source"
-              color={
-                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
-              }
-            >
-              {isDataURI ? (
-                <>{nftImageURL}</>
-              ) : (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={nftImageURL}
-                  title={nftImageURL}
-                >
-                  {nftImageURL}
-                </a>
-              )}
-            </Text>
-          </Box>
-          {imageThumbnail ? (
-            <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.bodySmBold}
-                as="h6"
-                marginBottom={4}
-                marginRight={2}
-                className="nft-details__link-title"
-              >
-                {t('link')}
-              </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                marginBottom={4}
-                className="nft-details__image-source"
-                color={
-                  isDataURI ? TextColor.textDefault : TextColor.primaryDefault
-                }
-              >
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={nftImageURL}
-                  title={nftImageURL}
-                >
-                  {imageThumbnail}
-                </a>
-              </Text>
-            </Box>
           ) : null}
           <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
             <Text

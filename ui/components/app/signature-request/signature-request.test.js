@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
@@ -14,11 +16,13 @@ import {
   conversionRateSelector,
   getCurrentCurrency,
   getMemoizedAddressBook,
-  getMemoizedMetaMaskIdentities,
   getPreferences,
   getSelectedAccount,
   getTotalUnapprovedMessagesCount,
+  getInternalAccounts,
   unconfirmedTransactionsHashSelector,
+  getAccountType,
+  getMemoizedMetaMaskInternalAccounts,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
 
@@ -50,9 +54,31 @@ const mockStore = {
       },
     },
     selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'John Doe',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     nativeCurrency: 'ETH',
     currentCurrency: 'usd',
-    conversionRate: null,
+    currencyRates: {
+      ETH: {
+        conversionRate: null,
+      },
+    },
     unapprovedTypedMessagesCount: 2,
   },
 };
@@ -66,6 +92,16 @@ jest.mock('react-redux', () => {
   };
 });
 
+const mockCustodySignFn = jest.fn();
+
+jest.mock('../../../hooks/useMMICustodySignMessage', () => ({
+  useMMICustodySignMessage: () => ({
+    custodySignFn: mockCustodySignFn,
+  }),
+}));
+
+jest.mock('@metamask-institutional/extension');
+
 const generateUseSelectorRouter = (opts) => (selector) => {
   switch (selector) {
     case getProviderConfig:
@@ -73,21 +109,27 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case getCurrentCurrency:
       return opts.metamask.currentCurrency;
     case getNativeCurrency:
-      return opts.metamask.nativeCurrency;
+      return opts.metamask.providerConfig.ticker;
     case getTotalUnapprovedMessagesCount:
       return opts.metamask.unapprovedTypedMessagesCount;
     case getPreferences:
       return opts.metamask.preferences;
     case conversionRateSelector:
-      return opts.metamask.conversionRate;
+      return opts.metamask.currencyRates[opts.metamask.providerConfig.ticker]
+        ?.conversionRate;
     case getSelectedAccount:
       return opts.metamask.accounts[opts.metamask.selectedAddress];
+    case getInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
+    case getMemoizedMetaMaskInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedAddressBook:
       return [];
     case accountsWithSendEtherInfoSelector:
       return Object.values(opts.metamask.accounts);
+    case getAccountType:
+      return 'custody';
     case unconfirmedTransactionsHashSelector:
-    case getMemoizedMetaMaskIdentities:
       return {};
     default:
       return undefined;
@@ -155,7 +197,13 @@ describe('Signature Request Component', () => {
           ...mockStore,
           metamask: {
             ...mockStore.metamask,
-            conversionRate: 231.06,
+            currencyRates: {
+              ...mockStore.metamask.currencyRates,
+              ETH: {
+                ...(mockStore.metamask.currencyRates.ETH || {}),
+                conversionRate: 231.06,
+              },
+            },
           },
         }),
       );
@@ -425,6 +473,42 @@ describe('Signature Request Component', () => {
                 balance: '0x0',
                 name: 'Account 1',
               },
+              '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+                address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                balance: '0x0',
+                name: 'Account 2',
+              },
+            },
+            internalAccounts: {
+              accounts: {
+                'b7e813d6-e31c-4bad-8615-8d4eff9f44f1': {
+                  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  id: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
+                  metadata: {
+                    name: 'Account 1',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Account 2',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
             },
           },
         }),
@@ -446,6 +530,94 @@ describe('Signature Request Component', () => {
       expect(
         container.querySelector('.request-signature__mismatch-info'),
       ).toBeInTheDocument();
+    });
+
+    it('should display security alert if present', () => {
+      const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { getByText } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          conversionRate={null}
+          txData={{
+            msgParams,
+            securityAlertResponse: {
+              resultType: 'Malicious',
+              reason: 'blur_farming',
+              description:
+                'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+              args: {
+                contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+                operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+              },
+            },
+          }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(getByText('This is a deceptive request')).toBeInTheDocument();
+    });
+
+    it('should click onSign with custodyId as a accountType and call custodySignFn', () => {
+      const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { getByTestId } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+        />,
+        store,
+      );
+
+      const rejectRequestsLink = getByTestId('page-container-footer-next');
+      fireEvent.click(rejectRequestsLink);
+      expect(mockCustodySignFn).toHaveBeenCalledWith({ msgParams });
+    });
+
+    it('should call showCustodianDeepLink with correct parameters when txData.custodyId is truthy', () => {
+      const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+            custodyId: 'custodyId',
+          }}
+        />,
+        store,
+      );
+
+      expect(showCustodianDeepLink).toHaveBeenCalledWith({
+        dispatch: expect.any(Function),
+        mmiActions: expect.any(Object),
+        txId: undefined,
+        custodyId: 'custodyId',
+        fromAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        isSignature: true,
+        closeNotification: false,
+        onDeepLinkFetched: expect.any(Function),
+        onDeepLinkShown: expect.any(Function),
+        showCustodyConfirmLink: expect.any(Function),
+      });
     });
   });
 });

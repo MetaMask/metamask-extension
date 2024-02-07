@@ -21,6 +21,7 @@ describe('watchAssetHandler', () => {
         type: ERC721,
       },
       origin: 'testOrigin',
+      networkClientId: 'networkClientId1',
     };
 
     const res = {
@@ -31,11 +32,12 @@ describe('watchAssetHandler', () => {
       handleWatchAssetRequest: mockHandleWatchAssetRequest,
     });
 
-    expect(mockHandleWatchAssetRequest).toHaveBeenCalledWith(
-      req.params.options,
-      req.params.type,
-      req.origin,
-    );
+    expect(mockHandleWatchAssetRequest).toHaveBeenCalledWith({
+      asset: req.params.options,
+      type: req.params.type,
+      origin: req.origin,
+      networkClientId: req.networkClientId,
+    });
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalledWith();
   });
@@ -51,6 +53,7 @@ describe('watchAssetHandler', () => {
         type: ERC20,
       },
       origin: 'testOrigin',
+      networkClientId: 'networkClientId1',
     };
 
     const res = {
@@ -61,11 +64,12 @@ describe('watchAssetHandler', () => {
       handleWatchAssetRequest: mockHandleWatchAssetRequest,
     });
 
-    expect(mockHandleWatchAssetRequest).toHaveBeenCalledWith(
-      req.params.options,
-      req.params.type,
-      req.origin,
-    );
+    expect(mockHandleWatchAssetRequest).toHaveBeenCalledWith({
+      asset: req.params.options,
+      type: req.params.type,
+      origin: req.origin,
+      networkClientId: req.networkClientId,
+    });
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalledWith();
   });

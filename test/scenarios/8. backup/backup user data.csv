@@ -1,0 +1,13 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Select Expand view in the wallet menu.,,"A new tab opens.
+The expanded extension view is shown.",
+4,Proceed to open the Accounts options menu.,,The accounts menu popover is shown.,
+5,Proceed to General in the Settings menu.,,The General settings are displayed.,
+6,Change the Theme option.,e.g. Dark.,The extension background is Dark. ,
+7,Proceed to Advanced in the Settings menu.,,The Advanced settings are displayed.,
+8,Proceed to Backup your data.,,"Your user data is saved to disk.
+The data payload is valid JSON and the Preferences object contains the Theme property with the value Dark.",

@@ -24,7 +24,6 @@ const DetectedTokenAggregators = ({ aggregators }) => {
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
             <Text
-              variant={TextVariant.bodySm}
               as="h6"
               fontWeight={FontWeight.Normal}
               key="detected-token-aggrgators-with-more"
@@ -42,7 +41,6 @@ const DetectedTokenAggregators = ({ aggregators }) => {
             </Text>
           ) : (
             <Text
-              variant={TextVariant.bodySm}
               as="h6"
               fontWeight={FontWeight.Normal}
               key="detected-token-aggrgators-without-more"

@@ -1,3 +1,5 @@
+import { ButtonSize, ButtonVariant } from '../../component-library';
+
 export enum QuizStage {
   introduction = 'introduction',
   questionOne = 'question_one',
@@ -31,8 +33,8 @@ export interface IQuizInformationProps {
   buttons: {
     onClick: () => void;
     label: string;
-    variant: string;
-    size?: string;
+    variant: ButtonVariant;
+    size?: ButtonSize;
     'data-testid'?: string;
   }[];
 }

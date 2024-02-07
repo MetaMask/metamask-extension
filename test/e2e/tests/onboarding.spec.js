@@ -9,22 +9,23 @@ const {
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
-  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
+  defaultGanacheOptions,
+  WALLET_PASSWORD,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('MetaMask onboarding', function () {
-  const testPassword = 'correct horse battery staple';
+describe('MetaMask onboarding @no-mmi', function () {
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
   const wrongTestPassword = 'test test test test';
 
-  const ganacheOptions = {
+  const ganacheOptions2 = {
     accounts: [
       {
         secretKey:
           '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(25000000000000000000),
+        balance: convertToHexValue(10000000000000000000),
       },
     ],
   };
@@ -33,14 +34,13 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
 
-        await completeCreateNewWalletOnboardingFlow(driver, testPassword);
+        await completeCreateNewWalletOnboardingFlow(driver, WALLET_PASSWORD);
 
         const homePage = await driver.findElement('.home__main-view');
         const homePageDisplayed = await homePage.isDisplayed();
@@ -54,9 +54,8 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -64,7 +63,7 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         const homePage = await driver.findElement('.home__main-view');
@@ -79,9 +78,8 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -101,9 +99,8 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -116,12 +113,11 @@ describe('MetaMask onboarding', function () {
 
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        const dropdowns = await driver.findElements('select');
-        const dropdownElement = dropdowns[1];
-        await dropdownElement.click();
-        const options = await dropdownElement.findElements(
-          By.tagName('option'),
+        const dropdownElement = await driver.findElement(
+          '.import-srp__number-of-words-dropdown',
         );
+        await dropdownElement.click();
+        const options = await dropdownElement.findElements(By.css('option'));
 
         const iterations = options.length;
 
@@ -141,9 +137,8 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -155,18 +150,21 @@ describe('MetaMask onboarding', function () {
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
         // Fill in confirm password field with incorrect password
-        await driver.fill('[data-testid="create-password-new"]', testPassword);
+        await driver.fill(
+          '[data-testid="create-password-new"]',
+          WALLET_PASSWORD,
+        );
         await driver.fill(
           '[data-testid="create-password-confirm"]',
           wrongTestPassword,
         );
 
         // Check that the error message is displayed for the password fields
-        const passwordErrorIsDisplayed = await driver.isElementPresent({
-          text: "Passwords don't match",
-          css: 'h6',
-        });
-        assert.equal(passwordErrorIsDisplayed, true);
+        await driver.isElementPresent(
+          { text: "Passwords don't match", tag: 'h6' },
+          true,
+        );
+
         // Check that the "Confirm Password" button is disabled
         const confirmPasswordButton = await driver.findElement(
           '[data-testid="create-password-wallet"]',
@@ -180,14 +178,17 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
 
-        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
         // Verify site
         assert.equal(
           await driver.isElementPresent({
@@ -204,9 +205,8 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -218,10 +218,13 @@ describe('MetaMask onboarding', function () {
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
         // Fill in confirm password field with correct password
-        await driver.fill('[data-testid="create-password-new"]', testPassword);
+        await driver.fill(
+          '[data-testid="create-password-new"]',
+          WALLET_PASSWORD,
+        );
         await driver.fill(
           '[data-testid="create-password-confirm"]',
-          testPassword,
+          WALLET_PASSWORD,
         );
         await driver.clickElement('[data-testid="create-password-terms"]');
         await driver.clickElement('[data-testid="create-password-wallet"]');
@@ -238,17 +241,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  const ganacheOptions2 = {
-    accounts: [
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(10000000000000000000),
-      },
-    ],
-  };
-
-  it(`User can add custom network during onboarding`, async function () {
+  it('User can add custom network during onboarding', async function () {
     const networkName = 'Localhost 8546';
     const networkUrl = 'http://127.0.0.1:8546';
     const currencySymbol = 'ETH';
@@ -258,15 +251,19 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: {
-          ...ganacheOptions,
+          ...defaultGanacheOptions,
           concurrent: { port, chainId, ganacheOptions2 },
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver, secondaryGanacheServer }) => {
         await driver.navigate();
-        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
 
         // Add custome network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
@@ -276,6 +273,7 @@ describe('MetaMask onboarding', function () {
           tag: 'button',
         });
 
+        await driver.waitForSelector('[data-testid="add-network-modal"]');
         const [
           networkNameField,
           networkUrlField,
@@ -288,7 +286,9 @@ describe('MetaMask onboarding', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.waitForElementNotPresent('span .modal');
+        await driver.waitForElementNotPresent(
+          '[data-testid="add-network-modal"]',
+        );
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // After login, check that notification message for added network is displayed
@@ -298,6 +298,7 @@ describe('MetaMask onboarding', function () {
           text: notificationMessage,
         });
         assert.equal(networkNotification, true);
+        await driver.clickElement({ text: 'Dismiss', tag: 'h6' });
 
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
@@ -305,7 +306,7 @@ describe('MetaMask onboarding', function () {
           text: networkName,
         });
 
-        await assertAccountBalanceForDOM(driver, secondaryGanacheServer);
+        await locateAccountBalanceDOM(driver, secondaryGanacheServer);
       },
     );
   });

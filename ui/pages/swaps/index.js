@@ -15,6 +15,7 @@ import {
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
 import classnames from 'classnames';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
@@ -50,10 +51,11 @@ import {
   navigateBackToBuildQuote,
   getSwapRedesignEnabled,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
-  currentNetworkTxListSelector,
+  getCurrentNetworkTransactions,
 } from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -79,6 +81,7 @@ import {
 import {
   resetBackgroundSwapsState,
   setSwapsTokens,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
@@ -86,7 +89,6 @@ import {
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';
@@ -134,7 +136,8 @@ export default function Swap() {
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
-  const txList = useSelector(currentNetworkTxListSelector, shallowEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
+  const txList = useSelector(getCurrentNetworkTransactions, shallowEqual);
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
@@ -208,6 +211,32 @@ export default function Swap() {
   if (conversionError && swapsErrorKey !== CONTRACT_DATA_DISABLED_ERROR) {
     swapsErrorKey = SWAP_FAILED_ERROR;
   }
+
+  const clearTemporaryTokenRef = useRef();
+  useEffect(() => {
+    clearTemporaryTokenRef.current = () => {
+      if (latestAddedTokenTo && (!isAwaitingSwapRoute || conversionError)) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: latestAddedTokenTo,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
+    };
+  }, [
+    conversionError,
+    dispatch,
+    latestAddedTokenTo,
+    destinationTokenInfo,
+    fetchParams,
+    isAwaitingSwapRoute,
+  ]);
+  useEffect(() => {
+    return () => {
+      clearTemporaryTokenRef.current();
+    };
+  }, []);
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -283,6 +312,7 @@ export default function Swap() {
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
     const fn = () => {
+      clearTemporaryTokenRef.current();
       if (isLoadingQuotesRoute) {
         dispatch(prepareToLeaveSwaps());
       }
@@ -349,9 +379,13 @@ export default function Swap() {
   }
 
   const redirectToDefaultRoute = async () => {
+    clearTemporaryTokenRef.current();
+    history.push({
+      pathname: DEFAULT_ROUTE,
+      state: { stayOnHomePage: true },
+    });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    history.push(DEFAULT_ROUTE);
   };
 
   return (
@@ -400,6 +434,7 @@ export default function Swap() {
             <div
               className="swaps__header-cancel"
               onClick={async () => {
+                clearTemporaryTokenRef.current();
                 dispatch(clearSwapsState());
                 await dispatch(resetBackgroundSwapsState());
                 history.push(DEFAULT_ROUTE);

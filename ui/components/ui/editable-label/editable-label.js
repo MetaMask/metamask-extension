@@ -4,17 +4,12 @@ import PropTypes from 'prop-types';
 import {
   AlignItems,
   Color,
-  DISPLAY,
+  Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import {
-  ButtonIcon,
-  FormTextField,
-  IconName,
-  Text,
-  Box,
-} from '../../component-library';
+import { ButtonIcon, IconName, Text, Box } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export default class EditableLabel extends Component {
   static propTypes = {
@@ -38,7 +33,7 @@ export default class EditableLabel extends Component {
       return;
     }
 
-    await this.props.onSubmit(this.state.value);
+    await this.props.onSubmit(this.state.value.trim());
     this.setState({ isEditing: false });
   }
 
@@ -53,7 +48,7 @@ export default class EditableLabel extends Component {
     return (
       <Box
         className={classnames('editable-label', this.props.className)}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         gap={3}
       >
         <FormTextField
@@ -83,8 +78,13 @@ export default class EditableLabel extends Component {
 
   renderReadonly() {
     return (
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={3}>
-        <Text variant={TextVariant.bodyLgMedium}>{this.state.value}</Text>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+        <Text
+          variant={TextVariant.bodyLgMedium}
+          style={{ wordBreak: 'break-word' }}
+        >
+          {this.state.value}
+        </Text>
         <ButtonIcon
           iconName={IconName.Edit}
           ariaLabel={this.context.t('edit')}

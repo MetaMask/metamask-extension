@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import { SubjectType } from '@metamask/permission-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -14,15 +15,20 @@ import Loading from '../../components/ui/loading-screen';
 import { useRouting } from '../../hooks/useRouting';
 import {
   getTotalUnapprovedSignatureRequestCount,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getSelectedAccount,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   getTargetSubjectMetadata,
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+  getMemoizedUnapprovedMessages,
+  getMemoizedUnapprovedPersonalMessages,
+  getMemoizedUnapprovedTypedMessages,
+  getMemoizedCurrentChainId,
+  getMemoizedTxId,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
@@ -52,23 +58,29 @@ const ConfirmTxScreen = ({ match }) => {
     getTotalUnapprovedSignatureRequestCount,
   );
   const sendTo = useSelector(getSendTo);
-  const {
-    unapprovedTxs,
-    identities,
-    currentNetworkTxList,
-    currentCurrency,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTypedMessages,
-    networkId,
-    blockGasLimit,
-  } = useSelector((state) => state.metamask);
-  const { chainId } = useSelector(getProviderConfig);
-  const { txId: index } = useSelector((state) => state.appState);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const {
+    identities,
+    currentCurrency,
+    blockGasLimit,
+    signatureSecurityAlertResponses,
+  } = useSelector((state) => state.metamask);
+  const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
+  const unapprovedPersonalMsgs = useSelector(
+    getMemoizedUnapprovedPersonalMessages,
+  );
+  const unapprovedTypedMessages = useSelector(
+    getMemoizedUnapprovedTypedMessages,
+  );
+
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
+  const chainId = useSelector(getMemoizedCurrentChainId);
+  const index = useSelector(getMemoizedTxId);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const [prevValue, setPrevValues] = useState();
   const history = useHistory();
@@ -79,102 +91,128 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       {},
-      networkId,
+      {},
+      {},
       chainId,
     );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
-  }, []);
-
-  useEffect(() => {
-    if (!prevValue) {
-      setPrevValues({ index, unapprovedTxs });
-      return;
-    }
-
-    let prevTx;
-    const { params: { id: transactionId } = {} } = match;
-    if (transactionId) {
-      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
-    } else {
-      const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevValue;
-      const prevUnconfTxList = txHelper(
-        prevUnapprovedTxs,
-        {},
-        {},
-        {},
-        networkId,
-        chainId,
-      );
-      const prevTxData = prevUnconfTxList[prevIndex] || {};
-      prevTx =
-        currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
-    }
-
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      {},
-      {},
-      {},
-      networkId,
-      chainId,
-    );
-
-    if (prevTx && prevTx.status === TransactionStatus.dropped) {
-      dispatch(
-        actions.showModal({
-          name: 'TRANSACTION_CONFIRMED',
-          onSubmit: () => navigateToMostRecentOverviewPage(),
-        }),
-      );
-      return;
-    }
-
-    if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
-      navigateToMostRecentOverviewPage();
-    }
-
-    setPrevValues({ index, unapprovedTxs });
   }, [
     chainId,
-    currentNetworkTxList,
-    match,
-    networkId,
+    navigateToMostRecentOverviewPage,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
   ]);
 
-  const getTxData = () => {
-    const { params: { id: transactionId } = {} } = match;
+  useEffect(
+    () => {
+      if (!prevValue) {
+        setPrevValues({ index, unapprovedTxs });
+        return;
+      }
 
+      let prevTx;
+      const { params: { id: transactionId } = {} } = match;
+      if (transactionId) {
+        prevTx = currentNetworkTxList.find(
+          ({ id }) => `${id}` === transactionId,
+        );
+      } else {
+        const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } =
+          prevValue;
+        const prevUnconfTxList = txHelper(
+          prevUnapprovedTxs,
+          {},
+          {},
+          {},
+          {},
+          {},
+          chainId,
+        );
+        const prevTxData = prevUnconfTxList[prevIndex] || {};
+        prevTx =
+          currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
+      }
+
+      const unconfTxList = txHelper(
+        unapprovedTxs || {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        chainId,
+      );
+
+      if (prevTx && prevTx.status === TransactionStatus.dropped) {
+        dispatch(
+          actions.showModal({
+            name: 'TRANSACTION_CONFIRMED',
+            onSubmit: () => navigateToMostRecentOverviewPage(),
+          }),
+        );
+        return;
+      }
+
+      if (
+        unconfTxList.length === 0 &&
+        !sendTo &&
+        unapprovedMessagesTotal === 0
+      ) {
+        navigateToMostRecentOverviewPage();
+      }
+
+      setPrevValues({ index, unapprovedTxs });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const { params: { id: txIdFromPath } = {} } = match;
+
+  const txData = useMemo(() => {
     const unconfTxList = txHelper(
       unapprovedTxs || {},
       unapprovedMsgs,
       unapprovedPersonalMsgs,
+      {},
+      {},
       unapprovedTypedMessages,
-      networkId,
       chainId,
     );
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
 
-    const unconfirmedTx = transactionId
-      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
+    const unconfirmedTx = txIdFromPath
+      ? unconfTxList.find(({ id }) => `${id}` === txIdFromPath)
       : unconfTxList[index];
-    return cloneDeep(unconfirmedTx);
-  };
+    return unconfirmedTx ? cloneDeep(unconfirmedTx) : {};
+  }, [
+    chainId,
+    index,
+    txIdFromPath,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTxs,
+    unapprovedTypedMessages,
+  ]);
 
-  const txData = getTxData() || {};
+  const resolvedSecurityAlertResponse =
+    signatureSecurityAlertResponses?.[
+      txData.securityAlertResponse?.securityAlertId
+    ];
 
-  const { msgParams } = txData;
+  if (resolvedSecurityAlertResponse) {
+    txData.securityAlertResponse = resolvedSecurityAlertResponse;
+  }
 
   const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, msgParams?.origin),
+    getTargetSubjectMetadata(state, txData.msgParams?.origin),
   );
 
-  if (!msgParams) {
+  if (!txData.msgParams) {
     return <Loading />;
   }
 
@@ -188,9 +226,9 @@ const ConfirmTxScreen = ({ match }) => {
       identities={identities}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       selectedAccount={selectedAccount}
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     />
   );
 };

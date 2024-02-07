@@ -11,14 +11,6 @@ ignores:
   - 'punycode'
 
   #
-  # snaps flask deps
-  #
-  - '@metamask/rpc-methods-flask'
-  - '@metamask/snaps-controllers-flask'
-  - '@metamask/snaps-ui-flask'
-  - '@metamask/snaps-utils-flask'
-
-  #
   # dev deps
   #
 
@@ -40,16 +32,17 @@ ignores:
   - 'geckodriver'
   - 'jest'
   - 'lavamoat-viz'
+  - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
   # development tool
-  - 'improved-yarn-audit'
   - 'nyc'
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
+  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
   - '@storybook/addon-mdx-gfm'
@@ -65,6 +58,8 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  # babel
+  - '@babel/plugin-transform-logical-assignment-operators'
 
 # files depcheck should not parse
 ignorePatterns:

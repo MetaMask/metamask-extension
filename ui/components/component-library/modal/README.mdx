@@ -6,13 +6,13 @@ import { Modal } from './modal';
 
 The `Modal` focuses the user's attention exclusively on information via a window that is overlaid on primary content. It should be used with the `ModalOverlay`, `ModalContent` and `ModalHeader` components to create a complete modal.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-modal--default-story" />
 </Canvas>
 
 ## Props
-
-The `Modal` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={Modal} />
 
@@ -33,7 +33,7 @@ When the modal opens:
 
 ```jsx
 import React, { useState, useRef } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, Text, Button } from '../../component-library';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, Button } from '../../component-library';
 
 const [open, setOpen] = useState(false);
 
@@ -55,7 +55,10 @@ const handleOnClose = () => {
     <ModalHeader onClose={handleOnClose} onBack={handleOnClose}>
       Modal Header
     </ModalHeader>
-    <Text>Children</Text>
+    <ModalBody>
+      <Text>ModalBody children</Text>
+    </ModalBody>
+    <ModalFooter onSubmit={handleOnClose} onCancel={handleOnCancel}>
   </ModalContent>
 </Modal>
 ```
@@ -102,7 +105,7 @@ Use the `initialFocusRef` to set the `ref` of the element to receive focus initi
 
 ```jsx
 import React, { useState, useRef } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, TextFieldSearch, Button } from '../../component-library';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, TextFieldSearch, Button } from '../../component-library';
 
 // Ref to set initial focus
 const inputRef = React.useRef<HTMLDivElement>(null);
@@ -137,6 +140,9 @@ const handleOnClose = () => {
       inputProps={{ ref: inputRef }}
       width={BLOCK_SIZES.FULL}
     />
+    <ModalBody>
+      <Text>ModalBody children</Text>
+    </ModalBody>
   </ModalContent>
 </Modal>
 ```
@@ -184,7 +190,9 @@ const handleOnClose = () => {
     >
       Modal Header
     </ModalHeader>
-    <Text>{args.children}</Text>
+    <ModalBody>
+      <Text>ModalBody children</Text>
+    </ModalBody>
   </ModalContent>
 </Modal>
 ```

@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopeeri aadress lõikelauale"
   },
-  "copyPrivateKey": {
-    "message": "See on teie privaatne võti (klõpsake kopeerimiseks)"
-  },
   "copyToClipboard": {
     "message": "Kopeeri lõikelauale"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Võrk kustutada?"
   },
-  "deleteNetworkDescription": {
-    "message": "Olete kindel, et soovite selle võrgu kustutada?"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Muuda kontakti"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-i nime ei leitud praegusest võrgust. Proovige lülituda peamisele Ethereumi võrgule."
-  },
   "ensRegistrationError": {
     "message": "Tõrge ENS-i nime registreerimisel"
-  },
-  "enterPassword": {
-    "message": "Sisestage parool"
   },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Laienda vaadet"
-  },
-  "exportPrivateKey": {
-    "message": "Ekspordi privaatvõti"
   },
   "failed": {
     "message": "Nurjus"
@@ -614,12 +599,6 @@
   "search": {
     "message": "Otsi"
   },
-  "searchResults": {
-    "message": "Otsingutulemused"
-  },
-  "searchTokens": {
-    "message": "Lubade otsimine"
-  },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
@@ -658,9 +637,6 @@
   },
   "showHexDataDescription": {
     "message": "Valige see, et kuvada saatmisekraanil hex-andmete väli"
-  },
-  "showPrivateKeys": {
-    "message": "Kuva privaatvõtmed"
   },
   "sigRequest": {
     "message": "Allkirja taotlus"
@@ -782,9 +758,6 @@
   "tryAgain": {
     "message": "Proovi uuesti"
   },
-  "typePassword": {
-    "message": "Sisestage oma MetaMaski parool"
-  },
   "unapproved": {
     "message": "Kinnitamata"
   },
@@ -793,12 +766,6 @@
   },
   "unknown": {
     "message": "Teadmata"
-  },
-  "unknownCameraError": {
-    "message": "Kaamerale ligipääsemisel ilmnes tõrge. Proovige uuesti..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oih! Midagi läks valesti...."
   },
   "unknownNetwork": {
     "message": "Tundmatu privaatvõrk"

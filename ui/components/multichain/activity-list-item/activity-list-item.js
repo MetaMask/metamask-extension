@@ -66,7 +66,11 @@ export const ActivityListItem = ({
         gap={4}
       >
         {icon && <Box display={Display.InlineFlex}>{icon}</Box>}
-        <Box display={Display.InlineFlex} width={BlockSize.Full}>
+        <Box
+          display={Display.InlineFlex}
+          width={BlockSize.Full}
+          className="activity-list-item__content-container"
+        >
           <Box
             display={Display.InlineFlex}
             width={[BlockSize.OneThird, BlockSize.SevenTwelfths]}
@@ -110,6 +114,7 @@ export const ActivityListItem = ({
             <Box
               display={Display.InlineFlex}
               width={BlockSize.Full}
+              height={BlockSize.Min}
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}
               className="activity-list-item__right-content"
@@ -124,14 +129,44 @@ export const ActivityListItem = ({
 };
 
 ActivityListItem.propTypes = {
+  /**
+   * Top content for the activity
+   */
   topContent: PropTypes.node,
+  /**
+   * Icon which represents the activity
+   */
   icon: PropTypes.node,
+  /**
+   * Title text
+   */
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Additional text detail
+   */
   subtitle: PropTypes.node,
+  /**
+   * Middle content
+   */
   midContent: PropTypes.node,
+  /**
+   * Additional variable contents
+   */
   children: PropTypes.node,
+  /**
+   * Right-most content
+   */
   rightContent: PropTypes.node,
+  /**
+   * Executes upon click of the activity
+   */
   onClick: PropTypes.func,
+  /**
+   * Additional classname for this component
+   */
   className: PropTypes.string,
+  /**
+   * Test ID for this component
+   */
   'data-testid': PropTypes.string,
 };

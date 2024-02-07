@@ -19,9 +19,9 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
 
   // in-hook state
   const [currentAsset, setCurrentAsset] = useState(null);
-  const { tokensWithBalances } = useTokenTracker(
-    currentToken ? [currentToken] : [],
-  );
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: currentToken ? [currentToken] : [],
+  });
 
   // previous state checkers
   const prevTokenAddress = usePrevious(tokenAddress);

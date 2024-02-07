@@ -2,6 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { KeyringType } from '../../../shared/constants/keyring';
 import TokenAllowance from './token-allowance';
@@ -30,7 +32,14 @@ const state = {
         name: 'Account 2',
       },
     },
-    cachedBalances: {},
+    accountsByChainId: {
+      '0x1': {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          balance: '0x0',
+        },
+      },
+    },
     addressBook: [
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
@@ -44,14 +53,17 @@ const state = {
       type: 'mainnet',
       nickname: '',
     },
-    networkDetails: {
-      EIPS: {
-        1559: true,
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: { 1559: true },
+        status: NetworkStatus.Available,
       },
     },
     preferences: {
       showFiatInTestnets: true,
     },
+    currencyRates: {},
     knownMethodData: {},
     tokens: [
       {
@@ -69,8 +81,7 @@ const state = {
         isERC721: false,
       },
     ],
-    unapprovedTxs: {},
-    keyringTypes: [],
+    transactions: [],
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
@@ -92,6 +103,7 @@ const state = {
 };
 
 const mockShowModal = jest.fn();
+const mockedState = jest.mocked(state);
 
 jest.mock('../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -159,7 +171,6 @@ describe('TokenAllowancePage', () => {
       id: 3049568294499567,
       time: 1664449552289,
       status: 'unapproved',
-      metamaskNetworkId: '3',
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
       chainId: '0x3',
@@ -196,12 +207,30 @@ describe('TokenAllowancePage', () => {
     store = configureMockStore([thunk])(state);
   });
 
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <TokenAllowance {...props} />,
-      store,
-    );
-    expect(container).toMatchSnapshot();
+  describe('when mounted', () => {
+    it('should match snapshot', () => {
+      const { container } = renderWithProvider(
+        <TokenAllowance {...props} />,
+        store,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
+      mockedState.appState.customTokenAmount = '';
+
+      const { queryByText, getByTestId } = renderWithProvider(
+        <TokenAllowance {...props} />,
+        configureMockStore([thunk])(mockedState),
+      );
+
+      const useSiteSuggestion = queryByText('Use site suggestion');
+      expect(useSiteSuggestion).not.toBeInTheDocument();
+
+      const input = getByTestId('custom-spending-cap-input');
+      expect(input.value).toBe('7');
+    });
   });
 
   it('should render title "Spending cap request for your" in token allowance page', () => {
@@ -352,34 +381,23 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
-  it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
-    const { queryByText, getByTestId } = renderWithProvider(
-      <TokenAllowance {...props} />,
-      store,
-    );
+  it('should click "Use site suggestion" and set input value to dappProposedTokenAmount', () => {
+    mockedState.appState.customTokenAmount = '';
 
-    act(() => {
-      const useSiteSuggestion = queryByText('Use site suggestion');
-      expect(useSiteSuggestion).not.toBeInTheDocument();
-    });
-
-    const input = getByTestId('custom-spending-cap-input');
-    expect(input.value).toBe('7');
-  });
-
-  it('should click Use site suggestion and set input value to default', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
-      store,
+      configureMockStore([thunk])(mockedState),
     );
     const textField = getByTestId('custom-spending-cap-input');
+
     expect(textField.value).toBe('7');
     fireEvent.change(textField, { target: { value: '1' } });
     expect(textField.value).toBe('1');
 
+    const useSiteSuggestion = getByText('Use site suggestion');
+    expect(useSiteSuggestion).toBeInTheDocument();
+
     act(() => {
-      const useSiteSuggestion = getByText('Use site suggestion');
-      expect(useSiteSuggestion).toBeInTheDocument();
       fireEvent.click(useSiteSuggestion);
     });
 
@@ -490,5 +508,29 @@ describe('TokenAllowancePage', () => {
 
     expect(queryByText('Account 1')).toBeInTheDocument();
     expect(queryByText('Account 2')).not.toBeInTheDocument();
+  });
+
+  it('should display security alert if present', () => {
+    const { getByText } = renderWithProvider(
+      <TokenAllowance
+        {...props}
+        txData={{
+          ...props.txData,
+          securityAlertResponse: {
+            resultType: 'Malicious',
+            reason: 'blur_farming',
+            description:
+              'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+            args: {
+              contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+              operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+            },
+          },
+        }}
+      />,
+      store,
+    );
+
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 });

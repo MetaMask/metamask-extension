@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -25,6 +25,7 @@ import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-sp
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
+  getCustomTokenAmount,
   getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
@@ -60,6 +61,11 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
+
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IF
+
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
@@ -68,6 +74,7 @@ import SecurityProviderBannerMessage from '../../components/app/security-provide
 import { Icon, IconName, Text } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
+import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -106,9 +113,9 @@ export default function TokenAllowance({
   const { hostname } = new URL(origin);
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
-  const [customSpendingCap, setCustomSpendingCap] = useState(
-    dappProposedTokenAmount,
-  );
+  const customTokenAmount = useSelector(getCustomTokenAmount);
+  const [customSpendingCap, setCustomSpendingCap] = useState(customTokenAmount);
+
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
@@ -132,6 +139,24 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+
+  /**
+   * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
+   * because customTokenAmount is reserved for custom user input. This is only set once when the component is mounted.
+   */
+  const initializeCustomSpendingCap = () => {
+    if (
+      (!customSpendingCap || customSpendingCap === '') &&
+      dappProposedTokenAmount
+    ) {
+      setCustomSpendingCap(dappProposedTokenAmount);
+    }
+  };
+
+  useEffect(() => {
+    initializeCustomSpendingCap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -260,13 +285,13 @@ export default function TokenAllowance({
     );
   };
 
-  const handleNextNonce = () => {
+  const handleNextNonce = useCallback(() => {
     dispatch(getNextNonce());
-  };
+  }, [getNextNonce, dispatch]);
 
   useEffect(() => {
-    handleNextNonce();
-  }, [dispatch]);
+    dispatch(getNextNonce());
+  }, [getNextNonce, dispatch]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
@@ -311,11 +336,6 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
-      {isSuspiciousResponse(txData?.securityProviderResponse) && (
-        <SecurityProviderBannerMessage
-          securityProviderResponse={txData.securityProviderResponse}
-        />
-      )}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -357,6 +377,16 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        <BlockaidBannerAlert txData={txData} margin={4} />
+        ///: END:ONLY_INCLUDE_IF
+      }
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      )}
       {warning && (
         <Box className="token-allowance-container__custom-nonce-warning">
           <ConfirmPageContainerWarning warning={warning} />
@@ -504,6 +534,13 @@ export default function TokenAllowance({
           />
         </Box>
       )}
+      <Box marginRight={4} marginLeft={4}>
+        <FeeDetailsComponent
+          useCurrencyRateCheck={useCurrencyRateCheck}
+          txData={txData}
+          hideGasDetails={isFirstPage}
+        />
+      </Box>
       {useNonceField && (
         <Box marginTop={4} marginRight={4} marginLeft={4}>
           <CustomNonce

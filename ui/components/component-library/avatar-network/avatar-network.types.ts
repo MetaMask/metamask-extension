@@ -13,7 +13,7 @@ export enum AvatarNetworkSize {
  * Props for the AvatarNetwork component
  */
 export interface AvatarNetworkStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size'> {
+  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
   /**
    * The name accepts the string to render the first alphabet of the Avatar Name
    */

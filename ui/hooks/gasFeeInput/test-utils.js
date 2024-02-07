@@ -8,7 +8,6 @@ import {
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentCurrency,
-  getSelectedAccount,
   getShouldShowFiat,
   getPreferences,
   txDataSelector,
@@ -122,7 +121,7 @@ export const generateUseSelectorRouter =
         },
       };
     }
-    if (selector === getSelectedAccount) {
+    if (selector.toString().includes('getTargetAccount')) {
       return {
         balance: '0x440aa47cc2556',
       };

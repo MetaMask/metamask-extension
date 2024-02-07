@@ -11,14 +11,13 @@ import {
   FontWeight,
   TextColor,
   TextVariant,
+  Severity,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { BannerAlert, Text } from '../../component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
-import ErrorMessage from '../../ui/error-message';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
-import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -62,38 +61,30 @@ export default function EditGasDisplay({
 
   const showTopError = balanceError && txParamsHaveBeenCustomized;
 
-  let errorKey;
-  if (balanceError) {
-    errorKey = 'insufficientFunds';
-  }
-
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
         {showTopError && (
-          <div className="edit-gas-display__warning">
-            <ErrorMessage errorKey={errorKey} />
-          </div>
+          <BannerAlert
+            severity={Severity.Danger}
+            description={t('insufficientFunds')}
+            marginBottom={6}
+          />
         )}
         {warningMessage && (
-          <div className="edit-gas-display__warning">
-            <ActionableMessage
-              className="actionable-message--warning"
-              message={warningMessage}
-              iconFillColor="var(--color-warning-default)"
-              useIcon
-            />
-          </div>
+          <BannerAlert
+            severity={Severity.Warning}
+            description={warningMessage}
+            marginBottom={6}
+          />
         )}
         {requireDappAcknowledgement && (
-          <div className="edit-gas-display__dapp-acknowledgement-warning">
-            <ActionableMessage
-              className="actionable-message--warning"
-              message={t('gasDisplayDappWarning', [transaction.origin])}
-              iconFillColor="var(--color-warning-default)"
-              useIcon
-            />
-          </div>
+          <BannerAlert
+            severity={Severity.Warning}
+            className="banner-alert--warning"
+            description={t('gasDisplayDappWarning', [transaction.origin])}
+            marginBottom={6}
+          />
         )}
         {mode === EditGasModes.speedUp && (
           <div className="edit-gas-display__top-tooltip">
@@ -113,7 +104,7 @@ export default function EditGasDisplay({
         )}
         <Text
           color={TextColor.textDefault}
-          variant={TextVariant.displayMd}
+          variant={TextVariant.headingLg}
           as="h1"
           textAlign={TextAlign.Center}
         >

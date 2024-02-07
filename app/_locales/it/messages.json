@@ -155,9 +155,6 @@
   "addContact": {
     "message": "Aggiungi contatto"
   },
-  "addCustomToken": {
-    "message": "Aggiungi token personalizzato"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -212,12 +209,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Quando la tua transazione viene inclusa nel blocco, ogni differenza tra la tua offerta massima di gas e il gas effettivamente utilizzato viene restituita a te. Il totale viene calcolato come offerta massima di gas (in GEWI) * limite di gas."
-  },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salva queste $1 come mie preferite per \"Avanzate\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Utilizzare sempre questi valori e l'impostazione avanzata come predefiniti."
   },
   "advancedGasFeeModalTitle": {
     "message": "Tariffa gas avanzata"
@@ -389,9 +380,6 @@
   "busy": {
     "message": "Occupato"
   },
-  "buy": {
-    "message": "Compra"
-  },
   "buyAsset": {
     "message": "Compra $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
@@ -427,10 +415,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Questo Chain ID al momento è usato dalla rete $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "La rete con chain ID $1 può utilizzare un simbolo diverso ($2) da quello che hai inserito. Si prega di verificare prima di continuare.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
@@ -582,9 +566,6 @@
   "copyAddress": {
     "message": "Copia l'indirizzo"
   },
-  "copyPrivateKey": {
-    "message": "Questa è la tua chiave privata (clicca per copiare)"
-  },
   "copyRawTransactionData": {
     "message": "Copia i dati grezzi della transazione"
   },
@@ -719,15 +700,6 @@
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sei sicuro di voler eliminare questa rete?"
-  },
-  "deprecatedTestNetworksLink": {
-    "message": "Scopri di più"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "A causa delle modifiche al protocollo di Ethereum: le reti di test Rinkeby, Ropsten e Kovan potrebbero non funzionare in modo affidabile e saranno presto rimosse."
-  },
   "description": {
     "message": "Descrizione"
   },
@@ -837,17 +809,11 @@
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS non trovato sulla rete attuale. Prova a passare alla rete principale di Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
   },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
-  },
-  "enterPassword": {
-    "message": "Inserisci password"
   },
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
@@ -880,9 +846,6 @@
   },
   "expandView": {
     "message": "Espandi Vista"
-  },
-  "exportPrivateKey": {
-    "message": "Esporta Chiave Privata"
   },
   "externalExtension": {
     "message": "Estensione Esterna"
@@ -1380,12 +1343,6 @@
   "searchAccounts": {
     "message": "Cerca Account"
   },
-  "searchResults": {
-    "message": "Risultati Ricerca"
-  },
-  "searchTokens": {
-    "message": "Cerca Tokens"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1447,9 +1404,6 @@
   },
   "showPermissions": {
     "message": "Mostra permessi"
-  },
-  "showPrivateKeys": {
-    "message": "Mostra Chiave Privata"
   },
   "sigRequest": {
     "message": "Firma Richiesta"
@@ -1650,9 +1604,6 @@
   "swapSource": {
     "message": "Sorgente di liquidità"
   },
-  "swapSourceInfo": {
-    "message": "Cerchiamo sorgenti di liquidità multiple (siti di scambio, aggregatori, market maker professionisti) per trovare le tariffe migliori e le tasse di rete minori."
-  },
   "swapSwapFrom": {
     "message": "Scambia da"
   },
@@ -1803,9 +1754,6 @@
   "tryAgain": {
     "message": "Prova di nuovo"
   },
-  "typePassword": {
-    "message": "Inserisci Password"
-  },
   "unapproved": {
     "message": "Non approvata"
   },
@@ -1814,12 +1762,6 @@
   },
   "unknown": {
     "message": "Sconosciuto"
-  },
-  "unknownCameraError": {
-    "message": "C'è stato un errore nel tentativo di accedere alla fotocamera. Per favore prova di nuovo..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Qualcosa è andato storto...."
   },
   "unknownNetwork": {
     "message": "Rete Privata Sconosciuta"

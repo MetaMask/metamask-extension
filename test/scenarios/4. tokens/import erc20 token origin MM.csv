@@ -1,0 +1,38 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,Deploy the Token contract.,,,
+8,Confirm the transaction and wait for it to complete.,,,
+9,Close the test dapp and switch back to the wallet.,,,
+10,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+11,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab., Take a note of the Contract address.
+12,Close the block explorer and switch back to the wallet.,,,
+13,Switch to the Tokens tab.,,,
+14,Proceed to the Import tokens flow.,,,
+15,Enter the contract address.,Contract address.,,
+16,Enter the token symbol.,e.g. TST.,,
+17,Enter the token decimals.,e.g. 4.,,
+18,Confirm the addition of the custom token.,,"The asset page is shown.
+The specified token symbol is shown.
+The specified token icon is shown.
+The specified token balance is shown.",
+19,Open the asset menu.,,,
+20,Proceed to view the asset in the block explorer.,,The block explorer opens in a new tab.,
+21,Close the block explorer and switch back to the wallet.,,,
+22,Open the asset menu.,,,
+23,Proceed to view the token details.,,"The token details page is shown.
+The token balance is shown.
+The token contract symbol is shown.
+The token decimals is shown.
+The current network is shown.",
+24,Close the token details page.,,,
+25,Navigate to the overview page using the asset breadcrumbs.,,"The overview page is shown.
+The TST token is shown in the wallets token list.",

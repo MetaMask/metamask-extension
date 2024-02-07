@@ -45,7 +45,7 @@ async function start() {
   );
 
   const buildCommand = devMode ? 'build:dev' : 'build';
-  await concurrently(
+  const { result } = concurrently(
     (Array.isArray(buildTypes) ? buildTypes : [buildTypes]).map(
       (buildType) => ({
         command: `yarn ${buildCommand} scripts:dist --policy-only --lint-fence-files=false --build-type=${buildType}`,
@@ -60,6 +60,7 @@ async function start() {
       maxProcesses: parallel ? buildTypes.length : 1,
     },
   );
+  await result;
 
   console.log('Policy file(s) successfully generated!');
 }

@@ -179,7 +179,7 @@ export default function DropdownSearchList({
       tabIndex="0"
     >
       {tokenForImport && isImportTokenModalOpen && (
-        <ImportToken {...importTokenProps} />
+        <ImportToken isOpen {...importTokenProps} />
       )}
       {!isOpen && (
         <div

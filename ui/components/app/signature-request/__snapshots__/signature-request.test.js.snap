@@ -179,7 +179,7 @@ exports[`Signature Request Component render should match snapshot when we are us
         class="signature-request__origin"
       >
         <div
-          class="box mm-tag-url box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -208,7 +208,7 @@ exports[`Signature Request Component render should match snapshot when we are us
       </h6>
       <div>
         <button
-          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="verify-contract-details"
         >
           <span
@@ -365,7 +365,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                           <div
                             class="tx-insight-component-address__name"
                           >
-                            0xCD2...D826
+                            0xCD2a3...DD826
                           </div>
                         </div>
                       </div>
@@ -441,7 +441,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                           <div
                             class="tx-insight-component-address__name"
                           >
-                            0xDea...beeF
+                            0xDeaDb...DbeeF
                           </div>
                         </div>
                       </div>
@@ -576,7 +576,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xbBb...BBbB
+                                0xbBbBB...bBBbB
                               </div>
                             </div>
                           </div>
@@ -652,7 +652,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xB0B...Ea57
+                                0xB0Bda...bEa57
                               </div>
                             </div>
                           </div>
@@ -728,7 +728,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xB0B...0000
+                                0xB0B0b...00000
                               </div>
                             </div>
                           </div>
@@ -750,23 +750,19 @@ exports[`Signature Request Component render should match snapshot when we are us
         <button
           class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
           data-testid="page-container-footer-cancel"
-          role="button"
-          tabindex="0"
         >
           Reject
         </button>
         <button
           class="button btn--rounded btn-primary page-container__footer-button"
           data-testid="page-container-footer-next"
-          role="button"
-          tabindex="0"
         >
           Sign
         </button>
       </footer>
     </div>
     <button
-      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       data-testid="signature-request-reject-all"
     >
       Reject 2 requests
@@ -954,7 +950,7 @@ exports[`Signature Request Component render should match snapshot when we want t
         class="signature-request__origin"
       >
         <div
-          class="box mm-tag-url box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -983,7 +979,7 @@ exports[`Signature Request Component render should match snapshot when we want t
       </h6>
       <div>
         <button
-          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="verify-contract-details"
         >
           <span
@@ -1140,7 +1136,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                           <div
                             class="tx-insight-component-address__name"
                           >
-                            0xCD2...D826
+                            0xCD2a3...DD826
                           </div>
                         </div>
                       </div>
@@ -1216,7 +1212,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                           <div
                             class="tx-insight-component-address__name"
                           >
-                            0xDea...beeF
+                            0xDeaDb...DbeeF
                           </div>
                         </div>
                       </div>
@@ -1351,7 +1347,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xbBb...BBbB
+                                0xbBbBB...bBBbB
                               </div>
                             </div>
                           </div>
@@ -1427,7 +1423,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xB0B...Ea57
+                                0xB0Bda...bEa57
                               </div>
                             </div>
                           </div>
@@ -1503,7 +1499,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xB0B...0000
+                                0xB0B0b...00000
                               </div>
                             </div>
                           </div>
@@ -1525,23 +1521,19 @@ exports[`Signature Request Component render should match snapshot when we want t
         <button
           class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
           data-testid="page-container-footer-cancel"
-          role="button"
-          tabindex="0"
         >
           Reject
         </button>
         <button
           class="button btn--rounded btn-primary page-container__footer-button"
           data-testid="page-container-footer-next"
-          role="button"
-          tabindex="0"
         >
           Sign
         </button>
       </footer>
     </div>
     <button
-      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       data-testid="signature-request-reject-all"
     >
       Reject 2 requests

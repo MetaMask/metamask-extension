@@ -32,6 +32,10 @@ import {
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
   getIpfsGateway,
+  getNetworkIdentifier,
+  getSelectedInternalAccount,
+  getSelectedAccountCachedBalance,
+  getAddressBookEntryOrAccountName,
 } from '../../selectors';
 import NftDefaultImage from '../../components/app/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
@@ -46,7 +50,15 @@ import {
   TextAlign,
   TextVariant,
   BlockSize,
+  TextColor,
 } from '../../helpers/constants/design-system';
+import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import SiteOrigin from '../../components/ui/site-origin/site-origin';
+import { PRIMARY } from '../../helpers/constants/common';
+import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
+import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -54,11 +66,34 @@ const ConfirmAddSuggestedNFT = () => {
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const suggestedNfts = useSelector(getSuggestedNfts);
+  const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
+  const suggestedNfts = suggestedNftsNotSorted.sort(
+    (a, b) => a.requestData.asset.tokenId - b.requestData.asset.tokenId,
+  );
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
   const trackEvent = useContext(MetaMetricsContext);
+  const networkIdentifier = useSelector(getNetworkIdentifier);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
+  const accountName = useSelector((state) =>
+    getAddressBookEntryOrAccountName(state, selectedAddress),
+  );
+
+  const networkName = NETWORK_TO_NAME_MAP[chainId] || networkIdentifier;
+
+  const {
+    currency: primaryCurrency,
+    numberOfDecimals: primaryNumberOfDecimals,
+  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
+
+  const [primaryCurrencyValue] = useCurrencyDisplay(selectedAccountBalance, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
+
+  const originMetadata = useOriginMetadata(suggestedNfts[0]?.origin) || {};
 
   const handleAddNftsClick = useCallback(async () => {
     await Promise.all(
@@ -106,13 +141,17 @@ const ConfirmAddSuggestedNFT = () => {
   }, [history, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
+  let link;
   if (suggestedNfts.length) {
     try {
-      origin = new URL(suggestedNfts[0].origin)?.host;
+      const url = new URL(suggestedNfts[0].origin);
+      origin = url.host;
+      link = url.href;
     } catch {
       origin = 'dapp';
     }
   }
+
   return (
     <Box
       height={BlockSize.Full}
@@ -121,6 +160,28 @@ const ConfirmAddSuggestedNFT = () => {
       flexDirection={FlexDirection.Column}
     >
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
+        <NetworkAccountBalanceHeader
+          accountName={accountName}
+          accountBalance={primaryCurrencyValue}
+          accountAddress={selectedAddress}
+          networkName={networkName}
+          chainId={chainId}
+        />
+        <Box
+          paddingTop={4}
+          paddingRight={4}
+          paddingLeft={4}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+        >
+          <SiteOrigin
+            chip
+            siteOrigin={originMetadata.origin}
+            title={originMetadata.origin}
+            iconSrc={originMetadata.iconUrl}
+            iconName={originMetadata.hostname}
+          />
+        </Box>
         <Text
           variant={TextVariant.headingLg}
           textAlign={TextAlign.Center}
@@ -138,7 +199,7 @@ const ConfirmAddSuggestedNFT = () => {
               <ButtonLink
                 key={origin}
                 size={BUTTON_SIZES.INHERIT}
-                href={origin}
+                href={link}
                 target="_blank"
               >
                 {origin}
@@ -180,6 +241,7 @@ const ConfirmAddSuggestedNFT = () => {
                   return (
                     <Box
                       className="confirm-add-suggested-nft__nft-single"
+                      key={`confirm-add-suggested-nft__nft-single-${id}`}
                       borderRadius={BorderRadius.MD}
                       margin={0}
                       padding={0}
@@ -233,6 +295,7 @@ const ConfirmAddSuggestedNFT = () => {
                           )}
                           <Text
                             variant={TextVariant.bodyMd}
+                            color={TextColor.textAlternative}
                             className="confirm-add-suggested-nft__nft-tokenId"
                           >
                             #{tokenId}
@@ -298,6 +361,7 @@ const ConfirmAddSuggestedNFT = () => {
                         )}
                         <Text
                           variant={TextVariant.bodySm}
+                          color={TextColor.textAlternative}
                           className="confirm-add-suggested-nft__nft-tokenId"
                         >
                           #{tokenId}

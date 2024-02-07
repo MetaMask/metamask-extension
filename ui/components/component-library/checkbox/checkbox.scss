@@ -42,6 +42,7 @@
 
   &--disabled {
     opacity: var(--opacity-disabled);
+    cursor: not-allowed;
   }
 
   &__icon {

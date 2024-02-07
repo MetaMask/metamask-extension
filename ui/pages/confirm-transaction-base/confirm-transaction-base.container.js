@@ -1,10 +1,16 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IN
+import { CHAIN_ID_TO_RPC_URL_MAP } from '../../../shared/constants/network';
+
+///: END:ONLY_INCLUDE_IF
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -17,6 +23,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
   addToAddressBook,
+  updateTransaction,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -41,6 +48,9 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
+  getUnapprovedTransactions,
+  getInternalAccountByAddress,
+  getApprovedAndSignedTransactions,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -50,17 +60,18 @@ import {
   getNativeCurrency,
   getSendToAccounts,
   getProviderConfig,
+  findKeyringForAddress,
+  getConversionRate,
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getEnvironmentType,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../app/scripts/lib/util';
 
 import {
   parseStandardTokenTransactionData,
-  transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import {
@@ -72,16 +83,20 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/no-duplicates
+import { getIsUsingPaymaster } from '../../selectors/account-abstraction';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+// eslint-disable-next-line import/no-duplicates
 import { getAccountType } from '../../selectors/selectors';
+
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
-import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
-///: END:ONLY_INCLUDE_IN
 import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../shared/constants/transaction';
+  getIsNoteToTraderSupported,
+  getIsCustodianPublishesTransactionSupported,
+} from '../../selectors/institutional/selectors';
+import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
+///: END:ONLY_INCLUDE_IF
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -112,27 +127,22 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const {
-    conversionRate,
-    identities,
-    addressBook,
-    networkId,
-    unapprovedTxs,
-    nextNonce,
-  } = metamask;
+  const conversionRate = getConversionRate(state);
+  const { addressBook, nextNonce } = metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
-  const txId = transactionId || Number(paramsTransactionId);
+  const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId);
   const {
     from: fromAddress,
@@ -148,7 +158,9 @@ const mapStateToProps = (state, ownProps) => {
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];
-  const { name: fromName } = identities[fromAddress];
+  const fromName = getInternalAccountByAddress(state, fromAddress)?.metadata
+    .name;
+  const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
     type === TransactionType.simpleSend || !isEmptyHexString(amount);
@@ -162,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
 
   const toName =
-    identities[toAddress]?.name ||
+    getInternalAccountByAddress(state, toAddress)?.metadata.name ||
     tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
@@ -180,14 +192,12 @@ const mapStateToProps = (state, ownProps) => {
   const {
     hexTransactionAmount,
     hexMaximumTransactionFee,
-    hexTransactionTotal,
+    hexMinimumTransactionFee,
     gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
-    )
+    .filter((key) => unapprovedTxs[key].chainId === chainId)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 
@@ -216,19 +226,31 @@ const mapStateToProps = (state, ownProps) => {
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   const isNoteToTraderSupported = getIsNoteToTraderSupported(
     state,
     fromChecksumHexAddress,
   );
-  ///: END:ONLY_INCLUDE_IN
+  const custodianPublishesTransaction =
+    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
+  const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+  const { rpcUrl: customRpcUrl } = getProviderConfig(state);
+
+  const rpcUrl = customRpcUrl || builtinRpcUrl;
+
+  ///: END:ONLY_INCLUDE_IF
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+  const isUsingPaymaster = getIsUsingPaymaster(state);
+
+  const isSigningOrSubmitting = Boolean(
+    getApprovedAndSignedTransactions(state).length,
+  );
 
   return {
     balance,
@@ -241,7 +263,7 @@ const mapStateToProps = (state, ownProps) => {
     toNickname,
     hexTransactionAmount,
     hexMaximumTransactionFee,
-    hexTransactionTotal,
+    hexMinimumTransactionFee,
     txData: fullTxData,
     tokenData,
     methodData,
@@ -280,18 +302,23 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    keyringForAccount: keyring,
+    isUsingPaymaster,
+    isSigningOrSubmitting,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
     isNotification,
-    ///: END:ONLY_INCLUDE_IN
+    custodianPublishesTransaction,
+    rpcUrl,
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
@@ -314,8 +341,21 @@ export const mapDispatchToProps = (dispatch) => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: (txData) =>
-      dispatch(updateAndApproveTx(customNonceMerge(txData))),
+    sendTransaction: (
+      txData,
+      dontShowLoadingIndicator,
+      loadingIndicatorMessage,
+    ) =>
+      dispatch(
+        updateAndApproveTx(
+          customNonceMerge(txData),
+          dontShowLoadingIndicator,
+          loadingIndicatorMessage,
+        ),
+      ),
+    updateTransaction: (txMeta) => {
+      dispatch(updateTransaction(txMeta, true));
+    },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
@@ -328,7 +368,7 @@ export const mapDispatchToProps = (dispatch) => {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     getCustodianConfirmDeepLink: (id) =>
       dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
     showTransactionsFailedModal: (errorMessage, closeNotification) =>
@@ -358,7 +398,7 @@ export const mapDispatchToProps = (dispatch) => {
       }),
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -373,11 +413,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   let isMainBetaFlask = ownProps.isMainBetaFlask || false;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   if (ownProps.isMainBetaFlask === undefined) {
     isMainBetaFlask = true;
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return {
     ...stateProps,

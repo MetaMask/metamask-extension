@@ -1,5 +1,6 @@
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   closeCurrentNotificationWindow,
   hideModal,
@@ -12,6 +13,7 @@ import {
   MessagesIndexedById,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { getCurrentNetworkTransactions } from '../../selectors';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -57,13 +59,19 @@ export function updateCustodyState(
   newState: MetaMaskReduxState['metamask'],
   state: CombinedBackgroundAndReduxState & any,
 ) {
-  if (!newState.currentNetworkTxList || !state.metamask.currentNetworkTxList) {
+  if (!newState.transactions || !state.metamask.transactions) {
     return;
   }
 
-  const differentTxs = newState.currentNetworkTxList.filter(
-    (item) =>
-      state.metamask.currentNetworkTxList.filter(
+  const newCurrentNetworkTxList = getCurrentNetworkTransactions({
+    metamask: newState,
+  });
+
+  const oldCurrentNetworkTxList = getCurrentNetworkTransactions(state);
+
+  const differentTxs = newCurrentNetworkTxList.filter(
+    (item: TransactionMeta) =>
+      oldCurrentNetworkTxList.filter(
         (tx: { [key: string]: any }) =>
           tx.custodyId === item.custodyId &&
           tx.custodyStatus !== item.custodyStatus,
@@ -71,7 +79,7 @@ export function updateCustodyState(
   );
 
   const txStateSaysDeepLinkShouldClose = Boolean(
-    differentTxs.find((tx) => {
+    differentTxs.find((tx: TransactionMeta) => {
       const custodyAccountDetails =
         state.metamask.custodyAccountDetails[
           toChecksumHexAddress(tx.txParams.from)
@@ -85,6 +93,7 @@ export function updateCustodyState(
 
       return (
         tx.custodyId === state.appState.modal.modalState.props?.custodyId &&
+        tx.custodyStatus &&
         (state.metamask.custodyStatusMaps[custody][tx.custodyStatus]
           ?.mmStatus !== 'approved' ||
           tx.custodyStatus === 'created')

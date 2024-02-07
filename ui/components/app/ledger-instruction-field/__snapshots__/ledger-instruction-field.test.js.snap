@@ -7,13 +7,15 @@ exports[`LedgerInstructionField Component rendering should render properly with 
       class="confirm-detail-row"
     >
       <div
-        class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
+        class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"
       >
         <span
           class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-primary-default"
           style="mask-image: url('./images/icons/info.svg');"
         />
-        <div>
+        <div
+          class="mm-box mm-box--min-width-0"
+        >
           <div
             class="ledger-live-dialog"
           >
@@ -37,7 +39,7 @@ exports[`LedgerInstructionField Component rendering should render properly with 
             >
               <span>
                 <button
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--text-align-left mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 >
                   Go to full screen to connect your Ledger.
                 </button>

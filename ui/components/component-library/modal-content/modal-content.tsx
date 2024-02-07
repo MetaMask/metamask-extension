@@ -1,31 +1,36 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import classnames from 'classnames';
 
 import {
   BackgroundColor,
   BorderRadius,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   JustifyContent,
   AlignItems,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
+import { Box, ModalFocus, useModalContext } from '..';
 
-import { ModalFocus, useModalContext } from '..';
+import { BoxProps } from '../box';
+import type { PolymorphicRef } from '../box';
+import {
+  ModalContentProps,
+  ModalContentSize,
+  ModalContentComponent,
+} from './modal-content.types';
 
-import { ModalContentProps, ModalContentSize } from './modal-content.types';
-
-export const ModalContent = forwardRef(
-  (
+export const ModalContent: ModalContentComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
     {
       className = '',
       children,
       size = ModalContentSize.Sm,
       modalDialogProps,
       ...props
-    }: ModalContentProps,
-    ref: React.Ref<HTMLElement>,
+    }: ModalContentProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
     const {
       onClose,
@@ -83,30 +88,35 @@ export const ModalContent = forwardRef(
         <Box
           className={classnames('mm-modal-content', className)}
           ref={ref}
-          display={DISPLAY.FLEX}
-          width={BLOCK_SIZES.SCREEN}
-          height={BLOCK_SIZES.SCREEN}
+          display={Display.Flex}
+          width={BlockSize.Screen}
+          height={BlockSize.Screen}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
-          padding={4}
-          {...props}
+          paddingRight={4}
+          paddingLeft={4}
+          paddingTop={[4, 8, 12]}
+          paddingBottom={[4, 8, 12]}
+          {...(props as BoxProps<C>)}
         >
           <Box
-            className={classnames(
-              'mm-modal-content__dialog',
-              `mm-modal-content__dialog--size-${size}`,
-            )}
             as="section"
             role="dialog"
             aria-modal="true"
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
-            width={BLOCK_SIZES.FULL}
-            marginTop={12}
-            marginBottom={12}
-            padding={4}
+            width={BlockSize.Full}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            paddingTop={4}
+            paddingBottom={4}
             ref={modalDialogRef}
             {...modalDialogProps}
+            className={classnames(
+              'mm-modal-content__dialog',
+              `mm-modal-content__dialog--size-${size}`,
+              modalDialogProps?.className,
+            )}
           >
             {children}
           </Box>

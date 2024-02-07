@@ -3,16 +3,23 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
-import slip44 from '@metamask/slip44';
+import {
+  getFormattedIpfsUrl,
+  fetchTokenContractExchangeRates,
+  CodefiTokenPricesServiceV2,
+} from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { getSnapPrefix } from '@metamask/snaps-utils';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { stripSnapPrefix } from '@metamask/snaps-utils';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+// eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-duplicates
+import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { logErrorWithMessage } from '../../../shared/modules/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -24,14 +31,14 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  SNAPS_DERIVATION_PATHS,
-  SNAPS_METADATA,
-} from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IN
-
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { SNAPS_METADATA } from '../../../shared/constants/snaps';
+///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
     return '';
@@ -113,6 +120,7 @@ export function isValidDomainName(address) {
     .match(
       /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     );
+
   return match !== null;
 }
 
@@ -207,7 +215,7 @@ export function getRandomFileName() {
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
  *
- * Example output: 0xabcd...1234
+ * Example output: 0xabcde...12345
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
@@ -498,7 +506,36 @@ export function getAssetImageURL(image, ipfsGateway) {
   }
 
   if (ipfsGateway && image.startsWith('ipfs://')) {
-    return getFormattedIpfsUrl(ipfsGateway, image, true);
+    // With v11.1.0, we started seeing errors thrown that included this
+    // line in the stack trace. The cause is that the `getIpfsCIDv1AndPath`
+    // method within assets-controllers/src/assetsUtil.ts can throw
+    // if part of the ipfsUrl, i.e. the `image` variable within this function,
+    // contains characters not in the Base58 alphabet. Details on that are
+    // here https://digitalbazaar.github.io/base58-spec/#alphabet. This happens
+    // with some NFTs, when we attempt to parse part of their IPFS image address
+    // with the `CID.parse` function (CID is part of the multiform package)
+    //
+    // Before v11.1.0 `getFormattedIpfsUrl` was not used in the extension codebase.
+    // Its use within assets-controllers always ensures that errors are caught
+    // and ignored. So while we were handling NFTs that can cause this error before,
+    // we were always catching and ignoring the error. As of PR #20172, we started
+    // passing all NFTs image URLs to `getAssetImageURL` from nft-items.js, which is
+    // why we started seeing these errors cause crashes for users in v11.1.0
+    //
+    // For the sake of a quick fix, we are wrapping this call in a try-catch, which
+    // the assets-controllers already do in some form in all cases where this function
+    // is called. This probably does not affect user experience, as we would not have
+    // correctly rendered these NFTs before v11.1.0 either (due to the same error
+    // disuccessed in this code comment).
+    //
+    // In the future, we can look into solving the root cause, which might require
+    // no longer using multiform's CID.parse() method within the assets-controller
+    try {
+      return getFormattedIpfsUrl(ipfsGateway, image, true);
+    } catch (e) {
+      logErrorWithMessage(e);
+      return '';
+    }
   }
   return image;
 }
@@ -517,21 +554,6 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
 }
 
 /**
- * Gets the name of the SLIP-44 protocol corresponding to the specified
- * `coin_type`.
- *
- * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
- * to retrieve.
- * @returns {string | undefined} The name of the protocol if found.
- */
-export function coinTypeToProtocolName(coinType) {
-  if (String(coinType) === '1') {
-    return 'Test Networks';
-  }
-  return slip44[coinType]?.name || undefined;
-}
-
-/**
  * Tests "nullishness". Used to guard a section of a component from being
  * rendered based on a value.
  *
@@ -542,31 +564,26 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-/**
- * @param {string[]} path
- * @param {string} curve
- * @returns {string | null}
- */
-export function getSnapDerivationPathName(path, curve) {
-  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
-    (derivationPath) =>
-      derivationPath.curve === curve &&
-      lodash.isEqual(derivationPath.path, path),
-  );
-
-  return pathMetadata?.name ?? null;
-}
-
-export const removeSnapIdPrefix = (snapId) =>
-  snapId?.replace(getSnapPrefix(snapId), '');
-
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapName = (snapId, subjectMetadata) => {
   if (SNAPS_METADATA[snapId]?.name) {
     return SNAPS_METADATA[snapId].name;
   }
 
-  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+  if (subjectMetadata) {
+    return subjectMetadata.name;
+  }
+
+  // Mirrors a legacy behaviour of stripSnapPrefix
+  if (!snapId) {
+    return null;
+  }
+
+  return stripSnapPrefix(snapId);
+};
+
+export const getSnapRoute = (snapId) => {
+  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {
@@ -588,7 +605,7 @@ export const getDedupedSnaps = (request, permissions) => {
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
 
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * The method escape RTL character in string
@@ -630,4 +647,61 @@ export const getNetworkNameFromProviderType = (providerName) => {
  */
 export const isAbleToExportAccount = (keyringType = '') => {
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+/**
+ * Checks if a tokenId in Hex or decimal format already exists in an object.
+ *
+ * @param {string} address - collection address.
+ * @param {string} tokenId - tokenId to search for
+ * @param {*} obj - object to look into
+ * @returns {boolean} `false` if tokenId does not already exist.
+ */
+export const checkTokenIdExists = (address, tokenId, obj) => {
+  // check if input tokenId is hexadecimal
+  // If it is convert to decimal and compare with existing tokens
+  const isHex = isStrictHexString(tokenId);
+  let convertedTokenId = tokenId;
+  if (isHex) {
+    // Convert to decimal
+    convertedTokenId = hexToDecimal(tokenId);
+  }
+  // Convert the input address to checksum address
+  const checkSumAdr = toChecksumHexAddress(address);
+  if (obj[checkSumAdr]) {
+    const value = obj[checkSumAdr];
+    return lodash.some(value.nfts, (nft) => {
+      return (
+        nft.address === checkSumAdr &&
+        (isEqualCaseInsensitive(nft.tokenId, tokenId) ||
+          isEqualCaseInsensitive(nft.tokenId, convertedTokenId.toString()))
+      );
+    });
+  }
+  return false;
+};
+
+/**
+ * Retrieves token prices
+ *
+ * @param {string} nativeCurrency - native currency to fetch prices for.
+ * @param {Hex[]} tokenAddresses - set of contract addresses
+ * @param {Hex} chainId - current chainId
+ * @returns The prices for the requested tokens.
+ */
+export const fetchTokenExchangeRates = async (
+  nativeCurrency,
+  tokenAddresses,
+  chainId,
+) => {
+  try {
+    return await fetchTokenContractExchangeRates({
+      tokenPricesService: new CodefiTokenPricesServiceV2(),
+      nativeCurrency,
+      tokenAddresses,
+      chainId,
+    });
+  } catch (err) {
+    return {};
+  }
 };

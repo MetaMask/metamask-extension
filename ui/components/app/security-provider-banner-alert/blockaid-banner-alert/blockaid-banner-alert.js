@@ -1,17 +1,27 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
+import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
-import { Text } from '../../../component-library';
-import { Severity } from '../../../../helpers/constants/design-system';
+import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import {
+  OverflowWrap,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
-
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import {
   BlockaidReason,
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
+import { Text } from '../../../component-library';
+
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import LoadingIndicator from '../../../ui/loading-indicator';
+import { getReportUrl } from './blockaid-banner-utils';
+
+const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
 const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
@@ -21,13 +31,14 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
+  [BlockaidReason.failed]: 'blockaidDescriptionFailed',
+
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
   [BlockaidReason.maliciousDomain]: 'blockaidDescriptionMaliciousDomain',
 
   [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionMightLoseAssets',
   [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
-  [BlockaidReason.unfairTrade]: 'blockaidDescriptionMightLoseAssets',
 
   [BlockaidReason.rawNativeTokenTransfer]: 'blockaidDescriptionTransferFarming',
   [BlockaidReason.transferFarming]: 'blockaidDescriptionTransferFarming',
@@ -36,13 +47,34 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.other]: 'blockaidDescriptionMightLoseAssets',
 });
 
-/** List of suspicious reason(s). Other reasons will be deemed as deceptive. */
-const SUSPCIOUS_REASON = [BlockaidReason.rawSignatureFarming];
+/** Reason to title translation key mapping. */
+const REASON_TO_TITLE_TKEY = Object.freeze({
+  [BlockaidReason.failed]: 'blockaidTitleMayNotBeSafe',
+  [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
+});
 
-function BlockaidBannerAlert({
-  ppomResponse: { reason, resultType, features },
-}) {
+function BlockaidBannerAlert({ txData, ...props }) {
+  const { securityAlertResponse, origin, msgParams, type, txParams, chainId } =
+    txData;
+
   const t = useContext(I18nContext);
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+
+  if (
+    !securityAlertResponse ||
+    Object.keys(securityAlertResponse).length === 0
+  ) {
+    return null;
+  } else if (securityAlertResponse.reason === 'loading') {
+    return <LoadingIndicator isLoading />;
+  }
+
+  const {
+    block,
+    features,
+    reason,
+    result_type: resultType,
+  } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
     return null;
@@ -52,39 +84,75 @@ function BlockaidBannerAlert({
     captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
   }
 
-  const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
+  const description = t(
+    REASON_TO_DESCRIPTION_TKEY[reason] || REASON_TO_DESCRIPTION_TKEY.other,
+  );
 
-  const details = Boolean(features?.length) && (
-    <Text as="ul">
+  const details = features?.length ? (
+    <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
       {features.map((feature, i) => (
         <li key={`blockaid-detail-${i}`}>• {feature}</li>
       ))}
     </Text>
-  );
+  ) : null;
+
+  const isFailedResultType = resultType === BlockaidResultType.Failed;
 
   const severity =
     resultType === BlockaidResultType.Malicious
       ? Severity.Danger
       : Severity.Warning;
 
-  const title =
-    SUSPCIOUS_REASON.indexOf(reason) > -1
-      ? t('blockaidTitleSuspicious')
-      : t('blockaidTitleDeceptive');
+  const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
+
+  /** Data we pass to Blockaid false reporting portal. As far as I know, there are no documents that exist that specifies these key values */
+  const reportUrl = (() => {
+    const reportData = {
+      blockNumber: block,
+      blockaidVersion: BlockaidPackage.version,
+      chain: NETWORK_TO_NAME_MAP[chainId],
+      classification: isFailedResultType ? 'error' : reason,
+      domain: origin ?? msgParams?.origin ?? txParams?.origin,
+      jsonRpcMethod: type,
+      jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+      resultType: isFailedResultType ? BlockaidResultType.Errored : resultType,
+      reproduce: JSON.stringify(features),
+    };
+
+    const jsonData = JSON.stringify(reportData);
+
+    const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+
+    return getReportUrl(encodedData);
+  })();
+
+  const onClickSupportLink = () => {
+    updateTransactionEventFragment(
+      {
+        properties: {
+          external_link_clicked: 'security_alert_support_link',
+        },
+      },
+      txData.id,
+    );
+  };
 
   return (
     <SecurityProviderBannerAlert
       description={description}
       details={details}
       provider={SecurityProvider.Blockaid}
+      reportUrl={reportUrl}
       severity={severity}
       title={title}
+      onClickSupportLink={onClickSupportLink}
+      {...props}
     />
   );
 }
 
 BlockaidBannerAlert.propTypes = {
-  ppomResponse: PropTypes.object,
+  txData: PropTypes.object,
 };
 
 export default BlockaidBannerAlert;

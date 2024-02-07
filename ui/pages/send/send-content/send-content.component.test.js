@@ -4,6 +4,12 @@ import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockSendState from '../../../../test/data/mock-send-state.json';
+import {
+  NETWORK_TYPES,
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendContent from '.';
 
 jest.mock('../../../store/actions', () => ({
@@ -13,11 +19,29 @@ jest.mock('../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
   createTransactionEventFragment: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue('unknown'),
+  getTokenSymbol: jest.fn().mockResolvedValue('ETH'),
 }));
 
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 describe('SendContent Component', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
   describe('render', () => {
-    const mockStore = configureMockStore()(mockSendState);
+    const mockStore = configureMockStore()({
+      ...mockSendState,
+      metamask: {
+        ...mockSendState.metamask,
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
+          nickname: GOERLI_DISPLAY_NAME,
+          type: NETWORK_TYPES.GOERLI,
+        },
+      },
+    });
 
     it('should match snapshot', async () => {
       const props = {
@@ -59,6 +83,14 @@ describe('SendContent Component', () => {
           },
         },
       },
+      metamask: {
+        ...mockSendState.metamask,
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
+          nickname: GOERLI_DISPLAY_NAME,
+          type: NETWORK_TYPES.GOERLI,
+        },
+      },
     };
 
     it('should not render the SendHexDataRow if props.showHexData is false', async () => {
@@ -67,7 +99,17 @@ describe('SendContent Component', () => {
         showHexData: false,
       };
 
-      const mockStore = configureMockStore()(mockSendState);
+      const mockStore = configureMockStore()({
+        ...mockSendState,
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
+      });
 
       const { queryByText } = renderWithProvider(
         <SendContent {...props} />,
@@ -106,7 +148,17 @@ describe('SendContent Component', () => {
         showHexData: false,
       };
 
-      const mockStore = configureMockStore()(mockSendState);
+      const mockStore = configureMockStore()({
+        ...mockSendState,
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
+      });
 
       const { queryByTestId } = renderWithProvider(
         <SendContent {...props} />,
@@ -131,6 +183,11 @@ describe('SendContent Component', () => {
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
         },
       };
 
@@ -168,6 +225,15 @@ describe('SendContent Component', () => {
                 warning: 'knownAddressRecipient',
               },
             },
+          },
+        },
+        metamask: {
+          ...mockSendState.metamask,
+          gasEstimateType: 'none',
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
           },
         },
       };
@@ -208,6 +274,15 @@ describe('SendContent Component', () => {
             },
           },
         },
+        metamask: {
+          ...mockSendState.metamask,
+          gasEstimateType: 'none',
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
       };
 
       const mockStore = configureMockStore()(assertErrorState);
@@ -233,7 +308,17 @@ describe('SendContent Component', () => {
         warning: 'warning',
       };
 
-      const mockStore = configureMockStore()(mockSendState);
+      const mockStore = configureMockStore()({
+        ...mockSendState,
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
+      });
 
       const { queryByTestId } = renderWithProvider(
         <SendContent {...props} />,

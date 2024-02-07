@@ -12,6 +12,9 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
+///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
+import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
+///: END:ONLY_INCLUDE_IF
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -33,6 +36,7 @@ import { usePrevious } from '../../hooks/usePrevious';
 import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
+  use4ByteResolutionSelector,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -43,6 +47,9 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
+///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
+import Confirm from '../confirm/confirm';
+///: END:ONLY_INCLUDE_IF
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -71,6 +78,11 @@ const ConfirmTransaction = () => {
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
+  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
+  const { currentConfirmation } = useCurrentConfirmation();
+  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     const tx = getTransaction();
@@ -88,7 +100,7 @@ const ConfirmTransaction = () => {
   ]);
 
   const { id, type } = transaction;
-  const transactionId = id && String(id);
+  const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
     transactionId &&
@@ -127,7 +139,7 @@ const ConfirmTransaction = () => {
       const { txParams: { data } = {}, origin } = transaction;
 
       if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data));
+        dispatch(getContractMethodData(data, use4ByteResolution));
       }
 
       const txId = transactionId || paramsTransactionId;
@@ -154,7 +166,7 @@ const ConfirmTransaction = () => {
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data));
+        dispatch(getContractMethodData(data, use4ByteResolution));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
@@ -178,7 +190,18 @@ const ConfirmTransaction = () => {
     totalUnapproved,
     transaction,
     transactionId,
+    use4ByteResolution,
   ]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
+  // Code below is required as we need to support both new and old confirmation pages,
+  // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
+  // Once we migrate all confirmations to new designs we can get rid of this code
+  // and render <Confirm /> component for all confirmation requests.
+  if (currentConfirmation) {
+    return <Confirm />;
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;

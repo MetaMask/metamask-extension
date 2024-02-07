@@ -1,27 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import Box from '../../../../components/ui/box';
-import SiteIcon from '../../../../components/ui/site-icon';
-import Typography from '../../../../components/ui/typography/typography';
 import {
-  TypographyVariant,
-  FontWeight,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../../../components/component-library';
+import {
   Display,
   JustifyContent,
   BlockSize,
   AlignItems,
-  TextAlign,
-  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
-export default function ConfirmationNetworkSwitch({ newNetwork }) {
-  const { chainId, nickname, type } = useSelector(getProviderConfig);
+const getNetworkDetails = (network) => {
+  return {
+    ...network,
+    nickname: network.nickname ?? NETWORK_TO_NAME_MAP[network.chainId],
+    iconUrl:
+      network.iconUrl ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+  };
+};
+
+export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
+  const fromNetworkDetails = getNetworkDetails(fromNetwork);
+  const toNetworkDetails = getNetworkDetails(toNetwork);
 
   return (
     <Box
@@ -35,29 +42,15 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
-          <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-            name={nickname}
-            size={64}
-          />
-        ) : (
-          <div className="confirmation-network-switch__unknown-icon">
-            <i className="fa fa-question fa-2x" />
-          </div>
-        )}
-        <Typography
-          color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
-        >
-          {nickname || NETWORK_TO_NAME_MAP[type]}
-        </Typography>
+        <AvatarNetwork
+          src={fromNetworkDetails.iconUrl}
+          name={fromNetworkDetails.nickname}
+          size={AvatarNetworkSize.Xl}
+          marginBottom={2}
+        />
+        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
+          {fromNetworkDetails.nickname}
+        </Text>
       </Box>
       <Box
         className="confirmation-network-switch__center-icon"
@@ -72,37 +65,29 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
-          <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
-            name={newNetwork.nickname}
-            size={64}
-          />
-        ) : (
-          <div className="confirmation-network-switch__unknown-icon">
-            <i className="fa fa-question fa-2x" />
-          </div>
-        )}
-        <Typography
-          color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
-        >
-          {newNetwork.nickname}
-        </Typography>
+        <AvatarNetwork
+          src={toNetworkDetails.iconUrl}
+          name={toNetworkDetails.nickname}
+          size={AvatarNetworkSize.Xl}
+          marginBottom={2}
+        />
+        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
+          {toNetworkDetails.nickname}
+        </Text>
       </Box>
     </Box>
   );
 }
 
 ConfirmationNetworkSwitch.propTypes = {
-  newNetwork: PropTypes.shape({
+  toNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
     nickname: PropTypes.string.isRequired,
+    type: PropTypes.string,
+  }),
+  fromNetwork: PropTypes.shape({
+    chainId: PropTypes.string.isRequired,
+    nickname: PropTypes.string.isRequired,
+    type: PropTypes.string,
   }),
 };

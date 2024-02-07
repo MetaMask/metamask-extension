@@ -8,13 +8,13 @@ import { Label } from './label';
 
 `Label` is used to describe the purpose of a form field
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-label--default-story" />
 </Canvas>
 
 ## Props
-
-The `Label` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={Label} />
 
@@ -32,7 +32,7 @@ The `children` of the label can be text or a react node
 
 ```jsx
 import { DISPLAY, AlignItems, FLEX_DIRECTION, Size, IconColor } from '../../../helpers/constants/design-system';
-import { Label, TextField, Icon, IconName, IconSize } from '../../component-library';
+import { Label, Icon, IconName, IconSize, TextField } from '../../component-library';
 
 <Label>Plain text</Label>
 <Label display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>

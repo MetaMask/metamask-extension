@@ -4,10 +4,10 @@ import thunk from 'redux-thunk';
 import nock from 'nock';
 import { waitFor } from '@testing-library/react';
 
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
   CONSTANTS,
 } from '../../../test/jest';

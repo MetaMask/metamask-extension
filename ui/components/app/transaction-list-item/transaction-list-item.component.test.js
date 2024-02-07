@@ -1,7 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
@@ -12,11 +13,8 @@ import {
   getShouldShowFiat,
   getCurrentNetwork,
 } from '../../../selectors';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
-
+import { renderWithProvider } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -25,7 +23,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-
+import { abortTransactionSigning } from '../../../store/actions';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -83,6 +81,7 @@ jest.mock('react', () => {
 
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  abortTransactionSigning: jest.fn(),
 }));
 
 jest.mock('../../../store/institutional/institution-background', () => ({
@@ -121,17 +120,17 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  beforeAll(() => {
+    useGasFeeEstimates.mockImplementation(
+      () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+    );
+  });
+
+  afterAll(() => {
+    useGasFeeEstimates.mockRestore();
+  });
+
   describe('ActivityListItem interactions', () => {
-    beforeAll(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-    });
-
-    afterAll(() => {
-      useGasFeeEstimates.mockRestore();
-    });
-
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
@@ -169,16 +168,6 @@ describe('TransactionListItem', () => {
   });
 
   describe('when account has insufficient balance to cover gas', () => {
-    beforeAll(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-    });
-
-    afterAll(() => {
-      useGasFeeEstimates.mockRestore();
-    });
-
     it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
@@ -228,13 +217,70 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+        },
       };
 
-      const { queryByTestId } = renderWithProvider(
+      const { getByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
-      expect(queryByTestId('custody-icon')).toBeInTheDocument();
+      const custodyIcon = getByTestId('custody-icon');
+      const custodyIconBadge = getByTestId('custody-icon-badge');
+
+      expect(custodyIcon).toBeInTheDocument();
+      expect(custodyIconBadge).toHaveClass('mm-box--color-primary-default');
+    });
+
+    it('should display correctly the custody icon if status is signed', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+          status: TransactionStatus.signed,
+        },
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+
+      const custodyIconBadge = getByTestId('custody-icon-badge');
+
+      expect(custodyIconBadge).toHaveClass('mm-box--color-icon-alternative');
+    });
+
+    it('should display correctly the custody icon if status is rejected', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+          status: TransactionStatus.rejected,
+        },
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+
+      const custodyIconBadge = getByTestId('custody-icon-badge');
+
+      expect(custodyIconBadge).toHaveClass('mm-box--color-error-default');
     });
 
     it('should click the custody list item and view the send screen', () => {
@@ -248,7 +294,10 @@ describe('TransactionListItem', () => {
 
       const newTransactionGroup = {
         ...transactionGroup,
-        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+        },
       };
 
       const { queryByTestId } = renderWithProvider(
@@ -262,5 +311,84 @@ describe('TransactionListItem', () => {
       const sendTextExists = screen.queryAllByText('Send');
       expect(sendTextExists).toBeTruthy();
     });
+
+    it('should not show the cancel tx button when the tx is from a custodian', () => {
+      const store = mockStore(mockState);
+
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          custodyId: '1',
+        },
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+        store,
+      );
+
+      const cancelButton = queryByTestId('cancel-button');
+      expect(cancelButton).not.toBeInTheDocument();
+    });
+  });
+
+  it('hides speed up button if status is approved', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        balance: '2AA1EFB94E0000',
+      }),
+    );
+
+    const transactionGroupSigning = {
+      ...transactionGroup,
+      primaryTransaction: {
+        ...transactionGroup.primaryTransaction,
+        status: TransactionStatus.approved,
+      },
+    };
+
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={transactionGroupSigning} />,
+    );
+
+    const speedUpButton = queryByTestId('speed-up-button');
+    expect(speedUpButton).not.toBeInTheDocument();
+  });
+
+  it('aborts transaction signing if cancel button clicked and status is approved', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        balance: '2AA1EFB94E0000',
+      }),
+    );
+
+    useDispatch.mockReturnValue(jest.fn());
+
+    const transactionGroupSigning = {
+      ...transactionGroup,
+      primaryTransaction: {
+        ...transactionGroup.primaryTransaction,
+        status: TransactionStatus.approved,
+      },
+    };
+
+    const { queryByTestId } = renderWithProvider(
+      <TransactionListItem transactionGroup={transactionGroupSigning} />,
+    );
+
+    const cancelButton = queryByTestId('cancel-button');
+    fireEvent.click(cancelButton);
+
+    expect(abortTransactionSigning).toHaveBeenCalledTimes(1);
+    expect(abortTransactionSigning).toHaveBeenCalledWith(
+      transactionGroupSigning.primaryTransaction.id,
+    );
   });
 });

@@ -142,6 +142,7 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
         ...draftTxState.recipient,
       },
       history: draftTxState.history ?? [],
+      userInputHexData: draftTxState.userInputHexData ?? null,
       // Use this key if you want to console.log inside the send.js file.
       test: draftTxState.test ?? 'yo',
     },

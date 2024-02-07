@@ -3,18 +3,30 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
-} from '../../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { act } from 'react-dom/test-utils';
+import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { setBackgroundConnection } from '../../store/background-connection';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { KeyringType } from '../../../shared/constants/keyring';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import { domainInitialState } from '../../ducks/domains';
 
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 const middleware = [thunk];
@@ -27,19 +39,18 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
 });
 
-const mockNetworkId = '5';
-
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
-const mockTxParamsToAddressConcat = '0x85c...D65e';
+const mockMaliciousToAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const mockTxParamsToAddressConcat = '0x85c16...DD65e';
 
 const mockParsedTxDataToAddressWithout0x =
   'e57e7847fd3661a9b7c86aaf1daea08d9da5750a';
-const mockParsedTxDataToAddress = '0xe57...750A';
+const mockParsedTxDataToAddress = '0xe57E7...5750A';
 
 const mockPropsToAddress = '0x33m1685cfceaa5c0bdb1609fc536e9a8387dd567';
-const mockPropsToAddressConcat = '0x33m...d567';
+const mockPropsToAddressConcat = '0x33m16...dd567';
 
 const mockTxParams = {
   from: mockTxParamsFromAddress,
@@ -64,13 +75,14 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: '/' },
   metamask: {
-    unapprovedTxs: {
-      1: {
+    transactions: [
+      {
         id: 1,
-        metamaskNetworkId: mockNetworkId,
+        chainId: '0x5',
         txParams: { ...mockTxParams },
+        status: 'unapproved',
       },
-    },
+    ],
     gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
@@ -84,26 +96,31 @@ const baseStore = {
         accounts: ['0x0'],
       },
     ],
-    networkId: mockNetworkId,
-    networkDetails: {
-      EIPS: {},
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      },
     },
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
     },
     currentCurrency: 'USD',
+    currencyRates: {},
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
+      nickname: GOERLI_DISPLAY_NAME,
+      type: NETWORK_TYPES.GOERLI,
     },
-    nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    cachedBalances: {
+    accountsByChainId: {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
@@ -118,6 +135,24 @@ const baseStore = {
         name: 'Test Address 1',
       },
     },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: mockTxParamsFromAddress,
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Account 1',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},
     ensResolutionsByAddress: {},
@@ -126,7 +161,6 @@ const baseStore = {
   confirmTransaction: {
     txData: {
       id: 1,
-      metamaskNetworkId: mockNetworkId,
       txParams: { ...mockTxParams },
       time: 1675012496170,
       status: TransactionStatus.unapproved,
@@ -169,7 +203,7 @@ const baseStore = {
 const mockedStore = jest.mocked(baseStore);
 
 const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
-  mockedStore.metamask.unapprovedTxs[1].txParams = { ..._mockTxParams };
+  mockedStore.metamask.transactions[0].txParams = { ..._mockTxParams };
   mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
 };
 
@@ -194,6 +228,57 @@ describe('Confirm Transaction Base', () => {
     );
     expect(queryByText('Layer 1 fees')).not.toBeInTheDocument();
     expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
+  });
+
+  it('should render only total fee details if simulation fails', () => {
+    mockedStore.send.hasSimulationError = true;
+    const store = configureMockStore(middleware)(mockedStore);
+    const { queryByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    expect(queryByText('Total')).toBeInTheDocument();
+    expect(queryByText('Amount + gas fee')).toBeInTheDocument();
+
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
+  });
+
+  it('renders blockaid security alert if recipient is a malicious address', () => {
+    const newMockedStore = {
+      ...mockedStore,
+      send: {
+        ...mockedStore.send,
+        hasSimulationError: false,
+      },
+      confirmTransaction: {
+        ...mockedStore.confirmTransaction,
+        txData: {
+          ...mockedStore.confirmTransaction.txData,
+          txParams: {
+            ...mockedStore.confirmTransaction.txData.txParams,
+            to: mockMaliciousToAddress,
+          },
+          securityAlertResponse: {
+            reason: BlockaidReason.maliciousDomain,
+            result_type: BlockaidResultType.Malicious,
+            features: [],
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(newMockedStore);
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    const securityProviderBanner = getByTestId(
+      'security-provider-banner-alert',
+    );
+    expect(securityProviderBanner).toBeInTheDocument();
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
@@ -221,7 +306,7 @@ describe('Confirm Transaction Base', () => {
     mockedStore.metamask.mmiConfiguration = {
       custodians: [
         {
-          name: 'saturn-dev',
+          envName: 'saturn-dev',
           displayName: 'Saturn Custody',
           isNoteToTraderSupported: true,
         },
@@ -235,6 +320,119 @@ describe('Confirm Transaction Base', () => {
     );
 
     expect(getByTestId('note-tab')).toBeInTheDocument();
+  });
+
+  it('handleMMISubmit calls sendTransaction correctly when isNoteToTraderSupported is false', async () => {
+    const newMockedStore = {
+      ...mockedStore,
+      appState: {
+        ...mockedStore.appState,
+        gasLoadingAnimationIsShowing: false,
+      },
+      confirmTransaction: {
+        ...mockedStore.confirmTransaction,
+        txData: {
+          ...mockedStore.confirmTransaction.txData,
+          custodyStatus: true,
+        },
+      },
+      metamask: {
+        ...mockedStore.metamask,
+        accounts: {
+          [mockTxParamsFromAddress]: {
+            balance: '0x1000000000000000000',
+            address: mockTxParamsFromAddress,
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: true,
+            },
+            status: NetworkStatus.Available,
+          },
+        },
+        customGas: {
+          gasLimit: '0x5208',
+          gasPrice: '0x59682f00',
+        },
+        noGasPrice: false,
+        keyrings: [
+          {
+            type: 'Custody',
+            accounts: ['0x123456789'],
+          },
+        ],
+        custodyAccountDetails: {
+          [mockTxParamsFromAddress]: {
+            address: mockTxParamsFromAddress,
+            details: 'details',
+            custodyType: 'testCustody - Saturn',
+            custodianName: 'saturn-dev',
+          },
+        },
+        mmiConfiguration: {
+          custodians: [
+            {
+              envName: 'saturn-dev',
+              displayName: 'Saturn Custody',
+              isNoteToTraderSupported: false,
+            },
+          ],
+        },
+      },
+      send: {
+        ...mockedStore.send,
+        gas: {
+          ...mockedStore.send.gas,
+          gasEstimateType: GasEstimateTypes.legacy,
+          gasFeeEstimates: {
+            low: '0',
+            medium: '1',
+            high: '2',
+          },
+        },
+        hasSimulationError: false,
+        userAcknowledgedGasMissing: false,
+        submitting: false,
+        hardwareWalletRequiresConnection: false,
+        gasIsLoading: false,
+        gasFeeIsCustom: true,
+      },
+    };
+
+    const store = configureMockStore(middleware)(newMockedStore);
+    const sendTransaction = jest
+      .fn()
+      .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+    const updateTransaction = jest.fn().mockResolvedValue();
+    const showCustodianDeepLink = jest.fn();
+    const setWaitForConfirmDeepLinkDialog = jest.fn();
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase
+        actionKey="confirm"
+        sendTransaction={sendTransaction}
+        updateTransaction={updateTransaction}
+        showCustodianDeepLink={showCustodianDeepLink}
+        setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
+        toAddress={mockPropsToAddress}
+        toAccounts={[{ address: mockPropsToAddress }]}
+        isMainBetaFlask={false}
+      />,
+      store,
+    );
+
+    const confirmButton = getByTestId('page-container-footer-next');
+
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
+
+    expect(sendTransaction).toHaveBeenCalled();
   });
 
   it('handleMainSubmit calls sendTransaction correctly', async () => {
@@ -253,10 +451,12 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        networkDetails: {
-          ...mockedStore.metamask.networkDetails,
-          EIPS: {
-            1559: true,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: { 1559: true },
+            status: NetworkStatus.Available,
           },
         },
         customGas: {
@@ -284,6 +484,7 @@ describe('Confirm Transaction Base', () => {
         gasFeeIsCustom: true,
       },
     };
+
     const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest.fn().mockResolvedValue();
 
@@ -324,10 +525,14 @@ describe('Confirm Transaction Base', () => {
           },
         },
         gasEstimateType: GasEstimateTypes.feeMarket,
-        networkDetails: {
-          ...mockedStore.metamask.networkDetails,
-          EIPS: {
-            1559: true,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: true,
+            },
+            status: NetworkStatus.Available,
           },
         },
         customGas: {
@@ -355,6 +560,7 @@ describe('Confirm Transaction Base', () => {
         gasFeeIsCustom: true,
       },
     };
+
     const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest
       .fn()

@@ -1,24 +1,23 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
-import * as actionConstants from '../../store/actionConstants';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
+import { KeyringType } from '../../../shared/constants/keyring';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-  getUseCurrencyRateCheck,
+  getSelectedNetworkClientId,
 } from '../../selectors';
+import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-
-import { KeyringType } from '../../../shared/constants/keyring';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 
 const initialState = {
   isInitialized: false,
@@ -26,10 +25,11 @@ const initialState = {
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   identities: {},
-  unapprovedTxs: {},
+  transactions: [],
   networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
+  confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
   useBlockie: false,
@@ -37,19 +37,29 @@ const initialState = {
   welcomeScreenSeen: false,
   currentLocale: '',
   currentBlockGasLimit: '',
+  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
+    petnamesEnabled: true,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
   knownMethodData: {},
+  use4ByteResolution: true,
   participateInMetaMetrics: null,
   nextNonce: null,
-  conversionRate: null,
-  nativeCurrency: 'ETH',
+  currencyRates: {
+    ETH: {
+      conversionRate: null,
+    },
+  },
+  providerConfig: {
+    ticker: 'ETH',
+  },
 };
 
 /**
@@ -109,8 +119,8 @@ export default function reduceMetamask(state = initialState, action) {
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {
       const { id: txId, value } = action;
-      let { currentNetworkTxList } = metamaskState;
-      currentNetworkTxList = currentNetworkTxList.map((tx) => {
+      let { transactions } = metamaskState;
+      transactions = transactions.map((tx) => {
         if (tx.id === txId) {
           const newTx = { ...tx };
           newTx.txParams = value;
@@ -121,7 +131,7 @@ export default function reduceMetamask(state = initialState, action) {
 
       return {
         ...metamaskState,
-        currentNetworkTxList,
+        transactions,
       };
     }
 
@@ -170,15 +180,20 @@ export default function reduceMetamask(state = initialState, action) {
         nextNonce: action.payload,
       };
     }
+    case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
+      return {
+        ...metamaskState,
+        confirmationExchangeRates: action.value,
+      };
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
         desktopEnabled: false,
       };
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     default:
       return metamaskState;
@@ -277,15 +292,13 @@ export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
 }
 
-export function getConversionRate(state) {
-  return state.metamask.conversionRate;
+export function getNativeCurrency(state) {
+  return getProviderConfig(state).ticker;
 }
 
-export function getNativeCurrency(state) {
-  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
-  return useCurrencyRateCheck
-    ? state.metamask.nativeCurrency
-    : getProviderConfig(state).ticker;
+export function getConversionRate(state) {
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.conversionRate;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -298,17 +311,17 @@ export function getSendToAccounts(state) {
   return [...fromAccounts, ...addressBookAccounts];
 }
 
-export function getUnapprovedTxs(state) {
-  return state.metamask.unapprovedTxs;
-}
-
 /**
  * Function returns true if network details are fetched and it is found to not support EIP-1559
  *
  * @param state
  */
 export function isNotEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === false;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
+    false
+  );
 }
 
 /**
@@ -317,7 +330,11 @@ export function isNotEIP1559Network(state) {
  * @param state
  */
 export function isEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === true;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata?.[selectedNetworkClientId].EIPS[1559] ===
+    true
+  );
 }
 
 export function getGasEstimateType(state) {
@@ -396,7 +413,7 @@ export function findKeyringForAddress(state, address) {
  * Given the redux state object, returns the users preferred ledger transport type
  *
  * @param {object} state - the redux state object
- * @returns {string} The users preferred ledger transport type. One of'ledgerLive', 'webhid' or 'u2f'
+ * @returns {string} The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
  */
 export function getLedgerTransportType(state) {
   return state.metamask.ledgerTransportType;

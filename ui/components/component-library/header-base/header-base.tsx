@@ -1,114 +1,126 @@
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
-  BLOCK_SIZES,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box';
+import { Box } from '..';
 
-import { HeaderBaseProps } from './header-base.types';
+import type { PolymorphicRef, BoxProps } from '../box';
 
-export const HeaderBase: React.FC<HeaderBaseProps> = ({
-  startAccessory,
-  endAccessory,
-  className = '',
-  children,
-  childrenWrapperProps,
-  startAccessoryWrapperProps,
-  endAccessoryWrapperProps,
-  ...props
-}) => {
-  const startAccessoryRef = useRef<HTMLDivElement>(null);
-  const endAccessoryRef = useRef<HTMLDivElement>(null);
-  const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
+import { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 
-  useEffect(() => {
-    function handleResize() {
-      if (startAccessoryRef.current && endAccessoryRef.current) {
-        const accMinWidth = Math.max(
-          startAccessoryRef.current.scrollWidth,
-          endAccessoryRef.current.scrollWidth,
-        );
-        setAccessoryMinWidth(accMinWidth);
-      } else if (startAccessoryRef.current && !endAccessoryRef.current) {
-        setAccessoryMinWidth(startAccessoryRef.current.scrollWidth);
-      } else if (!startAccessoryRef.current && endAccessoryRef.current) {
-        setAccessoryMinWidth(endAccessoryRef.current.scrollWidth);
-      } else {
-        setAccessoryMinWidth(0);
+export const HeaderBase: HeaderBaseComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
+    {
+      startAccessory,
+      endAccessory,
+      className = '',
+      children,
+      childrenWrapperProps,
+      startAccessoryWrapperProps,
+      endAccessoryWrapperProps,
+      ...props
+    }: HeaderBaseProps<C>,
+    ref?: PolymorphicRef<C>,
+  ) => {
+    const startAccessoryRef = useRef<HTMLDivElement>(null);
+    const endAccessoryRef = useRef<HTMLDivElement>(null);
+    const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
+
+    useEffect(() => {
+      function handleResize() {
+        if (startAccessoryRef.current && endAccessoryRef.current) {
+          const accMinWidth = Math.max(
+            startAccessoryRef.current.scrollWidth,
+            endAccessoryRef.current.scrollWidth,
+          );
+          setAccessoryMinWidth(accMinWidth);
+        } else if (startAccessoryRef.current && !endAccessoryRef.current) {
+          setAccessoryMinWidth(startAccessoryRef.current.scrollWidth);
+        } else if (!startAccessoryRef.current && endAccessoryRef.current) {
+          setAccessoryMinWidth(endAccessoryRef.current.scrollWidth);
+        } else {
+          setAccessoryMinWidth(0);
+        }
       }
-    }
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
+      handleResize();
+      window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [startAccessoryRef, endAccessoryRef, children]);
-
-  const getTitleStyles = useMemo(() => {
-    if (startAccessory && !endAccessory) {
-      return {
-        marginRight: `${accessoryMinWidth}px`,
+      return () => {
+        window.removeEventListener('resize', handleResize);
       };
-    } else if (!startAccessory && endAccessory) {
-      return {
-        marginLeft: `${accessoryMinWidth}px`,
-      };
-    }
-    return {};
-  }, [accessoryMinWidth, startAccessory, endAccessory]);
+    }, [startAccessoryRef, endAccessoryRef, children]);
 
-  return (
-    <Box
-      className={classnames('mm-header-base', className)}
-      display={DISPLAY.FLEX}
-      justifyContent={JustifyContent.spaceBetween}
-      {...props}
-    >
-      {startAccessory && (
-        <Box
-          ref={startAccessoryRef}
-          style={
-            children
-              ? {
-                  minWidth: `${accessoryMinWidth}px`,
-                }
-              : undefined
-          }
-          {...startAccessoryWrapperProps}
-        >
-          {startAccessory}
-        </Box>
-      )}
-      {children && (
-        <Box
-          width={BLOCK_SIZES.FULL}
-          style={getTitleStyles}
-          {...childrenWrapperProps}
-        >
-          {children}
-        </Box>
-      )}
-      {endAccessory && (
-        <Box
-          display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.flexEnd}
-          ref={endAccessoryRef}
-          style={
-            children
-              ? {
-                  minWidth: `${accessoryMinWidth}px`,
-                }
-              : undefined
-          }
-          {...endAccessoryWrapperProps}
-        >
-          {endAccessory}
-        </Box>
-      )}
-    </Box>
-  );
-};
+    const getTitleStyles = useMemo(() => {
+      if (startAccessory && !endAccessory && accessoryMinWidth) {
+        return {
+          marginRight: `${accessoryMinWidth}px`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
+        };
+      } else if (!startAccessory && endAccessory && accessoryMinWidth) {
+        return {
+          marginLeft: `${accessoryMinWidth}px`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
+        };
+      } else if (startAccessory && endAccessory && accessoryMinWidth) {
+        return {
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
+        };
+      }
+      return {};
+    }, [accessoryMinWidth, startAccessory, endAccessory]);
+
+    return (
+      <Box
+        className={classnames('mm-header-base', className)}
+        ref={ref}
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+        {...(props as BoxProps<C>)}
+      >
+        {startAccessory && (
+          <Box
+            ref={startAccessoryRef}
+            style={
+              children
+                ? {
+                    minWidth: `${accessoryMinWidth}px`,
+                  }
+                : undefined
+            }
+            {...(startAccessoryWrapperProps as BoxProps<'div'>)}
+          >
+            {startAccessory}
+          </Box>
+        )}
+        {children && (
+          <Box
+            style={getTitleStyles}
+            {...(childrenWrapperProps as BoxProps<'div'>)}
+          >
+            {children}
+          </Box>
+        )}
+        {endAccessory && (
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexEnd}
+            ref={endAccessoryRef}
+            style={
+              children
+                ? {
+                    minWidth: `${accessoryMinWidth}px`,
+                  }
+                : undefined
+            }
+            {...(endAccessoryWrapperProps as BoxProps<'div'>)}
+          >
+            {endAccessory}
+          </Box>
+        )}
+      </Box>
+    );
+  },
+);

@@ -195,9 +195,6 @@
   "buildContactList": {
     "message": "Buuin ang iyong listahan ng contact"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -338,9 +335,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong key (i-click para kopyahin)"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -408,9 +402,6 @@
   },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
   "details": {
     "message": "Mga Detalye"
@@ -483,17 +474,11 @@
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nahanap ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
   },
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
-  },
-  "enterPassword": {
-    "message": "Ilagay ang password"
   },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
@@ -544,9 +529,6 @@
   },
   "expandView": {
     "message": "I-expand ang view"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Pribadong Key"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -1211,12 +1193,6 @@
   "searchAccounts": {
     "message": "Maghanap ng Account"
   },
-  "searchResults": {
-    "message": "Mga Resulta ng Paghahanap"
-  },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -1314,9 +1290,6 @@
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
-  },
-  "showPrivateKeys": {
-    "message": "Ipakita ang Mga Private Key"
   },
   "sigRequest": {
     "message": "Request ng Signature"
@@ -1580,9 +1553,6 @@
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
   },
-  "swapSourceInfo": {
-    "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
   "swapSwapFrom": {
     "message": "I-swap mula sa"
   },
@@ -1770,9 +1740,6 @@
   "tryAgain": {
     "message": "Subukan ulit"
   },
-  "typePassword": {
-    "message": "Uri ng password ng iyong MetaMask"
-  },
   "unapproved": {
     "message": "Hindi inaprubahan"
   },
@@ -1781,12 +1748,6 @@
   },
   "unknown": {
     "message": "Hindi Alam"
-  },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukan ulit..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaproblema...."
   },
   "unknownNetwork": {
     "message": "Hindi Alam na Pribadong Network"
@@ -1827,10 +1788,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Makikita sa $1 ang decimal ng token",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",

@@ -1,0 +1,18 @@
+
+.create-snap-account-page {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  @include screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include screen-lg-min {
+    width: $width-screen-lg-min;
+  }
+}

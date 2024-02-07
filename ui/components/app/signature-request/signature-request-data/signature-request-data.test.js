@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { sanitizeMessage } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
@@ -47,6 +48,37 @@ describe('Signature Request Data', () => {
             name: 'Account 2',
             address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
           },
+        },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         addressBook: {
           '0x5': {
@@ -180,7 +212,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render first account name from wallets array if address exists in identities object', () => {
+    it('should render first account name from wallets array if address exists in internal account object', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
@@ -199,7 +231,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render second account name from wallets array if address exists in identities object', () => {
+    it('should render second account name from wallets array if address exists in internal account object', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
@@ -264,13 +296,13 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render first shorten address from wallets array if address does not exists in identities and address book objects', () => {
+    it('should render first shorten address from wallets array if address does not exists in internal account and address book objects', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
       );
 
-      expect(getByText('0xbBb...BBbB')).toBeInTheDocument();
+      expect(getByText('0xbBbBB...bBBbB')).toBeInTheDocument();
     });
 
     it('should render Identicon for second wallet in "to" array of objects', () => {
@@ -283,13 +315,13 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render second shorten address from wallets array if address does not exists in identities and address book objects', () => {
+    it('should render second shorten address from wallets array if address does not exists in internal account and address book objects', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
       );
 
-      expect(getByText('0xB0B...Ea57')).toBeInTheDocument();
+      expect(getByText('0xB0Bda...bEa57')).toBeInTheDocument();
     });
 
     it('should render Identicon for third wallet in "to" array of objects', () => {
@@ -302,13 +334,12 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render third shorten address from wallets array if address does not exists in identities and address book objects', () => {
+    it('should render third shorten address from wallets array if address does not exists in internal account and address book objects', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
       );
-
-      expect(getByText('0xB0B...0000')).toBeInTheDocument();
+      expect(getByText('0xB0B0b...00000')).toBeInTheDocument();
     });
 
     it('should escape RTL character in label or value', () => {

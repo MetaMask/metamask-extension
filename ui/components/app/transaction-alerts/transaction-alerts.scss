@@ -1,5 +1,6 @@
 .transaction-alerts {
   text-align: left;
+  margin: 15px;
 
   & > *:first-of-type {
     margin-top: 20px;
@@ -25,5 +26,11 @@
     display: inline;
     padding: 0;
     font-size: $font-size-h7;
+  }
+
+  // We plan to deprecate SecurityProviderBannerMessage in favor of SecurityProviderBannerAlert. This override should be temporary
+  .security-provider-banner-message {
+    margin-left: 0;
+    margin-right: 0;
   }
 }

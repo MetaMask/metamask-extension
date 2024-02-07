@@ -14,22 +14,25 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 ## Building locally
 
-- Install [Node.js](https://nodejs.org) version 16
+- Install [Node.js](https://nodejs.org) version 20
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
-- Install [Yarn v3](https://yarnpkg.com/getting-started/install)
-    - ONLY follow the steps in the "Install Corepack" and "Updating the global Yarn version" sections
-    - DO NOT take any of the steps in the "Initializing your project", "Updating to the latest versions" or "Installing the latest build fresh from master" sections. These steps could result in your repo being reset or installing the wrong yarn version, which can break your build.
-- Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc`
-  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
+- Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
+- Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
+  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
+    - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
+- Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist`.
   - Optionally, you may run `yarn start` to run dev mode.
+  - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+  - See the [build system readme](./development/build/README.md) for build system usage information.
 
-Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+- Follow these instructions to verify that your local build runs correctly:
+  - [How to add custom build to Chrome](./docs/add-to-chrome.md)
+  - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 
-See the [build system readme](./development/build/README.md) for build system usage information.
 
 ## Git Hooks
 
@@ -38,6 +41,8 @@ To get quick feedback from our shared code quality fitness functions before comm
 `$ yarn githooks:install`
 
 You can read more about them in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
+
+If you are using VS Code and are unable to make commits from the source control sidebar due to a "command not found" error, try these steps from the [Husky docs](https://typicode.github.io/husky/troubleshooting.html#command-not-found).
 
 ## Contributing
 
@@ -76,7 +81,7 @@ For Jest debugging guide using Node.js, see [docs/tests/jest.md](docs/tests/jest
 Our e2e test suite can be run on either Firefox or Chrome.
 
 1. **required** `yarn build:test` to create a test build.
-2. run tests, targetting the browser:
+2. run tests, targeting the browser:
 
 - Firefox e2e tests can be run with `yarn test:e2e:firefox`.
 - Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
@@ -88,19 +93,36 @@ These test scripts all support additional options, which might be helpful for de
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser        Set the browser used; either 'chrome' or 'firefox'.
-                                         [string] [choices: "chrome", "firefox"]
-  --debug          Run tests in debug mode, logging each driver interaction
-                                                      [boolean] [default: false]
-  --retries        Set how many times the test should be retried upon failure.
-                                                           [number] [default: 0]
-  --leave-running  Leaves the browser running after a test fails, along with
-                   anything else that the test used (ganache, the test dapp,
-                   etc.)                              [boolean] [default: false]
+  --browser           Set the browser used; either 'chrome' or 'firefox'.
+                                            [string] [choices: "chrome", "firefox"]
+  --debug             Run tests in debug mode, logging each driver interaction
+                                                         [boolean] [default: false]
+  --retries           Set how many times the test should be retried upon failure.
+                                                              [number] [default: 0]
+  --leave-running     Leaves the browser running after a test fails, along with
+                      anything else that the test used (ganache, the test dapp,
+                      etc.)                              [boolean] [default: false]
+  --update-snapshot   Update E2E test snapshots
+                                             [alias: -u] [boolean] [default: false]
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --debug --leave-running`
+
+#### Running specific builds types e2e test
+
+Different build types have different e2e tests sets. In order to run them look in the `packaje.json` file. You will find:
+```console
+    "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
+    "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
+    "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+```
+
+
+#### Note: Running MMI e2e tests
+When running e2e on an MMI build you need to know that there are 2 separated set of tests:
+- MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
+- MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/mmi/README.md)
 
 ### Changing dependencies
 
@@ -138,8 +160,6 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 ## Other Docs
 
-- [How to add custom build to Chrome](./docs/add-to-chrome.md)
-- [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
@@ -149,8 +169,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 ## Dapp Developer Resources
 
-- [Extend MetaMask's features w/ MetaMask Snaps.](https://docs.metamask.io/guide/snaps.html)
-- [Prompt your users to add and switch to a new network.](https://medium.com/metamask/connect-users-to-layer-2-networks-with-the-metamask-custom-networks-api-d0873fac51e5)
-- [Change the logo that appears when your dapp connects to MetaMask.](https://docs.metamask.io/guide/defining-your-icon.html)
+- [Extend MetaMask's features w/ MetaMask Snaps.](https://docs.metamask.io/snaps/)
+- [Prompt your users to add and switch to a new network.](https://docs.metamask.io/wallet/how-to/add-network/)
+- [Change the logo that appears when your dapp connects to MetaMask.](https://docs.metamask.io/wallet/how-to/display/icon/)
 
 [1]: http://www.nomnoml.com/#view/%5B%3Cactor%3Euser%5D%0A%0A%5Bmetamask-ui%7C%0A%20%20%20%5Btools%7C%0A%20%20%20%20%20react%0A%20%20%20%20%20redux%0A%20%20%20%20%20thunk%0A%20%20%20%20%20ethUtils%0A%20%20%20%20%20jazzicon%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20account-detail%0A%20%20%20%20%20accounts%0A%20%20%20%20%20locked-screen%0A%20%20%20%20%20restore-vault%0A%20%20%20%20%20identicon%0A%20%20%20%20%20config%0A%20%20%20%20%20info%0A%20%20%20%5D%0A%20%20%20%5Breducers%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20metamask%0A%20%20%20%20%20identities%0A%20%20%20%5D%0A%20%20%20%5Bactions%7C%0A%20%20%20%20%20%5BbackgroundConnection%5D%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%5D%3A-%3E%5Bactions%5D%0A%20%20%20%5Bactions%5D%3A-%3E%5Breducers%5D%0A%20%20%20%5Breducers%5D%3A-%3E%5Bcomponents%5D%0A%5D%0A%0A%5Bweb%20dapp%7C%0A%20%20%5Bui%20code%5D%0A%20%20%5Bweb3%5D%0A%20%20%5Bmetamask-inpage%5D%0A%20%20%0A%20%20%5B%3Cactor%3Eui%20developer%5D%0A%20%20%5Bui%20developer%5D-%3E%5Bui%20code%5D%0A%20%20%5Bui%20code%5D%3C-%3E%5Bweb3%5D%0A%20%20%5Bweb3%5D%3C-%3E%5Bmetamask-inpage%5D%0A%5D%0A%0A%5Bmetamask-background%7C%0A%20%20%5Bprovider-engine%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bid%20store%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%3E%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%3C-%3E%5Bid%20store%5D%0A%20%20%5Bconfig%20manager%7C%0A%20%20%20%20%5Brpc%20configuration%5D%0A%20%20%20%20%5Bencrypted%20keys%5D%0A%20%20%20%20%5Bwallet%20nicknames%5D%0A%20%20%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%5Bconfig%20manager%5D%0A%20%20%5Bid%20store%5D%3C-%3E%5Bconfig%20manager%5D%0A%5D%0A%0A%5Buser%5D%3C-%3E%5Bmetamask-ui%5D%0A%0A%5Buser%5D%3C%3A--%3A%3E%5Bweb%20dapp%5D%0A%0A%5Bmetamask-contentscript%7C%0A%20%20%5Bplugin%20restart%20detector%5D%0A%20%20%5Brpc%20passthrough%5D%0A%5D%0A%0A%5Brpc%20%7C%0A%20%20%5Bethereum%20blockchain%20%7C%0A%20%20%20%20%5Bcontracts%5D%0A%20%20%20%20%5Baccounts%5D%0A%20%20%5D%0A%5D%0A%0A%5Bweb%20dapp%5D%3C%3A--%3A%3E%5Bmetamask-contentscript%5D%0A%5Bmetamask-contentscript%5D%3C-%3E%5Bmetamask-background%5D%0A%5Bmetamask-background%5D%3C-%3E%5Bmetamask-ui%5D%0A%5Bmetamask-background%5D%3C-%3E%5Brpc%5D%0A

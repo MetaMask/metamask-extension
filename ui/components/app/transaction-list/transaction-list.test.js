@@ -9,6 +9,7 @@ const render = () => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      transactions: [],
     },
   });
   return renderWithProvider(<TransactionList />, store);

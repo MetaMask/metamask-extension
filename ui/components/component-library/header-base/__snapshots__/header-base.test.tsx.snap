@@ -3,12 +3,12 @@
 exports[`HeaderBase should render HeaderBase element correctly 1`] = `
 <div>
   <div
-    class="box mm-header-base box--display-flex box--flex-direction-row box--justify-content-space-between"
+    class="mm-box mm-header-base mm-box--display-flex mm-box--justify-content-space-between"
     data-testid="header-base"
     title="HeaderBase test"
   >
     <div
-      class="box box--flex-direction-row box--width-full"
+      class="mm-box"
     >
       should render HeaderBase element correctly
     </div>

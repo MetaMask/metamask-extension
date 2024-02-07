@@ -1,13 +1,14 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
-import { TransactionType } from '../../../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
+  IS_SIGNING_OR_SUBMITTING,
   TRANSACTION_ERROR_KEY,
 } from '../../../../helpers/constants/error-keys';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
@@ -24,6 +25,21 @@ describe('Confirm Page Container Content', () => {
             name: 'Address Book Account 1',
             chainId: '0x5',
           },
+        },
+      },
+      identities: {},
+      tokenList: {},
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+    },
+    confirmTransaction: {
+      txData: {
+        txParams: {
+          gas: '0x153e2',
+          value: '0x0',
+          to: '0x0BC30598F0F386371eB3d2195AcAA14C7566534b',
         },
       },
     },
@@ -51,13 +67,6 @@ describe('Confirm Page Container Content', () => {
       disabled: true,
       origin: 'http://localhost:4200',
       hideTitle: false,
-      txData: {
-        securityProviderResponse: {
-          flagAsDangerous: '?',
-          reason: 'Some reason...',
-          reason_header: 'Some reason header...',
-        },
-      },
     };
   });
 
@@ -114,7 +123,7 @@ describe('Confirm Page Container Content', () => {
     expect(props.onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it('render contract address name from addressBook in title for contract', async () => {
+  it('render contract address in the content component', async () => {
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
     props.transactionType = TransactionType.contractInteraction;
@@ -122,8 +131,11 @@ describe('Confirm Page Container Content', () => {
       <ConfirmPageContainerContent {...props} />,
       store,
     );
+    const expectedAddress = shortenAddress(
+      mockStore.confirmTransaction.txData.txParams.to,
+    );
 
-    expect(queryByText('Address Book Account 1')).toBeInTheDocument();
+    expect(queryByText(`${expectedAddress}`)).toBeInTheDocument();
   });
 
   it('render simple title without address name for simple send', async () => {
@@ -136,40 +148,6 @@ describe('Confirm Page Container Content', () => {
     );
 
     expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
-  });
-
-  it('should render SecurityProviderBannerMessage component properly', () => {
-    const { queryByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(queryByText('Request not verified')).toBeInTheDocument();
-    expect(
-      queryByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeInTheDocument();
-    expect(queryByText('OpenSea')).toBeInTheDocument();
-  });
-
-  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
-    props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
-    };
-
-    const { queryByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(queryByText('Request not verified')).toBeNull();
-    expect(
-      queryByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeNull();
-    expect(queryByText('OpenSea')).toBeNull();
   });
 
   it('should show insufficient funds error for EIP-1559 network', () => {
@@ -196,5 +174,18 @@ describe('Confirm Page Container Content', () => {
       store,
     );
     expect(getByRole('button', { name: 'Buy' })).toBeInTheDocument();
+  });
+
+  it('should show is signing or submitting error', () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent
+        {...props}
+        errorKey={IS_SIGNING_OR_SUBMITTING}
+      />,
+      store,
+    );
+    expect(
+      queryByText('A previous transaction is still being signed or submitted'),
+    ).toBeInTheDocument();
   });
 });

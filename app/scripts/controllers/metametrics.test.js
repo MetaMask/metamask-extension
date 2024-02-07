@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { toHex } from '@metamask/controller-utils';
+import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -146,6 +147,14 @@ describe('MetaMetricsController', function () {
   const now = new Date();
   let clock;
   beforeEach(function () {
+    globalThis.sentry = {
+      startSession: sinon.fake(() => {
+        /** NOOP */
+      }),
+      endSession: sinon.fake(() => {
+        /** NOOP */
+      }),
+    };
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
@@ -305,30 +314,35 @@ describe('MetaMetricsController', function () {
   });
 
   describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', function () {
+    it('should update the value of participateInMetaMetrics', async function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
+      await metaMetricsController.setParticipateInMetaMetrics(true);
+      assert.ok(globalThis.sentry.startSession.calledOnce);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
-      metaMetricsController.setParticipateInMetaMetrics(false);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
     });
-    it('should generate and update the metaMetricsId when set to true', function () {
+    it('should generate and update the metaMetricsId when set to true', async function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.metaMetricsId, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
+      await metaMetricsController.setParticipateInMetaMetrics(true);
       assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
     });
-    it('should nullify the metaMetricsId when set to false', function () {
+    it('should not nullify the metaMetricsId when set to false', async function () {
       const metaMetricsController = getMetaMetricsController();
-      metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.equal(metaMetricsController.state.metaMetricsId, null);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
+      assert.ok(globalThis.sentry.endSession.calledOnce);
+      assert.equal(
+        metaMetricsController.state.metaMetricsId,
+        TEST_META_METRICS_ID,
+      );
     });
   });
 
@@ -544,6 +558,80 @@ describe('MetaMetricsController', function () {
           userId: TEST_META_METRICS_ID,
           context: DEFAULT_TEST_CONTEXT,
           properties: DEFAULT_EVENT_PROPERTIES,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+  });
+
+  describe('Change Transaction XXX anonymous event namnes', function () {
+    it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Added',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Added Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Submitted',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Submitted Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Finalized',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Finalized Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
           messageId: Utils.generateRandomId(),
           timestamp: new Date(),
         }),
@@ -936,14 +1024,54 @@ describe('MetaMetricsController', function () {
           },
           'network-configuration-id-3': { chainId: '0xaf' },
         },
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         useNftDetection: false,
+        securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
         security_providers: [],
+        names: {
+          [NameType.ETHEREUM_ADDRESS]: {
+            '0x123': {
+              '0x1': {
+                name: 'Test 1',
+              },
+              '0x2': {
+                name: 'Test 2',
+              },
+              '0x3': {
+                name: null,
+              },
+            },
+            '0x456': {
+              '0x1': {
+                name: 'Test 3',
+              },
+            },
+            '0x789': {
+              '0x1': {
+                name: null,
+              },
+            },
+          },
+          otherType: {
+            otherValue: {
+              otherVariation: {
+                name: 'Test 4',
+              },
+            },
+          },
+        },
       });
 
       assert.deepEqual(traits, {
@@ -965,13 +1093,17 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
+        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
-        [MetaMetricsUserTrait.SecurityProviders]: [],
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,
         [MetaMetricsUserTrait.MmiIsCustodian]: false,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
+        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
+        [MetaMetricsUserTrait.PetnameAddressCount]: 3,
+        ///: END:ONLY_INCLUDE_IF
       });
     });
 
@@ -989,10 +1121,17 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
       });
 
@@ -1012,10 +1151,18 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+            mock3: {},
+          },
+        },
         identities: [{}, {}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: false,
         desktopEnabled: false,
       });
 
@@ -1024,6 +1171,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NumberOfAccounts]: 3,
         [MetaMetricsUserTrait.NumberOfTokens]: 1,
         [MetaMetricsUserTrait.OpenseaApiEnabled]: false,
+        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: false,
       });
     });
 
@@ -1041,10 +1189,17 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
       });
 
@@ -1060,10 +1215,17 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
         desktopEnabled: false,
       });
 

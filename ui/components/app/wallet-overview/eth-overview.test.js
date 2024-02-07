@@ -2,9 +2,15 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -23,25 +29,41 @@ jest.mock('../../../../shared/constants/network', () => ({
     },
   },
 }));
+
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 let openTabSpy;
 
 describe('EthOverview', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
   const mockStore = {
     metamask: {
       providerConfig: {
-        type: 'test',
         chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        type: NETWORK_TYPES.MAINNET,
+        ticker: 'ETH',
       },
-      cachedBalances: {
-        '0x1': {
-          '0x1': '0x1F4',
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x1': { address: '0x1', balance: '0x1F4' },
         },
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
-      conversionRate: 2,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 2,
+        },
+      },
       identities: {
         '0x1': {
           address: '0x1',
@@ -54,6 +76,37 @@ describe('EthOverview', () => {
         },
       },
       selectedAddress: '0x1',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x1',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Account 1',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
+            address: '0x2',
+            id: 'e9b992f9-e151-4317-b8b7-c771bb73dd02',
+            metadata: {
+              name: 'Account 2',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       keyrings: [
         {
           type: KeyringType.imported,
@@ -72,6 +125,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
+  const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
   const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 
@@ -102,7 +156,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('0ETH');
+      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -115,9 +169,9 @@ describe('EthOverview', () => {
               address: '0x1',
             },
           },
-          cachedBalances: {
-            '0x1': {
-              '0x1': '0x24da51d247e8b8',
+          accountsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
             },
           },
         },
@@ -187,6 +241,49 @@ describe('EthOverview', () => {
           url: expect.stringContaining(
             '/bridge?metamaskEntry=ext_bridge_button',
           ),
+        }),
+      );
+    });
+
+    it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
+      const mockedStoreWithCustodyKeyring = {
+        metamask: {
+          ...mockStore.metamask,
+          mmiConfiguration: {
+            portfolio: {
+              enabled: true,
+              url: 'https://metamask-institutional.io',
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: ['0x1'],
+            },
+          ],
+        },
+      };
+
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithCustodyKeyring,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
+
+      expect(swapButton).toBeInTheDocument();
+      expect(swapButton).not.toBeDisabled();
+
+      fireEvent.click(swapButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: 'https://metamask-institutional.io/swap',
         }),
       );
     });
@@ -312,7 +409,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });

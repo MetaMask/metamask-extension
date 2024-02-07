@@ -80,8 +80,12 @@ describe('NFTs Item Component', () => {
     );
 
     const nftImages = queryAllByTestId('nft-image');
-
-    fireEvent.click(nftImages[0]);
+    const nftDefaultImages = queryAllByTestId('nft-default-image');
+    if (nftImages.length) {
+      fireEvent.click(nftImages[0]);
+    } else {
+      fireEvent.click(nftDefaultImages[0]);
+    }
 
     const firstNft = nfts[0];
     const nftRoute = `/asset/${firstNft.address}/${firstNft.tokenId}`;

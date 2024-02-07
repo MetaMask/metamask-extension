@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { TransactionType } from '@metamask/transaction-controller';
 import Loading from '../../components/ui/loading-screen';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -17,7 +18,6 @@ import {
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
 } from '../../helpers/constants/routes';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { TransactionType } from '../../../shared/constants/transaction';
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {

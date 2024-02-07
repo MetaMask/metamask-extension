@@ -17,6 +17,7 @@ describe('DropdownTab', () => {
       selectedOption: 'foo',
       onChange,
       onClick,
+      isActive: true,
     };
   });
   it('should render the DropdownTab component without crashing', () => {
@@ -34,13 +35,13 @@ describe('DropdownTab', () => {
   });
 
   it('registers selection', () => {
-    const { container, getByText } = render(<DropdownTab {...args} />);
+    const { container } = render(<DropdownTab {...args} />);
 
-    fireEvent.click(container.firstChild);
+    // Find the clickable combobox element nested inside the rendered component
+    const combobox = container.firstChild.firstChild.firstChild;
+    fireEvent.click(combobox);
 
-    const element = getByText(args.options[1].name);
-
-    fireEvent.click(element);
+    fireEvent.change(combobox, { target: { value: args.options[1].value } });
 
     expect(onClick).toHaveBeenCalledWith(args.tabIndex);
     expect(onChange).toHaveBeenCalledWith(args.options[1].value);
