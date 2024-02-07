@@ -2639,9 +2639,14 @@ export function hideLoadingIndication(): Action {
 }
 
 /**
- * @param payload - The error message to display.
- * @deprecated The `displayWarning` function is now obsolete and does not impact the UI.
- * This action is currently unused and is slated for removal in upcoming versions.
+ * An action creator for display a warning to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @deprecated This way of displaying a warning is confusing for users and
+ * should no longer be used.
+ * @param {string} text - The warning text to show.
+ * @returns The action to display the warning.
  */
 export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
