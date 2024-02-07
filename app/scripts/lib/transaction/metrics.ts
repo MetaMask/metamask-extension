@@ -25,6 +25,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -35,11 +36,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
+import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -763,9 +760,6 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     contractMethodName,
     securityProviderResponse,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IF
     simulationFails,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
@@ -928,37 +922,30 @@ async function buildEventFragmentProperties({
     }
   }
 
-  let uiCustomizations;
-  let additionalBlockaidParams;
+  const uiCustomizations = [];
 
+  /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
   if (securityProviderResponse?.flagAsDangerous === 1) {
-    uiCustomizations = ['flagged_as_malicious'];
+    uiCustomizations.push(MetaMetricsEventUiCustomization.FlaggedAsMalicious);
   } else if (securityProviderResponse?.flagAsDangerous === 2) {
-    uiCustomizations = ['flagged_as_safety_unknown'];
-  } else {
-    uiCustomizations = null;
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
-    uiCustomizations = ['security_alert_failed'];
-  } else {
-    additionalBlockaidParams = getBlockaidMetricsParams(
-      securityAlertResponse as any,
-    );
-    uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
-  }
+  const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
 
+  if (blockaidProperties?.ui_customizations?.length > 0) {
+    uiCustomizations.push(...blockaidProperties.ui_customizations);
+  }
   ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
-    if (uiCustomizations === null) {
-      uiCustomizations = ['gas_estimation_failed'];
-    } else {
-      uiCustomizations.push('gas_estimation_failed');
-    }
+    uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -969,6 +956,7 @@ async function buildEventFragmentProperties({
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
+    gas_estimation_failed: Boolean(simulationFails),
     account_type: await transactionMetricsRequest.getAccountType(
       transactionMetricsRequest.getSelectedAddress(),
     ),
@@ -979,15 +967,11 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ...additionalBlockaidParams,
-    ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    security_alert_response:
-      securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
-    security_alert_reason:
-      securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+    ...blockaidProperties,
     ///: END:ONLY_INCLUDE_IF
-    gas_estimation_failed: Boolean(simulationFails),
+    // ui_customizations must come after ...blockaidProperties
+    ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(

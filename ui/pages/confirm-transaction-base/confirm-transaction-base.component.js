@@ -12,6 +12,7 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+  IS_SIGNING_OR_SUBMITTING,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 
@@ -153,6 +154,9 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
+    isSigningOrSubmitting: PropTypes.bool,
+    useMaxValue: PropTypes.bool,
+    maxValue: PropTypes.string,
   };
 
   state = {
@@ -180,6 +184,8 @@ export default class ConfirmTransactionBase extends Component {
       tryReverseResolveAddress,
       isEthGasPrice,
       setDefaultHomeActiveTabName,
+      hexMaximumTransactionFee,
+      useMaxValue,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
@@ -187,6 +193,7 @@ export default class ConfirmTransactionBase extends Component {
       toAddress: prevToAddress,
       transactionStatus: prevTxStatus,
       isEthGasPrice: prevIsEthGasPrice,
+      hexMaximumTransactionFee: prevHexMaximumTransactionFee,
     } = prevProps;
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
@@ -232,6 +239,13 @@ export default class ConfirmTransactionBase extends Component {
         });
       }
     }
+
+    if (
+      hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
+      useMaxValue
+    ) {
+      this.updateValueToMax();
+    }
   }
 
   getErrorKey() {
@@ -243,6 +257,7 @@ export default class ConfirmTransactionBase extends Component {
       customGas,
       noGasPrice,
       gasFeeIsCustom,
+      isSigningOrSubmitting,
     } = this.props;
 
     const insufficientBalance =
@@ -272,6 +287,13 @@ export default class ConfirmTransactionBase extends Component {
       return {
         valid: false,
         errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+      };
+    }
+
+    if (isSigningOrSubmitting) {
+      return {
+        valid: false,
+        errorKey: IS_SIGNING_OR_SUBMITTING,
       };
     }
 
@@ -311,6 +333,18 @@ export default class ConfirmTransactionBase extends Component {
 
   setUserAcknowledgedGasMissing() {
     this.setState({ userAcknowledgedGasMissing: true });
+  }
+
+  updateValueToMax() {
+    const { maxValue: value, txData, updateTransaction } = this.props;
+
+    updateTransaction({
+      ...txData,
+      txParams: {
+        ...txData.txParams,
+        value,
+      },
+    });
   }
 
   renderDetails() {
@@ -958,6 +992,7 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
       displayAccountBalanceHeader,
       title,
+      isSigningOrSubmitting,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       isNoteToTraderSupported,
       ///: END:ONLY_INCLUDE_IF
@@ -1051,7 +1086,8 @@ export default class ConfirmTransactionBase extends Component {
             !valid ||
             submitting ||
             hardwareWalletRequiresConnection ||
-            (gasIsLoading && !gasFeeIsCustom)
+            (gasIsLoading && !gasFeeIsCustom) ||
+            isSigningOrSubmitting
           }
           onEdit={() => this.handleEdit()}
           onCancelAll={() => this.handleCancelAll()}

@@ -1,11 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  useCallback,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   useDispatch,
   useSelector,
@@ -16,9 +9,6 @@ import {
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { showCustodianDeepLink } from '@metamask-institutional/extension';
-///: END:ONLY_INCLUDE_IF
 import {
   resolvePendingApproval,
   completedTx,
@@ -54,12 +44,7 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message';
 import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi,blockaid)
-  MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 
 import {
@@ -88,11 +73,6 @@ import {
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-// eslint-disable-next-line import/order
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -132,9 +112,7 @@ const SignatureRequest = ({ txData }) => {
   // Used to show a warning if the signing account is not the selected account
   // Largely relevant for contract wallet custodians
   const selectedAccount = useSelector(getSelectedAccount);
-  const mmiActions = mmiActionsFactory();
   const accountType = useSelector(getAccountType);
-  const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
   const allAccounts = useSelector(
     accountsWithSendEtherInfoSelector,
     shallowEqual,
@@ -161,21 +139,6 @@ const SignatureRequest = ({ txData }) => {
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
   });
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const onClickSupportLink = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        action: 'Sign Request',
-        type,
-        version,
-        external_link_clicked: 'security_alert_support_link',
-      },
-    });
-  }, [trackEvent, type, version]);
-  ///: END:ONLY_INCLUDE_IF
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -224,37 +187,6 @@ const SignatureRequest = ({ txData }) => {
     primaryType,
   } = parseMessage(data);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  useEffect(() => {
-    if (txData.custodyId) {
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId: undefined,
-        custodyId: txData.custodyId,
-        fromAddress: address,
-        isSignature: true,
-        closeNotification: isNotification,
-        onDeepLinkFetched: () => undefined,
-        onDeepLinkShown: () => {
-          trackEvent({
-            category: MetaMetricsEventCategory.MMI,
-            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
-          });
-        },
-        showCustodyConfirmLink,
-      });
-    }
-  }, [
-    dispatch,
-    mmiActions,
-    txData.custodyId,
-    address,
-    isNotification,
-    trackEvent,
-  ]);
-  ///: END:ONLY_INCLUDE_IF
-
   return (
     <div className="signature-request">
       <ConfirmPageContainerNavigation />
@@ -272,7 +204,6 @@ const SignatureRequest = ({ txData }) => {
             marginLeft={4}
             marginRight={4}
             marginBottom={4}
-            onClickSupportLink={onClickSupportLink}
           />
           ///: END:ONLY_INCLUDE_IF
         }

@@ -32,6 +32,7 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
+    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showProductTour": true,
     "showNetworkBanner": true,
@@ -91,6 +92,7 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "providerConfig": {
@@ -111,7 +113,7 @@
     "networkConfigurations": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -127,9 +129,7 @@
   },
   "PPOMController": {
     "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "versionInfo": [] }
-    },
+    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
@@ -166,9 +166,11 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": true
     },
     "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -176,6 +178,7 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
+    "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {

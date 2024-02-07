@@ -115,7 +115,7 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
+
 import {
   NameController,
   ENSNameProvider,
@@ -123,7 +123,6 @@ import {
   TokenNameProvider,
   LensNameProvider,
 } from '@metamask/name-controller';
-///: END:ONLY_INCLUDE_IF
 
 import {
   QueuedRequestController,
@@ -144,7 +143,11 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import { AssetType, TokenStandard } from '../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+  SIGNING_METHODS,
+} from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -224,10 +227,9 @@ import {
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-///: END:ONLY_INCLUDE_IF
+import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -1700,7 +1702,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     const isExternalNameSourcesEnabled = () =>
       this.preferencesController.store.getState().useExternalNameSources;
 
@@ -1733,15 +1734,22 @@ export default class MetamaskController extends EventEmitter {
       state: initState.NameController,
     });
 
+    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
+      name: 'PetnamesBridge',
+      allowedEvents: ['NameController:stateChange'],
+    });
+
     new AddressBookPetnamesBridge({
       addressBookController: this.addressBookController,
       nameController: this.nameController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AddressBookPetnamesBridge',
-        allowedEvents: ['NameController:stateChange'],
-      }),
+      messenger: petnamesBridgeMessenger,
     }).init();
-    ///: END:ONLY_INCLUDE_IF
+
+    new AccountIdentitiesPetnamesBridge({
+      preferencesController: this.preferencesController,
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
 
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
@@ -1948,9 +1956,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       NameController: this.nameController,
-      ///: END:ONLY_INCLUDE_IF
       UserOperationController: this.userOperationController,
       ...resetOnRestartStore,
     });
@@ -1997,9 +2003,7 @@ export default class MetamaskController extends EventEmitter {
           this.institutionalFeaturesController.store,
         MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         NameController: this.nameController,
-        ///: END:ONLY_INCLUDE_IF
         UserOperationController: this.userOperationController,
         ...resetOnRestartStore,
       },
@@ -2724,16 +2728,18 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
+      setIsIpfsGatewayEnabled:
+        preferencesController.setIsIpfsGatewayEnabled.bind(
+          preferencesController,
+        ),
       setUseAddressBarEnsResolution:
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
@@ -2988,6 +2994,7 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
+          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -2999,6 +3006,7 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
+          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
@@ -3017,6 +3025,8 @@ export default class MetamaskController extends EventEmitter {
         txController.updateTransactionSendFlowHistory.bind(txController),
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
+      abortTransactionSigning:
+        txController.abortTransactionSigning.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
@@ -3120,6 +3130,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.showInteractiveReplacementTokenBanner.bind(
           appStateController,
         ),
+      setCustodianDeepLink:
+        appStateController.setCustodianDeepLink.bind(appStateController),
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -3326,12 +3338,10 @@ export default class MetamaskController extends EventEmitter {
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-      ///: END:ONLY_INCLUDE_IF
     };
   }
 
@@ -4253,6 +4263,42 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  async updateSecurityAlertResponseByTxId(req, securityAlertResponse) {
+    let foundConfirmation = false;
+
+    while (!foundConfirmation) {
+      if (SIGNING_METHODS.includes(req.method)) {
+        foundConfirmation = Object.values(
+          this.signatureController.messages,
+        ).find(
+          (message) =>
+            message.securityAlertResponse?.securityAlertId ===
+            req.securityAlertResponse.securityAlertId,
+        );
+      } else {
+        foundConfirmation = this.txController.state.transactions.find(
+          (meta) =>
+            meta.securityAlertResponse?.securityAlertId ===
+            req.securityAlertResponse.securityAlertId,
+        );
+      }
+      if (!foundConfirmation) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+
+    if (SIGNING_METHODS.includes(req.method)) {
+      this.appStateController.addSignatureSecurityAlertResponse(
+        securityAlertResponse,
+      );
+    } else {
+      this.txController.updateSecurityAlertResponse(
+        foundConfirmation.id,
+        securityAlertResponse,
+      );
+    }
+  }
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -4645,6 +4691,8 @@ export default class MetamaskController extends EventEmitter {
         this.ppomController,
         this.preferencesController,
         this.networkController,
+        this.appStateController,
+        this.updateSecurityAlertResponseByTxId.bind(this),
       ),
     );
     ///: END:ONLY_INCLUDE_IF
@@ -4861,7 +4909,7 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         getIsLocked: () => {
-          return !this.appStateController.isUnlocked;
+          return !this.appStateController.isUnlocked();
         },
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

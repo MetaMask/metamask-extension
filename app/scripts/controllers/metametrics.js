@@ -819,10 +819,8 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.SecurityProviders]: securityProvider
         ? [securityProvider]
         : [],
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
-      ///: END:ONLY_INCLUDE_IF
     };
 
     if (!previousUserTraits) {

@@ -18,7 +18,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -74,9 +73,7 @@ describe('MetaMask Responsive UI', function () {
 
         // assert balance
         const balance = await driver.findElement(
-          process.env.MULTICHAIN
-            ? '[data-testid="token-balance-overview-currency-display"]'
-            : '[data-testid="eth-overview__primary-currency"]',
+          '[data-testid="eth-overview__primary-currency"]',
         );
         assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },
@@ -91,7 +88,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
