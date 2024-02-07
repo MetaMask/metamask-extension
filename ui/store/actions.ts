@@ -2147,7 +2147,7 @@ export function createCancelTransaction(
         [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
-            dispatch(displayWarning(err));
+            // dispatch(displayWarning(err));
             reject(err);
             return;
           }
@@ -2638,6 +2638,10 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+/**
+ * @deprecated The `displayWarning` function is now obsolete and does not impact the UI.
+ * This action is currently unused and is slated for removal in upcoming versions.
+ */
 export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
     return {
