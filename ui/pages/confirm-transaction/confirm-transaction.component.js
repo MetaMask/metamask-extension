@@ -40,8 +40,6 @@ import {
 } from '../../selectors';
 import {
   getContractMethodData,
-  addPollingTokenToAppState,
-  removePollingTokenFromAppState,
   setDefaultHomeActiveTabName,
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
@@ -106,18 +104,12 @@ const ConfirmTransaction = () => {
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
 
-  usePolling(
-    (pt) => {
-      addPollingTokenToAppState(pt);
-      return (_pt) => {
-        removePollingTokenFromAppState(_pt);
-      };
-    },
-    gasFeeStartPollingByNetworkClientId,
-    gasFeeStopPollingByPollingToken,
-    'mainnet',
-    {},
-  );
+  usePolling({
+    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+    stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+    networkClientId: 'mainnet',
+    options: {},
+  });
 
   useEffect(() => {
     if (!totalUnapproved && !sendTo) {

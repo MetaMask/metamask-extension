@@ -1,38 +1,34 @@
 import { useEffect, useRef } from 'react';
 
-const usePolling = (
-  callback: (pollingToken: string) => (pollingToken: string) => void,
+type UsePollingOptions = {
+  callback?: (pollingToken: string) => (pollingToken: string) => void;
   startPollingByNetworkClientId: (
     networkClientId: string,
     options: any,
-  ) => string,
-  stopPollingByPollingToken: (pollingToken: string) => void,
-  networkClientId: string,
-  options = {},
-) => {
+  ) => string;
+  stopPollingByPollingToken: (pollingToken: string) => void;
+  networkClientId: string;
+  options?: any;
+};
+
+const usePolling = (usePollingOptions: UsePollingOptions) => {
   const pollTokenRef = useRef<null | string>(null);
   useEffect(() => {
     // Start polling when the component mounts
-    pollTokenRef.current = startPollingByNetworkClientId(
-      networkClientId,
-      options,
+    pollTokenRef.current = usePollingOptions.startPollingByNetworkClientId(
+      usePollingOptions.networkClientId,
+      usePollingOptions.options,
     );
     // eslint-disable-next-line node/callback-return
-    const cleanup = callback(pollTokenRef.current);
+    const cleanup = usePollingOptions.callback?.(pollTokenRef.current);
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
       if (pollTokenRef.current) {
-        stopPollingByPollingToken(pollTokenRef.current);
-        cleanup(pollTokenRef.current);
+        usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
+        cleanup?.(pollTokenRef.current);
       }
     };
-  }, [
-    callback,
-    startPollingByNetworkClientId,
-    stopPollingByPollingToken,
-    networkClientId,
-    options,
-  ]);
+  }, []);
 };
 
 export default usePolling;

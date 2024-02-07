@@ -25,8 +25,8 @@ describe('usePolling', () => {
 
     renderHook(
       () => {
-        usePolling(
-          (pollingToken) => {
+        usePolling({
+          callback: (pollingToken) => {
             expect(mockStart).toHaveBeenCalledWith(networkClientId, options);
             expect(pollingToken).toBeDefined();
             done();
@@ -34,11 +34,11 @@ describe('usePolling', () => {
               // noop
             };
           },
-          mockStart,
-          mockStop,
+          startPollingByNetworkClientId: mockStart,
+          stopPollingByPollingToken: mockStop,
           networkClientId,
           options,
-        );
+        });
       },
       { wrapper },
     );
@@ -63,19 +63,19 @@ describe('usePolling', () => {
 
     renderHook(
       () => {
-        usePolling(
-          () => {
+        usePolling({
+          callback: () => {
             return (_pollingToken) => {
               expect(mockStop).toHaveBeenCalledWith(_pollingToken);
               expect(_pollingToken).toBeDefined();
               done();
             };
           },
-          mockStart,
-          mockStop,
+          startPollingByNetworkClientId: mockStart,
+          stopPollingByPollingToken: mockStop,
           networkClientId,
           options,
-        );
+        });
       },
       { wrapper },
     );
