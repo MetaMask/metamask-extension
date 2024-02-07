@@ -18,7 +18,7 @@ import { Text } from '../../../../../components/component-library';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
-import LoadingIndicator from '../../../ui/loading-indicator';
+import LoadingIndicator from '../../../../../components/ui/loading-indicator';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
