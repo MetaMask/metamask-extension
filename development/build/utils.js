@@ -299,8 +299,8 @@ function getBuildIcon({ buildType }) {
 function makeSelfInjecting(filePath) {
   const fileContents = readFileSync(filePath, 'utf8');
   const textContent = JSON.stringify(fileContents);
-  const html = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
-  writeFileSync(filePath, html, 'utf8');
+  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
+  writeFileSync(filePath, js, 'utf8');
 }
 
 module.exports = {
