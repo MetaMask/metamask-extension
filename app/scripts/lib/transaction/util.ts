@@ -109,10 +109,12 @@ export async function addDappTransaction(
   return (await waitForHash()) as string;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 const PPOM_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swap,
   TransactionType.swapApproval,
 ];
+///: END:ONLY_INCLUDE_IF
 
 export async function addTransaction(
   request: AddTransactionRequest,
