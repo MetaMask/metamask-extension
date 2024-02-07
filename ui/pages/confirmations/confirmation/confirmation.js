@@ -501,7 +501,12 @@ export default function ConfirmationPage({
         {
           ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           isSnapCustomUIDialog ? (
-            <Box marginRight={4} marginLeft={4} marginTop={4}>
+            <Box
+              marginRight={4}
+              marginLeft={4}
+              marginTop={4}
+              key="snap-dialog-content-wrapper"
+            >
               <SnapUIRenderer
                 snapId={pendingConfirmation?.origin}
                 interfaceId={pendingConfirmation?.requestData.id}
