@@ -445,6 +445,7 @@
     "@types/jest": "^29.1.2",
     "@types/madge": "^5.0.0",
     "@types/mocha": "^10.0.3",
+    "@types/module-alias": "^2",
     "@types/node": "^20",
     "@types/pify": "^5.0.1",
     "@types/pump": "^1.1.1",
@@ -539,6 +540,7 @@
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
+    "module-alias": "^2.2.3",
     "nock": "^13.2.9",
     "node-fetch": "^2.6.1",
     "nyc": "^15.0.0",
@@ -661,6 +663,14 @@
       "@metamask/ethjs-query>babel-runtime>core-js": false,
       "@storybook/test-runner>@swc/core": false
     }
+  },
+  "_moduleAliases": {
+    "background": "./app/scripts",
+    "development": "./development",
+    "offscreen": "./offscreen",
+    "shared": "./shared",
+    "types": "./types",
+    "ui": "./ui"
   },
   "packageManager": "yarn@4.0.2"
 }
