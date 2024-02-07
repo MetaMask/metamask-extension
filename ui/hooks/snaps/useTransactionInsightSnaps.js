@@ -90,7 +90,7 @@ export function useTransactionInsightSnaps({
         ///: END:ONLY_INCLUDE_IF
       }
     }
-    if (transaction) {
+    if (transaction && Object.keys(transaction).length > 0) {
       fetchInsight();
     }
     return () => {
