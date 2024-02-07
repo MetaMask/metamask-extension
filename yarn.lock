@@ -1625,7 +1625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.24.0":
+"@babel/runtime@npm:7.24.0, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.23.4":
   version: 7.24.0
   resolution: "@babel/runtime@npm:7.24.0"
   dependencies:
@@ -3942,14 +3942,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/address-book-controller@npm:3.0.0"
+"@metamask/address-book-controller@npm:^3.1.7":
+  version: 3.1.7
+  resolution: "@metamask/address-book-controller@npm:3.1.7"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/controller-utils": "npm:^4.0.0"
-    "@metamask/utils": "npm:^5.0.2"
-  checksum: 3ed2f225d7e4f2d88d8139afc7e296a5cde761ec1c9e996ea6c24e4f34d2bea4b3467c9fd3a126b48f534611ca1e7135f77a76d7c5334ab2a8406271b56b1cc8
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: e91c41dc2c88932b7a0e49734ea4205b27789e56c12c9c1d6ee7cbc971917896d195e368b10b8351689992de67ca6372461c2be52aca2a85618b788597be607b
   languageName: node
   linkType: hard
 
@@ -4110,22 +4110,6 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
   checksum: 112a07614eec28cff270c99aa0695bec34cd29461d0c4cb83eb913a5bc37b3b72e4f33dad59a0ab23da5d1b091372ee5207657349bfdb814098c5a51d6570554
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^4.0.0":
-  version: 4.3.2
-  resolution: "@metamask/controller-utils@npm:4.3.2"
-  dependencies:
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/utils": "npm:^6.2.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    eth-rpc-errors: "npm:^4.0.2"
-    ethereumjs-util: "npm:^7.0.10"
-    ethjs-unit: "npm:^0.1.6"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 16c82bdeeb99f96f2fb22132646e6aea66ada1a8427ba17e9c7d31e0bf32be6df7696d75030e30a4ab9be76c08a9d52dc3b25c21804a1328643c1240540ea621
   languageName: node
   linkType: hard
 
@@ -5715,7 +5699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^6.0.1, @metamask/utils@npm:^6.2.0":
+"@metamask/utils@npm:^6.0.1":
   version: 6.2.0
   resolution: "@metamask/utils@npm:6.2.0"
   dependencies:
@@ -25130,7 +25114,7 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/accounts-controller": "npm:^11.0.0"
-    "@metamask/address-book-controller": "npm:^3.0.0"
+    "@metamask/address-book-controller": "npm:^3.1.7"
     "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^6.0.0"
     "@metamask/assets-controllers": "npm:^26.0.0"
