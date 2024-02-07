@@ -152,7 +152,6 @@ import {
 } from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from 'shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
@@ -254,6 +253,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+import { STATIC_MAINNET_TOKEN_LIST } from 'shared/constants/tokens';
 import { LOG_EVENT } from 'shared/constants/logs';
 import {
   MetaMetricsEventCategory,

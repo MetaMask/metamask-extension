@@ -32,6 +32,17 @@ import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 import createStreamSink from './lib/createStreamSink';
+import NotificationManager, {
+  NOTIFICATION_MANAGER_EVENTS,
+} from './lib/notification-manager';
+import MetamaskController, {
+  METAMASK_CONTROLLER_EVENTS,
+} from './metamask-controller';
+import rawFirstTimeState from './first-time-state';
+import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
+import getObjStructure from './lib/getObjStructure';
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
+import { deferredPromise, getPlatform } from './lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -50,18 +61,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from 'shared/constants/metametrics';
-
-import NotificationManager, {
-  NOTIFICATION_MANAGER_EVENTS,
-} from './lib/notification-manager';
-import MetamaskController, {
-  METAMASK_CONTROLLER_EVENTS,
-} from './metamask-controller';
-import rawFirstTimeState from './first-time-state';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
-import getObjStructure from './lib/getObjStructure';
-import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { deferredPromise, getPlatform } from './lib/util';
 
 /* eslint-enable import/first */
 
