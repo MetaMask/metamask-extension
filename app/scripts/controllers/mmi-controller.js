@@ -619,6 +619,11 @@ export default class MMIController extends EventEmitter {
         signOperation,
         true,
       );
+
+      this.appStateController.setCustodianDeepLink({
+        fromAddress: signature.from,
+        custodyId: signature.custodian_transactionId,
+      });
     }
 
     this.signatureController.setMessageMetadata(messageId, signature);
