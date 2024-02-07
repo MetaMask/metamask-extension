@@ -17118,6 +17118,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-method-registry@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "eth-method-registry@npm:4.0.0"
+  dependencies:
+    "@metamask/ethjs-contract": "npm:^0.4.1"
+    "@metamask/ethjs-query": "npm:^0.7.1"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 959e833327960f40fab8693997e071def75103a694e931ab11313e642b6958d4f2878000d91ddfd6ba3c158bdc3f381c63eae0dd26738790e2aca5004ceb0387
+  languageName: node
+  linkType: hard
+
 "eth-phishing-detect@npm:^1.2.0":
   version: 1.2.0
   resolution: "eth-phishing-detect@npm:1.2.0"
@@ -24656,7 +24668,7 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-json-rpc-filters: "npm:^6.0.0"
     eth-lattice-keyring: "npm:^0.12.4"
-    eth-method-registry: "npm:^3.0.0"
+    eth-method-registry: "npm:^4.0.0"
     eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
     ethereum-ens-network-map: "npm:^1.0.2"
