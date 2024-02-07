@@ -469,6 +469,7 @@
     "addons-linter": "^5.2.0",
     "autoprefixer": "^10.4.16",
     "axios": "^1.1.3",
+    "babel-plugin-module-resolver": "^5.0.0",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
     "brfs": "^2.0.2",

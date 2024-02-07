@@ -13,6 +13,20 @@ module.exports = function (api) {
       // browsers (except we do still end up with transpiled logical assignment
       // operators 😭)
       '@babel/plugin-transform-logical-assignment-operators',
+      [
+        'module-resolver',
+        {
+          root: ['./'],
+          alias: {
+            background: './app/scripts',
+            development: './development',
+            offscreen: './offscreen',
+            shared: './shared',
+            types: './types',
+            ui: './ui',
+          },
+        },
+      ],
     ],
     presets: [
       '@babel/preset-typescript',
