@@ -75,7 +75,7 @@ describe('Confirm Remove Account', () => {
     expect(props.hideModal).toHaveBeenCalled();
   });
 
-  it('should call remove account with account address', async () => {
+  it('should call method removeAccount with account address', async () => {
     const { queryByText } = renderWithProvider(
       <ConfirmRemoveAccount.WrappedComponent {...props} />,
       mockStore,
