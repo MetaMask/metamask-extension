@@ -34,7 +34,6 @@ export const accountSnapFixtures = (title: string | undefined) => {
       })
       .build(),
     ganacheOptions: multipleGanacheOptions,
-    failOnConsoleError: false,
     title,
   };
 };

@@ -49,7 +49,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -73,7 +72,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -117,7 +115,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -154,7 +151,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -210,7 +206,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -244,7 +239,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -282,7 +276,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
 
       async ({ driver }) => {
@@ -311,7 +304,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
