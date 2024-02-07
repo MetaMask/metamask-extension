@@ -9157,14 +9157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prop-types@npm:*":
-  version: 15.7.3
-  resolution: "@types/prop-types@npm:15.7.3"
-  checksum: 90064105961cfabb9174e61e5010b4e7a471e21832118ad0258f196f4be19ad7dd0f724cc62b0e90939d0b830d4f49ba54dffde166893fd0d9be1f3b43db6981
-  languageName: node
-  linkType: hard
-
-"@types/prop-types@npm:^15.7.10":
+"@types/prop-types@npm:*, @types/prop-types@npm:^15.7.10":
   version: 15.7.11
   resolution: "@types/prop-types@npm:15.7.11"
   checksum: 7519ff11d06fbf6b275029fe03fff9ec377b4cb6e864cac34d87d7146c7f5a7560fd164bdc1d2dbe00b60c43713631251af1fd3d34d46c69cd354602bc0c7c54
@@ -30300,14 +30293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sc-errors@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "sc-errors@npm:2.0.1"
-  checksum: bc2748363a55446e22e3f0e91ba25f7dca0a227506abc69f79069f8df50553afdb4f5e7e9e34a44d13eed84fcbf4421c1e22b0fdcc1bfce3004177f1b398aa2a
-  languageName: node
-  linkType: hard
-
-"sc-errors@npm:^2.0.2":
+"sc-errors@npm:^2.0.1, sc-errors@npm:^2.0.2":
   version: 2.0.3
   resolution: "sc-errors@npm:2.0.3"
   checksum: 5876098dcbdca7bf1e7c90298164402251f87cf8a601bb6b0a885d9453d240034f8199c87992ad9db3be02378eeb6a9dd1902cacb816520e664d6c46dc101d2f
