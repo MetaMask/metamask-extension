@@ -11,7 +11,8 @@
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
-        "@babel/preset-typescript": true
+        "@babel/preset-typescript": true,
+        "babel-plugin-module-resolver": true
       }
     },
     "@babel/eslint-parser": {
