@@ -82,10 +82,12 @@ import {
   SnapController,
   IframeExecutionService,
   SnapInterfaceController,
+} from '@metamask/snaps-controllers';
+import {
+  createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-} from '@metamask/snaps-controllers';
-import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -2323,6 +2325,10 @@ export default class MetamaskController extends EventEmitter {
           createInterface: this.controllerMessenger.call.bind(
             this.controllerMessenger,
             'SnapInterfaceController:createInterface',
+          ),
+          getInterface: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapInterfaceController:getInterface',
           ),
           ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

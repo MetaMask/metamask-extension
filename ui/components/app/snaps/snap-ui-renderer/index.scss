@@ -26,8 +26,8 @@
     margin-top: 0;
   }
 
-  &__content > &__form > *:last-child {
-    margin-bottom: 0;
+  &__content > &__form > *:first-child {
+    margin-top: 0;
   }
 
   &__content > *:last-child {

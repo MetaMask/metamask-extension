@@ -469,9 +469,12 @@ export default function ConfirmationPage({
                 snapId={pendingConfirmation?.origin}
                 interfaceId={pendingConfirmation?.requestData.id}
                 isPrompt={isSnapPrompt}
-                inputValue={inputStates[pendingConfirmation?.id]}
-                onInputChange={(value) =>
-                  setInputState(pendingConfirmation?.id, value)
+                inputValue={inputStates[pendingConfirmation?.type]}
+                onInputChange={(event) =>
+                  setInputState(
+                    pendingConfirmation?.type,
+                    event.target.value ?? '',
+                  )
                 }
                 placeholder={pendingConfirmation?.requestData.placeholder}
               />

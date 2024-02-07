@@ -5,7 +5,6 @@ import { ValidChildren } from './section-shape';
 
 function getElement(section) {
   const { element } = section;
-  console.log(safeComponentList);
   const Element = safeComponentList[element];
   if (!Element) {
     throw new Error(

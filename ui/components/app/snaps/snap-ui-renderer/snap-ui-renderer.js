@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { UserInputEventType, isComponent } from '@metamask/snaps-sdk';
+import { isComponent } from '@metamask/snaps-sdk';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
@@ -60,8 +60,6 @@ export const SnapUIRenderer = ({
   const [internalState, setInternalState] = useState(
     interfaceData?.interfaceState ?? {},
   );
-
-  console.log(UserInputEventType);
 
   // We delete the interface on unmount because it means the UI has been unloaded.
   useEffect(() => {
@@ -174,6 +172,9 @@ export const SnapUIRenderer = ({
         <MetaMaskTemplateRenderer sections={sections} />
         {isPrompt && (
           <FormTextField
+            marginTop={4}
+            className="snap-prompt-input"
+            maxLength={300}
             value={inputValue}
             onChange={onInputChange}
             placeholder={placeholder}
