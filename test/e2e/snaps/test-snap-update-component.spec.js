@@ -21,7 +21,6 @@ describe('Test Snap update via snaps component', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
