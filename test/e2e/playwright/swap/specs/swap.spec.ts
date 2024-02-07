@@ -30,7 +30,7 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
 
-  await networkController.addPopularNetwork();
+  await networkController.addPopularNetwork('Arbitrum One');
   await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
   await swapPage.waitForInsufficentBalance();
   await swapPage.gotBack();
@@ -47,7 +47,7 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
 
-  await networkController.addPopularNetwork();
+  await networkController.addPopularNetwork('Avalanche Network C-Chain');
   await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
   await swapPage.waitForInsufficentBalance();
   await swapPage.gotBack();
