@@ -18,8 +18,10 @@ export class ChromeExtensionPage {
     };
 
     const context = await chromium.launchPersistentContext('', launchOptions);
+    // let the extension load on the second page on the browser
     await wait(2000);
 
-    return context.pages()[1];
+    const pages = context.pages();
+    return pages[1]; // return the second page
   }
 }

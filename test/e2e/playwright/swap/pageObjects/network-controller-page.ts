@@ -11,8 +11,6 @@ export class NetworkController {
 
   readonly networkTickerInput: Locator;
 
-  readonly addBtn: Locator;
-
   readonly approveBtn: Locator;
 
   readonly saveBtn: Locator;
@@ -34,7 +32,6 @@ export class NetworkController {
       'network-form-ticker-input',
     );
     this.saveBtn = this.page.getByRole('button', { name: 'Save' });
-    this.addBtn = this.page.getByRole('button', { name: 'Add' }).first();
     this.approveBtn = this.page.getByTestId('confirmation-submit-button');
     this.switchToNetworkBtn = this.page.locator('button', {
       hasText: 'Switch to',
@@ -47,6 +44,7 @@ export class NetworkController {
     await this.networkDisplay.click();
     await this.addNetworkButton.click();
     await this.addNetworkManuallyButton.click();
+
     const formField = await this.page.$$('.form-field__input');
     await formField[0].fill(option.name);
     await formField[1].fill(option.url);
@@ -57,10 +55,11 @@ export class NetworkController {
     await this.page.waitForTimeout(1000);
   }
 
-  async addPopularNetwork() {
+  async addPopularNetwork(networkName) {
     await this.networkDisplay.click();
     await this.addNetworkButton.click();
-    await this.addBtn.click();
+    const addBtn = this.page.getByTestId(`add-network__${networkName}`);
+    await addBtn.click();
     await this.approveBtn.click();
     await this.switchToNetworkBtn.click();
     await this.gotItBtn.click();

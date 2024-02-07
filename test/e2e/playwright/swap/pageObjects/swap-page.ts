@@ -70,7 +70,7 @@ export class SwapPage {
     this.fetchQuoteButton = this.page.getByText('Fetch quote');
     this.swapTokenButton = this.page.getByText('Swap');
     this.closeButton = this.page.getByText('Close');
-    this.backButton = this.page.getByText('Cancel');
+    this.backButton = this.page.locator('[title="Cancel"]');
   }
 
   async fetchQuote(options) {
