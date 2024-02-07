@@ -611,7 +611,20 @@ const NetworksForm = ({
             },
           ),
         );
+        trackEvent({
+          event: MetaMetricsEventName.CustomNetworkAdded,
+          category: MetaMetricsEventCategory.Network,
+          properties: {
+            block_explorer_url: blockExplorerUrl,
+            chain_id: prefixedChainId,
+            network_name: networkName,
+            source_connection_method:
+              MetaMetricsNetworkEventSource.CustomNetworkForm,
+            token_symbol: ticker,
+          },
+        });
       }
+
       if (addNewNetwork) {
         dispatch(
           setNewNetworkAdded({
@@ -620,19 +633,6 @@ const NetworksForm = ({
           }),
         );
       }
-      trackEvent({
-        event: MetaMetricsEventName.CustomNetworkAdded,
-        category: MetaMetricsEventCategory.Network,
-        properties: {
-          block_explorer_url: blockExplorerUrl,
-          chain_id: prefixedChainId,
-          network_name: networkName,
-          source_connection_method:
-            MetaMetricsNetworkEventSource.CustomNetworkForm,
-          token_symbol: ticker,
-        },
-      });
-
       submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
