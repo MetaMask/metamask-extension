@@ -414,7 +414,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
             class="disclosure__content normal"
           >
             <ul
-              class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-anywhere mm-box--color-text-default"
             >
               <li>
                 • 

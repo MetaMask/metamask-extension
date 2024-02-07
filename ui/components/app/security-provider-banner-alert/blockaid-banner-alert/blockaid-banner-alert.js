@@ -89,7 +89,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
   );
 
   const details = features?.length ? (
-    <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
+    <Text as="ul" overflowWrap={OverflowWrap.Anywhere}>
       {features.map((feature, i) => (
         <li key={`blockaid-detail-${i}`}>• {feature}</li>
       ))}
