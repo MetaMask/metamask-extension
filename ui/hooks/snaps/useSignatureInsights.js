@@ -100,7 +100,7 @@ export function useSignatureInsights({ txData }) {
         setLoading(false);
       }
     }
-    if (txData) {
+    if (Object.keys(txData).length > 0) {
       fetchInsight();
     }
     return () => {
