@@ -241,8 +241,31 @@ describe('Blockaid Banner Alert', () => {
 
     const elm = getByRole('link', { name: 'Report an issue' });
     expect(elm.href).toBe(
-      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22classification%22%3A%22set_approval_for_all%22%2C%22blockaidVersion%22%3A%221.4.0%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
+      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
     );
+  });
+
+  describe('when constructing the Blockaid Report URL', () => {
+    describe(`when result_type='${BlockaidResultType.Failed}'`, () => {
+      it('should pass the classification as "error" and the resultType as "Error"', () => {
+        const { getByRole } = renderWithProvider(
+          <BlockaidBannerAlert
+            txData={{
+              securityAlertResponse: {
+                ...mockSecurityAlertResponse,
+                result_type: BlockaidResultType.Failed,
+              },
+            }}
+          />,
+          configureStore(),
+        );
+
+        const elm = getByRole('link', { name: 'Report an issue' });
+        expect(elm.href).toBe(
+          'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom',
+        );
+      });
+    });
   });
 
   describe('when rendering description', () => {

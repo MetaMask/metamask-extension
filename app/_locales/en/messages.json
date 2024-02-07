@@ -3169,6 +3169,18 @@
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
   },
+  "notificationsPetnamesActionText": {
+    "message": "Got it"
+  },
+  "notificationsPetnamesDescriptionOne": {
+    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
+  },
+  "notificationsPetnamesDescriptionTwo": {
+    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
+  },
+  "notificationsPetnamesTitle": {
+    "message": "Suggested nicknames are here!"
+  },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"

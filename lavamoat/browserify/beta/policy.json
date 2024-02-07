@@ -1080,13 +1080,13 @@
         "@ngraveio/bc-ur>assert>object-is": true,
         "browserify>util>is-arguments": true,
         "browserify>util>which-typed-array": true,
-        "globalthis>define-properties>object-keys": true,
         "gulp>vinyl-fs>object.assign": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>es-abstract>array-buffer-byte-length": true,
         "string.prototype.matchall>es-abstract>is-array-buffer": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
         "string.prototype.matchall>es-abstract>is-shared-array-buffer": true,
+        "string.prototype.matchall>es-abstract>object-keys": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>regexp.prototype.flags": true,
         "string.prototype.matchall>side-channel": true
@@ -2143,8 +2143,8 @@
     },
     "@ngraveio/bc-ur>assert>object-is": {
       "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true
       }
     },
     "@ngraveio/bc-ur>bignumber.js": {
@@ -3540,30 +3540,11 @@
         "@metamask/ppom-validator>elliptic": true
       }
     },
-    "globalthis>define-properties": {
-      "packages": {
-        "globalthis>define-properties>define-data-property": true,
-        "globalthis>define-properties>has-property-descriptors": true,
-        "globalthis>define-properties>object-keys": true
-      }
-    },
-    "globalthis>define-properties>define-data-property": {
-      "packages": {
-        "globalthis>define-properties>has-property-descriptors": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
-        "string.prototype.matchall>get-intrinsic": true
-      }
-    },
-    "globalthis>define-properties>has-property-descriptors": {
-      "packages": {
-        "string.prototype.matchall>get-intrinsic": true
-      }
-    },
     "gulp>vinyl-fs>object.assign": {
       "packages": {
-        "globalthis>define-properties": true,
-        "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract>object-keys": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
@@ -4287,6 +4268,20 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "string.prototype.matchall>define-properties": {
+      "packages": {
+        "string.prototype.matchall>define-properties>define-data-property": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>object-keys": true
+      }
+    },
+    "string.prototype.matchall>define-properties>define-data-property": {
+      "packages": {
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
     "string.prototype.matchall>es-abstract>array-buffer-byte-length": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
@@ -4299,6 +4294,11 @@
       }
     },
     "string.prototype.matchall>es-abstract>gopd": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>has-property-descriptors": {
       "packages": {
         "string.prototype.matchall>get-intrinsic": true
       }
@@ -4348,16 +4348,16 @@
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
       }
     },
     "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
       "packages": {
-        "globalthis>define-properties>define-data-property": true,
-        "globalthis>define-properties>has-property-descriptors": true,
-        "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true
+        "string.prototype.matchall>define-properties>define-data-property": true,
+        "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
     },
     "string.prototype.matchall>side-channel": {
