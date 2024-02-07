@@ -32,6 +32,7 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
+    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showProductTour": true,
     "showNetworkBanner": true,
@@ -169,6 +170,7 @@
       "petnamesEnabled": true
     },
     "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
