@@ -139,7 +139,7 @@ export class SnapsNameProvider implements NameProvider {
 
       // TODO: Determine if this is what we want.
       proposedNames = domains
-        ? domains.map((domain) => domain.resolvedDomain)
+        ? [...new Set(domains.map((domain) => domain.resolvedDomain))]
         : [];
     } catch (error) {
       log.error('Snap name provider request failed', {
