@@ -4,10 +4,10 @@ import ObjectMultiplex from 'obj-multiplex';
 import pump from 'pump';
 import { obj as createThoughStream } from 'through2';
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { EXTENSION_MESSAGES } from 'shared/constants/app';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');

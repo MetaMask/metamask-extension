@@ -4,8 +4,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { nonceSortedTransactionsSelector } from './transactions';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const RECIPIENTS = {
   ONE: '0xRecipient1',

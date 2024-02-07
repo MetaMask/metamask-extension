@@ -2,11 +2,11 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { AssetType } from '../../../shared/constants/transaction';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { editExistingTransaction } from '../../ducks/send';
 import { SEND_ROUTE } from '../../helpers/constants/routes';
 import ConfirmTransactionBase from '../confirm-transaction-base';
+import { AssetType } from 'shared/constants/transaction';
 
 const ConfirmSendEther = () => {
   const dispatch = useDispatch();

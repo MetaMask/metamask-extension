@@ -26,10 +26,6 @@ import {
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import {
   DetectedTokensBanner,
@@ -55,6 +51,10 @@ import {
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);

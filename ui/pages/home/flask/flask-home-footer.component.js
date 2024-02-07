@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+} from 'shared/constants/metametrics';
 
 const FlaskHomeFooter = () => {
   const t = useI18nContext();

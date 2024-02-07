@@ -6,12 +6,12 @@ import { fireEvent } from '@testing-library/react';
 import { NetworkType } from '@metamask/controller-utils';
 import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/jest';
-import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
 } from '../../../../../../test/jest/mocks';
 import AmountMaxButton from './amount-max-button';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 const middleware = [thunk];
 

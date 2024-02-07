@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { TEST_CHAINS } from '../../../shared/constants/network';
+import { TEST_CHAINS } from 'shared/constants/network';
 
 const hexNumberIsGreaterThanZero = (hexNumber) =>
   new BigNumber(hexNumber || '0x0', 16).gt(0);

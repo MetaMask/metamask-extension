@@ -45,10 +45,6 @@ import {
   getNativeCurrency,
   getTokens,
 } from '../../../../ducks/metamask/metamask';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../shared/constants/transaction';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { updateSendAsset, Asset } from '../../../../ducks/send';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
@@ -57,6 +53,7 @@ import TokenCell from '../../../app/token-cell';
 import { TokenListItem } from '../../token-list-item';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 
 interface AssetPickerModalProps {
   isOpen: boolean;

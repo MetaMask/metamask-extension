@@ -16,14 +16,7 @@ import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-  HardwareAffiliateLinks,
-  HardwareAffiliateTutorialLinks,
-} from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
 import {
   AlignItems,
@@ -35,6 +28,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  HardwareAffiliateLinks,
+  HardwareAffiliateTutorialLinks,
+} from 'shared/constants/hardware-wallets';
 
 export default class SelectHardware extends Component {
   static contextTypes = {

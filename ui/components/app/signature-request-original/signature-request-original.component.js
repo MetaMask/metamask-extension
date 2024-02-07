@@ -7,7 +7,6 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   getURLHostName,
   sanitizeString,
@@ -56,6 +55,7 @@ import SignatureRequestHeader from '../signature-request-header';
 import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
 ///: END:ONLY_INCLUDE_IF
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {

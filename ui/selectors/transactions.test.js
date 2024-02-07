@@ -1,7 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -12,6 +11,7 @@ import {
   hasTransactionPendingApprovals,
   getApprovedAndSignedTransactions,
 } from './transactions';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 describe('Transaction Selectors', () => {
   describe('unapprovedMessagesSelector', () => {

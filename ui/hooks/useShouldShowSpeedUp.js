@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SECOND } from '../../shared/constants/time';
+import { SECOND } from 'shared/constants/time';
 
 /**
  * Evaluates whether the transaction is eligible to be sped up, and registers

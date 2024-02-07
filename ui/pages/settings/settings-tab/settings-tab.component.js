@@ -16,16 +16,16 @@ import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-
-import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { Text, Box } from '../../../components/component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+
+import { ThemeType } from 'shared/constants/preferences';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());

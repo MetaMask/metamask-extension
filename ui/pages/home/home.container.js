@@ -73,19 +73,16 @@ import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask'
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
+import { hasTransactionPendingApprovals } from '../../selectors/transactions';
+import Home from './home.component';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
-} from '../../../shared/constants/app';
-import {
-  AlertTypes,
-  Web3ShimUsageAlertStates,
-} from '../../../shared/constants/alerts';
-import { hasTransactionPendingApprovals } from '../../selectors/transactions';
-import Home from './home.component';
+} from 'shared/constants/app';
+import { AlertTypes, Web3ShimUsageAlertStates } from 'shared/constants/alerts';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;

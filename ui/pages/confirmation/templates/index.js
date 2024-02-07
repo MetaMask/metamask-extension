@@ -7,7 +7,6 @@ import {
   upsertNetworkConfiguration,
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
@@ -20,6 +19,7 @@ import error from './error';
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from 'shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 
 const APPROVAL_TEMPLATES = {

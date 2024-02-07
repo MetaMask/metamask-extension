@@ -6,11 +6,8 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
 import { getEnvironmentType } from '../app/scripts/lib/util';
-import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
-import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
-import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
@@ -28,6 +25,9 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
+import { COPY_OPTIONS } from 'shared/constants/copy';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
+import { AlertTypes } from 'shared/constants/alerts';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 

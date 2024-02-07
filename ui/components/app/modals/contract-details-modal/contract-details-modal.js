@@ -23,11 +23,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { getAddressBookEntry } from '../../../../selectors';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 import { ButtonIcon, IconName, Text } from '../../../component-library';
 import Name from '../../name/name';
 import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
+import { TokenStandard } from 'shared/constants/transaction';
 
 export default function ContractDetailsModal({
   onClose,

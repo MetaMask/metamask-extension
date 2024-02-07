@@ -1,11 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import LoadingScreen from '../../ui/loading-screen';
-import { SECOND } from '../../../../shared/constants/time';
-import {
-  DEPRECATED_NETWORKS,
-  NETWORK_TYPES,
-} from '../../../../shared/constants/network';
 import Popover from '../../ui/popover/popover.component';
 import {
   ButtonPrimary,
@@ -22,6 +17,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
+import { DEPRECATED_NETWORKS, NETWORK_TYPES } from 'shared/constants/network';
+import { SECOND } from 'shared/constants/time';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {

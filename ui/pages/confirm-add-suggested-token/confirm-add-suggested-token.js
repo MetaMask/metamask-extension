@@ -21,17 +21,14 @@ import {
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
+import { getSuggestedTokens } from '../../selectors';
+import { Severity } from '../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
-} from '../../../shared/constants/metametrics';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
-import { getSuggestedTokens } from '../../selectors';
-import { Severity } from '../../helpers/constants/design-system';
+} from 'shared/constants/metametrics';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;

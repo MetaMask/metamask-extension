@@ -22,7 +22,6 @@ import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -43,8 +42,6 @@ import {
   stopPollingForQuotes,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
 import { showRemainingTimeInMinAndSec } from '../swaps.util';
@@ -58,6 +55,9 @@ import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
+import { SmartTransactionStatus } from 'shared/constants/transaction';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from 'shared/constants/swaps';
 
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);

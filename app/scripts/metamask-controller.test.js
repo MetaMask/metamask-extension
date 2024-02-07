@@ -19,15 +19,15 @@ import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
-import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util.ts';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
+import { LOG_EVENT } from 'shared/constants/logs';
+import { KeyringType } from 'shared/constants/keyring';
+import { HardwareDeviceNames } from 'shared/constants/hardware-wallets';
+import { NETWORK_TYPES } from 'shared/constants/network';
 
 const { Ganache } = require('../../test/e2e/ganache');
 

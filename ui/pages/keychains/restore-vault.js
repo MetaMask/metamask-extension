@@ -15,7 +15,7 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../helpers/constants/design-system';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {

@@ -77,7 +77,6 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -93,12 +92,6 @@ import {
   formatSwapsValueForDisplay,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import {
-  SLIPPAGE_HIGH_ERROR,
-  SLIPPAGE_LOW_ERROR,
-  MAX_ALLOWED_SLIPPAGE,
-} from '../../../../shared/constants/swaps';
-import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import Box from '../../../components/ui/box';
@@ -119,11 +112,6 @@ import {
   ButtonLink,
   Text,
 } from '../../../components/component-library';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsEventErrorType,
-} from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -140,6 +128,18 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventErrorType,
+} from 'shared/constants/metametrics';
+import { GasRecommendations } from 'shared/constants/gas';
+import {
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
+} from 'shared/constants/swaps';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 let intervalId;
 

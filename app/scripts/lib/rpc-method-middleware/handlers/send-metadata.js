@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 /**
  * This internal method is used by our external provider to send metadata about

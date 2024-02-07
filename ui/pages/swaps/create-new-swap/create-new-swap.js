@@ -7,13 +7,13 @@ import isEqual from 'lodash/isEqual';
 import Box from '../../../components/ui/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import {
   navigateBackToBuildQuote,
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSwapsDefaultToken } from '../../../selectors';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);

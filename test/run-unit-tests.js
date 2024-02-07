@@ -1,3 +1,4 @@
+require('module-alias/register');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 const { runCommand, runInShell } = require('../development/lib/run-command');

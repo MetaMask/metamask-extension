@@ -36,9 +36,7 @@ import {
   setRemoveNftMessage,
   setNewNftAddedMessage,
 } from '../../../store/actions';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NftOptions from '../nft-options/nft-options';
 import Button from '../../ui/button';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -46,14 +44,13 @@ import InfoTooltip from '../../ui/info-tooltip';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
 import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 import { NftItem } from '../../multichain/nft-item';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 export default function NftDetails({ nft }) {
   const {

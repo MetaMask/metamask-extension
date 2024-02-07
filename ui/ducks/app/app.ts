@@ -1,10 +1,10 @@
 import { AnyAction, Action } from 'redux';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as actionConstants from '../../store/actionConstants';
 import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
-} from '../../../shared/constants/hardware-wallets';
-import * as actionConstants from '../../store/actionConstants';
+} from 'shared/constants/hardware-wallets';
 
 interface AppState {
   shouldClose: boolean;

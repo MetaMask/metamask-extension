@@ -1,9 +1,9 @@
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { createPPOMMiddleware } from './ppom-middleware';
+import { CHAIN_IDS } from 'shared/constants/network';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-import { createPPOMMiddleware } from './ppom-middleware';
+} from 'shared/constants/security-provider';
 
 Object.defineProperty(globalThis, 'fetch', {
   writable: true,

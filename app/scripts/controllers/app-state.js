@@ -4,16 +4,16 @@ import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
-import { MINUTE } from '../../../shared/constants/time';
-import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { isBeta } from '../../../ui/helpers/utils/build-types';
+import { MINUTE } from 'shared/constants/time';
+import { AUTO_LOCK_TIMEOUT_ALARM } from 'shared/constants/alarms';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
-} from '../../../shared/constants/app';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+} from 'shared/constants/app';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from 'shared/constants/preferences';
 
 export default class AppStateController extends EventEmitter {
   /**

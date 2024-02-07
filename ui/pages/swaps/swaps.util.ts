@@ -2,27 +2,9 @@ import { BigNumber } from 'bignumber.js';
 import { Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
-  ALLOWED_CONTRACT_ADDRESSES,
-  ARBITRUM,
-  AVALANCHE,
-  BSC,
-  ETHEREUM,
-  GOERLI,
-  LINEA,
-  OPTIMISM,
-  POLYGON,
-  ZKSYNC_ERA,
-  SWAPS_API_V2_BASE_URL,
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  SWAPS_CLIENT_ID,
-  SWAPS_DEV_API_V2_BASE_URL,
-  SwapsTokenObject,
-} from '../../../shared/constants/swaps';
-import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
@@ -42,7 +24,25 @@ import {
   getValueFromWeiHex,
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../shared/constants/common';
+import { CHAIN_IDS } from 'shared/constants/network';
+import {
+  ALLOWED_CONTRACT_ADDRESSES,
+  ARBITRUM,
+  AVALANCHE,
+  BSC,
+  ETHEREUM,
+  GOERLI,
+  LINEA,
+  OPTIMISM,
+  POLYGON,
+  ZKSYNC_ERA,
+  SWAPS_API_V2_BASE_URL,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  SWAPS_CLIENT_ID,
+  SWAPS_DEV_API_V2_BASE_URL,
+  SwapsTokenObject,
+} from 'shared/constants/swaps';
+import { EtherDenomination } from 'shared/constants/common';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';

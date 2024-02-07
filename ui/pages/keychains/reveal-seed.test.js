@@ -5,14 +5,14 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { Modal } from '../../components/app/modals';
+import configureStore from '../../store/store';
+import RevealSeedPage from './reveal-seed';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { Modal } from '../../components/app/modals';
-import configureStore from '../../store/store';
-import RevealSeedPage from './reveal-seed';
+} from 'shared/constants/metametrics';
 
 const mockRequestRevealSeedWords = jest.fn();
 const mockShowModal = jest.fn();

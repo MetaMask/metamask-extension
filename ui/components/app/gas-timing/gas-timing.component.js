@@ -18,13 +18,13 @@ import {
 } from '../../../ducks/metamask/metamask';
 
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
 import { getGasFeeTimeEstimate } from '../../../store/actions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;

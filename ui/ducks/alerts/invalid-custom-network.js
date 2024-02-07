@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AlertTypes } from '../../../shared/constants/alerts';
 import { ALERT_STATE } from './enums';
+import { AlertTypes } from 'shared/constants/alerts';
 
 // Constants
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -9,6 +8,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 
 import GasDetailsItem from './gas-details-item';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),

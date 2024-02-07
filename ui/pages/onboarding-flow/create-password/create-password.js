@@ -42,16 +42,16 @@ import {
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   Box,
   ButtonLink,
   Icon,
   IconName,
   Text,
 } from '../../../components/component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function CreatePassword({
   createNewAccount,

@@ -12,10 +12,10 @@ import {
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from 'shared/constants/swaps';
 
 export default function ItemList({
   results = [],

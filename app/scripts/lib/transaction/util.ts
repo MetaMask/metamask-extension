@@ -21,7 +21,7 @@ import { SUPPORTED_CHAIN_IDS } from '../ppom/ppom-middleware';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
+} from 'shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IF
 
 /**

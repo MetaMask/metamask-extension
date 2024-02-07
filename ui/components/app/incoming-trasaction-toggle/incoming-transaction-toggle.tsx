@@ -10,8 +10,8 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { PolymorphicRef } from '../../component-library/box';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
 import NetworkToggle from './network-toggle';
+import { TEST_CHAINS } from 'shared/constants/network';
 
 interface IncomingTransactionToggleProps {
   wrapperRef?: PolymorphicRef<any>;

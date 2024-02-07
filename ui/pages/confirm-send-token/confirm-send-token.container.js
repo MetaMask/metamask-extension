@@ -5,8 +5,8 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import { showSendTokenPage } from '../../store/actions';
 import { editExistingTransaction } from '../../ducks/send';
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors';
-import { AssetType } from '../../../shared/constants/transaction';
 import ConfirmSendToken from './confirm-send-token.component';
+import { AssetType } from 'shared/constants/transaction';
 
 const mapStateToProps = (state) => {
   const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state);

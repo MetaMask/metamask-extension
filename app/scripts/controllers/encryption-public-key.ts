@@ -22,9 +22,9 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { KeyringType } from 'shared/constants/keyring';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 const controllerName = 'EncryptionPublicKeyController';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';

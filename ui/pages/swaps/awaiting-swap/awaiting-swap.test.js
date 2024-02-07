@@ -8,6 +8,7 @@ import {
   createSwapsMockStore,
   fireEvent,
 } from '../../../../test/jest';
+import AwaitingSwap from '.';
 import {
   Slippage,
   QUOTES_EXPIRED_ERROR,
@@ -16,8 +17,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../../../shared/constants/swaps';
-import AwaitingSwap from '.';
+} from 'shared/constants/swaps';
 
 const middleware = [thunk];
 

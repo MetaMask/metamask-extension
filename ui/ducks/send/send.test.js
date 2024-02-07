@@ -17,13 +17,6 @@ import {
   NEGATIVE_ETH_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
 } from '../../pages/send/send.constants';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
-import { KeyringType } from '../../../shared/constants/keyring';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
@@ -79,6 +72,10 @@ import sendReducer, {
   updateGasPrice,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
+import { KeyringType } from 'shared/constants/keyring';
+import { GasEstimateTypes, GAS_LIMITS } from 'shared/constants/gas';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const mockStore = createMockStore([thunk]);
 

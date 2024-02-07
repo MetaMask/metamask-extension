@@ -4,11 +4,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
-import {
-  NETWORK_TYPES,
-  getRpcUrl,
-} from '../../../../../shared/constants/network';
 import NetworksForm from '.';
+import { NETWORK_TYPES, getRpcUrl } from 'shared/constants/network';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({

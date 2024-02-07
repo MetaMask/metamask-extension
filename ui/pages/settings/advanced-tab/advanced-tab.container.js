@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { getPreferences } from '../../../selectors';
 import {
   backupUserData,
@@ -18,6 +17,7 @@ import {
   showModal,
 } from '../../../store/actions';
 import AdvancedTab from './advanced-tab.component';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from 'shared/constants/preferences';
 
 export const mapStateToProps = (state) => {
   const {

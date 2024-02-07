@@ -1,5 +1,5 @@
-import { TEST_CHAINS } from '../../../shared/constants/network';
 import migration67 from './067';
+import { TEST_CHAINS } from 'shared/constants/network';
 
 describe('migration #67', () => {
   it('should update the version metadata', async () => {

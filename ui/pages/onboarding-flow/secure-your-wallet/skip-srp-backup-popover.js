@@ -18,16 +18,16 @@ import {
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);

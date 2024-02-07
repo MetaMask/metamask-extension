@@ -1,10 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import {
-  EditGasModes,
-  GasEstimateTypes,
-} from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -13,8 +9,9 @@ import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import PriorityfeeInput from './priority-fee-input';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { EditGasModes, GasEstimateTypes } from 'shared/constants/gas';
 
 jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),

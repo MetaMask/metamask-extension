@@ -15,10 +15,7 @@ import {
 } from '../../ducks/metamask/metamask';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 
 export default function ConfirmSendToken({
   assetStandard,

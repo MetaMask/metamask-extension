@@ -25,7 +25,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { TERMS_OF_USE_LINK } from '../../../../../shared/constants/terms';
+import { TERMS_OF_USE_LINK } from 'shared/constants/terms';
 
 export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
   const t = useI18nContext();

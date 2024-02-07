@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const mmiSupported = {
   methodNames: [MESSAGE_TYPE.MMI_SUPPORTED],

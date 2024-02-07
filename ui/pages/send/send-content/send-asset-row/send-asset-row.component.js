@@ -8,13 +8,10 @@ import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../shared/constants/transaction';
 import { Text } from '../../../../components/component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 
 export default class SendAssetRow extends Component {
   static propTypes = {

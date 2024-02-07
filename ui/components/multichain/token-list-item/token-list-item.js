@@ -41,17 +41,17 @@ import {
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../store/actions';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
+import { CURRENCY_SYMBOLS } from 'shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export const TokenListItem = ({
   className,

@@ -15,7 +15,6 @@ import {
   toggleNetworkMenu,
   updateNetworksList,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -52,17 +51,18 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import {
   getCompletedOnboarding,
   getIsUnlocked,
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import { CHAIN_IDS, TEST_CHAINS } from 'shared/constants/network';
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();

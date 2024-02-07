@@ -9,7 +9,6 @@ import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 import { showModal } from '../../store/actions';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
@@ -30,6 +29,7 @@ import {
   IconName,
   Text,
 } from '../../components/component-library';
+import { NETWORK_TYPES } from 'shared/constants/network';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();

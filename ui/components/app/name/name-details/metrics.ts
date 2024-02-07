@@ -1,11 +1,11 @@
 import { useCallback, useContext } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { FormComboFieldOption } from '../../../ui/form-combo-field/form-combo-field';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { FormComboFieldOption } from '../../../ui/form-combo-field/form-combo-field';
+} from 'shared/constants/metametrics';
 
 export function usePetnamesMetrics({
   initialSources,

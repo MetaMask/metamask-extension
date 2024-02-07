@@ -7,7 +7,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
   isEIP1559Transaction,
@@ -16,20 +15,6 @@ import {
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
-import {
-  TokenStandard,
-  TransactionApprovalAmountType,
-  TransactionMetaMetricsEvent,
-} from '../../../../shared/constants/transaction';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
-  MetaMetricsEventName,
-  MetaMetricsEventUiCustomization,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
-} from '../../../../shared/constants/metametrics';
-import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
@@ -42,6 +27,21 @@ import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import {
+  TokenStandard,
+  TransactionApprovalAmountType,
+  TransactionMetaMetricsEvent,
+} from 'shared/constants/transaction';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventFragment,
+  MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
+  MetaMetricsPageObject,
+  MetaMetricsReferrerObject,
+} from 'shared/constants/metametrics';
+import { GasRecommendations } from 'shared/constants/gas';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (

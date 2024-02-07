@@ -6,9 +6,9 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SEND_STAGES } from '../../../ducks/send';
 import { INSUFFICIENT_FUNDS_ERROR } from '../send.constants';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default class SendFooter extends Component {
   static propTypes = {

@@ -5,9 +5,8 @@ import { waitFor } from '@testing-library/react';
 
 import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-
 import Confirmation from '../confirmation';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 jest.mock('../../../../shared/lib/fetch-with-cache');
 

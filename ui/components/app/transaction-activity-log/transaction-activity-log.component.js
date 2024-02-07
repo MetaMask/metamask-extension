@@ -4,10 +4,10 @@ import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {

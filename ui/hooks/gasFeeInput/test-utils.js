@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   getConversionRate,
   getNativeCurrency,
@@ -21,7 +20,8 @@ import {
   getCustomMaxPriorityFeePerGas,
 } from '../../ducks/swaps/swaps';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
+import { GasEstimateTypes } from 'shared/constants/gas';
+import { EtherDenomination } from 'shared/constants/common';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei

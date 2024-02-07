@@ -11,8 +11,8 @@ import {
   DESKTOP_PAIRING_ROUTE,
 } from '../../../helpers/constants/routes';
 import actions from '../../../store/actions';
-import { EXTENSION_ERROR_PAGE_TYPES } from '../../../../shared/constants/desktop';
 import DesktopEnableButton from './desktop-enable-button.component';
+import { EXTENSION_ERROR_PAGE_TYPES } from 'shared/constants/desktop';
 
 const mockHideLoadingIndication = jest.fn();
 const mockShowLoadingIndication = jest.fn();

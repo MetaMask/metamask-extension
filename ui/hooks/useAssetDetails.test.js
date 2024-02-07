@@ -5,8 +5,8 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import configureStore from '../store/store';
 import * as Actions from '../store/actions';
-import { TokenStandard } from '../../shared/constants/transaction';
 import { useAssetDetails } from './useAssetDetails';
+import { TokenStandard } from 'shared/constants/transaction';
 
 const renderUseAssetDetails = ({
   tokenAddress,

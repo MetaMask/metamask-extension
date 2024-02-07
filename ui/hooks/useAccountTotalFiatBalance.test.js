@@ -5,8 +5,8 @@ import { renderHook } from '@testing-library/react-hooks';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 
-import { CHAIN_IDS } from '../../shared/constants/network';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 jest.mock('./useTokenTracker', () => {
   return {

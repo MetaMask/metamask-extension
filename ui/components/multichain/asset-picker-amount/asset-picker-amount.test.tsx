@@ -2,13 +2,13 @@ import * as React from 'react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockSendState from '../../../../test/data/mock-send-state.json';
+import { AssetPickerAmount } from './asset-picker-amount';
 import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../../shared/constants/network';
-import { AssetType } from '../../../../shared/constants/transaction';
-import { AssetPickerAmount } from './asset-picker-amount';
+} from 'shared/constants/network';
+import { AssetType } from 'shared/constants/transaction';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

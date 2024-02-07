@@ -5,13 +5,10 @@ import configureStore from '../../../store/store';
 import { TransactionModalContext } from '../../../contexts/transaction-modal';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  EditGasModes,
-  GasEstimateTypes,
-} from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import CancelSpeedupPopover from './cancel-speedup-popover';
+import { EditGasModes, GasEstimateTypes } from 'shared/constants/gas';
 
 const store = configureStore({
   metamask: {

@@ -41,7 +41,6 @@ import {
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -52,6 +51,7 @@ import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
 
 class SettingsPage extends PureComponent {
   static propTypes = {

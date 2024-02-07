@@ -5,7 +5,7 @@ import {
   I18NSubstitution,
   getMessage as getMessageShared,
 } from '../../../shared/modules/i18n';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from 'shared/constants/network';
 
 /**
  * Returns a localized message for the given key

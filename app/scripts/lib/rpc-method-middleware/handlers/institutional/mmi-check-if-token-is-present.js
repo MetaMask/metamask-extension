@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const mmiAuthenticate = {
   methodNames: [MESSAGE_TYPE.MMI_CHECK_IF_TOKEN_IS_PRESENT],

@@ -1,6 +1,6 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import AppStateController from './app-state';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 let appStateController, mockStore;
 

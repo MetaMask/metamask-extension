@@ -4,8 +4,8 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {

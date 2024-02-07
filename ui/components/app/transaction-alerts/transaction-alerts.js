@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-import { PriorityLevels } from '../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,6 +18,7 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
+import { PriorityLevels } from 'shared/constants/gas';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,

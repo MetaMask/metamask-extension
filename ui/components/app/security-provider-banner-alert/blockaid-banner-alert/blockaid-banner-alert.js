@@ -3,23 +3,23 @@ import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import {
   OverflowWrap,
   Severity,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import {
-  BlockaidReason,
-  BlockaidResultType,
-  SecurityProvider,
-} from '../../../../../shared/constants/security-provider';
 import { Text } from '../../../component-library';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 import LoadingIndicator from '../../../ui/loading-indicator';
 import { getReportUrl } from './blockaid-banner-utils';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+  SecurityProvider,
+} from 'shared/constants/security-provider';
+import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
 
 const zlib = require('zlib');
 

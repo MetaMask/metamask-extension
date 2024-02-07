@@ -2,17 +2,17 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 
-import {
-  CUSTOM_GAS_ESTIMATE,
-  EditGasModes,
-  GasRecommendations,
-} from '../../../shared/constants/gas';
 import mockState from '../../../test/data/mock-state.json';
 import * as Actions from '../../store/actions';
 import configureStore from '../../store/store';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
+import {
+  CUSTOM_GAS_ESTIMATE,
+  EditGasModes,
+  GasRecommendations,
+} from 'shared/constants/gas';
 
 jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),

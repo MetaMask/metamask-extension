@@ -1,8 +1,8 @@
+import { getBlockaidMetricsProps, getMethodName } from './metrics';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../shared/constants/security-provider';
-import { getBlockaidMetricsProps, getMethodName } from './metrics';
+} from 'shared/constants/security-provider';
 
 describe('getMethodName', () => {
   it('gets correct method names', () => {

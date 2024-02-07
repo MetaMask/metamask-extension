@@ -22,15 +22,9 @@ import {
   getUnapprovedConfirmations,
 } from '../../../selectors';
 
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_POPUP,
-  ORIGIN_METAMASK,
-} from '../../../../shared/constants/app';
 import { requestUserApproval } from '../../../store/actions';
 import Popover from '../../ui/popover';
 import ConfirmationPage from '../../../pages/confirmation/confirmation';
-import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -42,7 +36,13 @@ import {
   AvatarNetworkSize,
   Text,
 } from '../../component-library';
-import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
+import { FEATURED_RPCS } from 'shared/constants/network';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ORIGIN_METAMASK,
+} from 'shared/constants/app';
+import { MetaMetricsNetworkEventSource } from 'shared/constants/metametrics';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);

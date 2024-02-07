@@ -6,6 +6,7 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
+import SwapsBannerAlert from './swaps-banner-alert';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -17,8 +18,7 @@ import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
-} from '../../../../shared/constants/swaps';
-import SwapsBannerAlert from './swaps-banner-alert';
+} from 'shared/constants/swaps';
 
 const middleware = [thunk];
 

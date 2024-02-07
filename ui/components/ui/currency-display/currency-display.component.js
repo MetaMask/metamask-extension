@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { Text, Box } from '../../component-library';
 import {
   AlignItems,
@@ -10,6 +9,7 @@ import {
   FlexWrap,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { EtherDenomination } from 'shared/constants/common';
 
 export default function CurrencyDisplay({
   value,

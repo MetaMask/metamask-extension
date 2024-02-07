@@ -1,5 +1,5 @@
 import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const mmiOpenAddHardwareWallet = {
   methodNames: [MESSAGE_TYPE.MMI_OPEN_ADD_HARDWARE_WALLET],

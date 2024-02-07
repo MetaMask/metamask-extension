@@ -2,13 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import {
-  HardwareTransportStates,
-  LEDGER_USB_VENDOR_ID,
-  LedgerTransportTypes,
-  WebHIDConnectedStatuses,
-} from '../../../../shared/constants/hardware-wallets';
 import {
   getLedgerTransportStatus,
   getLedgerWebHidConnectedStatus,
@@ -24,6 +17,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { BannerAlert, ButtonLink, Text } from '../../component-library';
+import {
+  HardwareTransportStates,
+  LEDGER_USB_VENDOR_ID,
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
+} from 'shared/constants/hardware-wallets';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
 
 const renderInstructionStep = (
   text,

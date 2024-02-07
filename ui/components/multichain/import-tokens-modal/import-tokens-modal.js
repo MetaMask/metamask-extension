@@ -74,11 +74,6 @@ import {
   toChecksumHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
 import {
   checkExistingAddresses,
   getURLHostName,
@@ -90,12 +85,14 @@ import {
   getNativeCurrency,
   getPendingTokens,
 } from '../../../ducks/metamask/metamask';
+import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
-} from '../../../../shared/constants/metametrics';
-import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
+} from 'shared/constants/metametrics';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
+import { STATIC_MAINNET_TOKEN_LIST } from 'shared/constants/tokens';
 
 export const ImportTokensModal = ({ onClose }) => {
   const t = useI18nContext();

@@ -3,12 +3,12 @@ import {
   AbstractMessage,
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import EncryptionPublicKeyController, {
   EncryptionPublicKeyControllerMessenger,
   EncryptionPublicKeyControllerOptions,
 } from './encryption-public-key';
+import { KeyringType } from 'shared/constants/keyring';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 jest.mock('@metamask/message-manager', () => ({
   EncryptionPublicKeyManager: jest.fn(),

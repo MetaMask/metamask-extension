@@ -17,12 +17,6 @@ import {
   getFirstTimeFlowType,
 } from '../../../selectors';
 
-import {
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
@@ -31,6 +25,11 @@ import {
 } from '../../../components/component-library';
 
 import Box from '../../../components/ui/box/box';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();

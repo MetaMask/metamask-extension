@@ -3,8 +3,8 @@
  */
 import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const NETWORK_CONFIGURATION_DATA = {
   'test-networkConfigurationId-1': {

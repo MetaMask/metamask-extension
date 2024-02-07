@@ -18,11 +18,11 @@ import {
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
 import { getFirstTimeFlowType } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+} from 'shared/constants/metametrics';
 
 export default function CreationSuccessful() {
   const history = useHistory();

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
+import { CaveatTypes } from 'shared/constants/permissions';
 
 /**
  * This file contains selectors for PermissionController selector event

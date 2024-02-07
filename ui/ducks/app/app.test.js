@@ -1,6 +1,6 @@
 import * as actionConstants from '../../store/actionConstants';
-import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import reduceApp from './app';
+import { HardwareDeviceNames } from 'shared/constants/hardware-wallets';
 
 const actions = actionConstants;
 

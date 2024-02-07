@@ -1,14 +1,11 @@
 import { EthMethod, EthAccountType } from '@metamask/keyring-api';
 import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../shared/constants/permissions';
-import {
   getCaveatSpecifications,
   getPermissionSpecifications,
   unrestrictedMethods,
 } from './specifications';
+import { CaveatTypes, RestrictedMethods } from 'shared/constants/permissions';
 
 // Note: This causes Date.now() to return the number 1.
 jest.useFakeTimers('modern').setSystemTime(1);

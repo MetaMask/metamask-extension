@@ -5,17 +5,17 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { EditGasModes } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 
+import EditGasFeePopover from './edit-gas-fee-popover';
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
-import EditGasFeePopover from './edit-gas-fee-popover';
+} from 'shared/constants/network';
+import { EditGasModes } from 'shared/constants/gas';
 
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),

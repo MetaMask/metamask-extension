@@ -2,10 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import {
-  NETWORK_TYPES,
-  BUILT_IN_NETWORKS,
-} from '../../../../shared/constants/network';
 
 import LoadingIndicator from '../../ui/loading-indicator';
 import ColorIndicator from '../../ui/color-indicator';
@@ -21,6 +17,7 @@ import { isNetworkLoading } from '../../../selectors';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
+import { NETWORK_TYPES, BUILT_IN_NETWORKS } from 'shared/constants/network';
 
 /**
  * @deprecated The `<NetworkDisplay />` component has been deprecated in favor of the new `<PickerNetwork>` component from the component-library.

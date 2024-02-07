@@ -11,49 +11,6 @@ import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
-import {
-  TEST_CHAINS,
-  BUYABLE_CHAINS_MAP,
-  MAINNET_DISPLAY_NAME,
-  BSC_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  AVALANCHE_DISPLAY_NAME,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_IDS,
-  NETWORK_TYPES,
-  NetworkStatus,
-  SEPOLIA_DISPLAY_NAME,
-  GOERLI_DISPLAY_NAME,
-  ETH_TOKEN_IMAGE_URL,
-  LINEA_GOERLI_DISPLAY_NAME,
-  CURRENCY_SYMBOLS,
-  TEST_NETWORK_TICKER_MAP,
-  LINEA_GOERLI_TOKEN_IMAGE_URL,
-  LINEA_MAINNET_DISPLAY_NAME,
-  LINEA_MAINNET_TOKEN_IMAGE_URL,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  ARBITRUM_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
-  BASE_DISPLAY_NAME,
-  ZK_SYNC_ERA_DISPLAY_NAME,
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-} from '../../shared/constants/network';
-import {
-  WebHIDConnectedStatuses,
-  LedgerTransportTypes,
-  HardwareTransportStates,
-} from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
-
-import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
-
-import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_PROD_SWAPS_CHAIN_IDS,
-  ALLOWED_DEV_SWAPS_CHAIN_IDS,
-} from '../../shared/constants/swaps';
-
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
 import {
   shortenAddress,
@@ -65,9 +22,6 @@ import {
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import { DAY } from '../../shared/constants/time';
-import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getProviderConfig,
   getConversionRate,
@@ -113,6 +67,49 @@ import {
 } from './permissions';
 ///: END:ONLY_INCLUDE_IF
 import { createDeepEqualSelector } from './util';
+import { TERMS_OF_USE_LAST_UPDATED } from 'shared/constants/terms';
+import { DAY } from 'shared/constants/time';
+import { STATIC_MAINNET_TOKEN_LIST } from 'shared/constants/tokens';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  ALLOWED_DEV_SWAPS_CHAIN_IDS,
+} from 'shared/constants/swaps';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from 'shared/constants/bridge';
+import { TRUNCATED_NAME_CHAR_LIMIT } from 'shared/constants/labels';
+import { KeyringType } from 'shared/constants/keyring';
+import {
+  WebHIDConnectedStatuses,
+  LedgerTransportTypes,
+  HardwareTransportStates,
+} from 'shared/constants/hardware-wallets';
+import {
+  TEST_CHAINS,
+  BUYABLE_CHAINS_MAP,
+  MAINNET_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  CHAIN_ID_TO_RPC_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TYPES,
+  NetworkStatus,
+  SEPOLIA_DISPLAY_NAME,
+  GOERLI_DISPLAY_NAME,
+  ETH_TOKEN_IMAGE_URL,
+  LINEA_GOERLI_DISPLAY_NAME,
+  CURRENCY_SYMBOLS,
+  TEST_NETWORK_TICKER_MAP,
+  LINEA_GOERLI_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_DISPLAY_NAME,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  ARBITRUM_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  BASE_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+} from 'shared/constants/network';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no

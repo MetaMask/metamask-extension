@@ -15,7 +15,15 @@
     "rootDir": ".",
     "sourceMap": true,
     "strict": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "background/*": ["app/scripts/*"],
+      "development/*": ["development/*"],
+      "offscreen/*": ["offscreen/*"],
+      "shared/*": ["shared/*"],
+      "types/*": ["types/*"],
+      "ui/*": ["ui/*"]
+    }
   },
   "exclude": [
     "**/jest-coverage/**/*",

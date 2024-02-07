@@ -37,18 +37,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import { KeyringType } from 'shared/constants/keyring';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;

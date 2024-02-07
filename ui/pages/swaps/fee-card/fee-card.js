@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import {
@@ -12,9 +11,10 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getUseCurrencyRateCheck } from '../../../selectors';
 import { Text } from '../../../components/component-library';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';

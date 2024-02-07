@@ -12,13 +12,13 @@ import {
 } from '../../../selectors';
 import { addNewAccount, setAccountLabel } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Display } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Display } from '../../../helpers/constants/design-system';
+} from 'shared/constants/metametrics';
 
 export const CreateAccount = ({ onActionComplete }) => {
   const t = useI18nContext();

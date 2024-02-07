@@ -3,10 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import TransactionListItemDetails from '.';
+import { GAS_LIMITS } from 'shared/constants/gas';
 
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: () => jest.fn(),

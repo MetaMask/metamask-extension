@@ -1,7 +1,7 @@
 import ObjectMultiplex from 'obj-multiplex';
 import pump from 'pump';
 
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { EXTENSION_MESSAGES } from 'shared/constants/app';
 
 /**
  * Sets up stream multiplexing for the given stream

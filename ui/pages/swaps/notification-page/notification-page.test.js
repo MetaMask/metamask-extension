@@ -6,8 +6,8 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import NotificationPage from './notification-page';
+import { QUOTES_EXPIRED_ERROR } from 'shared/constants/swaps';
 
 const middleware = [thunk];
 

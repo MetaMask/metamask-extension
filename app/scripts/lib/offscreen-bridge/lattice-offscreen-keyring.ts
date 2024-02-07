@@ -2,7 +2,7 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import {
   OffscreenCommunicationTarget,
   KnownOrigins,
-} from '../../../../shared/constants/offscreen-communication';
+} from 'shared/constants/offscreen-communication';
 
 /**
  * This keyring extends the default keyring but uses a overwritten _getCreds

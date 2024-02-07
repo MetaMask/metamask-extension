@@ -9,12 +9,12 @@ import {
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
-import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
+import { SmartTransactionStatus } from 'shared/constants/transaction';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,

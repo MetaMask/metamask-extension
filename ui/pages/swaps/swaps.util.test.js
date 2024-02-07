@@ -1,22 +1,6 @@
 import nock from 'nock';
 import { MOCKS } from '../../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
-import {
-  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-  WETH_CONTRACT_ADDRESS,
-  WBNB_CONTRACT_ADDRESS,
-  WMATIC_CONTRACT_ADDRESS,
-  ETHEREUM,
-  POLYGON,
-  BSC,
-  GOERLI,
-  AVALANCHE,
-  OPTIMISM,
-  ARBITRUM,
-  ZKSYNC_ERA,
-  LINEA,
-} from '../../../shared/constants/swaps';
 import {
   TOKENS,
   EXPECTED_TOKENS_RESULT,
@@ -35,6 +19,22 @@ import {
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
 } from './swaps.util';
+import {
+  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
+  WETH_CONTRACT_ADDRESS,
+  WBNB_CONTRACT_ADDRESS,
+  WMATIC_CONTRACT_ADDRESS,
+  ETHEREUM,
+  POLYGON,
+  BSC,
+  GOERLI,
+  AVALANCHE,
+  OPTIMISM,
+  ARBITRUM,
+  ZKSYNC_ERA,
+  LINEA,
+} from 'shared/constants/swaps';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from 'shared/constants/network';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),

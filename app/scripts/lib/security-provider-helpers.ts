@@ -1,7 +1,7 @@
 import { Json } from '@metamask/utils';
 import { MessageParams } from '@metamask/message-manager';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 
 const fetchWithTimeout = getFetchWithTimeout();
 

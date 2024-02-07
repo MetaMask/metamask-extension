@@ -1,7 +1,4 @@
-import {
-  GasEstimateTypes,
-  CUSTOM_GAS_ESTIMATE,
-} from '../../../shared/constants/gas';
+import { GasEstimateTypes, CUSTOM_GAS_ESTIMATE } from 'shared/constants/gas';
 
 export function getGasFeeEstimate(
   field,

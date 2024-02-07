@@ -41,18 +41,18 @@ import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsSwapsEventSource,
-} from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import WalletOverview from './wallet-overview';
+import { AssetType } from 'shared/constants/transaction';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
+} from 'shared/constants/metametrics';
 
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch();

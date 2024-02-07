@@ -10,13 +10,13 @@ import {
   TextVariant,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
-import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
   BannerAlert,
   ButtonLink,
   ButtonLinkSize,
   Text,
 } from '../../../components/component-library';
+import { GasRecommendations } from 'shared/constants/gas';
 
 export default function ViewQuotePriceDifference(props) {
   const {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
-import { EtherDenomination } from '../../../../shared/constants/common';
 import UserPreferencedCurrencyDisplay from '.';
+import { EtherDenomination } from 'shared/constants/common';
 
 export default {
   title: 'Components/App/UserPreferencedCurrencyDisplay',

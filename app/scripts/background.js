@@ -22,24 +22,6 @@ import { ApprovalType } from '@metamask/controller-utils';
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  EXTENSION_MESSAGES,
-  PLATFORM_FIREFOX,
-  MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../shared/constants/app';
-import {
-  REJECT_NOTIFICATION_CLOSE,
-  REJECT_NOTIFICATION_CLOSE_SIG,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsUserTrait,
-} from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
@@ -49,7 +31,6 @@ import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
-
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
@@ -62,6 +43,24 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  EXTENSION_MESSAGES,
+  PLATFORM_FIREFOX,
+  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+} from 'shared/constants/app';
+import {
+  REJECT_NOTIFICATION_CLOSE,
+  REJECT_NOTIFICATION_CLOSE_SIG,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from 'shared/constants/metametrics';
 
 /* eslint-enable import/first */
 

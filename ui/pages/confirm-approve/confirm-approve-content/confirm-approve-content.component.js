@@ -24,8 +24,6 @@ import BlockaidBannerAlert from '../../../components/app/security-provider-banne
 ///: END:ONLY_INCLUDE_IF
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
   ButtonIcon,
@@ -39,8 +37,10 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import CustomNonce from '../../../components/app/custom-nonce';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import FeeDetailsComponent from '../../../components/app/fee-details-component/fee-details-component';
+import { COPY_OPTIONS } from 'shared/constants/copy';
+import { CHAIN_IDS, TEST_CHAINS } from 'shared/constants/network';
+import { TokenStandard } from 'shared/constants/transaction';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {

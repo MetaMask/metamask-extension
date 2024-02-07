@@ -7,7 +7,7 @@ import {
   NetworkState,
 } from '@metamask/network-controller';
 import type { Patch } from 'immer';
-import { MAINNET_CHAINS } from '../../../shared/constants/network';
+import { MAINNET_CHAINS } from 'shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';

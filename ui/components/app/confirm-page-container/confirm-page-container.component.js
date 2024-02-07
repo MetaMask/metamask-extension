@@ -10,10 +10,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
-import { EditGasModes } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -56,16 +53,19 @@ import useRamps from '../../../hooks/experiences/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
-
-import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IF
+
+import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
+import { TokenStandard } from 'shared/constants/transaction';
+import { EditGasModes } from 'shared/constants/gas';
 
 const ConfirmPageContainer = (props) => {
   const {

@@ -3,15 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
@@ -24,6 +18,12 @@ import {
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TYPES,
+} from 'shared/constants/network';
 
 const NetworksListItem = ({
   network,

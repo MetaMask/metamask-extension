@@ -8,12 +8,12 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Button, Box } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { Button, Box } from '../../component-library';
+} from 'shared/constants/metametrics';
 
 const radius = 14;
 const strokeWidth = 2;

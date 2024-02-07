@@ -2,13 +2,7 @@ import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import {
   addGasBuffer,
@@ -20,6 +14,9 @@ import {
 import { getGasPriceInHexWei } from '../../selectors';
 import { estimateGas } from '../../store/actions';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
+import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from 'shared/constants/network';
+import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from 'shared/constants/gas';
 
 export async function estimateGasLimitForSend({
   selectedAddress,

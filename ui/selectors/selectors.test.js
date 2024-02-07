@@ -2,15 +2,15 @@ import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
-import { KeyringType } from '../../shared/constants/keyring';
+import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
+import * as selectors from './selectors';
+import { KeyringType } from 'shared/constants/keyring';
 import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
   OPTIMISM_DISPLAY_NAME,
-} from '../../shared/constants/network';
-import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import * as selectors from './selectors';
+} from 'shared/constants/network';
 
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');

@@ -3,12 +3,12 @@ import configureMockStore from 'redux-mock-store';
 
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { TokenListItem } from '.';
 import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
   NETWORK_TYPES,
-} from '../../../../shared/constants/network';
-import { TokenListItem } from '.';
+} from 'shared/constants/network';
 
 const state = {
   metamask: {

@@ -7,10 +7,6 @@ import { matchPath, useHistory } from 'react-router-dom';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
@@ -56,7 +52,6 @@ import {
 } from '../../../store/actions';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -66,7 +61,12 @@ import {
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { MINUTE } from '../../../../shared/constants/time';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import { MINUTE } from 'shared/constants/time';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);

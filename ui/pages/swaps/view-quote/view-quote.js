@@ -91,13 +91,10 @@ import {
   getFeeForSmartTransaction,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -118,6 +115,9 @@ import {
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
+import { GasRecommendations } from 'shared/constants/gas';
+import { QUOTES_EXPIRED_ERROR } from 'shared/constants/swaps';
 
 let intervalId;
 

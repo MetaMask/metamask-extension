@@ -1,8 +1,5 @@
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
 import switchEthereumChain from './switch-ethereum-chain';
+import { CHAIN_IDS, NETWORK_TYPES } from 'shared/constants/network';
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
 

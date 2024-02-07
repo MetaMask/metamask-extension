@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 
 class ErrorPage extends PureComponent {
   static contextTypes = {

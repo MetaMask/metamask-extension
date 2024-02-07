@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { renderWithProvider, fireEvent } from '../../../../test/jest';
-import { Slippage } from '../../../../shared/constants/swaps';
 import SlippageButtons from './slippage-buttons';
+import { Slippage } from 'shared/constants/swaps';
 
 const createProps = (customProps = {}) => {
   return {

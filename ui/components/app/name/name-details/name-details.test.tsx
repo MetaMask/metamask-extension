@@ -7,11 +7,11 @@ import { useDispatch } from 'react-redux';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import NameDetails from './name-details';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import NameDetails from './name-details';
+} from 'shared/constants/metametrics';
 
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),

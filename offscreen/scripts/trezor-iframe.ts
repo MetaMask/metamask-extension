@@ -3,7 +3,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
   TrezorAction,
-} from '../../shared/constants/offscreen-communication';
+} from 'shared/constants/offscreen-communication';
 
 /**
  * This listener is used to listen for messages targeting the Trezor Offscreen

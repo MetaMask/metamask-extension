@@ -12,9 +12,9 @@ import {
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import { getPermissionBackgroundApiMethods } from './permissions';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 export default class MMIController extends EventEmitter {
   constructor(opts) {

@@ -17,10 +17,10 @@ import {
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { AssetType } from '../../../../../shared/constants/transaction';
 import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import { AssetType } from 'shared/constants/transaction';
 
 // A component that lets the user pick from a list of assets.
 export default function AssetPicker({ asset }: { asset: Asset }) {

@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { Text } from '../../component-library';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { PriorityLevels } from '../../../../shared/constants/gas';
 import {
   getIsMultiLayerFeeNetwork,
   getPreferences,
@@ -30,6 +29,7 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import { PriorityLevels } from 'shared/constants/gas';
 
 const GasDetailsItem = ({
   'data-testid': dataTestId,

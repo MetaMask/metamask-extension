@@ -7,23 +7,7 @@ import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import {
-  AssetType,
-  TokenStandard,
-  TransactionMetaMetricsEvent,
-} from '../../../../shared/constants/transaction';
-import {
-  MetaMetricsTransactionEventSource,
-  MetaMetricsEventCategory,
-} from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF(blockaid)
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -35,6 +19,22 @@ import {
   METRICS_STATUS_FAILED,
   TransactionMetricsRequest,
 } from './metrics';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
+import {
+  AssetType,
+  TokenStandard,
+  TransactionMetaMetricsEvent,
+} from 'shared/constants/transaction';
+import {
+  MetaMetricsTransactionEventSource,
+  MetaMetricsEventCategory,
+} from 'shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from 'shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IF(blockaid)
 
 const providerResultStub = {
   eth_getCode: '0x123',

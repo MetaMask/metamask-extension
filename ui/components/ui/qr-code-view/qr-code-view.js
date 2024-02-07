@@ -10,7 +10,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 
 export default connect(mapStateToProps)(QrCodeView);
 

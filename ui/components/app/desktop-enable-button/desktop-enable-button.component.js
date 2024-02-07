@@ -9,7 +9,6 @@ import {
   DESKTOP_ERROR_ROUTE,
   DESKTOP_PAIRING_ROUTE,
 } from '../../../helpers/constants/routes';
-import { EXTENSION_ERROR_PAGE_TYPES } from '../../../../shared/constants/desktop';
 import { getIsDesktopEnabled } from '../../../selectors';
 import {
   hideLoadingIndication,
@@ -18,9 +17,10 @@ import {
   testDesktopConnection,
   disableDesktop,
 } from '../../../store/actions';
-import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { SECOND } from 'shared/constants/time';
+import { EXTENSION_ERROR_PAGE_TYPES } from 'shared/constants/desktop';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 const DESKTOP_ERROR_DESKTOP_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.DESKTOP_OUTDATED}`;
 const DESKTOP_ERROR_EXTENSION_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.EXTENSION_OUTDATED}`;

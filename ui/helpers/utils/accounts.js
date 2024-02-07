@@ -1,13 +1,13 @@
 import { InvisibleCharacter } from '../../components/component-library';
+import { BackgroundColor } from '../constants/design-system';
+import { t } from '../../../app/scripts/translate';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
-import { BackgroundColor } from '../constants/design-system';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
-import { t } from '../../../app/scripts/translate';
+} from 'shared/constants/network';
+import { KeyringType } from 'shared/constants/keyring';
+import { HardwareKeyringNames } from 'shared/constants/hardware-wallets';
 
 export function getAccountNameErrorMessage(
   accounts,

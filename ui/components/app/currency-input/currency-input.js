@@ -18,8 +18,8 @@ import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
 } from '../../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { EtherDenomination } from 'shared/constants/common';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted

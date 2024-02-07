@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   AlignItems,
   Display,
@@ -25,6 +24,7 @@ import {
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 const CancelSpeedupPopover = () => {
   const {

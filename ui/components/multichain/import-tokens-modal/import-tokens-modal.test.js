@@ -10,8 +10,8 @@ import {
   setConfirmationExchangeRates,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import { ImportTokensModal } from '.';
+import { TokenStandard } from 'shared/constants/transaction';
 
 jest.mock('../../../store/actions', () => ({
   getTokenStandardAndDetails: jest

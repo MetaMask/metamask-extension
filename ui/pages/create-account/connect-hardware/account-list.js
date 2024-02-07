@@ -8,8 +8,8 @@ import Dropdown from '../../../components/ui/dropdown';
 
 import { getURLHostName } from '../../../helpers/utils/util';
 
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { HardwareDeviceNames } from 'shared/constants/hardware-wallets';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 class AccountList extends Component {
   state = {

@@ -1,12 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import UserPreferencedCurrencyDisplay from '.';
 import {
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   CHAIN_IDS,
-} from '../../../../shared/constants/network';
-import UserPreferencedCurrencyDisplay from '.';
+} from 'shared/constants/network';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {

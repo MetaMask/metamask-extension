@@ -11,16 +11,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsNetworkEventSource,
-} from '../../../../../shared/constants/metametrics';
-import {
-  BUILT_IN_NETWORKS,
-  FEATURED_RPCS,
-  infuraProjectId,
-} from '../../../../../shared/constants/network';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
@@ -55,6 +45,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import {
+  BUILT_IN_NETWORKS,
+  FEATURED_RPCS,
+  infuraProjectId,
+} from 'shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from 'shared/constants/metametrics';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display

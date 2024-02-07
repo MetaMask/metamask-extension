@@ -17,10 +17,10 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { cloneDeep } from 'lodash';
-import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
 import { previousValueComparator } from './util';
+import { LOCALHOST_RPC_URL } from 'shared/constants/network';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction

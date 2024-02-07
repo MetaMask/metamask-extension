@@ -2,14 +2,14 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
+import { NetworkListMenu } from '.';
 import {
   BNB_TOKEN_IMAGE_URL,
   BSC_DISPLAY_NAME,
   CHAIN_IDS,
   OPTIMISM_DISPLAY_NAME,
   OPTIMISM_TOKEN_IMAGE_URL,
-} from '../../../../shared/constants/network';
-import { NetworkListMenu } from '.';
+} from 'shared/constants/network';
 
 const customNetworkStore = configureStore({
   ...testData,

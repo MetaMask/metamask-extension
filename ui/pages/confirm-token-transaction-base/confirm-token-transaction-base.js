@@ -25,13 +25,13 @@ import {
   getNativeCurrency,
   getNftContracts,
 } from '../../ducks/metamask/metamask';
-import { TokenStandard } from '../../../shared/constants/transaction';
 import {
   getWeiHexFromDecimalValue,
   hexWEIToDecETH,
 } from '../../../shared/modules/conversion.utils';
-import { EtherDenomination } from '../../../shared/constants/common';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { TokenStandard } from 'shared/constants/transaction';
+import { EtherDenomination } from 'shared/constants/common';
+import { CHAIN_IDS, TEST_CHAINS } from 'shared/constants/network';
 
 export default function ConfirmTokenTransactionBase({
   image = '',

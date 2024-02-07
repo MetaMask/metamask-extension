@@ -10,8 +10,6 @@ import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
-
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
 ///: END:ONLY_INCLUDE_IF
@@ -51,6 +49,7 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import Confirm from '../confirm/confirm';
 ///: END:ONLY_INCLUDE_IF
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();

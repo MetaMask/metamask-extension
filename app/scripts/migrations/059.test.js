@@ -3,8 +3,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import migration59 from './059';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TransactionType.simpleSend
 

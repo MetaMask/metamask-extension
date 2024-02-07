@@ -14,8 +14,8 @@ import {
 } from '../../../../../ducks/send';
 import { showQrScanner } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../../../shared/constants/metametrics';
 import { SendPageRow } from '.';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export const SendPageRecipientInput = () => {
   const t = useContext(I18nContext);

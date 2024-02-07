@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   BlockSize,
@@ -30,6 +25,11 @@ import { ModalContent } from '../../../component-library/modal-content/deprecate
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import QuizContent from '../QuizContent';
 import { JSXDict, QuizStage } from '../types';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 const wrongAnswerIcon = (
   <Icon

@@ -46,16 +46,8 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 ///: END:ONLY_INCLUDE_IF
 import IconButton from '../../ui/icon-button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -66,6 +58,14 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import WalletOverview from './wallet-overview';
+import { AssetType } from 'shared/constants/transaction';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  MetaMetricsSwapsEventSource,
+  ///: END:ONLY_INCLUDE_IF
+} from 'shared/constants/metametrics';
 
 const EthOverview = ({ className, showAddress }) => {
   const dispatch = useDispatch();

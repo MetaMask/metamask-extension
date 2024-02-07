@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import copyToClipboard from 'copy-to-clipboard';
-import { MINUTE } from '../../shared/constants/time';
-import { COPY_OPTIONS } from '../../shared/constants/copy';
 import { useTimeout } from './useTimeout';
+import { MINUTE } from 'shared/constants/time';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 /**
  * useCopyToClipboard

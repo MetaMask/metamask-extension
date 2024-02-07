@@ -5,11 +5,11 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionType } from '@metamask/transaction-controller';
 import * as TokenUtil from '../../../../shared/lib/token-util.ts';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
 import ConfirmPageContainer from '.';
+import { TokenStandard } from 'shared/constants/transaction';
 
 const mockOnCancelAll = jest.fn();
 const mockOnCancel = jest.fn();

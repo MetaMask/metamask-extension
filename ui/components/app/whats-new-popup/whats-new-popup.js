@@ -5,10 +5,6 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   NOTIFICATION_BLOCKAID_DEFAULT,
   ///: END:ONLY_INCLUDE_IF
@@ -39,6 +35,10 @@ import { getSortedAnnouncementsToShow } from '../../../selectors';
 import { updateViewedNotifications } from '../../../store/actions';
 import { ButtonPrimary, Text } from '../../component-library';
 import Popover from '../../ui/popover';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {

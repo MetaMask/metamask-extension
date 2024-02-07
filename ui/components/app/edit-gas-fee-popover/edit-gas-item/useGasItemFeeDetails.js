@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  EditGasModes,
-  PriorityLevels,
-} from '../../../../../shared/constants/gas';
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
 import {
   addTenPercentAndRound,
@@ -18,6 +14,7 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../../shared/modules/conversion.utils';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
+import { EditGasModes, PriorityLevels } from 'shared/constants/gas';
 
 export const useGasItemFeeDetails = (priorityLevel) => {
   const {

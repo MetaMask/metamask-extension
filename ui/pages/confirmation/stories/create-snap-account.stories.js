@@ -1,7 +1,7 @@
 import React from 'react';
 import ConfirmationPage from '../confirmation';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { PendingApproval } from './util';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from 'shared/constants/app';
 
 /**
  * An approval to add a snap account.<br/><br/>

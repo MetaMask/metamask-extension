@@ -5,9 +5,9 @@ import { screen, fireEvent } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { act } from 'react-dom/test-utils';
 import { sha256 } from '../../../../shared/modules/hash.utils';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import InteractiveReplacementTokenNotification from './interactive-replacement-token-notification';
+import { KeyringType } from 'shared/constants/keyring';
 
 jest.mock('../../../../shared/modules/hash.utils');
 

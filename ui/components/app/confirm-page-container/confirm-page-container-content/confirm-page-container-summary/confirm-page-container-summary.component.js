@@ -14,9 +14,9 @@ import { getIpfsGateway, txDataSelector } from '../../../../../selectors';
 import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
-import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../ui/site-origin';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
 
 const ConfirmPageContainerSummary = (props) => {
   const {

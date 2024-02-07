@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import {
   DEFAULT_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -13,6 +12,7 @@ import {
   forceUpdateMetamaskState,
 } from '../../store/actions';
 import UnlockPage from './unlock-page.component';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
 
 const mapStateToProps = (state) => {
   const {

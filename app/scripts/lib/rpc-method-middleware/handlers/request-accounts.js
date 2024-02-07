@@ -1,9 +1,9 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { MESSAGE_TYPE } from 'shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
-} from '../../../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the

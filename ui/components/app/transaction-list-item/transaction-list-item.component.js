@@ -36,12 +36,6 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../component-library';
 ///: END:ONLY_INCLUDE_IF
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { EditGasModes } from '../../../../shared/constants/gas';
-import {
   GasFeeContextProvider,
   useGasFeeContext,
 } from '../../../contexts/gasFee';
@@ -65,6 +59,12 @@ import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
+import { EditGasModes } from 'shared/constants/gas';
+import { TransactionGroupCategory } from 'shared/constants/transaction';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 function TransactionListItemInner({
   transactionGroup,

@@ -10,10 +10,9 @@ import { tick } from '../../../../../test/lib/timer-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { KeyringType } from '../../../../../shared/constants/keyring';
-
 import UnconnectedAccountAlert from '.';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { KeyringType } from 'shared/constants/keyring';
 
 describe('Unconnected Account Alert', () => {
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';

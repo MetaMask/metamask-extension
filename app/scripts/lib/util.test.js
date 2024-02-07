@@ -3,16 +3,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  ENVIRONMENT_TYPE_BACKGROUND,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-  PLATFORM_CHROME,
-  PLATFORM_EDGE,
-  PLATFORM_FIREFOX,
-  PLATFORM_OPERA,
-} from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import {
   addUrlProtocolPrefix,
@@ -23,6 +13,16 @@ import {
   getValidUrl,
   isWebUrl,
 } from './util';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_CHROME,
+  PLATFORM_EDGE,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
+} from 'shared/constants/app';
 
 describe('app utils', () => {
   describe('getEnvironmentType', () => {

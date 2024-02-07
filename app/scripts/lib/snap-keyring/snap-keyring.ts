@@ -20,12 +20,12 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
 import { getSnapName } from '../../../../ui/helpers/utils/util';
 import { isBlockedUrl } from './utils/isBlockedUrl';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from 'shared/constants/app';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.

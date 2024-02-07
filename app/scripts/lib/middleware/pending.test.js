@@ -1,10 +1,10 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { txMetaStub } from '../../../../test/stub/tx-meta-stub';
 import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
 } from './pending';
+import { GAS_LIMITS } from 'shared/constants/gas';
 
 describe('PendingNonceMiddleware', () => {
   describe('#createPendingNonceMiddleware', () => {

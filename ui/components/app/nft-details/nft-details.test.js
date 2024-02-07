@@ -8,19 +8,19 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
-import { AssetType } from '../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
 } from '../../../store/actions';
+import NftDetails from './nft-details';
+import { COPY_OPTIONS } from 'shared/constants/copy';
+import { AssetType } from 'shared/constants/transaction';
 import {
   CHAIN_IDS,
   CURRENCY_SYMBOLS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
-} from '../../../../shared/constants/network';
-import NftDetails from './nft-details';
+} from 'shared/constants/network';
 
 jest.mock('copy-to-clipboard');
 

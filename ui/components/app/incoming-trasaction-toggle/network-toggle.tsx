@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { ETHERSCAN_SUPPORTED_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
@@ -20,6 +19,7 @@ import {
 } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import Tooltip from '../../ui/tooltip';
+import { ETHERSCAN_SUPPORTED_NETWORKS } from 'shared/constants/network';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 

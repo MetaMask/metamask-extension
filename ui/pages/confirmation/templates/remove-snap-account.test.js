@@ -5,8 +5,8 @@ import { waitFor } from '@testing-library/react';
 
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from 'shared/constants/app';
 
 const middleware = [thunk];
 

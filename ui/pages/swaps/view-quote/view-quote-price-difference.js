@@ -11,8 +11,8 @@ import {
   JustifyContent,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { GasRecommendations } from '../../../../shared/constants/gas';
 import { Icon, IconName } from '../../../components/component-library';
+import { GasRecommendations } from 'shared/constants/gas';
 
 export default function ViewQuotePriceDifference(props) {
   const {

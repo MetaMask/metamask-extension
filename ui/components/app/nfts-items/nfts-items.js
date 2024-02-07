@@ -15,7 +15,6 @@ import {
   BLOCK_SIZES,
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
@@ -34,7 +33,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Icon, IconName, Text } from '../../component-library';
 import { NftItem } from '../../multichain/nft-item';
 import { updateSendAsset } from '../../../ducks/send';
-import { AssetType } from '../../../../shared/constants/transaction';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
+import { AssetType } from 'shared/constants/transaction';
 
 const width = (isModal) => {
   const env = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;

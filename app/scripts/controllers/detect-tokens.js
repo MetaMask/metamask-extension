@@ -1,18 +1,15 @@
 import { warn } from 'loglevel';
 import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
-import { MINUTE } from '../../../shared/constants/time';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../shared/constants/transaction';
+import { MINUTE } from 'shared/constants/time';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { STATIC_MAINNET_TOKEN_LIST } from 'shared/constants/tokens';
+import { AssetType, TokenStandard } from 'shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;

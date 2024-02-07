@@ -79,19 +79,6 @@ import {
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLinkType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  TokenBucketPriority,
-  ERROR_FETCHING_QUOTES,
-  QUOTES_NOT_AVAILABLE_ERROR,
-  QUOTES_EXPIRED_ERROR,
-  MAX_ALLOWED_SLIPPAGE,
-} from '../../../../shared/constants/swaps';
-import {
   resetSwapsPostFetchState,
   ignoreTokens,
   clearSwapsQuotes,
@@ -137,6 +124,19 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
+import {
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  TokenBucketPriority,
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
+  QUOTES_EXPIRED_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
+} from 'shared/constants/swaps';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLinkType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 let timeoutIdForQuotesPrefetching;
 

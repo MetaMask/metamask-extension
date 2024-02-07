@@ -5,13 +5,6 @@ import {
   addUrlProtocolPrefix,
   getEnvironmentType,
 } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventKeyType,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
@@ -44,6 +37,13 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import { IPFS_DEFAULT_GATEWAY_URL } from 'shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_POPUP } from 'shared/constants/app';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {

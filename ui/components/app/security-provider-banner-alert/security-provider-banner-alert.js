@@ -22,11 +22,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   SecurityProvider,
   SECURITY_PROVIDER_CONFIG,
-} from '../../../../shared/constants/security-provider';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+} from 'shared/constants/security-provider';
 
 function SecurityProviderBannerAlert({
   description,

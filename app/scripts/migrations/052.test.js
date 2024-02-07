@@ -1,5 +1,5 @@
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import migration52 from './052';
+import { CHAIN_IDS, NETWORK_TYPES } from 'shared/constants/network';
 
 const TOKEN1 = { symbol: 'TST', address: '0x10', decimals: 18 };
 const TOKEN2 = { symbol: 'TXT', address: '0x11', decimals: 18 };

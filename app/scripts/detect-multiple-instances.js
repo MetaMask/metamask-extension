@@ -6,13 +6,13 @@
  */
 
 import browser from 'webextension-polyfill';
+import { getPlatform } from './lib/util';
 import {
   PLATFORM_CHROME,
   PLATFORM_FIREFOX,
   CHROME_BUILD_IDS,
   FIREFOX_BUILD_IDS,
-} from '../../shared/constants/app';
-import { getPlatform } from './lib/util';
+} from 'shared/constants/app';
 
 const MESSAGE_TEXT = 'isRunning';
 

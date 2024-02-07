@@ -1,5 +1,5 @@
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import migration55 from './055';
+import { CHAIN_IDS, NETWORK_TYPES } from 'shared/constants/network';
 
 describe('migration #55', () => {
   it('should update the version metadata', async () => {

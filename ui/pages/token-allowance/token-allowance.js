@@ -37,7 +37,6 @@ import {
   getCustomNonceValue,
   getNextSuggestedNonce,
 } from '../../selectors';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   cancelTx,
   cancelTxs,
@@ -56,10 +55,6 @@ import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import {
-  MAX_TOKEN_ALLOWANCE_AMOUNT,
-  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
-} from '../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -75,6 +70,11 @@ import { Icon, IconName, Text } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
 import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
+} from 'shared/constants/tokens';
+import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 

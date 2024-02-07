@@ -9,12 +9,12 @@ import {
   getDetectedTokensInCurrentNetwork,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { BannerAlert } from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
-} from '../../../../shared/constants/metametrics';
-import { BannerAlert } from '../../component-library';
+} from 'shared/constants/metametrics';
 
 export const DetectedTokensBanner = ({
   className,

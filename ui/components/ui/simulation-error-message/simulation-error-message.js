@@ -4,12 +4,12 @@ import { BannerAlert } from '../../component-library';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 import { I18nContext } from '../../../../.storybook/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+} from 'shared/constants/metametrics';
 
 export default function SimulationErrorMessage({
   userAcknowledgedGasMissing = false,

@@ -5,14 +5,14 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export interface NameProps {
   /** Whether to prevent the modal from opening when the component is clicked. */

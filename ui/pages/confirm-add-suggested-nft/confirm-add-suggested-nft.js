@@ -13,12 +13,6 @@ import {
   rejectPendingApproval,
 } from '../../store/actions';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsTokenEventSource,
-} from '../../../shared/constants/metametrics';
-import { AssetType } from '../../../shared/constants/transaction';
-import {
   BUTTON_SIZES,
   ButtonIcon,
   ButtonIconSize,
@@ -53,12 +47,18 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import SiteOrigin from '../../components/ui/site-origin/site-origin';
 import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
+import { NETWORK_TO_NAME_MAP } from 'shared/constants/network';
+import { AssetType } from 'shared/constants/transaction';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from 'shared/constants/metametrics';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);

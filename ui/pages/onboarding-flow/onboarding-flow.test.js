@@ -19,12 +19,12 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
 import OnboardingFlow from './onboarding-flow';
+import { CHAIN_IDS, NETWORK_TYPES } from 'shared/constants/network';
 
 jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),

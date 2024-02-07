@@ -1,6 +1,6 @@
 import React from 'react';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
+import { TokenStandard } from 'shared/constants/transaction';
 
 export default {
   title: 'Pages/ConfirmApprove/ConfirmApproveContent',

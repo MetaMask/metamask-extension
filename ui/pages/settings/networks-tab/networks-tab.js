@@ -13,7 +13,6 @@ import {
 import { setSelectedNetworkConfigurationId } from '../../../store/actions';
 import Button from '../../../components/ui/button';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
   getNetworkConfigurations,
   getNetworksTabSelectedNetworkConfigurationId,
@@ -22,15 +21,16 @@ import {
   getProviderConfig,
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
-import {
-  NETWORK_TYPES,
-  TEST_CHAINS,
-  BUILT_IN_NETWORKS,
-} from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
 import NetworksFormSubheader from './networks-tab-subheader';
+import {
+  NETWORK_TYPES,
+  TEST_CHAINS,
+  BUILT_IN_NETWORKS,
+} from 'shared/constants/network';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from 'shared/constants/app';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,

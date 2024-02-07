@@ -5,13 +5,13 @@ import { fireEvent } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
   getIsCustodianSupportedChain,
   getCustodianIconForAddress,
 } from '../../../selectors/institutional/selectors';
 import { AddressCopyButton } from '.';
+import { COPY_OPTIONS } from 'shared/constants/copy';
 
 jest.mock('copy-to-clipboard');
 

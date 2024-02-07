@@ -1,5 +1,5 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { migrate, version } from './096';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const oldVersion = 95;
 describe('migration #96', () => {

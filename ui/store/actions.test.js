@@ -5,12 +5,12 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
-import { GAS_LIMITS } from '../../shared/constants/gas';
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { setBackgroundConnection } from './background-connection';
+import { HardwareDeviceNames } from 'shared/constants/hardware-wallets';
+import { GAS_LIMITS } from 'shared/constants/gas';
+import { ORIGIN_METAMASK } from 'shared/constants/app';
+import { MetaMetricsNetworkEventSource } from 'shared/constants/metametrics';
 
 const middleware = [thunk];
 const defaultState = {

@@ -3,14 +3,14 @@ import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
 import { v4 as uuid } from 'uuid';
 
+import { PreferencesController } from '../../controllers/preferences';
+import { SecurityAlertResponse } from '../transaction/util';
 import {
   BlockaidReason,
   BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { PreferencesController } from '../../controllers/preferences';
-import { SecurityAlertResponse } from '../transaction/util';
+} from 'shared/constants/security-provider';
+import { CHAIN_IDS } from 'shared/constants/network';
+import { SIGNING_METHODS } from 'shared/constants/transaction';
 
 const { sentry } = global as any;
 

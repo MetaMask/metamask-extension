@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import ensNetworkMap from 'ethereum-ens-network-map';
-import { CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP } from '../../../../shared/constants/network';
+import { CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP } from 'shared/constants/network';
 
 export default class Ens {
   static getChainEnsSupport(chainId) {

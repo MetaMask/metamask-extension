@@ -1,5 +1,5 @@
-import { GAS_LIMITS } from '../../../shared/constants/gas';
 import * as utils from './confirm-tx.util';
+import { GAS_LIMITS } from 'shared/constants/gas';
 
 describe('Confirm Transaction utils', () => {
   describe('getHexGasTotal', () => {

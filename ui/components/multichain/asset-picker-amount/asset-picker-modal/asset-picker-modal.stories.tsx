@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { Asset } from '../../../../ducks/send';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from './asset-picker-modal';
+import { AssetType } from 'shared/constants/transaction';
 
 const storybook = {
   title: 'Components/Multichain/AssetPickerModal',

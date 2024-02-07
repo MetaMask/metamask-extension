@@ -21,13 +21,13 @@ import {
 } from '../ducks/metamask/metamask';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { CHAIN_IDS } from '../../shared/constants/network';
-import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
+import { TransactionGroupCategory } from 'shared/constants/transaction';
+import { CHAIN_IDS } from 'shared/constants/network';
 
 const expectedResults = [
   {

@@ -1,10 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   AlignItems,
@@ -36,6 +32,10 @@ import {
 } from '../../component-library';
 import { AccountListItem } from '../account-list-item';
 import { mergeAccounts } from './account-list-menu';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from 'shared/constants/metametrics';
 
 export const HiddenAccountList = ({ onClose }) => {
   const t = useI18nContext();

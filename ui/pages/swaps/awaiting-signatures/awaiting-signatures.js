@@ -31,9 +31,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
 import SwapStepIcon from './swap-step-icon';
+import { MetaMetricsEventCategory } from 'shared/constants/metametrics';
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);

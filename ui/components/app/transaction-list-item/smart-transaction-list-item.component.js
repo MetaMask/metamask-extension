@@ -6,11 +6,6 @@ import TransactionIcon from '../transaction-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import {
-  TransactionGroupCategory,
-  TransactionGroupStatus,
-  SmartTransactionStatus,
-} from '../../../../shared/constants/transaction';
 
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
@@ -28,6 +23,11 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
+import {
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+  SmartTransactionStatus,
+} from 'shared/constants/transaction';
 
 export default function SmartTransactionListItem({
   smartTransaction,

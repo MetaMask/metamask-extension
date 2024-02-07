@@ -2,7 +2,6 @@ import React, { useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import BigNumber from 'bignumber.js';
-import { EditGasModes } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
 
@@ -20,6 +19,7 @@ import InfoTooltip from '../../ui/info-tooltip';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
 
 import { I18nContext } from '../../../contexts/i18n';
+import { EditGasModes } from 'shared/constants/gas';
 
 export default function EditGasDisplay({
   mode = EditGasModes.modifyInPlace,

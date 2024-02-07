@@ -1,6 +1,5 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { GasEstimateTypes } from '../../shared/constants/gas';
 import { getInitialSendStateWithExistingTxState } from '../../test/jest/mocks';
 import {
   getCustomGasLimit,
@@ -8,6 +7,7 @@ import {
   isCustomPriceSafe,
   isCustomPriceExcessive,
 } from './custom-gas';
+import { GasEstimateTypes } from 'shared/constants/gas';
 
 describe('custom-gas selectors', () => {
   describe('getCustomGasPrice()', () => {

@@ -29,7 +29,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+} from 'shared/constants/metametrics';
 
 const InteractiveReplacementTokenModal = () => {
   const t = useI18nContext();
