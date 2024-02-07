@@ -1155,6 +1155,25 @@ export const getSnapManifest = createDeepEqualSelector(
 );
 
 /**
+ * Get a selector that returns all snaps metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ */
+export const getSnapsMetadata = createDeepEqualSelector(
+  (state) => state,
+  (state) => {
+    return Object.keys(getSnaps(state));
+  },
+  (state, snapIds) => {
+    return snapIds.reduce((snapsMetadata, snapId) => {
+      snapsMetadata[snapId] = getSnapsMetadata(state, snapId);
+    }, {});
+  },
+);
+
+/**
  * Get a selector that returns the snap metadata (name and description) for a
  * given `snapId`.
  *
