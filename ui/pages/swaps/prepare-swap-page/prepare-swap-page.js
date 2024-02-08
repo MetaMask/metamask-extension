@@ -108,7 +108,7 @@ import {
   formatSwapsValueForDisplay,
   getClassNameForCharLength,
 } from '../swaps.util';
-import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';

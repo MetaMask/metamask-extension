@@ -37,70 +37,7 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render({ desktopEnabled: true });
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(5);
-  });
-
-  it('should disable opensea when blockaid is enabled', () => {
-    const setSecurityAlertsEnabled = jest.fn();
-    const setTransactionSecurityCheckEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
-    const { getAllByRole } = render(
-      { desktopEnabled: true },
-      {
-        securityAlertsEnabled: false,
-        transactionSecurityCheckEnabled: true,
-        setSecurityAlertsEnabled,
-        setTransactionSecurityCheckEnabled,
-        petnamesEnabled: true,
-        setPetnamesEnabled,
-      },
-    );
-    const toggle = getAllByRole('checkbox');
-    fireEvent.click(toggle[1]);
-    expect(setSecurityAlertsEnabled).toHaveBeenCalledWith(true);
-    expect(setTransactionSecurityCheckEnabled).toHaveBeenCalledWith(false);
-  });
-
-  it('should disable blockaid when opensea is enabled', () => {
-    const setSecurityAlertsEnabled = jest.fn();
-    const setTransactionSecurityCheckEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
-    const { getAllByRole } = render(
-      { desktopEnabled: true },
-      {
-        transactionSecurityCheckEnabled: false,
-        securityAlertsEnabled: true,
-        setSecurityAlertsEnabled,
-        setTransactionSecurityCheckEnabled,
-        petnamesEnabled: true,
-        setPetnamesEnabled,
-      },
-    );
-    const toggle = getAllByRole('checkbox');
-    fireEvent.click(toggle[2]);
-    expect(setTransactionSecurityCheckEnabled).toHaveBeenCalledWith(true);
-    expect(setSecurityAlertsEnabled).toHaveBeenCalledWith(false);
-  });
-
-  it('should show terms of use links', () => {
-    const setSecurityAlertsEnabled = jest.fn();
-    const setTransactionSecurityCheckEnabled = jest.fn();
-    const setPetnamesEnabled = jest.fn();
-    const { getAllByRole } = render(
-      { desktopEnabled: true },
-      {
-        securityAlertsEnabled: false,
-        transactionSecurityCheckEnabled: true,
-        setSecurityAlertsEnabled,
-        setTransactionSecurityCheckEnabled,
-        petnamesEnabled: true,
-        setPetnamesEnabled,
-      },
-    );
-    expect(getAllByRole('link', { name: 'Terms of use' })[0]).toHaveAttribute(
-      'href',
-      'https://opensea.io/securityproviderterms',
-    );
+    expect(toggle).toHaveLength(3);
   });
 
   it('should enable add account snap', async () => {

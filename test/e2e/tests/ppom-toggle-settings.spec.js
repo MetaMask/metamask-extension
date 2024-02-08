@@ -28,7 +28,7 @@ describe('PPOM Settings @no-mmi', function () {
         );
 
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
         await driver.clickElement(
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
