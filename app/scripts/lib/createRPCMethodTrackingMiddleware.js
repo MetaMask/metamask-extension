@@ -125,7 +125,7 @@ const rateLimitTimeouts = {};
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- * @param opts.appStateController
+ * @param {AppStateController} opts.appStateController
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
@@ -319,13 +319,13 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      if (!isDisabledRPCMethod) {
-        let blockaidMetricProps = {};
+      let blockaidMetricProps = {};
 
+      if (!isDisabledRPCMethod) {
         if (SIGNING_METHODS.includes(method)) {
           const securityAlertResponse =
             appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse.securityAlertId,
+              req.securityAlertResponse?.securityAlertId,
             );
           blockaidMetricProps = getBlockaidMetricsProps({
             securityAlertResponse,
@@ -341,10 +341,10 @@ export default function createRPCMethodTrackingMiddleware({
           url: origin,
         },
         properties: {
-          ...eventProperties,
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           ...blockaidMetricProps,
           ///: END:ONLY_INCLUDE_IF
+          ...eventProperties,
         },
       });
 
