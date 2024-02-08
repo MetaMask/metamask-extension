@@ -1,4 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { createSelector } from 'reselect';
+import { mergeGasFeeControllerAndTransactionGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -18,8 +20,6 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../shared/constants/common';
 
 const initialState = {
   isInitialized: false,
@@ -343,44 +343,35 @@ export function getGasEstimateType(state) {
   return state.metamask.gasEstimateType;
 }
 
-export function getGasFeeEstimates(state) {
-  const transaction = state.confirmTransaction?.txData;
-
-  let { gasFeeEstimates } = state.metamask;
-
-  const weiHexToGweiDec = (weiHex) =>
-    Numeric.from(weiHex, 16, EtherDenomination.WEI)
-      .toDenomination(EtherDenomination.GWEI)
-      .toBase(10)
-      .toString();
-
-  const convertLevel = (newData, oldData) => {
-    return {
-      ...oldData,
-      suggestedMaxFeePerGas: weiHexToGweiDec(newData.maxFeePerGas),
-      suggestedMaxPriorityFeePerGas: weiHexToGweiDec(
-        newData.maxPriorityFeePerGas,
-      ),
-    };
-  };
-
-  if (transaction.suggestedGasFees) {
-    gasFeeEstimates = {
-      ...gasFeeEstimates,
-      low: convertLevel(transaction.suggestedGasFees.low, gasFeeEstimates.low),
-      medium: convertLevel(
-        transaction.suggestedGasFees.medium,
-        gasFeeEstimates.medium,
-      ),
-      high: convertLevel(
-        transaction.suggestedGasFees.high,
-        gasFeeEstimates.high,
-      ),
-    };
-  }
-
-  return gasFeeEstimates;
+export function getGasFeeControllerEstimates(state) {
+  return state.metamask.gasFeeEstimates;
 }
+
+export function getTransactionGasFeeEstimates(state) {
+  const transactionMetadata = state.confirmTransaction?.txData;
+  return transactionMetadata?.gasFeeEstimates;
+}
+
+export const getGasFeeEstimates = createSelector(
+  getGasEstimateType,
+  getGasFeeControllerEstimates,
+  getTransactionGasFeeEstimates,
+  (
+    gasFeeControllerEstimateType,
+    gasFeeControllerEstimates,
+    transactionGasFeeEstimates,
+  ) => {
+    if (transactionGasFeeEstimates) {
+      return mergeGasFeeControllerAndTransactionGasFeeEstimates(
+        gasFeeControllerEstimateType,
+        gasFeeControllerEstimates,
+        transactionGasFeeEstimates,
+      );
+    }
+
+    return gasFeeControllerEstimates;
+  },
+);
 
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;

@@ -3978,23 +3978,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-query@npm:4.0.0":
+"@metamask/eth-query@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/eth-query@npm:3.0.1"
+  dependencies:
+    json-rpc-random-id: "npm:^1.0.0"
+    xtend: "npm:^4.0.1"
+  checksum: d463aff018ae3f1229331177e9efa0eb62958c6fcc30039c22d151ee64da17d55153ef4861060aecec674f764aa9074341bef53fdf86c2258d3cb2682976e835
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-query@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/eth-query@npm:4.0.0"
   dependencies:
     json-rpc-random-id: "npm:^1.0.0"
     xtend: "npm:^4.0.1"
   checksum: c7a2ff14c4fb7be5de0ffc914068ef69a4af3d8840b51595219c673e6c7001305f742f18b393c9812be1b80866f4105af3ae41e39232eaba7f44e64b386d6651
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-query@patch:@metamask/eth-query@npm%3A4.0.0#~/.yarn/patches/@metamask-eth-query-npm-4.0.0-0a9b8b131b.patch":
-  version: 4.0.0
-  resolution: "@metamask/eth-query@patch:@metamask/eth-query@npm%3A4.0.0#~/.yarn/patches/@metamask-eth-query-npm-4.0.0-0a9b8b131b.patch::version=4.0.0&hash=22f2c5"
-  dependencies:
-    json-rpc-random-id: "npm:^1.0.0"
-    xtend: "npm:^4.0.1"
-  checksum: fb453e97c0a2dc3b596b87087064a84f559fa0d979eeed029900e1e181cb60919fd5fbc6084c227cb9c89b6c1bde84e3f9d2eb5e41cb83b76f56a8a6840a5e40
   languageName: node
   linkType: hard
 
@@ -5013,7 +5013,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A21.0.1#~/.yarn/patches/@metamask-transaction-controller-npm-21.0.1-543adeddce.patch":
   version: 21.0.1
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A21.0.1#~/.yarn/patches/@metamask-transaction-controller-npm-21.0.1-543adeddce.patch::version=21.0.1&hash=f641ef"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A21.0.1#~/.yarn/patches/@metamask-transaction-controller-npm-21.0.1-543adeddce.patch::version=21.0.1&hash=f4a488"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5039,7 +5039,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
     babel-runtime: ^6.26.0
-  checksum: ddcf255fdb66575d1fc0cfca8ff302f14d9d7cafd1e10863dfabab0883c12c3d2df3a28d464117a3327412afe9e5cec2a083e6000314d31425ead519103f5a48
+  checksum: c1f73e0ade332f3b797543a4b6eb1074250776e1bedcee4809ff500078d17044b410c07d297aee21d7fdcdcd85dc97c6d4bdd1221753e7c85743c5e0e11cdc8a
   languageName: node
   linkType: hard
 
@@ -24063,7 +24063,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^12.0.1"
     "@metamask/eth-keyring-controller": "npm:^15.1.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
-    "@metamask/eth-query": "patch:@metamask/eth-query@npm%3A4.0.0#~/.yarn/patches/@metamask-eth-query-npm-4.0.0-0a9b8b131b.patch"
+    "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-snap-keyring": "npm:^2.1.1"
     "@metamask/eth-token-tracker": "npm:^7.0.1"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
