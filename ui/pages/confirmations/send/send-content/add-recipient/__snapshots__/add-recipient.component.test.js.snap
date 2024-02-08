@@ -336,6 +336,69 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             </p>
           </div>
         </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(24, 125, 242);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81435"
+                    height="28"
+                    transform="translate(-1.8544047661519008 -1.6499475479241468) rotate(249.5 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F5E400"
+                    height="28"
+                    transform="translate(-1.3241332948360764 10.505504944881555) rotate(269.5 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F96001"
+                    height="28"
+                    transform="translate(6.630832321372173 21.724427796185292) rotate(216.3 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Snap Account 1
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
+              0xb552...ee5d
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -832,6 +895,69 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
               class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xc42e...8813
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(24, 125, 242);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81435"
+                    height="28"
+                    transform="translate(-1.8544047661519008 -1.6499475479241468) rotate(249.5 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F5E400"
+                    height="28"
+                    transform="translate(-1.3241332948360764 10.505504944881555) rotate(269.5 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F96001"
+                    height="28"
+                    transform="translate(6.630832321372173 21.724427796185292) rotate(216.3 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Snap Account 1
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
+              0xb552...ee5d
             </p>
           </div>
         </div>
