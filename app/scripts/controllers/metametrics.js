@@ -156,6 +156,7 @@ export default class MetaMetricsController {
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
+      previousUserTraits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
