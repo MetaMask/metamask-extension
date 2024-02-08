@@ -48,7 +48,7 @@ export const AccountListItemMenu = ({
   onClose,
   closeMenu,
   isRemovable,
-  account,
+  identity,
   isOpen,
   isPinned,
   isHidden,
@@ -61,7 +61,7 @@ export const AccountListItemMenu = ({
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const { keyring } = account.metadata;
+  const { keyring } = identity.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
@@ -173,22 +173,22 @@ export const AccountListItemMenu = ({
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={account.address}
+            address={identity.address}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
-            address={account.address}
+            address={identity.address}
           />
           {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
                 isPinned
-                  ? handleUnpinning(account.address)
-                  : handlePinning(account.address);
+                  ? handleUnpinning(identity.address)
+                  : handlePinning(identity.address);
                 onClose();
               }}
               iconName={isPinned ? IconName.Unpin : IconName.Pin}
@@ -202,8 +202,8 @@ export const AccountListItemMenu = ({
             data-testid="account-list-menu-hide"
             onClick={() => {
               isHidden
-                ? handleUnhidding(account.address)
-                : handleHidding(account.address);
+                ? handleUnhidding(identity.address)
+                : handleHidding(identity.address);
               onClose();
             }}
             iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
@@ -220,7 +220,7 @@ export const AccountListItemMenu = ({
                 dispatch(
                   showModal({
                     name: 'CONFIRM_REMOVE_ACCOUNT',
-                    account,
+                    identity,
                   }),
                 );
                 trackEvent({
@@ -248,7 +248,7 @@ export const AccountListItemMenu = ({
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
                   const token = await dispatch(
-                    mmiActions.getCustodianToken(account.address),
+                    mmiActions.getCustodianToken(identity.address),
                   );
 
                   const custodyAccountDetails = await dispatch(
@@ -264,7 +264,7 @@ export const AccountListItemMenu = ({
                       token,
                       custodyAccountDetails,
                       accounts,
-                      selectedAddress: toChecksumHexAddress(account.address),
+                      selectedAddress: toChecksumHexAddress(identity.address),
                     }),
                   );
                   onClose();
@@ -317,7 +317,7 @@ AccountListItemMenu.propTypes = {
   /**
    * An account object that has name, address, and balance data
    */
-  account: PropTypes.shape({
+  identity: PropTypes.shape({
     id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,

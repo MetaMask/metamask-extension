@@ -54,7 +54,7 @@ const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
 export const AccountListItem = ({
-  account,
+  identity,
   selected = false,
   onClick,
   closeMenu,
@@ -75,11 +75,11 @@ export const AccountListItem = ({
   };
 
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
-    account.address,
+    identity.address,
   );
   const balanceToTranslate = process.env.MULTICHAIN
     ? totalWeiBalance
-    : account.balance;
+    : identity.balance;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -122,7 +122,7 @@ export const AccountListItem = ({
       <AvatarAccount
         borderColor={BorderColor.transparent}
         size={Size.SM}
-        address={account.address}
+        address={identity.address}
         variant={
           useBlockie
             ? AvatarAccountVariant.Blockies
@@ -175,17 +175,17 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {account.metadata.name.length >
+                {identity.metadata.name.length >
                 MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={account.metadata.name}
+                    title={identity.metadata.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {account.metadata.name}
+                    {identity.metadata.name}
                   </Tooltip>
                 ) : (
-                  account.metadata.name
+                  identity.metadata.name
                 )}
               </Text>
             </Box>
@@ -221,7 +221,7 @@ export const AccountListItem = ({
               />
             ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-              {shortenAddress(toChecksumHexAddress(account.address))}
+              {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
           {orderedTokenList.length > 1 ? (
@@ -254,22 +254,22 @@ export const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {account.label ? (
+        {identity.label ? (
           <Tag
-            label={account.label}
+            label={identity.label}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
             startIconName={
-              account.keyring.type === KeyringType.snap ? IconName.Snaps : null
+              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
             }
           />
         ) : null}
       </Box>
       {showOptions ? (
         <ButtonIcon
-          ariaLabel={`${account.metadata.name} ${t('options')}`}
+          ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountListItemMenuRef}
@@ -292,10 +292,10 @@ export const AccountListItem = ({
       {showOptions ? (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
-          account={account}
+          identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={account.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
@@ -309,7 +309,7 @@ AccountListItem.propTypes = {
   /**
    * An account object that has name, address, and balance data
    */
-  account: PropTypes.shape({
+  identity: PropTypes.shape({
     id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,

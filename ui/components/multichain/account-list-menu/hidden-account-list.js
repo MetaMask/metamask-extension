@@ -124,7 +124,7 @@ export const HiddenAccountList = ({ onClose }) => {
                     });
                     dispatch(setSelectedAccount(account.address));
                   }}
-                  account={account}
+                  identity={account}
                   key={account.address}
                   selected={selectedAccount.address === account.address}
                   closeMenu={onClose}
