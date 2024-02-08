@@ -45,7 +45,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import InsightWarnings from '../snaps/insight-warnings';
+import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';

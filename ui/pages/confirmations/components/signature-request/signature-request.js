@@ -80,7 +80,7 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import InsightWarnings from '../snaps/insight-warnings';
+import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
