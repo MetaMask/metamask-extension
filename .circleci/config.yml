@@ -81,10 +81,7 @@ workflows:
       - trigger-beta-build:
           requires:
             - prep-deps
-      - prep-deps:
-          filters:
-            branches:
-              ignore: l10n_crowdin_action
+      - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -148,10 +145,7 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
-      - test-lint-shellcheck:
-          filters:
-            branches:
-              ignore: l10n_crowdin_action
+      - test-lint-shellcheck
       - test-lint-lockfile:
           requires:
             - prep-deps
