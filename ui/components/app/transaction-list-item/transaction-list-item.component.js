@@ -57,11 +57,11 @@ import {
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
-import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
+import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
-import EditGasFeePopover from '../edit-gas-fee-popover';
-import EditGasPopover from '../edit-gas-popover';
+import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
+import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';

@@ -2,12 +2,18 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
+  getCustodianDeepLink,
   getWaitForConfirmDeepLinkDialog,
 } from '../../selectors/institutional/selectors';
-import { mmiActionsFactory } from '../../store/institutional/institution-background';
+import {
+  mmiActionsFactory,
+  setCustodianDeepLink,
+} from '../../store/institutional/institution-background';
+import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
 import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -39,6 +45,9 @@ import {
   getShowSurveyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getAccountType,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 
 import {
@@ -181,6 +190,8 @@ const mapStateToProps = (state) => {
     mmiPortfolioUrl: getMmiPortfolioUrl(state),
     mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
     notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
+    custodianDeepLink: getCustodianDeepLink(state),
+    accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };
@@ -233,6 +244,30 @@ const mapDispatchToProps = (dispatch) => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    showCustodianDeepLink: ({
+      txId = undefined,
+      fromAddress,
+      custodyId,
+      onDeepLinkFetched = () => undefined,
+      onDeepLinkShown = () => undefined,
+      isSignature = false,
+      isNotification = false,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId,
+        fromAddress,
+        custodyId,
+        closeNotification: isNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+        showCustodyConfirmLink,
+        isSignature,
+      }),
+    cleanCustodianDeepLink: () => {
+      dispatch(setCustodianDeepLink({}));
+    },
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
