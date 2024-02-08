@@ -88,7 +88,10 @@ export function createPPOMMiddleware(
             }
           })
           .then((securityAlertResponse) => {
-            updateSecurityAlertResponseByTxId(req, {...securityAlertResponse, securityAlertId});
+            updateSecurityAlertResponseByTxId(req, {
+              ...securityAlertResponse,
+              securityAlertId,
+            });
           });
 
         if (SIGNING_METHODS.includes(req.method)) {

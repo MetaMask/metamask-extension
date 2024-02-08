@@ -26,14 +26,17 @@ const securityProviderRequest = () => {
 
 const appStateController = {
   getSignatureSecurityAlertResponse: (securityAlertId) => {
-    console.log('getSignatureSecurityAlertResponse called in test: ', securityAlertId);
+    console.log(
+      'getSignatureSecurityAlertResponse called in test: ',
+      securityAlertId,
+    );
     return {
       result_type: BlockaidResultType.Malicious,
       reason: BlockaidReason.maliciousDomain,
       securityAlertId,
-    }
-  }
-}
+    };
+  },
+};
 
 const handler = createRPCMethodTrackingMiddleware({
   trackEvent,

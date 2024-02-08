@@ -181,10 +181,10 @@ export async function addTransaction(
           }
         })
         .then((securityAlertResponse) => {
-          updateSecurityAlertResponseByTxId(
-            request.transactionOptions,
-            {...securityAlertResponse, securityAlertId},
-          );
+          updateSecurityAlertResponseByTxId(request.transactionOptions, {
+            ...securityAlertResponse,
+            securityAlertId,
+          });
         });
 
       request.transactionOptions.securityAlertResponse = {
