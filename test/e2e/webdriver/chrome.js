@@ -7,7 +7,9 @@ const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-l
  *
  * @type {string}
  */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const HTTPS_PROXY_HOST = `${
+  process.env.SELENIUM_HTTPS_PROXY || '127.0.0.1:8000'
+}`;
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
@@ -34,11 +36,21 @@ class ChromeDriver {
     } else {
       args.push('--log-level=3');
     }
+    if (process.env.SELENIUM_HEADLESS) {
+      args.push('--headless=new');
+    }
     const options = new chrome.Options().addArguments(args);
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
+    // Allow disabling DoT local testing
+    if (process.env.SELENIUM_DISABLE_DOT) {
+      options.setLocalState({
+        'dns_over_https.mode': 'off',
+        'dns_over_https.templates': '',
+      });
+    }
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);

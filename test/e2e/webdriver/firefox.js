@@ -21,7 +21,9 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 /**
  * Proxy host to use for HTTPS requests
  */
-const HTTPS_PROXY_HOST = { ip: '127.0.0.1', port: 8000 };
+const HTTPS_PROXY_HOST = new URL(
+  process.env.SELENIUM_HTTPS_PROXY || 'http://127.0.0.1:8000',
+);
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
@@ -41,8 +43,11 @@ class FirefoxDriver {
 
     // Set proxy in the way that doesn't interfere with Selenium Manager
     options.setPreference('network.proxy.type', 1);
-    options.setPreference('network.proxy.ssl', HTTPS_PROXY_HOST.ip);
-    options.setPreference('network.proxy.ssl_port', HTTPS_PROXY_HOST.port);
+    options.setPreference('network.proxy.ssl', HTTPS_PROXY_HOST.hostname);
+    options.setPreference(
+      'network.proxy.ssl_port',
+      parseInt(HTTPS_PROXY_HOST.port, 10),
+    );
 
     options.setAcceptInsecureCerts(true);
     options.setPreference('browser.download.folderList', 2);
@@ -52,6 +57,9 @@ class FirefoxDriver {
     );
     if (process.env.CI === 'true') {
       options.setBinary('/opt/firefox/firefox');
+    }
+    if (process.env.SELENIUM_HEADLESS) {
+      options.headless();
     }
     const builder = new Builder()
       .forBrowser('firefox')
