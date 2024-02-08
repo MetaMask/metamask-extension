@@ -85,7 +85,6 @@ import {
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
-import { getLocalizedSnapManifest } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 
 import { AccountsController } from '@metamask/accounts-controller';
