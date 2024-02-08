@@ -1,6 +1,6 @@
 import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { flatten } from 'lodash';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import localHandlers from './handlers';
@@ -44,7 +44,7 @@ export function createMethodMiddleware(hooks) {
   return async function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
     if (UNSUPPORTED_RPC_METHODS.has(req.method)) {
-      return end(ethErrors.rpc.methodNotSupported());
+      return end(rpcErrors.methodNotSupported());
     }
 
     const handler = handlerMap.get(req.method);
