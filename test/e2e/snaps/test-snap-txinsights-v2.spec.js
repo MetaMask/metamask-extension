@@ -68,7 +68,6 @@ describe('Test Snap TxInsights-v2', function () {
         // switch to test-snaps page and get accounts
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement('#getAccounts');
-        // await driver.delay(1000);
 
         // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
