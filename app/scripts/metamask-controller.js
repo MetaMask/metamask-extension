@@ -656,17 +656,9 @@ export default class MetamaskController extends EventEmitter {
     this.nftDetectionController = new NftDetectionController({
       chainId: this.networkController.state.providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-      onPreferencesStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener({
-              selectedAddress: newlySelectedInternalAccount.address,
-              useNftDetection:
-                this.preferencesController.store.getState().useNftDetection,
-            });
-          },
-        ),
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
