@@ -15,9 +15,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
-import {
-  getOriginOfCurrentTab,
-} from '../../../selectors';
+import { getOriginOfCurrentTab } from '../../../selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
 import { getSnapRoute } from '../../../helpers/utils/util';
 

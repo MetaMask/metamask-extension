@@ -1299,7 +1299,10 @@ export function disconnectOriginFromSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('disconnectOriginFromSnap', [origin, snapId]);
+    await submitRequestToBackground('disconnectOriginFromSnap', [
+      origin,
+      snapId,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }

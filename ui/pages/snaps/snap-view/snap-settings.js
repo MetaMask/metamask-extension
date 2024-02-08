@@ -6,10 +6,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  SnapCaveatType,
-  WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/snaps-rpc-methods';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
 import { useI18nContext } from '../../../hooks/useI18nContext';
