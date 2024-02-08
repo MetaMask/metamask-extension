@@ -68,7 +68,10 @@ describe('Send ETH', function () {
           assert.equal(inputValue, '1');
 
           // Continue to next screen
-          await driver.findClickableElement({ text: 'Next', tag: 'button' });
+          await driver.findClickableElement({
+            text: 'Next',
+            tag: 'button',
+          });
           await driver.clickElement({ text: 'Next', tag: 'button' });
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -119,7 +122,10 @@ describe('Send ETH', function () {
           assert.equal(inputValue, '1');
 
           // Continue to next screen
-          await driver.findClickableElement({ text: 'Next', tag: 'button' });
+          await driver.findClickableElement({
+            text: 'Next',
+            tag: 'button',
+          });
           await driver.clickElement({ text: 'Next', tag: 'button' });
 
           await driver.delay(1000);
@@ -163,9 +169,7 @@ describe('Send ETH', function () {
             smartContract,
           );
           await unlockWallet(driver);
-          if (process.env.MULTICHAIN) {
-            return;
-          }
+
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -176,8 +180,15 @@ describe('Send ETH', function () {
           await inputAmount.fill('1');
 
           // Continue to next screen
-          await driver.findClickableElement({ text: 'Next', tag: 'button' });
-          await driver.clickElement({ text: 'Next', tag: 'button' });
+          if (process.env.MULTICHAIN) {
+            await driver.clickElement({ text: 'Continue', tag: 'button' });
+          } else {
+            await driver.findClickableElement({
+              text: 'Next',
+              tag: 'button',
+            });
+            await driver.clickElement({ text: 'Next', tag: 'button' });
+          }
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
@@ -245,9 +256,6 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            if (process.env.MULTICHAIN) {
-              return;
-            }
             await unlockWallet(driver);
 
             // initiates a send from the dapp
@@ -318,9 +326,6 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            if (process.env.MULTICHAIN) {
-              return;
-            }
             await unlockWallet(driver);
 
             // initiates a transaction from the dapp
@@ -418,9 +423,6 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
-            if (process.env.MULTICHAIN) {
-              return;
-            }
             await unlockWallet(driver);
             const balance = await driver.findElement(
               '[data-testid="eth-overview__primary-currency"]',
@@ -443,9 +445,19 @@ describe('Send ETH', function () {
               'textarea[placeholder="Optional',
               '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
             );
-
-            await driver.findClickableElement({ text: 'Next', tag: 'button' });
-            await driver.clickElement({ text: 'Next', tag: 'button' });
+            if (process.env.MULTICHAIN) {
+              await driver.findClickableElement({
+                text: 'Continue',
+                tag: 'button',
+              });
+              await driver.clickElement({ text: 'Continue', tag: 'button' });
+            } else {
+              await driver.findClickableElement({
+                text: 'Next',
+                tag: 'button',
+              });
+              await driver.clickElement({ text: 'Next', tag: 'button' });
+            }
 
             await driver.findClickableElement(
               '[data-testid="sender-to-recipient__name"]',
