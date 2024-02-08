@@ -12,8 +12,8 @@
   "configuration.dev.metamask-institutional.io",
   "configuration.metamask-institutional.io",
   "connect.trezor.io",
-  "customnetwork.com",
-  "doesntexist.abc",
+  "customnetwork.test",
+  "doesntexist.test",
   "etherscan.io",
   "execution.metamask.io",
   "fonts.gstatic.com",
@@ -31,7 +31,7 @@
   "proxy.metafi.codefi.network",
   "raw.githubusercontent.com",
   "registry.npmjs.org",
-  "responsive-rpc.url",
+  "responsive-rpc.test",
   "sentry.io",
   "start.metamask.io",
   "static.metafi-dev.codefi.network",
@@ -41,6 +41,6 @@
   "test.metamask-phishing.io",
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
-  "unresponsive-rpc.url",
+  "unresponsive-rpc.test",
   "www.4byte.directory"
 ]
