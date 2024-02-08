@@ -848,7 +848,7 @@ describe('Actions', () => {
     });
   });
 
-  describe.only('#setSelectedAccount', () => {
+  describe('#setSelectedAccount', () => {
     afterEach(() => {
       sinon.restore();
     });
