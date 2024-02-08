@@ -16802,10 +16802,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereum-ens-network-map@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "ethereum-ens-network-map@npm:1.0.2"
-  checksum: 34fa160f2b1ee8ec31bfe3dcec7b4becd4a6110acde171f43b9c28e0adc126dbded9dc6747d03088b6c99f04582887e6a23cb24b718321712c85208965835ea1
+"ethereum-ens-network-map@npm:@optidomains/ethereum-ens-network-map@2.0.0":
+  version: 2.0.0
+  resolution: "@optidomains/ethereum-ens-network-map@npm:2.0.0"
+  checksum: 1c95d0a32227697f01b74c6c62100317d64f8113dce9c029b0c19604b017a4cc097d96a3c7a77acd6ccc799d47a14ba5bd2133d0af165f195a55693d833d9a59
   languageName: node
   linkType: hard
 
@@ -24184,7 +24184,7 @@ __metadata:
     eth-method-registry: "npm:^3.0.0"
     eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
-    ethereum-ens-network-map: "npm:^1.0.2"
+    ethereum-ens-network-map: "npm:@optidomains/ethereum-ens-network-map@2.0.0"
     ethereumjs-abi: "npm:^0.6.4"
     ethereumjs-util: "npm:^7.0.10"
     extension-port-stream: "npm:^3.0.0"
