@@ -273,7 +273,7 @@ const CustodyPage = () => {
           const accountsValue = await dispatch(
             mmiActions.getCustodianAccounts(
               custodianToken,
-              custodianName,
+              custodianName  || custodianType,
               custodianType,
               true,
             ),
