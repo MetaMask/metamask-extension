@@ -111,11 +111,8 @@ workflows:
       - prep-build-desktop:
           filters:
             branches:
-<<<<<<< HEAD
               only: develop
-=======
               ignore: master
->>>>>>> 5802f81b73 (Try full pipeline)
           requires:
             - prep-deps
       - prep-build-flask:
@@ -188,7 +185,6 @@ workflows:
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
-<<<<<<< HEAD
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
@@ -345,8 +341,6 @@ workflows:
             - prep-build-ts-migration-dashboard
             - prep-build-test-mswapmi-playwright
             - prep-build-test-swap-playwright
-=======
->>>>>>> 5802f81b73 (Try full pipeline)
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
@@ -1340,13 +1334,13 @@ jobs:
       - slack/notify:
           branch_pattern: Version-v*
           event: fail
-          mentions: <@antonio.regadas>, @ramon.acitores134
+          mentions: <@antonio.regadas>
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
           branch_pattern: develop
           event: fail
-          mentions: <@antonio.regadas>, @ramon.acitores134
+          mentions: <@antonio.regadas>
           template: basic_fail_1
           channel: C05QXJA7NP8
       - store_artifacts:

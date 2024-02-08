@@ -112,7 +112,10 @@ export class MMIAccountMenuPage {
       });
   }
 
-  async removeTokenScreenshot(accountToRemoveName: string) {
+  async removeTokenScreenshot(
+    accountToRemoveName: string,
+    // screenshotName: string,
+  ) {
     await this.page
       .getByRole('button', { name: `${accountToRemoveName} Options` })
       .click();
