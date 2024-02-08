@@ -588,21 +588,9 @@ export default class MetamaskController extends EventEmitter {
       {
         messenger: nftControllerMessenger,
         chainId: this.networkController.state.providerConfig.chainId,
-        onPreferencesStateChange: (listener) =>
-          this.controllerMessenger.subscribe(
-            `AccountsController:selectedAccountChange`,
-            (newlySelectedInternalAccount) => {
-              listener({
-                selectedAddress: newlySelectedInternalAccount.address,
-                ipfsGateway:
-                  this.preferencesController.store.getState().ipfsGateway,
-                openSeaEnabled:
-                  this.preferencesController.store.getState().openSeaEnabled,
-                isIpfsGatewayEnabled:
-                  this.preferencesController.store.getState()
-                    .isIpfsGatewayEnabled,
-              });
-            },
+        onPreferencesStateChange:
+          this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
           ),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
