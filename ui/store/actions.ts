@@ -2645,7 +2645,7 @@ export function hideLoadingIndication(): Action {
  *
  * @deprecated This way of displaying a warning is confusing for users and
  * should no longer be used.
- * @param text - The warning text to show.
+ * @param payload - The warning to show.
  * @returns The action to display the warning.
  */
 export function displayWarning(payload: unknown): PayloadAction<string> {
