@@ -3,10 +3,10 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
+import { useAssetDetails } from '../pages/confirmations/hooks/useAssetDetails';
 import configureStore from '../store/store';
 import * as Actions from '../store/actions';
 import { TokenStandard } from '../../shared/constants/transaction';
-import { useAssetDetails } from './useAssetDetails';
 
 const renderUseAssetDetails = ({
   tokenAddress,

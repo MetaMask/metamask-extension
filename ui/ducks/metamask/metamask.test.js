@@ -234,19 +234,40 @@ describe('MetaMask Reducers', () => {
   });
 
   it('sets account label', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_ACCOUNT_LABEL,
-        value: {
-          account: 'test account',
-          label: 'test label',
-        },
+    const state = reduceMetamask(mockState.metamask, {
+      type: actionConstants.SET_ACCOUNT_LABEL,
+      value: {
+        account: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+        label: 'test label',
       },
-    );
+    });
 
     expect(state.identities).toStrictEqual({
-      'test account': { name: 'test label' },
+      ...mockState.metamask.identities,
+      '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+        ...mockState.metamask.identities[
+          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
+        ],
+        name: 'test label',
+      },
+    });
+
+    expect(state.internalAccounts).toStrictEqual({
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          ...mockState.metamask.internalAccounts.accounts[
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+          ],
+          metadata: {
+            ...mockState.metamask.internalAccounts.accounts[
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+            ].metadata,
+            name: 'test label',
+          },
+        },
+      },
     });
   });
 

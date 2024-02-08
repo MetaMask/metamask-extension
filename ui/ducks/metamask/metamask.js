@@ -97,7 +97,31 @@ export default function reduceMetamask(state = initialState, action) {
       const id = {};
       id[account] = { ...metamaskState.identities[account], name };
       const identities = { ...metamaskState.identities, ...id };
-      return Object.assign(metamaskState, { identities });
+      console.log(account);
+      console.log(444, metamaskState.internalAccounts);
+      const accountToUpdate = Object.values(
+        metamaskState.internalAccounts.accounts,
+      ).find((internalAccount) => {
+        console.log(internalAccount);
+        return internalAccount.address.toLowerCase() === account.toLowerCase();
+      });
+
+      console.log('accountToUpdate', accountToUpdate);
+
+      const internalAccounts = {
+        ...metamaskState.internalAccounts,
+        accounts: {
+          ...metamaskState.internalAccounts.accounts,
+          [accountToUpdate.id]: {
+            ...accountToUpdate,
+            metadata: {
+              ...accountToUpdate.metadata,
+              name,
+            },
+          },
+        },
+      };
+      return Object.assign(metamaskState, { identities, internalAccounts });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:

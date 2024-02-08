@@ -21,8 +21,8 @@ export const SnapAccountCard = ({
   const internalAccounts = useSelector(getInternalAccounts);
   // We should stop using mergeAccounts and write a new selector instead
   const mergedAccounts = mergeAccounts(accounts, internalAccounts);
-  const account = mergedAccounts.find(
-    (mergedAccount: { address: string }) => mergedAccount.address === address,
+  const identity = mergedAccounts.find(
+    (account: { address: string }) => account.address === address,
   );
 
   return (
@@ -36,7 +36,7 @@ export const SnapAccountCard = ({
         boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
       }}
     >
-      <AccountListItem account={account} selected={remove} />
+      <AccountListItem identity={identity} selected={remove} />
     </Box>
   );
 };
