@@ -37,7 +37,6 @@ import {
   getSnaps,
   getSubjectsWithSnapPermission,
   getPermissions,
-  getPermissionSubjects,
   getTargetSubjectMetadata,
   getSnapLatestVersion,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -88,14 +87,13 @@ function SnapSettings({ snapId }) {
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
-  const subjects = useSelector((state) => getPermissionSubjects(state));
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snap?.id),
   );
 
   let isKeyringSnap = false;
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
+  isKeyringSnap = Boolean(permissions?.snap_manageAccounts);
 
   useEffect(() => {
     if (isKeyringSnap) {
