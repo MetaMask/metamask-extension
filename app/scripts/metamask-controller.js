@@ -2894,8 +2894,13 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
 
       // AccountsController
-      setSelectedInternalAccount:
-        accountsController.setSelectedAccount.bind(accountsController),
+      setSelectedInternalAccount: (id) => {
+        const account = this.accountsController.getAccount(id);
+        if (account) {
+          this.preferencesController.setSelectedAddress(account.address);
+          this.accountsController.setSelectedAccount(id);
+        }
+      },
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
