@@ -38,6 +38,21 @@ export function showInteractiveReplacementTokenBanner({
   };
 }
 
+export function setCustodianDeepLink({
+  fromAddress,
+  custodyId,
+}: {
+  fromAddress: string;
+  custodyId: string;
+}) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setCustodianDeepLink', [
+      { fromAddress, custodyId },
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
