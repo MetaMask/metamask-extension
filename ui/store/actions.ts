@@ -1787,14 +1787,6 @@ export function setSelectedAccount(
       return;
     } finally {
       dispatch(hideLoadingIndication());
-      const newState = getState().metamask;
-      console.log(
-        'selected addresses are the same',
-        newState.selectedAddress ===
-          newState.internalAccounts.accounts[
-            newState.internalAccounts.selectedAccount
-          ].address,
-      );
     }
 
     if (
