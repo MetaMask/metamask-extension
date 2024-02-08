@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { getAccountLink } from '@metamask/etherscan-link';
 import {
   getCurrentCurrency,
   getNativeCurrencyImage,
+  getRpcPrefsForCurrentProvider,
   getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
   getShouldShowFiat,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -13,6 +16,10 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import AssetOptions from './asset-options';
 import AssetV2 from './asset-v2';
 
 const NativeAssetV2 = () => {
@@ -22,6 +29,11 @@ const NativeAssetV2 = () => {
   const showFiat = useSelector(getShouldShowFiat);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId, ticker, type } = useSelector(getProviderConfig);
+  const { address } = useSelector(getSelectedInternalAccount);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
+  const accountLink = getAccountLink(address, chainId, rpcPrefs);
+  const trackEvent = useContext(MetaMetricsContext);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -41,9 +53,29 @@ const NativeAssetV2 = () => {
         type: AssetType.native,
         symbol: nativeCurrency,
         image,
-        balanceDisplay,
+        balance: balanceDisplay,
+        isOriginalNativeSymbol: isOriginalNativeSymbol === true,
         fiatDisplay:
           showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
+        optionsButton: (
+          <AssetOptions
+            isNativeAsset={true}
+            onClickBlockExplorer={() => {
+              trackEvent({
+                event: 'Clicked Block Explorer Link',
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  link_type: 'Account Tracker',
+                  action: 'Asset Options',
+                  block_explorer_domain: getURLHostName(accountLink),
+                },
+              });
+              global.platform.openTab({
+                url: accountLink,
+              });
+            }}
+          />
+        ),
       }}
     />
   );

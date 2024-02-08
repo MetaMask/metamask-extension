@@ -1008,7 +1008,7 @@
     "message": "Copy transaction ID"
   },
   "couldNotFetchDataForToken": {
-    "message": "We could not fetch any data for this token"
+    "message": "Prices could not be fetched for this token"
   },
   "create": {
     "message": "Create"

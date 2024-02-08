@@ -54,10 +54,10 @@ const crosshairPlugin = {
   afterDraw(chart: Chart) {
     if (chart.crosshairX !== undefined) {
       const { y } = chart.scales;
-      chart.ctx.beginPath();
-      chart.ctx.moveTo(chart.crosshairX, y.getPixelForValue(y.max));
       chart.ctx.lineWidth = 2;
       chart.ctx.strokeStyle = '#BBC0C5';
+      chart.ctx.beginPath();
+      chart.ctx.moveTo(chart.crosshairX, y.getPixelForValue(y.max));
       chart.ctx.lineTo(chart.crosshairX, y.getPixelForValue(y.min));
       chart.ctx.stroke();
     }
@@ -76,7 +76,7 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.3,
+  aspectRatio: 2.5,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
@@ -159,24 +159,23 @@ const AssetChart = ({
 
         let [xMin, xMax, yMin, yMax]: Point[] = [];
         for (const p of prices) {
-          !xMin || p.x < xMin.x ? (xMin = p) : null;
-          !xMax || p.x > xMax.x ? (xMax = p) : null;
-          !yMin || p.y < yMin.y ? (yMin = p) : null;
-          !yMax || p.y > yMax.y ? (yMax = p) : null;
+          xMin = !xMin || p.x < xMin.x ? p : xMin;
+          xMax = !xMax || p.x > xMax.x ? p : xMax;
+          yMin = !yMin || p.y < yMin.y ? p : yMin;
+          yMax = !yMax || p.y > yMax.y ? p : yMax;
         }
 
         const drawTooltips = () => {
           maxPriceTooltip.current?.setTooltip({
-            xAxisPercent: (100 * (yMax.x - xMin.x)) / (xMax.x - xMin.x),
+            xAxisPercent: (yMax.x - xMin.x) / (xMax.x - xMin.x),
             price: yMax.y,
           });
           minPriceTooltip.current?.setTooltip({
-            xAxisPercent: (100 * (yMin.x - xMin.x)) / (xMax.x - xMin.x),
+            xAxisPercent: (yMin.x - xMin.x) / (xMax.x - xMin.x),
             price: yMin.y,
           });
         };
 
-        drawTooltips();
         setChartOptions((options) => ({
           ...options,
           onResize: () => drawTooltips(),
@@ -186,6 +185,7 @@ const AssetChart = ({
           },
         }));
         setData({ datasets: [{ data: prices }] });
+        drawTooltips();
       });
   }, [chainId, address, currency, timeRange]);
 
@@ -210,55 +210,64 @@ const AssetChart = ({
             aspectRatio: `${chartOptions.aspectRatio}`,
           }}
         >
-          {prices ? (
-            <Line
-              ref={chartRef}
-              data={data}
-              options={chartOptions}
-              updateMode="none"
-              onMouseMove={(e: MouseEvent) => {
-                if (chartRef.current && e.nativeEvent) {
-                  const { offsetX } = e.nativeEvent;
-                  const { width } = chartRef.current;
-                  const index = Math.max(
-                    0,
-                    Math.min(
-                      prices.length - 1,
-                      Math.round((offsetX / width) * prices.length),
-                    ),
-                  );
-                  priceRef?.current?.setPrices({
-                    price: prices[index].y,
-                    comparePrice: prices[0].y,
-                    date: prices[index].x,
-                  });
-                }
-              }}
-              onMouseOut={() => {
-                priceRef?.current?.setPrices({
-                  price: undefined,
-                  comparePrice: prices?.[0].y,
-                  date: Date.now(),
-                });
-              }}
-            />
-          ) : loading ? (
-            <Box backgroundColor={BackgroundColor.backgroundAlternative}></Box>
-          ) : (
-            <Box
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              gap={1}
-              paddingTop={12}
-            >
-              <Icon name={IconName.Info} size={IconSize.Xl} />
-              <Text>{t('noChartData')}</Text>
-              <Text>{t('couldNotFetchDataForToken')}</Text>
-            </Box>
-          )}
+          {(function () {
+            if (prices) {
+              return (
+                <Line
+                  ref={chartRef}
+                  data={data}
+                  options={chartOptions}
+                  updateMode="none"
+                  onMouseMove={({ nativeEvent: e }: MouseEvent) => {
+                    if (chartRef.current) {
+                      const index = Math.max(
+                        0,
+                        Math.min(
+                          prices.length - 1,
+                          Math.round(
+                            (e.offsetX / chartRef.current.width) *
+                              prices.length,
+                          ),
+                        ),
+                      );
+                      priceRef?.current?.setPrices({
+                        price: prices[index]?.y,
+                        comparePrice: prices[0]?.y,
+                        date: prices[index]?.x,
+                      });
+                    }
+                  }}
+                  onMouseOut={() => {
+                    priceRef?.current?.setPrices({
+                      price: undefined,
+                      comparePrice: prices?.[0]?.y,
+                      date: Date.now(),
+                    });
+                  }}
+                />
+              );
+            }
+
+            return loading ? (
+              <Box
+                backgroundColor={BackgroundColor.backgroundAlternative}
+              ></Box>
+            ) : (
+              <Box
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                gap={1}
+                paddingTop={10}
+              >
+                <Icon name={IconName.Info} size={IconSize.Xl} />
+                <Text>{t('noChartData')}</Text>
+                <Text>{t('couldNotFetchDataForToken')}</Text>
+              </Box>
+            );
+          })()}
         </Box>
         <ChartTooltip ref={minPriceTooltip} />
       </Box>

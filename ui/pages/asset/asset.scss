@@ -36,15 +36,30 @@
   height:24px;
 
   &:hover {
-    background-color: transparent !important;
+    background-color: var(--color-background-default-hover) !important;;
     color: var(--color-text-alternative) !important;
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default) !important;
   }
   &:active {
     border-color: transparent;
   }
+  &:focus {
+    background-color: var(--color-background-default);
+    color: var(--color-text-alternative) !important;
+  }
   &__selected {
-    background-color: var(--color-background-default-pressed);
+    background-color: var(--color-background-default-pressed) !important;;
   }
 }
 
+.asset-header {
+  position: sticky;
+  top: 0;
+  z-index: 55;
+  height: 64px;
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+}
+
+.asset-tooltip {
+  width:100%;
+}

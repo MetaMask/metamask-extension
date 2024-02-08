@@ -27,9 +27,9 @@ const ChartTooltip = forwardRef((_, ref) => {
   return (
     <Box
       style={{
-        ...(xAxisPercent < 50
-          ? { marginRight: `${100 - 2 * xAxisPercent}%` }
-          : { marginLeft: `${100 - 2 * (100 - xAxisPercent)}%` }),
+        ...(xAxisPercent < 0.5
+          ? { marginRight: `${100 - 2 * 100 * xAxisPercent}%` }
+          : { marginLeft: `${100 - 2 * (100 - 100 * xAxisPercent)}%` }),
       }}
     >
       <Text
@@ -37,7 +37,7 @@ const ChartTooltip = forwardRef((_, ref) => {
         color={TextColor.textAlternative}
         textAlign={TextAlign.Center}
         textDirection={
-          xAxisPercent < 50
+          xAxisPercent < 0.5
             ? TextDirection.LeftToRight
             : TextDirection.RightToLeft
         }

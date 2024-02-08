@@ -489,6 +489,10 @@ export default class Routes extends Component {
       return true;
     }
 
+    if (matchPath(location.pathname, { path: ASSET_ROUTE, exact: false })) {
+      return true;
+    }
+
     const isHandlingPermissionsRequest = Boolean(
       matchPath(location.pathname, {
         path: CONNECT_ROUTE,
