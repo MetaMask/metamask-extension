@@ -1294,6 +1294,28 @@ export function revokeDynamicSnapPermissions(
   };
 }
 
+/**
+ * Disconnects a given origin from a snap.
+ *
+ * This revokes the permission granted to the origin
+ * that provides the capability to communicate with a snap.
+ *
+ * @param origin - The origin.
+ * @param snapId - The snap ID.
+ */
+export function disconnectOriginFromSnap(
+  origin: string,
+  snapId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('disconnectOriginFromSnap', [
+      origin,
+      snapId,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
 
@@ -3690,35 +3712,6 @@ export function updateHiddenAccountsList(
     ]);
   };
 }
-
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-/**
- * Updates the caveat value for the specified origin, permission and caveat type.
- *
- * @param origin
- * @param target
- * @param caveatType
- * @param caveatValue
- */
-export function updateCaveat(
-  origin: string,
-  target: string,
-  caveatType: string,
-  caveatValue: Record<string, Json>,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    callBackgroundMethod(
-      'updateCaveat',
-      [origin, target, caveatType, caveatValue],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-  };
-}
-///: END:ONLY_INCLUDE_IF
 
 // Pending Approvals
 

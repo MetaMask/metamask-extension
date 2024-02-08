@@ -416,11 +416,22 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskIdentities,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
+  getInternalAccounts,
+  (keyrings, identities, accounts, internalAccounts) =>
     keyrings
       .reduce((list, keyring) => list.concat(keyring.accounts), [])
       .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+      .map((address) => {
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, address),
+        );
+
+        return {
+          ...identities[address],
+          ...internalAccount,
+          ...accounts[address],
+        };
+      }),
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -542,7 +553,7 @@ export function accountsWithSendEtherInfoSelector(state) {
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
-    ({ address, name, balance }) => ({
+    ({ address, balance, metadata: { name } }) => ({
       address,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT

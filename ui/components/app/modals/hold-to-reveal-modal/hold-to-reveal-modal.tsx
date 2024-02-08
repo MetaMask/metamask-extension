@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Display,
   FlexDirection,
-  TextVariant
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,7 +16,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
 } from '../../../component-library';
 import HoldToRevealButton from '../../hold-to-reveal-button/hold-to-reveal-button';
 
@@ -107,10 +107,7 @@ export default function HoldToRevealModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t(holdToRevealTitle)}</ModalHeader>
-        <Container
-          paddingLeft={4}
-          paddingRight={4}
-        >
+        <Container paddingLeft={4} paddingRight={4}>
           <MainContent />
           <HoldToRevealButton
             buttonText={t(holdToRevealButton)}
