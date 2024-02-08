@@ -594,6 +594,13 @@ export default class MetamaskController extends EventEmitter {
             (newlySelectedInternalAccount) => {
               listener({
                 selectedAddress: newlySelectedInternalAccount.address,
+                ipfsGateway:
+                  this.preferencesController.store.getState().ipfsGateway,
+                openSeaEnabled:
+                  this.preferencesController.store.getState().openSeaEnabled,
+                isIpfsGatewayEnabled:
+                  this.preferencesController.store.getState()
+                    .isIpfsGatewayEnabled,
               });
             },
           ),
@@ -649,9 +656,17 @@ export default class MetamaskController extends EventEmitter {
     this.nftDetectionController = new NftDetectionController({
       chainId: this.networkController.state.providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
+      onPreferencesStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          `AccountsController:selectedAccountChange`,
+          (newlySelectedInternalAccount) => {
+            listener({
+              selectedAddress: newlySelectedInternalAccount.address,
+              useNftDetection:
+                this.preferencesController.store.getState().useNftDetection,
+            });
+          },
+        ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
