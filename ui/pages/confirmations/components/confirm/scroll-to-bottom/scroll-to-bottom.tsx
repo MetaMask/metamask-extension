@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { I18nContext } from '../../../../contexts/i18n';
+import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../../component-library';
-import type { StyleUtilityProps } from '../../../component-library/box';
+} from '../../../../../components/component-library';
+import type { StyleUtilityProps } from '../../../../../components/component-library/box';
 
 import {
   BackgroundColor,
@@ -16,9 +16,9 @@ import {
   FlexDirection,
   IconColor,
   BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { updateCurrentConfirmation } from '../../../../ducks/confirm/confirm';
+} from '../../../../../helpers/constants/design-system';
+import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
+import { updateCurrentConfirmation } from '../../../../../ducks/confirm/confirm';
 
 interface ContentProps extends StyleUtilityProps {
   /**

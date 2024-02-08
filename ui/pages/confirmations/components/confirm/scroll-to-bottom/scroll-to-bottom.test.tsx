@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import * as ConfirmDucks from '../../../../ducks/confirm/confirm';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import * as ConfirmDucks from '../../../../../ducks/confirm/confirm';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';

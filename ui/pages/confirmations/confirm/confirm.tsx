@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Footer as ConfirmFooter } from '../components/confirm/footer';
-import ScrollToBottom from '../../../components/app/confirm/scroll-to-bottom';
+import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { ConfirmTitle } from '../../../components/app/confirm/title';
 import { Page } from '../../../components/multichain/pages/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
