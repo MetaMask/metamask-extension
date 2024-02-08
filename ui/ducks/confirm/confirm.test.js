@@ -5,13 +5,13 @@ describe('Confirm State', () => {
     currentConfirmation: undefined,
   };
 
-  it('sets currentConfirmation', () => {
+  it('updates currentConfirmation', () => {
     const currentConfirmation = {
       id: '123',
     };
     const state = confirmReducer(metamaskConfirmState, {
       type: UPDATE_CURRENT_CONFIRMATION,
-      currentConfirmation,
+      propsToUpdate: { ...currentConfirmation },
     });
 
     expect(state.currentConfirmation).toStrictEqual(currentConfirmation);
