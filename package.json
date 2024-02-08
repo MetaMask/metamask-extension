@@ -233,7 +233,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
-    "@lavamoat/lavadome-react": "0.0.10",
+    "@lavamoat/lavadome-react": "0.0.11",
     "@lavamoat/snow": "^2.0.1",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.18",
@@ -656,7 +656,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@metamask/ethjs-query>babel-runtime>core-js": false,
-      "@storybook/test-runner>@swc/core": false
+      "@storybook/test-runner>@swc/core": false,
+      "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false
     }
   },
   "packageManager": "yarn@4.0.2"

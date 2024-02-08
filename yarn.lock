@@ -3239,22 +3239,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-core@npm:0.0.10, @lavamoat/lavadome-core@npm:^0.0.10":
+"@lavamoat/lavadome-core@npm:0.0.10":
   version: 0.0.10
   resolution: "@lavamoat/lavadome-core@npm:0.0.10"
   checksum: 79011976d5643112b3930210d56f933a575102ff200338c1436c102f5f0f3f6efea9cd44ef673f5859e0832980b83ad7a2162d95db299f5877e8a408cf16bd6c
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-react@npm:0.0.10":
-  version: 0.0.10
-  resolution: "@lavamoat/lavadome-react@npm:0.0.10"
+"@lavamoat/lavadome-core@npm:^0.0.11":
+  version: 0.0.11
+  resolution: "@lavamoat/lavadome-core@npm:0.0.11"
   dependencies:
-    "@lavamoat/lavadome-core": "npm:^0.0.10"
+    "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
+  checksum: 5c64915fbb6f50ed85653a475d9be5fdd9dc8c4dbcc9edd86984a1c9e1088f9fe8f0e1020c155cfc75603d4789834ff1a39a6d5e91c2b50af2f2ed1a4e22bc8a
+  languageName: node
+  linkType: hard
+
+"@lavamoat/lavadome-react@npm:0.0.11":
+  version: 0.0.11
+  resolution: "@lavamoat/lavadome-react@npm:0.0.11"
+  dependencies:
+    "@lavamoat/lavadome-core": "npm:^0.0.11"
+    "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
   peerDependencies:
     react: ^16.12.0
     react-dom: ^16.12.0
-  checksum: cac64b7bd75d4796bffd13e529f864c41e2e1cfde281ad68ca500dc13af5d0bef5293abdc45a95e4e42251bc848d1e0beda907450672acc7fe69c323ca9d1c4d
+  checksum: 5c357430b875e561f2da4b6f84bb5c7a5aa86c73afc3fb5cae4cf6f58d1b81f56cbf8b1703695107f5a3efeda968bf172aa0e29b32118cc5def095a4af070545
   languageName: node
   linkType: hard
 
@@ -3272,6 +3282,13 @@ __metadata:
     through2: "npm:4.0.2"
     umd: "npm:3.0.3"
   checksum: faf4425e740c5abb9a441b6e872921943d48129f8f2120ce26672119824cea5dfcbcb7ae7113ece639a34c924794e3f6088564281672421bf31b40c25cfc93dc
+  languageName: node
+  linkType: hard
+
+"@lavamoat/preinstall-always-fail@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@lavamoat/preinstall-always-fail@npm:2.0.0"
+  checksum: a69c712e9a01029cacc8f77f7b9a944a285d9532583c09fc6050baef098d962d7dea18f17f446ca1f0ec3cd1eea07bfaedd583a704e016889cae1eba7f3552fd
   languageName: node
   linkType: hard
 
@@ -24005,7 +24022,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.1"
     "@lavamoat/lavadome-core": "npm:0.0.10"
-    "@lavamoat/lavadome-react": "npm:0.0.10"
+    "@lavamoat/lavadome-react": "npm:0.0.11"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
