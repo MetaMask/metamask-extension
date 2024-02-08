@@ -4724,6 +4724,9 @@ export default class MetamaskController extends EventEmitter {
             'AccountsController:getSelectedAccount',
           ],
         }),
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        appStateController: this.appStateController,
+        ///: END:ONLY_INCLUDE_IF
       }),
     );
 

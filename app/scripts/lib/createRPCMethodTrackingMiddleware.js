@@ -17,7 +17,11 @@ import {
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IF
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+///: END:ONLY_INCLUDE_IF
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -121,6 +125,7 @@ const rateLimitTimeouts = {};
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
+ * @param opts.appStateController
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
@@ -131,6 +136,9 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  appStateController,
+  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -310,13 +318,34 @@ export default function createRPCMethodTrackingMiddleware({
         event = eventType.APPROVED;
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      if (!isDisabledRPCMethod) {
+        let blockaidMetricProps = {};
+
+        if (SIGNING_METHODS.includes(method)) {
+          const securityAlertResponse =
+            appStateController.getSignatureSecurityAlertResponse(
+              req.securityAlertResponse.securityAlertId,
+            );
+          blockaidMetricProps = getBlockaidMetricsProps({
+            securityAlertResponse,
+          });
+        }
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       trackEvent({
         event,
         category: MetaMetricsEventCategory.InpageProvider,
         referrer: {
           url: origin,
         },
-        properties: eventProperties,
+        properties: {
+          ...eventProperties,
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+          ...blockaidMetricProps,
+          ///: END:ONLY_INCLUDE_IF
+        },
       });
 
       return callback();

@@ -470,6 +470,14 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  getSignatureSecurityAlertResponse(securityAlertId) {
+    const currentState = this.store.getState();
+    const { signatureSecurityAlertResponses } = currentState;
+    return signatureSecurityAlertResponses[securityAlertId];
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *
