@@ -30,8 +30,7 @@ import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-sna
 ///: END:ONLY_INCLUDE_IF
 import {
   removeSnap,
-  removePermissionsFor,
-  updateCaveat,
+  disconnectOriginFromSnap,
   updateSnap,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   showKeyringSnapRemovalModal,
@@ -116,27 +115,7 @@ function SnapSettings({ snapId }) {
   ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
-    const caveatValue =
-      subjects[connectedOrigin].permissions[WALLET_SNAP_PERMISSION_KEY]
-        .caveats[0].value;
-    const newCaveatValue = { ...caveatValue };
-    delete newCaveatValue[snapId];
-    if (Object.keys(newCaveatValue).length > 0) {
-      dispatch(
-        updateCaveat(
-          connectedOrigin,
-          WALLET_SNAP_PERMISSION_KEY,
-          SnapCaveatType.SnapIds,
-          newCaveatValue,
-        ),
-      );
-    } else {
-      dispatch(
-        removePermissionsFor({
-          [connectedOrigin]: [WALLET_SNAP_PERMISSION_KEY],
-        }),
-      );
-    }
+    dispatch(disconnectOriginFromSnap(connectedOrigin, snap.id));
   };
 
   const snapName = getSnapName(snap.id, targetSubjectMetadata);
