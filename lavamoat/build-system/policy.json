@@ -152,21 +152,10 @@
         "console.warn": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@babel/types": true,
         "@babel/core>@babel/generator>jsesc": true,
+        "@babel/core>@babel/types": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "@babel/core>@babel/generator>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-tofu>@babel/types>@babel/helper-string-parser": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -576,10 +565,10 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -1179,12 +1168,12 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>convert-source-map": true,
-        "@lavamoat/lavapack>espree": true,
         "@lavamoat/lavapack>json-stable-stringify": true,
         "@lavamoat/lavapack>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
+        "eslint>espree": true,
         "through2": true
       }
     },
@@ -1217,13 +1206,6 @@
         "atob": true,
         "btoa": true,
         "value": true
-      }
-    },
-    "@lavamoat/lavapack>espree": {
-      "packages": {
-        "eslint>eslint-visitor-keys": true,
-        "eslint>espree>acorn-jsx": true,
-        "jsdom>acorn": true
       }
     },
     "@lavamoat/lavapack>json-stable-stringify": {
@@ -1268,36 +1250,8 @@
         "console.log": true
       },
       "packages": {
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
-      }
-    },
-    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/types": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true,
-        "nock>debug": true
-      }
-    },
-    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-tofu>@babel/types>@babel/helper-string-parser": true
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "@lavamoat/lavapack>readable-stream": {
@@ -1661,16 +1615,8 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "brfs>resolve>is-core-module": true,
-        "brfs>resolve>path-parse": true
-      }
-    },
-    "brfs>resolve>is-core-module": {
-      "globals": {
-        "process.versions": true
-      },
-      "packages": {
-        "browserify>has": true
+        "brfs>resolve>path-parse": true,
+        "depcheck>is-core-module": true
       }
     },
     "brfs>resolve>path-parse": {
@@ -3174,8 +3120,8 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
@@ -3274,8 +3220,8 @@
     },
     "eslint>espree": {
       "packages": {
+        "eslint>eslint-visitor-keys": true,
         "eslint>espree>acorn-jsx": true,
-        "eslint>espree>eslint-visitor-keys": true,
         "jsdom>acorn": true
       }
     },
@@ -6206,41 +6152,7 @@
         "path.relative": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
-      }
-    },
-    "lavamoat>@lavamoat/aa>resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "brfs>resolve>path-parse": true,
-        "depcheck>is-core-module": true
+        "brfs>resolve": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep": {

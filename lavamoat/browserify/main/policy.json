@@ -20,9 +20,9 @@
     "@ensdomains/content-hash>cids": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>multicodec": true,
         "@ensdomains/content-hash>cids>multihashes": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec": true
       }
     },
     "@ensdomains/content-hash>cids>multibase": {
@@ -34,35 +34,11 @@
         "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true
       }
     },
-    "@ensdomains/content-hash>cids>multicodec": {
-      "packages": {
-        "@ensdomains/content-hash>cids>multicodec>uint8arrays": true,
-        "@ensdomains/content-hash>multicodec>varint": true
-      }
-    },
-    "@ensdomains/content-hash>cids>multicodec>uint8arrays": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@ensdomains/content-hash>cids>multicodec>uint8arrays>multiformats": true
-      }
-    },
-    "@ensdomains/content-hash>cids>multicodec>uint8arrays>multiformats": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "console.warn": true,
-        "crypto.subtle.digest": true
-      }
-    },
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>multihashes>varint": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multihashes>varint": true
       }
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
@@ -71,7 +47,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ensdomains/content-hash>cids>multibase": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>js-base64": {
@@ -94,15 +70,13 @@
       }
     },
     "@ensdomains/content-hash>multicodec>uint8arrays": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multibase": true,
-        "@ensdomains/content-hash>multihashes>web-encoding": true
-      }
-    },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multibase": {
-      "packages": {
-        "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true,
-        "@ensdomains/content-hash>multihashes>web-encoding": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>multihashes": {
@@ -872,7 +846,8 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
-        "console.warn": true
+        "console.warn": true,
+        "crypto.subtle.digest": true
       }
     },
     "@metamask/base-controller": {
