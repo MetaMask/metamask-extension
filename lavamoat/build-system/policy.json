@@ -152,21 +152,10 @@
         "console.warn": true
       },
       "packages": {
-        "@babel/core>@babel/generator>@babel/types": true,
         "@babel/core>@babel/generator>jsesc": true,
+        "@babel/core>@babel/types": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "@babel/core>@babel/generator>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-tofu>@babel/types>@babel/helper-string-parser": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -576,10 +565,10 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -1179,13 +1168,13 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>convert-source-map": true,
-        "@lavamoat/lavapack>espree": true,
+        "@lavamoat/lavapack>json-stable-stringify": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
-        "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true
+        "eslint>espree": true,
+        "through2": true
       }
     },
     "@lavamoat/lavapack>combine-source-map": {
@@ -1219,11 +1208,50 @@
         "value": true
       }
     },
-    "@lavamoat/lavapack>espree": {
+    "@lavamoat/lavapack>json-stable-stringify": {
       "packages": {
-        "eslint>eslint-visitor-keys": true,
-        "eslint>espree>acorn-jsx": true,
-        "jsdom>acorn": true
+        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
+        "lavamoat>json-stable-stringify>jsonify": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
+    "@lavamoat/lavapack>lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.readFileSync": true,
+        "node:fs/promises.readFile": true,
+        "node:fs/promises.writeFile": true,
+        "path.extname": true,
+        "path.join": true
+      },
+      "globals": {
+        "__dirname": true,
+        "ast": true,
+        "console.error": true,
+        "console.warn": true,
+        "content": true,
+        "define": true,
+        "file": true,
+        "importMap": true,
+        "moduleInitializer": true,
+        "packageName": true,
+        "specifier": true,
+        "type": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>json-stable-stringify": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": true,
+        "lavamoat>lavamoat-core>merge-deep": true
+      }
+    },
+    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "@lavamoat/lavapack>readable-stream": {
@@ -1243,52 +1271,6 @@
         "browserify>string_decoder": true,
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true
-      }
-    },
-    "@lavamoat/lavapack>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>through2>readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "@lavamoat/lavapack>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true,
-        "@lavamoat/lavapack>through2>readable-stream>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "readable-stream>process-nextick-args": true,
-        "readable-stream>util-deprecate": true
-      }
-    },
-    "@lavamoat/lavapack>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "@lavamoat/lavapack>through2>readable-stream>string_decoder": {
-      "packages": {
-        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true
       }
     },
     "@metamask/build-utils": {
@@ -1483,9 +1465,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "new": true,
-        "process": true,
-        "target": true
+        "process": true
       },
       "packages": {
         "@typescript-eslint/eslint-plugin>tsutils": true,
@@ -1635,16 +1615,8 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "brfs>resolve>is-core-module": true,
-        "brfs>resolve>path-parse": true
-      }
-    },
-    "brfs>resolve>is-core-module": {
-      "globals": {
-        "process.versions": true
-      },
-      "packages": {
-        "browserify>has": true
+        "brfs>resolve>path-parse": true,
+        "depcheck>is-core-module": true
       }
     },
     "brfs>resolve>path-parse": {
@@ -3148,8 +3120,8 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
@@ -3248,8 +3220,8 @@
     },
     "eslint>espree": {
       "packages": {
+        "eslint>eslint-visitor-keys": true,
         "eslint>espree>acorn-jsx": true,
-        "eslint>espree>eslint-visitor-keys": true,
         "jsdom>acorn": true
       }
     },
@@ -4282,7 +4254,7 @@
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>isobject": {
       "packages": {
-        "readable-stream>isarray": true
+        "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>isobject>isarray": true
       }
     },
     "gulp-watch>anymatch>micromatch>braces>expand-range>fill-range>randomatic": {
@@ -4765,7 +4737,7 @@
     },
     "gulp-watch>chokidar>braces>snapdragon>base>cache-base>unset-value>has-value>isobject": {
       "packages": {
-        "readable-stream>isarray": true
+        "gulp-watch>chokidar>braces>snapdragon>base>cache-base>unset-value>has-value>isobject>isarray": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>base>class-utils": {
@@ -5888,8 +5860,8 @@
     },
     "gulp>vinyl-fs>glob-stream>unique-stream": {
       "packages": {
-        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": true,
-        "lavamoat>json-stable-stringify": true
+        "@lavamoat/lavapack>json-stable-stringify": true,
+        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": true
       }
     },
     "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": {
@@ -5937,9 +5909,9 @@
     },
     "gulp>vinyl-fs>object.assign": {
       "packages": {
+        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract>object-keys": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
@@ -6131,14 +6103,26 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
+        "@lavamoat/lavapack>json-stable-stringify": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
         "browserify>browser-resolve": true,
-        "browserify>concat-stream": true,
         "duplexify": true,
+        "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
-        "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true
+        "through2": true
+      }
+    },
+    "lavamoat-browserify>concat-stream": {
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.isBuffer": true
+      },
+      "packages": {
+        "browserify>concat-stream>typedarray": true,
+        "lavamoat-browserify>readable-stream": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -6160,52 +6144,6 @@
         "readable-stream>util-deprecate": true
       }
     },
-    "lavamoat-browserify>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "lavamoat-browserify>through2>readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "lavamoat-browserify>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "lavamoat-browserify>through2>readable-stream>safe-buffer": true,
-        "lavamoat-browserify>through2>readable-stream>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "readable-stream>process-nextick-args": true,
-        "readable-stream>util-deprecate": true
-      }
-    },
-    "lavamoat-browserify>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "lavamoat-browserify>through2>readable-stream>string_decoder": {
-      "packages": {
-        "lavamoat-browserify>through2>readable-stream>safe-buffer": true
-      }
-    },
     "lavamoat>@lavamoat/aa": {
       "builtin": {
         "fs.readFileSync": true,
@@ -6214,66 +6152,7 @@
         "path.relative": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
-      }
-    },
-    "lavamoat>@lavamoat/aa>resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "brfs>resolve>path-parse": true,
-        "depcheck>is-core-module": true
-      }
-    },
-    "lavamoat>json-stable-stringify": {
-      "packages": {
-        "lavamoat>json-stable-stringify>jsonify": true
-      }
-    },
-    "lavamoat>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.readFileSync": true,
-        "node:fs/promises.readFile": true,
-        "path.extname": true,
-        "path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true
+        "brfs>resolve": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep": {
@@ -6338,43 +6217,6 @@
     "lavamoat>lavamoat-core>merge-deep>kind-of": {
       "packages": {
         "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "lavamoat>lavamoat-tofu": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true,
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/types": true,
-        "nock>debug": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-tofu>@babel/types>@babel/helper-string-parser": true
       }
     },
     "lodash": {
@@ -7204,7 +7046,6 @@
         "moveSyntheticComments": true,
         "navigator": true,
         "needsParentheses": true,
-        "new": true,
         "newCaseClauseTracker": true,
         "newPrivateEnvironment": true,
         "noEmitNotification": true,
@@ -7342,7 +7183,6 @@
         "syntaxMayBeASICandidate": true,
         "syntaxRequiresTrailingSemicolonOrASI": true,
         "sysLog": true,
-        "target": true,
         "targetOptionDeclaration": true,
         "templateObjectHelper": true,
         "testFormatSettings": true,
@@ -7729,18 +7569,30 @@
     "string.prototype.matchall>call-bind": {
       "packages": {
         "browserify>has>function-bind": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>call-bind>set-function-length": true,
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>call-bind>set-function-length": {
+      "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
+        "string.prototype.matchall>define-properties>define-data-property": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
     "string.prototype.matchall>define-properties": {
       "packages": {
+        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
-        "string.prototype.matchall>es-abstract>object-keys": true
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
     },
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
+        "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>es-abstract>gopd": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -7829,6 +7681,7 @@
       "packages": {
         "browserify>has>function-bind": true,
         "depcheck>is-core-module>hasown": true,
+        "string.prototype.matchall>call-bind>es-errors": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>has-symbols": true
       }
