@@ -1,18 +1,17 @@
 diff --git a/dist/utils.js b/dist/utils.js
-index 810f229841ffff83f7a28191bc558862b1809e01..2daf3b12cf8a77aad9a5e0a6167734540805ecfc 100644
+index 810f229841ffff83f7a28191bc558862b1809e01..31047fd3387693f30a76807d596a8de86bb505e1 100644
 --- a/dist/utils.js
 +++ b/dist/utils.js
-@@ -36,6 +36,13 @@ function keyringTypeToName(keyringType) {
-         case keyring_controller_1.KeyringTypes.custody: {
-             return 'Custody';
-         }
-+        /**
-+         * PATCH INFORMATION - The keyring type used for custody account has been changed from 'Custody' to 'Custody - JSONRPC'.
-+         * To do: Develop a better solution to keep all keyring types in sync.
-+         */
-+        case 'Custody - JSONRPC': {
-+            return 'Custody';
-+        }
-         default: {
-             throw new Error(`Unknown keyring ${keyringType}`);
-         }
+@@ -11,6 +11,12 @@ const uuid_1 = require("uuid");
+  * @returns The name of the keyring type.
+  */
+ function keyringTypeToName(keyringType) {
++
++    // Custody Keyrings follow this pattern
++    if (/^Custody.*/.test(keyringType)) { 
++        return "Custody";
++    }
++
+     switch (keyringType) {
+         case keyring_controller_1.KeyringTypes.simple: {
+             return 'Account';
