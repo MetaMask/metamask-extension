@@ -284,10 +284,10 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: { allNftContracts, selectedAddress },
+    metamask: { allNftContracts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
