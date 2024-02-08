@@ -24,7 +24,7 @@ describe('Confirm', () => {
     expect(container).toBeDefined();
   });
 
-  it('should match snapshot for personal signature', async () => {
+  it('matches snapshot for personal signature type', () => {
     const mockStatePersonalSign = {
       ...mockState,
       metamask: {
