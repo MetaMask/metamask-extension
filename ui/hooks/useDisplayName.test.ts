@@ -39,32 +39,35 @@ describe('useDisplayName', () => {
     jest.resetAllMocks();
   });
 
-  it('returns null if no name is found', () => {
+  it('handles no name found', () => {
     useNameMock.mockReturnValue(NO_PETNAME_FOUND_RETURN_VALUE);
     getMemoizedMetadataContractNameMock.mockReturnValue(
       NO_CONTRACT_NAME_FOUND_RETURN_VALUE,
     );
 
-    const name = useDisplayName(VALUE_MOCK, TYPE_MOCK);
-
-    expect(name).toBe(null);
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+      name: null,
+      hasPetname: false,
+    });
   });
 
-  it('returns a petname if one is found, even if a contract name exists', () => {
+  it('prioritizes an existing petname over an existing contract name', () => {
     useNameMock.mockReturnValue(PETNAME_FOUND_RETURN_VALUE);
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
 
-    const name = useDisplayName(VALUE_MOCK, TYPE_MOCK);
-
-    expect(name).toBe(NAME_MOCK);
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+      name: NAME_MOCK,
+      hasPetname: true,
+    });
   });
 
   it('returns a contract name if one is found, if no petname exists', () => {
     useNameMock.mockReturnValue(NO_PETNAME_FOUND_RETURN_VALUE);
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
 
-    const name = useDisplayName(VALUE_MOCK, TYPE_MOCK);
-
-    expect(name).toBe(CONTRACT_NAME_MOCK);
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
+      name: CONTRACT_NAME_MOCK,
+      hasPetname: false,
+    });
   });
 });

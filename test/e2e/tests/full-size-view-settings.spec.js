@@ -26,7 +26,6 @@ describe('Full-size View Setting @no-mmi', function () {
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        failOnConsoleError: false,
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
