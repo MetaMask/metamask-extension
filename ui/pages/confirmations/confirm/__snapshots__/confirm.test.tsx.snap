@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confirm should match snapshot for personal signature 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--width-full mm-box--height-full"
+  >
+    <div
+      class="mm-box confirm_header__wrapper mm-box--padding-4 mm-box--display-flex mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-box--display-flex"
+      >
+        <div
+          class=""
+        >
+          <div
+            class="identicon"
+            style="height: 32px; width: 32px; border-radius: 16px;"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+            >
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#FB184D"
+                  height="32"
+                  transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#1888F2"
+                  height="32"
+                  transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FA8900"
+                  height="32"
+                  transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          C
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--margin-inline-start-4"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        />
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        >
+          Chain 5
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box"
+    >
+      CONFIRMATION PAGE BODY TO COME HERE
+    </div>
+    <div
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        data-testid="confirm-footer-cancel-button"
+      >
+        Cancel
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        data-testid="confirm-footer-confirm-button"
+      >
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>
+`;
