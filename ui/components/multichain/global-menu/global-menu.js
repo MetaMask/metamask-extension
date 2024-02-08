@@ -6,6 +6,7 @@ import {
   CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
+  ALL_CONNECTIONS,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
@@ -162,25 +163,37 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         width={BlockSize.Full}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
-      <MenuItem
-        iconName={IconName.Connect}
-        disabled={hasUnapprovedTransactions}
-        onClick={() => {
-          history.push(CONNECTED_ROUTE);
-          trackEvent({
-            event: MetaMetricsEventName.NavConnectedSitesOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-connected-sites"
-      >
-        {t('connectedSites')}
-      </MenuItem>
-
+      {process.env.MULTICHAIN ? (
+        <MenuItem
+          iconName={IconName.SecurityTick}
+          disabled={hasUnapprovedTransactions}
+          onClick={() => {
+            history.push(ALL_CONNECTIONS);
+            closeMenu();
+          }}
+        >
+          {t('allPermissions')}
+        </MenuItem>
+      ) : (
+        <MenuItem
+          iconName={IconName.Connect}
+          disabled={hasUnapprovedTransactions}
+          onClick={() => {
+            history.push(CONNECTED_ROUTE);
+            trackEvent({
+              event: MetaMetricsEventName.NavConnectedSitesOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-connected-sites"
+        >
+          {t('connectedSites')}
+        </MenuItem>
+      )}
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         mmiPortfolioEnabled && (
@@ -225,7 +238,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        notifySnaps.length ? (
+        notifySnaps.length && !process.env.MULTICHAIN ? (
           <>
             <MenuItem
               iconName={IconName.Notification}
@@ -265,16 +278,18 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        <MenuItem
-          iconName={IconName.Snaps}
-          onClick={() => {
-            history.push(SNAPS_ROUTE);
-            closeMenu();
-          }}
-          showInfoDot={snapsUpdatesAvailable}
-        >
-          {t('snaps')}
-        </MenuItem>
+        process.env.MULTICHAIN ? null : (
+          <MenuItem
+            iconName={IconName.Snaps}
+            onClick={() => {
+              history.push(SNAPS_ROUTE);
+              closeMenu();
+            }}
+            showInfoDot={snapsUpdatesAvailable}
+          >
+            {t('snaps')}
+          </MenuItem>
+        )
         ///: END:ONLY_INCLUDE_IF(snaps)
       }
       <MenuItem
