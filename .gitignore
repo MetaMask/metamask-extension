@@ -65,7 +65,7 @@ test-results/
 
 # MMI Playwright
 public/playwright
-test/e2e/playwright/mmi/.env
+test/e2e/playwright/**/.env
 test/e2e/playwright/mmi/playwright.config.ts
 test/e2e/playwright/mmi/specs/**/*-darwin.png
 test/e2e/playwright/mmi/dist/
