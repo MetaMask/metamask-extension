@@ -106,7 +106,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   );
 
   if (metamaskState.textDirection === 'rtl') {
-    await switchDirection('rtl');
+    switchDirection('rtl');
   }
 
   const draftInitialState = {

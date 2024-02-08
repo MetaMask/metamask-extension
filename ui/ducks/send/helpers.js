@@ -16,7 +16,7 @@ import {
   generateERC721TransferData,
   generateERC1155TransferData,
   getAssetTransferData,
-} from '../../pages/send/send.utils';
+} from '../../pages/confirmations/send/send.utils';
 import { getGasPriceInHexWei } from '../../selectors';
 import { estimateGas } from '../../store/actions';
 import { Numeric } from '../../../shared/modules/Numeric';
