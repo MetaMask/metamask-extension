@@ -64,7 +64,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -207,6 +207,18 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
   return Boolean(keyring?.type?.includes('Hardware'));
+}
+
+/**
+ * Checks if the account supports smart transactions.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
 }
 
 /**

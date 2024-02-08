@@ -3923,7 +3923,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@npm:^15.0.0, @metamask/eth-keyring-controller@npm:^15.1.0":
+"@metamask/eth-keyring-controller@npm:^15.1.0":
   version: 15.1.0
   resolution: "@metamask/eth-keyring-controller@npm:15.1.0"
   dependencies:
@@ -3935,6 +3935,22 @@ __metadata:
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/utils": "npm:^8.2.0"
   checksum: f7d9abf56c42aa34542ceb3ea9f33c2a8b52a77699b57ee224df06883590a317f889dd2f231ebad465806538da97b31384cad91fd4faee627a258dd1f279d2c8
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-keyring-controller@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "@metamask/eth-keyring-controller@npm:17.0.1"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/browser-passworder": "npm:^4.3.0"
+    "@metamask/eth-hd-keyring": "npm:^7.0.1"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/eth-simple-keyring": "npm:^6.0.1"
+    "@metamask/keyring-api": "npm:^3.0.0"
+    "@metamask/obs-store": "npm:^9.0.0"
+    "@metamask/utils": "npm:^8.2.0"
+  checksum: 1b56eb67a53ed743eae95fc630ea45fb3c7639823391ef452d8f1153d2d5242e29622717e8a07afa70a8ca3608966cd3d9a61079e18e8514d7b852dc8357e374
   languageName: node
   linkType: hard
 
@@ -4266,43 +4282,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/keyring-controller@npm:9.0.0"
+"@metamask/keyring-controller@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@metamask/keyring-controller@npm:12.2.0"
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/eth-keyring-controller": "npm:^15.0.0"
-    "@metamask/message-manager": "npm:^7.3.5"
-    "@metamask/preferences-controller": "npm:^4.4.3"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/eth-keyring-controller": "npm:^17.0.1"
+    "@metamask/keyring-api": "npm:^3.0.0"
+    "@metamask/message-manager": "npm:^7.3.8"
+    "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
     ethereumjs-util: "npm:^7.0.10"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  peerDependencies:
-    "@metamask/preferences-controller": ^4.4.3
-  checksum: 0cefdd7d205ca5c2978f98af6eeda6c31fbad0393dea4e5587813a54337f3af09441afa677a49166676df5c93f93469e4082e8b6cab55ee3de69bc588b621713
+  checksum: 8f671f10a1640df9d5bccee539fb522a070633dc402327d6d4a168c2730dbadc2abde395f87b2ca0df401b49d6e67060142870316c07761cbae7e15f9bc718b0
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A9.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-9.0.0-f57ed3ebea.patch":
-  version: 9.0.0
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A9.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-9.0.0-f57ed3ebea.patch::version=9.0.0&hash=845a95"
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch":
+  version: 12.2.0
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch::version=12.2.0&hash=8ab884"
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/eth-keyring-controller": "npm:^15.0.0"
-    "@metamask/message-manager": "npm:^7.3.5"
-    "@metamask/preferences-controller": "npm:^4.4.3"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/eth-keyring-controller": "npm:^17.0.1"
+    "@metamask/keyring-api": "npm:^3.0.0"
+    "@metamask/message-manager": "npm:^7.3.8"
+    "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
     ethereumjs-util: "npm:^7.0.10"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  peerDependencies:
-    "@metamask/preferences-controller": ^4.4.3
-  checksum: 3ca2d4f0fc50d86f3b7992e8c71e95c1b6d3f414c3ec975d65230668d1edef87307a7fe4dd7de118a2a0b24d61fda8b669409388ba388efa16bda172228e2874
+  checksum: 7874fe2645d3c4ed08155825b1f5d10dec3cc6eb05e75e94664dda59056c8e625cfdf394678b6b9dbecf93ab20dcdf5b920a3a77701cd1854ab9668116eecdff
   languageName: node
   linkType: hard
 
@@ -4327,7 +4339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.5":
+"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.5, @metamask/message-manager@npm:^7.3.8":
   version: 7.3.8
   resolution: "@metamask/message-manager@npm:7.3.8"
   dependencies:
@@ -4458,6 +4470,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/obs-store@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/obs-store@npm:9.0.0"
+  dependencies:
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    readable-stream: "npm:^3.6.2"
+  checksum: 1c202a5bbdc79a6b8b3fba946c09dc5521e87260956d30db6543e7bf3d95bd44ebd958f509e3e7332041845176487fe78d3b40bdedbc213061ba849fd978e468
+  languageName: node
+  linkType: hard
+
 "@metamask/permission-controller@npm:^7.0.0, @metamask/permission-controller@npm:^7.1.0":
   version: 7.1.0
   resolution: "@metamask/permission-controller@npm:7.1.0"
@@ -4563,16 +4585,6 @@ __metadata:
     eslint-plugin-n: "npm:^16.6.2"
     json-rpc-random-id: "npm:^1.0.1"
   checksum: b353c9a24a35972a05f75daf0b438d368e6f154145cfc02be217d335309cec0d94c51da78bbe6aadb4f6dbcbaea97dc3b2f561e3b5dbe053063a7a81190a8b26
-  languageName: node
-  linkType: hard
-
-"@metamask/preferences-controller@npm:^4.4.3":
-  version: 4.4.3
-  resolution: "@metamask/preferences-controller@npm:4.4.3"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-  checksum: e69294b5eb584d5156759fc8f34ecd3a07b20bd4cc71c052f279fda4d59c0c79548f6425b7161e718ea7504ac1f94176e920a7ddf56efc4c1b721efbf8021ee2
   languageName: node
   linkType: hard
 
@@ -24020,7 +24032,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^12.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
-    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A9.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-9.0.0-f57ed3ebea.patch"
+    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch"
     "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
