@@ -17,7 +17,7 @@ const mockUseScrollRequiredResult = {
 
 const mockedUseScrollRequiredResult = jest.mocked(mockUseScrollRequiredResult);
 
-jest.mock('../../../../hooks/useScrollRequired', () => ({
+jest.mock('../../../../../hooks/useScrollRequired', () => ({
   useScrollRequired: () => mockedUseScrollRequiredResult,
 }));
 
