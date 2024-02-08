@@ -1294,6 +1294,15 @@ export function revokeDynamicSnapPermissions(
   };
 }
 
+/**
+ * Disconnects a given origin from a snap.
+ *
+ * This revokes the permission granted to the origin
+ * that provides the capability to communicate with a snap.
+ *
+ * @param origin - The origin.
+ * @param snapId - The snap ID.
+ */
 export function disconnectOriginFromSnap(
   origin: string,
   snapId: string,
