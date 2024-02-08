@@ -8,7 +8,7 @@ import {
 } from 'react-redux';
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
   resolvePendingApproval,
   completedTx,
@@ -186,7 +186,7 @@ const SignatureRequest = ({
     await dispatch(
       rejectPendingApproval(
         id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
+        serializeError(providerErrors.userRejectedRequest()),
       ),
     );
     trackEvent({

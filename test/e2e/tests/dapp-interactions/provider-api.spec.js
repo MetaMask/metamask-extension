@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { errorCodes } = require('eth-rpc-errors');
+const { errorCodes } = require('@metamask/rpc-errors');
 const {
   defaultGanacheOptions,
   withFixtures,
