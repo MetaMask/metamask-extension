@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   JustifyContent,
   SEVERITIES,
@@ -85,7 +85,7 @@ function getValues(pendingApproval, t, actions) {
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest().serialize(),
+        providerErrors.userRejectedRequest().serialize(),
       ),
     networkDisplay: true,
   };

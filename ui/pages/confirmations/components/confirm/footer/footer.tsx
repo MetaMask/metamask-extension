@@ -1,5 +1,4 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
-import React, { useCallback, useState } from 'react';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -109,7 +108,7 @@ const Footer = () => {
     dispatch(
       rejectPendingApproval(
         currentConfirmation.id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
+        serializeError(providerErrors.userRejectedRequest()),
       ),
     );
   }, [currentConfirmation]);

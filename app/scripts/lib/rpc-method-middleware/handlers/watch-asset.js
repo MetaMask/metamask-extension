@@ -1,5 +1,5 @@
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const watchAsset = {
@@ -51,7 +51,7 @@ async function watchAssetHandler(
       typeof tokenId !== 'string'
     ) {
       return end(
-        ethErrors.rpc.invalidParams({
+        rpcErrors.invalidParams({
           message: `Expected parameter 'tokenId' to be type 'string'. Received type '${typeof tokenId}'`,
         }),
       );

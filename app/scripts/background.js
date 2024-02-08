@@ -20,7 +20,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import PortStream from 'extension-port-stream';
 
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -906,7 +906,7 @@ export function setupController(
           default:
             controller.approvalController.reject(
               id,
-              ethErrors.provider.userRejectedRequest(),
+              providerErrors.userRejectedRequest(),
             );
             break;
         }

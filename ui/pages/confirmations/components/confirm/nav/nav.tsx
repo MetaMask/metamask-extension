@@ -1,4 +1,4 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -76,7 +76,7 @@ const Nav = () => {
       dispatch(
         rejectPendingApproval(
           conf.id,
-          serializeError(ethErrors.provider.userRejectedRequest()),
+          serializeError(providerErrors.userRejectedRequest()),
         ),
       );
     });
