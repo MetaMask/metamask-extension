@@ -14,10 +14,9 @@ import {
   Modal,
   ModalOverlay,
   Text,
-  ModalContent,
-  ModalHeader,
 } from '../../../component-library';
-
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import HoldToRevealButton from '../../hold-to-reveal-button';
 
 type HoldToRevealModalProps = {
