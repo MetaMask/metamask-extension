@@ -83,19 +83,35 @@ describe('Add existing token using search', function () {
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({ useTokenDetection: true })
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.fill('input[placeholder="Search tokens"]', 'BAT');
+        // Switch to mainnet
+
+        await driver.clickElement('[data-testid="network-display"]');
+        const networkSelectionModal = await driver.findVisibleElement(
+          '.mm-modal',
+        );
+        await driver.waitForElementNotPresent('.loading-overlay');
+
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
+
+        // Wait for network to change and token list to load from state
+        await networkSelectionModal.waitForElementState('hidden');
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Ethereum Mainnet',
+        });
+
+        await driver.clickElement('[data-testid="import-token-button"]');
+
+        await driver.fill('input[placeholder="Search tokens"]', 'Uni');
         await driver.clickElement({
-          text: 'BAT',
+          text: 'Uni',
           tag: 'p',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
@@ -111,7 +127,7 @@ describe('Add existing token using search', function () {
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',
-          text: '0 BAT',
+          text: '0 UNI',
         });
       },
     );
