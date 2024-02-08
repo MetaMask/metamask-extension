@@ -3828,7 +3828,7 @@ __metadata:
 
 "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch":
   version: 4.0.0
-  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch::version=4.0.0&hash=aa3146"
+  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch::version=4.0.0&hash=16c83a"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.3"
     "@metamask/eth-snap-keyring": "npm:^2.0.0"
@@ -3841,7 +3841,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^8.1.0
-  checksum: 37152bb1cc007694d5887e4aeb01382b175ab8c4b7cb7b64b63b774a3e246d102f7f7fcc8d3956d3b3b0a7cbd883919f404b8afbbc9bf77db4b2394f9156c2fa
+  checksum: 1bf1cac74035df05354681e57ec4a39f0786d9e4e9b49a207a7eec9f3d564932f57945d3b35419aeb1bc8f6c7f0c401d594933b6c9482737a1dde1d2846cfda4
   languageName: node
   linkType: hard
 
@@ -24728,7 +24728,7 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.23"
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
-    "@metamask/accounts-controller": "npm:^4.0.0"
+    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^5.1.0"

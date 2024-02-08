@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.9.2]
+### Fixed
+- [MMI] Patches `@metamask/accounts-controller` to fix an issue with MMI where custodial keyrings could nto be found ([#22730](https://github.com/MetaMask/metamask-extension/pull/22692))
+
 ## [11.9.1]
 ### Fixed
 - [MMI] Patches `@metamask/transaction-controller` to fix an issue with MMI where due to a TransactionController refactor, custodial transactions stopped yielding a hash to dapps when they were submitted ([#22730](https://github.com/MetaMask/metamask-extension/pull/22730))
@@ -4343,7 +4347,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.2...HEAD
+[11.9.2]: https://github.com/MetaMask/metamask-extension/compare/v11.9.1...v11.9.2
 [11.9.1]: https://github.com/MetaMask/metamask-extension/compare/v11.9.0...v11.9.1
 [11.9.0]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...v11.9.0
 [11.8.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.5...v11.8.0
