@@ -67,10 +67,7 @@ test.describe('MMI visual', () => {
     // FIX: This check fails in the pipeline. I think it is related with the image used to run the test
 
     // Check remove custodian token screen (aborted before removed)
-    await accountsPopup.removeTokenScreenshot(
-      'Custody Account A',
-      '',
-    );
+    await accountsPopup.removeTokenScreenshot('Custody Account A');
 
     // Select custodian accounts
     await accountsPopup.selectCustodyAccount(accountA);

@@ -108,10 +108,7 @@ export class MMIAccountMenuPage {
       .toHaveScreenshot(screenshotName, { mask: [accountsFunds] });
   }
 
-  async removeTokenScreenshot(
-    accountToRemoveName: string,
-    screenshotName: string,
-  ) {
+  async removeTokenScreenshot(accountToRemoveName: string) {
     await this.page
       .getByRole('button', { name: `${accountToRemoveName} Options` })
       .click();
