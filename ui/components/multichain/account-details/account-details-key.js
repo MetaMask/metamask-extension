@@ -4,6 +4,7 @@ import {
   toLavaDomeToken,
 } from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
+import qrCode from 'qrcode-generator';
 import {
   BannerAlert,
   Box,
@@ -35,8 +36,25 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
   const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
 
+  // Generate QR code for scanning
+  const qrImage = qrCode(0, 'L');
+  qrImage.addData(privateKey.toString());
+  qrImage.make();
+
   return (
     <>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        flexDirection={FlexDirection.Column}
+      >
+        <div
+          className="qr-code__wrapper"
+          dangerouslySetInnerHTML={{
+            __html: qrImage.createTableTag(5, 24),
+          }}
+        />
+      </Box>
       <Text
         marginTop={6}
         variant={TextVariant.bodySm}
