@@ -427,10 +427,8 @@ export default function ConfirmationPage({
     return inputStates[type] ?? '';
   };
 
-  const onInputChange = (event) => setInputState(
-    pendingConfirmation?.type,
-    event.target.value ?? '',
-  )
+  const onInputChange = (event) =>
+    setInputState(pendingConfirmation?.type, event.target.value ?? '');
 
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
