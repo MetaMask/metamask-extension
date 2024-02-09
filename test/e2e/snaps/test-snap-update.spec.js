@@ -20,14 +20,18 @@ describe('Test Snap update', function () {
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 2);
@@ -79,7 +83,6 @@ describe('Test Snap update', function () {
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
-        await driver.delay(1000);
 
         // switch to metamask extension and update
         await switchToNotificationWindow(driver, 2);
