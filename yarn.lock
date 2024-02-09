@@ -5224,7 +5224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@patch:@metamask/user-operation-controller@npm%3A1.0.0#~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch":
+"@metamask/user-operation-controller@patch:@metamask/user-operation-controller@npm%3A1.0.0#~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch::version=1.0.0&hash=411694":
   version: 1.0.0
   resolution: "@metamask/user-operation-controller@patch:@metamask/user-operation-controller@npm%3A1.0.0#~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch::version=1.0.0&hash=411694"
   dependencies:
@@ -5249,6 +5249,34 @@ __metadata:
     "@metamask/polling-controller": ^4.0.0
     "@metamask/transaction-controller": ^20.0.0
   checksum: 99837567f7fa5bc139b42e7f07c75769dccce6c1ee6b58932f473b08f58de200ccc03d7d3370eca575804cb28571fe247910d5db2323f8d87bb40c5882c1f531
+  languageName: node
+  linkType: hard
+
+"@metamask/user-operation-controller@patch:@metamask/user-operation-controller@patch%3A@metamask/user-operation-controller@npm%253A1.0.0%23~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch%3A%3Aversion=1.0.0&hash=411694#~/.yarn/patches/@metamask-user-operation-controller-patch-61bc0d06fe.patch":
+  version: 1.0.0
+  resolution: "@metamask/user-operation-controller@patch:@metamask/user-operation-controller@patch%3A@metamask/user-operation-controller@npm%253A1.0.0%23~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch%3A%3Aversion=1.0.0&hash=411694#~/.yarn/patches/@metamask-user-operation-controller-patch-61bc0d06fe.patch::version=1.0.0&hash=21e8a8"
+  dependencies:
+    "@metamask/approval-controller": "npm:^5.1.1"
+    "@metamask/base-controller": "npm:^4.1.0"
+    "@metamask/controller-utils": "npm:^8.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/gas-fee-controller": "npm:^12.0.0"
+    "@metamask/network-controller": "npm:^17.1.0"
+    "@metamask/polling-controller": "npm:^4.0.0"
+    "@metamask/transaction-controller": "npm:^20.0.0"
+    "@metamask/utils": "npm:^8.3.0"
+    ethereumjs-util: "npm:^7.0.10"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^5.1.1
+    "@metamask/gas-fee-controller": ^12.0.0
+    "@metamask/network-controller": ^17.1.0
+    "@metamask/polling-controller": ^4.0.0
+    "@metamask/transaction-controller": ^20.0.0
+  checksum: 349975ab8e07ae470cd85f7159f8ff4964aba697502cdbba677b1385c1c674993165407e847811f8052f7cd14087b3673c31aaa5a1ffc5bc31bf52124d95e9cc
   languageName: node
   linkType: hard
 
@@ -24851,7 +24879,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^7.3.1"
     "@metamask/transaction-controller": "npm:^20.0.0"
-    "@metamask/user-operation-controller": "patch:@metamask/user-operation-controller@npm%3A1.0.0#~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch"
+    "@metamask/user-operation-controller": "patch:@metamask/user-operation-controller@patch%3A@metamask/user-operation-controller@npm%253A1.0.0%23~/.yarn/patches/@metamask-user-operation-controller-npm-1.0.0-5c1285dfad.patch%3A%3Aversion=1.0.0&hash=411694#~/.yarn/patches/@metamask-user-operation-controller-patch-61bc0d06fe.patch"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
     "@playwright/test": "npm:^1.39.0"
