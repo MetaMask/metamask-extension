@@ -1,34 +1,17 @@
-import { Form, UserInputEventType } from '@metamask/snaps-sdk';
-import { FormEvent } from 'react';
-import { mapToTemplate } from '../snap-ui-renderer';
-import { UIComponent } from './types';
+import { Form } from '@metamask/snaps-sdk';
+import { mapToTemplate } from '../utils';
+import { UIComponentFactory } from './types';
 
-export const form: UIComponent<Form> = ({
-  element,
-  handleEvent,
-  state,
-  ...params
-}) => ({
-  element: 'form',
+export const form: UIComponentFactory<Form> = ({ element, ...params }) => ({
+  element: 'SnapUIForm',
   children: element.children.map((children) =>
-    // eslint-disable-next-line no-use-before-define
     mapToTemplate({
-      ...params,
-      handleEvent,
-      state,
       element: children,
-      parentForm: element.name,
+      form: element.name,
+      ...params,
     }),
   ),
   props: {
-    className: 'snap-ui-renderer__form',
-    onSubmit: (event: FormEvent<HTMLElement>) => {
-      event.preventDefault();
-      handleEvent({
-        eventType: UserInputEventType.FormSubmitEvent,
-        componentName: element.name,
-        value: state[element.name] ?? null,
-      });
-    },
+    name: element.name,
   },
 });

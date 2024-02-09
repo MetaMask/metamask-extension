@@ -1,10 +1,12 @@
 import { Copyable } from '@metamask/snaps-sdk';
-import { UIComponent } from './types';
+import { UIComponentFactory } from './types';
 
-export const copyable: UIComponent<Copyable> = ({ element }) => ({
+export const copyable: UIComponentFactory<Copyable> = ({ element }) => ({
   element: 'Copyable',
   props: {
     text: element.value,
     sensitive: element.sensitive,
+    marginTop: 1,
+    marginBottom: 1,
   },
 });

@@ -1,32 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { debounce } from 'lodash';
+import { useSelector } from 'react-redux';
+
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { getSnapName } from '../../../../helpers/utils/util';
-import { getInterface, getTargetSubjectMetadata } from '../../../../selectors';
+import {
+  getMemoizedInterface,
+  getTargetSubjectMetadata,
+} from '../../../../selectors';
 import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import {
-  handleSnapRequest,
-  updateInterfaceState,
-} from '../../../../store/actions';
-import { COMPONENT_MAPPING } from './components';
 
-export const mapToTemplate = (params) => {
-  const { type } = params.element;
-  params.elementKeyIndex.value += 1;
-  const indexKey = `snap_ui_element_${type}__${params.elementKeyIndex.value}`;
-  const mapped = COMPONENT_MAPPING[type](params);
-  return { ...mapped, key: indexKey };
-};
+import { SnapInterfaceContextProvider } from '../../../../contexts/snap';
+import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 export const SnapUIRenderer = ({
@@ -44,7 +37,6 @@ export const SnapUIRenderer = ({
   boxProps,
   interfaceId,
 }) => {
-  const dispatch = useDispatch();
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -52,67 +44,11 @@ export const SnapUIRenderer = ({
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  const interfaceData = useSelector((state) =>
-    getInterface(state, interfaceId),
+  const { content } = useSelector((state) =>
+    getMemoizedInterface(state, interfaceId),
   );
 
-  const [internalState, setInternalState] = useState(
-    interfaceData?.interfaceState ?? {},
-  );
-
-  const snapRequestDebounced = debounce(
-    (params) =>
-      handleSnapRequest({
-        snapId,
-        origin: '',
-        handler: 'onUserInput',
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: {
-            event: params.value
-              ? {
-                  type: params.eventType,
-                  name: params.componentName,
-                  value: params.value,
-                }
-              : { type: params.eventType, name: params.componentName },
-            id: interfaceId,
-          },
-        },
-      }),
-    200,
-  );
-
-  const updateStateDebounced = debounce(
-    (state) => dispatch(updateInterfaceState(interfaceId, state)),
-    200,
-  );
-
-  const handleEvent = ({ eventType, componentName, parentForm, value }) => {
-    if (eventType) {
-      updateStateDebounced.flush();
-
-      snapRequestDebounced({ value, eventType, componentName });
-    }
-
-    if (!eventType) {
-      const state = parentForm
-        ? {
-            ...internalState,
-            [parentForm]: {
-              ...internalState[parentForm],
-              [componentName]: value,
-            },
-          }
-        : { ...internalState, [componentName]: value };
-
-      setInternalState(state);
-      updateStateDebounced(state);
-    }
-  };
-
-  if (isLoading || !interfaceData) {
+  if (isLoading || !content) {
     return (
       <SnapDelineator
         snapName={snapName}
@@ -126,7 +62,7 @@ export const SnapUIRenderer = ({
     );
   }
 
-  if (!isComponent(interfaceData.content)) {
+  if (!isComponent(content)) {
     return (
       <SnapDelineator
         isCollapsable={isCollapsable}
@@ -144,13 +80,10 @@ export const SnapUIRenderer = ({
     );
   }
 
-  const elementKeyIndex = { value: 0 };
+  const elementKeyIndex = 0;
   const sections = mapToTemplate({
-    element: interfaceData.content,
+    element: content,
     elementKeyIndex,
-    snapId,
-    state: internalState,
-    handleEvent,
   });
 
   return (
@@ -163,7 +96,9 @@ export const SnapUIRenderer = ({
       boxProps={boxProps}
     >
       <Box className="snap-ui-renderer__content">
-        <MetaMaskTemplateRenderer sections={sections} />
+        <SnapInterfaceContextProvider snapId={snapId} interfaceId={interfaceId}>
+          <MetaMaskTemplateRenderer sections={sections} />
+        </SnapInterfaceContextProvider>
         {isPrompt && (
           <FormTextField
             marginTop={4}

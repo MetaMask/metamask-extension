@@ -1,7 +1,7 @@
 import { Text } from '@metamask/snaps-sdk';
-import { UIComponent } from './types';
+import { UIComponentFactory } from './types';
 
-export const text: UIComponent<Text> = ({ element }) => ({
+export const text: UIComponentFactory<Text> = ({ element }) => ({
   element: 'SnapUIMarkdown',
   children: element.value,
   props: {

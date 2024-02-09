@@ -1,25 +1,12 @@
-import { Button, ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
-import { MouseEvent } from 'react';
-import { UIComponent } from './types';
+import { Button } from '@metamask/snaps-sdk';
+import { UIComponentFactory } from './types';
 
-export const button: UIComponent<Button> = ({ element, handleEvent }) => ({
-  element: 'DSButton',
+export const button: UIComponentFactory<Button> = ({ element }) => ({
+  element: 'SnapUIButton',
   props: {
-    className: 'snap-ui-renderer__button',
-    marginTop: 1,
-    marginBottom: 1,
-    block: true,
-    onClick: (event: MouseEvent<HTMLElement>) => {
-      if (element.buttonType === ButtonType.Button) {
-        event.preventDefault();
-      }
-      handleEvent({
-        eventType: UserInputEventType.ButtonClickEvent,
-        componentName: element.name,
-      });
-    },
     type: element.buttonType,
     variant: element.variant,
+    name: element.name,
   },
   children: element.value,
 });

@@ -1,13 +1,13 @@
 import { Panel } from '@metamask/snaps-sdk';
-import { mapToTemplate } from '../snap-ui-renderer';
 import {
   Display,
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponent } from './types';
+import { mapToTemplate } from '../utils';
+import { UIComponentFactory } from './types';
 
-export const panel: UIComponent<Panel> = ({ element, ...params }) => ({
+export const panel: UIComponentFactory<Panel> = ({ element, ...params }) => ({
   element: 'Box',
   children: element.children.map((children) =>
     mapToTemplate({ ...params, element: children }),

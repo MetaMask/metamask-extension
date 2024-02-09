@@ -1,17 +1,17 @@
 import { Heading } from '@metamask/snaps-sdk';
 import {
-  FontWeight,
   OverflowWrap,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponent } from './types';
+import { UIComponentFactory } from './types';
 
-export const heading: UIComponent<Heading> = ({ element }) => ({
-  element: 'Typography',
+export const heading: UIComponentFactory<Heading> = ({ element }) => ({
+  element: 'Text',
   children: element.value,
   props: {
-    variant: TypographyVariant.H4,
-    fontWeight: FontWeight.Bold,
-    overflowWrap: OverflowWrap.BreakWord,
+    variant: TextVariant.headingSm,
+    overflowWrap: OverflowWrap.Anywhere,
+    marginTop: 1,
+    marginBottom: 1,
   },
 });

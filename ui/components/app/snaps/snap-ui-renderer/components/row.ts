@@ -1,11 +1,11 @@
 import { Row } from '@metamask/snaps-sdk';
-import { mapToTemplate } from '../snap-ui-renderer';
-import { UIComponent } from './types';
 
-export const row: UIComponent<Row> = ({ element, elementKeyIndex }) => ({
+import { mapToTemplate } from '../utils';
+import { UIComponentFactory } from './types';
+
+export const row: UIComponentFactory<Row> = ({ element, ...params }) => ({
   element: 'ConfirmInfoRow',
-  // eslint-disable-next-line no-use-before-define
-  children: [mapToTemplate({ element: element.value, elementKeyIndex })],
+  children: [mapToTemplate({ element: element.value, ...params })],
   props: {
     label: element.label,
     variant: element.variant,

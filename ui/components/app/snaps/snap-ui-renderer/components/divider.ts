@@ -7,7 +7,7 @@ export const divider: UIComponent<Divider> = () => ({
   props: {
     className: 'snap-ui-renderer__divider',
     backgroundColor: BorderColor.borderDefault,
-    marginTop: 2,
-    marginBottom: 2,
+    marginTop: 1,
+    marginBottom: 1,
   },
 });
