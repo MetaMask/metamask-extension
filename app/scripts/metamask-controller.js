@@ -2995,6 +2995,7 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
+          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -3006,6 +3007,7 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
+          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(

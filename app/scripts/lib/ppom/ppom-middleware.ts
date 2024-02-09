@@ -10,14 +10,7 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import PreferencesController from '../../controllers/preferences';
-
-type SecurityAlertResponse = {
-  reason: string;
-  features?: string[];
-  result_type: string;
-  providerRequestsCount?: Record<string, number>;
-  securityAlertId?: string;
-};
+import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
