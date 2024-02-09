@@ -25,6 +25,20 @@ async function getSymbolFromContract(tokenAddress) {
   }
 }
 
+async function getNameFromContract(tokenAddress) {
+  const token = util.getContractAtAddress(tokenAddress);
+  try {
+    const [name] = await token.name();
+    return name;
+  } catch (error) {
+    log.warn(
+      `name() call for token at address ${tokenAddress} resulted in error:`,
+      error,
+    );
+    return undefined;
+  }
+}
+
 async function getDecimalsFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
 
@@ -59,6 +73,20 @@ async function getSymbol(tokenAddress, tokenList) {
   return symbol;
 }
 
+async function getName(tokenAddress, tokenList) {
+  let name = await getNameFromContract(tokenAddress);
+
+  if (!name) {
+    const contractMetadataInfo = getTokenMetadata(tokenAddress, tokenList);
+
+    if (contractMetadataInfo) {
+      name = contractMetadataInfo.name;
+    }
+  }
+
+  return name;
+}
+
 async function getDecimals(tokenAddress, tokenList) {
   let decimals = await getDecimalsFromContract(tokenAddress);
 
@@ -73,15 +101,23 @@ async function getDecimals(tokenAddress, tokenList) {
   return decimals;
 }
 
-export async function getSymbolAndDecimals(tokenAddress, tokenList) {
-  let symbol, decimals;
+export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
+  let symbol, decimals, name;
 
   try {
-    symbol = await getSymbol(tokenAddress, tokenList);
-    decimals = await getDecimals(tokenAddress, tokenList);
+    const results = await Promise.allSettled([
+      getSymbol(tokenAddress, tokenList),
+      getDecimals(tokenAddress, tokenList),
+      getName(tokenAddress, tokenList),
+    ]);
+    const fulfilled = results
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value);
+
+    [symbol, decimals, name] = fulfilled;
   } catch (error) {
     log.warn(
-      `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
+      `symbol() and decimal() and name() calls for token at address ${tokenAddress} resulted in error:`,
       error,
     );
   }
@@ -89,6 +125,7 @@ export async function getSymbolAndDecimals(tokenAddress, tokenList) {
   return {
     symbol: symbol || DEFAULT_SYMBOL,
     decimals,
+    name,
   };
 }
 
@@ -100,8 +137,7 @@ export function tokenInfoGetter() {
       return tokens[address];
     }
 
-    tokens[address] = await getSymbolAndDecimals(address, tokenList);
-
+    tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);
     return tokens[address];
   };
 }
@@ -242,7 +278,7 @@ export async function getAssetDetails(
         isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
     );
 
-    if (existingNft) {
+    if (existingNft && (existingNft.name || existingNft.symbol)) {
       return {
         toAddress,
         ...existingNft,

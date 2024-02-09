@@ -16,10 +16,9 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement(
@@ -37,7 +36,6 @@ describe('Settings', function () {
           '.nft-item__container',
         );
         await importedNftImage.click();
-
         // check for default image
         const nftDefaultImage = await driver.findElement(
           '[data-testid=nft-default-image]',
@@ -57,7 +55,6 @@ describe('Settings', function () {
           text: 'Confirm',
           tag: 'button',
         });
-
         // should render image now
         const nftImage = await driver.findVisibleElement(
           '[data-testid="nft-image"]',

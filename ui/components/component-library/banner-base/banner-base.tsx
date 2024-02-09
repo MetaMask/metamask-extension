@@ -4,6 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
+  BlockSize,
   BorderRadius,
   Display,
   TextVariant,
@@ -55,7 +56,8 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
       >
         {startAccessory && <>{startAccessory}</>}
 
-        <div>
+        {/* min-Width: 0 style is used to prevent grid/flex blowout */}
+        <Box minWidth={BlockSize.Zero}>
           {title && (
             <Text variant={TextVariant.bodyLgMedium} {...titleProps}>
               {title}
@@ -76,7 +78,8 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
               {actionButtonLabel}
             </ButtonLink>
           )}
-        </div>
+        </Box>
+
         {onClose && (
           <ButtonIcon
             className="mm-banner-base__close-button"

@@ -1,21 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/rpc-methods';
-///: END:ONLY_INCLUDE_IN
+} from '@metamask/snaps-rpc-methods';
+///: END:ONLY_INCLUDE_IF
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -24,11 +23,11 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
     setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
@@ -45,9 +44,9 @@ export default class PermissionPageContainer extends Component {
     requestMetadata: {},
     selectedIdentities: [],
     allIdentitiesSelected: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: {},
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   static contextTypes = {
@@ -55,37 +54,25 @@ export default class PermissionPageContainer extends Component {
     trackEvent: PropTypes.func,
   };
 
-  state = {
-    selectedPermissions: this.getRequestedMethodState(
-      this.getRequestedMethodNames(this.props),
-    ),
-  };
+  state = {};
 
-  componentDidUpdate() {
-    const newMethodNames = this.getRequestedMethodNames(this.props);
-
-    if (!isEqual(Object.keys(this.state.selectedPermissions), newMethodNames)) {
-      // this should be a new request, so just overwrite
-      this.setState({
-        selectedPermissions: this.getRequestedMethodState(newMethodNames),
-      });
-    }
-  }
-
-  getRequestedMethodState(methodNames) {
-    return methodNames.reduce((acc, methodName) => {
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      if (methodName === RestrictedMethods.wallet_snap) {
-        acc[methodName] = this.getDedupedSnapPermissions();
+  getRequestedPermissions() {
+    return Object.entries(this.props.request.permissions).reduce(
+      (acc, [permissionName, permissionValue]) => {
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+        if (permissionName === RestrictedMethods.wallet_snap) {
+          acc[permissionName] = this.getDedupedSnapPermissions();
+          return acc;
+        }
+        ///: END:ONLY_INCLUDE_IF
+        acc[permissionName] = permissionValue;
         return acc;
-      }
-      ///: END:ONLY_INCLUDE_IN
-      acc[methodName] = true;
-      return acc;
-    }, {});
+      },
+      {},
+    );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getDedupedSnapPermissions() {
     const { request, currentPermissions } = this.props;
     const snapKeys = getDedupedSnaps(request, currentPermissions);
@@ -109,11 +96,7 @@ export default class PermissionPageContainer extends Component {
       isShowingSnapsPrivacyWarning: true,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
-
-  getRequestedMethodNames(props) {
-    return Object.keys(props.request.permissions || {});
-  }
+  ///: END:ONLY_INCLUDE_IF
 
   componentDidMount() {
     this.context.trackEvent({
@@ -125,13 +108,13 @@ export default class PermissionPageContainer extends Component {
       },
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY]) {
       if (this.props.snapsInstallPrivacyWarningShown === false) {
         this.showSnapsPrivacyWarning();
       }
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   }
 
   onCancel = () => {
@@ -155,12 +138,6 @@ export default class PermissionPageContainer extends Component {
       ),
     };
 
-    Object.keys(this.state.selectedPermissions).forEach((key) => {
-      if (!this.state.selectedPermissions[key]) {
-        delete request.permissions[key];
-      }
-    });
-
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
@@ -176,7 +153,9 @@ export default class PermissionPageContainer extends Component {
       allIdentitiesSelected,
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    const requestedPermissions = this.getRequestedPermissions();
+
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     const setIsShowingSnapsPrivacyWarning = (value) => {
       this.setState({
         isShowingSnapsPrivacyWarning: value,
@@ -187,12 +166,12 @@ export default class PermissionPageContainer extends Component {
       setIsShowingSnapsPrivacyWarning(false);
       this.props.setSnapsInstallPrivacyWarningShownStatus(true);
     };
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           <>
             {this.state.isShowingSnapsPrivacyWarning && (
               <SnapPrivacyWarning
@@ -201,12 +180,12 @@ export default class PermissionPageContainer extends Component {
               />
             )}
           </>
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
-          selectedPermissions={this.state.selectedPermissions}
+          selectedPermissions={requestedPermissions}
           selectedIdentities={selectedIdentities}
           allIdentitiesSelected={allIdentitiesSelected}
         />

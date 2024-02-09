@@ -3,8 +3,6 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
-@import 'snaps/snaps-list-tab/index';
-@import 'snaps/view-snap/index';
 
 .settings-page {
   position: relative;
@@ -363,13 +361,6 @@
       // for eth_sign we need to override the uppercase property of toggle button text
       text-transform: capitalize;
     }
-  }
-
-  &__content-item-col__security-toggle-option {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    margin-top: 16px;
   }
 
   &__button {

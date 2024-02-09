@@ -181,73 +181,110 @@ describe('Popover', () => {
       getByTestId('popover').querySelector('.mm-popover__arrow');
     expect(arrowElement).toHaveClass('mm-popover__arrow');
   });
-});
 
-test('should render Popover with isPortal set to false', () => {
-  const { getByTestId } = render(
-    <div>
+  test('should render Popover with isPortal set to false', () => {
+    const { getByTestId } = render(
+      <div>
+        <Popover
+          data-testid="popover"
+          isOpen={true}
+          position={PopoverPosition.Bottom}
+          isPortal={false}
+        >
+          <p>Popover content</p>
+        </Popover>
+      </div>,
+    );
+    // Check that the Popover is rendered inside the body DOM
+    expect(getByTestId('popover')).toBeInTheDocument();
+  });
+
+  test('should render Popover with isPortal set to true', () => {
+    const { getByTestId } = render(
+      <div>
+        <Popover data-testid="popover" isOpen={true} isPortal={true}>
+          <p>Popover content</p>
+        </Popover>
+      </div>,
+    );
+
+    expect(getByTestId('popover')).toBeTruthy();
+  });
+
+  test('should add reference-hidden classname when referenceHidden prop is true', () => {
+    const { getByTestId } = render(
+      <div>
+        <Popover data-testid="popover" isOpen={true} referenceHidden={true}>
+          <p>Popover content</p>
+        </Popover>
+      </div>,
+    );
+
+    expect(getByTestId('popover')).toHaveClass('mm-popover--reference-hidden');
+  });
+
+  const EscKeyTestComponent = () => {
+    const [isOpen, setIsOpen] = useState(true);
+
+    return (
       <Popover
-        data-testid="popover"
-        isOpen={true}
-        position={PopoverPosition.Bottom}
-        isPortal={false}
+        isOpen={isOpen}
+        referenceHidden={false}
+        onPressEscKey={() => setIsOpen(false)}
       >
-        <p>Popover content</p>
+        Press esc key to close
       </Popover>
-    </div>,
-  );
-  // Check that the Popover is rendered inside the body DOM
-  expect(getByTestId('popover')).toBeInTheDocument();
-});
+    );
+  };
 
-test('should render Popover with isPortal set to true', () => {
-  const { getByTestId } = render(
-    <div>
-      <Popover data-testid="popover" isOpen={true} isPortal={true}>
-        <p>Popover content</p>
-      </Popover>
-    </div>,
-  );
+  test('Press esc key to close fires', () => {
+    // Render the component
+    const { getByText, queryByText } = render(<EscKeyTestComponent />);
 
-  expect(getByTestId('popover')).toBeTruthy();
-});
+    // Assert that the popover is initially visible
+    expect(getByText('Press esc key to close')).toBeVisible();
 
-test('should add reference-hidden classname when referenceHidden prop is true', () => {
-  const { getByTestId } = render(
-    <div>
-      <Popover data-testid="popover" isOpen={true} referenceHidden={true}>
-        <p>Popover content</p>
-      </Popover>
-    </div>,
-  );
+    // Trigger the "Escape" key press event
+    fireEvent.keyDown(document, { key: 'Escape' });
 
-  expect(getByTestId('popover')).toHaveClass('mm-popover--reference-hidden');
-});
+    // Assert that the popover closes
+    expect(queryByText('Press esc key to close')).not.toBeInTheDocument();
+  });
 
-const EscKeyTestComponent = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const ClickOutsideTestComponent = () => {
+    const [isOpen, setIsOpen] = useState(true);
 
-  return (
-    <Popover
-      isOpen={isOpen}
-      referenceHidden={false}
-      onPressEscKey={() => setIsOpen(false)}
-    >
-      Press esc key to close
-    </Popover>
-  );
-};
+    const handleOnClickOutside = () => {
+      setIsOpen(false);
+    };
 
-test('Press esc key to close fires', () => {
-  // Render the component
-  const { getByText, queryByText } = render(<EscKeyTestComponent />);
+    return (
+      <div>
+        <Popover
+          isOpen={isOpen}
+          referenceHidden={false}
+          onClickOutside={handleOnClickOutside}
+        >
+          Click outside to close
+        </Popover>
+        <div data-testid="outside-click-target">Click outside</div>
+      </div>
+    );
+  };
 
-  // Assert that the popover is initially visible
-  expect(getByText('Press esc key to close')).toBeVisible();
+  test('Close popover when clicking outside using onClickOutside prop', () => {
+    const { getByText, getByTestId, queryByText } = render(
+      <ClickOutsideTestComponent />,
+    );
 
-  // Trigger the "Escape" key press event
-  fireEvent.keyDown(document, { key: 'Escape' });
+    // Assert that the popover is initially open
+    expect(getByText('Click outside to close')).toBeVisible();
 
-  // Assert that the popover closes
-  expect(queryByText('Press esc key to close')).not.toBeInTheDocument();
+    // Simulate a click event outside the popover
+    const outsideClickTarget = getByTestId('outside-click-target');
+    fireEvent.click(outsideClickTarget);
+
+    // Assert that the popover is closed after the click event
+    expect(queryByText('Click outside to close')).not.toBeInTheDocument();
+  });
 });

@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendFooter Component Component Update should match snapshot when component updated with errors 1`] = `
+<div>
+  <div
+    class="page-container__footer"
+  >
+    <footer>
+      <button
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+        data-testid="page-container-footer-cancel"
+      >
+        [cancel]
+      </button>
+      <button
+        class="button btn--rounded btn-primary page-container__footer-button"
+        data-testid="page-container-footer-next"
+      >
+        [next]
+      </button>
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`SendFooter Component should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container__footer"
+  >
+    <footer>
+      <button
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+        data-testid="page-container-footer-cancel"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-primary page-container__footer-button"
+        data-testid="page-container-footer-next"
+      >
+        Next
+      </button>
+    </footer>
+  </div>
+</div>
+`;

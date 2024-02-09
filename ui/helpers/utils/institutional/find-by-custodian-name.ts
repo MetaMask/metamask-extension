@@ -24,9 +24,12 @@ export function findCustodianByDisplayName(
   }
 
   for (const custodian of custodians) {
-    const custodianName = custodian.envName.toLowerCase();
+    const custodianName = custodian.name.toLowerCase();
 
-    if (formatedDisplayName.includes(custodianName)) {
+    if (
+      custodianName.length !== 0 &&
+      formatedDisplayName.includes(custodianName)
+    ) {
       return custodian;
     }
   }

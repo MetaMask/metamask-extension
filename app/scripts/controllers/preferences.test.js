@@ -40,9 +40,6 @@ describe('preferences controller', () => {
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
       tokenListController,
-      onInfuraIsBlocked: jest.fn(),
-      onInfuraIsUnblocked: jest.fn(),
-      onAccountRemoved: jest.fn(),
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
     });
   });
@@ -107,65 +104,6 @@ describe('preferences controller', () => {
           address: '0x7e57e277',
         },
       });
-    });
-  });
-
-  describe('onAccountRemoved', () => {
-    it('should remove an address from state', () => {
-      const testAddress = '0xda22le';
-      let accountRemovedListener;
-      const onAccountRemoved = (callback) => {
-        accountRemovedListener = callback;
-      };
-      preferencesController = new PreferencesController({
-        initLangCode: 'en_US',
-        tokenListController,
-        onInfuraIsBlocked: jest.fn(),
-        onInfuraIsUnblocked: jest.fn(),
-        initState: {
-          identities: {
-            [testAddress]: {
-              name: 'Account 1',
-              address: testAddress,
-            },
-          },
-        },
-        onAccountRemoved,
-        networkConfigurations: NETWORK_CONFIGURATION_DATA,
-      });
-
-      accountRemovedListener(testAddress);
-
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual(undefined);
-    });
-
-    it('should throw an error if address not found', () => {
-      const testAddress = '0xda22le';
-      let accountRemovedListener;
-      const onAccountRemoved = (callback) => {
-        accountRemovedListener = callback;
-      };
-      preferencesController = new PreferencesController({
-        initLangCode: 'en_US',
-        tokenListController,
-        onInfuraIsBlocked: jest.fn(),
-        onInfuraIsUnblocked: jest.fn(),
-        initState: {
-          identities: {
-            '0x7e57e2': {
-              name: 'Account 1',
-              address: '0x7e57e2',
-            },
-          },
-        },
-        onAccountRemoved,
-        networkConfigurations: NETWORK_CONFIGURATION_DATA,
-      });
-      expect(() => {
-        accountRemovedListener(testAddress);
-      }).toThrow(`${testAddress} can't be deleted cause it was not found`);
     });
   });
 
@@ -257,11 +195,31 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setUseTokenDetection', () => {
-    it('should default to false', () => {
+  describe('setUseSafeChainsListValidation', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+
+      expect(state.useSafeChainsListValidation).toStrictEqual(true);
+    });
+
+    it('should set the `setUseSafeChainsListValidation` property in state', function () {
       expect(
-        preferencesController.store.getState().useTokenDetection,
+        preferencesController.store.getState().useSafeChainsListValidation,
+      ).toStrictEqual(true);
+
+      preferencesController.setUseSafeChainsListValidation(false);
+
+      expect(
+        preferencesController.store.getState().useSafeChainsListValidation,
       ).toStrictEqual(false);
+    });
+  });
+
+  describe('setUseTokenDetection', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+
+      expect(state.useTokenDetection).toStrictEqual(false);
     });
 
     it('should set the useTokenDetection property in state', () => {
@@ -405,4 +363,21 @@ describe('preferences controller', () => {
       });
     });
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
+  describe('setUseExternalNameSources', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the useExternalNameSources property in state', () => {
+      preferencesController.setUseExternalNameSources(false);
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(false);
+    });
+  });
+  ///: END:ONLY_INCLUDE_IF
 });

@@ -1,6 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -37,12 +37,16 @@ describe('MetaMask Reducers', () => {
             name: 'Send Account 4',
           },
         },
-        cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
-        conversionRate: 1200.88200327,
-        nativeCurrency: 'ETH',
+        currentBlockGasLimitByChainId: {
+          '0x5': '0x4c1878',
+        },
         useCurrencyRateCheck: true,
-        networkId: '5',
+        currencyRates: {
+          TestETH: {
+            conversionRate: 1200.88200327,
+          },
+        },
         selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           [NetworkType.goerli]: {
@@ -81,6 +85,34 @@ describe('MetaMask Reducers', () => {
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
           },
         },
+        accountsByChainId: {
+          '0x5': {
+            '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+              code: '0x',
+              balance: '0x47c9d71831c76efe',
+              nonce: '0x1b',
+              address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+            },
+            '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+              code: '0x',
+              balance: '0x37452b1315889f80',
+              nonce: '0xa',
+              address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            },
+            '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+              code: '0x',
+              balance: '0x30c9d71831c76efe',
+              nonce: '0x1c',
+              address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            },
+            '0xd85a4b6a394794842887b8284293d69163007bbb': {
+              code: '0x',
+              balance: '0x0',
+              nonce: '0x0',
+              address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            },
+          },
+        },
         addressBook: {
           '0x5': {
             '0x06195827297c7a80a443b6894d3bdb8824b43896': {
@@ -96,13 +128,13 @@ describe('MetaMask Reducers', () => {
             time: 1487363153561,
             status: TransactionStatus.unapproved,
             gasMultiplier: 1,
-            metamaskNetworkId: '5',
+            chainId: '0x5',
             txParams: {
               from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
               to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
               value: '0xde0b6b3a7640000',
               metamaskId: 4768706228115573,
-              metamaskNetworkId: '5',
+              chainId: '0x5',
               gas: '0x5209',
             },
             txFee: '17e0186e60800',
@@ -264,7 +296,7 @@ describe('MetaMask Reducers', () => {
 
     describe('getNativeCurrency()', () => {
       it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
-        expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+        expect(getNativeCurrency(mockState)).toStrictEqual('TestETH');
       });
 
       it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {

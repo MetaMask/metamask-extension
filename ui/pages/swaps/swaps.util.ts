@@ -8,6 +8,7 @@ import {
   BSC,
   ETHEREUM,
   GOERLI,
+  LINEA,
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
@@ -209,16 +210,20 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
   });
 }
 
-export async function fetchTokenPrice(address: string): Promise<any> {
-  const query = `contract_addresses=${address}&vs_currencies=eth`;
+export async function fetchTokenPrice(
+  tokenContractAddress: string,
+): Promise<any> {
+  const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
   const prices = await fetchWithCache({
-    url: `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
-    fetchOptions: { method: 'GET' },
+    url: `https://price-api.metafi.codefi.network/v2/chains/1/${query}`,
+    fetchOptions: {
+      method: 'GET',
+    },
     cacheOptions: { cacheRefreshTime: 60000 },
     functionName: 'fetchTokenPrice',
   });
-  return prices?.[address]?.eth;
+  return prices?.[tokenContractAddress]?.eth;
 }
 
 export async function fetchSwapsGasPrices(chainId: any): Promise<
@@ -630,6 +635,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return ARBITRUM;
     case CHAIN_IDS.ZKSYNC_ERA:
       return ZKSYNC_ERA;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA;
     default:
       return '';
   }

@@ -1,10 +1,12 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
-import { setBackgroundConnection } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import NftsTab from '.';
 
 const NFTS = [
@@ -163,8 +165,26 @@ const render = ({
           [chainId]: nftContracts,
         },
       },
-      providerConfig: { chainId },
+      providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       selectedAddress,
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: selectedAddress,
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       useNftDetection,
       nftsDropdownState,
     },
@@ -201,14 +221,14 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
@@ -227,14 +247,14 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
   });
 
@@ -293,6 +313,26 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
+    });
+  });
+
+  describe('nft conversion banner', () => {
+    it('shows the NFT conversion banner when there are no NFTs', () => {
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        nfts: [],
+      });
+
+      expect(queryByText('Learn more about NFTs')).toBeInTheDocument();
+    });
+
+    it('does not show the NFT conversion banner when there are NFTs', () => {
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+      });
+
+      expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
     });
   });
 });

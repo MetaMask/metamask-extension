@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Ens from './ens';
 
@@ -17,10 +16,9 @@ export default class EnsController {
     this._ens = ens;
     if (!this._ens) {
       const chainId = getCurrentChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      if (Ens.getNetworkEnsSupport(network)) {
+      if (Ens.getChainEnsSupport(chainId)) {
         this._ens = new Ens({
-          network,
+          chainId,
           provider,
         });
       }
@@ -35,10 +33,9 @@ export default class EnsController {
     onNetworkDidChange(() => {
       this.store.putState(initState);
       const chainId = getCurrentChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      if (Ens.getNetworkEnsSupport(network)) {
+      if (Ens.getChainEnsSupport(chainId)) {
         this._ens = new Ens({
-          network,
+          chainId,
           provider,
         });
       } else {

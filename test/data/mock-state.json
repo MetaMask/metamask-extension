@@ -4,7 +4,9 @@
   },
   "appState": {
     "networkDropdownOpen": false,
-    "importNftsModal": { "open": false },
+    "importNftsModal": {
+      "open": false
+    },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -19,6 +21,15 @@
     },
     "warning": null,
     "customTokenAmount": "10"
+  },
+  "confirm": {},
+  "confirmTransaction": {
+    "txData": {
+      "txParams": {
+        "gas": "0x153e2",
+        "value": "0x0"
+      }
+    }
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
@@ -98,9 +109,11 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": false
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -109,7 +122,6 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "networkId": "5",
     "providerConfig": {
       "type": "rpc",
       "nickname": "goerli",
@@ -133,6 +145,136 @@
         "id": "chain5"
       }
     },
+    "internalAccounts": {
+      "accounts": {
+        "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "id": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+          "metadata": {
+            "name": "Test Account",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
+          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+          "id": "07c2cfec-36c9-46c4-8115-3836d3ac9047",
+          "metadata": {
+            "name": "Test Account 2",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "15e69915-2a1a-4019-93b3-916e11fd432f": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "id": "15e69915-2a1a-4019-93b3-916e11fd432f",
+          "metadata": {
+            "name": "Ledger Hardware 2",
+            "keyring": {
+              "type": "Ledger Hardware"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "784225f4-d30b-4e77-a900-c8bbce735b88": {
+          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+          "id": "784225f4-d30b-4e77-a900-c8bbce735b88",
+          "metadata": {
+            "name": "Test Account 3",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "694225f4-d30b-4e77-a900-c8bbce735b42": {
+          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+          "id": "694225f4-d30b-4e77-a900-c8bbce735b42",
+          "metadata": {
+            "name": "Test Account 4",
+            "keyring": {
+              "type": "Custody test"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "a59e7df7-c6cb-4198-a6dd-36386a409551": {
+          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+          "id": "a59e7df7-c6cb-4198-a6dd-36386a409551",
+          "metadata": {
+            "name": "Snap Account 1",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "mock-id",
+              "name": "mock-snap",
+              "enabled": true
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        }
+      },
+      "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
+    },
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -152,6 +294,10 @@
       {
         "type": "Snap Keyring",
         "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+      },
+      {
+        "type": "Custody test",
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
     "identities": {
@@ -170,12 +316,18 @@
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "name": "Test Account 3",
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "name": "Custody test",
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
       }
     },
     "selectedNetworkClientId": "goerli",
     "networksMetadata": {
       "goerli": {
-        "EIPS": { "1559": true },
+        "EIPS": {
+          "1559": true
+        },
         "status": "available"
       }
     },
@@ -197,7 +349,7 @@
         "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
         "tags": ["EOA"],
         "developer": "Metamask",
-        "website": "https://www.consensys.net/",
+        "website": "https://www.consensys.io/",
         "auditUrls": ["auditUrl1", "auditUrl2"],
         "version": "1.0.0",
         "lastUpdated": "April 20, 2023"
@@ -219,7 +371,13 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "cachedBalances": {},
+    "accountsByChainId": {
+      "0x5": {
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+          "balance": "0x15f6f0b9d4f8d000"
+        }
+      }
+    },
     "incomingTransactionsPreferences": {
       "0x1": true,
       "0xe708": false,
@@ -244,6 +402,10 @@
       },
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "balance": "0x0"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
         "balance": "0x0"
       }
     },
@@ -270,8 +432,11 @@
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
-    "nativeCurrency": "ETH",
-    "conversionRate": 556.12,
+    "currencyRates": {
+      "ETH": {
+        "conversionRate": 556.12
+      }
+    },
     "addressBook": {
       "0x5": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
@@ -297,6 +462,9 @@
     "useCurrencyRateCheck": true,
     "useNftDetection": true,
     "openSeaEnabled": true,
+    "orderedNetworkList": [],
+    "pinnedAccountList": [],
+    "hiddenAccountList": [],
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",
@@ -597,7 +765,6 @@
         "id": 8393540981007587,
         "time": 1536268017676,
         "status": "unapproved",
-        "metamaskNetworkId": "4",
         "loadingDefaults": false,
         "txParams": {
           "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
@@ -612,7 +779,7 @@
             "id": 8393540981007587,
             "time": 1536268017676,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -646,7 +813,7 @@
         "id": 3387511061307736,
         "time": 1528133130531,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -661,7 +828,7 @@
             "id": 3387511061307736,
             "time": 1528133130531,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -778,7 +945,7 @@
         "id": 3387511061307737,
         "time": 1528133149983,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -793,7 +960,7 @@
             "id": 3387511061307737,
             "time": 1528133149983,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -910,7 +1077,7 @@
         "id": 3387511061307738,
         "time": 1528133180635,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -925,7 +1092,7 @@
             "id": 3387511061307738,
             "time": 1528133180635,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1042,7 +1209,7 @@
         "id": 3387511061307739,
         "time": 1528133223918,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1058,7 +1225,7 @@
             "id": 3387511061307739,
             "time": 1528133223918,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1179,7 +1346,7 @@
         "id": 3387511061307740,
         "time": 1528133291381,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1195,7 +1362,7 @@
             "id": 3387511061307740,
             "time": 1528133291381,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1313,7 +1480,7 @@
         "id": 3387511061307741,
         "time": 1528133318440,
         "status": "rejected",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1327,7 +1494,7 @@
             "id": 3387511061307741,
             "time": 1528133318440,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1387,11 +1554,54 @@
         "time": 1528133319641,
         "origin": "metamask",
         "type": "transaction",
-        "requestData": { "txId": "testTransactionId" },
-        "requestState": { "test": "value" }
+        "requestData": {
+          "txId": "testTransactionId"
+        },
+        "requestState": {
+          "test": "value"
+        }
       }
     },
-    "pendingApprovalCount": 1
+    "pendingApprovalCount": 1,
+    "database": {
+      "verifiedSnaps": {
+        "npm:@metamask/test-snap-bip44": {
+          "id": "npm:@metamask/test-snap-bip44",
+          "metadata": {
+            "name": "BIP-44",
+            "author": {
+              "name": "Consensys",
+              "website": "https://consensys.io/"
+            },
+            "website": "https://snaps.consensys.io/",
+            "summary": "An example Snap that signs messages using BLS.",
+            "description": "An example Snap that signs messages using BLS.",
+            "audits": [
+              {
+                "auditor": "Consensys Diligence",
+                "report": "https://consensys.io/diligence/audits/"
+              }
+            ],
+            "category": "interoperability",
+            "support": {
+              "contact": "https://github.com/MetaMask"
+            },
+            "sourceCode": "https://github.com/MetaMask/test-snaps"
+          },
+          "versions": {
+            "5.1.2": {
+              "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            },
+            "5.1.3": {
+              "checksum": "21k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            },
+            "6.0.0": {
+              "checksum": "31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            }
+          }
+        }
+      }
+    }
   },
   "send": {
     "amountMode": "INPUT",

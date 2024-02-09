@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -19,11 +18,11 @@ describe('JwtUrlForm', function () {
   const props = {
     jwtList: ['jwt1'],
     currentJwt: 'jwt1',
-    onJwtChange: sinon.spy(),
+    onJwtChange: jest.fn(),
     jwtInputText: 'input text',
     apiUrl: 'url',
     urlInputText: '',
-    onUrlChange: sinon.spy(),
+    onUrlChange: jest.fn(),
   };
 
   it('opens JWT Url Form without input for new JWT', () => {
@@ -43,15 +42,21 @@ describe('JwtUrlForm', function () {
     expect(screen.getByText('input text')).toBeInTheDocument();
   });
 
-  it('goes through the api url input', () => {
-    const { queryByTestId } = renderWithProvider(
+  it('calls onUrlChange when API URL input value changes', () => {
+    const { getByTestId } = renderWithProvider(
       <JwtUrlForm {...props} />,
       store,
     );
 
-    const apiUrlinput = queryByTestId('jwt-api-url-input');
+    const apiUrlinput = getByTestId('jwt-api-url-input');
+
     fireEvent.change(apiUrlinput, { target: { value: 'url' } });
-    expect(apiUrlinput.value).toBe('url');
+
+    fireEvent.change(apiUrlinput, {
+      target: { value: 'new url' },
+    });
+
+    expect(props.onUrlChange).toHaveBeenCalled();
   });
 
   it('shows JWT text area when no jwt token exists', () => {
@@ -67,5 +72,40 @@ describe('JwtUrlForm', function () {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('calls onJwtChange when JWT textarea value changes', () => {
+    const customProps = {
+      ...props,
+      currentJwt: '',
+      jwtList: [],
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <JwtUrlForm {...customProps} />,
+      store,
+    );
+    fireEvent.change(getByTestId('jwt-input'), { target: { value: 'jwt2' } });
+    expect(props.onJwtChange).toHaveBeenCalled();
+  });
+
+  it('shows JWT dropdown when jwtList has at least one token', () => {
+    const { getByTestId } = renderWithProvider(
+      <JwtUrlForm {...props} />,
+      store,
+    );
+
+    expect(getByTestId('jwt-dropdown')).toBeInTheDocument();
+  });
+
+  it('calls onJwtChange when JWT dropdown value changes', () => {
+    const { getByTestId } = renderWithProvider(
+      <JwtUrlForm {...props} />,
+      store,
+    );
+
+    fireEvent.change(getByTestId('jwt-dropdown'), 'jwt2');
+
+    expect(props.onJwtChange).toHaveBeenCalled();
   });
 });

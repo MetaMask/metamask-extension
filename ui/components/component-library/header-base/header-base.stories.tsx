@@ -231,6 +231,41 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>
+      children with ellipsis, startAccessory, and endAccessory assigned{' '}
+    </Text>
+    <Box backgroundColor={BackgroundColor.warningAlternative}>
+      <HeaderBase
+        marginBottom={4}
+        startAccessory={
+          <Button
+            backgroundColor={BackgroundColor.successAlternative}
+            style={{ whiteSpace: 'nowrap' }}
+            size={ButtonSize.Sm}
+          >
+            Unlock Now
+          </Button>
+        }
+        endAccessory={
+          <ButtonIcon
+            backgroundColor={BackgroundColor.goerli}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
+            ariaLabel="close"
+          />
+        }
+        {...args}
+      >
+        <Text
+          variant={TextVariant.headingSm}
+          textAlign={TextAlign.Center}
+          backgroundColor={BackgroundColor.primaryAlternative}
+          ellipsis={true}
+        >
+          Title is sentence case no period
+        </Text>
+      </HeaderBase>
+    </Box>
+    <Text>
       children, startAccessory, and endAccessory assigned with prop alignItems=
       {AlignItems.center} passed at HeaderBase
     </Text>

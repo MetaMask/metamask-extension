@@ -26,6 +26,10 @@ describe('Onboarding Create Password', () => {
     metamask: {
       identities: {},
       selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
       metaMetricsId: '0x00000000',
     },
   };

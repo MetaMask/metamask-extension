@@ -1,0 +1,17 @@
+Step,Test steps,Test data,Expected result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Switch networks to a test network.,e.g. Sepolia,The Sepolia balance is shown on the overview. The wallet address is shown on the overview. The selected network is Sepolia.,
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to connect with MetaMask. ,,,
+6,Connect with the current account. ,,,
+7,Deploy the NFT contract. ,,,
+8,Confirm the transaction and wait for it to complete.,,,
+9,Proceed to mint NFT. ,,,"If NFT with token ID #3 must be watched, amount of NFTs minted should be equal to or greater than 3."
+10,Confirm the transaction and wait for it to complete.,,,
+11,Switch to the wallet and open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+12,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,
+13,"In the test dapp, enter the NFT ID you wish to watch. ",e.g. 3,,
+14,Proceed to Watch NFT. ,,,
+15,Confirm the addition of the custom token.,,,
+16,Switch back to the wallet.,,The NFT is shown in the wallets NFTs list. The NFT image is shown.,OpenSea API in Security & Privacy Settings has to be enabled for the NFT image to be shown.

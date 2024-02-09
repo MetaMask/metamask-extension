@@ -195,9 +195,6 @@
   "buildContactList": {
     "message": "Buuin ang iyong listahan ng contact"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -476,9 +473,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nahanap ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
   },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
@@ -1199,9 +1193,6 @@
   "searchAccounts": {
     "message": "Maghanap ng Account"
   },
-  "searchResults": {
-    "message": "Mga Resulta ng Paghahanap"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -1562,9 +1553,6 @@
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
   },
-  "swapSourceInfo": {
-    "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
   "swapSwapFrom": {
     "message": "I-swap mula sa"
   },
@@ -1761,12 +1749,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukan ulit..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaproblema...."
-  },
   "unknownNetwork": {
     "message": "Hindi Alam na Pribadong Network"
   },
@@ -1806,10 +1788,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Makikita sa $1 ang decimal ng token",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",

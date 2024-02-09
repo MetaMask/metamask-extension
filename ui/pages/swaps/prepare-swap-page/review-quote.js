@@ -19,7 +19,7 @@ import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
+import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   FALLBACK_GAS_MULTIPLIER,
@@ -40,7 +40,6 @@ import {
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
-  getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
@@ -68,9 +67,7 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
-  safeRefetchQuotes,
   setCustomApproveTxData,
-  setSwapsErrorKey,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
@@ -78,7 +75,6 @@ import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
   AWAITING_SWAP_ROUTE,
-  SWAPS_NOTIFICATION_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -89,7 +85,7 @@ import {
   decWEIToDecETH,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
-import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
+import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
@@ -98,7 +94,6 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
-  QUOTES_EXPIRED_ERROR,
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
   MAX_ALLOWED_SLIPPAGE,
@@ -157,7 +152,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden] = useState(false); // TODO: Check when to use setWarningHidden
@@ -215,7 +209,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
-  const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
@@ -264,11 +257,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
       case CHAIN_IDS.OPTIMISM:
-        return t('networkNameOptimism');
+        return t('networkNameOpMainnet');
       case CHAIN_IDS.ARBITRUM:
         return t('networkNameArbitrum');
       case CHAIN_IDS.ZKSYNC_ERA:
         return t('networkNameZkSyncEra');
+      case CHAIN_IDS.LINEA_MAINNET:
+        return t('networkNameLinea');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -340,7 +335,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   }
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: swapsTokens,
+    includeFailedTokens: true,
+  });
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken
@@ -463,7 +461,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       smartTransactionFees?.tradeTxFees.feeEstimate +
       (smartTransactionFees?.approvalTxFees?.feeEstimate || 0);
     const stxMaxFeeInWeiDec =
-      stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
+      smartTransactionFees?.tradeTxFees.maxFeeEstimate +
+      (smartTransactionFees?.approvalTxFees?.maxFeeEstimate || 0);
+
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
@@ -551,27 +551,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     dispatch,
     isSmartTransaction,
     balanceError,
-  ]);
-
-  useEffect(() => {
-    const currentTime = Date.now();
-    const timeSinceLastFetched = currentTime - quotesLastFetched;
-    if (
-      timeSinceLastFetched > swapsQuoteRefreshTime &&
-      !dispatchedSafeRefetch
-    ) {
-      setDispatchedSafeRefetch(true);
-      dispatch(safeRefetchQuotes());
-    } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
-      dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR));
-      history.push(SWAPS_NOTIFICATION_ROUTE);
-    }
-  }, [
-    quotesLastFetched,
-    dispatchedSafeRefetch,
-    dispatch,
-    history,
-    swapsQuoteRefreshTime,
   ]);
 
   useEffect(() => {

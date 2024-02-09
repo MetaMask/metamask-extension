@@ -1,5 +1,5 @@
 const { Browser } = require('selenium-webdriver');
-const Driver = require('./driver');
+const { Driver } = require('./driver');
 const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
 

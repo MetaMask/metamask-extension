@@ -1,0 +1,408 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] = `
+<div>
+  <div
+    class="signature-request-siwe"
+  >
+    <div
+      class="request-signature__navigation"
+    >
+      <div
+        class="confirm-page-container-navigation"
+        style="display: none;"
+      >
+        <div
+          class="confirm-page-container-navigation__container"
+          data-testid="navigation-container"
+          style="visibility: hidden;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="first-page"
+          >
+            <i
+              class="fa fa-angle-double-left fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="previous-page"
+          >
+            <i
+              class="fa fa-angle-left fa-2x"
+            />
+          </button>
+        </div>
+        <div
+          class="confirm-page-container-navigation__textcontainer"
+        >
+          <div
+            class="confirm-page-container-navigation__navtext"
+          >
+            0
+             
+            of
+             
+            1
+          </div>
+          <div
+            class="confirm-page-container-navigation__longtext"
+          >
+            requests waiting to be acknowledged
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-navigation__container"
+          style="visibility: initial;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="next-page"
+          >
+            <i
+              class="fa fa-angle-right fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="last-page"
+          >
+            <i
+              class="fa fa-angle-double-right fa-2x"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+    >
+      <div
+        class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+      >
+        <div
+          class="box box--display-flex box--flex-direction-row box--align-items-center"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 32px; width: 32px; border-radius: 16px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="32"
+                  width="32"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="32"
+                    transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="32"
+                    transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="32"
+                    transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+          >
+            <span
+              class="icon-with-fallback__fallback"
+            >
+              G
+            </span>
+          </div>
+        </div>
+        <div
+          class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          >
+            goerli
+          </h6>
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+          >
+            Test Account
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Balance
+        </h6>
+        <h6
+          align="end"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+        >
+          966.987986
+           
+          ETH
+        </h6>
+      </div>
+    </div>
+    <div
+      class="signature-request-siwe-header"
+    >
+      <div
+        class="box permissions-connect-header box--flex-direction-column box--justify-content-center box--display-flex"
+      >
+        <div
+          class="permissions-connect-header__icon"
+        >
+          <div
+            class="site-origin"
+            title="https://example-dapp.website"
+          >
+            <div
+              class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+            >
+              <div
+                class="chip__left-icon"
+              >
+                <div
+                  class=""
+                >
+                  <img
+                    alt="icon"
+                    src="https://example-dapp.website/favicon-32x32.png"
+                    style="height: 24px; width: 24px;"
+                  />
+                </div>
+              </div>
+              <span
+                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+              >
+                https://example-dapp.website
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="permissions-connect-header__title"
+        >
+          Sign-in request
+        </div>
+        <div
+          class="permissions-connect-header__subtitle"
+        >
+          This site is requesting to sign in with
+        </div>
+      </div>
+      <div
+        class="account-list-item signature-request-siwe-header__account-list-item"
+        data-testid="account-list-item"
+      >
+        <div
+          class="account-list-item__top-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon account-list-item__identicon"
+              style="height: 18px; width: 18px; border-radius: 9px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="18"
+                  width="18"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="18"
+                    transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="18"
+                    transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="18"
+                    transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="account-list-item__account-name"
+          >
+            Test Account
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="box signature-request-siwe-message box--flex-direction-row"
+    >
+      <div
+        class="box box--flex-direction-column"
+      >
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Message:
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Click to sign in and accept the Terms of Service: https://community.metamask.io/tos
+          </p>
+        </div>
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            URI:
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            http://localhost:8080
+          </p>
+        </div>
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Version:
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            1
+          </p>
+        </div>
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Chain ID:
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            1
+          </p>
+        </div>
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Nonce:
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            STMt6KQMwwdOXE306
+          </p>
+        </div>
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Issued At:
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            2023-03-18T21:40:40.823Z
+          </p>
+        </div>
+        <div
+          class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
+        >
+          <h4
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            Resources: 2
+          </h4>
+          <p
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
+          >
+            ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu
+https://example.com/my-web2-claim.json
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="page-container__footer signature-request-siwe__page-container-footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Sign-In
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

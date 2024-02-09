@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { valuesFor } from './util';
 
 export default function txHelper(
@@ -9,7 +8,6 @@ export default function txHelper(
   decryptMsgs: Record<string, any> | null,
   encryptionPublicKeyMsgs: Record<string, any> | null,
   typedMessages: Record<string, any> | null,
-  networkId?: string | null,
   chainId?: string,
 ): Record<string, any> {
   log.debug('tx-helper called with params:');
@@ -20,14 +18,11 @@ export default function txHelper(
     decryptMsgs,
     encryptionPublicKeyMsgs,
     typedMessages,
-    networkId,
     chainId,
   });
 
-  const txValues = networkId
-    ? valuesFor(unapprovedTxs).filter((txMeta) =>
-        transactionMatchesNetwork(txMeta, chainId, networkId),
-      )
+  const txValues = chainId
+    ? valuesFor(unapprovedTxs).filter((txMeta) => txMeta.chainId === chainId)
     : valuesFor(unapprovedTxs);
 
   const msgValues = valuesFor(unapprovedMsgs);

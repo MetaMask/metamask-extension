@@ -54,4 +54,11 @@
     color: var(--color-text-alternative);
     font-size: 12px;
   }
+
+  &__option-primary,
+  &__option-secondary {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }

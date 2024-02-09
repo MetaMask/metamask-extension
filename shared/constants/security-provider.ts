@@ -43,23 +43,25 @@ export enum BlockaidReason {
   transferFarming = 'transfer_farming',
   /** Direct theft of assets using transferFrom  */
   transferFromFarming = 'transfer_from_farming',
-  /** Malicious trade that results in the victim being rained  */
-  unfairTrade = 'unfair_trade',
 
   other = 'other',
 
-  // Locally defined
+  // MetaMask defined reasons
   failed = 'Failed',
   notApplicable = 'NotApplicable',
+  inProgress = 'validation_in_progress',
 }
 
 export enum BlockaidResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',
   Benign = 'Benign',
-  // Locally defined
+  Errored = 'Error',
+
+  // MetaMask defined result types
   Failed = 'Failed',
   NotApplicable = 'NotApplicable',
+  Loading = 'loading',
 }
 
 /**
@@ -75,3 +77,7 @@ export const SECURITY_PROVIDER_MESSAGE_SEVERITY = {
   MALICIOUS: 1,
   NOT_SAFE: 2,
 };
+
+export const FALSE_POSITIVE_REPORT_BASE_URL =
+  'https://blockaid-false-positive-portal.metamask.io';
+export const SECURITY_PROVIDER_UTM_SOURCE = 'metamask-ppom';

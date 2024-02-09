@@ -57,8 +57,6 @@ const t = (key) => {
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
       return 'Enter the URL of the IPFS CID gateway to use for ENS content resolution.';
-    case 'preferredLedgerConnectionType':
-      return 'Preferred ledger connection type';
     case 'dismissReminderField':
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
@@ -107,7 +105,7 @@ const t = (key) => {
       return "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off.";
     case 'useNftDetection':
       return 'Autodetect NFTs';
-    case 'useNftDetectionDescription':
+    case 'useNftDetectionDescriptionText':
       return 'Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services.';
     case 'about':
       return 'About';

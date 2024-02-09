@@ -16,14 +16,12 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="home__asset-tab"]');
-
         const tokenValue = '0 ETH';
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
@@ -32,10 +30,10 @@ describe('Settings', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.currency-display-component__text',
+          '.multichain-account-list-item .currency-display-component__text',
         );
 
-        assert.equal(await accountTokenValue.getText(), '0', `ETH`);
+        assert.equal(await accountTokenValue.getText(), '0', 'ETH');
       },
     );
   });
@@ -47,10 +45,9 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement(
@@ -67,6 +64,7 @@ describe('Settings', function () {
           '.settings-page__header__title-container__close-button',
         );
         await driver.clickElement('[data-testid="home__asset-tab"]');
+
         const tokenValue = '0 ETH';
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
@@ -75,10 +73,10 @@ describe('Settings', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.currency-display-component__text',
+          '.multichain-account-list-item .currency-display-component__text',
         );
 
-        assert.equal(await accountTokenValue.getText(), '0', `ETH`);
+        assert.equal(await accountTokenValue.getText(), '0', 'ETH');
       },
     );
   });

@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import Name from './name';
 
-const addressProposedMock = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
-const addressNoProposedMock = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
-const addressSavedNameMock = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
+const addressNoSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54978';
+const addressSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
+const addressSavedTokenMock = '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d';
+const addressUnsavedTokenMock = '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8';
 const chainIdMock = '0x1';
 
 const storeMock = configureStore({
@@ -15,27 +16,83 @@ const storeMock = configureStore({
     providerConfig: {
       chainId: chainIdMock,
     },
+    useTokenDetection: true,
+    tokenList: {
+      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+        symbol: 'IUSD',
+        name: 'iZUMi Bond USD',
+        iconUrl:
+          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+      },
+      '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8': {
+        address: '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8',
+        symbol: 'USX',
+        name: 'dForce USD',
+        iconUrl:
+          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8.png',
+      },
+    },
     names: {
       [NameType.ETHEREUM_ADDRESS]: {
-        [addressProposedMock]: {
+        [addressNoSavedNameMock]: {
           [chainIdMock]: {
             proposedNames: {
-              ens: ['test.eth'],
-              etherscan: ['TestContract'],
-              token: ['TestToken'],
-              lens: ['test.lens'],
+              ens: {
+                proposedNames: ['test.eth'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
+              etherscan: {
+                proposedNames: ['TestContract'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
+              token: {
+                proposedNames: ['Test Token'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
+              lens: {
+                proposedNames: ['test.lens'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
             },
           },
         },
         [addressSavedNameMock]: {
           [chainIdMock]: {
             proposedNames: {
-              ens: ['test.eth'],
-              etherscan: ['TestContract'],
-              token: ['TestToken'],
-              lens: ['test.lens'],
+              ens: {
+                proposedNames: ['test.eth'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
+              etherscan: {
+                proposedNames: ['TestContract'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
+              token: {
+                proposedNames: ['Test Token'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
+              lens: {
+                proposedNames: ['test.lens'],
+                lastRequestTime: 123,
+                retryDelay: null,
+              },
             },
-            name: 'TestToken',
+            name: 'Test Token',
+            sourceId: 'token',
+          },
+        },
+        [addressSavedTokenMock]: {
+          [chainIdMock]: {
+            proposedNames: {},
+            name: 'Saved Token Name',
             sourceId: 'token',
           },
         },
@@ -51,10 +108,9 @@ const storeMock = configureStore({
 });
 
 /**
- * Displays the saved or proposed name for a raw value such as an Ethereum address.<br/><br/>
- * Proposed names are populated in the state using the `NameController` and the attached `NameProvider` instances.<br/><br/>
- * These name providers use multiple sources such as ENS, Etherscan, and the Blockchain itself.<br/><br/>
- * Clicking the component will display a modal to select a proposed name or enter a custom name.
+ * Displays the saved name for a raw value such as an Ethereum address.<br/><br/>
+ * Clicking the component will display a modal to select a proposed name or enter a custom name.<br/><br/>
+ * Proposed names are populated in the state using the `NameController` and the attached `NameProvider` instances.
  */
 export default {
   title: 'Components/App/Name',
@@ -70,16 +126,6 @@ export default {
       description: `The type of value.<br/><br/>
         Limited to the values in the \`NameType\` enum.`,
     },
-    sourcePriority: {
-      control: 'object',
-      description: `The order of priority to use when choosing which proposed name to display.<br/><br/>
-         The available source IDs are defined by the \`NameProvider\` instances passed to the \`NameController\`.<br/><br/>
-         Current options include:<br/><br/>
-         \`ens\`<br/>
-         \`etherscan\`<br/>
-         \`lens\`<br/>
-         \`token\``,
-    },
     disableEdit: {
       control: 'boolean',
       description: `Whether to prevent the modal from opening when the component is clicked.`,
@@ -87,71 +133,58 @@ export default {
         defaultValue: { summary: false },
       },
     },
-    disableUpdate: {
-      control: 'boolean',
-      description: `Whether to disable updating the proposed names on render.`,
-      table: {
-        defaultValue: { summary: false },
-      },
-    },
-    updateDelay: {
-      control: 'number',
-      description: `The minimum number of seconds to wait between updates of the proposed names on render.`,
-      table: {
-        defaultValue: { summary: 300 },
-      },
-    },
   },
   args: {
-    value: addressProposedMock,
+    value: addressNoSavedNameMock,
     type: NameType.ETHEREUM_ADDRESS,
-    sourcePriority: ['ens'],
     disableEdit: false,
-    disableUpdate: false,
-    updateDelay: 300,
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };
 
 // eslint-disable-next-line jsdoc/require-param
 /**
- * A proposed name matching the value and type has been found in the state.<br/><br/>
- * Which proposed name is displayed is configurable by the `sourcePriority` property.
+ * No name has been saved for the value and type.
  */
 export const DefaultStory = (args) => {
   return <Name {...args} />;
 };
 
-DefaultStory.storyName = 'Proposed Name';
-
-/** No proposed name matching the value and type has been found in the state. */
-export const NoProposedNameStory = () => {
-  return (
-    <Name
-      value={addressNoProposedMock}
-      type={NameType.ETHEREUM_ADDRESS}
-      sourcePriority={['ens']}
-    />
-  );
-};
-
-NoProposedNameStory.storyName = 'No Proposed Name';
+DefaultStory.storyName = 'No Saved Name';
 
 /**
  * A name was previously saved for this value and type.<br/><br/>
  * The component will still display a modal when clicked to edit the name.
  */
 export const SavedNameStory = () => {
-  return (
-    <Name
-      value={addressSavedNameMock}
-      type={NameType.ETHEREUM_ADDRESS}
-      sourcePriority={['ens']}
-    />
-  );
+  return <Name value={addressSavedNameMock} type={NameType.ETHEREUM_ADDRESS} />;
 };
 
 SavedNameStory.storyName = 'Saved Name';
+
+/**
+ * No name was previously saved for this recognized token.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
+export const UnsavedTokenNameStory = () => {
+  return (
+    <Name value={addressUnsavedTokenMock} type={NameType.ETHEREUM_ADDRESS} />
+  );
+};
+
+UnsavedTokenNameStory.storyName = 'Unsaved Token Name';
+
+/**
+ * A name was previously saved for this recognized token.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
+export const SavedTokenNameStory = () => {
+  return (
+    <Name value={addressSavedTokenMock} type={NameType.ETHEREUM_ADDRESS} />
+  );
+};
+
+SavedTokenNameStory.storyName = 'Saved Token Name';
 
 /**
  * Clicking the component will not display a modal to edit the name.
@@ -161,7 +194,6 @@ export const EditDisabledStory = () => {
     <Name
       value={addressSavedNameMock}
       type={NameType.ETHEREUM_ADDRESS}
-      sourcePriority={['ens']}
       disableEdit
     />
   );

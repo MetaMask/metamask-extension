@@ -30,6 +30,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
       avatarNetworkProps,
       iconProps,
       label,
+      labelProps,
       src,
       ...props
     }: PickerNetworkProps<C>,
@@ -56,7 +57,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
           size={AvatarNetworkSize.Xs}
           {...avatarNetworkProps}
         />
-        <Text ellipsis variant={TextVariant.bodySm}>
+        <Text as="span" ellipsis variant={TextVariant.bodySm} {...labelProps}>
           {label}
         </Text>
         <Icon
@@ -64,6 +65,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
           name={IconName.ArrowDown}
           color={IconColor.iconDefault}
           size={IconSize.Xs}
+          marginLeft="auto"
           {...iconProps}
         />
       </Box>

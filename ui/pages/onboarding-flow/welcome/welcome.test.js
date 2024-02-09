@@ -29,6 +29,11 @@ jest.mock('../../../store/actions.ts', () => ({
       return type;
     }),
   ),
+  setParticipateInMetaMetrics: jest.fn().mockReturnValue(
+    jest.fn((type) => {
+      return type;
+    }),
+  ),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -42,8 +47,10 @@ jest.mock('react-router-dom', () => ({
 describe('Onboarding Welcome Component', () => {
   const mockState = {
     metamask: {
-      identities: {},
-      selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 

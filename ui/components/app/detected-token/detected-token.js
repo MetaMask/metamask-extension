@@ -11,6 +11,7 @@ import {
 import {
   getCurrentChainId,
   getDetectedTokensInCurrentNetwork,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -52,6 +53,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
   const chainId = useSelector(getCurrentChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const [tokensListDetected, setTokensListDetected] = useState(() =>
     detectedTokens.reduce((tokenObj, token) => {
@@ -81,7 +83,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         },
       });
     });
-    await dispatch(addImportedTokens(selectedTokens));
+    await dispatch(addImportedTokens(selectedTokens, networkClientId));
     const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
     dispatch(setNewTokensImported(tokenSymbols.join(', ')));
   };

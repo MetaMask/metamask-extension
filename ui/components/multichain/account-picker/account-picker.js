@@ -1,45 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
-  Box,
   AvatarAccount,
   AvatarAccountVariant,
-  Icon,
+  ButtonBase,
+  ButtonBaseSize,
   IconName,
   Text,
-  ButtonBase,
 } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
   Display,
-  FlexDirection,
-  FontWeight,
   IconColor,
   Size,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
-import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountPicker = ({
   address,
   name,
   onClick,
-  disabled,
-  showAddress = false,
+  disabled = false,
+  labelProps = {},
+  textProps = {},
+  className = '',
+  ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
     <ButtonBase
-      className="multichain-account-picker"
+      className={classnames('multichain-account-picker', className)}
       data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
@@ -47,46 +42,41 @@ export const AccountPicker = ({
       ellipsis
       textProps={{
         display: Display.Flex,
-        gap: 2,
         alignItems: AlignItems.center,
+        gap: 2,
+        ...textProps,
       }}
+      size={ButtonBaseSize.Sm}
       disabled={disabled}
+      endIconName={IconName.ArrowDown}
+      endIconProps={{
+        color: IconColor.iconDefault,
+        size: Size.SM,
+      }}
+      {...props}
+      gap={2}
     >
-      <Box
-        display={Display.Flex}
-        className="multichain-account-picker-container"
-        flexDirection={FlexDirection.Column}
+      <AvatarAccount
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
+        address={address}
+        size={Size.XS}
+        borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+      />
+      <Text
+        as="span"
+        ellipsis
+        {...labelProps}
+        className={classnames(
+          'multichain-account-picker__label',
+          labelProps.className ?? '',
+        )}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={address}
-            size={Size.XS}
-            borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-          />
-          <Text as="span" fontWeight={FontWeight.Bold} ellipsis>
-            {name}
-          </Text>
-          <Icon
-            name={IconName.ArrowDown}
-            color={IconColor.iconDefault}
-            size={Size.SM}
-          />
-        </Box>
-        {showAddress ? (
-          <Text
-            color={TextColor.textAlternative}
-            textAlign={TextAlign.Center}
-            variant={TextVariant.bodySm}
-          >
-            {shortenedAddress}
-          </Text>
-        ) : null}
-      </Box>
+        {name}
+      </Text>
     </ButtonBase>
   );
 };
@@ -107,9 +97,21 @@ AccountPicker.propTypes = {
   /**
    * Represents if the AccountPicker should be actionable
    */
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   /**
-   * Represents if the account address should display
+   * Represents if the AccountPicker should take full width
    */
-  showAddress: PropTypes.bool,
+  block: PropTypes.bool,
+  /**
+   * Props to be added to the label element
+   */
+  labelProps: PropTypes.object,
+  /**
+   * Props to be added to the text element
+   */
+  textProps: PropTypes.object,
+  /**
+   * Additional className to be added to the AccountPicker
+   */
+  className: PropTypes.string,
 };

@@ -10,8 +10,8 @@ import 'react-devtools';
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
-import Eth from 'ethjs';
-import EthQuery from 'eth-query';
+import Eth from '@metamask/ethjs';
+import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
 import log from 'loglevel';
 import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
@@ -25,9 +25,9 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   registerDesktopErrorActions,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -38,70 +38,12 @@ const container = document.getElementById('app-content');
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
-// Service Worker Keep Alive Message Constants
-const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
-const ACK_KEEP_ALIVE_WAIT_TIME = 60_000; // 1 minute
-const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
-
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
-let lastMessageReceivedTimestamp = Date.now();
-
 let extensionPort;
-let ackTimeoutToDisplayError;
-
-/*
- * As long as UI is open it will keep sending messages to service worker
- * In service worker as this message is received
- * if service worker is inactive it is reactivated and script re-loaded
- * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
- */
-if (isManifestV3) {
-  // Checking for SW aliveness (or stuckness) flow
-  // 1. Check if we have an extensionPort, if yes
-  // 2a. Send a keep alive message to the background via extensionPort
-  // 2b. Add a listener to it (if not already added)
-  // 3a. Set a timeout to check if we have received an ACK from background
-  // 3b. If we have not received an ACK within ACK_KEEP_ALIVE_WAIT_TIME,
-  //     we know the background is stuck or dead
-  // 4. If we recieve an ACK_KEEP_ALIVE_MESSAGE from the service worker, we know it is alive
-
-  const ackKeepAliveListener = (message) => {
-    if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
-      lastMessageReceivedTimestamp = Date.now();
-      clearTimeout(ackTimeoutToDisplayError);
-    }
-  };
-
-  const keepAliveInterval = setInterval(() => {
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
-    if (extensionPort !== null && extensionPort !== undefined) {
-      extensionPort.postMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
-      if (extensionPort.onMessage.hasListener(ackKeepAliveListener) === false) {
-        extensionPort.onMessage.addListener(ackKeepAliveListener);
-      }
-    }
-
-    ackTimeoutToDisplayError = setTimeout(() => {
-      if (
-        Date.now() - lastMessageReceivedTimestamp >
-        ACK_KEEP_ALIVE_WAIT_TIME
-      ) {
-        clearInterval(keepAliveInterval);
-        displayCriticalError(
-          'somethingIsWrong',
-          new Error("Something's gone wrong. Try reloading the page."),
-        );
-      }
-    }, ACK_KEEP_ALIVE_WAIT_TIME);
-  }, WORKER_KEEP_ALIVE_INTERVAL);
-}
 
 start().catch(log.error);
 
@@ -244,10 +186,6 @@ async function start() {
         resetExtensionStreamAndListeners,
       );
 
-      // message below will try to activate service worker
-      // in MV3 is likely that reason of stream closing is service worker going in-active
-      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
       extensionPort.onMessage.addListener(messageListener);
@@ -273,9 +211,9 @@ async function start() {
       (
         err,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       ) => {
         if (err) {
           // if there's an error, store will be = metamaskState
@@ -283,9 +221,9 @@ async function start() {
             'troubleStarting',
             err,
             store,
-            ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+            ///: BEGIN:ONLY_INCLUDE_IF(desktop)
             backgroundConnection,
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           );
           return;
         }
@@ -311,10 +249,10 @@ async function start() {
         displayCriticalError(
           'troubleStarting',
           err,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           undefined,
           backgroundConnection,
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         );
         return;
       }
@@ -354,9 +292,9 @@ function initializeUi(activeTab, connectionStream, cb) {
       cb(
         err,
         null,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       );
       return;
     }
@@ -376,24 +314,24 @@ async function displayCriticalError(
   errorKey,
   err,
   metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   backgroundConnection,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 ) {
   const html = await getErrorHtml(
     errorKey,
     SUPPORT_LINK,
     metamaskState,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     err,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   );
 
   container.innerHTML = html;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   registerDesktopErrorActions(backgroundConnection, browser);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const button = document.getElementById('critical-error-button');
 

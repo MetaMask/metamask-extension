@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "添加 NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "了解使用 MetaMask Snaps 来保护账户安全的选项"
-  },
   "addSuggestedNFTs": {
     "message": "添加推荐的 NFT"
   },
@@ -442,10 +439,6 @@
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。请务必使用跨链桥进行操作。"
   },
-  "attemptToCancelSwap": {
-    "message": "尝试取消兑换 ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "正在尝试连接到区块链。"
   },
@@ -593,12 +586,6 @@
   "bridge": {
     "message": "跨链桥"
   },
-  "bridgeDescription": {
-    "message": "从不同网络传送代币"
-  },
-  "bridgeDisabled": {
-    "message": "在此网络中无法使用跨链桥"
-  },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
@@ -611,18 +598,9 @@
   "busy": {
     "message": "忙碌中"
   },
-  "buy": {
-    "message": "购买"
-  },
   "buyAsset": {
     "message": "购买$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "继续持有加密货币，赚取潜在利润"
-  },
-  "buyDisabled": {
-    "message": "在此网络中无法购买"
   },
   "buyMoreAsset": {
     "message": "购买更多$1",
@@ -668,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "此链 ID 目前已被 $1 网络使用。"
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "链 ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chooseYourNetwork": {
     "message": "选择您的网络"
@@ -843,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "连接请求"
-  },
-  "connections": {
-    "message": "连接"
   },
   "contactUs": {
     "message": "联系我们"
@@ -1140,12 +1111,6 @@
   "deposit": {
     "message": "保证金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "了解详情"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten 和 Kovan 测试网络可能无法可靠地工作，很快就会被弃用。"
-  },
   "description": {
     "message": "描述"
   },
@@ -1286,12 +1251,6 @@
   "dismissReminderField": {
     "message": "关闭账户私钥助记词备份提醒"
   },
-  "displayNftMedia": {
-    "message": "显示NFT媒体"
-  },
-  "displayNftMediaDescription": {
-    "message": "显示NFT媒体和数据时，OpenSea或其他第三方会获悉您的IP地址。这可能会使攻击者能够将您的IP地址和您的以太坊地址关联起来。NFT自动检测依赖于此设置，关闭后将不可用。"
-  },
   "domain": {
     "message": "域"
   },
@@ -1414,14 +1373,8 @@
   "enableAutoDetect": {
     "message": " 启用自动检测"
   },
-  "enableForAllNetworks": {
-    "message": "为所有网络启用"
-  },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
-  },
-  "enableSmartSwaps": {
-    "message": "启用智能兑换"
   },
   "enableSnap": {
     "message": "启用"
@@ -1447,32 +1400,11 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1. $2目前提供增强型代币检测"
   },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask让您可以直接在浏览器地址栏中看到ENS域（例如“https://metamask.eth”）。其工作原理如下："
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "普通浏览器通常不处理ENS或IPFS地址，但MetaMask会帮助解决此问题。使用此功能，您的IP地址可能会与IPFS第三方服务共享。"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask会检查以太坊的ENS合约，以查找与ENS名称相关的代码。"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "如果代码链接到IPFS，将会从IPFS网络获取内容。"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "然后，您可以看到内容，通常是网站或类似的内容。"
-  },
   "ensDomainsSettingTitle": {
     "message": "在地址栏中显示ENS域"
   },
   "ensIllegalCharacter": {
     "message": "ENS 的非法字符。"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "未在当前网络找到 ENS 名称。请尝试切换至以太坊主网。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "网络不支持 ENS"
   },
   "ensRegistrationError": {
     "message": "ENS 名称注册错误"
@@ -1565,11 +1497,9 @@
   "experimental": {
     "message": "实验性"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "探索 MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "扩展钱包体验。"
+    "message": "扩展钱包体验。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部扩展程序"
@@ -1599,9 +1529,6 @@
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "拖放的文件太大。"
   },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
@@ -1712,42 +1639,19 @@
     "message": "$1 小时",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 分钟",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 分钟",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "可能在 $1 内",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "有可能在 $1 以内",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "很可能在 $1 以内",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "使用的燃料"
   },
   "general": {
     "message": "通用"
-  },
-  "getStarted": {
-    "message": "开始进行"
   },
   "globalTitle": {
     "message": "全局菜单"
@@ -2151,25 +2055,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "在您的 Ledger 设备上启用“智能合约数据”或“盲签”。"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "在“设置 > 高级”下启用使用 Ledger Live"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "打开并解锁 Ledger Live 应用程序。"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 设备打开失败。您的 Ledger 可能已连接到其他软件。请关闭 Ledger Live 或其他连接到您的 Ledger 设备的应用程序，并尝试再次连接。"
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 应用程序"
@@ -2179,9 +2069,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "如果您的 Ledger Live 应用程序已打开，请断开任何打开的 Ledger Live 的连接并关闭 Ledger Live 应用程序。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 设备未连接。如果您想要连接您的 Ledger，请再次点击“继续”并批准 HID 连接",
@@ -2261,9 +2148,6 @@
   "makeSureNoOneWatching": {
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "格式错误的数据"
   },
   "max": {
     "message": "最大"
@@ -2419,9 +2303,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2479,12 +2360,6 @@
   },
   "newContract": {
     "message": "新合约"
-  },
-  "newNFTDetectedMessage": {
-    "message": "允许 MetaMask 自动检测 Opensea 的 NFT 并在您的钱包中显示。"
-  },
-  "newNFTsDetected": {
-    "message": "新功能！NFT 检测"
   },
   "newNetworkAdded": {
     "message": "成功添加了 “$1”！"
@@ -2565,9 +2440,6 @@
   },
   "noSnaps": {
     "message": "您没有安装 snap。"
-  },
-  "noThanksVariant2": {
-    "message": "不，谢谢."
   },
   "noTransactions": {
     "message": "您没有任何交易"
@@ -3060,9 +2932,6 @@
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid（测试版）"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3168,10 +3037,6 @@
     "message": "访问互联网。",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "允许snap访问互联网。这可用于通过第三方服务器发送和接收数据。",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "连接到$1 Snap。",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3184,17 +3049,9 @@
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "允许snap执行按固定时间、日期或间隔定期运行的操作。这可用于触发对时间敏感的交互或通知。",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "允许snap显示带有以下内容的MetaMask弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这可用于创建snap的提醒、确认和流程加入选择等。",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "查看您允许的账户的地址（必填）",
@@ -3204,97 +3061,29 @@
     "message": "访问以太坊提供商。",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "允许snap直接与MetaMask通信，使其可以从区块链中读取数据，并提出消息和交易建议。",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "衍生特定于此snap的随机私钥。",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "允许 snap 衍生其独有的任意私钥，而不公开私钥。这些私钥与您的 MetaMask 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "使用生命周期挂钩。",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "允许snap使用生命周期挂钩在其生命周期的特定时间运行代码。",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "无限期运行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "允许snap无限期运行，例如在处理大量数据时。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "添加并控制以太坊账户",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "在$1（$2）下控制您的账户和资产。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "允许snap根据您的私钥助记词衍生BIP-32私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "控制您的 $1 账户和资产。",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "允许snap根据您的私钥助记词衍生BIP-44私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "控制您的$1账户和资产。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "在您的设备上存储和管理其数据。",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "允许 snap 使用加密安全地存储、更新和检索数据。其他 snap 无法访问此信息。",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "显示通知。",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "允许snap在MetaMask中显示通知。snap可以触发简短的通知文本，以提供可操作或对时间敏感的信息。",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "允许 $1 直接与此 snap 通信。",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "允许$1向 snap 发送消息以及接收来自 snap 的响应。",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "获取并显示交易洞察。",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "允许snap对交易进行解码，并在MetaMask UI中显示见解。这可用于反网络钓鱼和安全解决方案。",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "查看建议交易的网站来源",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "允许snap查看建议交易的网站的来源（URI）。这可用于反网络钓鱼和安全解决方案。",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "未知权限：$1",
@@ -3304,10 +3093,6 @@
     "message": "查看您的$1 ($2)公钥。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "允许snap查看$1的公钥（和地址）。这并不会授予对账户或资产的任何控制权。",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "查看您的$1公钥。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3315,10 +3100,6 @@
   "permission_webAssembly": {
     "message": "支持WebAssembly。",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "允许snap通过WebAssembly访问低级执行环境。",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "权限"
@@ -3347,10 +3128,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio 控制面板"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "首选 Ledger 连接类型",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "正在准备交换......"
@@ -3673,9 +3450,6 @@
   "searchAccounts": {
     "message": "搜索账户"
   },
-  "searchResults": {
-    "message": "搜索结果"
-  },
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
   },
@@ -3782,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "选择要在 MetaMask Institutional 使用的托管账户。"
   },
-  "selectAnAction": {
-    "message": "选择操作"
-  },
   "selectHdPath": {
     "message": "选择 HD 路径"
   },
@@ -3808,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
-  },
-  "sendDescription": {
-    "message": "将加密货币发送到任何账户"
   },
   "sendSpecifiedTokens": {
     "message": "发送 $1",
@@ -3931,9 +3699,6 @@
   "smartContracts": {
     "message": "智能合约"
   },
-  "smartSwap": {
-    "message": "智能兑换"
-  },
   "smartSwapsAreHere": {
     "message": "智能兑换已推出！"
   },
@@ -3946,12 +3711,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "智能兑换暂时不可用。"
   },
-  "smartSwapsSubDescription": {
-    "message": "* 智能兑换将多次尝试以私密方式提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的兑换成功进行。"
-  },
-  "snapConfigure": {
-    "message": "配置"
-  },
   "snapConnectionWarning": {
     "message": "$1想连接$2。只有在您信任此网站的情况下才能继续。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3960,53 +3719,8 @@
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "选择如何使用 MetaMask Snaps 来保护您的新账户。"
-  },
-  "snapCreateAccountTitle": {
-    "message": "创建 $1 账户",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "由MetaMask创建"
-  },
-  "snapDetailAudits": {
-    "message": "审核"
-  },
-  "snapDetailDeveloper": {
-    "message": "开发者"
-  },
-  "snapDetailLastUpdated": {
-    "message": "已更新"
-  },
-  "snapDetailManageSnap": {
-    "message": "管理snap"
-  },
-  "snapDetailTags": {
-    "message": "标签"
-  },
-  "snapDetailVersion": {
-    "message": "版本"
-  },
   "snapDetailWebsite": {
     "message": "网站"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "创建Snap账户"
-  },
-  "snapDetailsInstalled": {
-    "message": "已安装"
-  },
-  "snapError": {
-    "message": "Snap错误：'$1'。错误代码：'$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
-  "snapInstall": {
-    "message": "安装Snap"
   },
   "snapInstallRequest": {
     "message": "安装$1，将向其授予以下权限。只有在您信任$1的情况下才能继续。",
@@ -4015,24 +3729,8 @@
   "snapInstallSuccess": {
     "message": "安装完成"
   },
-  "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "请谨慎行事"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "将对 $2 的账户控制权授予 $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "授予 $2 对 $1 的公钥访问权限",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "无法安装$1。",
@@ -4042,9 +3740,6 @@
     "message": "安装失败",
     "description": "Error title used when snap installation fails."
   },
-  "snapIsAudited": {
-    "message": "已审核"
-  },
   "snapResultError": {
     "message": "错误"
   },
@@ -4053,9 +3748,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1已可以使用"
-  },
-  "snapUpdate": {
-    "message": "更新Snap"
   },
   "snapUpdateAvailable": {
     "message": "有更新"
@@ -4068,18 +3760,11 @@
     "message": "更新失败",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1希望将$2更新为$3，更新后将获得下列权限。只有在您信任$2的情况下才可继续。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "更新完成"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "正在加载交易洞察……"
   },
   "snapsInvalidUIError": {
     "message": "Snap 指定的用户界面无效。"
@@ -4090,9 +3775,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "管理您的 Snaps"
   },
   "snapsTermsOfUse": {
     "message": "使用条款"
@@ -4247,9 +3929,6 @@
   "stake": {
     "message": "质押"
   },
-  "stakeDescription": {
-    "message": "继续持有加密货币，赚取潜在利润"
-  },
   "stateLogError": {
     "message": "检索状态日志时出错。"
   },
@@ -4350,9 +4029,6 @@
     "message": "Swap距离完成尚有<",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "在提交前模拟交易，以降低交易成本并减少失败。"
-  },
   "stxTryingToCancel": {
     "message": "正在尝试取消您的交易......"
   },
@@ -4367,9 +4043,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "您的交易已被取消，您并未支付任何不必要的燃料费。"
-  },
-  "stxYouCanOptOut": {
-    "message": "您可以随时选择退出高级设置。"
   },
   "submit": {
     "message": "提交"
@@ -4441,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "去中心化交易所"
   },
-  "swapDescription": {
-    "message": "兑换和交易您的代币"
-  },
   "swapDirectContract": {
     "message": "直接合约"
-  },
-  "swapDisabled": {
-    "message": "在此网络无法兑换代币"
   },
   "swapEditLimit": {
     "message": "编辑限制"
@@ -4688,9 +4355,6 @@
   "swapSource": {
     "message": "流动性来源"
   },
-  "swapSourceInfo": {
-    "message": "我们搜索多个流动性来源（交易所、聚合器和专业做市商），以找到最优惠的价格和最低的网络费用。"
-  },
   "swapSuggested": {
     "message": "建议的交换"
   },
@@ -4845,9 +4509,6 @@
   "termsOfService": {
     "message": "服务条款"
   },
-  "termsOfUse": {
-    "message": "使用条款"
-  },
   "termsOfUseAgreeText": {
     "message": "我同意适用于我使用MetaMask及其所有功能的使用条款"
   },
@@ -4875,10 +4536,6 @@
   },
   "thisCollection": {
     "message": "这个收藏品"
-  },
-  "thisServiceIsExperimental": {
-    "message": "此服务是实验性的。启用此功能，即表示您同意OpenSea的$1。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "时间"
@@ -5008,18 +4665,6 @@
   "transactionCreated": {
     "message": "在 $2 创建了值为 $1 的交易。"
   },
-  "transactionData": {
-    "message": "交易数据"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "由 Truffle 解码"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "已在 $1 验证的合约"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "链 ID $1 不可使用交易解码"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "建议的网站"
   },
@@ -5028,9 +4673,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "估算的燃料费"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "估算"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "了解更多关于燃料费的信息"
@@ -5095,12 +4737,6 @@
   "transactionResubmitted": {
     "message": "已在 $2 重新提交交易，燃料费预计升至 $1"
   },
-  "transactionSecurityCheck": {
-    "message": "启用安全提醒"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "我们使用第三方 API 来检测和显示未签名交易和签名请求中涉及的风险，然后您再进行签名。这些服务将访问您的未签名交易和签名请求、您的账户地址以及首选语言。"
-  },
   "transactionSettings": {
     "message": "交易设置"
   },
@@ -5157,9 +4793,6 @@
   "twelveHrTitle": {
     "message": "12小时："
   },
-  "txInsightsNotSupported": {
-    "message": "此合约目前不支持交易见解。"
-  },
   "typeYourSRP": {
     "message": "输入私钥助记词"
   },
@@ -5175,12 +4808,6 @@
   },
   "unknown": {
     "message": "未知"
-  },
-  "unknownCameraError": {
-    "message": "尝试访问您的相机时出错。请重试……"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "糟糕！出问题了...."
   },
   "unknownCollection": {
     "message": "未命名的收藏"
@@ -5203,10 +4830,6 @@
   "unrecognizedChain": {
     "message": "该自定义网络无法识别",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1（未识别的协议）",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "当前不支持发送NFT (ERC-721)代币",
@@ -5245,21 +4868,6 @@
   "useNftDetection": {
     "message": "自动检测NFT"
   },
-  "useNftDetectionDescription": {
-    "message": "我们使用第三方API在您的钱包中检测NFT，这意味着您的IP地址可能会暴露给集中式服务器。在启用此功能时，有几件事需要注意。"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "您的账户地址将对第三方API可见。"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT 元数据可能包含欺诈或网络钓鱼网站的链接。"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "如果您不希望应用程序从这些服务中提取数据，请关闭此功能。"
-  },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
   },
@@ -5280,10 +4888,6 @@
   },
   "verifyContractDetails": {
     "message": "验证第三方详情"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "代币小数可以在 $1 上找到",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "在 $1 上验证此代币",
@@ -5333,9 +4937,6 @@
   },
   "viewOnOpensea": {
     "message": "在 Opensea 上查看"
-  },
-  "viewPortfolioDashboard": {
-    "message": "查看 Portfolio 控制面板"
   },
   "viewinCustodianApp": {
     "message": "在托管应用程序中查看"

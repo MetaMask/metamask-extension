@@ -4,12 +4,13 @@ import thunk from 'redux-thunk';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
+
 import ViewQuote from '.';
 
 jest.mock(
@@ -17,7 +18,7 @@ jest.mock(
   () => () => '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
+jest.mock('../../confirmations/hooks/useGasFeeInputs', () => {
   return {
     useGasFeeInputs: () => {
       return {

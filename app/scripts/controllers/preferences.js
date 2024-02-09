@@ -7,9 +7,6 @@ import {
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IN
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -55,20 +52,21 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
-
+      useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
+      useRequestQueue: false,
       openSeaEnabled: false,
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-      securityAlertsEnabled: false,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      securityAlertsEnabled: true,
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -88,40 +86,38 @@ export default class PreferencesController {
       forgottenPassword: false,
       preferences: {
         autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      isIpfsGatewayEnabled: true,
       useAddressBarEnsResolution: true,
-      infuraBlocked: null,
+      // Ledger transport type is deprecated. We currently only support webhid
+      // on chrome, and u2f on firefox.
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
       snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       isLineaMainnetReleased: false,
+      useExternalNameSources: true,
       ...opts.initState,
     };
 
     this.network = opts.network;
 
-    this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
-    this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
-
-    this._subscribeToInfuraAvailability();
-
-    // subscribe to account removal
-    opts.onAccountRemoved((address) => this.removeAddress(address));
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -177,6 +173,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useSafeChainsListValidation` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
+   */
+  setUseSafeChainsListValidation(val) {
+    this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  /**
    * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
@@ -220,6 +225,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useRequestQueue` property
+   *
+   * @param {boolean} val - Whether or not the user wants to have requests queued if network change is required.
+   */
+  setUseRequestQueue(val) {
+    this.store.updateState({ useRequestQueue: val });
+  }
+
+  /**
    * Setter for the `openSeaEnabled` property
    *
    * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
@@ -230,7 +244,7 @@ export default class PreferencesController {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * Setter for the `securityAlertsEnabled` property
    *
@@ -241,9 +255,9 @@ export default class PreferencesController {
       securityAlertsEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -255,7 +269,18 @@ export default class PreferencesController {
       addSnapAccountEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `useExternalNameSources` property
+   *
+   * @param {boolean} useExternalNameSources - Whether or not to use external name providers in the name controller.
+   */
+  setUseExternalNameSources(useExternalNameSources) {
+    this.store.updateState({
+      useExternalNameSources,
+    });
+  }
 
   /**
    * Setter for the `advancedGasFee` property
@@ -390,7 +415,7 @@ export default class PreferencesController {
    * Removes any unknown identities, and returns the resulting selected address.
    *
    * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} selectedAddress the selected address.
+   * @returns {string} selectedAddress the selected address.
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
@@ -454,6 +479,15 @@ export default class PreferencesController {
    */
   getSelectedAddress() {
     return this.store.getState().selectedAddress;
+  }
+
+  /**
+   * Getter for the `useRequestQueue` property
+   *
+   * @returns {boolean} whether this option is on or off.
+   */
+  getUseRequestQueue() {
+    return this.store.getState().useRequestQueue;
   }
 
   /**
@@ -545,6 +579,15 @@ export default class PreferencesController {
   }
 
   /**
+   * A setter for the `isIpfsGatewayEnabled` property
+   *
+   * @param {boolean} enabled - Whether or not IPFS is enabled
+   */
+  async setIsIpfsGatewayEnabled(enabled) {
+    this.store.updateState({ isIpfsGatewayEnabled: enabled });
+  }
+
+  /**
    * A setter for the `useAddressBarEnsResolution` property
    *
    * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
@@ -556,21 +599,14 @@ export default class PreferencesController {
   /**
    * A setter for the `ledgerTransportType` property.
    *
-   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
+   * @deprecated We no longer support specifying a ledger transport type other
+   * than webhid, therefore managing a preference is no longer necessary.
+   * @param {LedgerTransportTypes.webhid} ledgerTransportType - 'webhid'
    * @returns {string} The transport type that was set.
    */
   setLedgerTransportPreference(ledgerTransportType) {
     this.store.updateState({ ledgerTransportType });
     return ledgerTransportType;
-  }
-
-  /**
-   * A getter for the `ledgerTransportType` property.
-   *
-   * @returns {string} The current preferred Ledger transport type.
-   */
-  getLedgerTransportPreference() {
-    return this.store.getState().ledgerTransportType;
   }
 
   /**
@@ -619,54 +655,11 @@ export default class PreferencesController {
     return this.store.getState().disabledRpcMethodPreferences;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
-
-  async updateSnapRegistry() {
-    let snapRegistry;
-    try {
-      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
-      snapRegistry = await response.json();
-    } catch (error) {
-      console.error(`Failed to fetch registry: `, error);
-      snapRegistry = {};
-    }
-    this.store.updateState({ snapRegistryList: snapRegistry });
-  }
-
-  ///: END:ONLY_INCLUDE_IN
-
-  //
-  // PRIVATE METHODS
-  //
-
-  _subscribeToInfuraAvailability() {
-    this._onInfuraIsBlocked(() => {
-      this._setInfuraBlocked(true);
-    });
-
-    this._onInfuraIsUnblocked(() => {
-      this._setInfuraBlocked(false);
-    });
-  }
-
-  /**
-   *
-   * A setter for the `infuraBlocked` property
-   *
-   * @param {boolean} isBlocked - Bool indicating whether Infura is blocked
-   */
-  _setInfuraBlocked(isBlocked) {
-    const { infuraBlocked } = this.store.getState();
-
-    if (infuraBlocked === isBlocked) {
-      return;
-    }
-
-    this.store.updateState({ infuraBlocked: isBlocked });
-  }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * A method to check is the linea mainnet network should be displayed

@@ -3,10 +3,11 @@ import {
   showLoadingIndication,
   forceUpdateMetamaskState,
 } from '../actions';
-import { submitRequestToBackground } from '../action-queue';
+import { submitRequestToBackground } from '../background-connection';
 import {
   mmiActionsFactory,
   showInteractiveReplacementTokenBanner,
+  setCustodianDeepLink,
   setTypedMessageInProgress,
   setPersonalMessageInProgress,
 } from './institution-background';
@@ -18,7 +19,7 @@ jest.mock('../actions', () => ({
   forceUpdateMetamaskState: jest.fn(),
 }));
 
-jest.mock('../action-queue', () => ({
+jest.mock('../background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
@@ -136,6 +137,22 @@ describe('Institution Actions', () => {
       expect(submitRequestToBackground).toHaveBeenCalledWith(
         'showInteractiveReplacementTokenBanner',
         [{ url: 'testUrl', oldRefreshToken: 'testToken' }],
+      );
+    });
+  });
+
+  describe('#setCustodianDeepLink', () => {
+    it('should test setCustodianDeepLink action', async () => {
+      const dispatch = jest.fn();
+
+      await setCustodianDeepLink({
+        fromAddress: '0x',
+        custodyId: 'custodyId',
+      })(dispatch);
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setCustodianDeepLink',
+        [{ fromAddress: '0x', custodyId: 'custodyId' }],
       );
     });
   });

@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -32,6 +33,7 @@ describe('TokenOverview', () => {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
+      currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
@@ -41,6 +43,24 @@ describe('TokenOverview', () => {
         },
       },
       selectedAddress: '0x1',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x1',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       keyrings: [
         {
           type: KeyringType.hdKeyTree,
@@ -234,12 +254,14 @@ describe('TokenOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });
 
-    it('should show the Bridge button if chain id and token are supported', async () => {
+    it('should show the Bridge button if chain id is supported', async () => {
       const mockToken = {
         name: 'test',
         isERC721: false,
@@ -289,32 +311,6 @@ describe('TokenOverview', () => {
         metamask: {
           ...mockStore.metamask,
           providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBridgeableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        mockedStore,
-      );
-      const bridgeButton = queryByTestId('token-overview-bridge');
-      expect(bridgeButton).not.toBeInTheDocument();
-    });
-
-    it('should not show the Bridge button if token is not supported', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f620',
-        symbol: 'test',
-      };
-
-      const mockedStoreWithBridgeableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

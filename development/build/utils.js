@@ -1,7 +1,17 @@
 const path = require('path');
+const { readFileSync, writeFileSync } = require('fs');
 const semver = require('semver');
+const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
+
+const BUILD_TYPES_TO_SVG_LOGO_PATH = {
+  main: './app/images/logo/metamask-fox.svg',
+  beta: './app/build-types/beta/images/logo/metamask-fox.svg',
+  flask: './app/build-types/flask/images/logo/metamask-fox.svg',
+  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
+  desktop: './app/build-types/desktop/images/logo/metamask-fox.svg',
+};
 
 /**
  * Returns whether the current build is a development build or not.
@@ -218,12 +228,91 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
   return targetPath;
 }
 
+/**
+ * Get the name for the current build.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
+ * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
+ * @param {boolean} options.shouldIncludeMV3 - Flag if mv3 should be included in the build name.
+ * @param options.environment
+ * @returns {string} The build name.
+ */
+function getBuildName({
+  environment,
+  buildType,
+  applyLavaMoat,
+  shouldIncludeSnow,
+  shouldIncludeMV3,
+}) {
+  const config = loadBuildTypesConfig();
+
+  let name =
+    config.buildTypes[buildType].buildNameOverride ||
+    `MetaMask ${capitalize(buildType)}`;
+
+  if (environment !== ENVIRONMENT.PRODUCTION) {
+    const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
+    const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
+    const snowStr = shouldIncludeSnow ? ' snow' : '';
+    name += `${mv3Str}${lavamoatStr}${snowStr}`;
+  }
+  return name;
+}
+
+/**
+ * Get the app ID for the current build. Should be valid reverse FQDN.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @returns {string} The build app ID.
+ */
+function getBuildAppId({ buildType }) {
+  const baseDomain = 'io.metamask';
+  return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
+}
+
+/**
+ * Get the image data uri for the svg icon for the current build.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @returns {string} The image data uri for the icon.
+ */
+function getBuildIcon({ buildType }) {
+  const svgLogoPath =
+    BUILD_TYPES_TO_SVG_LOGO_PATH[buildType] ||
+    BUILD_TYPES_TO_SVG_LOGO_PATH.main;
+  const svg = readFileSync(svgLogoPath, 'utf8');
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+/**
+ * Takes the given JavaScript file at `filePath` and replaces its contents with
+ * a script that injects the original file contents into the document in which
+ * the file is loaded. Useful for MV2 extensions to run scripts synchronously in the
+ * "MAIN" world.
+ *
+ * @param {string} filePath - The path to the file to convert to a self-injecting
+ * script.
+ */
+function makeSelfInjecting(filePath) {
+  const fileContents = readFileSync(filePath, 'utf8');
+  const textContent = JSON.stringify(fileContents);
+  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
+  writeFileSync(filePath, js, 'utf8');
+}
+
 module.exports = {
   getBrowserVersionMap,
+  getBuildName,
+  getBuildAppId,
+  getBuildIcon,
   getEnvironment,
   isDevBuild,
   isTestBuild,
   logError,
   getPathInsideNodeModules,
   wrapAgainstScuttling,
+  makeSelfInjecting,
 };

@@ -12,8 +12,9 @@ import {
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
+import mockEncryptor from '../../test/lib/mock-encryptor';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -96,15 +97,7 @@ describe('MetaMaskController', function () {
       );
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
-      encryptor: {
-        encrypt(_, object) {
-          this.object = object;
-          return Promise.resolve('mock-encrypted');
-        },
-        decrypt() {
-          return Promise.resolve(this.object);
-        },
-      },
+      encryptor: mockEncryptor,
       initLangCode: 'en_US',
       platform: {
         showTransactionNotification: () => undefined,
@@ -177,7 +170,7 @@ describe('MetaMaskController', function () {
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
-            metamaskController.keyringController.memStore.getState(),
+            metamaskController.keyringController.state,
           );
           metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
@@ -185,7 +178,7 @@ describe('MetaMaskController', function () {
         }),
         Promise.resolve(2).then(() => {
           keyringControllerState2 = JSON.stringify(
-            metamaskController.keyringController.memStore.getState(),
+            metamaskController.keyringController.state,
           );
         }),
       ]);
@@ -244,10 +237,40 @@ describe('MetaMaskController', function () {
         );
 
       const [token1, token2] = await Promise.all([
-        metamaskController.getApi().addToken(address, symbol, decimals),
-        metamaskController.getApi().addToken(address, symbol, decimals),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
       ]);
       assert.deepEqual(token1, token2);
+    });
+
+    it('networkClientId is used when provided', async function () {
+      const supportsInterfaceStub = sinon
+        .stub()
+        .returns(Promise.resolve(false));
+      sinon
+        .stub(metamaskController.tokensController, '_createEthersContract')
+        .callsFake(() =>
+          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
+        );
+      sinon
+        .stub(metamaskController.tokensController, 'getNetworkClientById')
+        .callsFake(() => ({
+          configuration: {
+            chainId: '0xa',
+          },
+        }));
+
+      await metamaskController.getApi().addToken({
+        address,
+        symbol,
+        decimals,
+        networkClientId: 'networkClientId1',
+      });
+      assert.strictEqual(
+        metamaskController.tokensController.getNetworkClientById.getCall(0)
+          .args[0],
+        'networkClientId1',
+      );
     });
   });
 

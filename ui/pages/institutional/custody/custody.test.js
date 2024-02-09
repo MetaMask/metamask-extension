@@ -43,7 +43,8 @@ describe('CustodyPage', function () {
         custodians: [
           {
             type: 'GK8',
-            envName: 'gk8',
+            envName: 'gk8-prod',
+            name: 'GK8',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',
@@ -56,7 +57,8 @@ describe('CustodyPage', function () {
           },
           {
             type: 'Saturn B',
-            envName: 'Saturn Custody B',
+            envName: 'saturn-prod',
+            name: 'Saturn Custody B',
             apiUrl: 'https://saturn-custody.dev.metamask-institutional.io',
             iconUrl:
               'https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg',

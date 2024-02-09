@@ -1,11 +1,19 @@
 {
   "data": {
+    "AccountsController": {
+      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+    },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "NetworkOrderController": { "orderedNetworkList": {} },
+    "AccountOrderController": {
+      "pinnedAccountList": {},
+      "hiddenAccountList": {}
+    },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
@@ -28,13 +36,15 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
-    "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
-      "conversionDate": "number",
-      "conversionRate": 1300,
       "currentCurrency": "usd",
-      "nativeCurrency": "ETH",
-      "usdConversionRate": 1300
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": "number",
+          "conversionRate": 1300,
+          "usdConversionRate": 1300
+        }
+      }
     },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -50,7 +60,6 @@
       "traits": "object"
     },
     "NetworkController": {
-      "networkId": "1337",
       "selectedNetworkClientId": "string",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
@@ -80,7 +89,6 @@
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
-      "infuraBlocked": false,
       "ipfsGateway": "string",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
@@ -88,9 +96,11 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
+        "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "useNativeCurrencyAsPrimaryCurrency": true
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "petnamesEnabled": true
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -100,7 +110,8 @@
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
-      "useMultiAccountBalanceChecker": true
+      "useMultiAccountBalanceChecker": true,
+      "useRequestQueue": false
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {

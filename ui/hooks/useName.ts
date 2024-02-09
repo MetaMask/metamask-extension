@@ -1,7 +1,31 @@
-import { NameEntry, NameType } from '@metamask/name-controller';
+import {
+  FALLBACK_VARIATION,
+  NameEntry,
+  NameType,
+} from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getCurrentChainId, getNames } from '../selectors';
+
+function normalizeValue(value: string, type: string): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return value.toLowerCase();
+
+    default:
+      return value;
+  }
+}
+
+function getVariationKey(type: string, chainId: string): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return chainId;
+
+    default:
+      return '';
+  }
+}
 
 export function useName(
   value: string,
@@ -10,16 +34,29 @@ export function useName(
 ): NameEntry {
   const names = useSelector(getNames, isEqual);
   const chainId = useSelector(getCurrentChainId);
+  const normalizedValue = normalizeValue(value, type);
+  const typeVariationKey = getVariationKey(type, chainId);
+  const variationKey = variation ?? typeVariationKey;
+  const variationsToNameEntries = names[type]?.[normalizedValue] ?? {};
 
-  const variationKey =
-    variation ?? (type === NameType.ETHEREUM_ADDRESS ? chainId : '');
+  const variationEntry = variationsToNameEntries[variationKey];
+  const fallbackEntry = variationsToNameEntries[FALLBACK_VARIATION];
 
-  const nameEntry = names[type]?.[value]?.[variationKey];
+  const entry =
+    !variationEntry?.name && fallbackEntry
+      ? fallbackEntry
+      : variationEntry ?? {};
 
+  const {
+    name = null,
+    sourceId = null,
+    origin = null,
+    proposedNames = {},
+  } = entry;
   return {
-    name: nameEntry?.name ?? null,
-    sourceId: nameEntry?.sourceId ?? null,
-    proposedNames: nameEntry?.proposedNames ?? {},
-    proposedNamesLastUpdated: nameEntry?.proposedNamesLastUpdated ?? null,
+    name,
+    sourceId,
+    proposedNames,
+    origin,
   };
 }

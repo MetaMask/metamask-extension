@@ -19,7 +19,7 @@ const state = {
       type: NETWORK_TYPES.MAINNET,
     },
     useTokenDetection: false,
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    currencyRates: {},
   },
 };
 

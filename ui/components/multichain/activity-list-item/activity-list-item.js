@@ -129,14 +129,44 @@ export const ActivityListItem = ({
 };
 
 ActivityListItem.propTypes = {
+  /**
+   * Top content for the activity
+   */
   topContent: PropTypes.node,
+  /**
+   * Icon which represents the activity
+   */
   icon: PropTypes.node,
+  /**
+   * Title text
+   */
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Additional text detail
+   */
   subtitle: PropTypes.node,
+  /**
+   * Middle content
+   */
   midContent: PropTypes.node,
+  /**
+   * Additional variable contents
+   */
   children: PropTypes.node,
+  /**
+   * Right-most content
+   */
   rightContent: PropTypes.node,
+  /**
+   * Executes upon click of the activity
+   */
   onClick: PropTypes.func,
+  /**
+   * Additional classname for this component
+   */
   className: PropTypes.string,
+  /**
+   * Test ID for this component
+   */
   'data-testid': PropTypes.string,
 };

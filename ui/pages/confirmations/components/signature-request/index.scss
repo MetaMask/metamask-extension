@@ -1,0 +1,66 @@
+@import 'signature-request-header/index';
+@import 'signature-request-message/index';
+@import 'signature-request-data/index';
+
+.signature-request {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  width: 408px;
+  min-height: 100%;
+  height: max-content;
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  border-radius: 8px;
+
+  @include screen-sm-min {
+    max-height: max-content;
+    min-height: 570px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &__reject-all-button {
+    padding-bottom: 20px;
+  }
+
+  &__origin {
+    margin-top: 16px;
+  }
+}
+
+.signature-request-header {
+  flex: 1;
+
+  .network-display {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+}
+
+.signature-request-content {
+  flex: 1 40%;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: min-content;
+
+  &__info {
+    @include H7;
+
+    padding: 0 12px 4px;
+  }
+
+  &__info--bolded {
+    @include Paragraph;
+
+    font-weight: 500;
+  }
+}
+
+a.signature-request-content__verify-contract-details {
+  padding: 0;
+}

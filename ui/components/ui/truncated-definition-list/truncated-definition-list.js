@@ -11,6 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 export default function TruncatedDefinitionList({
   dictionary,
   tooltips,
+  warnings,
   prefaceKeys,
   title,
 }) {
@@ -28,6 +29,7 @@ export default function TruncatedDefinitionList({
       >
         <DefinitionList
           dictionary={pick(dictionary, prefaceKeys)}
+          warnings={warnings}
           tooltips={tooltips}
         />
         <Button
@@ -60,6 +62,7 @@ export default function TruncatedDefinitionList({
             <DefinitionList
               gap={Size.MD}
               tooltips={tooltips}
+              warnings={warnings}
               dictionary={dictionary}
             />
           </Box>
@@ -72,6 +75,7 @@ export default function TruncatedDefinitionList({
 TruncatedDefinitionList.propTypes = {
   dictionary: DefinitionList.propTypes.dictionary,
   tooltips: DefinitionList.propTypes.dictionary,
+  warnings: DefinitionList.propTypes.dictionary,
   title: PropTypes.string,
   prefaceKeys: PropTypes.arrayOf(PropTypes.string),
 };

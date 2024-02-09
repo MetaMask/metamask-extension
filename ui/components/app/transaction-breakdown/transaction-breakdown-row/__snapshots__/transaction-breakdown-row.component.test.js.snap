@@ -18,8 +18,6 @@ exports[`TransactionBreakdownRow Component should match snapshot 1`] = `
     >
       <button
         class="button btn--rounded btn-default"
-        role="button"
-        tabindex="0"
       >
         Button
       </button>

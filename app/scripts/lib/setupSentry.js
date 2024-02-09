@@ -28,9 +28,17 @@ export const ERROR_URL_ALLOWLIST = {
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
+  AccountsController: {
+    internalAccounts: {
+      accounts: false,
+      selectedAccount: false,
+    },
+  },
   AccountTracker: {
     accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
+    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -42,6 +50,13 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AnnouncementController: {
     announcements: false,
+  },
+  NetworkOrderController: {
+    orderedNetworkList: [],
+  },
+  AccountOrderController: {
+    pinnedAccountList: [],
+    hiddenAccountList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -69,30 +84,24 @@ export const SENTRY_BACKGROUND_STATE = {
     qrHardware: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    serviceWorkerLastActiveTime: true,
     showBetaHeader: true,
     showProductTour: true,
+    showNetworkBanner: true,
+    showAccountBanner: true,
     showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
   },
-  CachedBalancesController: {
-    cachedBalances: false,
-  },
   CronjobController: {
     jobs: false,
   },
   CurrencyController: {
-    conversionDate: true,
-    conversionRate: true,
     currentCurrency: true,
-    nativeCurrency: true,
-    pendingCurrentCurrency: true,
-    pendingNativeCurrency: true,
-    usdConversionRate: true,
+    currencyRates: true,
   },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
@@ -109,11 +118,11 @@ export const SENTRY_BACKGROUND_STATE = {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
   },
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
-    keyringTypes: false,
   },
   LoggingController: {
     logs: false,
@@ -127,9 +136,13 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
   },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
+  },
   NetworkController: {
     networkConfigurations: false,
-    networkId: true,
     networksMetadata: true,
     providerConfig: {
       chainId: true,
@@ -156,6 +169,13 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
+  PPOMController: {
+    chainStatus: true,
+    securityAlertsEnabled: false,
+    storageMetadata: [],
+    versionFileETag: false,
+    versionInfo: [],
+  },
   PermissionController: {
     subjects: false,
   },
@@ -173,7 +193,7 @@ export const SENTRY_BACKGROUND_STATE = {
     forgottenPassword: true,
     identities: false,
     incomingTransactionsPreferences: true,
-    infuraBlocked: true,
+    isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     isLineaMainnetReleased: true,
     knownMethodData: false,
@@ -183,13 +203,16 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
     },
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
+    signatureSecurityAlertResponses: false,
     transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
@@ -200,6 +223,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
+    useRequestQueue: true,
   },
   SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
@@ -219,10 +243,11 @@ export const SENTRY_BACKGROUND_STATE = {
       liveness: true,
       smartTransactions: false,
       userOptIn: true,
+      userOptInV2: true,
     },
   },
   SnapController: {
-    snapErrors: false,
+    unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
   },
@@ -271,6 +296,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenRatesController: {
     contractExchangeRates: false,
+    contractExchangeRatesByChainId: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -289,9 +315,13 @@ export const SENTRY_BACKGROUND_STATE = {
   TransactionController: {
     transactions: false,
     lastFetchedBlockNumbers: false,
+    methodData: false,
   },
   TxController: {
     transactions: false,
+  },
+  UserOperationController: {
+    userOperations: false,
   },
 };
 
@@ -321,6 +351,12 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    confirmationExchangeRates: true,
+    useSafeChainsListValidation: true,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    addSnapAccountEnabled: false,
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IF
   },
   unconnectedAccount: true,
 };

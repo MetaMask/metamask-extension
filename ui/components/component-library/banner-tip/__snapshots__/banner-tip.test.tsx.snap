@@ -15,7 +15,9 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
         src="images/fox-greeting.png"
       />
     </div>
-    <div>
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
       <p
         class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >

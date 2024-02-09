@@ -6,6 +6,10 @@ import {
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../shared/constants/security-provider';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -115,6 +119,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const req = {
         method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
+        securityAlertResponse: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+        },
       };
 
       const res = {
@@ -128,6 +136,49 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
+          security_alert_response: BlockaidResultType.Malicious,
+          security_alert_reason: BlockaidReason.maliciousDomain,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track an event with correct blockaid parameters when providerRequestsCount is provided`, async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN,
+        origin: 'some.dapp',
+        securityAlertResponse: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+          providerRequestsCount: {
+            eth_call: 5,
+            eth_getCode: 3,
+          },
+        },
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      await handler(req, res, next);
+      expect(trackEvent).toHaveBeenCalledTimes(1);
+      /**
+       * TODO:
+       * toMatchObject matches even if the matched object does not contain some of the properties of the expected object
+       * I'm not sure why toMatchObject is used but we should probably check the other tests in this file for correctness in
+       * another PR.
+       *
+       */
+      expect(trackEvent.mock.calls[0][0]).toStrictEqual({
+        category: 'inpage_provider',
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          security_alert_response: BlockaidResultType.Malicious,
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
         referrer: { url: 'some.dapp' },
       });

@@ -20,13 +20,12 @@ describe('4byte setting', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
         await unlockWallet(driver);
 
         // deploy contract
@@ -42,7 +41,7 @@ describe('4byte setting', function () {
         });
 
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const actionElement = await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
@@ -61,13 +60,12 @@ describe('4byte setting', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
         await unlockWallet(driver);
 
         // goes to the settings screen
@@ -95,7 +93,7 @@ describe('4byte setting', function () {
         });
 
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const contractInteraction = 'Contract interaction';
         const actionElement = await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',

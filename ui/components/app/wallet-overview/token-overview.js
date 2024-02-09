@@ -7,35 +7,34 @@ import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { startNewDraftTransaction } from '../../../ducks/send';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   getIsSwapsChain,
   getCurrentChainId,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  getIsBridgeToken,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getIsBridgeChain,
   getCurrentKeyring,
   getIsBuyableChain,
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -52,6 +51,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
+import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -59,29 +59,34 @@ const TokenOverview = ({ className, token }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const { tokensWithBalances } = useTokenTracker([token]);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   const balance = tokensWithBalances[0]?.balance;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   const balanceToRender = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
     token.address,
     balanceToRender,
     token.symbol,
   );
+
+  const isOriginalTokenSymbol = useIsOriginalTokenSymbol(
+    token.address,
+    token.symbol,
+  );
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  const isBridgeToken = useSelector(getIsBridgeToken(token.address));
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const { openBuyCryptoInPdapp } = useRamps();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
 
@@ -98,7 +103,7 @@ const TokenOverview = ({ className, token }) => {
       event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     if (token.isERC721) {
@@ -124,7 +129,7 @@ const TokenOverview = ({ className, token }) => {
               suffix={token.symbol}
             />
           </div>
-          {formattedFiatBalance ? (
+          {formattedFiatBalance && isOriginalTokenSymbol ? (
             <CurrencyDisplay
               className="token-overview__secondary-balance"
               displayValue={formattedFiatBalance}
@@ -136,13 +141,16 @@ const TokenOverview = ({ className, token }) => {
       buttons={
         <>
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="token-overview__button"
               Icon={
-                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
+                <Icon
+                  name={IconName.PlusMinus}
+                  color={IconColor.primaryInverse}
+                />
               }
-              label={t('buy')}
+              label={t('buyAndSell')}
               data-testid="token-overview-buy"
               onClick={() => {
                 openBuyCryptoInPdapp();
@@ -159,11 +167,11 @@ const TokenOverview = ({ className, token }) => {
               }}
               disabled={token.isERC721 || !isBuyableChain}
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             <>
               <IconButton
                 className="eth-overview__button"
@@ -178,7 +186,7 @@ const TokenOverview = ({ className, token }) => {
                 onClick={() => {
                   stakingEvent();
                   global.platform.openTab({
-                    url: 'https://metamask-institutional.io/stake',
+                    url: `${mmiPortfolioUrl}/stake`,
                   });
                 }}
               />
@@ -195,12 +203,14 @@ const TokenOverview = ({ className, token }) => {
                   data-testid="token-overview-mmi-portfolio"
                   onClick={() => {
                     portfolioEvent();
-                    window.open(mmiPortfolioUrl, '_blank');
+                    global.platform.openTab({
+                      url: mmiPortfolioUrl,
+                    });
                   }}
                 />
               )}
             </>
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
 
           <IconButton
@@ -250,13 +260,13 @@ const TokenOverview = ({ className, token }) => {
                 />
               }
               onClick={() => {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 global.platform.openTab({
-                  url: MMI_SWAPS_URL,
+                  url: `${mmiPortfolioUrl}/swap`,
                 });
-                ///: END:ONLY_INCLUDE_IN
+                ///: END:ONLY_INCLUDE_IF
 
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
@@ -281,7 +291,7 @@ const TokenOverview = ({ className, token }) => {
                 } else {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
-                ///: END:ONLY_INCLUDE_IN
+                ///: END:ONLY_INCLUDE_IF
               }}
               label={t('swap')}
               tooltipRender={null}
@@ -289,8 +299,8 @@ const TokenOverview = ({ className, token }) => {
           )}
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            isBridgeToken && (
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            isBridgeChain && (
               <IconButton
                 className="token-overview__button"
                 data-testid="token-overview-bridge"
@@ -325,7 +335,7 @@ const TokenOverview = ({ className, token }) => {
                 tooltipRender={null}
               />
             )
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </>
       }

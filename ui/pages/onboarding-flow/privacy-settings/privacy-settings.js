@@ -70,6 +70,7 @@ export default function PrivacySettings() {
     useState(useTokenDetection);
   const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] =
     useState(useCurrencyRateCheck);
+
   const [
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
@@ -196,7 +197,7 @@ export default function PrivacySettings() {
               <>
                 {t('onboardingAdvancedPrivacyNetworkDescription', [
                   <a
-                    href="https://consensys.net/privacy-policy/"
+                    href="https://consensys.io/privacy-policy/"
                     key="link"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -269,7 +270,7 @@ export default function PrivacySettings() {
             description={
               <>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionIntro')}
+                  {t('ensDomainsSettingDescriptionIntroduction')}
                 </Text>
                 <Box
                   as="ul"
@@ -279,17 +280,14 @@ export default function PrivacySettings() {
                   style={{ listStyleType: 'circle' }}
                 >
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint1')}
+                    {t('ensDomainsSettingDescriptionPart1')}
                   </Text>
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint2')}
-                  </Text>
-                  <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint3')}
+                    {t('ensDomainsSettingDescriptionPart2')}
                   </Text>
                 </Box>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionOutro')}
+                  {t('ensDomainsSettingDescriptionOutroduction')}
                 </Text>
               </>
             }

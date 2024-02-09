@@ -10,7 +10,7 @@ import {
 import {
   callBackgroundMethod,
   submitRequestToBackground,
-} from '../action-queue';
+} from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
 
@@ -35,6 +35,21 @@ export function showInteractiveReplacementTokenBanner({
         throw new Error(err.message);
       }
     }
+  };
+}
+
+export function setCustodianDeepLink({
+  fromAddress,
+  custodyId,
+}: {
+  fromAddress: string;
+  custodyId: string;
+}) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setCustodianDeepLink', [
+      { fromAddress, custodyId },
+    ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 

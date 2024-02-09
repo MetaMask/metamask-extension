@@ -1,0 +1,18 @@
+.multichain-send-page {
+  width: 408px;
+
+  &__account-picker {
+    height: 62px;
+  }
+
+  &__recipient {
+    .tabs__list {
+      border-bottom: 0;
+      background-color: transparent;
+
+      .tab {
+        width: 50%;
+      }
+    }
+  }
+}

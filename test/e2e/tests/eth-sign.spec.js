@@ -6,6 +6,7 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   regularDelayMs,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -18,10 +19,9 @@ describe('Eth sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver);
@@ -53,10 +53,9 @@ describe('Eth sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver);
@@ -66,7 +65,7 @@ describe('Eth sign', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -75,7 +74,7 @@ describe('Eth sign', function () {
         await approveEthSign(
           driver,
           '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
+          '[data-testid="signature-warning-sign-button"]',
         );
         // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
@@ -108,12 +107,10 @@ describe('Eth sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         // Create eth sign
@@ -130,7 +127,7 @@ describe('Eth sign', function () {
         await driver.clickElement('#ethSign');
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -145,14 +142,14 @@ describe('Eth sign', function () {
         await approveEthSign(
           driver,
           '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
+          '[data-testid="signature-warning-sign-button"]',
         );
 
         // Confirm second eth sign
         await approveEthSign(
           driver,
           '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
+          '[data-testid="signature-warning-sign-button"]',
         );
 
         // Switch to the Dapp

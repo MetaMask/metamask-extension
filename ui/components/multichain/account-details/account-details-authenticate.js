@@ -14,8 +14,8 @@ import {
   Box,
   ButtonPrimary,
   ButtonSecondary,
-  FormTextField,
 } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export const AccountDetailsAuthenticate = ({
   address,
@@ -88,8 +88,20 @@ export const AccountDetailsAuthenticate = ({
 };
 
 AccountDetailsAuthenticate.propTypes = {
+  /**
+   * The account address
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Executes upon Cancel button click
+   */
   onCancel: PropTypes.func.isRequired,
+  /**
+   * Private key setter
+   */
   setPrivateKey: PropTypes.func.isRequired,
+  /**
+   * showHoldToReveal setter
+   */
   setShowHoldToReveal: PropTypes.func.isRequired,
 };

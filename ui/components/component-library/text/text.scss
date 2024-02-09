@@ -48,6 +48,14 @@ $text-variants: (
     }
   }
 
+  &--inherit {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
+
   @each $weight in $font-weight {
     &--font-weight-#{$weight} {
       @if $weight == "medium" {
@@ -78,13 +86,7 @@ $text-variants: (
     }
   }
 
-  &--inherit {
-    font-family: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    letter-spacing: inherit;
-  }
+
 
   &--ellipsis {
     text-overflow: ellipsis;

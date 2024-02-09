@@ -28,10 +28,6 @@
     "name": "Philippine Peso"
   },
   {
-    "code": "1st",
-    "name": "FirstBlood"
-  },
-  {
     "code": "adt",
     "name": "adToken"
   },
@@ -58,10 +54,6 @@
   {
     "code": "cad",
     "name": "Canadian Dollar"
-  },
-  {
-    "code": "cfi",
-    "name": "Cofound.it"
   },
   {
     "code": "crb",
@@ -104,20 +96,12 @@
     "name": "Golem"
   },
   {
-    "code": "gup",
-    "name": "Matchpool"
-  },
-  {
     "code": "hmq",
     "name": "Humaniq"
   },
   {
     "code": "jpy",
     "name": "Japanese Yen"
-  },
-  {
-    "code": "lgd",
-    "name": "Legends Room"
   },
   {
     "code": "lsk",
@@ -208,10 +192,6 @@
     "name": "TokenCard"
   },
   {
-    "code": "trst",
-    "name": "WeTrust"
-  },
-  {
     "code": "uah",
     "name": "Ukrainian Hryvnia"
   },
@@ -248,7 +228,7 @@
     "name": "DAI"
   },
   {
-    "code": "sai",
-    "name": "SAI"
+    "code": "sek",
+    "name": "Swedish Krona"
   }
 ]

@@ -1,0 +1,234 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`All Connections render renders correctly 1`] = `
+<div>
+  <div
+    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+  >
+    <div
+      class="mm-box multichain-page__inner-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      data-testid="all-connections"
+      header="[object Object]"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-center mm-box--padding-4 mm-box--color-text-default mm-box--background-color-background-default"
+        data-testid="sites-connections"
+      >
+        Site Connections
+      </p>
+      <button
+        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+      >
+        <div
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <img
+              alt="avatar-favicon logo"
+              class="mm-avatar-favicon__image"
+              src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+            />
+          </div>
+          <div
+            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-default mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+          style="flex-grow: 1;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+          >
+            E2E Test Dapp
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--align-items-flex-start mm-box--color-text-alternative"
+          >
+            metamask.github.io
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
+          style="flex: 1;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
+          >
+            1
+             
+            account
+          </p>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
+          />
+        </div>
+      </button>
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-center mm-box--padding-4 mm-box--color-text-default mm-box--background-color-background-default"
+        data-testid="snaps-connections"
+      >
+        Snap Connections
+      </p>
+      <button
+        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+      >
+        <div
+          class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+            style="border-width: 0px;"
+          >
+            T
+          </div>
+          <div
+            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-0 box--border-style-solid box--border-width-1"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
+                style="mask-image: url('./images/icons/snaps.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+          style="flex-grow: 1;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+          >
+            Test Snap 1
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--align-items-flex-start mm-box--color-text-alternative"
+          >
+            @metamask/testSnap1
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
+          style="flex: 1;"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
+          />
+        </div>
+      </button>
+      <button
+        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+      >
+        <div
+          class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+            style="border-width: 0px;"
+          >
+            T
+          </div>
+          <div
+            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-0 box--border-style-solid box--border-width-1"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
+                style="mask-image: url('./images/icons/snaps.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+          style="flex-grow: 1;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+          >
+            Test Snap 2
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--align-items-flex-start mm-box--color-text-alternative"
+          >
+            @metamask/testSnap2
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
+          style="flex: 1;"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
+          />
+        </div>
+      </button>
+      <button
+        class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+      >
+        <div
+          class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+            style="border-width: 0px;"
+          >
+            T
+          </div>
+          <div
+            class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-0 box--border-style-solid box--border-width-1"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
+                style="mask-image: url('./images/icons/snaps.svg');"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
+          style="flex-grow: 1;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
+          >
+            Test Snap 3
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--align-items-flex-start mm-box--color-text-alternative"
+          >
+            @metamask/testSnap3
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
+          style="flex: 1;"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
+          />
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;

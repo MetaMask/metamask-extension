@@ -30,12 +30,12 @@ import {
   Button,
   BUTTON_VARIANT,
   Modal,
-  ModalHeader,
-  ModalContent,
   ModalOverlay,
   Text,
   Box,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CustodyConfirmLink = ({ hideModal }) => {
   const t = useI18nContext();
@@ -49,7 +49,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
   const { displayName, iconUrl } =
-    custodians.find((item) => item.name === custodianName) || {};
+    custodians.find((item) => item.envName === custodianName) || {};
   const { url, ethereum, text, action } = useSelector(
     (state) => state.appState.modal.modalState.props.link || {},
   );

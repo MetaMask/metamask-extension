@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -8,22 +8,29 @@ import {
   Display,
   JustifyContent,
   AlignItems,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
 import { Box, ModalFocus, useModalContext } from '..';
 
-import { ModalContentProps, ModalContentSize } from './modal-content.types';
+import { BoxProps } from '../box';
+import type { PolymorphicRef } from '../box';
+import {
+  ModalContentProps,
+  ModalContentSize,
+  ModalContentComponent,
+} from './modal-content.types';
 
-export const ModalContent = forwardRef(
-  (
+export const ModalContent: ModalContentComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
     {
       className = '',
       children,
       size = ModalContentSize.Sm,
       modalDialogProps,
       ...props
-    }: ModalContentProps,
-    ref: React.Ref<HTMLElement>,
+    }: ModalContentProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
     const {
       onClose,
@@ -90,7 +97,7 @@ export const ModalContent = forwardRef(
           paddingLeft={4}
           paddingTop={[4, 8, 12]}
           paddingBottom={[4, 8, 12]}
-          {...props}
+          {...(props as BoxProps<C>)}
         >
           <Box
             as="section"
@@ -99,7 +106,10 @@ export const ModalContent = forwardRef(
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
-            padding={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            paddingTop={4}
+            paddingBottom={4}
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(

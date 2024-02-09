@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
-  BlockSize,
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -55,13 +54,19 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
     }, [startAccessoryRef, endAccessoryRef, children]);
 
     const getTitleStyles = useMemo(() => {
-      if (startAccessory && !endAccessory) {
+      if (startAccessory && !endAccessory && accessoryMinWidth) {
         return {
           marginRight: `${accessoryMinWidth}px`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
-      } else if (!startAccessory && endAccessory) {
+      } else if (!startAccessory && endAccessory && accessoryMinWidth) {
         return {
           marginLeft: `${accessoryMinWidth}px`,
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
+        };
+      } else if (startAccessory && endAccessory && accessoryMinWidth) {
+        return {
+          width: `calc(100% - ${accessoryMinWidth * 2}px)`,
         };
       }
       return {};
@@ -92,7 +97,6 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
         )}
         {children && (
           <Box
-            width={BlockSize.Full}
             style={getTitleStyles}
             {...(childrenWrapperProps as BoxProps<'div'>)}
           >

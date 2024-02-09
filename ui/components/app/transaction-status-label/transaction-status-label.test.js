@@ -1,6 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import TransactionStatusLabel from '.';
 
@@ -9,8 +11,24 @@ describe('TransactionStatusLabel Component', () => {
   const mockState = {
     metamask: {
       custodyStatusMaps: {},
-      identities: {},
-      selectedAddress: 'fakeAddress',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
     },
   };
 
@@ -29,25 +47,10 @@ describe('TransactionStatusLabel Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render PENDING properly when status is APPROVED', () => {
-    const props = {
-      status: 'approved',
-      isEarliestNonce: true,
-      error: { message: 'test-title' },
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('should render PENDING properly', () => {
     const props = {
       date: 'June 1',
-      status: 'submitted',
+      status: TransactionStatus.submitted,
       isEarliestNonce: true,
     };
 
@@ -61,7 +64,8 @@ describe('TransactionStatusLabel Component', () => {
 
   it('should render QUEUED properly', () => {
     const props = {
-      status: 'queued',
+      status: TransactionStatus.submitted,
+      isEarliestNonce: false,
     };
 
     const { container } = renderWithProvider(
@@ -74,7 +78,20 @@ describe('TransactionStatusLabel Component', () => {
 
   it('should render UNAPPROVED properly', () => {
     const props = {
-      status: 'unapproved',
+      status: TransactionStatus.unapproved,
+    };
+
+    const { container } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render SIGNING if status is approved', () => {
+    const props = {
+      status: TransactionStatus.approved,
     };
 
     const { container } = renderWithProvider(
@@ -104,6 +121,7 @@ describe('TransactionStatusLabel Component', () => {
     const props = {
       status: 'approved',
       custodyStatus: 'approved',
+      custodyStatusDisplayText: 'Test',
     };
     const customMockStore = {
       metamask: {
@@ -115,12 +133,23 @@ describe('TransactionStatusLabel Component', () => {
             },
           },
         },
-        selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        identities: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            name: 'Account 1',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'Custody - Jupiter',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         keyrings: [
           {
@@ -138,7 +167,7 @@ describe('TransactionStatusLabel Component', () => {
       store,
     );
 
-    expect(getByText(mockShortText)).toBeVisible();
+    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
   });
   it('should display the error message when there is an error', () => {
     const mockShortText = 'Short Text Test';
@@ -158,12 +187,23 @@ describe('TransactionStatusLabel Component', () => {
             },
           },
         },
-        selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        identities: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            name: 'Account 1',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'Custody - Jupiter',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         keyrings: [
           {
@@ -203,12 +243,23 @@ describe('TransactionStatusLabel Component', () => {
             },
           },
         },
-        selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        identities: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            name: 'Account 1',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'Custody - Jupiter',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         keyrings: [
           {

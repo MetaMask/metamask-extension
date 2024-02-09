@@ -43,16 +43,6 @@ html {
   }
 }
 
-.mouse-user-styles {
-  button:focus,
-  input:focus,
-  textarea:focus,
-  .unit-input__input,
-  .currency-display__input {
-    outline: none;
-  }
-}
-
 /*
   This error class is used in the following files still:
   /ui/pages/create-account/import-account/json.js
@@ -91,19 +81,6 @@ a {
 
 a:hover {
   color: var(--color-primary-alternative);
-}
-
-input.large-input,
-textarea.large-input {
-  padding: 8px;
-}
-
-input.large-input {
-  height: 36px;
-}
-
-.allcaps {
-  text-transform: uppercase;
 }
 
 .input-label {
