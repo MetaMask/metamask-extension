@@ -319,9 +319,9 @@ export default function createRPCMethodTrackingMiddleware({
       if (!isDisabledRPCMethod) {
         if (SIGNING_METHODS.includes(method)) {
           const securityAlertResponse =
-            appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse?.securityAlertId,
-            );
+            appStateController.store.getState().signatureSecurityAlertResponses[
+              req.securityAlertResponse?.securityAlertId
+            ];
           blockaidMetricProps = getBlockaidMetricsProps({
             securityAlertResponse,
           });

@@ -25,16 +25,15 @@ const securityProviderRequest = () => {
 };
 
 const appStateController = {
-  getSignatureSecurityAlertResponse: (securityAlertId) => {
-    console.log(
-      'getSignatureSecurityAlertResponse called in test: ',
-      securityAlertId,
-    );
-    return {
-      result_type: BlockaidResultType.Malicious,
-      reason: BlockaidReason.maliciousDomain,
-      securityAlertId,
-    };
+  store: {
+    getState: () => ({
+      signatureSecurityAlertResponses: {
+        1: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+        },
+      },
+    }),
   },
 };
 
@@ -137,6 +136,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         securityAlertResponse: {
           result_type: BlockaidResultType.Malicious,
           reason: BlockaidReason.maliciousDomain,
+          securityAlertId: 1,
         },
       };
 
@@ -169,6 +169,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             eth_call: 5,
             eth_getCode: 3,
           },
+          securityAlertId: 1,
         },
       };
 
