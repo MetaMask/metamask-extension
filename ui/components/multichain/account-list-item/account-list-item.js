@@ -262,7 +262,9 @@ export const AccountListItem = ({
               color: Color.textAlternative,
             }}
             startIconName={
-              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
+              identity.metadata.keyring.type === KeyringType.snap
+                ? IconName.Snaps
+                : null
             }
           />
         ) : null}

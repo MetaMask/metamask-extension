@@ -15,25 +15,28 @@ const [chaosId, simpleId, hardwareId] = Object.keys(
 const SIMPLE_ACCOUNT = {
   ...testData.metamask.internalAccounts.accounts[simpleId],
   balance: '0x152387ad22c3f0',
-  keyring: {
-    type: 'HD Key Tree',
+  metadata: {
+    ...testData.metamask.internalAccounts.accounts[simpleId].metadata,
+    keyring: {
+      type: 'HD Key Tree',
+    },
   },
 };
 
 const HARDWARE_ACCOUNT = {
   ...testData.metamask.internalAccounts.accounts[hardwareId],
-  balance: '0x152387ad22c3f0',
-  keyring: {
-    type: 'Ledger Hardware',
+  metadata: {
+    ...testData.metamask.internalAccounts.accounts[hardwareId].metadata,
+    keyring: {
+      type: 'Ledger Hardware',
+    },
   },
+  balance: '0x152387ad22c3f0',
 };
 
 const CHAOS_ACCOUNT = {
   ...testData.metamask.internalAccounts.accounts[chaosId],
   balance: '0x152387ad22c3f0',
-  keyring: {
-    type: 'HD Key Tree',
-  },
 };
 
 const SNAP_IDENTITY = {
@@ -44,8 +47,12 @@ const SNAP_IDENTITY = {
     name: 'Snap Account 1',
     keyring: {
       type: 'Snap Keyring',
-      id: 'Mock-snap',
       name: 'snap-name',
+    },
+    snap: {
+      name: 'Test Snap Name',
+      id: 'snap-id',
+      enabled: true,
     },
   },
   balance: '0x152387ad22c3f0',
@@ -65,7 +72,7 @@ export default {
   title: 'Components/Multichain/AccountListItem',
   component: AccountListItem,
   argTypes: {
-    account: {
+    identity: {
       control: 'object',
     },
     selected: {

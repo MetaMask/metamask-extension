@@ -13,7 +13,7 @@ export default {
     },
   },
   argTypes: {
-    account: {
+    identity: {
       control: 'object',
     },
     className: { control: 'text' },
@@ -43,7 +43,7 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  account,
+  identity: account,
   displayAddress: false,
 };
 
