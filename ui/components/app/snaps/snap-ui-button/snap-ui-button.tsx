@@ -20,6 +20,8 @@ export const SnapUIButton: FunctionComponent<
     handleEvent(UserInputEventType.ButtonClickEvent, name);
   };
 
+  console.log('re-render');
+
   return (
     <Button
       className="snap-ui-renderer__button"

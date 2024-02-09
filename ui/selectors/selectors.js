@@ -934,6 +934,17 @@ export const getMemoizedInterface = createDeepEqualSelector(
   getInterface,
   (snapInterface) => snapInterface,
 );
+
+export const getInterfaceContent = createSelector(
+  [getMemoizedInterfaces, selectInterfaceId],
+  (interfaces, id) => interfaces[id]?.content,
+);
+
+export const getMemoizedInterfaceContent = createDeepEqualSelector(
+  getInterfaceContent,
+  (content) => content,
+);
+
 ///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {

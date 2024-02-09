@@ -9,6 +9,7 @@ import React, {
   ReactNode,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,13 +46,18 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children, interfaceId, snapId }) => {
   const dispatch = useDispatch();
-  const { state: interfaceState } = useSelector((state) =>
-    getMemoizedInterface(state, interfaceId),
+  const { state: interfaceState } = useSelector(
+    (state) => getMemoizedInterface(state, interfaceId),
+    () => true,
   );
 
   const [internalState, setInternalState] = useState<InterfaceState>(
     interfaceState ?? {},
   );
+
+  useEffect(() => {
+    console.log('internal state triggered re-render');
+  }, [internalState]);
 
   const snapRequestDebounced: HandleEvent = debounce(
     (event, name) =>

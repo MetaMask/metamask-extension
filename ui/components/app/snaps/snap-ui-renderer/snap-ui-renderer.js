@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
 
@@ -11,7 +11,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { getSnapName } from '../../../../helpers/utils/util';
 import {
-  getMemoizedInterface,
+  getMemoizedInterfaceContent,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { Box, FormTextField, Text } from '../../../component-library';
@@ -44,9 +44,24 @@ export const SnapUIRenderer = ({
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  const { content } = useSelector((state) =>
-    getMemoizedInterface(state, interfaceId),
+  const content = useSelector((state) =>
+    getMemoizedInterfaceContent(state, interfaceId),
   );
+
+  const elementKeyIndex = 0;
+  const sections = useMemo(
+    () =>
+      content &&
+      mapToTemplate({
+        element: content,
+        elementKeyIndex,
+      }),
+    [content, elementKeyIndex],
+  );
+
+  useEffect(() => {
+    console.log('sections caused a re-render');
+  }, [sections]);
 
   if (isLoading || !content) {
     return (
@@ -79,12 +94,6 @@ export const SnapUIRenderer = ({
       </SnapDelineator>
     );
   }
-
-  const elementKeyIndex = 0;
-  const sections = mapToTemplate({
-    element: content,
-    elementKeyIndex,
-  });
 
   return (
     <SnapDelineator
