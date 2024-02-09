@@ -56,7 +56,6 @@ const SNAP_IDENTITY = {
     },
   },
   balance: '0x152387ad22c3f0',
-  label: 'Test Snap Name',
 };
 
 const CONTAINER_STYLES = {

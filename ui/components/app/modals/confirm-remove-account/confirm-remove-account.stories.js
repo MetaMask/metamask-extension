@@ -7,12 +7,12 @@ export default {
 
   component: ConfirmRemoveAccount,
   argTypes: {
-    account: {
+    identity: {
       control: 'object',
     },
   },
   args: {
-    account: {
+    identity: {
       address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
