@@ -1,8 +1,16 @@
-import React, { useCallback, useMemo } from 'react';
+import classnames from 'classnames';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Header, Page } from '../page';
+import { Content, Header, Page } from '../page';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -11,17 +19,26 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BackgroundColor,
+  BlockSize,
   Color,
+  Display,
+  FlexDirection,
+  JustifyContent,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   getAllConnectedAccounts,
   getConnectedSubjectsForAllAddresses,
+  getOnboardedInThisUISession,
+  getShowPermissionsTour,
   getSnapsList,
 } from '../../../../selectors';
 import { Tab, Tabs } from '../../../ui/tabs';
+import { ProductTour } from '../../product-tour-popover';
+import { hidePermissionsTour } from '../../../../store/actions';
 import { ConnectionListItem } from './connection-list-item';
 
 const TABS_THRESHOLD = 5;
@@ -29,12 +46,15 @@ const TABS_THRESHOLD = 5;
 export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  let totalConnections = 0;
+  const headerRef = useRef();
+  const [totalConnections, setTotalConnections] = useState(0);
   const connectedSubjectsForAllAddresses = useSelector(
     getConnectedSubjectsForAllAddresses,
   );
   const connectedAddresses = useSelector(getAllConnectedAccounts);
   const connectedSnapsData = useSelector(getSnapsList);
+  const showPermissionsTour = useSelector(getShowPermissionsTour);
+  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
 
   const connectedSiteData = useMemo(() => {
     const siteData = {};
@@ -48,6 +68,13 @@ export const PermissionsPage = () => {
     });
     return siteData;
   }, [connectedAddresses, connectedSubjectsForAllAddresses]);
+
+  useEffect(() => {
+    setTotalConnections(
+      Object.keys(connectedSiteData).length +
+        Object.keys(connectedSnapsData).length,
+    );
+  }, [connectedSiteData, connectedSnapsData]);
 
   const sitesConnectionsList = useMemo(() => {
     const sitesList = {};
@@ -65,7 +92,6 @@ export const PermissionsPage = () => {
           extensionId,
           addresses: [],
         };
-        totalConnections += 1;
       }
 
       sitesList[name].addresses.push(...addresses);
@@ -87,7 +113,6 @@ export const PermissionsPage = () => {
           packageName,
           subjectType,
         };
-        totalConnections += 1;
       }
     });
     return snapsList;
@@ -119,93 +144,120 @@ export const PermissionsPage = () => {
     });
 
   return (
-    <Page
-      data-testid="permissions-page"
-      header={
-        <Header
-          backgroundColor={BackgroundColor.backgroundDefault}
-          startAccessory={
-            <ButtonIcon
-              ariaLabel={t('back')}
-              iconName={IconName.ArrowLeft}
-              className="connections-header__start-accessory"
-              color={Color.iconDefault}
-              onClick={() => history.push(DEFAULT_ROUTE)}
-              size={ButtonIconSize.Sm}
-            />
-          }
-        >
-          <Text
-            as="span"
-            variant={TextVariant.headingMd}
-            textAlign={TextAlign.Center}
-          >
-            {t('permissions')}
-          </Text>
-        </Header>
-      }
-    >
-      {shouldShowTabsView ? (
-        <Tabs tabsClassName="permissions-page__tabs">
-          <Tab
-            data-testid="permissions-page-sites-tab"
-            name={t('sites')}
-            tabKey="sites"
-          >
-            {renderConnectionsList(sitesConnectionsList)}
-          </Tab>
-          <Tab
-            data-testid="permissions-page-snaps-tab"
-            name={t('snaps')}
-            tabKey="snaps"
-          >
-            {renderConnectionsList(snapsConnectionsList)}
-          </Tab>
-        </Tabs>
-      ) : (
-        <>
-          {Object.keys(sitesConnectionsList).length > 0 && (
-            <>
-              <Text
-                data-testid="sites-connections"
-                backgroundColor={BackgroundColor.backgroundDefault}
-                variant={TextVariant.bodyLgMedium}
-                textAlign={TextAlign.Center}
-                padding={4}
-              >
-                {t('siteConnections')}
-              </Text>
-              {renderConnectionsList(sitesConnectionsList)}
-            </>
-          )}
-          {Object.keys(snapsConnectionsList).length > 0 && (
-            <>
-              <Text
-                data-testid="snaps-connections"
-                variant={TextVariant.bodyLgMedium}
-                backgroundColor={BackgroundColor.backgroundDefault}
-                textAlign={TextAlign.Center}
-                padding={4}
-              >
-                {t('snapConnections')}
-              </Text>
-              {renderConnectionsList(snapsConnectionsList)}
-            </>
-          )}
-        </>
-      )}
-      {totalConnections === 0 ? (
+    <Page data-testid="permissions-page">
+      <Header
+        backgroundColor={BackgroundColor.backgroundDefault}
+        startAccessory={
+          <ButtonIcon
+            ariaLabel={t('back')}
+            iconName={IconName.ArrowLeft}
+            className="connections-header__start-accessory"
+            color={Color.iconDefault}
+            onClick={() => history.push(DEFAULT_ROUTE)}
+            size={ButtonIconSize.Sm}
+          />
+        }
+      >
         <Text
-          data-testid="no-connections"
-          variant={TextVariant.bodyLgMedium}
-          backgroundColor={BackgroundColor.backgroundDefault}
+          as="span"
+          variant={TextVariant.headingMd}
           textAlign={TextAlign.Center}
-          padding={4}
         >
-          {/* TODO: get copy for this edge case */}
-          No Connected Sites or Snaps
+          {t('permissions')}
         </Text>
+      </Header>
+      {showPermissionsTour && !onboardedInThisUISession ? (
+        <ProductTour
+          closeMenu={hidePermissionsTour}
+          className={classnames(
+            'multichain-product-tour-menu__permissions-page-tour',
+          )}
+          data-testid="permissions-page-product-tour"
+          anchorElement={headerRef.current}
+          title={t('permissionsPageTourTitle')}
+          description={t('permissionsPageTourDescription')}
+          onClick={hidePermissionsTour}
+          positionObj="44%"
+        />
       ) : null}
+      <Content>
+        <Box ref={headerRef}></Box>
+        {shouldShowTabsView ? (
+          <Tabs tabsClassName="permissions-page__tabs">
+            <Tab
+              data-testid="permissions-page-sites-tab"
+              name={t('sites')}
+              tabKey="sites"
+            >
+              {renderConnectionsList(sitesConnectionsList)}
+            </Tab>
+            <Tab
+              data-testid="permissions-page-snaps-tab"
+              name={t('snaps')}
+              tabKey="snaps"
+            >
+              {renderConnectionsList(snapsConnectionsList)}
+            </Tab>
+          </Tabs>
+        ) : (
+          <>
+            {Object.keys(sitesConnectionsList).length > 0 && (
+              <>
+                <Text
+                  data-testid="sites-connections"
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  variant={TextVariant.bodyLgMedium}
+                  textAlign={TextAlign.Center}
+                  padding={4}
+                >
+                  {t('siteConnections')}
+                </Text>
+                {renderConnectionsList(sitesConnectionsList)}
+              </>
+            )}
+            {Object.keys(snapsConnectionsList).length > 0 && (
+              <>
+                <Text
+                  data-testid="snaps-connections"
+                  variant={TextVariant.bodyLgMedium}
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  textAlign={TextAlign.Center}
+                  padding={4}
+                >
+                  {t('snapConnections')}
+                </Text>
+                {renderConnectionsList(snapsConnectionsList)}
+              </>
+            )}
+          </>
+        )}
+        {totalConnections === 0 ? (
+          <Box
+            data-testid="no-connections"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            height={BlockSize.Full}
+            gap={2}
+          >
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              textAlign={TextAlign.Center}
+            >
+              {t('permissionsPageEmptyContent')}
+            </Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              textAlign={TextAlign.Center}
+            >
+              {t('permissionsPageEmptySubContent')}
+            </Text>
+          </Box>
+        ) : null}
+      </Content>
     </Page>
   );
 };

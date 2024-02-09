@@ -1382,6 +1382,10 @@ export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
 
+export function getShowPermissionsTour(state) {
+  return state.metamask.showPermissionsTour;
+}
+
 export function getShowProductTour(state) {
   return state.metamask.showProductTour;
 }
