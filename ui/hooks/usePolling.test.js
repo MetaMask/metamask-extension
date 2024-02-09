@@ -8,7 +8,7 @@ describe('usePolling', () => {
   // eslint-disable-next-line jest/no-done-callback
   it('calls callback with polling token', (done) => {
     const mockStart = jest.fn().mockImplementation(() => {
-      return 'pollingToken';
+      return Promise.resolve('pollingToken');
     });
     const mockStop = jest.fn();
     const networkClientId = 'mainnet';
@@ -46,7 +46,7 @@ describe('usePolling', () => {
   // eslint-disable-next-line jest/no-done-callback
   it('calls the cleanup function when unmounted', (done) => {
     const mockStart = jest.fn().mockImplementation(() => {
-      return 'pollingToken';
+      return Promise.resolve('pollingToken');
     });
     const mockStop = jest.fn();
     const networkClientId = 'mainnet';
