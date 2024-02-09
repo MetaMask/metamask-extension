@@ -13,12 +13,16 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
+import { NETWORK_TYPES } from '../shared/constants/network';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
+  getOriginOfCurrentTab,
+  getAllDomains,
+  getUseRequestQueue,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -175,6 +179,38 @@ async function startApp(metamaskState, backgroundConnection, opts) {
         id: unapprovedTxsAll[0].id,
       }),
     );
+  }
+
+  const state = store.getState();
+  const selectedTabOrigin = getOriginOfCurrentTab(state);
+  const useRequestQueue = getUseRequestQueue(state);
+  // selectedTabOrigin won't be populated if in fullscreen mode
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    useRequestQueue &&
+    selectedTabOrigin
+  ) {
+    const domainNetworks = getAllDomains(state);
+    const networkForThisDomain = domainNetworks[selectedTabOrigin];
+
+    console.log('selectedTabOrigin: ', selectedTabOrigin);
+    console.log('domainNetworks: ', domainNetworks);
+    console.log('networkForThisDomain: ', networkForThisDomain);
+
+    // If we have a match, "silently" switch networks
+    if (networkForThisDomain) {
+      if (Object.keys(NETWORK_TYPES).includes(networkForThisDomain)) {
+        store.dispatch(actions.setProviderType(networkForThisDomain));
+      } else {
+        store.dispatch(actions.setActiveNetwork(networkForThisDomain));
+      }
+      // TODO: Show toast notifying user of network change
+      console.log('Switched network to ', networkForThisDomain);
+    } else {
+      console.log('No domainNetwork, not changing networks');
+    }
+  } else {
+    console.log('useRequestQueue is off or no selectedTabOrigin');
   }
 
   // global metamask api - used by tooling
