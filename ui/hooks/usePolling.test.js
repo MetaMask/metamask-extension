@@ -3,7 +3,6 @@ import { renderHook, cleanup } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from '../store/store';
 import usePolling from './usePolling';
-import { set } from 'lodash';
 
 describe('usePolling', () => {
   // eslint-disable-next-line jest/no-done-callback

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 type UsePollingOptions = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
