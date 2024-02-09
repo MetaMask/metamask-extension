@@ -188,72 +188,6 @@ describe('selectors', () => {
             address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
           },
         },
-        accountsByChainId: {},
-        subjects: {
-          'https://remix.ethereum.org': {
-            permissions: {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: [
-                      '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                      '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                      '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-                      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-                      '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-                    ],
-                  },
-                ],
-                date: 1586359844177,
-                id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
-                invoker: 'https://remix.ethereum.org',
-                parentCapability: 'eth_accounts',
-              },
-            },
-          },
-          'peepeth.com': {
-            permissions: {
-              eth_accounts: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
-                  },
-                ],
-                date: 1585676177970,
-                id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
-                invoker: 'peepeth.com',
-                parentCapability: 'eth_accounts',
-              },
-            },
-          },
-        },
-        identities: {
-          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
-            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-            name: 'Really Long Name That Should Be Truncated',
-          },
-          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
-            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-            lastSelected: 1586359844192,
-            name: 'Account 1',
-          },
-          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
-            lastSelected: 1586359844193,
-            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-            name: 'Account 2',
-          },
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            lastSelected: 1586359844192,
-            name: 'Account 3',
-          },
-          '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4': {
-            address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-            name: 'Account 4',
-          },
-        },
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -329,6 +263,72 @@ describe('selectors', () => {
             },
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+        accountsByChainId: {},
+        subjects: {
+          'https://remix.ethereum.org': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: [
+                      '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                      '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                      '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+                      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                      '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+                    ],
+                  },
+                ],
+                date: 1586359844177,
+                id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
+                invoker: 'https://remix.ethereum.org',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+          'peepeth.com': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+                  },
+                ],
+                date: 1585676177970,
+                id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
+                invoker: 'peepeth.com',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+        },
+        identities: {
+          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
+            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+            name: 'Really Long Name That Should Be Truncated',
+          },
+          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
+            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+            lastSelected: 1586359844192,
+            name: 'Account 1',
+          },
+          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
+            lastSelected: 1586359844193,
+            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+            name: 'Account 2',
+          },
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            lastSelected: 1586359844192,
+            name: 'Account 3',
+          },
+          '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4': {
+            address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+            name: 'Account 4',
+          },
         },
         keyrings: [
           {

@@ -28,10 +28,9 @@ import {
 export const ReceiveModal = ({ address, onClose }) => {
   const t = useI18nContext();
   const useBlockie = useSelector(getUseBlockie);
-  const internalAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
-  const name = internalAccount?.metadata.name;
+  const {
+    metadata: { name },
+  } = useSelector((state) => getInternalAccountByAddress(state, address));
 
   return (
     <Modal isOpen onClose={onClose}>
