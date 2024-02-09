@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 type UsePollingOptions = {
-  // callback?: (pollingToken: string) => (pollingToken: string) => void;
+  callback?: (pollingToken: string) => (pollingToken: string) => void;
   startPollingByNetworkClientId: (
     networkClientId: string,
     options: any,
@@ -13,6 +13,7 @@ type UsePollingOptions = {
 
 const usePolling = (usePollingOptions: UsePollingOptions) => {
   const pollTokenRef = useRef<null | string>(null);
+  const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   useEffect(() => {
     // Start polling when the component mounts
     usePollingOptions
@@ -22,12 +23,14 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
       )
       .then((pollToken) => {
         pollTokenRef.current = pollToken;
+        cleanupRef.current = usePollingOptions.callback?.(pollToken) || null;
       });
 
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
+        cleanupRef.current?.(pollTokenRef.current);
       }
     };
   }, []);
