@@ -427,6 +427,11 @@ export default function ConfirmationPage({
     return inputStates[type] ?? '';
   };
 
+  const onInputChange = (event) => setInputState(
+    pendingConfirmation?.type,
+    event.target.value ?? '',
+  )
+
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
       setLoadingText(templatedValues.submitText);
@@ -513,12 +518,7 @@ export default function ConfirmationPage({
                 interfaceId={pendingConfirmation?.requestData.id}
                 isPrompt={isSnapPrompt}
                 inputValue={inputStates[pendingConfirmation?.type]}
-                onInputChange={(event) =>
-                  setInputState(
-                    pendingConfirmation?.type,
-                    event.target.value ?? '',
-                  )
-                }
+                onInputChange={onInputChange}
                 placeholder={pendingConfirmation?.requestData.placeholder}
               />
             </Box>

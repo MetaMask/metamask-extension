@@ -894,6 +894,11 @@ export const getAnySnapUpdateAvailable = createSelector(
   },
 );
 
+export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
+  getTargetSubjectMetadata,
+  (interfaces) => interfaces,
+);
+
 /**
  * Get the Snap interfaces from the redux state.
  *
