@@ -517,9 +517,13 @@ export default function ConfirmationPage({
                 snapId={pendingConfirmation?.origin}
                 interfaceId={pendingConfirmation?.requestData.id}
                 isPrompt={isSnapPrompt}
-                inputValue={inputStates[pendingConfirmation?.type]}
-                onInputChange={onInputChange}
-                placeholder={pendingConfirmation?.requestData.placeholder}
+                inputValue={
+                  isSnapPrompt && inputStates[pendingConfirmation?.type]
+                }
+                onInputChange={isSnapPrompt && onInputChange}
+                placeholder={
+                  isSnapPrompt && pendingConfirmation?.requestData.placeholder
+                }
               />
             </Box>
           ) : (
