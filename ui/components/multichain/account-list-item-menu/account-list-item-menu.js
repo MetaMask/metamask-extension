@@ -170,6 +170,7 @@ export const AccountListItemMenu = ({
       isOpen={isOpen}
       isPortal
       preventOverflow
+      flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
