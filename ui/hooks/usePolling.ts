@@ -23,7 +23,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
         cleanupRef.current?.(pollTokenRef.current);
       }
-    }
+    };
     // Start polling when the component mounts
     usePollingOptions
       .startPollingByNetworkClientId(
