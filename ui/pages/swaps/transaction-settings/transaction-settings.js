@@ -229,6 +229,7 @@ export default function TransactionSettings({
                     offLabel={t('off')}
                     onLabel={t('on')}
                     disabled={Boolean(currentSmartTransactionsError)}
+                    dataTestId="transaction-settings-smart-swaps-toggle"
                   />
                 </Box>
               )}

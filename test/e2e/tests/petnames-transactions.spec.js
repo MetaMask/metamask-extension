@@ -68,13 +68,7 @@ describe('Petnames - Transactions', function () {
         await expectName(driver, CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await saveName(
-          driver,
-          CUSTOM_NAME_MOCK,
-          undefined,
-          PROPOSED_NAME_MOCK,
-          true,
-        );
+        await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
         await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createDappSendTransaction(driver);
@@ -119,13 +113,7 @@ describe('Petnames - Transactions', function () {
         await expectName(driver, CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await saveName(
-          driver,
-          CUSTOM_NAME_MOCK,
-          undefined,
-          PROPOSED_NAME_MOCK,
-          true,
-        );
+        await saveName(driver, CUSTOM_NAME_MOCK, undefined, PROPOSED_NAME_MOCK);
         await rejectSignatureOrTransactionRequest(driver);
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, PROPOSED_NAME_MOCK, true);
