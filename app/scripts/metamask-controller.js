@@ -1506,6 +1506,8 @@ export default class MetamaskController extends EventEmitter {
       initState.TransactionController,
     );
 
+    this.txController.wipeTransactions();
+
     this._addTransactionControllerListeners();
 
     networkControllerMessenger.subscribe(
@@ -1744,7 +1746,7 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
 
     this.userOperationController = new UserOperationController({
-      entrypoint: process.env.EIP_4337_ENTRYPOINT,
+      entrypoint: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789', //process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
