@@ -22,16 +22,12 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
       )
       .then((pollToken) => {
         pollTokenRef.current = pollToken;
-        // const cleanup = usePollingOptions.callback?.(pollTokenRef.current);
       });
 
-    // eslint-disable-next-line node/callback-return
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
-      console.log('jiexi usePolling exit', pollTokenRef, pollTokenRef.current);
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
-        // cleanup?.(pollTokenRef.current);
       }
     };
   }, []);
