@@ -31,6 +31,10 @@ test.describe('MMI extension', () => {
     // Setup testnetwork in settings
     const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
     await mainMenuPage.goto();
+
+    // Close goerli advert banner
+    await mainMenuPage.page.getByRole('button', { name: /close/iu });
+
     await mainMenuPage.selectMenuOption('settings');
     await mainMenuPage.selectSettings('Advance');
     await mainMenuPage.switchTestNetwork();
