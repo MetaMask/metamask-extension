@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import ConfirmTitle from './sender-info';
+import ConfirmTitle from './info';
 
 const mockPersonalSign = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
@@ -18,7 +18,7 @@ const mockPersonalSign = {
   },
 };
 
-describe('SenderInfo', () => {
+describe('Info', () => {
   it('renders origin for personal sign request', () => {
     const mockState = {
       confirm: {

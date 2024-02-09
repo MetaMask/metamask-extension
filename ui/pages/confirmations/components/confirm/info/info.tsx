@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
@@ -11,24 +11,22 @@ import { currentConfirmationSelector } from '../../../../../selectors';
 import { Box } from '../../../../../components/component-library';
 import {
   ConfirmInfo,
-  ConfirmInfoRowConfig,
   ConfirmInfoRowType,
 } from '../../../../../components/app/confirm/info/info';
 
-const SenderInfo: React.FC = memo(() => {
+const Info: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
-  const [rowConfigs, setRowConfigs] = useState<ConfirmInfoRowConfig[]>([]);
 
-  useEffect(() => {
+  const infoRows = useMemo(() => {
     if (
       !currentConfirmation ||
       currentConfirmation.type !== MESSAGE_TYPE.PERSONAL_SIGN ||
       !currentConfirmation.msgParams?.origin
     ) {
-      return;
+      return undefined;
     }
-    setRowConfigs([
+    return [
       {
         label: t('origin'),
         type: ConfirmInfoRowType.UrlType,
@@ -36,12 +34,10 @@ const SenderInfo: React.FC = memo(() => {
           url: currentConfirmation.msgParams?.origin,
         },
       },
-    ]);
+    ];
   }, [currentConfirmation]);
 
-  const args = useMemo(() => ({ rowConfigs: [...rowConfigs] }), [rowConfigs]);
-
-  if (!rowConfigs?.length) {
+  if (!infoRows?.length) {
     return null;
   }
 
@@ -52,9 +48,9 @@ const SenderInfo: React.FC = memo(() => {
       padding={2}
       marginBottom={4}
     >
-      <ConfirmInfo {...args} />
+      <ConfirmInfo rowConfigs={infoRows} />
     </Box>
   );
 });
 
-export default SenderInfo;
+export default Info;

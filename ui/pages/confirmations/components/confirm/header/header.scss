@@ -1,8 +1,5 @@
 .confirm_header {
-  &__wrapper {
-    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
-    height: 64px;
-  }
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 
   &__avatar-network {
     margin-left: -12px;

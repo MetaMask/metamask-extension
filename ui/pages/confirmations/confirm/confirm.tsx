@@ -1,14 +1,12 @@
 import React from 'react';
 
+import { Box } from '../../../components/component-library';
+import { Content, Page } from '../../../components/multichain/pages/page';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
-import { SenderInfo } from '../components/confirm/sender-info';
-import { ConfirmTitle } from '../../../components/app/confirm/title';
-import { Box } from '../../../components/component-library';
-import {
-  BackgroundColor,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
+import { Info } from '../components/confirm/info';
+import { Title } from '../components/confirm/title';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
 
@@ -17,18 +15,15 @@ const Confirm = () => {
   syncConfirmPath();
 
   return (
-    <Box height={BlockSize.Full} width={BlockSize.Full}>
+    <Page>
       <Header />
-      <Box
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        paddingInline={4}
-      >
-        <ConfirmTitle />
-        <SenderInfo />
+      <Content backgroundColor={BackgroundColor.backgroundAlternative}>
+        <Title />
+        <Info />
         <Box>CONFIRMATION PAGE BODY TO COME HERE</Box>
-      </Box>
+      </Content>
       <Footer />
-    </Box>
+    </Page>
   );
 };
 

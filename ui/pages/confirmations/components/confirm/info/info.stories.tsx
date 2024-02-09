@@ -5,7 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
-import SenderInfo from './sender-info';
+import Info from './info';
 
 const store = configureStore({
   metamask: {
@@ -22,8 +22,8 @@ const store = configureStore({
 });
 
 const Story = {
-  title: 'Components/App/Confirm/SenderInfo',
-  component: SenderInfo,
+  title: 'Components/App/Confirm/Info',
+  component: Info,
   decorators: [
     (story: () => any) => <Provider store={store}>{story()}</Provider>,
   ],
@@ -31,6 +31,6 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <SenderInfo />;
+export const DefaultStory = () => <Info />;
 
 DefaultStory.storyName = 'Default';
