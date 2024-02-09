@@ -2,7 +2,7 @@ import { Input } from '@metamask/snaps-sdk';
 
 import { UIComponentFactory } from './types';
 
-export const input: UIComponentFactory<Input> = ({ element }) => ({
+export const input: UIComponentFactory<Input> = ({ element, form }) => ({
   element: 'SnapUIInput',
   props: {
     id: element.name,
@@ -11,5 +11,7 @@ export const input: UIComponentFactory<Input> = ({ element }) => ({
     textFieldProps: {
       type: element.type,
     },
+    name: element.name,
+    form,
   },
 });

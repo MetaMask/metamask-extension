@@ -8,7 +8,6 @@ import React, {
   FunctionComponent,
   ReactNode,
   createContext,
-  useCallback,
   useContext,
   useState,
 } from 'react';
@@ -25,7 +24,7 @@ export type HandleInputChange = (
   form?: string,
 ) => void;
 
-export type GetValue = (name: string, form?: string) => string;
+export type GetValue = (name: string, form?: string) => string | undefined;
 
 export type SnapInterfaceContextType = {
   handleEvent: HandleEvent;
@@ -93,8 +92,17 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     updateStateDebounced(state);
   };
 
-  const getValue: GetValue = (name, form) =>
-    form ? (internalState[form] as FormState)[name] : interfaceState[name];
+  const getValue: GetValue = (name, form) => {
+    const value = form
+      ? (internalState[form] as FormState)?.[name]
+      : (internalState as FormState)?.[name];
+
+    if (value) {
+      return value;
+    }
+
+    return undefined;
+  };
 
   return (
     <SnapInterfaceContext.Provider
