@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { WebElement } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
 import {
@@ -11,6 +12,7 @@ import { Driver } from '../../webdriver/driver';
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   informationSymbol: '[data-testid="info-tooltip"]',
+  inputText: 'input[type="text"]',
   settingsOption: { text: 'Settings', tag: 'div' },
   networkOption: { text: 'Networks', tag: 'div' },
   ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
@@ -22,16 +24,18 @@ const selectors = {
     tag: 'h6',
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
-  networkNameInputField: '[data-testid="network-form-network-name"]',
-  rpcUrlInputField: '[data-testid="network-form-rpc-url"]',
 };
 
 async function editNetworkDetails(
   driver: Driver,
-  inputField: string,
+  indexOfInputField: number,
   inputValue: string,
 ) {
-  const inputTextFieldToEdit = await driver.findElement(inputField);
+  const getAllInputElements: WebElement[] = (await driver.findElements(
+    selectors.inputText,
+  )) as WebElement[];
+  const inputTextFieldToEdit: WebElement =
+    getAllInputElements[indexOfInputField];
   await inputTextFieldToEdit.clear();
   await inputTextFieldToEdit.sendKeys(inputValue);
 }
@@ -53,25 +57,22 @@ describe('Update Network:', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
-        await editNetworkDetails(
-          driver,
-          selectors.networkNameInputField,
-          'Update Network',
-        );
+        await editNetworkDetails(driver, 2, 'Update Network');
         await driver.clickElement(selectors.saveButton);
 
         // Validate the network name is updated
-        const updatedNetworkNamePresent = await driver.isElementPresent(
+        const networkName = await driver.findElement(
           selectors.updatedNetworkDropDown,
         );
+        const updatedNetworkName = await networkName.getText();
         assert.equal(
-          updatedNetworkNamePresent,
-          true,
+          updatedNetworkName,
+          'Update Network',
           'Network name is not updated',
         );
 
         await navigateToEditNetwork(driver);
-        await editNetworkDetails(driver, selectors.rpcUrlInputField, 'test');
+        await editNetworkDetails(driver, 3, 'test');
 
         // Validate the error message that appears for the invalid url format
         const errorMessage = await driver.isElementPresent(
@@ -100,7 +101,7 @@ describe('Update Network:', function (this: Suite) {
 
         await driver.clickElement(selectors.ethereumNetwork);
 
-        // Validate the Save,Cancel Delete button is not present for the default network
+        // Validate the Save,Cancel Delete button is not present
         await driver.assertElementNotPresent(selectors.deleteButton);
         await driver.assertElementNotPresent(selectors.cancelButton);
         await driver.assertElementNotPresent(selectors.saveButton);
