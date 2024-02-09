@@ -10,7 +10,8 @@ const subjectMetadata = {
 };
 
 export default {
-  title: 'Confirmations/Components/SignatureRequestSIWE/SignatureRequestSIWEHeader',
+  title:
+    'Confirmations/Components/SignatureRequestSIWE/SignatureRequestSIWEHeader',
 
   argTypes: {
     fromAccount: {

@@ -11,7 +11,8 @@ const mockFeatures = [
 ];
 
 export default {
-  title: 'Confirmations/Components/SecurityProviderBannerAlert/BlockaidBannerAlert',
+  title:
+    'Confirmations/Components/SecurityProviderBannerAlert/BlockaidBannerAlert',
   argTypes: {
     reason: {
       control: 'select',

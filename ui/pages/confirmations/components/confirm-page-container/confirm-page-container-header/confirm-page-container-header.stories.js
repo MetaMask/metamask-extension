@@ -2,7 +2,8 @@ import React from 'react';
 import ConfirmPageContainerHeader from '.';
 
 export default {
-  title: 'Confirmations/Components/ConfirmPageContainer/ConfirmPageContainerHeader',
+  title:
+    'Confirmations/Components/ConfirmPageContainer/ConfirmPageContainerHeader',
 
   argTypes: {
     accountAddress: {

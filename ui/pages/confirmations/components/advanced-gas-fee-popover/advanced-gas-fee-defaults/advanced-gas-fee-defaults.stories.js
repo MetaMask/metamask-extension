@@ -24,7 +24,8 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Confirmations/Components/AdvancedGasFeePopover/AdvancedGasFeeDefaults',
+  title:
+    'Confirmations/Components/AdvancedGasFeePopover/AdvancedGasFeeDefaults',
   decorators: [
     (story) => (
       <Provider store={store}>

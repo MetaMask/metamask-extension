@@ -2,7 +2,8 @@ import React from 'react';
 import SignatureRequestMessage from '.';
 
 export default {
-  title: 'Confirmations/Components/SignatureRequestSIWE/SignatureRequestMessage',
+  title:
+    'Confirmations/Components/SignatureRequestSIWE/SignatureRequestMessage',
 
   argTypes: {
     data: {
