@@ -49,10 +49,12 @@ export const UI_NOTIFICATIONS = {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
     date: null,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   [NOTIFICATION_BLOCKAID_DEFAULT]: {
     id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
     date: null,
   },
+  ///: END:ONLY_INCLUDE_IF
   [NOTIFICATION_PETNAMES]: {
     id: Number(NOTIFICATION_PETNAMES),
     date: null,
@@ -63,7 +65,13 @@ export const UI_NOTIFICATIONS = {
   },
 };
 
-export const getTranslatedUINotifications = (t, locale, theme) => {
+export const getTranslatedUINotifications = (
+  t,
+  locale,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  theme,
+  ///: END:ONLY_INCLUDE_IF
+) => {
   const formattedLocale = locale?.replace('_', '-');
 
   return {
@@ -148,6 +156,7 @@ export const getTranslatedUINotifications = (t, locale, theme) => {
           )
         : '',
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT],
       title: t('notificationsBlockaidDefaultTitle'),
@@ -172,6 +181,7 @@ export const getTranslatedUINotifications = (t, locale, theme) => {
               width: '100%',
             },
     },
+    ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_PETNAMES],
       title: t('notificationsPetnamesTitle'),
