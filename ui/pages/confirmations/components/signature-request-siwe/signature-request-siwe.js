@@ -18,7 +18,7 @@ import {
   getTotalUnapprovedMessagesCount,
   unconfirmedMessagesHashSelector,
 } from '../../../../selectors';
-import { valuesFor } from '../../../../helpers/utils/util';
+import { valuesFor, getAccountByAddress } from '../../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -68,7 +68,7 @@ export default function SignatureRequestSIWE({ txData }) {
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
 
-  const fromAccount = allAccounts.find((account) => account.address === from);
+  const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
 
   const isMatchingAddress =
