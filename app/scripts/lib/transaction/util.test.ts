@@ -425,6 +425,50 @@ describe('Transaction Utils', () => {
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
+
+      it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swap', async () => {
+        const swapRequest = { ...request };
+        swapRequest.transactionOptions.type = TransactionType.swap;
+        await addTransaction({
+          ...swapRequest,
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          type: TransactionType.swap,
+        });
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swapApproval', async () => {
+        const swapRequest = { ...request };
+        swapRequest.transactionOptions.type = TransactionType.swapApproval;
+        await addTransaction({
+          ...swapRequest,
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          type: TransactionType.swapApproval,
+        });
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('when blockaid is disabled', () => {
