@@ -131,7 +131,7 @@ module.exports = {
       parserOptions: {
         project: tsconfigPath,
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
-        tsconfigRootDir: __dirname ?? path.dirname(tsconfigPath),
+        tsconfigRootDir: path.dirname(tsconfigPath),
       },
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
