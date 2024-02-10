@@ -142,9 +142,7 @@ describe('Confirmation Transaction Page', () => {
     });
     jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-      .mockImplementation(() => {
-        // noop
-      });
+      .mockResolvedValue(null);
     const { container } = renderWithProvider(<ConfirmTransaction />, mockStore);
 
     expect(container.querySelector('.loading-overlay')).toBeInTheDocument();
@@ -155,9 +153,7 @@ describe('Confirmation Transaction Page', () => {
     const mockStore = configureMockStore(middleware)({ ...mockState });
     jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-      .mockImplementation(() => {
-        // noop
-      });
+      .mockResolvedValue(null);
     const { container } = renderWithProvider(<ConfirmTransaction />, mockStore);
     expect(container.querySelector('.loading-overlay')).toBeNull();
   });
@@ -174,9 +170,7 @@ describe('Confirmation Transaction Page', () => {
       const mockStore = configureMockStore(middleware)(mockState);
       jest
         .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-        .mockImplementation(() => {
-          // noop
-        });
+        .mockResolvedValue(null);
       const { container } = renderWithProvider(
         <ConfirmTransaction />,
         mockStore,
@@ -202,9 +196,7 @@ describe('Confirmation Transaction Page', () => {
     });
     jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-      .mockImplementation(() => {
-        // noop
-      });
+      .mockResolvedValue(null);
     const { container } = renderWithProvider(
       <ConfirmTransaction />,
       mockStore,
@@ -221,9 +213,7 @@ describe('Confirmation Transaction Page', () => {
     const mockStore = configureMockStore(middleware)(mockState);
     jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-      .mockImplementation(() => {
-        // noop
-      });
+      .mockResolvedValue(null);
     const { container } = renderWithProvider(
       <ConfirmTransaction />,
       mockStore,
@@ -240,9 +230,7 @@ describe('Confirmation Transaction Page', () => {
       const mockStore = configureMockStore(middleware)(mockState);
       const gasEstimationPollingSpy = jest
         .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-        .mockImplementation(() => {
-          // noop
-        });
+        .mockResolvedValue(null);
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
 
@@ -253,9 +241,7 @@ describe('Confirmation Transaction Page', () => {
       const mockStore = configureMockStore(middleware)({ ...mockState });
       jest
         .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-        .mockImplementation(() => {
-          // noop
-        });
+        .mockResolvedValue(null);
       ConfirmTransactionDucks.setTransactionToConfirm.mockClear();
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
@@ -272,9 +258,7 @@ describe('Confirmation Transaction Page', () => {
       });
       jest
         .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-        .mockImplementation(() => {
-          // noop
-        });
+        .mockResolvedValue(null);
       jest.spyOn(ReactRouterDOM, 'useParams').mockImplementation(() => {
         return { id: null };
       });
@@ -292,9 +276,7 @@ describe('Confirmation Transaction Page', () => {
         const mockStore = configureMockStore(middleware)(mockState);
         jest
           .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-          .mockImplementation(() => {
-            // noop
-          });
+          .mockResolvedValue(null);
         const replaceSpy = jest.fn();
         jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
           return {
@@ -318,9 +300,7 @@ describe('Confirmation Transaction Page', () => {
         });
         jest
           .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
-          .mockImplementation(() => {
-            // noop
-          });
+          .mockResolvedValue(null);
         jest.spyOn(Actions, 'gasFeeStopPollingByPollingToken');
         const replaceSpy = jest.fn();
         jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
