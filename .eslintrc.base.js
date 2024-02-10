@@ -12,7 +12,7 @@ module.exports = {
   },
 
   rules: {
-    // CHECKED: rule was updated so it causes a massive amount of changes so we have to turn it off now.
+    // re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
     'jsdoc/check-line-alignment': 'off',
 
     'default-param-last': 'off',

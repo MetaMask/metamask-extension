@@ -139,9 +139,8 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
-        // CHECKED: a new rule that we didn't use before, so I'm turning it off.
+        // this rule is new, but we didn't use it before, so it's off now
         '@typescript-eslint/no-duplicate-enum-values': 'off',
-        // CHECKED: a hold bunch of new globals were added that we already use
         '@typescript-eslint/no-shadow': [
           'error',
           {
@@ -157,11 +156,9 @@ module.exports = {
             ],
           },
         ],
-        // CHECKED: `no-parameter-properties` was removed in favor of `parameter-properties`
-        // that's how insane the eslint community is. they have opposite names
-        // but do the same thing?!
+        // `no-parameter-properties` was removed in favor of `parameter-properties`
+        // Yeah, they have opposite names but do the same thing?!
         '@typescript-eslint/no-parameter-properties': 'off',
-        // CHECKED: (See above)
         '@typescript-eslint/parameter-properties': 'error',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
