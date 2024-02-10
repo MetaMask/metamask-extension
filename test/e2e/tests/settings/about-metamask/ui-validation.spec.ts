@@ -22,43 +22,42 @@ const selectors = {
   titleText: { text: 'About', tag: 'h4' },
   closeButton: '.mm-box button[aria-label="Close"]',
   walletOverview: '.wallet-overview__balance',
-  privacyPolicy: { text: 'Privacy Policy', tag: 'h1' },
-  termsOfUse: { text: 'Terms of Use', tag: 'h1' },
-  attributions: { text: 'Attributions', tag: 'h1' },
-  website: { text: 'Get started with MetaMask Portfolio', tag: 'div' },
 };
 
+const exceptedUrl = {
+  privacyPolicy: 'https://metamask.io/privacy.html',
+  termsOfUse: 'https://metamask.io/terms.html',
+  attributions: 'https://metamask.io/attributions.html',
+  supportCenter: 'https://support.metamask.io',
+  website: 'https://metamask.io/',
+  contactUS: 'https://metamask.zendesk.com/hc/en-us',
+};
+
+const linkTexts = {
+  privacyPolicy: 'Privacy policy',
+  termsOfUse: 'Terms of use',
+  attributions: 'Attributions',
+  supportCenter: 'Support Center',
+  website: 'Visit our website',
+  contactUS: 'Contact us',
+};
+
+// This function is to click on the three dots and select the "Settings" option from the dropdown menu.
+// Then, click on the "About" section from the left panel.
 async function switchToAboutView(driver: Driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsDiv);
   await driver.clickElement(selectors.aboutDiv);
 }
 
-const validateLink = async (
-  driver: Driver,
-  linkText: string,
-  title: string,
-  expectedUrl: string,
-  expectedHeading: any,
-) => {
-  // Click on the link
-  await driver.clickElement({ text: linkText, tag: 'a' });
-
-  // Switch to the new window
-  await driver.switchToWindowWithTitle(title);
-
-  // Validate the URL
-  assert.equal(await driver.getCurrentUrl(), expectedUrl);
-
-  // Validate the heading
-  const isHeadingPresent = await driver.isElementPresent(expectedHeading);
-  assert.equal(
-    isHeadingPresent,
-    true,
-    `${linkText} heading is not present in the page`,
-  );
+// Get the href value of the link
+const getHrefValue = async (driver: Driver, linkText: string) => {
+  const getHref = await driver.findElement({ text: linkText, tag: 'a' });
+  return await getHref.getAttribute('href');
 };
 
+// Test case to validate the view and links in the "About" - MetaMask.
+// This test is critical because it's the only way to access privacy policy and other important links.
 describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
   it('validate the view and links', async function () {
     await withFixtures(
@@ -74,45 +73,58 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
         await switchToAboutView(driver);
 
         // Validate 'Privacy Policy' link
-        await validateLink(
-          driver,
-          'Privacy policy',
-          'Privacy Policy | Consensys',
-          'https://consensys.io/privacy-policy',
-          selectors.privacyPolicy,
-        );
+        getHrefValue(driver, linkTexts.privacyPolicy).then((actualUrlValue) => {
+          assert.strictEqual(
+            actualUrlValue,
+            exceptedUrl.privacyPolicy,
+            'URLs are not equal',
+          );
+        });
 
-        await driver.switchToWindowWithTitle('MetaMask');
         // Validate 'Terms of Use' link
-        await validateLink(
-          driver,
-          'Terms of use',
-          'Terms of use | Consensys',
-          'https://consensys.io/terms-of-use',
-          selectors.termsOfUse,
-        );
+        getHrefValue(driver, linkTexts.termsOfUse).then((actualUrlValue) => {
+          assert.strictEqual(
+            actualUrlValue,
+            exceptedUrl.termsOfUse,
+            'URLs are not equal',
+          );
+        });
 
-        await driver.switchToWindowWithTitle('MetaMask');
         // Validate 'Attributions' link
-        await validateLink(
-          driver,
-          'Attributions',
-          'Attributions | MetaMask',
-          'https://metamask.io/attributions/',
-          selectors.attributions,
-        );
+        getHrefValue(driver, linkTexts.attributions).then((actualUrlValue) => {
+          assert.strictEqual(
+            actualUrlValue,
+            exceptedUrl.attributions,
+            'URLs are not equal',
+          );
+        });
 
-        await driver.switchToWindowWithTitle('MetaMask');
+        // Validate 'Support Center' link
+        getHrefValue(driver, linkTexts.supportCenter).then((actualUrlValue) => {
+          assert.strictEqual(
+            actualUrlValue,
+            exceptedUrl.supportCenter,
+            'URLs are not equal',
+          );
+        });
+
         // Validate 'Visit our website' link
-        await validateLink(
-          driver,
-          'Visit our website',
-          'The Ultimate Crypto Wallet for DeFi, Web3 Apps, and NFTs | MetaMask',
-          'https://metamask.io/',
-          selectors.website,
-        );
+        getHrefValue(driver, linkTexts.website).then((actualUrlValue) => {
+          assert.strictEqual(
+            actualUrlValue,
+            exceptedUrl.website,
+            'URLs are not equal',
+          );
+        });
 
-        await driver.switchToWindowWithTitle('MetaMask');
+        // Validate 'Contact us' link
+        getHrefValue(driver, linkTexts.contactUS).then((actualUrlValue) => {
+          assert.strictEqual(
+            actualUrlValue,
+            exceptedUrl.contactUS,
+            'URLs are not equal',
+          );
+        });
 
         // Validating the title
         const isTitlePresent = await driver.isElementPresent(
