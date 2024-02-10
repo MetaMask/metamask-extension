@@ -16,7 +16,7 @@ module.exports = {
   extends: ['plugin:storybook/recommended'],
   // Ignore files which are also in .prettierignore
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
-  // eslint is not compatible with ESM, so use babel's by default
+  // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
   parserOptions: {
     // use the same ecmaVersion as our tsconfig
