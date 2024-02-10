@@ -37,6 +37,7 @@ import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
   use4ByteResolutionSelector,
+  getSelectedNetworkClientId,
 } from '../../selectors';
 import {
   getContractMethodData,
@@ -103,13 +104,17 @@ const ConfirmTransaction = () => {
 
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
-  usePolling({
-    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
-    stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
-    networkClientId: 'mainnet',
-    options: {},
-  });
+  usePolling(
+    {
+      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+      networkClientId: transaction.networkClientId ?? networkClientId,
+      options: {},
+    },
+    [transaction, networkClientId],
+  );
 
   useEffect(() => {
     if (!totalUnapproved && !sendTo) {
