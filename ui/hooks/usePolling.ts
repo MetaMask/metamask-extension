@@ -11,7 +11,10 @@ type UsePollingOptions = {
   options?: any;
 };
 
-const usePolling = (usePollingOptions: UsePollingOptions) => {
+const usePolling = (
+  usePollingOptions: UsePollingOptions,
+  dependencies: unknown[] = [],
+) => {
   const pollTokenRef = useRef<null | string>(null);
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   let isMounted = false;
@@ -43,7 +46,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
       isMounted = false;
       cleanup();
     };
-  }, []);
+  }, [...dependencies]);
 };
 
 export default usePolling;
