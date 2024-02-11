@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Cầu nối"
   },
-  "bridgeDescription": {
-    "message": "Chuyển token từ các mạng khác nhau"
-  },
-  "bridgeDisabled": {
-    "message": "Cầu không khả dụng trong mạng này"
-  },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng ID chuỗi này."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Mạng có ID chuỗi $1 có thể sử dụng một ký hiệu tiền tệ ($2) khác với ký hiệu mà bạn đã nhập. Vui lòng xác minh trước khi tiếp tục.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Chọn mạng của bạn"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Yêu cầu kết nối"
-  },
-  "connections": {
-    "message": "Kết nối"
   },
   "contactUs": {
     "message": "Liên hệ với chúng tôi"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Trang tổng quan Danh mục đầu tư"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Dạng kết nối Ledger ưu tiên",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "Chọn tài khoản lưu ký để sử dụng trong MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Chọn một hành động"
-  },
   "selectHdPath": {
     "message": "Chọn đường dẫn HD"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Gửi báo cáo lỗi."
-  },
-  "sendDescription": {
-    "message": "Gửi tiền mã hóa đến bất kỳ tài khoản nào"
   },
   "sendSpecifiedTokens": {
     "message": "Gửi $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Giữ tiền mã hóa và kiếm lợi nhuận tiềm năng"
-  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Sàn giao dịch phi tập trung"
   },
-  "swapDescription": {
-    "message": "Hoán đổi và giao dịch token của bạn"
-  },
   "swapDirectContract": {
     "message": "Hợp đồng trực tiếp"
-  },
-  "swapDisabled": {
-    "message": "Hoán đổi không khả dụng trong mạng này"
   },
   "swapEditLimit": {
     "message": "Chỉnh sửa giới hạn"

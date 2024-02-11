@@ -13,7 +13,6 @@ describe('Test Snap manageState', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -21,14 +20,18 @@ describe('Test Snap manageState', function () {
 
         // navigate to test snaps page, then fill in the snapId
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
 
-        // find and scroll to the connect button and click it
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // navigate to test snaps page and connect to manage-state snap
         const snapButton1 = await driver.findElement('#connectmanage-state');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectmanage-state');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(

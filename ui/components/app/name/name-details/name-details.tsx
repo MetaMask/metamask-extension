@@ -2,7 +2,6 @@
 
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -27,11 +26,14 @@ import {
   IconName,
   Label,
   Modal,
+  ModalContent,
+  ModalHeader,
   ModalOverlay,
   Text,
+  ModalBody,
+  ModalFooter,
+  ButtonSize,
 } from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   AlignItems,
   BlockSize,
@@ -51,7 +53,8 @@ import {
 } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
-import { I18nContext } from '../../../../contexts/i18n';
+import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
@@ -63,6 +66,10 @@ export interface NameDetailsProps {
   value: string;
 }
 
+type ProposedNameOption = Required<FormComboFieldOption> & {
+  sourceId: string;
+};
+
 function formatValue(value: string, type: NameType): string {
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
@@ -73,24 +80,50 @@ function formatValue(value: string, type: NameType): string {
   }
 }
 
+// Provider source ids that have a localized name:
+const LOCALIZED_PROVIDERS = ['ens', 'etherscan', 'lens', 'token'];
+// The following lines avoid i18n "unused messages" lint error.
+// t('nameProvider_ens');
+// t('nameProvider_etherscan');
+// t('nameProvider_lens');
+// t('nameProvider_token');
+
+function getProviderLabel(
+  sourceId: string,
+  t: ReturnType<typeof useI18nContext>,
+  nameSources: NameControllerState['nameSources'],
+) {
+  if (LOCALIZED_PROVIDERS.includes(sourceId)) {
+    // Use intermediate variable to avoid "Forbidden use of template strings
+    // in 't' function" error.
+    const messageKey = `nameProvider_${sourceId}`;
+    return t(messageKey);
+  }
+  return nameSources[sourceId]?.label ?? sourceId;
+}
+
 function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
+  t: ReturnType<typeof useI18nContext>,
   nameSources: NameControllerState['nameSources'],
-): FormComboFieldOption[] {
+): ProposedNameOption[] {
   const sourceIds = Object.keys(proposedNameEntries);
 
   const sourceIdsWithProposedNames = sourceIds.filter(
     (sourceId) => proposedNameEntries[sourceId]?.proposedNames?.length,
   );
 
-  const options = sourceIdsWithProposedNames
+  const options: ProposedNameOption[] = sourceIdsWithProposedNames
     .map((sourceId: string) => {
       const sourceProposedNames =
         proposedNameEntries[sourceId]?.proposedNames ?? [];
 
-      return sourceProposedNames.map((proposedName: any) => ({
-        primaryLabel: proposedName,
-        secondaryLabel: nameSources[sourceId]?.label ?? sourceId,
+      return sourceProposedNames.map((proposedName: string) => ({
+        value: proposedName,
+        primaryLabel: t('nameModalMaybeProposedName', [proposedName]),
+        secondaryLabel: t('nameProviderProposedBy', [
+          getProviderLabel(sourceId, t, nameSources),
+        ]),
         sourceId,
       }));
     })
@@ -166,15 +199,20 @@ export default function NameDetails({
   value,
 }: NameDetailsProps) {
   const chainId = useSelector(getCurrentChainId);
-  const { name: savedName, sourceId: savedSourceId } = useName(value, type);
+  const { name: savedPetname, sourceId: savedSourceId } = useName(value, type);
+  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName(
+    value,
+    type,
+  );
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
   const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
-  const t = useContext(I18nContext);
-  const hasSavedName = Boolean(savedName);
+  const t = useI18nContext();
+
+  const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
@@ -189,13 +227,15 @@ export default function NameDetails({
   ];
 
   useEffect(() => {
-    setName(savedName ?? '');
+    setName(savedPetname ?? '');
     setSelectedSourceId(savedSourceId ?? undefined);
-    setSelectedSourceName(savedSourceId ? savedName ?? undefined : undefined);
-  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
+    setSelectedSourceName(
+      savedSourceId ? savedPetname ?? undefined : undefined,
+    );
+  }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () => generateComboOptions(proposedNames, nameSources),
+    () => generateComboOptions(proposedNames, t, nameSources),
     [proposedNames, nameSources],
   );
 
@@ -204,7 +244,7 @@ export default function NameDetails({
       initialSources,
       name,
       proposedNameOptions,
-      savedName,
+      savedName: savedPetname,
       savedSourceId,
       selectedSourceId,
       type,
@@ -247,13 +287,13 @@ export default function NameDetails({
         setSelectedSourceName(undefined);
       }
     },
-    [setName, selectedSourceId],
+    [setName, selectedSourceId, setSelectedSourceId, setSelectedSourceName],
   );
 
   const handleProposedNameClick = useCallback(
-    (option: any) => {
+    (option: ProposedNameOption) => {
       setSelectedSourceId(option.sourceId);
-      setSelectedSourceName(option.primaryLabel);
+      setSelectedSourceName(option.value);
     },
     [setSelectedSourceId, setSelectedSourceName],
   );
@@ -262,72 +302,85 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
+  const [title, instructions] = (() => {
+    if (hasSavedPetname) {
+      return [t('nameModalTitleSaved'), t('nameInstructionsSaved')];
+    }
+    if (isRecognizedUnsaved) {
+      return [t('nameModalTitleRecognized'), t('nameInstructionsRecognized')];
+    }
+    return [t('nameModalTitleNew'), t('nameInstructionsNew')];
+  })();
+
   return (
     <Box>
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleClose} onBack={handleClose}>
-            {hasSavedName ? t('nameModalTitleSaved') : t('nameModalTitleNew')}
-          </ModalHeader>
-          <div style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}>
-            <Name
-              value={value}
-              type={NameType.ETHEREUM_ADDRESS}
-              disableEdit
-              internal
-            />
-          </div>
-          <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-            {hasSavedName
-              ? t('nameInstructionsSaved')
-              : t('nameInstructionsNew')}
-          </Text>
-          <hr className="name-details__line" />
-          {/* @ts-ignore */}
-          <FormTextField
-            id="address"
-            className="name-details__address"
-            label={t('nameAddressLabel')}
-            value={formattedValue}
-            marginBottom={4}
-            disabled
-            endAccessory={
-              <ButtonIcon
-                display={Display.Flex}
-                iconName={copiedAddress ? IconName.CopySuccess : IconName.Copy}
-                size={ButtonIconSize.Sm}
-                onClick={handleCopyClick}
-                color={IconColor.iconMuted}
-                ariaLabel={t('copyAddress')}
+          <ModalHeader onClose={handleClose}>{title}</ModalHeader>
+          <ModalBody className="name-details__modal-body">
+            <div
+              style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
+            >
+              <Name
+                value={value}
+                type={NameType.ETHEREUM_ADDRESS}
+                disableEdit
+                internal
               />
-            }
-          />
-          <Label
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            marginBottom={2}
-            className="name-details__display-name"
-          >
-            {t('nameLabel')}
-            <FormComboField
-              value={name}
-              options={proposedNameOptions}
-              placeholder={t('nameSetPlaceholder')}
-              noOptionsText={t('nameNoProposedNames')}
-              onChange={handleNameChange}
-              onOptionClick={handleProposedNameClick}
+            </div>
+            <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
+              {instructions}
+            </Text>
+            {/* @ts-ignore */}
+            <FormTextField
+              id="address"
+              className="name-details__address"
+              label={t('nameAddressLabel')}
+              value={formattedValue}
+              marginBottom={4}
+              disabled
+              endAccessory={
+                <ButtonIcon
+                  display={Display.Flex}
+                  iconName={
+                    copiedAddress ? IconName.CopySuccess : IconName.Copy
+                  }
+                  size={ButtonIconSize.Sm}
+                  onClick={handleCopyClick}
+                  color={IconColor.iconMuted}
+                  ariaLabel={t('copyAddress')}
+                />
+              }
             />
-          </Label>
-          <hr className="name-details__line" />
-          <Button
-            variant={ButtonVariant.Primary}
-            startIconName={hasSavedName ? undefined : IconName.Save}
-            width={BlockSize.Full}
-            onClick={handleSaveClick}
-          >
-            {hasSavedName ? t('ok') : t('save')}
-          </Button>
+            <Label
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexStart}
+              marginBottom={2}
+              className="name-details__display-name"
+            >
+              {t('nameLabel')}
+              <FormComboField
+                hideDropdownIfNoOptions
+                value={name}
+                options={proposedNameOptions}
+                placeholder={t('nameSetPlaceholder')}
+                onChange={handleNameChange}
+                onOptionClick={handleProposedNameClick}
+              />
+            </Label>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant={ButtonVariant.Primary}
+              startIconName={IconName.Save}
+              width={BlockSize.Full}
+              onClick={handleSaveClick}
+              size={ButtonSize.Lg}
+            >
+              {t('save')}
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>

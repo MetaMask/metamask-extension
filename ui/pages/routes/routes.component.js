@@ -8,9 +8,9 @@ import IdleTimer from 'react-idle-timer';
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IF
 
-import SendTransactionScreen from '../send';
+import SendTransactionScreen from '../confirmations/send';
 import Swaps from '../swaps';
-import ConfirmTransaction from '../confirm-transaction';
+import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
 import { AllConnections, Connections } from '../../components/multichain/pages';
 import Settings from '../settings';
@@ -34,8 +34,6 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
-  SelectActionModal,
-  AppFooter,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -113,7 +111,7 @@ import {
 } from '../../../shared/constants/app';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import ConfirmationPage from '../confirmation';
+import ConfirmationPage from '../confirmations/confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
@@ -155,6 +153,7 @@ export default class Routes extends Component {
     isNetworkUsed: PropTypes.bool,
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
+    showExtensionInFullSizeView: PropTypes.bool,
     currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
@@ -171,8 +170,6 @@ export default class Routes extends Component {
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
-    isSelectActionModalOpen: PropTypes.bool.isRequired,
-    hideSelectActionModal: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -228,7 +225,14 @@ export default class Routes extends Component {
       setCurrentCurrencyToUSD,
       history,
       theme,
+      showExtensionInFullSizeView,
     } = this.props;
+
+    const windowType = getEnvironmentType();
+    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
+      global.platform.openExtensionInBrowser();
+    }
+
     if (!currentCurrency) {
       setCurrentCurrencyToUSD();
     }
@@ -512,25 +516,6 @@ export default class Routes extends Component {
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
   }
 
-  showFooter() {
-    if (Boolean(process.env.MULTICHAIN) === false) {
-      return false;
-    }
-
-    const { location } = this.props;
-    const isHomePage = Boolean(
-      matchPath(location.pathname, { path: DEFAULT_ROUTE, exact: true }),
-    );
-    const isConnectionsPage = Boolean(
-      matchPath(location.pathname, { path: CONNECTIONS, exact: true }),
-    );
-    const isAssetPage = Boolean(
-      matchPath(location.pathname, { path: ASSET_ROUTE, exact: false }),
-    );
-
-    return isAssetPage || isHomePage || isConnectionsPage;
-  }
-
   showOnboardingHeader() {
     const { location } = this.props;
 
@@ -572,14 +557,12 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
-      isSelectActionModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
-      hideSelectActionModal,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -658,9 +641,6 @@ export default class Routes extends Component {
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
-        {isSelectActionModalOpen ? (
-          <SelectActionModal onClose={() => hideSelectActionModal()} />
-        ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
@@ -676,7 +656,6 @@ export default class Routes extends Component {
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
-        {this.showFooter() && <AppFooter location={location} />}
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );

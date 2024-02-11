@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Ponte"
   },
-  "bridgeDescription": {
-    "message": "Transfira tokens de redes diferentes"
-  },
-  "bridgeDisabled": {
-    "message": "A ponte não está disponível nesta rede"
-  },
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Esse ID da cadeia é usado pela rede $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "A rede com ID de cadeia $1 pode usar um símbolo de moeda ($2) diferente do que você inseriu. Por favor, verifique antes de continuar.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Escolha sua rede"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Solicitação de conexão"
-  },
-  "connections": {
-    "message": "Conexões"
   },
   "contactUs": {
     "message": "Fale conosco"
@@ -3146,10 +3133,6 @@
   "portfolioDashboard": {
     "message": "Painel do portfólio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexão preferencial com o Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Preparando troca..."
   },
@@ -3577,9 +3560,6 @@
   "selectAnAccountHelp": {
     "message": "Selecione as contas custodiantes para usar no MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Selecione uma ação"
-  },
   "selectHdPath": {
     "message": "Selecione o caminho do disco rígido"
   },
@@ -3603,9 +3583,6 @@
   },
   "sendBugReport": {
     "message": "Envie-nos um relatório de bugs."
-  },
-  "sendDescription": {
-    "message": "Envie criptoativos para qualquer conta"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -3956,9 +3933,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Segure seus criptoativos e ganhe lucros em potencial"
-  },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."
   },
@@ -4144,14 +4118,8 @@
   "swapDecentralizedExchange": {
     "message": "Corretora descentralizada"
   },
-  "swapDescription": {
-    "message": "Troque e negocie seus tokens"
-  },
   "swapDirectContract": {
     "message": "Contrato direto"
-  },
-  "swapDisabled": {
-    "message": "A troca não está disponível nesta rede"
   },
   "swapEditLimit": {
     "message": "Editar limite"

@@ -12,7 +12,11 @@ const render = (metamaskStateChanges = {}) => {
     },
   });
   return renderWithProvider(
-    <GlobalMenu anchorElement={document.body} closeMenu={() => undefined} />,
+    <GlobalMenu
+      anchorElement={document.body}
+      isOpen
+      closeMenu={() => undefined}
+    />,
     store,
   );
 };

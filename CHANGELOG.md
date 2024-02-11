@@ -6,6 +6,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.8.0]
+### Added
+- Enhanced the Networks List with drag and drop functionality ([#21163] (https://github.com/MetaMask/metamask-extension/pull/21163))
+- Added a deprecation warning for the Aurora network to inform users about its upcoming removal ([#21933] (https://github.com/MetaMask/metamask-extension/pull/21933))
+
+### Changed
+- Corrected a typo and improved the alignment of 'Terms of use' ([#22227] (https://github.com/MetaMask/metamask-extension/pull/22227))
+- Changed the title of MetaMask pop-up window to 'MetaMask Dialog' ([#21680] (https://github.com/MetaMask/metamask-extension/pull/21680))
+- Refined the Max fee calculation in Smart Swaps to ensure it does not exceed twice the estimated gas fee ([#22127] (https://github.com/MetaMask/metamask-extension/pull/22127))
+- [MMI] Enabled the Cancel and Speed Up options for non-custodial accounts in MetaMask Institutional ([#22164] (https://github.com/MetaMask/metamask-extension/pull/22164))
+- [MMI] Updated Consensys URLs from .net to .io ([#22107] (https://github.com/MetaMask/metamask-extension/pull/22107))
+- [FLASK] Updated the background color of the Snap Avatar ([#22137] (https://github.com/MetaMask/metamask-extension/pull/22137))
+- [FLASK] Updated the color of the tooltip icon in the transaction confirmation section ([#22144] (https://github.com/MetaMask/metamask-extension/pull/22144))
+- [FLASK] Updated the weighting of permissions ([#22063] (https://github.com/MetaMask/metamask-extension/pull/22063))
+
+### Fixed
+- Improved the token autodetection feature to automatically trigger detection when the setting is enabled ([#21749] (https://github.com/MetaMask/metamask-extension/pull/21749))
+- Fixed an issue causing duplicate entries for confirmed incoming transactions ([#21840] (https://github.com/MetaMask/metamask-extension/pull/21840))
+- Fixed a rounding issue causing incorrect gas fee displays on the Optimism network ([#19960] (https://github.com/MetaMask/metamask-extension/pull/19960))
+- Fixed an issue causing incorrect EIP-6963 provider names in MetaMask production builds ([#22090] (https://github.com/MetaMask/metamask-extension/pull/22090))
+- Fixed a crash that occurred when the list of ordered networks was empty ([#22109] (https://github.com/MetaMask/metamask-extension/pull/22109))
+- Fixed an issue where the settings search function only supported English and numbers ([#21013] (https://github.com/MetaMask/metamask-extension/pull/21013))
+
+## [11.7.5]
+### Fixed
+- Fix compatability of MetaMask Extension and Chrome versions v122 and higher [#22590](https://github.com/MetaMask/metamask-extension/pull/22590)
+
+## [11.7.4]
+
+## [11.7.3]
+### Fixed
+- Ensure fiat token balances are displayed on the homescreen [#22295](https://github.com/MetaMask/metamask-extension/pull/22295)
+
+## [11.7.2]
+### Fixed
+- Fixed the activity list occasionally incorrectly showing transaction statuses as failed, pending or dropped [#22319](https://github.com/MetaMask/metamask-extension/pull/22319)
+
 ## [11.7.1]
 ### Added
 - Added mapping to hardcode a mapping of ChainIDs to currency symbols [#22292](https://github.com/MetaMask/metamask-extension/pull/22292)
@@ -4258,7 +4295,12 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...HEAD
+[11.8.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.5...v11.8.0
+[11.7.5]: https://github.com/MetaMask/metamask-extension/compare/v11.7.4...v11.7.5
+[11.7.4]: https://github.com/MetaMask/metamask-extension/compare/v11.7.3...v11.7.4
+[11.7.3]: https://github.com/MetaMask/metamask-extension/compare/v11.7.2...v11.7.3
+[11.7.2]: https://github.com/MetaMask/metamask-extension/compare/v11.7.1...v11.7.2
 [11.7.1]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...v11.7.1
 [11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...v11.7.0
 [11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3

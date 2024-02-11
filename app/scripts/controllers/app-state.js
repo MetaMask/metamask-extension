@@ -48,6 +48,8 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showProductTour: true,
+      showNetworkBanner: true,
+      showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
       // This key is only used for checking if the user had set advancedGasFee
@@ -63,6 +65,7 @@ export default class AppStateController extends EventEmitter {
         '0x539': true,
       },
       surveyLinkLastClickedOrClosed: null,
+      signatureSecurityAlertResponses: {},
     });
     this.timer = null;
 
@@ -371,6 +374,24 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the Network Banner should be shown
+   *
+   * @param showNetworkBanner
+   */
+  setShowNetworkBanner(showNetworkBanner) {
+    this.store.updateState({ showNetworkBanner });
+  }
+
+  /**
+   * Sets whether the Account Banner should be shown
+   *
+   * @param showAccountBanner
+   */
+  setShowAccountBanner(showAccountBanner) {
+    this.store.updateState({ showAccountBanner });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -422,7 +443,33 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  /**
+   * Set the setCustodianDeepLink with the fromAddress and custodyId
+   *
+   * @param {object} opts
+   * @param opts.fromAddress
+   * @param opts.custodyId
+   * @returns {void}
+   */
+  setCustodianDeepLink({ fromAddress, custodyId }) {
+    this.store.updateState({
+      custodianDeepLink: { fromAddress, custodyId },
+    });
+  }
+
   ///: END:ONLY_INCLUDE_IF
+
+  addSignatureSecurityAlertResponse(securityAlertResponse) {
+    const currentState = this.store.getState();
+    const { signatureSecurityAlertResponses } = currentState;
+    this.store.updateState({
+      signatureSecurityAlertResponses: {
+        ...signatureSecurityAlertResponses,
+        [securityAlertResponse.securityAlertId]: securityAlertResponse,
+      },
+    });
+  }
+
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *

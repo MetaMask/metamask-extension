@@ -586,12 +586,6 @@
   "bridge": {
     "message": "跨链桥"
   },
-  "bridgeDescription": {
-    "message": "从不同网络传送代币"
-  },
-  "bridgeDisabled": {
-    "message": "在此网络中无法使用跨链桥"
-  },
   "browserNotSupported": {
     "message": "您的浏览器不受支持……"
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "此链 ID 目前已被 $1 网络使用。"
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "链 ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "选择您的网络"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "连接请求"
-  },
-  "connections": {
-    "message": "连接"
   },
   "contactUs": {
     "message": "联系我们"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Portfolio 控制面板"
   },
-  "preferredLedgerConnectionType": {
-    "message": "首选 Ledger 连接类型",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "正在准备交换......"
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "选择要在 MetaMask Institutional 使用的托管账户。"
   },
-  "selectAnAction": {
-    "message": "选择操作"
-  },
   "selectHdPath": {
     "message": "选择 HD 路径"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "向我们发送错误报告。"
-  },
-  "sendDescription": {
-    "message": "将加密货币发送到任何账户"
   },
   "sendSpecifiedTokens": {
     "message": "发送 $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "质押"
   },
-  "stakeDescription": {
-    "message": "继续持有加密货币，赚取潜在利润"
-  },
   "stateLogError": {
     "message": "检索状态日志时出错。"
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "去中心化交易所"
   },
-  "swapDescription": {
-    "message": "兑换和交易您的代币"
-  },
   "swapDirectContract": {
     "message": "直接合约"
-  },
-  "swapDisabled": {
-    "message": "在此网络无法兑换代币"
   },
   "swapEditLimit": {
     "message": "编辑限制"

@@ -21,22 +21,25 @@ describe('Test Snap update via snaps component', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // open a new tab and navigate to test snaps page and connect
+        // open a new tab and navigate to test snaps page
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
 
-        // find and scroll to the correct card and click first
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 3);
@@ -55,7 +58,7 @@ describe('Test Snap update via snaps component', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
+        await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
@@ -86,9 +89,11 @@ describe('Test Snap update via snaps component', function () {
         // switch to the original MM tab
         const extensionPage = windowHandles[0];
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
 
         // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -98,12 +103,12 @@ describe('Test Snap update via snaps component', function () {
           text: 'Snaps',
           tag: 'div',
         });
+
+        // click into snap view and attempt to update the snap
         await driver.waitForSelector({
           text: 'BIP-32 Example Snap',
           tag: 'p',
         });
-
-        // click into snap view and attempt to update the snap
         await driver.clickElement({
           text: 'BIP-32 Example Snap',
           tag: 'p',

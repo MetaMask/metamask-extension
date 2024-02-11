@@ -13,20 +13,24 @@ describe('Test Snap Cronjob', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page and connect to cronjobs snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const snapButton = await driver.findElement('#connectcronjobs');
         await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#connectcronjobs');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -72,10 +76,9 @@ describe('Test Snap Cronjob', function () {
           WINDOW_TITLES.Dialog,
           windowHandles,
         );
-        await driver.delay(1000);
 
         // look for the dialog popup to verify cronjob fired
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '.snap-delineator__content',
           text: 'This dialog was triggered by a cronjob',
         });

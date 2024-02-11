@@ -10,17 +10,16 @@ import {
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box, ButtonLink } from '../../component-library';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  DEPRECATED_NETWORKS,
+} from '../../../../shared/constants/network';
 
 export default function DeprecatedNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
-
-  // To add a deprecation warning to a network, add it to the array
-  // `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy()`
-  const DEPRECATED_NETWORKS = [CHAIN_IDS.AURORA, CHAIN_IDS.GOERLI];
 
   useEffect(() => {
     if (completedOnboarding && DEPRECATED_NETWORKS.includes(currentChainID)) {
@@ -63,7 +62,7 @@ function getDeprecationWarningCopy(t, currentChainID) {
     bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
     actionBtnLinkURL = 'https://mainnet.aurora.dev/';
   } else if (currentChainID === CHAIN_IDS.GOERLI) {
-    bannerAlertDescription = t('deprecatedGoerliNetworkMsg');
+    bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
     actionBtnLinkURL =
       'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
   }

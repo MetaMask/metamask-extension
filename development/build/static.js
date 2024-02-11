@@ -155,10 +155,6 @@ function getCopyTargets(
       dest: `loading.html`,
     },
     {
-      src: getPathInsideNodeModules('globalthis', 'dist/browser.js'),
-      dest: `globalthis.js`,
-    },
-    {
       src: shouldIncludeSnow
         ? `./node_modules/@lavamoat/snow/snow.prod.js`
         : EMPTY_JS_FILE,

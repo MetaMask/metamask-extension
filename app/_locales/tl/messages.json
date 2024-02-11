@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Maglipat ng mga token mula sa iba't ibang network"
-  },
-  "bridgeDisabled": {
-    "message": "Hindi available ang bridge sa network na ito"
-  },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong browser..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Ang ID ng Chain na ito ay kasalukuyang ginagamit ng $1 network."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Ang network na may ID ng chain na $1 ay maaaring gumamit ng ibang simbolo ng currency ($2) sa inilagay mo. Mag-verify bago magpatuloy.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Piliin ang iyong network"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Kahilingan sa koneksyon"
-  },
-  "connections": {
-    "message": "Mga Koneksyon"
   },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Dashboard ng Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Napiling Uri ng Ledger Connection",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Inihahanda ang pag-swap..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "Piliin ang mga custodian account para gamitin sa MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Pumili ng aksyon"
-  },
   "selectHdPath": {
     "message": "Pumili ng HD Path"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Padalhan kami ng ulat ng bug."
-  },
-  "sendDescription": {
-    "message": "Magpadala ng crypto sa anumang account"
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Mag-stake"
   },
-  "stakeDescription": {
-    "message": "I-hold ang iyong crypto at kumita ng potensyal na tubo"
-  },
   "stateLogError": {
     "message": "Error sa pagkuha ng mga log ng estado."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDescription": {
-    "message": "Ipagpalit at i-trade ang iyong mga token"
-  },
   "swapDirectContract": {
     "message": "Direktang kontrata"
-  },
-  "swapDisabled": {
-    "message": "Hindi available ang swap sa network na ito"
   },
   "swapEditLimit": {
     "message": "I-edit ang limitasyon"

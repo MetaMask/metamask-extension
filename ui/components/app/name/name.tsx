@@ -2,14 +2,16 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { useName } from '../../../hooks/useName';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import { useDisplayName } from '../../../hooks/useDisplayName';
+import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
 
 export interface NameProps {
@@ -45,7 +47,7 @@ export default function Name({
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { name } = useName(value, type);
+  const { name, hasPetname } = useDisplayName(value, type);
 
   useEffect(() => {
     if (internal) {
@@ -71,8 +73,7 @@ export default function Name({
   }, [setModalOpen]);
 
   const formattedValue = formatValue(value, type);
-  const hasName = Boolean(name);
-  const iconName = hasName ? IconName.Save : IconName.Warning;
+  const hasDisplayName = Boolean(name);
 
   return (
     <div>
@@ -82,14 +83,30 @@ export default function Name({
       <div
         className={classnames({
           name: true,
-          name__saved: hasName,
-          name__missing: !hasName,
+          name__saved: hasPetname,
+          name__recognized_unsaved: !hasPetname && hasDisplayName,
+          name__missing: !hasDisplayName,
         })}
         onClick={handleClick}
       >
-        <Icon name={iconName} className="name__icon" size={IconSize.Lg} />
-        {!hasName && <span className="name__value">{formattedValue}</span>}
-        {hasName && <span className="name__name">{name}</span>}
+        {hasDisplayName ? (
+          <Identicon address={value} diameter={18} />
+        ) : (
+          <Icon
+            name={IconName.Question}
+            className="name__icon"
+            size={IconSize.Lg}
+          />
+        )}
+        {hasDisplayName ? (
+          <Text className="name__name" variant={TextVariant.bodyMd}>
+            {name}
+          </Text>
+        ) : (
+          <Text className="name__value" variant={TextVariant.bodyMd}>
+            {formattedValue}
+          </Text>
+        )}
       </div>
     </div>
   );

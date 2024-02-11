@@ -46,7 +46,6 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -81,7 +80,6 @@ describe('Phishing Detection', function () {
         dappOptions: {
           numberOfDapps: 2,
         },
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -120,7 +118,6 @@ describe('Phishing Detection', function () {
         dappOptions: {
           numberOfDapps: 2,
         },
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -159,7 +156,6 @@ describe('Phishing Detection', function () {
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
         dapp: true,
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -174,7 +170,7 @@ describe('Phishing Detection', function () {
         });
         assert.equal(
           await driver.getCurrentUrl(),
-          `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%3A8080%2F`,
+          `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
         );
       },
     );
@@ -196,7 +192,6 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -213,7 +208,7 @@ describe('Phishing Detection', function () {
           await driver.getCurrentUrl(),
           `https://github.com/MetaMask/eth-phishing-detect/issues/new?title=[Legitimate%20Site%20Blocked]%20${encodeURIComponent(
             phishingSite.hostname,
-          )}&body=${encodeURIComponent(phishingSite.href)}`,
+          )}&body=${encodeURIComponent(`${phishingSite.origin}/`)}`,
         );
       },
     );
@@ -232,7 +227,6 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -247,7 +241,7 @@ describe('Phishing Detection', function () {
         });
         assert.equal(
           await driver.getCurrentUrl(),
-          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%3A8080%2F`,
+          `https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%2F`,
         );
       },
     );
@@ -270,7 +264,6 @@ describe('Phishing Detection', function () {
         dappOptions: {
           numberOfDapps: 2,
         },
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);

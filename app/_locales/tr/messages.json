@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Köprü"
   },
-  "bridgeDescription": {
-    "message": "Farklı ağlardan tokenleri transfer et"
-  },
-  "bridgeDisabled": {
-    "message": "Köprü bu ağda kullanılamaz"
-  },
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Bu Zincir Kimliği şu anda $1 ağı tarafından kullanılıyor."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Zincir kimliği $1 olan ağ, girdiğin para biriminden farklı bir para birimi sembolü ($2) kullanabilir. Lütfen devam etmeden önce doğrula.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Ağınızı seçin"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
-  },
-  "connections": {
-    "message": "Bağlantılar"
   },
   "contactUs": {
     "message": "Bize ulaşın"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Portföy Kontrol Paneli"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tercih Edilen Ledger bağlantı türü",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Swap hazırlanıyor..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutional'da kullanılacak saklayıcı kurum hesaplarını seçin."
   },
-  "selectAnAction": {
-    "message": "Bir eylem seçin"
-  },
   "selectHdPath": {
     "message": "HD yolunu seç"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Bize bir hata raporu gönder."
-  },
-  "sendDescription": {
-    "message": "Dilediğiniz hesaba kripto gönderin"
   },
   "sendSpecifiedTokens": {
     "message": "$1 Gönder",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Pay"
   },
-  "stakeDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Merkeziyetsiz borsa"
   },
-  "swapDescription": {
-    "message": "Tokenlerinizle swap ve ticaret yapın"
-  },
   "swapDirectContract": {
     "message": "Doğrudan sözleşme"
-  },
-  "swapDisabled": {
-    "message": "Swap bu ağda kullanılamaz"
   },
   "swapEditLimit": {
     "message": "Limiti düzenle"

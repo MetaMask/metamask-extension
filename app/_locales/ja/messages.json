@@ -586,12 +586,6 @@
   "bridge": {
     "message": "ブリッジ"
   },
-  "bridgeDescription": {
-    "message": "別のネットワークからトークンを転送します"
-  },
-  "bridgeDisabled": {
-    "message": "ブリッジはこのネットワークで利用できません"
-  },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "このチェーンIDは現在$1ネットワークで使用されています。"
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "チェーンID $1 のネットワークは、入力されたものとは異なる通貨記号 ($2) を使用している可能性があります。続行する前に確認してください。",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "ネットワークを選択してください"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "接続リクエスト"
-  },
-  "connections": {
-    "message": "接続"
   },
   "contactUs": {
     "message": "お問い合わせ"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Portfolioダッシュボード"
   },
-  "preferredLedgerConnectionType": {
-    "message": "優先Ledger接続タイプ",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "スワップを準備しています..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutionalで使用するカストディアンアカウントを選択します。"
   },
-  "selectAnAction": {
-    "message": "アクションを選択してください"
-  },
   "selectHdPath": {
     "message": "HDパスを選択"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "バグの報告をお送りください。"
-  },
-  "sendDescription": {
-    "message": "仮想通貨を任意のアカウントに送金します"
   },
   "sendSpecifiedTokens": {
     "message": "$1を送金",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "ステーク"
   },
-  "stakeDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "分散型取引所"
   },
-  "swapDescription": {
-    "message": "トークンのスワップや取引を行います"
-  },
   "swapDirectContract": {
     "message": "ダイレクトコントラクト"
-  },
-  "swapDisabled": {
-    "message": "このネットワークではスワップが利用できません"
   },
   "swapEditLimit": {
     "message": "限度額を編集"

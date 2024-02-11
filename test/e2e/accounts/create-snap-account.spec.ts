@@ -8,7 +8,7 @@ import {
   withFixtures,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from './common';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../ui/helpers/constants/common';
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
@@ -16,7 +16,6 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -83,13 +82,8 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         await driver.findElement({
-          css: '[data-testid="create-snap-account-content-description"]',
-          text: 'MetaMask Simple Snap Keyring wants to add a new Snap account to your wallet',
-        });
-
-        await driver.findElement({
           css: '[data-testid="create-snap-account-content-title"]',
-          text: 'Create Snap account',
+          text: 'Create account',
         });
       },
     );
@@ -100,7 +94,6 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -159,8 +152,8 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         await driver.findElement({
-          tag: 'div',
-          text: 'Your account is ready!',
+          tag: 'h3',
+          text: 'Account created',
         });
 
         // click the okay button
@@ -193,7 +186,6 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

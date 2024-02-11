@@ -1,7 +1,4 @@
 {
-  "DragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -158,6 +155,9 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPinningBannerDescription": {
+    "message": "Keep tabs on what matters by pinning or hiding accounts"
   },
   "active": {
     "message": "Active"
@@ -617,7 +617,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -633,12 +633,6 @@
   },
   "bridge": {
     "message": "Bridge"
-  },
-  "bridgeDescription": {
-    "message": "Transfer tokens from different networks"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge is not available in this network"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -657,12 +651,6 @@
   },
   "buyAndSell": {
     "message": "Buy & Sell"
-  },
-  "buyAndSellDescription": {
-    "message": "Buy crypto or sell your crypto for cash"
-  },
-  "buyAndSellDisabled": {
-    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
@@ -714,8 +702,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
+    "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -791,6 +778,12 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmTitleDescSignature": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleSignature": {
+    "message": "Signature request"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -888,6 +881,9 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
+  "connectingToDeprecatedNetwork": {
+    "message": "'$1' is being phased out and may not work. Try another network."
+  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
@@ -912,9 +908,6 @@
   },
   "connectionRequest": {
     "message": "Connection request"
-  },
-  "connections": {
-    "message": "Connections"
   },
   "contactUs": {
     "message": "Contact us"
@@ -986,6 +979,9 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
+  "copyPrivateKey": {
+    "message": "Copy private key"
+  },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
   },
@@ -1005,10 +1001,10 @@
     "message": "Create password"
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
+    "message": "$1 wants to add a new account to MetaMask."
   },
   "createSnapAccountTitle": {
-    "message": "Create Snap account"
+    "message": "Create account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1224,8 +1220,8 @@
   "deprecatedAuroraNetworkMsg": {
     "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
-  "deprecatedGoerliNetworkMsg": {
-    "message": "Due to the protocol changes of Ethereum: Goerli test network may not work as reliably and will be deprecated soon."
+  "deprecatedGoerliNtwrkMsg": {
+    "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
   "description": {
     "message": "Description"
@@ -1403,6 +1399,9 @@
   },
   "downloadStateLogs": {
     "message": "Download state logs"
+  },
+  "dragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
   },
   "dropped": {
     "message": "Dropped"
@@ -1664,10 +1663,10 @@
     "message": "External extension"
   },
   "externalNameSourcesSetting": {
-    "message": "Suggest address names"
+    "message": "Proposed nicknames"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see the those addresses and your IP address. Your account address won’t be exposed to third parties."
   },
   "failed": {
     "message": "Failed"
@@ -1836,6 +1835,9 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
+  "genericExplorerView": {
+    "message": "View account on $1"
+  },
   "globalTitle": {
     "message": "Global menu"
   },
@@ -1889,8 +1891,14 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hiddenAccounts": {
+    "message": "Hidden accounts"
+  },
   "hide": {
     "message": "Hide"
+  },
+  "hideAccount": {
+    "message": "Hide account"
   },
   "hideFullTransactionDetails": {
     "message": "Hide full transaction details"
@@ -1981,6 +1989,9 @@
   },
   "ignoreTokenWarning": {
     "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
+  },
+  "imToken": {
+    "message": "imToken"
   },
   "import": {
     "message": "Import",
@@ -2190,6 +2201,9 @@
   "ipfsToggleModalSettings": {
     "message": "Settings > Security and privacy"
   },
+  "isSigningOrSubmitting": {
+    "message": "A previous transaction is still being signed or submitted"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2285,6 +2299,18 @@
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
+  },
+  "ledgerErrorConnectionIssue": {
+    "message": "Reconnect your ledger, open the ETH app and try again."
+  },
+  "ledgerErrorDevicedLocked": {
+    "message": "Your Ledger is locked. Unlock it then try again."
+  },
+  "ledgerErrorEthAppNotOpen": {
+    "message": "To solve the issue, open the ETH application on your device and retry."
+  },
+  "ledgerErrorTransactionDataNotPadded": {
+    "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -2488,31 +2514,55 @@
     "description": "Label above address field in name component modal."
   },
   "nameInstructionsNew": {
-    "message": "You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.",
+    "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
   },
+  "nameInstructionsRecognized": {
+    "message": "This address has a default nickname, but you can edit it or explore other suggestions.",
+    "description": "Instruction text in name component modal when value is recognized but not saved."
+  },
   "nameInstructionsSaved": {
-    "message": "Interactions with this address will always be identified using this personal display name.",
+    "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
   "nameLabel": {
-    "message": "Display name",
+    "message": "Nickname",
     "description": "Label above name input field in name component modal."
+  },
+  "nameModalMaybeProposedName": {
+    "message": "Maybe: $1",
+    "description": "$1 is the proposed name"
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
     "description": "Title of the modal created by the name component when value is not recognised."
   },
+  "nameModalTitleRecognized": {
+    "message": "Recognized address",
+    "description": "Title of the modal created by the name component when value is recognized but not saved."
+  },
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
-  "nameNoProposedNames": {
-    "message": "No proposed names found",
-    "description": "Text shown in the proposed name dropdown if none found."
+  "nameProviderProposedBy": {
+    "message": "Proposed by $1",
+    "description": "$1 is the name of the provider"
+  },
+  "nameProvider_ens": {
+    "message": "Ethereum Name Service (ENS)"
+  },
+  "nameProvider_etherscan": {
+    "message": "Etherscan"
+  },
+  "nameProvider_lens": {
+    "message": "Lens Protocol"
+  },
+  "nameProvider_token": {
+    "message": "MetaMask"
   },
   "nameSetPlaceholder": {
-    "message": "Set a personal display name...",
+    "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
@@ -3058,6 +3108,18 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsBlockaidDefaultDescriptionActionText": {
+    "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
+  },
+  "notificationsBlockaidDefaultDescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notificationsBlockaidDefaultTitle": {
+    "message": "Stay safe with security alerts"
+  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },
@@ -3102,6 +3164,18 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
+  },
+  "notificationsPetnamesActionText": {
+    "message": "Got it"
+  },
+  "notificationsPetnamesDescriptionOne": {
+    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
+  },
+  "notificationsPetnamesDescriptionTwo": {
+    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
+  },
+  "notificationsPetnamesTitle": {
+    "message": "Suggested nicknames are here!"
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3356,6 +3430,10 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "paymasterInUse": {
+    "message": "The gas for this transaction will be paid by a paymaster.",
+    "description": "Alert shown in transaction confirmation if paymaster in use."
+  },
   "pending": {
     "message": "Pending"
   },
@@ -3577,6 +3655,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "petnamesEnabledToggle": {
+    "message": "Allow nicknames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
@@ -3601,10 +3685,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Preferred Ledger connection type",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preferredProvider": {
     "message": "Select your preferred provider"
@@ -3764,11 +3844,8 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
+    "message": "If you proceed, this account will no longer be available in MetaMask."
   },
   "removeSnapAccountTitle": {
     "message": "Remove account"
@@ -3782,6 +3859,9 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "reportIssue": {
+    "message": "Report an issue"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -4048,9 +4128,6 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
-  "selectActionButton": {
-    "message": "Select action"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4065,9 +4142,6 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
-  "selectAnAction": {
-    "message": "Select an action"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
@@ -4098,9 +4172,6 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
-  },
-  "sendDescription": {
-    "message": "Send crypto to any account"
   },
   "sendNoContactsConversionText": {
     "message": "click here"
@@ -4158,11 +4229,20 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"
+  },
+  "showAccount": {
+    "message": "Show account"
+  },
+  "showExtensionInFullSizeView": {
+    "message": "Show extension in full-size view"
+  },
+  "showExtensionInFullSizeViewDescription": {
+    "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
@@ -4225,6 +4305,9 @@
   "signin": {
     "message": "Sign-In"
   },
+  "signing": {
+    "message": "Signing"
+  },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
@@ -4270,7 +4353,17 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
-    "message": "Your account is ready!"
+    "message": "Account created"
+  },
+  "snapAccountCreatedDescription": {
+    "message": "Your new account is ready to use!"
+  },
+  "snapAccountCreationFailed": {
+    "message": "Account creation failed"
+  },
+  "snapAccountCreationFailedDescription": {
+    "message": "$1 didn't manage to create an account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
@@ -4278,8 +4371,18 @@
   "snapAccountRedirectSiteDescription": {
     "message": "Follow the instructions from $1"
   },
+  "snapAccountRemovalFailed": {
+    "message": "Account removal failed"
+  },
+  "snapAccountRemovalFailedDescription": {
+    "message": "$1 didn't manage to remove this account for you.",
+    "description": "$1 is the snap name"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
+  },
+  "snapAccountRemovedDescription": {
+    "message": "This account will no longer be available to use in MetaMask."
   },
   "snapAccounts": {
     "message": "Account Snaps"
@@ -4557,9 +4660,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Stake your crypto to earn rewards"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4757,14 +4857,8 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDescription": {
-    "message": "Swap and trade your tokens"
-  },
   "swapDirectContract": {
     "message": "Direct contract"
-  },
-  "swapDisabled": {
-    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"

@@ -16,7 +16,7 @@ jest.mock(
   () => () => '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
+jest.mock('../../confirmations/hooks/useGasFeeInputs', () => {
   return {
     useGasFeeInputs: () => {
       return {

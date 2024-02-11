@@ -19,6 +19,7 @@ describe('Incremental Security', function () {
       },
     ],
   };
+
   it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
     await withFixtures(
       {
@@ -26,7 +27,6 @@ describe('Incremental Security', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
         dappPath: 'send-eth-with-private-key-test',
       },
       async ({ driver }) => {
@@ -80,11 +80,15 @@ describe('Incremental Security', function () {
         const publicAddress = await address.getText();
 
         // wait for account modal to be visible
-        const accountModal = await driver.findVisibleElement('.mm-modal');
-        await driver.clickElement('.mm-modal button[aria-label="Close"]');
+        await driver.findVisibleElement(
+          '[data-testid="account-details-modal"]',
+        );
+        await driver.clickElement('button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
-        await accountModal.waitForElementState('hidden');
+        await driver.waitForElementNotPresent(
+          '[data-testid="account-details-modal"]',
+        );
 
         // send to current account from dapp with different provider
         const windowHandles = await driver.getAllWindowHandles();
@@ -128,8 +132,11 @@ describe('Incremental Security', function () {
         await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
         await driver.fill('[placeholder="Password"]', WALLET_PASSWORD);
+
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.mm-modal-overlay');
+        await driver.waitForElementNotPresent(
+          '[data-testid="reveal-srp-modal"]',
+        );
 
         const recoveryPhraseRevealButton = await driver.findClickableElement(
           '[data-testid="recovery-phrase-reveal"]',

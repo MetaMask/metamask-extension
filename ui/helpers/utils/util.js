@@ -3,7 +3,11 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
+import {
+  getFormattedIpfsUrl,
+  fetchTokenContractExchangeRates,
+  CodefiTokenPricesServiceV2,
+} from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -675,4 +679,29 @@ export const checkTokenIdExists = (address, tokenId, obj) => {
     });
   }
   return false;
+};
+
+/**
+ * Retrieves token prices
+ *
+ * @param {string} nativeCurrency - native currency to fetch prices for.
+ * @param {Hex[]} tokenAddresses - set of contract addresses
+ * @param {Hex} chainId - current chainId
+ * @returns The prices for the requested tokens.
+ */
+export const fetchTokenExchangeRates = async (
+  nativeCurrency,
+  tokenAddresses,
+  chainId,
+) => {
+  try {
+    return await fetchTokenContractExchangeRates({
+      tokenPricesService: new CodefiTokenPricesServiceV2(),
+      nativeCurrency,
+      tokenAddresses,
+      chainId,
+    });
+  } catch (err) {
+    return {};
+  }
 };

@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Transfer token dari jaringan yang berbeda"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge tidak tersedia di jaringan ini"
-  },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "ID chain ini saat ini digunakan oleh jaringan $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Jaringan dengan ID chain $1 dapat menggunakan simbol mata uang yang berbeda ($2) dari yang Anda masukkan. Harap verifikasikan sebelum melanjutkan.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Pilih jaringan Anda"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Permintaan koneksi"
-  },
-  "connections": {
-    "message": "Koneksi"
   },
   "contactUs": {
     "message": "Hubungi kami"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Dasbor Portofolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Jenis koneksi Ledger yang dipilih",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Mempersiapkan pertukaran..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "Pilih akun kustodian untuk digunakan di MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Pilih tindakan"
-  },
   "selectHdPath": {
     "message": "Pilih path HD"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Kirimi kami laporan bug."
-  },
-  "sendDescription": {
-    "message": "Kirim kripto ke akun mana pun"
   },
   "sendSpecifiedTokens": {
     "message": "Kirim $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
   "stateLogError": {
     "message": "Terjadi kesalahan pada log status pengambilan."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Bursa terdesentralisasi"
   },
-  "swapDescription": {
-    "message": "Tukar dan perdagangkan token Anda"
-  },
   "swapDirectContract": {
     "message": "Kontrak langsung"
-  },
-  "swapDisabled": {
-    "message": "Pertukaran tidak tersedia di jaringan ini"
   },
   "swapEditLimit": {
     "message": "Edit batas"

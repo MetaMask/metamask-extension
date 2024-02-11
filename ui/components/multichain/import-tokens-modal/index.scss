@@ -12,6 +12,14 @@
     }
   }
 
+  &__body::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__body {
+    overflow-y: auto;
+  }
+
   &__confirmation-list {
     overflow-y: scroll;
     overflow: auto;

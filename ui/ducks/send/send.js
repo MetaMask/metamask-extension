@@ -24,13 +24,13 @@ import {
   NEGATIVE_ETH_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
-} from '../../pages/send/send.constants';
+} from '../../pages/confirmations/send/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/send/send.utils';
+} from '../../pages/confirmations/send/send.utils';
 import {
   getAdvancedInlineGasShown,
   getCurrentChainId,
@@ -45,7 +45,8 @@ import {
   getIsMultiLayerFeeNetwork,
   getEnsResolutionByAddress,
   getSelectedAccount,
-  getSelectedAddress,
+  getSelectedInternalAccount,
+  getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
 } from '../../selectors';
 import {
@@ -113,6 +114,7 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -509,6 +511,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+    const selectedAccount = getSelectedInternalAccountWithBalance(state);
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
@@ -536,7 +539,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress: metamask.selectedAddress,
+        selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -672,7 +675,8 @@ export const initializeSendState = createAsyncThunk(
         blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress:
           draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address,
+          sendState.selectedAccount.address ??
+          account.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -1952,7 +1956,7 @@ export function updateRecipientUserInput(userInput) {
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
@@ -2074,7 +2078,7 @@ export function updateSendAsset(
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTransactions(state);
@@ -2304,10 +2308,11 @@ export function resetSendState() {
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
-    const { stage, eip1559support } = state[name];
+    const { stage, eip1559support, amountMode } = state[name];
     const txParams = generateTransactionParams(state[name]);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
@@ -2378,11 +2383,19 @@ export function signTransaction() {
         ),
       );
 
-      dispatch(
+      const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           sendFlowHistory: draftTransaction.history,
           type: transactionType,
         }),
+      );
+
+      await dispatch(
+        setMaxValueMode(
+          transactionId,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.asset.type === AssetType.native,
+        ),
       );
     }
   };

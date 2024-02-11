@@ -12,7 +12,7 @@ import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedAddress } from './selectors';
+import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 
@@ -56,6 +56,19 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
+export const getApprovedAndSignedTransactions = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+
+    return currentNetworkTransactions.filter((transaction) =>
+      [TransactionStatus.approved, TransactionStatus.signed].includes(
+        transaction.status,
+      ),
+    );
+  },
+  (transactions) => transactions,
+);
+
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
     const { incomingTransactionsPreferences } = state.metamask;
@@ -64,7 +77,7 @@ export const incomingTxListSelector = createDeepEqualSelector(
     }
 
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const selectedAddress = getSelectedAddress(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
 
     return currentNetworkTransactions.filter(
       (tx) =>
@@ -98,12 +111,14 @@ export const smartTransactionsListSelector = (state) =>
     }));
 
 export const selectedAddressTxListSelector = createSelector(
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getCurrentNetworkTransactions,
   smartTransactionsListSelector,
-  (selectedAddress, transactions = [], smTransactions = []) => {
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
     return transactions
-      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .filter(
+        ({ txParams }) => txParams.from === selectedInternalAccount.address,
+      )
       .filter(({ type }) => type !== TransactionType.incoming)
       .concat(smTransactions);
   },
@@ -594,6 +609,6 @@ const TRANSACTION_APPROVAL_TYPES = [
 export function hasTransactionPendingApprovals(state) {
   return (
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
-    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
+    hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
   );
 }

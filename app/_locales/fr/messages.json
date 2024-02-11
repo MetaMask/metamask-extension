@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Pont"
   },
-  "bridgeDescription": {
-    "message": "Transférez des jetons provenant de différents réseaux"
-  },
-  "bridgeDisabled": {
-    "message": "La passerelle n’est pas disponible sur ce réseau"
-  },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas compatible..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Cet ID de chaîne est actuellement utilisé par le réseau $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Le réseau avec l’ID de chaîne $1 peut utiliser un symbole de devise différent ($2) de celui que vous avez saisi. Veuillez vérifier avant de continuer.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Choisissez votre réseau"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Demande de connexion"
-  },
-  "connections": {
-    "message": "Connexions"
   },
   "contactUs": {
     "message": "Nous contacter"
@@ -1665,6 +1652,9 @@
   },
   "general": {
     "message": "Général"
+  },
+  "genericExplorerView": {
+    "message": "Afficher le compte sur $1"
   },
   "globalTitle": {
     "message": "Menu global"
@@ -3142,10 +3132,6 @@
   "portfolioDashboard": {
     "message": "Tableau de bord du portefeuille"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Type de connexion préférée au Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Préparation du swap..."
   },
@@ -3573,9 +3559,6 @@
   "selectAnAccountHelp": {
     "message": "Sélectionnez les comptes de dépôt que vous voulez utiliser dans MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Sélectionner une action"
-  },
   "selectHdPath": {
     "message": "Sélectionner le chemin HD"
   },
@@ -3599,9 +3582,6 @@
   },
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
-  },
-  "sendDescription": {
-    "message": "Transférez des crypto-actifs vers n’importe quel compte"
   },
   "sendSpecifiedTokens": {
     "message": "Envoyer $1",
@@ -3952,9 +3932,6 @@
   "stake": {
     "message": "Staker"
   },
-  "stakeDescription": {
-    "message": "Conservez vos crypto-actifs et dégagez des bénéfices potentiels"
-  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
@@ -4140,14 +4117,8 @@
   "swapDecentralizedExchange": {
     "message": "Échange décentralisé"
   },
-  "swapDescription": {
-    "message": "Échangez vos jetons"
-  },
   "swapDirectContract": {
     "message": "Contrat direct"
-  },
-  "swapDisabled": {
-    "message": "Impossible d’effectuer un échange sur ce réseau"
   },
   "swapEditLimit": {
     "message": "Modifier la limite"

@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Διασύνδεση"
   },
-  "bridgeDescription": {
-    "message": "Μεταφορά tokens από διαφορετικά δίκτυα"
-  },
-  "bridgeDisabled": {
-    "message": "Η διασύνδεση δεν είναι διαθέσιμη σε αυτό το δίκτυο"
-  },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Αυτό το αναγνωριστικό αλυσίδας χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Το δίκτυο με αναγνωριστικό αλυσίδας $1 ενδέχεται να χρησιμοποιεί διαφορετικό σύμβολο νομίσματος ($2) από αυτό που έχετε εισαγάγει. Παρακαλούμε επιβεβαιώστε το πριν συνεχίσετε.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Επιλέξτε το δίκτυό σας"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Αίτημα σύνδεσης"
-  },
-  "connections": {
-    "message": "Συνδέσεις"
   },
   "contactUs": {
     "message": "Επικοινωνήστε μαζί μας"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Πίνακας ελέγχου χαρτοφυλακίου"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Προτιμώμενος τύπος σύνδεσης στο Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "Επιλέξτε τους λογαριασμούς θεματοφύλακα που θα χρησιμοποιηθούν στο MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Επιλέξτε μια ενέργεια"
-  },
   "selectHdPath": {
     "message": "Επιλέξτε τη διαδρομή HD"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Στείλτε μας μια αναφορά σφάλματος."
-  },
-  "sendDescription": {
-    "message": "Στείλτε κρυπτονομίσματα σε οποιονδήποτε λογαριασμό"
   },
   "sendSpecifiedTokens": {
     "message": "Αποστολή $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Κρατήστε τα κρυπτονομίσματά σας και κερδίστε πιθανά κέρδη"
-  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Αποκεντρωμένη ανταλλαγή"
   },
-  "swapDescription": {
-    "message": "Ανταλλάξτε και διαπραγματευτείτε τα tokens σας"
-  },
   "swapDirectContract": {
     "message": "Άμεσο συμβόλαιο"
-  },
-  "swapDisabled": {
-    "message": "Η ανταλλαγή δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "swapEditLimit": {
     "message": "Επεξεργασία ορίου"

@@ -13,20 +13,24 @@ describe('Test Snap Get Locale', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect to get-locale snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const dialogButton = await driver.findElement('#connectgetlocale');
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
         await driver.clickElement('#connectgetlocale');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -82,25 +86,30 @@ describe('Test Snap Get Locale', function () {
         // switch to the original MM tab
         const extensionPage = windowHandles[0];
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
 
         // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
 
         // try to click on the notification item
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.delay(1000);
 
         // try to click on the snaps item
+        await driver.waitForSelector({
+          text: 'General',
+          tag: 'div',
+        });
         await driver.clickElement({
           text: 'General',
           tag: 'div',
         });
-        await driver.delay(1000);
 
         // try to click on locale-select
+        await driver.waitForSelector('[data-testid="locale-select"]');
         await driver.clickElement('[data-testid="locale-select"]');
 
         // try to select dansk from the list

@@ -1636,10 +1636,6 @@
     "message": "+ $1 más",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexión de Ledger preferida",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "prev": {
     "message": "Ant."
   },

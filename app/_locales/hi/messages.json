@@ -586,12 +586,6 @@
   "bridge": {
     "message": "ब्रिज"
   },
-  "bridgeDescription": {
-    "message": "अलग-अलग नेटवर्कों से टोकन ट्रांसफर करें"
-  },
-  "bridgeDisabled": {
-    "message": "इस नेटवर्क में ब्रिज उपलब्ध नहीं है"
-  },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "यह चेन ID वर्तमान में $1 नेटवर्क द्वारा इस्तेमाल की जाती है।"
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "चेन ID $1 वाला नेटवर्क आपके द्वारा एंटर किए गए करेंसी सिंबल ($2) से अलग करेंसी चिह्न का इस्तेमाल कर सकता है। कृपया जारी रखने से पहले वेरीफ़ाई करें।",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "अपना नेटवर्क चुनें"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "कनेक्शन अनुरोध"
-  },
-  "connections": {
-    "message": "कनेक्शन"
   },
   "contactUs": {
     "message": "हमसे कॉन्टेक्ट करें"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "पोर्टफोलियो डैशबोर्ड"
   },
-  "preferredLedgerConnectionType": {
-    "message": "वरीयता वाले Ledger कनेक्शन के प्रकार",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutional में इस्तेमाल करने के लिए कस्टोडियन एकाउंट्स को चुनें।"
   },
-  "selectAnAction": {
-    "message": "एक एक्शन चुनें"
-  },
   "selectHdPath": {
     "message": "HD पथ को चुनें"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
-  },
-  "sendDescription": {
-    "message": "किसी भी खाता में क्रिप्टो भेजें"
   },
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "हिस्सेदारी"
   },
-  "stakeDescription": {
-    "message": "अपने क्रिप्टो को रोक कर रखें और शानदार लाभ कमाएं"
-  },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "विकेंद्रीकृत विनिमय"
   },
-  "swapDescription": {
-    "message": "अपने टोकन स्वैप करें और ट्रेड करें"
-  },
   "swapDirectContract": {
     "message": "प्रत्यक्ष कॉन्ट्रैक्ट"
-  },
-  "swapDisabled": {
-    "message": "इस नेटवर्क में स्वैप उपलब्ध नहीं है"
   },
   "swapEditLimit": {
     "message": "सीमा बदलें"

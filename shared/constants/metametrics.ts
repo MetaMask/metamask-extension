@@ -355,6 +355,10 @@ export type MetaMetricsUserTraits = {
    */
   token_detection_enabled?: boolean;
   /**
+   * Does the user have native currency enabled?
+   */
+  use_native_as_primary_currency?: boolean;
+  /**
    * Does the user have desktop enabled?
    */
   desktop_enabled?: boolean;
@@ -438,6 +442,10 @@ export enum MetaMetricsUserTrait {
    */
   TokenDetectionEnabled = 'token_detection_enabled',
   /**
+   * Identified when the user enables native currency.
+   */
+  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
+  /**
    * Identified when the user enables desktop.
    */
   DesktopEnabled = 'desktop_enabled',
@@ -459,9 +467,7 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   PetnameAddressCount = 'petname_addresses_count',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -484,6 +490,11 @@ export const REJECT_NOTIFICATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTIFICATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
 
+/**
+ * The name of the event. Event definitions with corresponding properties can be found in the following document:
+ *
+ * @see {@link https://www.notion.so/f2997ab32326441793ff790ba5c60a6a?v=267d984721cd4a26be610b5caa3e25b7&pvs=4}
+ */
 export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
@@ -503,6 +514,12 @@ export enum MetaMetricsEventName {
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
+  EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
+  EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
+  EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
+  EmptyNftsBannerDisplayed = 'Empty NFTs Banner Displayed',
+  EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -594,6 +611,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
@@ -745,7 +763,9 @@ export enum MetaMetricsEventLocation {
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
+  FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  SecurityAlertFailed = 'security_alert_failed',
   Siwe = 'sign_in_with_ethereum',
 }
 

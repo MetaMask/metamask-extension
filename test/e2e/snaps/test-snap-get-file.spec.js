@@ -13,20 +13,24 @@ describe('Test Snap Get File', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect to get-file snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const dialogButton = await driver.findElement('#connectgetfile');
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
         await driver.clickElement('#connectgetfile');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
@@ -69,10 +73,7 @@ describe('Test Snap Get File', function () {
         // click on get text
         await driver.clickElement('#sendGetFileTextButton');
 
-        // short delay
-        await driver.delay(500);
-
-        // assert that the get text result is correct
+        // check that the get text result is correct
         await driver.waitForSelector({
           css: '#getFileResult',
           text: '"foo": "bar"',

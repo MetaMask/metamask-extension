@@ -8,10 +8,10 @@ const {
   largeDelayMs,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
-  findAnotherAccountFromAccountList,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   WALLET_PASSWORD,
+  waitForAccountRendered,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { emptyHtmlPage } = require('../mock-e2e');
@@ -47,7 +47,6 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -67,15 +66,16 @@ describe('Import flow @no-mmi', function () {
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // shows a QR code for the account
-        await driver.findVisibleElement('.mm-modal');
+        await driver.findVisibleElement(
+          '[data-testid="account-details-modal"]',
+        );
         // shows the correct account address
-        await driver.findElement({
-          css: '.multichain-address-copy-button',
-          text: '0x0Cc52...7afD3',
-        });
+        await driver.findElement('[data-testid="app-header-copy-button"]');
 
-        await driver.clickElement('.mm-modal button[aria-label="Close"]');
-
+        await driver.clickElement('button[aria-label="Close"]');
+        await driver.waitForElementNotPresent(
+          '[data-testid="account-details-modal"]',
+        );
         // logs out of the account
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -167,7 +167,6 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -231,14 +230,9 @@ describe('Import flow @no-mmi', function () {
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
-
-        const accountMenuItemSelector = await findAnotherAccountFromAccountList(
-          driver,
-          4,
-          'Account 4',
-        );
+        await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.findElement({
-          css: `${accountMenuItemSelector} .mm-tag`,
+          css: `.multichain-account-list-item--selected .multichain-account-list-item__content .mm-tag`,
           text: 'Imported',
         });
 
@@ -271,11 +265,12 @@ describe('Import flow @no-mmi', function () {
         // Account 5 can be removed
         await driver.clickElement('[data-testid="account-list-menu-remove"]');
         await driver.clickElement({ text: 'Remove', tag: 'button' });
-        await driver.findClickableElement({
+
+        await driver.delay(1000);
+        await driver.clickElementUsingMouseMove({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
-        await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountListItemsAfterRemoval = await driver.findElements(
           '.multichain-account-list-item',
         );
@@ -297,12 +292,13 @@ describe('Import flow @no-mmi', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
+        await waitForAccountRendered(driver);
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
+
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
         await driver.clickElement('.dropdown__select');
@@ -323,19 +319,17 @@ describe('Import flow @no-mmi', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
+        await waitForAccountRendered(driver);
         // New imported account has correct name and label
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
 
-        const accountMenuItemSelector = await findAnotherAccountFromAccountList(
-          driver,
-          4,
-          'Account 4',
-        );
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+
         await driver.findElement({
-          css: `${accountMenuItemSelector} .mm-tag`,
+          css: `.multichain-account-list-item--selected .multichain-account-list-item__content .mm-tag`,
           text: 'Imported',
         });
 

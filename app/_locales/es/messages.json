@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Puente"
   },
-  "bridgeDescription": {
-    "message": "Transferir tokens de diferentes redes"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge no está disponible en esta red"
-  },
   "browserNotSupported": {
     "message": "Su explorador no es compatible..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando este identificador de cadena."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "La red con ID de cadena $1 puede usar un símbolo de moneda diferente ($2) al que ingresó. Verifique antes de continuar.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Elija su red"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Solicitud de conexión"
-  },
-  "connections": {
-    "message": "Conexiones"
   },
   "contactUs": {
     "message": "Contáctenos"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Panel de cartera"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexión a Ledger preferida",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Preparando intercambio..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "Seleccione las cuentas custodiadas para usar en MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Seleccionar una acción"
-  },
   "selectHdPath": {
     "message": "Seleccione la ruta de acceso al disco duro"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Envíenos un informe de error."
-  },
-  "sendDescription": {
-    "message": "Enviar criptomonedas a cualquier cuenta"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Staking"
   },
-  "stakeDescription": {
-    "message": "Guarde su cripto y obtenga ganancias potenciales"
-  },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Cambio descentralizado"
   },
-  "swapDescription": {
-    "message": "Intercambie y opere con sus tokens"
-  },
   "swapDirectContract": {
     "message": "Contrato directo"
-  },
-  "swapDisabled": {
-    "message": "El intercambio no está disponible en esta red"
   },
   "swapEditLimit": {
     "message": "Editar límite"

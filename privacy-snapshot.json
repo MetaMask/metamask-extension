@@ -1,6 +1,5 @@
 [
   "acl.execution.metamask.io",
-  "api.coingecko.com",
   "api.lens.dev",
   "api.segment.io",
   "arbitrum-mainnet.infura.io",
@@ -17,8 +16,9 @@
   "etherscan.io",
   "execution.metamask.io",
   "fonts.gstatic.com",
-  "gas-api.metaswap.codefi.network",
+  "gas.api.cx.metamask.io",
   "github.com",
+  "goerli.infura.io",
   "localhost:8000",
   "localhost:8545",
   "mainnet.infura.io",

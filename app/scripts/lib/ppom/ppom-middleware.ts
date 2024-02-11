@@ -1,26 +1,34 @@
 import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
+import { v4 as uuid } from 'uuid';
 
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import PreferencesController from '../../controllers/preferences';
+import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
+import { PreferencesController } from '../../controllers/preferences';
+import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
-const ConfirmationMethods = Object.freeze([
+const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'eth_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v1',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'personal_sign',
+  ...SIGNING_METHODS,
 ]);
+
+export const SUPPORTED_CHAIN_IDS: string[] = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.AVALANCHE,
+  CHAIN_IDS.LINEA_MAINNET,
+];
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -34,12 +42,19 @@ const ConfirmationMethods = Object.freeze([
  * @param ppomController - Instance of PPOMController.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
+ * @param appStateController
+ * @param updateSecurityAlertResponseByTxId
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
+  appStateController: any,
+  updateSecurityAlertResponseByTxId: (
+    req: any,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void,
 ) {
   return async (req: any, _res: any, next: () => void) => {
     try {
@@ -48,15 +63,46 @@ export function createPPOMMiddleware(
       const { chainId } = networkController.state.providerConfig;
       if (
         securityAlertsEnabled &&
-        ConfirmationMethods.includes(req.method) &&
-        chainId === CHAIN_IDS.MAINNET
+        CONFIRMATION_METHODS.includes(req.method) &&
+        SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         // eslint-disable-next-line require-atomic-updates
-        req.securityAlertResponse = await ppomController.usePPOM(
-          async (ppom: PPOM) => {
-            return ppom.validateJsonRpc(req);
-          },
-        );
+        const securityAlertId = uuid();
+
+        ppomController.usePPOM(async (ppom: PPOM) => {
+          try {
+            const securityAlertResponse = await ppom.validateJsonRpc(req);
+            securityAlertResponse.securityAlertId = securityAlertId;
+            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
+          } catch (error: any) {
+            sentry?.captureException(error);
+            console.error('Error validating JSON RPC using PPOM: ', error);
+            const securityAlertResponse = {
+              result_type: BlockaidResultType.Failed,
+              reason: BlockaidReason.failed,
+              description:
+                'Validating the confirmation failed by throwing error.',
+            };
+            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
+          }
+        });
+
+        if (SIGNING_METHODS.includes(req.method)) {
+          req.securityAlertResponse = {
+            securityAlertId,
+          };
+          appStateController.addSignatureSecurityAlertResponse({
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
+            securityAlertId,
+          });
+        } else {
+          req.securityAlertResponse = {
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
+            securityAlertId,
+          };
+        }
       }
     } catch (error: any) {
       sentry?.captureException(error);

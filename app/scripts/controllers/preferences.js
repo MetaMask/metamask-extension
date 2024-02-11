@@ -86,14 +86,19 @@ export default class PreferencesController {
       forgottenPassword: false,
       preferences: {
         autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      isIpfsGatewayEnabled: true,
       useAddressBarEnsResolution: true,
+      // Ledger transport type is deprecated. We currently only support webhid
+      // on chrome, and u2f on firefox.
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
@@ -104,9 +109,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       isLineaMainnetReleased: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -268,7 +271,6 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -279,7 +281,6 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property
@@ -414,7 +415,7 @@ export default class PreferencesController {
    * Removes any unknown identities, and returns the resulting selected address.
    *
    * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} selectedAddress the selected address.
+   * @returns {string} selectedAddress the selected address.
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
@@ -578,6 +579,15 @@ export default class PreferencesController {
   }
 
   /**
+   * A setter for the `isIpfsGatewayEnabled` property
+   *
+   * @param {boolean} enabled - Whether or not IPFS is enabled
+   */
+  async setIsIpfsGatewayEnabled(enabled) {
+    this.store.updateState({ isIpfsGatewayEnabled: enabled });
+  }
+
+  /**
    * A setter for the `useAddressBarEnsResolution` property
    *
    * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
@@ -589,21 +599,14 @@ export default class PreferencesController {
   /**
    * A setter for the `ledgerTransportType` property.
    *
-   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
+   * @deprecated We no longer support specifying a ledger transport type other
+   * than webhid, therefore managing a preference is no longer necessary.
+   * @param {LedgerTransportTypes.webhid} ledgerTransportType - 'webhid'
    * @returns {string} The transport type that was set.
    */
   setLedgerTransportPreference(ledgerTransportType) {
     this.store.updateState({ ledgerTransportType });
     return ledgerTransportType;
-  }
-
-  /**
-   * A getter for the `ledgerTransportType` property.
-   *
-   * @returns {string} The current preferred Ledger transport type.
-   */
-  getLedgerTransportPreference() {
-    return this.store.getState().ledgerTransportType;
   }
 
   /**

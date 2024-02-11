@@ -45,11 +45,11 @@ import {
 } from '../../../../store/actions';
 import {
   ButtonLink,
-  FormTextField,
   HelpText,
   HelpTextSeverity,
   Text,
 } from '../../../../components/component-library';
+import { FormTextField } from '../../../../components/component-library/form-text-field/deprecated';
 import {
   FontWeight,
   TextColor,
@@ -453,9 +453,7 @@ const NetworksForm = ({
             formTickerSymbol.toLowerCase()
           ) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
-            warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              returnedTickerSymbol,
-            ]);
+            warningMessage = t('chainListReturnedDifferentTickerSymbol');
             setSuggestedTicker(returnedTickerSymbol);
           }
         }

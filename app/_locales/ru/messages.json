@@ -586,12 +586,6 @@
   "bridge": {
     "message": "Мост"
   },
-  "bridgeDescription": {
-    "message": "Передавайте токены из разных сетей"
-  },
-  "bridgeDisabled": {
-    "message": "В этой сети недоступен мост"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Этот ID блокчейна в настоящее время используется сетью $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Сеть с ID блокчейна $1 может использовать другой символ валюты ($2), чем тот, который вы ввели. Подтвердите, прежде чем продолжить.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Выберите свою сеть"
@@ -827,9 +817,6 @@
   },
   "connectionRequest": {
     "message": "Запрос подключения"
-  },
-  "connections": {
-    "message": "Связи"
   },
   "contactUs": {
     "message": "Свяжитесь с нами"
@@ -3142,10 +3129,6 @@
   "portfolioDashboard": {
     "message": "Панель инструментов Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Предпочтительный тип подключения к Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Подготовка свопа..."
   },
@@ -3573,9 +3556,6 @@
   "selectAnAccountHelp": {
     "message": "Выберите депозитарные счета для использования в MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Выберите аукцион"
-  },
   "selectHdPath": {
     "message": "Выберите путь HD"
   },
@@ -3599,9 +3579,6 @@
   },
   "sendBugReport": {
     "message": "Отправьте нам отчет об ошибке."
-  },
-  "sendDescription": {
-    "message": "Отправляйте криптовалюту на любой счет"
   },
   "sendSpecifiedTokens": {
     "message": "Отправить $1",
@@ -3952,9 +3929,6 @@
   "stake": {
     "message": "Выполнить стейкинг"
   },
-  "stakeDescription": {
-    "message": "Держите криптовалюту и зарабатывайте потенциально прибыль"
-  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
   },
@@ -4140,14 +4114,8 @@
   "swapDecentralizedExchange": {
     "message": "Децентрализованная биржа"
   },
-  "swapDescription": {
-    "message": "Выполняйте своп токенов и торгуйте ими"
-  },
   "swapDirectContract": {
     "message": "Прямой контракт"
-  },
-  "swapDisabled": {
-    "message": "В этой сети недоступен своп"
   },
   "swapEditLimit": {
     "message": "Изменить лимит"

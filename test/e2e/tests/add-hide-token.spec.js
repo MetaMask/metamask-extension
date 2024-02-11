@@ -8,7 +8,7 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Hide token', function () {
+describe('Add hide token', function () {
   it('hides the token when clicked', async function () {
     await withFixtures(
       {
@@ -60,14 +60,16 @@ describe('Hide token', function () {
 
         await driver.clickElement('[data-testid="asset-options__hide"]');
         // wait for confirm hide modal to be visible
-        const confirmHideModal = await driver.findVisibleElement('span .modal');
+        const confirmHideModal =
+          '[data-testid="hide-token-confirmation-modal"]';
+        await driver.findVisibleElement(confirmHideModal);
 
         await driver.clickElement(
           '[data-testid="hide-token-confirmation__hide"]',
         );
 
         // wait for confirm hide modal to be removed from DOM.
-        await confirmHideModal.waitForElementState('hidden');
+        await driver.waitForElementNotPresent(confirmHideModal);
 
         assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 1);

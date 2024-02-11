@@ -22,6 +22,7 @@
     "warning": null,
     "customTokenAmount": "10"
   },
+  "confirm": {},
   "confirmTransaction": {
     "txData": {
       "txParams": {
@@ -108,9 +109,11 @@
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": false
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -243,6 +246,31 @@
             "eth_signTypedData_v4"
           ],
           "type": "eip155:eoa"
+        },
+        "a59e7df7-c6cb-4198-a6dd-36386a409551": {
+          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+          "id": "a59e7df7-c6cb-4198-a6dd-36386a409551",
+          "metadata": {
+            "name": "Snap Account 1",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "mock-id",
+              "name": "mock-snap",
+              "enabled": true
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
         }
       },
       "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
@@ -321,7 +349,7 @@
         "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
         "tags": ["EOA"],
         "developer": "Metamask",
-        "website": "https://www.consensys.net/",
+        "website": "https://www.consensys.io/",
         "auditUrls": ["auditUrl1", "auditUrl2"],
         "version": "1.0.0",
         "lastUpdated": "April 20, 2023"
@@ -436,6 +464,7 @@
     "openSeaEnabled": true,
     "orderedNetworkList": [],
     "pinnedAccountList": [],
+    "hiddenAccountList": [],
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",

@@ -19,10 +19,10 @@ import {
   Modal,
   AvatarToken,
   AvatarTokenSize,
-  FormTextField,
   BUTTON_SIZES,
   ModalOverlay,
 } from '../../../components/component-library';
+import { FormTextField } from '../../../components/component-library/form-text-field/deprecated';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 

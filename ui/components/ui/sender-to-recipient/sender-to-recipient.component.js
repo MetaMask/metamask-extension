@@ -2,15 +2,18 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
+import { NameType } from '@metamask/name-controller';
 import Tooltip from '../tooltip';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import Name from '../../app/name/name';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
 import { Icon, IconName } from '../../component-library';
+import { usePetnamesEnabled } from '../../../hooks/usePetnamesEnabled';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -110,6 +113,7 @@ export function RecipientWithAddress({
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
+  const petnamesEnabled = usePetnamesEnabled();
 
   let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
@@ -123,6 +127,14 @@ export function RecipientWithAddress({
       </p>
     );
   }
+
+  const displayName =
+    (recipientName ||
+      recipientNickname ||
+      recipientMetadataName ||
+      recipientEns ||
+      shortenAddress(checksummedRecipientAddress)) ??
+    (!addressOnly && t('newContract'));
 
   return (
     <>
@@ -140,9 +152,11 @@ export function RecipientWithAddress({
           }
         }}
       >
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksummedRecipientAddress} diameter={24} />
-        </div>
+        {!petnamesEnabled && (
+          <div className="sender-to-recipient__sender-icon">
+            <Identicon address={checksummedRecipientAddress} diameter={24} />
+          </div>
+        )}
         <Tooltip
           position="bottom"
           disabled={!recipientName}
@@ -151,26 +165,22 @@ export function RecipientWithAddress({
           containerClassName="sender-to-recipient__tooltip-container"
           onHidden={() => setAddressCopied(false)}
         >
-          <div
-            className="sender-to-recipient__name"
-            data-testid="sender-to-recipient__name"
-          >
-            {addressOnly
-              ? recipientName ||
-                recipientNickname ||
-                recipientMetadataName ||
-                recipientEns ||
-                shortenAddress(checksummedRecipientAddress)
-              : recipientName ||
-                recipientNickname ||
-                recipientMetadataName ||
-                recipientEns ||
-                shortenAddress(checksummedRecipientAddress) ||
-                t('newContract')}
-          </div>
+          {petnamesEnabled ? (
+            <Name
+              value={checksummedRecipientAddress}
+              type={NameType.ETHEREUM_ADDRESS}
+            />
+          ) : (
+            <div
+              className="sender-to-recipient__name"
+              data-testid="sender-to-recipient__name"
+            >
+              {displayName}
+            </div>
+          )}
         </Tooltip>
       </div>
-      {showNicknamePopovers ? (
+      {showNicknamePopovers && !petnamesEnabled ? (
         <NicknamePopovers
           onClose={() => setShowNicknamePopovers(false)}
           address={checksummedRecipientAddress}

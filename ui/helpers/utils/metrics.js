@@ -3,6 +3,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
 export function getMethodName(camelCase) {
@@ -25,42 +26,61 @@ export function formatAccountType(accountType) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
-  const additionalParams = {};
+/**
+ * Returns the ui_customization string value based on the result type
+ *
+ * @param {BlockaidResultType} resultType
+ * @returns {MetaMetricsEventUiCustomization}
+ */
+const getBlockaidMetricUiCustomization = (resultType) => {
+  let uiCustomization;
 
-  if (securityAlertResponse) {
-    const {
-      result_type: resultType,
-      reason,
-      providerRequestsCount,
-    } = securityAlertResponse;
-
-    if (resultType === BlockaidResultType.Malicious) {
-      additionalParams.ui_customizations = ['flagged_as_malicious'];
-    }
-
-    if (resultType === BlockaidResultType.Failed) {
-      additionalParams.ui_customizations = ['security_alert_failed'];
-    }
-
-    if (resultType !== BlockaidResultType.Benign) {
-      additionalParams.security_alert_reason = BlockaidReason.notApplicable;
-
-      if (reason) {
-        additionalParams.security_alert_response = resultType;
-        additionalParams.security_alert_reason = reason;
-      }
-    }
-
-    // add counts of each RPC call
-    if (providerRequestsCount) {
-      Object.keys(providerRequestsCount).forEach((key) => {
-        const metricKey = `ppom_${key}_count`;
-        additionalParams[metricKey] = providerRequestsCount[key];
-      });
-    }
+  if (resultType === BlockaidResultType.Failed) {
+    uiCustomization = [MetaMetricsEventUiCustomization.SecurityAlertFailed];
+  } else if (resultType === BlockaidResultType.Malicious) {
+    uiCustomization = [MetaMetricsEventUiCustomization.FlaggedAsMalicious];
+  } else if (resultType === BlockaidResultType.Warning) {
+    uiCustomization = [MetaMetricsEventUiCustomization.FlaggedAsWarning];
   }
 
-  return additionalParams;
+  return uiCustomization;
+};
+
+/**
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transactionMeta
+ * @returns {object}
+ */
+export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
+  if (!securityAlertResponse) {
+    return {};
+  }
+
+  const params = {};
+  const {
+    providerRequestsCount,
+    reason,
+    result_type: resultType,
+  } = securityAlertResponse;
+
+  const uiCustomization = getBlockaidMetricUiCustomization(resultType);
+  if (uiCustomization) {
+    params.ui_customizations = uiCustomization;
+  }
+
+  if (resultType !== BlockaidResultType.Benign) {
+    params.security_alert_reason = reason ?? BlockaidReason.notApplicable;
+  }
+  params.security_alert_response =
+    resultType ?? BlockaidResultType.NotApplicable;
+
+  // add counts of each RPC call
+  if (providerRequestsCount) {
+    Object.keys(providerRequestsCount).forEach((key) => {
+      const metricKey = `ppom_${key}_count`;
+      params[metricKey] = providerRequestsCount[key];
+    });
+  }
+
+  return params;
 };
 ///: END:ONLY_INCLUDE_IF

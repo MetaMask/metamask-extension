@@ -16,7 +16,7 @@ export interface ContainerStyleUtilityProps extends StyleUtilityProps {
   className?: string;
   /**
    * maxWidth prop sets the max-width of the Container component
-   * Sm (320px)
+   * Sm (360px)
    * Md (480px)
    * Lg (720px)
    */
