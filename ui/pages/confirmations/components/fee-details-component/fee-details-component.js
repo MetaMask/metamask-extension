@@ -27,7 +27,7 @@ import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { addHexes } from '../../../../../shared/modules/conversion.utils';
-import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+import fetchEstimatedL1Fee from '../../../../helpers/utils/multiLayerFee/fetchEstimatedL1Fee';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 export default function FeeDetailsComponent({
@@ -142,7 +142,7 @@ export default function FeeDetailsComponent({
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           {isMultiLayerFeeNetwork && (
             <TransactionDetailItem
-              detailTitle={t('optimismFees')}
+              detailTitle={t('executionFee')}
               detailText={
                 useCurrencyRateCheck &&
                 renderTotalDetailText(hexMinimumTransactionFee)

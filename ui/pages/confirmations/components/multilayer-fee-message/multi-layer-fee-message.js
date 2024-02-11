@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
-import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+import fetchEstimatedL1Fee from '../../../../helpers/utils/multiLayerFee/fetchEstimatedL1Fee';
 import { SECONDARY } from '../../../../helpers/constants/common';
 import { I18nContext } from '../../../../contexts/i18n';
 import { sumHexes } from '../../../../../shared/modules/conversion.utils';
