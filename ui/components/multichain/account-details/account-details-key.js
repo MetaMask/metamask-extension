@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { LavaDome as LavaDomeReact, toLavaDomeToken } from '@lavamoat/lavadome-react';
+import {
+  LavaDome as LavaDomeReact,
+  toLavaDomeToken,
+} from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
