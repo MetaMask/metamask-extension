@@ -20,16 +20,30 @@ function buildTransactionCommon(txMeta) {
   return Common.custom({
     chainId: new BN(stripHexPrefix(txMeta.chainId), 16),
     // Scroll only supports type-0 transactions, while OP Stack chains can support
-    // type-2 transactions, but that support hasn't been tested here.
+    // type-2 transactions. Both are supported here.
     // Sources:
     // <https://community.optimism.io/docs/developers/build/transaction-fees/#the-l2-execution-fee>
     // <https://docs.scroll.io/en/developers/ethereum-and-scroll-differences/#user-content-fnref-eip1559>
-    defaultHardfork: Hardfork.SpuriousDragon,
+    defaultHardfork: Hardfork.Shanghai,
   });
 }
 
-export default function buildUnserializedTransaction(txMeta) {
+export default function buildUnserializedTransaction(txMeta, signed = false) {
   const txParams = buildTxParams(txMeta);
   const common = buildTransactionCommon(txMeta);
-  return TransactionFactory.fromTxData(txParams, { common });
+  let unserializedTransaction = TransactionFactory.fromTxData(txParams, {
+    common,
+  });
+
+  // Different Gas Oracle contracts have different requirements for using signed or unsigned transactions.
+  if (signed) {
+    // Since this is just for signature formatting, we can use a fake key here.
+    const temporaryKey = Buffer.from(
+      'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789',
+      'hex',
+    );
+    unserializedTransaction = unserializedTransaction.sign(temporaryKey);
+  }
+
+  return unserializedTransaction;
 }

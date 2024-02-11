@@ -207,9 +207,7 @@ export default class ConfirmTransactionBase extends Component {
       (!this.state.estimatedL1Fees ||
         prevHexMinimumTransactionFee !== hexMinimumTransactionFee)
     ) {
-      console.log('fetching estimated L1 fees in confirm transaction base');
       fetchEstimatedL1Fee(txData?.chainId, txData).then((result) => {
-        console.log('setting state', result);
         this.setState({
           estimatedL1Fees: result,
         });

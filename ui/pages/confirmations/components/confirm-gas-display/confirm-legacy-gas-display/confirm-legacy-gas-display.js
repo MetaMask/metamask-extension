@@ -29,6 +29,7 @@ import {
   IconName,
   Text,
 } from '../../../../../components/component-library';
+import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import fetchEstimatedL1Fee from '../../../../../helpers/utils/multiLayerFee/fetchEstimatedL1Fee';
 
 const renderHeartBeatIfNotInTest = () =>

@@ -48,8 +48,10 @@ export default async function fetchEstimatedL1Fee(
     SCROLL_GAS_PRICE_ORACLE_ABI,
     provider,
   );
-  const serializedTransaction =
-    buildUnserializedTransaction(txMeta).serialize();
+  const serializedTransaction = buildUnserializedTransaction(
+    txMeta,
+    true,
+  ).serialize();
   const result = await contract.getL1Fee(serializedTransaction);
 
   return result?.toHexString();

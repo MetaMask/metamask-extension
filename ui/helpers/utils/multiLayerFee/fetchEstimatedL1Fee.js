@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js';
-
 import { isOpStack, isScroll } from './networks';
 import fetchEstimatedL1FeeOptimism from './optimism/fetchEstimatedL1Fee';
 import fetchEstimatedL1FeeScroll from './scroll/fetchEstimatedL1Fee';
@@ -24,5 +22,5 @@ export default async function fetchEstimatedL1Fee(
     return await fetchEstimatedL1FeeScroll(...params);
   }
 
-  return new BigNumber(0).toHexString();
+  return '0x0';
 }
