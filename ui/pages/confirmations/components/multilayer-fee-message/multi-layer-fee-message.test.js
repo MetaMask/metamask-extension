@@ -6,7 +6,7 @@ import configureStore from '../../../../store/store';
 import MultilayerFeeMessage from './multi-layer-fee-message';
 
 jest.mock(
-  '../../../../helpers/utils/optimism/fetchEstimatedL1Fee',
+  '../../../../helpers/utils/multiLayerFee/fetchEstimatedL1Fee',
   () => '0x5',
 );
 
