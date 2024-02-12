@@ -96,6 +96,8 @@ export function createPPOMMiddleware(
 
         if (SIGNING_METHODS.includes(req.method)) {
           req.securityAlertResponse = {
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
             securityAlertId,
           };
           appStateController.addSignatureSecurityAlertResponse({
