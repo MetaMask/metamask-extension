@@ -13,6 +13,7 @@ const selectors = {
   informationSymbol: '[data-testid="info-tooltip"]',
   settingsOption: { text: 'Settings', tag: 'div' },
   networkOption: { text: 'Networks', tag: 'div' },
+  generalOption: { text: 'General', tag: 'div' },
   ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
   deleteButton: { text: 'Delete', tag: 'button' },
   cancelButton: { text: 'Cancel', tag: 'button' },
@@ -24,17 +25,15 @@ const selectors = {
   },
   networkNameInputField: '[data-testid="network-form-network-name"]',
   rpcUrlInputField: '[data-testid="network-form-rpc-url"]',
+  chainIdInputField: '[data-testid="network-form-chain-id"]',
+  errorContainer: '.settings-tab__error',
 };
 
-async function editNetworkDetails(
-  driver: Driver,
-  inputField: string,
-  inputValue: string,
-) {
-  const inputTextFieldToEdit = await driver.findElement(inputField);
-  await inputTextFieldToEdit.clear();
-  await inputTextFieldToEdit.sendKeys(inputValue);
-}
+const inputData = {
+  networkName: 'Update Network',
+  rpcUrl: 'test',
+  chainId: '0x539',
+};
 
 async function navigateToEditNetwork(driver: Driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
@@ -42,7 +41,7 @@ async function navigateToEditNetwork(driver: Driver) {
   await driver.clickElement(selectors.networkOption);
 }
 describe('Update Network:', function (this: Suite) {
-  it('name is updated and validate the ui elements', async function () {
+  it('update network details and validate the ui elements', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -53,12 +52,16 @@ describe('Update Network:', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         await navigateToEditNetwork(driver);
-        await editNetworkDetails(
-          driver,
+        await driver.fill(
           selectors.networkNameInputField,
-          'Update Network',
+          inputData.networkName,
         );
+        await driver.fill(selectors.chainIdInputField, inputData.chainId);
         await driver.clickElement(selectors.saveButton);
+
+        // Validate the error does not appear for updating the network name and chain id
+        await driver.clickElement(selectors.generalOption);
+        await driver.assertElementNotPresent(selectors.errorContainer);
 
         // Validate the network name is updated
         const updatedNetworkNamePresent = await driver.isElementPresent(
@@ -71,7 +74,7 @@ describe('Update Network:', function (this: Suite) {
         );
 
         await navigateToEditNetwork(driver);
-        await editNetworkDetails(driver, selectors.rpcUrlInputField, 'test');
+        await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
 
         // Validate the error message that appears for the invalid url format
         const errorMessage = await driver.isElementPresent(
@@ -83,7 +86,7 @@ describe('Update Network:', function (this: Suite) {
           'Error message for the invalid url did not appear',
         );
 
-        // Validate the Save button is disabled
+        // Validate the Save button is disabled for the invalid url format
         const saveButton = await driver.findElement(selectors.saveButton);
         const saveButtonEnabled = await saveButton.isEnabled();
         assert.equal(saveButtonEnabled, false, 'Save button is enabled');
