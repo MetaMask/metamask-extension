@@ -335,9 +335,9 @@ export default function createRPCMethodTrackingMiddleware({
         // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
         security_alert_reason:
           blockaidMetricProps.security_alert_response ===
-          BlockaidResultType.Benign
+            BlockaidResultType.Benign
             ? ''
-            : blockaidMetricProps.security_alert_response,
+            : blockaidMetricProps.security_alert_reason,
       };
 
       trackEvent({
