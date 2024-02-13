@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
 
@@ -29,8 +29,8 @@ const SnapUIRendererComponent = ({
   isCollapsable = false,
   isCollapsed = false,
   isLoading = false,
-  isPrompt = false,
   // This is a workaround while we have the prompt dialog type since we can't inject the SnapUIRenderer in the template renderer.
+  isPrompt = false,
   inputValue,
   onInputChange,
   placeholder,
@@ -50,6 +50,8 @@ const SnapUIRendererComponent = ({
   );
 
   const elementKeyIndex = 0;
+
+  // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
       content &&
@@ -59,16 +61,6 @@ const SnapUIRendererComponent = ({
       }),
     [content, elementKeyIndex],
   );
-
-  useEffect(() => {
-    console.log('sections caused a re-render');
-  }, [sections]);
-
-  useEffect(() => {
-    console.log('targetSubjectMetadata caused a re-render');
-  }, [targetSubjectMetadata]);
-
-  console.log('snap-ui-renderer re-render');
 
   if (isLoading || !content) {
     return (
@@ -130,19 +122,10 @@ const SnapUIRendererComponent = ({
   );
 };
 
+// SnapUIRenderer is memoized to avoid useless re-renders if one of the parents element re-renders.
 export const SnapUIRenderer = memo(
   SnapUIRendererComponent,
-  (prevProps, nextProps) => {
-    const equals = isEqual(prevProps, nextProps);
-    console.log(
-      'renderer props changed?',
-      !equals,
-      prevProps,
-      nextProps,
-      prevProps.onInputChange === nextProps.onInputChange,
-    );
-    return equals;
-  },
+  (prevProps, nextProps) => isEqual(prevProps, nextProps),
 );
 
 SnapUIRendererComponent.propTypes = {
