@@ -1,5 +1,5 @@
 const path = require('path');
-const { readFileSync } = require('fs');
+const { readFileSync, writeFileSync } = require('fs');
 const semver = require('semver');
 const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
@@ -287,6 +287,21 @@ function getBuildIcon({ buildType }) {
   const svg = readFileSync(svgLogoPath, 'utf8');
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
+/**
+ * Takes the given JavaScript file at `filePath` and replaces its contents with
+ * a script that injects the original file contents into the document in which
+ * the file is loaded. Useful for MV2 extensions to run scripts synchronously in the
+ * "MAIN" world.
+ *
+ * @param {string} filePath - The path to the file to convert to a self-injecting
+ * script.
+ */
+function makeSelfInjecting(filePath) {
+  const fileContents = readFileSync(filePath, 'utf8');
+  const textContent = JSON.stringify(fileContents);
+  const js = `{let d=document,s=d.createElement('script');s.textContent=${textContent};d.documentElement.appendChild(s).remove();}`;
+  writeFileSync(filePath, js, 'utf8');
+}
 
 module.exports = {
   getBrowserVersionMap,
@@ -299,4 +314,5 @@ module.exports = {
   logError,
   getPathInsideNodeModules,
   wrapAgainstScuttling,
+  makeSelfInjecting,
 };

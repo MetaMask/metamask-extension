@@ -1,5 +1,4 @@
 import React from 'react';
-import Confusable from '../../ui/confusable';
 import { Box } from '../../component-library';
 import { AddressListItem } from '.';
 
@@ -55,4 +54,4 @@ export const ConfusableStory = (args) => (
   </Box>
 );
 ConfusableStory.storyName = 'Confusable';
-ConfusableStory.args = { label: <Confusable input={LABEL} /> };
+ConfusableStory.args = { label: '👻.eth' };
