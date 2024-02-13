@@ -21,7 +21,7 @@ export type HandleEvent = (event: UserInputEventType, name?: string) => void;
 
 export type HandleInputChange = (
   name: string,
-  value: string,
+  value: string | null,
   form?: string,
 ) => void;
 

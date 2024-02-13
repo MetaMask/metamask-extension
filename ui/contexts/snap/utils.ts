@@ -3,7 +3,7 @@ import { FormState, InterfaceState } from '@metamask/snaps-sdk';
 export const mergeValue = (
   state: InterfaceState,
   name: string,
-  value: string,
+  value: string | null,
   form?: string,
 ): InterfaceState => {
   if (form) {
