@@ -3246,25 +3246,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-core@npm:^0.0.13":
-  version: 0.0.13
-  resolution: "@lavamoat/lavadome-core@npm:0.0.13"
+"@lavamoat/lavadome-core@npm:^0.0.14":
+  version: 0.0.14
+  resolution: "@lavamoat/lavadome-core@npm:0.0.14"
   dependencies:
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
-  checksum: fe607d5047229315ffea26170ea7d145575aff783c27b28f507d734aadd4b81462aa130baeedf70a8e4a4b71932f408a03e4696513ad6387332f8d941ce45714
+  checksum: b6089689aedd695fbbd6342fdc338782750fdf2cc2105706928c1507230bfc4f399ed891593a10e54049b763868c5a8478af3906085afee89d0698d8496b6efe
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-react@npm:0.0.13":
-  version: 0.0.13
-  resolution: "@lavamoat/lavadome-react@npm:0.0.13"
+"@lavamoat/lavadome-react@npm:0.0.14":
+  version: 0.0.14
+  resolution: "@lavamoat/lavadome-react@npm:0.0.14"
   dependencies:
-    "@lavamoat/lavadome-core": "npm:^0.0.13"
+    "@lavamoat/lavadome-core": "npm:^0.0.14"
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
   peerDependencies:
     react: ^16.12.0
     react-dom: ^16.12.0
-  checksum: 6c436bcc46f39aba89806cd4c6c2e1d034ffddd6d65b4aa6236133c4b81172275cfd5a774373f47139362d55759f7f49a182e342b3fe1f7a24de126b616e4cef
+  checksum: 191043c1cd32b8b2d12a5b2ee985238b9330e9599ba76a6d1732b22fabe6cf2543a91209f1292f1501d8f6081f6889b81499a39bbbb8676f4b1c0c041e4993c1
   languageName: node
   linkType: hard
 
@@ -24022,7 +24022,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.1"
     "@lavamoat/lavadome-core": "npm:0.0.10"
-    "@lavamoat/lavadome-react": "npm:0.0.13"
+    "@lavamoat/lavadome-react": "npm:0.0.14"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
