@@ -138,10 +138,18 @@ describe('Routes Component', () => {
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
+          providerConfig: {
+            chainId: CHAIN_IDS.MAINNET,
+            ticker: 'ETH',
+            type: NETWORK_TYPES.MAINNET,
+          },
         },
         send: {
           ...mockSendState.send,
           stage: SEND_STAGES.INACTIVE,
+        },
+        localeMessages: {
+          currentLocale: 'en',
         },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store);

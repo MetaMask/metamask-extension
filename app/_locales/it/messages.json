@@ -416,10 +416,6 @@
   "chainIdExistsErrorMsg": {
     "message": "Questo Chain ID al momento è usato dalla rete $1."
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "La rete con chain ID $1 può utilizzare un simbolo diverso ($2) da quello che hai inserito. Si prega di verificare prima di continuare.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
   },

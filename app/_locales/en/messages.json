@@ -702,8 +702,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
+    "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -979,6 +978,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyPrivateKey": {
+    "message": "Copy private key"
   },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
@@ -1661,10 +1663,10 @@
     "message": "External extension"
   },
   "externalNameSourcesSetting": {
-    "message": "Suggest address names"
+    "message": "Proposed nicknames"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signature and transaction requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see the those addresses and your IP address. Your account address won’t be exposed to third parties."
   },
   "failed": {
     "message": "Failed"
@@ -2199,6 +2201,9 @@
   "ipfsToggleModalSettings": {
     "message": "Settings > Security and privacy"
   },
+  "isSigningOrSubmitting": {
+    "message": "A previous transaction is still being signed or submitted"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2509,27 +2514,55 @@
     "description": "Label above address field in name component modal."
   },
   "nameInstructionsNew": {
-    "message": "You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.",
+    "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
   },
+  "nameInstructionsRecognized": {
+    "message": "This address has a default nickname, but you can edit it or explore other suggestions.",
+    "description": "Instruction text in name component modal when value is recognized but not saved."
+  },
   "nameInstructionsSaved": {
-    "message": "Interactions with this address will always be identified using this personal display name.",
+    "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
   "nameLabel": {
-    "message": "Display name",
+    "message": "Nickname",
     "description": "Label above name input field in name component modal."
+  },
+  "nameModalMaybeProposedName": {
+    "message": "Maybe: $1",
+    "description": "$1 is the proposed name"
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
     "description": "Title of the modal created by the name component when value is not recognised."
   },
+  "nameModalTitleRecognized": {
+    "message": "Recognized address",
+    "description": "Title of the modal created by the name component when value is recognized but not saved."
+  },
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
+  "nameProviderProposedBy": {
+    "message": "Proposed by $1",
+    "description": "$1 is the name of the provider"
+  },
+  "nameProvider_ens": {
+    "message": "Ethereum Name Service (ENS)"
+  },
+  "nameProvider_etherscan": {
+    "message": "Etherscan"
+  },
+  "nameProvider_lens": {
+    "message": "Lens Protocol"
+  },
+  "nameProvider_token": {
+    "message": "MetaMask"
+  },
   "nameSetPlaceholder": {
-    "message": "Set a personal display name...",
+    "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
@@ -3132,17 +3165,17 @@
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
   },
-  "notificationsStakingPortfolioActionText": {
-    "message": "Got it",
-    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  "notificationsPetnamesActionText": {
+    "message": "Got it"
   },
-  "notificationsStakingPortfolioDescription": {
-    "message": "Now you can stake ETH and manage your rewards all in one place.",
-    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  "notificationsPetnamesDescriptionOne": {
+    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
   },
-  "notificationsStakingPortfolioTitle": {
-    "message": "Stake smarter in Portfolio",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  "notificationsPetnamesDescriptionTwo": {
+    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
+  },
+  "notificationsPetnamesTitle": {
+    "message": "Suggested nicknames are here!"
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3623,10 +3656,10 @@
     "message": "Personal address detected. Input the token contract address."
   },
   "petnamesEnabledToggle": {
-    "message": "Petnames"
+    "message": "Allow nicknames"
   },
   "petnamesEnabledToggleDescription": {
-    "message": "This allows you to assign a name to any address. This name will be visible to you only."
+    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
   },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
@@ -4271,6 +4304,9 @@
   },
   "signin": {
     "message": "Sign-In"
+  },
+  "signing": {
+    "message": "Signing"
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."

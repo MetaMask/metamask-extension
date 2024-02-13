@@ -64,7 +64,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -93,8 +93,8 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -207,6 +207,18 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
   return Boolean(keyring?.type?.includes('Hardware'));
+}
+
+/**
+ * Checks if the account supports smart transactions.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
 }
 
 /**
@@ -404,11 +416,22 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskIdentities,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
+  getInternalAccounts,
+  (keyrings, identities, accounts, internalAccounts) =>
     keyrings
       .reduce((list, keyring) => list.concat(keyring.accounts), [])
       .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+      .map((address) => {
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, address),
+        );
+
+        return {
+          ...identities[address],
+          ...internalAccount,
+          ...accounts[address],
+        };
+      }),
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -530,7 +553,7 @@ export function accountsWithSendEtherInfoSelector(state) {
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
-    ({ address, name, balance }) => ({
+    ({ address, balance, metadata: { name } }) => ({
       address,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT
@@ -1081,6 +1104,31 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
   },
 );
 
+export const getMemoizedCurrentChainId = createDeepEqualSelector(
+  getCurrentChainId,
+  (chainId) => chainId,
+);
+
+export const getMemoizedTxId = createDeepEqualSelector(
+  (state) => state.appState.txId,
+  (txId) => txId,
+);
+
+export const getMemoizedUnapprovedMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedMsgs,
+  (unapprovedMsgs) => unapprovedMsgs,
+);
+
+export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedPersonalMsgs,
+  (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
+);
+
+export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedTypedMessages,
+  (unapprovedTypedMessages) => unapprovedTypedMessages,
+);
+
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -1229,10 +1277,10 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
-    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: true,
   };
 }
 

@@ -107,6 +107,10 @@ export function getInteractiveReplacementToken(state) {
   return state.metamask.interactiveReplacementToken || {};
 }
 
+export function getCustodianDeepLink(state) {
+  return state.metamask.custodianDeepLink || {};
+}
+
 export function getIsNoteToTraderSupported(state, fromChecksumHexAddress) {
   const { custodyAccountDetails, mmiConfiguration } = state.metamask;
   const accountDetails = custodyAccountDetails?.[fromChecksumHexAddress];

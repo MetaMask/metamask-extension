@@ -647,10 +647,6 @@
   "chainIdExistsErrorMsg": {
     "message": "此链 ID 目前已被 $1 网络使用。"
   },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "链 ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
-  },
   "chooseYourNetwork": {
     "message": "选择您的网络"
   },
