@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.9.3.1]
+### Fixed
+- Fix security advisory https://github.com/advisories/GHSA-78xj-cgh5-2h22 ([#22910](https://github.com/MetaMask/metamask-extension/pull/22890))
+
 ## [11.9.3]
 ### Fixed
 - Fix: don't prevent users from editing gas when "Show balance and token price checker" toggle is off ([#22890](https://github.com/MetaMask/metamask-extension/pull/22890))
