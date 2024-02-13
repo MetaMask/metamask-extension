@@ -102,18 +102,19 @@ const GasDetailsItem = ({
       detailTitle={<Text>{t('estimatedFee')}</Text>}
       detailTitleColor={TextColor.textDefault}
       detailText={
-        useCurrencyRateCheck &&
         Object.keys(draftTransaction).length === 0 && (
           <div className="gas-details-item__currency-container">
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
-            <UserPreferencedCurrencyDisplay
-              type={SECONDARY}
-              value={getTransactionFeeTotal}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-            />
+            {useCurrencyRateCheck && (
+              <UserPreferencedCurrencyDisplay
+                type={SECONDARY}
+                value={getTransactionFeeTotal}
+                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              />
+            )}
           </div>
         )
       }
