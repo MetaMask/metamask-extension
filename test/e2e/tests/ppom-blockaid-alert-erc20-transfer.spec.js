@@ -192,6 +192,8 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await driver.waitForElementNotPresent('.loading-indicator');
+
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,
           text: expectedTitle,
