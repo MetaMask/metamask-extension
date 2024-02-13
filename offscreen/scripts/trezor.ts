@@ -7,7 +7,7 @@ import {
 
 /**
  * This listener is used to listen for messages targeting the Trezor Offscreen
- * iframe. Each package sent has an action that is used to determine what calls
+ * handler. Each package sent has an action that is used to determine what calls
  * to the Trezor Connect SDK should be made. The response is then sent back to
  * the sender of the message, which in this case will be the
  * TrezorOffscreenBridge.
