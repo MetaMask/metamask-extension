@@ -136,10 +136,10 @@ export default class DetectTokensController extends StaticIntervalPollingControl
       const networkClient = this.getNetworkClientById(networkClientId);
       chainIdAgainstWhichToDetect = networkClient.configuration.chainId;
     } else {
-      chainIdAgainstWhichToDetect = chainId ?? this.getChainIdFromNetworkStore();
-      networkClientIdAgainstWhichToDetect = this.network.findNetworkClientIdByChainId(
-        chainIdAgainstWhichToDetect,
-      )
+      chainIdAgainstWhichToDetect =
+        chainId ?? this.getChainIdFromNetworkStore();
+      networkClientIdAgainstWhichToDetect =
+        this.network.findNetworkClientIdByChainId(chainIdAgainstWhichToDetect);
     }
 
     if (!this.isActive) {
