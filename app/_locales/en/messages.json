@@ -2888,108 +2888,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notifications10ActionText": {
-    "message": "Visit in Settings",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Improved token detection is currently available on Ethereum Mainnet, Polygon, BSC, and Avalanche networks. More to come!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Token detection feature is currently OFF by default. You can enable it from Settings."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "We source tokens from third party tokens lists. Tokens listed on more than two token lists will be automatically detected."
-  },
-  "notifications10Title": {
-    "message": "Improved token detection is here"
-  },
-  "notifications11Description": {
-    "message": "Tokens can be created by anyone and can have duplicate names. If you see a token appear that you don’t trust or haven’t interacted with - it’s safer to not trust it."
-  },
-  "notifications11Title": {
-    "message": "Scam and security risks"
-  },
-  "notifications12ActionText": {
-    "message": "Enable dark mode"
-  },
-  "notifications12Description": {
-    "message": "Dark mode on Extension is finally here! To turn it on, go to Settings > Experimental and select one of the display options: Light, Dark, System."
-  },
-  "notifications12Title": {
-    "message": "Wen dark mode? Now dark mode! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Show custom network list"
-  },
-  "notifications13Description": {
-    "message": "You can now add the following popular custom networks easily: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon! To enable this feature, go to Settings > Experimental and turn \"Show custom network list\" on!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Add Popular Networks"
-  },
-  "notifications14ActionText": {
-    "message": "Show backup settings"
-  },
-  "notifications14Description": {
-    "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Box Deprecation"
-  },
-  "notifications15Description": {
-    "message": "There's no action required from you, so keep using your wallet as usual. Be aware of potential scams around the Merge.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "The Ethereum Merge is here!"
-  },
-  "notifications18ActionText": {
-    "message": "Enable security alerts"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Get alerts from third parties when you may have received a malicious request.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Always be sure to do your own due diligence before approving any requests.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Stay safe with security alerts"
-  },
-  "notifications19ActionText": {
-    "message": "Enable NFT autodetection"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Two ways you can get started:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "We only support ERC-721 at the moment.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Manually add your NFTs, or turn on NFT autodetection in Settings > Experimental.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "See your NFTs like never before"
-  },
-  "notifications1Description": {
-    "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Swapping on mobile is here!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Learn more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -3002,37 +2900,6 @@
     "message": "Ledger and Firefox Users Experiencing Connection Issues",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Try it out"
-  },
-  "notifications21Description": {
-    "message": "We've updated Swaps in the MetaMask extension to be easier and faster to use.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Introducing new and refreshed Swaps!"
-  },
-  "notifications22ActionText": {
-    "message": "Got it"
-  },
-  "notifications22Description": {
-    "message": "💡 Just click the global menu or account menu to find them!"
-  },
-  "notifications22Title": {
-    "message": "Looking for your account details or the block explorer URL?"
-  },
-  "notifications23ActionText": {
-    "message": "Enable security alerts"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Always do your own due diligence before approving requests."
-  },
-  "notifications23Title": {
-    "message": "Stay safe with security alerts"
-  },
   "notifications24ActionText": {
     "message": "Got it"
   },
@@ -3041,62 +2908,6 @@
   },
   "notifications24Title": {
     "message": "Advanced gas fees by network"
-  },
-  "notifications3ActionText": {
-    "message": "Read more",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Stay up to date on MetaMask security best practices and get the latest security tips from official MetaMask support.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Stay secure",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Start swapping",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Get the best prices on token swaps right inside your wallet. MetaMask now connects you to multiple decentralized exchange aggregators and professional market makers on Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Swap on Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Your \"Seed Phrase\" is now called your \"Secret Recovery Phrase.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "As of Chrome version 91, the API that enabled our Ledger support (U2F) no longer supports hardware wallets. MetaMask has implemented a new Ledger Live support that allows you to continue to connect to your Ledger device via the Ledger Live desktop app.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "When interacting with your Ledger account in MetaMask, a new tab will open and you will be asked to open the Ledger Live app.  Once the app opens, you'll be asked to allow a WebSocket connection to your MetaMask account.  That's all!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "You can enable Ledger Live support by clicking Settings > Advanced > Use Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Ledger support update for Chrome users",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 included new support for EIP-1559 transactions when using Ledger devices.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "To complete transactions on Ethereum Mainnet, make sure your Ledger device has the latest firmware.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger firmware update",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Go to Settings > Advanced",
@@ -3113,15 +2924,6 @@
   "notifications8Title": {
     "message": "Ledger connection improvement",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "We now provide you with more insights on the 'Data' tab when confirming smart contract transactions."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "You can now get a better understanding of your transaction’s details before confirming, and more easily add transaction addresses to your address book, helping you make safe and informed decisions."
-  },
-  "notifications9Title": {
-    "message": "👓 We are making transactions easier to read."
   },
   "notificationsBlockaidDefaultDescriptionActionText": {
     "message": "Got it"
