@@ -4204,7 +4204,7 @@ export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
 /**
  * Informs the GasFeeController that the UI no longer requires gas fee polling
  * for the given network client.
- * If all network clients unsubscribe the controller stops polling.
+ * If all network clients unsubscribe, the controller stops polling.
  *
  * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
  */
