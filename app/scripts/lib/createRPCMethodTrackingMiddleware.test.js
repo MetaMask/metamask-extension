@@ -35,6 +35,11 @@ const appStateController = {
       },
     }),
   },
+  getSignatureSecurityAlertResponse: (id) => {
+    return appStateController.store.getState().signatureSecurityAlertResponses[
+      id
+    ];
+  },
 };
 
 const handler = createRPCMethodTrackingMiddleware({

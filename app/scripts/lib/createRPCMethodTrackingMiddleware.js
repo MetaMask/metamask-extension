@@ -319,14 +319,26 @@ export default function createRPCMethodTrackingMiddleware({
       if (!isDisabledRPCMethod) {
         if (SIGNING_METHODS.includes(method)) {
           const securityAlertResponse =
-            appStateController.store.getState().signatureSecurityAlertResponses[
-              req.securityAlertResponse?.securityAlertId
-            ];
+            appStateController.getSignatureSecurityAlertResponse(
+              req.securityAlertResponse?.securityAlertId,
+            );
+
           blockaidMetricProps = getBlockaidMetricsProps({
             securityAlertResponse,
           });
         }
       }
+
+      const properties = {
+        ...eventProperties,
+        ...blockaidMetricProps,
+        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
+        security_alert_reason:
+          blockaidMetricProps.security_alert_response ===
+          BlockaidResultType.Benign
+            ? ''
+            : blockaidMetricProps.security_alert_response,
+      };
 
       trackEvent({
         event,
@@ -334,10 +346,7 @@ export default function createRPCMethodTrackingMiddleware({
         referrer: {
           url: origin,
         },
-        properties: {
-          ...blockaidMetricProps,
-          ...eventProperties,
-        },
+        properties,
       });
 
       return callback();
