@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useSnapInterfaceContext } from '../../../../contexts/snap';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { FormTextField, FormTextFieldProps } from '../../../component-library';
 
 export type SnapUIInputProps = {

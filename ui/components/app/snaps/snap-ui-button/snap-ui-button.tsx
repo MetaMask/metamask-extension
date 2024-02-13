@@ -1,7 +1,7 @@
 import React, { FunctionComponent, MouseEvent } from 'react';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import { Button, ButtonProps } from '../../../component-library';
-import { useSnapInterfaceContext } from '../../../../contexts/snap';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUIButtonProps = {
   name?: string;

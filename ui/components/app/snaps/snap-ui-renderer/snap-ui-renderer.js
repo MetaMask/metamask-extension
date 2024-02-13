@@ -19,7 +19,7 @@ import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
-import { SnapInterfaceContextProvider } from '../../../../contexts/snap';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format

@@ -1,6 +1,6 @@
 import React, { FormEvent, FunctionComponent } from 'react';
 import { UserInputEventType } from '@metamask/snaps-sdk';
-import { useSnapInterfaceContext } from '../../../../contexts/snap';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUIFormProps = {
   name: string;
