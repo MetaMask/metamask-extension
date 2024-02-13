@@ -46,7 +46,6 @@ if (false) {
   require('@babel/eslint-plugin');
   require('@metamask/eslint-config');
   require('@metamask/eslint-config-nodejs');
-  // eslint-disable-next-line import/no-unresolved
   require('@typescript-eslint/parser');
   require('eslint');
   require('eslint-config-prettier');
