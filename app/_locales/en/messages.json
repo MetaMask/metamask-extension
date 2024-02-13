@@ -2727,7 +2727,7 @@
     "message": "Settings > Security and privacy"
   },
   "newNFTDetectedInImportNFTsMsg": {
-    "message": "To use Opensea see your NFT, turn on 'Display NFT Media' in $1.",
+    "message": "To use Opensea to see your NFTs, turn on 'Display NFT Media' in $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
@@ -2770,7 +2770,7 @@
     "message": "NFT has already been added."
   },
   "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
   "nftLearnMore": {
     "message": "Learn more about NFTs"
