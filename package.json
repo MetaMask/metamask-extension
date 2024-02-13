@@ -217,7 +217,8 @@
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@trezor/connect-web": "9.0.11",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
-    "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch"
+    "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch",
+    "socks": "^2.7.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -255,7 +256,7 @@
     "@metamask/controller-utils": "^8.0.1",
     "@metamask/design-tokens": "^1.13.0",
     "@metamask/desktop": "^0.3.0",
-    "@metamask/eth-json-rpc-middleware": "^12.0.1",
+    "@metamask/eth-json-rpc-middleware": "^12.1.0",
     "@metamask/eth-keyring-controller": "^15.1.0",
     "@metamask/eth-ledger-bridge-keyring": "^2.0.1",
     "@metamask/eth-query": "^4.0.0",

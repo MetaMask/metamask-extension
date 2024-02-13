@@ -29,12 +29,15 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapUIRenderer } from '../snap-ui-renderer';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
+import {
+  DelineatorType,
+  InsightWarningLanguage,
+} from '../../../../helpers/constants/snaps';
 import { stripHttpSchemes } from '../../../../helpers/utils/util';
 
-export default function TxInsightWarnings({
+export default function InsightWarnings({
   warnings,
-  type = 'confirming',
+  action = 'confirming',
   origin,
   onCancel,
   onSubmit,
@@ -67,7 +70,7 @@ export default function TxInsightWarnings({
   const Warnings = () => {
     const lastWarningIdx = warnings.length - 1;
     return (
-      <Box className="tx-insights-warnings-modal__content">
+      <Box className="insights-warnings-modal__content">
         {warnings.map((warning, idx) => {
           const { snapId, content } = warning;
           return (
@@ -87,19 +90,12 @@ export default function TxInsightWarnings({
     );
   };
 
-  // move this to an enum that defines the language to be used in this modal on the various
-  // screens that will offer transaction insights, should be indexed on "type".
-  const results = {
-    confirming: { noun: 'confirmation', imperative: 'confirm' },
-    signing: { noun: 'signature', imperative: 'sign' },
-  };
-
   return (
     <Modal
       isOpen
       isClosedOnEscapeKey={false}
       isClosedOnOutsideClick={false}
-      className="tx-insights-warnings-modal"
+      className="insights-warnings-modal"
     >
       <ModalOverlay />
       <ModalContent>
@@ -122,19 +118,19 @@ export default function TxInsightWarnings({
             paddingTop={4}
             paddingBottom={4}
           >
-            {t('transactionInsightWarningHeader')}
+            {t('insightWarningHeader')}
           </Text>
         </ModalHeader>
         <Text variant={TextVariant.bodyMd} paddingBottom={4}>
           {warnings.length === 1
-            ? t('transactionInsightWarningContentSingular', [
-                type,
-                results[type].noun,
+            ? t('insightWarningContentSingular', [
+                action,
+                InsightWarningLanguage[action].noun,
               ])
-            : t('transactionInsightWarningContentPlural', [
+            : t('insightWarningContentPlural', [
                 warnings.length,
-                type,
-                results[type].noun,
+                action,
+                InsightWarningLanguage[action].noun,
               ])}
         </Text>
         <Warnings />
@@ -156,8 +152,8 @@ export default function TxInsightWarnings({
             variant={TextVariant.bodySm}
             isChecked={isChecked}
             onChange={handleOnChange}
-            label={t('transactionInsightWarningCheckboxMessage', [
-              t(results[type].imperative),
+            label={t('insightWarningCheckboxMessage', [
+              t(InsightWarningLanguage[action].imperative),
               stripHttpSchemes(origin),
             ])}
           />
@@ -182,7 +178,7 @@ export default function TxInsightWarnings({
             onClick={onSubmit}
             disabled={!isChecked}
           >
-            {t(results[type].imperative)}
+            {t(InsightWarningLanguage[action].imperative)}
           </Button>
         </Box>
       </ModalContent>
@@ -190,7 +186,7 @@ export default function TxInsightWarnings({
   );
 }
 
-TxInsightWarnings.propTypes = {
+InsightWarnings.propTypes = {
   /**
    * An array of warnings returned from tx-insight snaps that deem their content 'critical'
    */
@@ -198,7 +194,7 @@ TxInsightWarnings.propTypes = {
   /**
    * A limited set of actions defining the type of transaction
    */
-  type: PropTypes.oneOf(['confirming', 'signing']),
+  action: PropTypes.oneOf(Object.keys(InsightWarningLanguage)),
   /**
    * Origin initiating the transaction
    */
