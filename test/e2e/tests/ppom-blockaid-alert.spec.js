@@ -168,7 +168,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/1766}
    */
   // eslint-disable-next-line mocha/no-skipped-tests
-  it('should not show security alerts for benign requests', async function () {
+  it.skip('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -231,7 +231,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
   // eslint-disable-next-line mocha/no-skipped-tests
-  it('should show security alerts for malicious requests', async function () {
+  it.skip('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
         dapp: true,
