@@ -47,8 +47,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
+import {
+  getCurrentNetwork,
+  getNativeCurrencyImage,
+  getUseBlockie,
+} from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -69,6 +74,7 @@ export const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
   const useBlockie = useSelector(getUseBlockie);
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
@@ -77,6 +83,10 @@ export const AccountListItem = ({
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
+
+  const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork.nickname)
+    ? totalWeiBalance
+    : identity.balance;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -197,9 +207,9 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={totalWeiBalance}
+                value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat
+                showFiat={!TEST_NETWORKS.includes(currentNetwork.nickname)}
               />
             </Text>
           </Box>

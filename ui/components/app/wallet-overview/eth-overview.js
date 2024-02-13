@@ -32,12 +32,14 @@ import {
   getPreferences,
   getSelectedAddress,
   getShouldHideZeroBalanceTokens,
+  getCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getSelectedAccountCachedBalance,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -66,6 +68,7 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -86,6 +89,8 @@ const EthOverview = ({ className, showAddress }) => {
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
   const { ticker, type } = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const balance = useSelector(getSelectedAccountCachedBalance);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
@@ -102,9 +107,11 @@ const EthOverview = ({ className, showAddress }) => {
     shouldHideZeroBalanceTokens,
   );
 
-  const isSwapsChain = useSelector(getIsSwapsChain);
+  const balanceToUse = TEST_NETWORKS.includes(currentNetwork.nickname)
+    ? balance
+    : totalWeiBalance;
 
-  const balanceToUse = totalWeiBalance;
+  const isSwapsChain = useSelector(getIsSwapsChain);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -189,7 +196,7 @@ const EthOverview = ({ className, showAddress }) => {
                       ? PRIMARY
                       : SECONDARY
                   }
-                  showFiat
+                  showFiat={!TEST_NETWORKS.includes(currentNetwork.nickname)}
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
