@@ -111,9 +111,7 @@ const ConfirmTransaction = () => {
       startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
       stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
       networkClientId: transaction.networkClientId ?? networkClientId,
-      options: {},
     },
-    [transaction, networkClientId],
   );
 
   useEffect(() => {

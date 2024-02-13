@@ -13,7 +13,6 @@ type UsePollingOptions = {
 
 const usePolling = (
   usePollingOptions: UsePollingOptions,
-  dependencies: unknown[] = [],
 ) => {
   const pollTokenRef = useRef<null | string>(null);
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
@@ -46,7 +45,7 @@ const usePolling = (
       isMounted = false;
       cleanup();
     };
-  }, [...dependencies]);
+  }, [usePollingOptions.networkClientId, usePollingOptions.options]);
 };
 
 export default usePolling;
