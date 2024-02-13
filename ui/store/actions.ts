@@ -4190,7 +4190,7 @@ export function getGasFeeEstimatesAndStartPolling(): Promise<string> {
 }
 
 /**
- * Informs the GasFeeController that the UI requiring gas fee polling
+ * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client
  * @returns polling token that can be used to stop polling
