@@ -6,7 +6,6 @@ import {
 import { debounce } from 'lodash';
 import React, {
   FunctionComponent,
-  ReactNode,
   createContext,
   useContext,
   useEffect,
@@ -37,38 +36,42 @@ export const SnapInterfaceContext =
   createContext<SnapInterfaceContextType | null>(null);
 
 export type SnapInterfaceContextProviderProps = {
-  children: ReactNode;
   interfaceId: string;
   snapId: string;
 };
 
+/**
+ * The Snap interface context provider that handles all the interface state operations.
+ *
+ * @param params - The context provider params.
+ * @param params.children - The childrens to wrap with the context provider.
+ * @param params.interfaceId - The interface ID to use.
+ * @param params.snapId - The Snap ID that requested the interface.
+ * @returns The context provider.
+ */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children, interfaceId, snapId }) => {
   const dispatch = useDispatch();
   const { state: initialState } = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
+    // Prevents the selector update.
+    // We do this to avoid useless re-renders.
     () => true,
   );
 
+  // We keep an internal copy of the state to speed-up the state update in the UI.
+  // It's kept in a ref to avoid useless re-rendering of the entire tree of components.
   const internalState = useRef<InterfaceState>(initialState ?? {});
 
+  // Since the internal state is kept in a reference, it won't update when the interface is updated.
+  // We have to manually update it
   useEffect(() => {
     internalState.current = initialState;
   }, [initialState]);
 
-  useEffect(() => {
-    console.log('internal state triggered re-render');
-  }, [internalState]);
-
-  useEffect(() => {
-    console.log('interface id triggered re-render');
-  }, [interfaceId]);
-
-  useEffect(() => {
-    console.log('snapId triggered re-render');
-  }, [snapId]);
-
+  // The submittion of user input events is debounced to avoid crashing the snap if
+  // there's too much events sent at the same time
   const snapRequestDebounced: HandleEvent = debounce(
     (event, name) =>
       handleSnapRequest({
@@ -91,16 +94,32 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     200,
   );
 
+  // The update of the state is debounced to avoid crashes due to too much
+  // updates in a short amount of time.
   const updateStateDebounced = debounce(
     (state) => dispatch(updateInterfaceState(interfaceId, state)),
     200,
   );
 
+  /**
+   * Handle the submission of an user input event to the Snap.
+   *
+   * @param event - The event object.
+   * @param name - The name of the component emmitting the event.
+   */
   const handleEvent: HandleEvent = (event, name) => {
     updateStateDebounced.flush();
     snapRequestDebounced(event, name);
   };
 
+  /**
+   * Handle the value change of an input.
+   *
+   * @param name - The name of the input.
+   * @param value - The new value.
+   * @param form - The name of the form containing the input.
+   * Optional if the input is not contained in a form.
+   */
   const handleInputChange: HandleInputChange = (name, value, form) => {
     const state = mergeValue(internalState.current, name, value, form);
 
@@ -108,6 +127,14 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     updateStateDebounced(state);
   };
 
+  /**
+   * Get the value of an input from the interface state.
+   *
+   * @param name - The name of the input.
+   * @param form - The name of the form containing the input.
+   * Optional if the input is not contained in a form.
+   * @returns The value of the input or undefinded if the input has no value.
+   */
   const getValue: GetValue = (name, form) => {
     const value = form
       ? (initialState[form] as FormState)?.[name]
@@ -129,6 +156,11 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   );
 };
 
+/**
+ * The utility hook to consume the Snap inteface context.
+ *
+ * @returns The snap interface context.
+ */
 export function useSnapInterfaceContext() {
   return useContext(SnapInterfaceContext) as SnapInterfaceContextType;
 }
