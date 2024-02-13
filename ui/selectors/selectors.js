@@ -64,7 +64,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -207,6 +207,18 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
   return Boolean(keyring?.type?.includes('Hardware'));
+}
+
+/**
+ * Checks if the account supports smart transactions.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
 }
 
 /**
@@ -404,11 +416,22 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskIdentities,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
+  getInternalAccounts,
+  (keyrings, identities, accounts, internalAccounts) =>
     keyrings
       .reduce((list, keyring) => list.concat(keyring.accounts), [])
       .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+      .map((address) => {
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, address),
+        );
+
+        return {
+          ...identities[address],
+          ...internalAccount,
+          ...accounts[address],
+        };
+      }),
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -530,7 +553,7 @@ export function accountsWithSendEtherInfoSelector(state) {
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
-    ({ address, name, balance }) => ({
+    ({ address, balance, metadata: { name } }) => ({
       address,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT
@@ -1136,6 +1159,21 @@ export const getInsightSnaps = createDeepEqualSelector(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
     );
   },
+);
+
+export const getSignatureInsightSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions['endowment:signature-insight'],
+    );
+  },
+);
+
+export const getSignatureInsightSnapIds = createDeepEqualSelector(
+  getSignatureInsightSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
 );
 
 export const getInsightSnapIds = createDeepEqualSelector(

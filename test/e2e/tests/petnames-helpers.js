@@ -26,7 +26,7 @@ async function clickName(driver, value) {
   });
 }
 
-async function saveName(driver, value, name, proposedName, isUpdate = false) {
+async function saveName(driver, value, name, proposedName) {
   await clickName(driver, value);
   await driver.clickElement('.form-combo-field');
 
@@ -44,7 +44,7 @@ async function saveName(driver, value, name, proposedName, isUpdate = false) {
     await input.press(driver.Key.ENTER);
   }
 
-  await driver.clickElement({ text: isUpdate ? 'Ok' : 'Save', tag: 'button' });
+  await driver.clickElement({ text: 'Save', tag: 'button' });
 }
 
 module.exports = {

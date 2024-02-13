@@ -6,12 +6,12 @@
 
   flex-flow: column nowrap;
   z-index: 55;
-  min-height: 64px;
+  min-height: 68px;
 
   &__contents {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-    height: 64px;
+    height: 68px;
 
     @include screen-sm-max {
       height: $height-screen-sm-max;
@@ -38,9 +38,17 @@
     }
   }
 
+  &__address-copy-button {
+    &:not([disabled]):hover,
+    &:not([disabled]):focus {
+      box-shadow: none;
+      background: var(--color-background-default-hover);
+    }
+  }
+
   &__lock-contents {
     flex-flow: row nowrap;
-    height: 64px;
+    height: 68px;
 
     @include screen-sm-max {
       height: $height-screen-sm-max;
