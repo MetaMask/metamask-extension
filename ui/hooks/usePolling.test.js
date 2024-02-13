@@ -44,7 +44,7 @@ describe('usePolling', () => {
     );
   });
   // eslint-disable-next-line jest/no-done-callback
-  it('calls the cleanup function when unmounted', (done) => {
+  it('calls the cleanup function with the correct pollingToken when unmounted', (done) => {
     const mockStart = jest.fn().mockImplementation(() => {
       return Promise.resolve('pollingToken');
     });
