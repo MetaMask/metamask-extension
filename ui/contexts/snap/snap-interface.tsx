@@ -10,7 +10,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useState,
+  useRef,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMemoizedInterface } from '../../selectors';
@@ -51,13 +51,19 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     () => true,
   );
 
-  const [internalState, setInternalState] = useState<InterfaceState>(
-    interfaceState ?? {},
-  );
+  const internalState = useRef<InterfaceState>(interfaceState ?? {});
 
   useEffect(() => {
     console.log('internal state triggered re-render');
   }, [internalState]);
+
+  useEffect(() => {
+    console.log('interface id triggered re-render');
+  }, [interfaceId]);
+
+  useEffect(() => {
+    console.log('snapId triggered re-render');
+  }, [snapId]);
 
   const snapRequestDebounced: HandleEvent = debounce(
     (event, name) =>
@@ -72,7 +78,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             event: {
               type: event,
               name,
-              value: internalState[name],
+              value: internalState.current[name],
             },
             id: interfaceId,
           },
@@ -92,9 +98,9 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   };
 
   const handleInputChange: HandleInputChange = (name, value, form) => {
-    const state = mergeValue(internalState, name, value, form);
+    const state = mergeValue(internalState.current, name, value, form);
 
-    setInternalState(state);
+    internalState.current = state;
     updateStateDebounced(state);
   };
 
