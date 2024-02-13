@@ -46,12 +46,16 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children, interfaceId, snapId }) => {
   const dispatch = useDispatch();
-  const { state: interfaceState } = useSelector(
+  const { state: initialState } = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
     () => true,
   );
 
-  const internalState = useRef<InterfaceState>(interfaceState ?? {});
+  const internalState = useRef<InterfaceState>(initialState ?? {});
+
+  useEffect(() => {
+    internalState.current = initialState;
+  }, [initialState]);
 
   useEffect(() => {
     console.log('internal state triggered re-render');
@@ -106,8 +110,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   const getValue: GetValue = (name, form) => {
     const value = form
-      ? (internalState[form] as FormState)?.[name]
-      : (internalState as FormState)?.[name];
+      ? (initialState[form] as FormState)?.[name]
+      : (initialState as FormState)?.[name];
 
     if (value) {
       return value;

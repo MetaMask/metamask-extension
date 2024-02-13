@@ -1,4 +1,9 @@
-import React, { ChangeEvent, FunctionComponent } from 'react';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  useEffect,
+  useState,
+} from 'react';
 import { useSnapInterfaceContext } from '../../../../contexts/snap';
 import { FormTextField, FormTextFieldProps } from '../../../component-library';
 
@@ -12,9 +17,18 @@ export const SnapUIInput: FunctionComponent<
 > = ({ name, form, ...props }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const value = getValue(name, form);
+  const initialValue = getValue(name, form);
+
+  const [value, setValue] = useState(initialValue ?? '');
+
+  useEffect(() => {
+    if (initialValue) {
+      setValue(initialValue);
+    }
+  }, [initialValue]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
     handleInputChange(name, event.target.value ?? null, form);
   };
   return (
