@@ -12,10 +12,29 @@ exports[`Add Network Modal should render 1`] = `
     </h4>
   </div>
   <div
-    class="networks-tab__network-form networks-tab__restrict-height"
+    class="networks-tab__add-network-form networks-tab__restrict-height"
   >
     <div
-      class="networks-tab__network-form-body"
+      class="actionable-message actionable-message--warning actionable-message--with-right-button networks-tab__add-network-form__alert actionable-message--with-icon"
+    >
+      <svg
+        viewBox="0 0 10 10"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+          fill="var(--color-warning-default)"
+        />
+      </svg>
+      
+      <div
+        class="actionable-message__message"
+      >
+        A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust.
+      </div>
+    </div>
+    <div
+      class="networks-tab__add-network-form-body"
     >
       <div
         class="form-field"
@@ -190,7 +209,7 @@ exports[`Add Network Modal should render 1`] = `
       </div>
     </div>
     <div
-      class="networks-tab__network-form-footer"
+      class="networks-tab__add-network-form-footer"
     >
       <button
         class="button btn--rounded btn-secondary"
