@@ -49,18 +49,19 @@ const SnapUIRendererComponent = ({
     getMemoizedInterfaceContent(state, interfaceId),
   );
 
+  const isValidComponent = content && isComponent(content);
+
   const elementKeyIndex = 0;
 
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
-      content &&
-      isComponent(content) &&
+      isValidComponent &&
       mapToTemplate({
         element: content,
         elementKeyIndex,
       }),
-    [content, elementKeyIndex],
+    [content, isValidComponent, elementKeyIndex],
   );
 
   if (isLoading || !content) {
@@ -77,7 +78,7 @@ const SnapUIRendererComponent = ({
     );
   }
 
-  if (!isComponent(content)) {
+  if (!isValidComponent) {
     return (
       <SnapDelineator
         isCollapsable={isCollapsable}
