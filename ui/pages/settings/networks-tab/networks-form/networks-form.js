@@ -625,7 +625,7 @@ const NetworksForm = ({
         });
       }
 
-      if (addNewNetwork) {
+      if (addNewNetwork && !setActiveOnSubmit) {
         dispatch(
           setNewNetworkAdded({
             nickname: networkName,
@@ -641,7 +641,7 @@ const NetworksForm = ({
   };
 
   const onCancel = () => {
-    if (addNewNetwork || setActiveOnSubmit) {
+    if (addNewNetwork) {
       dispatch(setSelectedNetworkConfigurationId(''));
       cancelCallback?.();
     } else {
@@ -661,8 +661,7 @@ const NetworksForm = ({
       }),
     );
   };
-  const deletable =
-    !isCurrentRpcTarget && !viewOnly && !addNewNetwork && !setActiveOnSubmit;
+  const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
     selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
