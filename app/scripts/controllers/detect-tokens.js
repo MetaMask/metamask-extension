@@ -196,7 +196,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
         result = await this.assetsContractController.getBalancesInSingleCall(
           addressAgainstWhichToDetect,
           tokensSlice,
-          networkClientId,
+          networkClientIdAgainstWhichToDetect,
         );
       } catch (error) {
         warn(
