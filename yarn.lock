@@ -3239,22 +3239,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-core@npm:0.0.10, @lavamoat/lavadome-core@npm:^0.0.10":
+"@lavamoat/lavadome-core@npm:0.0.10":
   version: 0.0.10
   resolution: "@lavamoat/lavadome-core@npm:0.0.10"
   checksum: 79011976d5643112b3930210d56f933a575102ff200338c1436c102f5f0f3f6efea9cd44ef673f5859e0832980b83ad7a2162d95db299f5877e8a408cf16bd6c
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-react@npm:0.0.10":
-  version: 0.0.10
-  resolution: "@lavamoat/lavadome-react@npm:0.0.10"
+"@lavamoat/lavadome-core@npm:^0.0.11":
+  version: 0.0.11
+  resolution: "@lavamoat/lavadome-core@npm:0.0.11"
   dependencies:
-    "@lavamoat/lavadome-core": "npm:^0.0.10"
+    "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
+  checksum: 5c64915fbb6f50ed85653a475d9be5fdd9dc8c4dbcc9edd86984a1c9e1088f9fe8f0e1020c155cfc75603d4789834ff1a39a6d5e91c2b50af2f2ed1a4e22bc8a
+  languageName: node
+  linkType: hard
+
+"@lavamoat/lavadome-react@npm:0.0.11":
+  version: 0.0.11
+  resolution: "@lavamoat/lavadome-react@npm:0.0.11"
+  dependencies:
+    "@lavamoat/lavadome-core": "npm:^0.0.11"
+    "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
   peerDependencies:
     react: ^16.12.0
     react-dom: ^16.12.0
-  checksum: cac64b7bd75d4796bffd13e529f864c41e2e1cfde281ad68ca500dc13af5d0bef5293abdc45a95e4e42251bc848d1e0beda907450672acc7fe69c323ca9d1c4d
+  checksum: 5c357430b875e561f2da4b6f84bb5c7a5aa86c73afc3fb5cae4cf6f58d1b81f56cbf8b1703695107f5a3efeda968bf172aa0e29b32118cc5def095a4af070545
   languageName: node
   linkType: hard
 
@@ -3272,6 +3282,13 @@ __metadata:
     through2: "npm:4.0.2"
     umd: "npm:3.0.3"
   checksum: faf4425e740c5abb9a441b6e872921943d48129f8f2120ce26672119824cea5dfcbcb7ae7113ece639a34c924794e3f6088564281672421bf31b40c25cfc93dc
+  languageName: node
+  linkType: hard
+
+"@lavamoat/preinstall-always-fail@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@lavamoat/preinstall-always-fail@npm:2.0.0"
+  checksum: a69c712e9a01029cacc8f77f7b9a944a285d9532583c09fc6050baef098d962d7dea18f17f446ca1f0ec3cd1eea07bfaedd583a704e016889cae1eba7f3552fd
   languageName: node
   linkType: hard
 
@@ -3630,15 +3647,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@metamask/approval-controller@npm:5.1.1"
+"@metamask/approval-controller@npm:^5.1.1, @metamask/approval-controller@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "@metamask/approval-controller@npm:5.1.2"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/base-controller": "npm:^4.1.1"
     "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/utils": "npm:^8.3.0"
     nanoid: "npm:^3.1.31"
-  checksum: a75a0bfa3ecdae427ec44a575163fd4ff2bb6c8232020bd2cd83b85dd35e84f2a7955028d46d4565efeb9b6d10274a73fcb887e4af1ec5df37c731decc70078c
+  checksum: 827ff7b40f15cd8c20378fb008d664cbd319667cbcb9440166b30889bd154c61367078aa8646c66de1d0f02e6c72aa279c197e6431804fd97226299bbfaeb4ba
   languageName: node
   linkType: hard
 
@@ -3895,9 +3912,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:12.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^12.0.1, @metamask/eth-json-rpc-middleware@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:12.1.0"
   dependencies:
     "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
     "@metamask/eth-sig-util": "npm:^7.0.0"
@@ -3908,7 +3925,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 3ff40940d118042cfa957222effcd30035b1eb8f412724c3e60e87eef7b9cdcaf4cd9af743eb7c9b1846a3af896830b1522c73f57bcc791a82aa7d1ee96d294c
+  checksum: 35a34dba839b957068030880328b43aabca615cc9f9fbf2d11fd998f0cc622ff3eec87582861b6cc517ee18cbd652f5c237647d651aa939151ac3f8738abae73
   languageName: node
   linkType: hard
 
@@ -4282,7 +4299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:12.2.0":
+"@metamask/keyring-controller@npm:12.2.0, @metamask/keyring-controller@npm:^12.2.0":
   version: 12.2.0
   resolution: "@metamask/keyring-controller@npm:12.2.0"
   dependencies:
@@ -4318,14 +4335,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/logging-controller@npm:^1.0.1, @metamask/logging-controller@npm:^1.0.3":
-  version: 1.0.4
-  resolution: "@metamask/logging-controller@npm:1.0.4"
+"@metamask/logging-controller@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@metamask/logging-controller@npm:2.0.2"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
     uuid: "npm:^8.3.2"
-  checksum: 8b119a11e302ca43b0d7b90e4462426a53aee48bafdac308cab70a64f06e639209c9fb72868ed026d1730938a239ce2bdf6702e3c1cc5ec3e58ea8ed6bd30adf
+  checksum: 0b387edf5db404670b3904eccbbfee5dbe86663ce7ca24f0b4ec61c7d93893d64d60185de1019f871093e1ae98f4c2355fd215a1952702f9d2460d7e02557a3d
   languageName: node
   linkType: hard
 
@@ -4339,7 +4356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.5, @metamask/message-manager@npm:^7.3.8":
+"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.8":
   version: 7.3.8
   resolution: "@metamask/message-manager@npm:7.3.8"
   dependencies:
@@ -4696,45 +4713,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/signature-controller@npm:6.1.2"
+"@metamask/signature-controller@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/signature-controller@npm:12.0.0"
   dependencies:
-    "@metamask/approval-controller": "npm:^4.0.0"
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/logging-controller": "npm:^1.0.3"
-    "@metamask/message-manager": "npm:^7.3.5"
-    "@metamask/utils": "npm:^8.1.0"
-    eth-rpc-errors: "npm:^4.0.2"
+    "@metamask/approval-controller": "npm:^5.1.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/keyring-controller": "npm:^12.2.0"
+    "@metamask/logging-controller": "npm:^2.0.2"
+    "@metamask/message-manager": "npm:^7.3.8"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.3.0"
     ethereumjs-util: "npm:^7.0.10"
-    immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/approval-controller": ^4.0.0
-    "@metamask/logging-controller": ^1.0.3
-  checksum: c90440b9926510db0b397761bb4bdd245c1f2d11719ace069abb1198a51ec56f211304f77a914a1478a71bf7311c06fe38ed7eb03ca48125d6ed7c79fe94fb23
-  languageName: node
-  linkType: hard
-
-"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch":
-  version: 6.1.2
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch::version=6.1.2&hash=fd2be3"
-  dependencies:
-    "@metamask/approval-controller": "npm:^4.0.0"
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/logging-controller": "npm:^1.0.3"
-    "@metamask/message-manager": "npm:^7.3.5"
-    "@metamask/utils": "npm:^8.1.0"
-    eth-rpc-errors: "npm:^4.0.2"
-    ethereumjs-util: "npm:^7.0.10"
-    immer: "npm:^9.0.6"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/approval-controller": ^4.0.0
-    "@metamask/logging-controller": ^1.0.3
-  checksum: 0a8ca6302925fc235e274c4fda16c85d78362b3ae63ce30f10d64c3cfc5daa5b3532e05864e840f9b0d90c1c66b1b4f973f1b9202f13f511428d8ac8d2e23054
+    "@metamask/approval-controller": ^5.1.2
+    "@metamask/keyring-controller": ^12.2.0
+    "@metamask/logging-controller": ^2.0.2
+  checksum: 5f766c5487693e33189e73ae5712a7d7b019761510975803e4ff30aa23a8594189555668f336b7527b72c017a82c599be97781b3a5d726b8a7a82e497d11fc72
   languageName: node
   linkType: hard
 
@@ -20195,6 +20192,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ip-address@npm:^9.0.5":
+  version: 9.0.5
+  resolution: "ip-address@npm:9.0.5"
+  dependencies:
+    jsbn: "npm:1.1.0"
+    sprintf-js: "npm:^1.1.3"
+  checksum: 1ed81e06721af012306329b31f532b5e24e00cb537be18ddc905a84f19fe8f83a09a1699862bf3a1ec4b9dea93c55a3fa5faf8b5ea380431469df540f38b092c
+  languageName: node
+  linkType: hard
+
 "ip@npm:^1.1.4, ip@npm:^1.1.8":
   version: 1.1.8
   resolution: "ip@npm:1.1.8"
@@ -21939,6 +21946,13 @@ __metadata:
   version: 3.2.5
   resolution: "jsbi@npm:3.2.5"
   checksum: 2cceb3a06dcb16493e936aa22384d912dd5f0a1fd474b97b5c6705011bd0aac8214d9a392a730b3f3ffb61a8fbe910a34d0fe881329be6a02857520d7a61ace6
+  languageName: node
+  linkType: hard
+
+"jsbn@npm:1.1.0":
+  version: 1.1.0
+  resolution: "jsbn@npm:1.1.0"
+  checksum: bebe7ae829bbd586ce8cbe83501dd8cb8c282c8902a8aeeed0a073a89dc37e8103b1244f3c6acd60278bcbfe12d93a3f83c9ac396868a3b3bbc3c5e5e3b648ef
   languageName: node
   linkType: hard
 
@@ -24025,7 +24039,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.1"
     "@lavamoat/lavadome-core": "npm:0.0.10"
-    "@lavamoat/lavadome-react": "npm:0.0.10"
+    "@lavamoat/lavadome-react": "npm:0.0.11"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
@@ -24040,7 +24054,7 @@ __metadata:
     "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A10.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-10.0.0-247993ca9a.patch"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
-    "@metamask/approval-controller": "npm:^5.1.1"
+    "@metamask/approval-controller": "npm:^5.1.2"
     "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.1.0"
@@ -24055,7 +24069,7 @@ __metadata:
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
-    "@metamask/eth-json-rpc-middleware": "npm:^12.0.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
     "@metamask/eth-keyring-controller": "npm:^15.1.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -24071,7 +24085,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch"
-    "@metamask/logging-controller": "npm:^1.0.1"
+    "@metamask/logging-controller": "npm:^2.0.2"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
@@ -24091,7 +24105,7 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^6.0.0"
-    "@metamask/signature-controller": "npm:^6.1.2"
+    "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^4.1.0"
     "@metamask/snaps-rpc-methods": "npm:^5.0.0"
@@ -30955,13 +30969,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks@npm:^2.6.1, socks@npm:^2.6.2, socks@npm:^2.7.1":
-  version: 2.7.1
-  resolution: "socks@npm:2.7.1"
+"socks@npm:^2.7.3":
+  version: 2.8.0
+  resolution: "socks@npm:2.8.0"
   dependencies:
-    ip: "npm:^2.0.0"
+    ip-address: "npm:^9.0.5"
     smart-buffer: "npm:^4.2.0"
-  checksum: 5074f7d6a13b3155fa655191df1c7e7a48ce3234b8ccf99afa2ccb56591c195e75e8bb78486f8e9ea8168e95a29573cbaad55b2b5e195160ae4d2ea6811ba833
+  checksum: ed0224ce2c7daaa7690cb87cf53d9703ffc4e983aca221f6f5b46767b232658df49494fd86acd0bf97ada6de05248ea8ea625c2343d48155d8463fc40d4a340f
   languageName: node
   linkType: hard
 
