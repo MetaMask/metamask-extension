@@ -2826,10 +2826,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       // PreferencesController
       setSelectedAddress: (address) => {
-        this.preferencesController.setSelectedAddress(address);
         const account = this.accountsController.getAccountByAddress(address);
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
+          this.preferencesController.setSelectedAddress(address);
         } else {
           throw new Error(`No account found for address: ${address}`);
         }
