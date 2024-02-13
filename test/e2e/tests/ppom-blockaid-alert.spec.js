@@ -168,7 +168,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/1766}
    */
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should not show security alerts for benign requests', async function () {
+  it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -231,7 +231,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show security alerts for malicious requests', async function () {
+  it('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -262,6 +262,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           // Wait for confirmation pop-up
           await driver.delay(500);
           await switchToNotificationWindow(driver, 3);
+
+          await driver.waitForElementNotPresent('.loading-indicator');
 
           // Find element by title
           const bannerAlertFoundByTitle = await driver.findElement({
@@ -316,6 +318,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
         await switchToNotificationWindow(driver, 3);
 
         const expectedTitle = 'Request may not be safe';
+
+        await driver.waitForElementNotPresent('.loading-indicator');
 
         const bannerAlert = await driver.findElement({
           css: bannerAlertSelector,
