@@ -19,7 +19,7 @@
     "preserveSymlinks": true,
     "resolveJsonModule": true,
     // sets output file location for the `incremental` setting
-    "tsBuildInfoFile": ".cache/typescript/tsconfig.tsbuildinfo",
+    "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
     "useUnknownInCatchVariables": true
   },
   "exclude": [

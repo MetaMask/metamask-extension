@@ -49,9 +49,6 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
-# Caches
-.cache/
-
 # Test results
 test-results/
 
