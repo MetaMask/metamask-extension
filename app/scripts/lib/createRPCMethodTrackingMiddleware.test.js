@@ -61,6 +61,7 @@ const waitForSeconds = async (seconds) =>
   await new Promise((resolve) => setTimeout(resolve, SECOND * seconds));
 
 jest.mock('@metamask/controller-utils', () => ({
+  ...jest.requireActual('@metamask/controller-utils'),
   detectSIWE: jest.fn().mockImplementation(() => {
     return { isSIWEMessage: false };
   }),
