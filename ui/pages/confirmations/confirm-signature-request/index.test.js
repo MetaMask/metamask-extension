@@ -25,6 +25,7 @@ const mockState = {
           from: '0x8eeee1781fd885ff5ddef7789486676961873d12',
           version: 'V4',
           origin: 'https://metamask.github.io',
+          signatureMethod: 'eth_signTypedData_v4',
         },
         time: 1674533844299,
         status: 'unapproved',
@@ -67,6 +68,78 @@ const mockState = {
     addressBook: {},
     tokenList: {},
     preferences: {},
+    snaps: {
+      'local:http://localhost:8080/': {
+        enabled: true,
+        id: 'local:http://localhost:8080/',
+        initialPermissions: {
+          snap_dialog: {},
+        },
+        manifest: {
+          description: 'An example MetaMask Snap.',
+          initialPermissions: {
+            snap_dialog: {},
+          },
+          manifestVersion: '0.1',
+          proposedName: 'MetaMask Example Snap',
+          repository: {
+            type: 'git',
+            url: 'https://github.com/MetaMask/snaps-skunkworks.git',
+          },
+          source: {
+            location: {
+              npm: {
+                filePath: 'dist/bundle.js',
+                iconPath: 'images/icon.svg',
+                packageName: '@metamask/example-snap',
+                registry: 'https://registry.npmjs.org/',
+              },
+            },
+            shasum: '3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE=',
+          },
+          version: '0.6.0',
+        },
+        sourceCode: '(...)',
+        status: 'stopped',
+        svgIcon: '<svg>...</svg>',
+        version: '0.6.0',
+      },
+      'npm:@metamask/test-snap-bip44': {
+        id: 'npm:@metamask/test-snap-bip44',
+        origin: 'npm:@metamask/test-snap-bip44',
+        version: '5.1.2',
+        iconUrl: null,
+        initialPermissions: {
+          'endowment:ethereum-provider': {},
+        },
+        manifest: {
+          description: 'An example Snap that signs messages using BLS.',
+          proposedName: 'BIP-44 Test Snap',
+          repository: {
+            type: 'git',
+            url: 'https://github.com/MetaMask/test-snaps.git',
+          },
+          source: {
+            location: {
+              npm: {
+                filePath: 'dist/bundle.js',
+                packageName: '@metamask/test-snap-bip44',
+                registry: 'https://registry.npmjs.org',
+              },
+            },
+            shasum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
+          version: '5.1.2',
+        },
+        versionHistory: [
+          {
+            date: 1680686075921,
+            origin: 'https://metamask.github.io',
+            version: '5.1.2',
+          },
+        ],
+      },
+    },
   },
   appState: {
     warning: null,
