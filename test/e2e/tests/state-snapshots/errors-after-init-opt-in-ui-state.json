@@ -173,6 +173,7 @@
     "database": "object",
     "lastUpdated": "object",
     "notifications": "object",
+    "interfaces": "object",
     "names": "object",
     "nameSources": "object",
     "userOperations": "object",

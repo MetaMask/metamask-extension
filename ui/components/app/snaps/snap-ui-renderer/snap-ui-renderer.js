@@ -55,6 +55,7 @@ const SnapUIRendererComponent = ({
   const sections = useMemo(
     () =>
       content &&
+      isComponent(content) &&
       mapToTemplate({
         element: content,
         elementKeyIndex,
