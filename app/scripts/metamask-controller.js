@@ -4897,9 +4897,9 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             requestedPermissions,
           ),
-        revokePermissions: async (revokedPermissions) => {
+        revokePermissions: (revokedPermissions) => {
           const revokeParams = { [origin]: revokedPermissions };
-          await this.permissionController.revokePermissions(revokeParams);
+          this.permissionController.revokePermissions(revokeParams);
         },
         getPermissions: this.permissionController.getPermissions.bind(
           this.permissionController,
