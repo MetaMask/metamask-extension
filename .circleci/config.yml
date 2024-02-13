@@ -1,9 +1,17 @@
 version: 2.1
 
 executors:
-  node-browsers:
+  node-browsers-small:
     docker:
       - image: cimg/node:20.11-browsers
+    resource_class: small
+    environment:
+      FONTCONFIG_PATH: /etc/fonts
+      NODE_OPTIONS: --max_old_space_size=1024
+  node-browsers-medium:
+    docker:
+      - image: cimg/node:20.11-browsers
+    resource_class: medium
     environment:
       FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=3072
@@ -14,19 +22,14 @@ executors:
     environment:
       FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=4096
-  node-browsers-large:
-    docker:
-      - image: cimg/node:20.11-browsers
-    resource_class: large
-    environment:
-      FONTCONFIG_PATH: /etc/fonts
-      NODE_OPTIONS: --max_old_space_size=4096
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
+    resource_class: small
   playwright:
     docker:
       - image: mcr.microsoft.com/playwright:v1.41.1-jammy
+    resource_class: medium
 
 orbs:
   gh: circleci/github-cli@2.0
@@ -109,7 +112,7 @@ workflows:
       - prep-build-desktop:
           filters:
             branches:
-              ignore: master
+              only: develop
           requires:
             - prep-deps
       - prep-build-flask:
@@ -220,7 +223,7 @@ workflows:
       - validate-source-maps-desktop:
           filters:
             branches:
-              ignore: master
+              only: develop
           requires:
             - prep-build-desktop
       - validate-source-maps-mmi:
@@ -236,7 +239,7 @@ workflows:
       - test-mozilla-lint-desktop:
           filters:
             branches:
-              ignore: master
+              only: develop
           requires:
             - prep-deps
             - prep-build-desktop
@@ -327,7 +330,7 @@ workflows:
 
 jobs:
   trigger-beta-build:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -356,7 +359,7 @@ jobs:
                   - builds-beta
 
   create_release_pull_request:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -375,7 +378,7 @@ jobs:
           command: .circleci/scripts/release-create-release-pr.sh
 
   prep-deps:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - run:
@@ -409,7 +412,7 @@ jobs:
             - build-artifacts
 
   validate-lavamoat-allow-scripts:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -422,7 +425,7 @@ jobs:
           command: .circleci/scripts/check-working-tree.sh
 
   validate-lavamoat-policy-build:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -723,7 +726,7 @@ jobs:
             - builds-test-multichain
 
   prep-build-storybook:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -737,7 +740,7 @@ jobs:
             - storybook-build
 
   prep-build-ts-migration-dashboard:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -751,7 +754,7 @@ jobs:
             - development/ts-migration-dashboard/build/final
 
   test-yarn-dedupe:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -761,7 +764,7 @@ jobs:
           command: yarn dedupe --check
 
   test-lint:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -774,7 +777,7 @@ jobs:
           command: yarn verify-locales --quiet
 
   test-storybook:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -796,7 +799,7 @@ jobs:
           command: ./development/shellcheck.sh
 
   test-lint-lockfile:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -809,7 +812,7 @@ jobs:
           command: yarn --check-resolutions
 
   test-lint-changelog:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -835,7 +838,7 @@ jobs:
                 command: .circleci/scripts/validate-changelog-in-rc.sh
 
   test-deps-audit:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -845,7 +848,7 @@ jobs:
           command: yarn audit
 
   test-deps-depcheck:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -855,8 +858,8 @@ jobs:
           command: yarn depcheck
 
   test-e2e-chrome:
-    executor: node-browsers-large
-    parallelism: 24
+    executor: node-browsers-medium-plus
+    parallelism: 20
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -882,8 +885,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-multichain:
-    executor: node-browsers-large
-    parallelism: 24
+    executor: node-browsers-medium-plus
+    parallelism: 20
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -911,8 +914,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-mv3:
-    executor: node-browsers-large
-    parallelism: 24
+    executor: node-browsers-medium-plus
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -936,7 +939,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-chrome-rpc:
-    executor: node-browsers
+    executor: node-browsers-medium
     parallelism: 1
     steps:
       - run: *shallow-git-clone
@@ -963,7 +966,7 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-multiple-providers:
-    executor: node-browsers
+    executor: node-browsers-small
     parallelism: 1
     steps:
       - run: *shallow-git-clone
@@ -990,7 +993,7 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-rpc-mmi:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1016,7 +1019,7 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-vault-decryption:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1031,8 +1034,8 @@ jobs:
           no_output_timeout: 5m
 
   test-e2e-firefox-flask:
-    executor: node-browsers-large
-    parallelism: 16
+    executor: node-browsers-medium-plus
+    parallelism: 10
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1058,8 +1061,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-flask:
-    executor: node-browsers-large
-    parallelism: 16
+    executor: node-browsers-medium-plus
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1085,8 +1088,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-mmi:
-    executor: node-browsers-large
-    parallelism: 16
+    executor: node-browsers-medium-plus
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1152,7 +1155,7 @@ jobs:
           path: public/playwright/playwright-reports/junit/test-results.xml
 
   test-e2e-firefox:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     parallelism: 24
     steps:
       - run: *shallow-git-clone
@@ -1179,7 +1182,7 @@ jobs:
           path: test/test-results/e2e
 
   benchmark:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1202,7 +1205,7 @@ jobs:
             - test-artifacts
 
   user-actions-benchmark:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1225,7 +1228,7 @@ jobs:
             - test-artifacts
 
   stats-module-load-init:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1262,7 +1265,7 @@ jobs:
             - test-artifacts
 
   job-publish-prerelease:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - checkout
       - attach_workspace:
@@ -1326,7 +1329,7 @@ jobs:
           command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1346,7 +1349,7 @@ jobs:
             .circleci/scripts/release-create-gh-release.sh
 
   job-publish-storybook:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -1361,7 +1364,7 @@ jobs:
             yarn storybook:deploy
 
   job-publish-ts-migration-dashboard:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -1378,7 +1381,7 @@ jobs:
             yarn ts-migration:dashboard:deploy
 
   test-unit-mocha:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1393,7 +1396,7 @@ jobs:
             - coverage
 
   test-unit-jest-development:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1410,7 +1413,7 @@ jobs:
 
   test-unit-jest-main:
     executor: node-browsers-medium-plus
-    parallelism: 12
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1426,7 +1429,7 @@ jobs:
           path: test/test-results/junit.xml
 
   upload-and-validate-coverage:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1441,7 +1444,7 @@ jobs:
             - coverage
 
   test-unit-global:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1451,7 +1454,7 @@ jobs:
           command: yarn test:unit:global
 
   validate-source-maps:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1461,7 +1464,7 @@ jobs:
           command: yarn validate-source-maps
 
   validate-source-maps-beta:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1472,7 +1475,7 @@ jobs:
             .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-desktop:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1488,7 +1491,7 @@ jobs:
           command: yarn validate-source-maps
 
   validate-source-maps-mmi:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1504,7 +1507,7 @@ jobs:
           command: yarn validate-source-maps
 
   validate-source-maps-flask:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1520,17 +1523,17 @@ jobs:
           command: yarn validate-source-maps
 
   test-mozilla-lint:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
+          command: yarn mozilla-lint
 
   test-mozilla-lint-desktop:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1543,10 +1546,10 @@ jobs:
           command: mv ./builds-desktop ./builds
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
+          command: yarn mozilla-lint
 
   test-mozilla-lint-flask:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1559,10 +1562,10 @@ jobs:
           command: mv ./builds-flask ./builds
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
+          command: yarn mozilla-lint
 
   all-tests-pass:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run:
           name: All Tests Passed

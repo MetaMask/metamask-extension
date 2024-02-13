@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   SnapCaveatType,
@@ -55,34 +54,22 @@ export default class PermissionPageContainer extends Component {
     trackEvent: PropTypes.func,
   };
 
-  state = {
-    selectedPermissions: this.getRequestedMethodState(
-      this.getRequestedMethodNames(this.props),
-    ),
-  };
+  state = {};
 
-  componentDidUpdate() {
-    const newMethodNames = this.getRequestedMethodNames(this.props);
-
-    if (!isEqual(Object.keys(this.state.selectedPermissions), newMethodNames)) {
-      // this should be a new request, so just overwrite
-      this.setState({
-        selectedPermissions: this.getRequestedMethodState(newMethodNames),
-      });
-    }
-  }
-
-  getRequestedMethodState(methodNames) {
-    return methodNames.reduce((acc, methodName) => {
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-      if (methodName === RestrictedMethods.wallet_snap) {
-        acc[methodName] = this.getDedupedSnapPermissions();
+  getRequestedPermissions() {
+    return Object.entries(this.props.request.permissions).reduce(
+      (acc, [permissionName, permissionValue]) => {
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+        if (permissionName === RestrictedMethods.wallet_snap) {
+          acc[permissionName] = this.getDedupedSnapPermissions();
+          return acc;
+        }
+        ///: END:ONLY_INCLUDE_IF
+        acc[permissionName] = permissionValue;
         return acc;
-      }
-      ///: END:ONLY_INCLUDE_IF
-      acc[methodName] = true;
-      return acc;
-    }, {});
+      },
+      {},
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -110,10 +97,6 @@ export default class PermissionPageContainer extends Component {
     });
   }
   ///: END:ONLY_INCLUDE_IF
-
-  getRequestedMethodNames(props) {
-    return Object.keys(props.request.permissions || {});
-  }
 
   componentDidMount() {
     this.context.trackEvent({
@@ -155,12 +138,6 @@ export default class PermissionPageContainer extends Component {
       ),
     };
 
-    Object.keys(this.state.selectedPermissions).forEach((key) => {
-      if (!this.state.selectedPermissions[key]) {
-        delete request.permissions[key];
-      }
-    });
-
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
@@ -175,6 +152,8 @@ export default class PermissionPageContainer extends Component {
       selectedIdentities,
       allIdentitiesSelected,
     } = this.props;
+
+    const requestedPermissions = this.getRequestedPermissions();
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     const setIsShowingSnapsPrivacyWarning = (value) => {
@@ -206,7 +185,7 @@ export default class PermissionPageContainer extends Component {
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
-          selectedPermissions={this.state.selectedPermissions}
+          selectedPermissions={requestedPermissions}
           selectedIdentities={selectedIdentities}
           allIdentitiesSelected={allIdentitiesSelected}
         />
