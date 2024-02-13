@@ -1757,6 +1757,7 @@ export function setSelectedAccount(
       !currentTabIsConnectedToNextAddress;
 
     try {
+      await _setSelectedAddress(address);
       await _setSelectedInternalAccount(internalAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
