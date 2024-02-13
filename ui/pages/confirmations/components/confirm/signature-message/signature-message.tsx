@@ -19,7 +19,7 @@ const SignatureMessage: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
-  const args = useMemo(() => {
+  const rowConfigs = useMemo(() => {
     if (
       !currentConfirmation ||
       currentConfirmation.type !== MESSAGE_TYPE.PERSONAL_SIGN ||
@@ -27,20 +27,18 @@ const SignatureMessage: React.FC = memo(() => {
     ) {
       return null;
     }
-    return {
-      rowConfigs: [
-        {
-          label: t('message'),
-          type: ConfirmInfoRowType.Text,
-          rowProps: {
-            text: hexToText(currentConfirmation.msgParams?.data),
-          },
+    return [
+      {
+        label: t('message'),
+        type: ConfirmInfoRowType.Text,
+        rowProps: {
+          text: hexToText(currentConfirmation.msgParams?.data),
         },
-      ],
-    };
+      },
+    ];
   }, [currentConfirmation]);
 
-  if (!args) {
+  if (!rowConfigs?.length) {
     return null;
   }
 
@@ -51,7 +49,7 @@ const SignatureMessage: React.FC = memo(() => {
       padding={2}
       marginBottom={4}
     >
-      <ConfirmInfo {...args} />
+      <ConfirmInfo rowConfigs={rowConfigs} />
     </Box>
   );
 });
