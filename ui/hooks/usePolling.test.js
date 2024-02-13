@@ -6,7 +6,7 @@ import usePolling from './usePolling';
 
 describe('usePolling', () => {
   // eslint-disable-next-line jest/no-done-callback
-  it('calls callback with polling token', (done) => {
+  it('calls startPollingByNetworkClientId and callback option args with polling token when component instantiating the hook mounts', (done) => {
     const mockStart = jest.fn().mockImplementation(() => {
       return Promise.resolve('pollingToken');
     });
