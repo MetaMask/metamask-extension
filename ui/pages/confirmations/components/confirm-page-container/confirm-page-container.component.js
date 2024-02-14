@@ -41,7 +41,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useTransactionInsights from '../../../../hooks/useTransactionInsights';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import TxInsightWarnings from '../../../../components/app/snaps/tx-insight-warnings/tx-insight-warnings';
+import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import {
   getAccountName,
@@ -378,7 +378,7 @@ const ConfirmPageContainer = (props) => {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         }
         {isShowingTxInsightWarnings && (
-          <TxInsightWarnings
+          <InsightWarnings
             warnings={insightObject.warnings}
             origin={origin}
             onCancel={() => setIsShowingTxInsightWarnings(false)}
