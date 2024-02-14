@@ -10,8 +10,8 @@
   }
 
   &__permissions-page-tour {
-    left: auto !important;
-    top: 0 !important;
+    left: auto !important; //important required for permissions page popup center alignment, overrides .multichain-product-tour-menu -7px left styling
+    top: 0 !important; //important required for permissions page styling, since the anchorElement is inside Page Content
   }
 
   &__arrow,
