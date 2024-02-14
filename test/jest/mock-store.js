@@ -325,9 +325,6 @@ export const createSwapsMockStore = () => {
             id: 'b4f1cb89-1c38-44e0-aa25-995b3afb7d45',
             metadata: {
               name: 'Erc4337 Account 1',
-              keyring: {
-                type: 'HD Key Tree',
-              },
             },
             options: {},
             methods: [...Object.values(EthMethod)],

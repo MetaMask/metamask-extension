@@ -10,6 +10,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -216,7 +217,7 @@ export function isHardwareWallet(state) {
  * @returns {boolean}
  */
 export function accountSupportsSmartTx(state) {
-  const unsupportedTypes = ['hardware', 'snap', 'eip155:erc4337'];
+  const unsupportedTypes = ['hardware', 'snap', EthAccountType.Erc4337];
   return !unsupportedTypes.includes(getAccountType(state));
 }
 
@@ -232,6 +233,12 @@ export function getHardwareWalletType(state) {
 }
 
 export function getAccountType(state) {
+  const accType = getSelectedInternalAccount(state)?.type;
+
+  if (accType === EthAccountType.Erc4337) {
+    return EthAccountType.Erc4337;
+  }
+
   const currentKeyring = getCurrentKeyring(state);
   return getAccountTypeForKeyring(currentKeyring);
 }
