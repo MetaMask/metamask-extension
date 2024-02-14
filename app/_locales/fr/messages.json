@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Autoriser ce site à :"
   },
-  "allowThisSnapTo": {
-    "message": "Autoriser ce snap à :"
-  },
   "allowWithdrawAndSpend": {
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

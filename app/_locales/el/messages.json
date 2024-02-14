@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Επιτρέψτε σε αυτόν τον ιστότοπο να:"
   },
-  "allowThisSnapTo": {
-    "message": "Επιτρέψτε αυτό το snap να:"
-  },
   "allowWithdrawAndSpend": {
     "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

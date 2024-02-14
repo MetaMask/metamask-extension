@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "允许此网站："
   },
-  "allowThisSnapTo": {
-    "message": "允许此 Snap："
-  },
   "allowWithdrawAndSpend": {
     "message": "允许 $1 提取和消费最高以下金额：",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

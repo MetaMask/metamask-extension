@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Erlauben Sie dieser Seite:"
   },
-  "allowThisSnapTo": {
-    "message": "Erlauben Sie diesem Snap Folgendes:"
-  },
   "allowWithdrawAndSpend": {
     "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Cho phép trang web này:"
   },
-  "allowThisSnapTo": {
-    "message": "Cho phép Snap này:"
-  },
   "allowWithdrawAndSpend": {
     "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "इस साइट को इसकी अनुमति दें:"
   },
-  "allowThisSnapTo": {
-    "message": "इस Snap को इसकी अनुमति दें:"
-  },
   "allowWithdrawAndSpend": {
     "message": "$1 को निम्नलिखित तक अमाउंट निकालने और खर्च करने की अनुमति दें:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

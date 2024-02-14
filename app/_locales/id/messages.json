@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Izinkan situs ini untuk:"
   },
-  "allowThisSnapTo": {
-    "message": "Izinkan snap ini untuk:"
-  },
   "allowWithdrawAndSpend": {
     "message": "Izinkan $1 untuk menarik dan menggunakan hingga jumlah berikut:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

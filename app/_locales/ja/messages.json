@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "このサイトに次の操作を許可します"
   },
-  "allowThisSnapTo": {
-    "message": "このsnapに次の操作を許可します:"
-  },
   "allowWithdrawAndSpend": {
     "message": "$1に以下の額までの引き出しと使用を許可します。",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

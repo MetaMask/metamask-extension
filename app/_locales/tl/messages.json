@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Payagan ang site na ito na:"
   },
-  "allowThisSnapTo": {
-    "message": "Payagan ang snap na ito sa:"
-  },
   "allowWithdrawAndSpend": {
     "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

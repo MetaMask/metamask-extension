@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "Bu sitenin şunu yapmasına izin ver:"
   },
-  "allowThisSnapTo": {
-    "message": "Bu snap için şuna izin verin:"
-  },
   "allowWithdrawAndSpend": {
     "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"

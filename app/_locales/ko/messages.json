@@ -358,9 +358,6 @@
   "allowThisSiteTo": {
     "message": "다음에 이 사이트를 허용:"
   },
-  "allowThisSnapTo": {
-    "message": "다음에 이 스냅을 허용:"
-  },
   "allowWithdrawAndSpend": {
     "message": "$1에서 다음 금액까지 인출 및 지출하도록 허용:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
