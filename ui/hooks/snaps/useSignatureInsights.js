@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getSignatureOriginCaveat } from '@metamask/snaps-rpc-methods';
 import { SeverityLevel } from '@metamask/snaps-sdk';
-import { handleSnapRequest } from '../../store/actions';
+import { deleteInterface, handleSnapRequest } from '../../store/actions';
 import {
   getSignatureInsightSnapIds,
   getPermissionSubjectsDeepEqual,
@@ -11,6 +11,7 @@ import {
 const SIGNATURE_INSIGHT_PERMISSION = 'endowment:signature-insight';
 
 export function useSignatureInsights({ txData }) {
+  const dispatch = useDispatch();
   const subjects = useSelector(getPermissionSubjectsDeepEqual);
   const snapIds = useSelector(getSignatureInsightSnapIds);
   const [loading, setLoading] = useState(true);
@@ -87,9 +88,9 @@ export function useSignatureInsights({ txData }) {
         if (promise.response?.severity === SeverityLevel.Critical) {
           const {
             snapId,
-            response: { content },
+            response: { id },
           } = promise;
-          warningsArr.push({ snapId, content });
+          warningsArr.push({ snapId, id });
         }
         return warningsArr;
       }, []);
@@ -108,6 +109,15 @@ export function useSignatureInsights({ txData }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txData, JSON.stringify(snapIds), subjects]);
+
+  useEffect(() => {
+    return () => {
+      data?.map(
+        ({ response }) =>
+          response?.id && dispatch(deleteInterface(response.id)),
+      );
+    };
+  }, []);
 
   return { data, loading, warnings };
 }

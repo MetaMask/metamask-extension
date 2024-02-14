@@ -1303,7 +1303,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SnapInterfaceController',
         allowedActions: [
           `${this.phishingController.name}:maybeUpdateState`,
-          `${this.phishingController.name}PhishingController:testOrigin`,
+          `${this.phishingController.name}:testOrigin`,
         ],
       });
 

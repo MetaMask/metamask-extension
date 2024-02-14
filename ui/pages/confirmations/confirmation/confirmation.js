@@ -12,10 +12,7 @@ import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
-import { SnapUIRenderer } from '../../components/app/snaps/snap-ui-renderer';
-///: END:ONLY_INCLUDE_IF
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
@@ -38,14 +35,14 @@ import Callout from '../../../components/ui/callout';
 import { Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
-import { SnapUIRenderer } from '../../components/app/snaps/snap-ui-renderer';
-import { getSnapName } from '../../helpers/utils/util';
+import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
+import { getSnapName } from '../../../helpers/utils/util';
+import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
-import { DAY } from '../../../shared/constants/time';
+import { DAY } from '../../../../shared/constants/time';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
