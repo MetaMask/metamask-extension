@@ -5841,6 +5841,12 @@
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"
   },
+  "yourTransactionConfirmed": {
+    "message": "Your transaction is confirmed"
+  },
+  "yourTransactionJustConfirmed": {
+    "message": "Your transaction was just confirmed. We weren't able to cancel it."
+  },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
   }
