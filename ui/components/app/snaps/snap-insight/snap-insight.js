@@ -29,12 +29,14 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   deleteInterface,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   trackInsightSnapUsage,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../store/actions';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
 import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransactionInsightSnaps';
 ///: END:ONLY_INCLUDE_IF
