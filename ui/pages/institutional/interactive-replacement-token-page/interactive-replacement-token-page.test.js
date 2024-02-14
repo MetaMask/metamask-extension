@@ -71,7 +71,7 @@ const connectRequests = [
   {
     labels,
     origin: 'origin',
-    apiUrl: 'apiUrl',
+    environment: 'environment',
   },
 ];
 
@@ -170,7 +170,7 @@ describe('Interactive Replacement Token Page', function () {
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalled();
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
       origin: connectRequests[0].origin,
-      apiUrl: connectRequests[0].apiUrl,
+      environment: connectRequests[0].environment,
       token: connectRequests[0].token,
     });
   });
@@ -195,7 +195,7 @@ describe('Interactive Replacement Token Page', function () {
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalled();
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
       origin: connectRequests[0].origin,
-      apiUrl: connectRequests[0].apiUrl,
+      environment: connectRequests[0].environment,
       token: connectRequests[0].token,
     });
     expect(props.history.push).toHaveBeenCalled();
