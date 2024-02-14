@@ -61,6 +61,7 @@ const useTransactionInsights = ({ txData }) => {
     }
   }, [insightSnapIds, selectedInsightSnapId, setSelectedInsightSnapId]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useEffect(() => {
     return () => {
       data?.map(
@@ -69,6 +70,7 @@ const useTransactionInsights = ({ txData }) => {
       );
     };
   }, []);
+  ///: END:ONLY_INCLUDE_IF
 
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;

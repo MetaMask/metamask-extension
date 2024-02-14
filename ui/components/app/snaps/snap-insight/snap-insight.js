@@ -30,7 +30,10 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { trackInsightSnapUsage } from '../../../../store/actions';
+import {
+  deleteInterface,
+  trackInsightSnapUsage,
+} from '../../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
 import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransactionInsightSnaps';
@@ -70,6 +73,12 @@ export const SnapInsight = ({
   error = insights.data?.[0]?.error;
   interfaceId = insights.data?.[0]?.response?.id;
   isLoading = insights.loading;
+
+  useEffect(() => {
+    return () => {
+      interfaceId && dispatch(deleteInterface(interfaceId));
+    };
+  }, []);
   ///: END:ONLY_INCLUDE_IF
 
   const targetSubjectMetadata = useSelector((state) =>
