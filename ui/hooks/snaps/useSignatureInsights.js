@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getSignatureOriginCaveat } from '@metamask/snaps-controllers';
+import { getSignatureOriginCaveat } from '@metamask/snaps-rpc-methods';
 import { SeverityLevel } from '@metamask/snaps-sdk';
 import { handleSnapRequest } from '../../store/actions';
 import {
