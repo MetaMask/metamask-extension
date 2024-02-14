@@ -30,11 +30,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
-  getAllConnectedAccounts,
-  getConnectedSubjectsForAllAddresses,
   getOnboardedInThisUISession,
   getShowPermissionsTour,
-  getSnapsList,
+  getConnectedSitesList,
+  getConnectedSnapsList,
 } from '../../../../selectors';
 import { Tab, Tabs } from '../../../ui/tabs';
 import { ProductTour } from '../../product-tour-popover';
@@ -48,75 +47,17 @@ export const PermissionsPage = () => {
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const connectedSubjectsForAllAddresses = useSelector(
-    getConnectedSubjectsForAllAddresses,
-  );
-  const connectedAddresses = useSelector(getAllConnectedAccounts);
-  const connectedSnapsData = useSelector(getSnapsList);
+  const sitesConnectionsList = useSelector(getConnectedSitesList);
+  const snapsConnectionsList = useSelector(getConnectedSnapsList);
   const showPermissionsTour = useSelector(getShowPermissionsTour);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
 
-  const connectedSiteData = useMemo(() => {
-    const siteData = {};
-    connectedAddresses.forEach((connectedAddress) => {
-      connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
-        if (!siteData[app.origin]) {
-          siteData[app.origin] = { ...app, addresses: [] };
-        }
-        siteData[app.origin].addresses.push(connectedAddress);
-      });
-    });
-    return siteData;
-  }, [connectedAddresses, connectedSubjectsForAllAddresses]);
-
   useEffect(() => {
     setTotalConnections(
-      Object.keys(connectedSiteData).length +
-        Object.keys(connectedSnapsData).length,
+      Object.keys(sitesConnectionsList).length +
+        Object.keys(snapsConnectionsList).length,
     );
-  }, [connectedSiteData, connectedSnapsData]);
-
-  const sitesConnectionsList = useMemo(() => {
-    const sitesList = {};
-    Object.keys(connectedSiteData).forEach((siteKey) => {
-      const siteData = connectedSiteData[siteKey];
-      const { name, iconUrl, origin, subjectType, extensionId, addresses } =
-        siteData;
-
-      if (!sitesList[name]) {
-        sitesList[name] = {
-          name,
-          iconUrl,
-          origin,
-          subjectType,
-          extensionId,
-          addresses: [],
-        };
-      }
-
-      sitesList[name].addresses.push(...addresses);
-    });
-    return sitesList;
-  }, [connectedSiteData]);
-
-  const snapsConnectionsList = useMemo(() => {
-    const snapsList = {};
-    Object.keys(connectedSnapsData).forEach((snap) => {
-      const snapData = connectedSnapsData[snap];
-      const { id, name, packageName, iconUrl, subjectType } = snapData;
-
-      if (!snapsList[name]) {
-        snapsList[name] = {
-          id,
-          name,
-          iconUrl,
-          packageName,
-          subjectType,
-        };
-      }
-    });
-    return snapsList;
-  }, [connectedSnapsData]);
+  }, [sitesConnectionsList, snapsConnectionsList]);
 
   const shouldShowTabsView = useMemo(() => {
     return (
