@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "कस्टोडियन टोकन बदलें"
   },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "$1 ऐप में ट्रांसेक्शन को एप्रूव करें। एक बार सभी आवश्यक कस्टडी एप्रूवल किए जाने के बाद ट्रांसेक्शन पूरा हो जाएगा। स्केटेटस लिए अपना $1 ऐप देखें।"
   },

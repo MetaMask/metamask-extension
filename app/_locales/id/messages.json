@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Ganti token kustodian"
   },
-  "custodyApiUrl": {
-    "message": "URL API $1"
-  },
   "custodyDeeplinkDescription": {
     "message": "Setujui transaksi di aplikasi $1. Setelah semua persetujuan kustodian yang diperlukan telah dilakukan, transaksi akan selesai. Periksa status aplikasi $1 Anda."
   },
