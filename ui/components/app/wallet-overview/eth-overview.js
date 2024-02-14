@@ -107,7 +107,7 @@ const EthOverview = ({ className, showAddress }) => {
     shouldHideZeroBalanceTokens,
   );
 
-  const balanceToUse = TEST_NETWORKS.includes(currentNetwork.nickname)
+  const balanceToUse = TEST_NETWORKS.includes(currentNetwork?.nickname)
     ? balance
     : totalWeiBalance;
 
@@ -196,7 +196,7 @@ const EthOverview = ({ className, showAddress }) => {
                       ? PRIMARY
                       : SECONDARY
                   }
-                  showFiat={!TEST_NETWORKS.includes(currentNetwork.nickname)}
+                  showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
                   ethNumberOfDecimals={4}
                   hideTitle
                 />

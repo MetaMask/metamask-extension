@@ -84,7 +84,7 @@ export const AccountListItem = ({
     identity.address,
   );
 
-  const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork.nickname)
+  const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork?.nickname)
     ? totalWeiBalance
     : identity.balance;
 
@@ -209,7 +209,7 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={!TEST_NETWORKS.includes(currentNetwork.nickname)}
+                showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
               />
             </Text>
           </Box>
