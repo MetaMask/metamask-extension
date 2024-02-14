@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
@@ -12,7 +12,7 @@ import {
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
   getIsBuyableChain,
-  getCurrentChainId,
+  getCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
@@ -55,17 +55,20 @@ import {
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const chainId = useSelector(getCurrentChainId);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentLocale = useSelector(getCurrentLocale);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
+    currentNetwork.chainId,
     ticker,
     type,
   );
@@ -123,6 +126,39 @@ const AssetList = ({ onClickAsset }) => {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   ///: END:ONLY_INCLUDE_IF
 
+  useEffect(() => {
+    if (shouldShowBuy) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
+    }
+    if (shouldShowReceive) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
+    }
+  }, [
+    shouldShowBuy,
+    shouldShowReceive,
+    trackEvent,
+    currentNetwork,
+    currentLocale,
+  ]);
+
   return (
     <>
       {detectedTokens.length > 0 &&
@@ -152,7 +188,7 @@ const AssetList = ({ onClickAsset }) => {
                     properties: {
                       location: 'Home',
                       text: 'Buy',
-                      chain_id: chainId,
+                      chain_id: currentNetwork.chainId,
                       token_symbol: defaultSwapsToken,
                     },
                   });
@@ -192,12 +228,9 @@ const AssetList = ({ onClickAsset }) => {
             : null
         }
         tokenSymbol={
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
+          useNativeCurrencyAsPrimaryCurrency
             ? primaryCurrencyProperties.suffix
-            : null
+            : secondaryCurrencyProperties.suffix
         }
         secondary={
           showFiat &&
