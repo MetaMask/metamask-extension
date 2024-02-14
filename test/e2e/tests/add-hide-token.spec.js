@@ -7,6 +7,7 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { CHAIN_IDS } = require('../../../shared/constants/network');
 
 describe('Add hide token', function () {
   it('hides the token when clicked', async function () {
@@ -83,35 +84,22 @@ describe('Add existing token using search', function () {
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
+          .withPreferencesController({ useTokenDetection: true })
+          .build(),
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          chainId: parseInt(CHAIN_IDS.BSC, 16),
+        },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Switch to mainnet
-
-        await driver.clickElement('[data-testid="network-display"]');
-        const networkSelectionModal = await driver.findVisibleElement(
-          '.mm-modal',
-        );
-        await driver.waitForElementNotPresent('.loading-overlay');
-
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
-
-        // Wait for network to change and token list to load from state
-        await networkSelectionModal.waitForElementState('hidden');
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
-          text: 'Ethereum Mainnet',
-        });
-
-        await driver.clickElement('[data-testid="import-token-button"]');
-
-        await driver.fill('input[placeholder="Search tokens"]', 'Uni');
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+        await driver.fill('input[placeholder="Search tokens"]', 'BAT');
         await driver.clickElement({
-          text: 'Uni',
+          text: 'BAT',
           tag: 'p',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
@@ -127,7 +115,7 @@ describe('Add existing token using search', function () {
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',
-          text: '0 UNI',
+          text: '0 BAAT',
         });
       },
     );
