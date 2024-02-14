@@ -47,8 +47,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
+import {
+  getCurrentNetwork,
+  getNativeCurrencyImage,
+  getUseBlockie,
+} from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -69,6 +74,7 @@ export const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
   const useBlockie = useSelector(getUseBlockie);
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
@@ -77,7 +83,8 @@ export const AccountListItem = ({
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-  const balanceToTranslate = process.env.MULTICHAIN
+
+  const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork?.nickname)
     ? totalWeiBalance
     : identity.balance;
 
@@ -202,6 +209,7 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
+                showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
               />
             </Text>
           </Box>
@@ -231,6 +239,7 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               gap={1}
+              className="multichain-account-list-item__avatar-currency"
             >
               <AvatarToken
                 src={primaryTokenImage}
@@ -246,8 +255,9 @@ export const AccountListItem = ({
               >
                 <UserPreferencedCurrencyDisplay
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={balanceToTranslate}
+                  value={identity.balance}
                   type={SECONDARY}
+                  showNative
                 />
               </Text>
             </Box>
