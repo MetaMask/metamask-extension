@@ -1,12 +1,6 @@
 # PR Labeling Guidelines
 To maintain a consistent and efficient development workflow, we have set specific label guidelines for all pull requests (PRs). Please ensure you adhere to the following instructions:
 
-### PR Titles:
-- Must adhere to the [Conventional Commits specification](https://www.conventionalcommits.org)
-  - `<type>[optional scope]: <description>`
-  - `type` is generally one of `fix:` `feat:` `build:` `chore:` `ci:` `docs:` `style:` `refactor:` `perf:` `test:`
-  - Example: `feat(parser): add ability to parse arrays`
-
 ### Mandatory team labels:
 - **Internal Developers**: Every PR raised by an internal developer must include a label prefixed with `team-` (e.g., `team-extension-ux`, `team-extension-platform`, etc.). This indicates the respective internal team responsible for the PR.
 
