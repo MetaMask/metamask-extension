@@ -51,13 +51,13 @@ export const SnapInsight = ({
   insightHookParams,
   ///: END:ONLY_INCLUDE_IF
 }) => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   let error, interfaceId;
   let isLoading = loading;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   error = data?.error;
   interfaceId = data?.response?.id;
-  const dispatch = useDispatch();
   useEffect(() => {
     const trackInsightUsage = async () => {
       try {
