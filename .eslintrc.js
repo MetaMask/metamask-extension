@@ -18,10 +18,6 @@ module.exports = {
   ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
   // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
   parser: '@babel/eslint-parser',
-  parserOptions: {
-    // use the same ecmaVersion as our tsconfig
-    ecmaVersion: Number(ts.ScriptTarget[tsconfig.options.target].slice(2)),
-  },
   overrides: [
     /**
      * == Modules ==
