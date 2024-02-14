@@ -35,6 +35,7 @@ import {
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
+import Box from '../../../../components/ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
 
@@ -42,7 +43,7 @@ import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
 import LedgerInstructionField from '../ledger-instruction-field';
-import ContractDetailsModal from '../contract-details-modal';
+import ContractDetails from '../contract-details';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
@@ -60,8 +61,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 import {
-  ButtonVariant,
-  Button,
   ButtonLink,
   TagUrl,
   Text,
@@ -96,7 +95,6 @@ const SignatureRequest = ({
   const t = useI18nContext();
 
   const [hasScrolledMessage, setHasScrolledMessage] = useState(false);
-  const [showContractDetails, setShowContractDetails] = useState(false);
   const [messageRootRef, setMessageRootRef] = useState(null);
   const [messageIsScrollable, setMessageIsScrollable] = useState(false);
 
@@ -289,22 +287,15 @@ const SignatureRequest = ({
             {t('signatureRequestGuidance')}
           </Text>
           {verifyingContract ? (
-            <div>
-              <Button
-                variant={ButtonVariant.Link}
-                onClick={() => setShowContractDetails(true)}
-                className="signature-request-content__verify-contract-details"
-                data-testid="verify-contract-details"
-              >
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  as="h6"
-                >
-                  {t('verifyContractDetails')}
-                </Text>
-              </Button>
-            </div>
+            <Box margin={2}>
+            <ContractDetails
+              inline={true}
+              toAddress={verifyingContract}
+              chainId={chainId}
+              rpcPrefs={rpcPrefs}
+              isContractRequestingSignature
+            />
+</Box>
           ) : null}
         </div>
         {isLedgerWallet ? (
@@ -338,15 +329,6 @@ const SignatureRequest = ({
             (messageIsScrollable && !hasScrolledMessage)
           }
         />
-        {showContractDetails && (
-          <ContractDetailsModal
-            toAddress={verifyingContract}
-            chainId={chainId}
-            rpcPrefs={rpcPrefs}
-            onClose={() => setShowContractDetails(false)}
-            isContractRequestingSignature
-          />
-        )}
         {unapprovedMessagesCount > 1 ? (
           <ButtonLink
             size={Size.inherit}

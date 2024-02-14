@@ -1,0 +1,16 @@
+.contract-details {
+  width: 100% !important;
+  max-width: 408px;
+
+  &__contract {
+    &__identicon {
+      margin: 16px;
+      box-shadow: none;
+      background: none;
+    }
+
+    .name {
+      margin: 5px;
+    }
+  }
+}
