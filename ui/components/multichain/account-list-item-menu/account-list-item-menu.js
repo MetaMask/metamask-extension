@@ -41,6 +41,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { connectAccount } from '../../../ducks/alerts/unconnected-account';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -174,6 +175,18 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+          {process.env.MULTICHAIN ? (
+            <MenuItem
+              data-testid="account-list-menu-connect-account"
+              onClick={() => {
+                dispatch(connectAccount(identity.address));
+                onClose();
+              }}
+              iconName={IconName.UserCircleLink}
+            >
+              <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
+            </MenuItem>
+          ) : null}
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
