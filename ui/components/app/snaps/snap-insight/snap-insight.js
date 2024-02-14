@@ -1,17 +1,8 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import {
-  useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useDispatch,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Text } from '../../../component-library';
 import {
   AlignItems,
