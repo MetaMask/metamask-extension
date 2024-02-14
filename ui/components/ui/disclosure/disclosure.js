@@ -58,9 +58,7 @@ const Disclosure = ({
   const [open, setOpen] = useState(false);
 
   const scrollToBottom = () => {
-    disclosureFooterEl &&
-      disclosureFooterEl.current &&
-      disclosureFooterEl.current.scrollIntoView({ behavior: 'smooth' });
+    disclosureFooterEl?.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
