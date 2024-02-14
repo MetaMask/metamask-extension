@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Remplacer le jeton de dépôt"
   },
-  "custodyApiUrl": {
-    "message": "URL DE L’API $1"
-  },
   "custodyDeeplinkDescription": {
     "message": "Approuvez la transaction dans l’application $1. La transaction sera effectuée une fois que toutes les approbations de dépôt auront été obtenues. Vérifiez l’état de votre application $1."
   },
