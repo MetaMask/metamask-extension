@@ -421,10 +421,6 @@ module.exports = {
       },
     },
     {
-      // According to a comment in the PR that introduced this rule set (https://github.com/MetaMask/metamask-extension/pull/21833),
-      // it didn't work on typescript files (but included them anyway), so we
-      // don't need it (and it'd fail if you tried because of other breaking
-      // changes).
       files: ['ui/components/multichain/**/*.{js}'],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
