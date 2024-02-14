@@ -24,6 +24,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
     </p>
     <div
       class="disclosure"
+      data-testid="disclosure"
     >
       <details>
         <summary
@@ -116,6 +117,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     </p>
     <div
       class="disclosure"
+      data-testid="disclosure"
     >
       <details>
         <summary
@@ -208,6 +210,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     </p>
     <div
       class="disclosure"
+      data-testid="disclosure"
     >
       <details>
         <summary
@@ -301,6 +304,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
@@ -395,6 +399,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
@@ -501,6 +506,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
