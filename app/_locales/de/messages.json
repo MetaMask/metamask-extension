@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Verwahrungstoken ersetzen"
   },
-  "custodyApiUrl": {
-    "message": "$1 API-URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "Genehmigen Sie die Transaktion in der $1-App. Wenn alle benötigten Verwahrungsgenehmigungen erteilt wurden, wir die Transaktion abgeschlossen. Überprüfen Sie Ihre $1-App für den Status."
   },

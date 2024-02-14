@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Thay thế token lưu ký"
   },
-  "custodyApiUrl": {
-    "message": "URL API $1"
-  },
   "custodyDeeplinkDescription": {
     "message": "Chấp thuận giao dịch trong ứng dụng $1. Sau khi đã chấp thuận tất cả hình thức lưu ký bắt buộc, giao dịch sẽ hoàn tất. Kiểm tra ứng dụng $1 của bạn để biết trạng thái."
   },
