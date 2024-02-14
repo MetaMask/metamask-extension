@@ -320,6 +320,19 @@ export const createSwapsMockStore = () => {
             methods: [...Object.values(EthMethod)],
             type: EthAccountType.Eoa,
           },
+          'b4f1cb89-1c38-44e0-aa25-995b3afb7d45': {
+            address: '0x0F3f7A0E3A201Dea10BB578110bF2Ab128B54E78',
+            id: 'b4f1cb89-1c38-44e0-aa25-995b3afb7d45',
+            metadata: {
+              name: 'Erc4337 Account 1',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Erc4337,
+          },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },

@@ -459,7 +459,15 @@ describe('Ducks - Swaps', () => {
     });
   });
 
-  describe('getCurrentSmartTransactionsEnabled', () => {
+  it('returns false if a Erc4337 account is used', () => {
+    const state = createSwapsMockStore();
+    state.metamask.internalAccounts.selectedAccount =
+      'b4f1cb89-1c38-44e0-aa25-995b3afb7d45';
+    expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+  });
+});
+
+describe('getCurrentSmartTransactionsEnabled', () => {
     it('returns true if STX are enabled and there is no current STX error', () => {
       const state = createSwapsMockStore();
       expect(swaps.getCurrentSmartTransactionsEnabled(state)).toBe(true);

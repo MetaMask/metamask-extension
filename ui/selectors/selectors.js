@@ -216,9 +216,8 @@ export function isHardwareWallet(state) {
  * @returns {boolean}
  */
 export function accountSupportsSmartTx(state) {
-  const accountType = getAccountType(state);
-
-  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
+  const unsupportedTypes = ['hardware', 'snap', 'eip155:erc4337'];
+  return !unsupportedTypes.includes(getAccountType(state));
 }
 
 /**
