@@ -365,7 +365,11 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: {
+            type: 'test',
+            chainId: CHAIN_IDS.POLYGON,
+            nickname: '',
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -385,7 +389,7 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON, nickname: '' },
         },
       };
       const mockedStore = configureMockStore([thunk])(

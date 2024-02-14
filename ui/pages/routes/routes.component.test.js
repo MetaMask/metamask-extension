@@ -131,6 +131,11 @@ describe('Routes Component', () => {
         ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
+          providerConfig: {
+            type: 'test',
+            chainId: CHAIN_IDS.POLYGON,
+            nickname: '',
+          },
           swapsState: {
             ...mockSendState.metamask.swapsState,
             swapsFeatureIsLive: true,
