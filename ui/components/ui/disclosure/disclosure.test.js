@@ -1,15 +1,6 @@
-import React, { useRef } from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
 import Disclosure from './disclosure';
-
-jest.mock('react', () => {
-  const originReact = jest.requireActual('react');
-  const mockUseRef = jest.fn();
-  return {
-    ...originReact,
-    useRef: mockUseRef,
-  };
-});
 
 describe('Disclosure', () => {
   it('matches snapshot without title prop', () => {
@@ -51,47 +42,39 @@ describe('Disclosure', () => {
   });
 
   describe('when clicking on disclosure', () => {
-    it.skip('toggles open state', async () => {
-      const { container } = render(
-        <Disclosure title="Test Title">Test</Disclosure>,
-      );
-      const element = container.querySelector('.disclosure');
-      const elementDetails = container.querySelector('.disclosure > details');
-
-      expect(elementDetails).not.toHaveAttribute('open');
-      fireEvent.click(element);
-
-      await waitFor(() => {
-        expect(container.querySelector('details')).toHaveAttribute('open');
-      });
-    });
-
     it('does not scroll down on open by default or when isScrollToBottomOnOpen is false', () => {
-      const spyScrollIntoView = jest.fn();
-      const mockRef = { current: { scrollIntoView: spyScrollIntoView } };
-      useRef.mockReturnValueOnce(mockRef);
+      const mockScrollIntoView = jest.fn();
+      const originalScrollIntoView =
+        window.HTMLElement.prototype.scrollIntoView;
+      window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
-      const { container } = render(
+      const { getByTestId } = render(
         <Disclosure title="Test Title">Test</Disclosure>,
       );
-      const element = container.querySelector('.disclosure');
+      const element = getByTestId('disclosure');
       fireEvent.click(element);
-      expect(spyScrollIntoView).not.toHaveBeenCalled();
+      expect(mockScrollIntoView).not.toHaveBeenCalled();
+      window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
 
-    it.skip('scrolls down on open when isScrollToBottomOnOpen is true', () => {
-      const spyScrollIntoView = jest.fn();
-      const mockRef = { current: { scrollIntoView: spyScrollIntoView } };
-      useRef.mockReturnValueOnce(mockRef);
+    it('scrolls down on open when isScrollToBottomOnOpen is true', () => {
+      const mockScrollIntoView = jest.fn();
+      const originalScrollIntoView =
+        window.HTMLElement.prototype.scrollIntoView;
+      window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
 
-      const { container } = render(
-        <Disclosure title="Test Title">Test</Disclosure>,
+      const { getByTestId } = render(
+        <Disclosure title="Test Title" isScrollToBottomOnOpen>
+          Test
+        </Disclosure>,
       );
-      const element = container.querySelector('.disclosure');
+      const element = getByTestId('disclosure');
 
-      expect(spyScrollIntoView).not.toHaveBeenCalled();
       fireEvent.click(element);
-      expect(spyScrollIntoView).toHaveBeenCalled();
+      expect(mockScrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+      });
+      window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
   });
 });

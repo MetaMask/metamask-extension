@@ -4,6 +4,7 @@ exports[`Disclosure matches snapshot with title prop 1`] = `
 <div>
   <div
     class="disclosure"
+    data-testid="disclosure"
   >
     <details>
       <summary
@@ -32,6 +33,7 @@ exports[`Disclosure matches snapshot without title prop 1`] = `
 <div>
   <div
     class="disclosure"
+    data-testid="disclosure"
   >
     Test
   </div>
