@@ -1,6 +1,7 @@
 import { omit, pick } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
+  deleteInterface,
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
@@ -136,6 +137,7 @@ function getAttenuatedDispatch(dispatch) {
     upsertNetworkConfiguration: (...args) =>
       dispatch(upsertNetworkConfiguration(...args)),
     setNewNetworkAdded: (...args) => dispatch(setNewNetworkAdded(...args)),
+    deleteInterface: (...args) => dispatch(deleteInterface(...args)),
   };
 }
 
