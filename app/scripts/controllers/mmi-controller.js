@@ -546,7 +546,8 @@ export default class MMIController extends EventEmitter {
   async handleMmiCheckIfTokenIsPresent(req) {
     const { token, envName, address } = req.params;
 
-    const currentAddress = address || this.preferencesController.getSelectedAddress();
+    const currentAddress =
+      address || this.preferencesController.getSelectedAddress();
     const currentCustodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(currentAddress),
     );
