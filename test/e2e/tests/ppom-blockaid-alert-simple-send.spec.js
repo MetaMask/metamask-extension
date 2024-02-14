@@ -207,6 +207,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             securityAlertsEnabled: true,
           })
