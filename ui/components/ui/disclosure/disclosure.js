@@ -47,7 +47,13 @@ const renderSummaryByType = (variant, title, size) => {
   }
 };
 
-const Disclosure = ({ children, title, size, variant }) => {
+const Disclosure = ({
+  children,
+  isScrollToBottomOnOpen,
+  title,
+  size,
+  variant,
+}) => {
   const disclosureFooterEl = useRef(null);
   const [open, setOpen] = useState(false);
 
@@ -58,10 +64,10 @@ const Disclosure = ({ children, title, size, variant }) => {
   };
 
   useEffect(() => {
-    if (open) {
+    if (isScrollToBottomOnOpen && open) {
       scrollToBottom();
     }
-  }, [open]);
+  }, [isScrollToBottomOnOpen, open]);
 
   return (
     <div className="disclosure" onClick={() => setOpen((state) => !state)}>
@@ -83,12 +89,14 @@ const Disclosure = ({ children, title, size, variant }) => {
 
 Disclosure.propTypes = {
   children: PropTypes.node.isRequired,
+  isScrollToBottomOnOpen: PropTypes.bool,
   size: PropTypes.string,
   title: PropTypes.string,
   variant: PropTypes.string,
 };
 
 Disclosure.defaultProps = {
+  isScrollToBottomOnOpen: false,
   size: 'normal',
   title: null,
   variant: DisclosureVariant.Default,
