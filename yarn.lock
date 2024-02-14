@@ -3434,22 +3434,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-controller@npm:^0.2.19":
-  version: 0.2.19
-  resolution: "@metamask-institutional/custody-controller@npm:0.2.19"
+"@metamask-institutional/custody-controller@npm:^0.2.19, @metamask-institutional/custody-controller@npm:^0.2.20":
+  version: 0.2.20
+  resolution: "@metamask-institutional/custody-controller@npm:0.2.20"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.8"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.9"
     "@metamask-institutional/sdk": "npm:^0.1.24"
     "@metamask-institutional/types": "npm:^1.0.4"
     "@metamask/obs-store": "npm:^8.0.0"
-  checksum: 2acf49e665135baa3507dc8076e9a910b1bad1e9aec4b7821f616b5defc674fb7e454c1ff85fb8790b3370cfceda0d87de0b56a16ceefc44432e905397edbb05
+  checksum: 8b6a25b4d870ea9bd3f235d45c82226cecbbef3bbbe6b635114e28642c847dbd1258982d0b0501b0e4109de0d16024c4c192dcd7ff018d281f7e075f1de23b1d
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-keyring@npm:^1.0.8":
-  version: 1.0.8
-  resolution: "@metamask-institutional/custody-keyring@npm:1.0.8"
+"@metamask-institutional/custody-keyring@npm:^1.0.10, @metamask-institutional/custody-keyring@npm:^1.0.8, @metamask-institutional/custody-keyring@npm:^1.0.9":
+  version: 1.0.10
+  resolution: "@metamask-institutional/custody-keyring@npm:1.0.10"
   dependencies:
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethereumjs/util": "npm:^8.0.5"
@@ -3459,7 +3459,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.0.0"
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: ce88a18fcfb8222c6f624f123dd3c076111a20e84309256162423f1076655c452b924ea06f5f398529d6b169a842ff7cea75984f15a30763228902d290b24970
+  checksum: 5009f4d0bd6779898b632a0f00ad3f572678ec3cf36dafac2365199645f0702dba76e62ad1b08dc405b502d501070f3efadac1409c3c1eeade5d6b66aefd8eb3
   languageName: node
   linkType: hard
 
@@ -23993,8 +23993,8 @@ __metadata:
     "@lavamoat/lavapack": "npm:^6.0.2"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
-    "@metamask-institutional/custody-controller": "npm:^0.2.19"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.8"
+    "@metamask-institutional/custody-controller": "npm:^0.2.20"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.10"
     "@metamask-institutional/extension": "npm:^0.3.13"
     "@metamask-institutional/institutional-features": "npm:^1.2.11"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
