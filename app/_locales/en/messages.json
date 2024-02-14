@@ -4394,6 +4394,10 @@
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
+  "snapPermissionRequestWarning": {
+    "message": "$1 are requesting the following permissions. Only continue if you trust $2.",
+    "description": "$1 is a Snap name, $2 is the Snap name."
+  },
   "snapConnections": {
     "message": "Snap Connections"
   },

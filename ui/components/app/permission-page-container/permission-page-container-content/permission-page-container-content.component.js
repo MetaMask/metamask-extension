@@ -6,6 +6,13 @@ import { SubjectType } from '@metamask/permission-controller';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+import { getSnapName } from '../../../../helpers/utils/util';
+import { Text, Box } from '../../../component-library';
+import {
+  Display,
+  FontWeight,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -34,12 +41,10 @@ export default class PermissionPageContainerContent extends PureComponent {
     const { selectedPermissions, subjectMetadata } = this.props;
 
     return (
-      <div className="permission-approval-container__content__requested">
-        <PermissionsConnectPermissionList
-          permissions={selectedPermissions}
-          targetSubjectMetadata={subjectMetadata}
-        />
-      </div>
+      <PermissionsConnectPermissionList
+        permissions={selectedPermissions}
+        targetSubjectMetadata={subjectMetadata}
+      />
     );
   }
 
@@ -105,7 +110,28 @@ export default class PermissionPageContainerContent extends PureComponent {
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (subjectMetadata.subjectType === SubjectType.Snap) {
-      return t('allowThisSnapTo');
+      const snapFriendlyName = getSnapName(
+        subjectMetadata.origin,
+        subjectMetadata,
+      );
+      return t('snapPermissionRequestWarning', [
+        <Text
+          as="span"
+          key="snapNameFirstTime"
+          variant={TextVariant.bodyMd}
+          fontWeight={FontWeight.Medium}
+        >
+          {snapFriendlyName}
+        </Text>,
+        <Text
+          as="span"
+          key="snapNameSecondTime"
+          variant={TextVariant.bodyMd}
+          fontWeight={FontWeight.Medium}
+        >
+          {snapFriendlyName}
+        </Text>,
+      ]);
     }
     ///: END:ONLY_INCLUDE_IF
 
@@ -132,9 +158,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             siteOrigin={subjectMetadata.origin}
             subjectType={subjectMetadata.subjectType}
           />
-          <section className="permission-approval-container__permissions-container">
-            {this.renderRequestedPermissions()}
-          </section>
+          <Box display={Display.Flex}>{this.renderRequestedPermissions()}</Box>
         </div>
       </div>
     );

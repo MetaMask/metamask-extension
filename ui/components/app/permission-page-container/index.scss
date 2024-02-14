@@ -44,8 +44,6 @@
     overflow-y: auto;
     flex-direction: column;
     color: var(--color-text-default);
-    padding-left: 24px;
-    padding-right: 24px;
     margin-top: 2px;
 
     a,
@@ -92,12 +90,12 @@
     color: var(--color-text-default);
   }
 
-  &__permissions-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-top: 38px;
-  }
+  //&__permissions-container {
+  //  width: 100%;
+  //  display: flex;
+  //  flex-direction: column;
+  //  margin-top: 38px;
+  //}
 
   @include screen-sm-max {
     &__title {

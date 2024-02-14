@@ -5,11 +5,12 @@ import classnames from 'classnames';
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import SiteOrigin from '../../ui/site-origin';
-import Box from '../../ui/box';
 import {
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { Box } from '../../component-library';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
@@ -71,8 +72,11 @@ export default class PermissionsConnectHeader extends Component {
     return (
       <Box
         className={classnames('permissions-connect-header', className)}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
+        paddingLeft={6}
+        paddingRight={6}
         {...boxProps}
       >
         {this.renderHeaderIcon()}

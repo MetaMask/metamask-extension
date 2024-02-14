@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { SubjectType } from '@metamask/permission-controller';
 import {
   getRightIcon,
   getWeightedPermissions,
 } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import SnapPermissionsList from '../snaps/snap-permissions-list';
 
 /**
  * Get one or more permission descriptions for a permission name.
@@ -31,7 +33,13 @@ export default function PermissionsConnectPermissionList({
 }) {
   const t = useI18nContext();
 
-  return (
+  return targetSubjectMetadata.subjectType === SubjectType.Snap ? (
+    <SnapPermissionsList
+      snapId={targetSubjectMetadata.origin}
+      permissions={permissions || {}}
+      targetSubjectMetadata={targetSubjectMetadata}
+    />
+  ) : (
     <div className="permissions-connect-permission-list">
       {getWeightedPermissions(t, permissions, targetSubjectMetadata).map(
         getDescriptionNode,
