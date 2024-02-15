@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.10.0]
+## [11.9.4]
+### Fixed
+- Fix security advisory https://github.com/advisories/GHSA-78xj-cgh5-2h22 ([#22910](https://github.com/MetaMask/metamask-extension/pull/22890))
+
+## [11.9.3]
+### Fixed
+- Fix: don't prevent users from editing gas when "Show balance and token price checker" toggle is off ([#22890](https://github.com/MetaMask/metamask-extension/pull/22890))
+
+## [11.9.2]
+### Fixed
+- [MMI] Patches `@metamask/accounts-controller` to fix an issue with MMI where custodial keyrings could nto be found ([#22730](https://github.com/MetaMask/metamask-extension/pull/22692))
+
+## [11.9.1]
+### Fixed
+- [MMI] Patches `@metamask/transaction-controller` to fix an issue with MMI where due to a TransactionController refactor, custodial transactions stopped yielding a hash to dapps when they were submitted ([#22730](https://github.com/MetaMask/metamask-extension/pull/22730))
+
 ## [11.9.0]
 ### Added
 - Enhanced Snap account identification by displaying the Snap name and icon in the accounts list and wallet overview ([#22342](https://github.com/MetaMask/metamask-extension/pull/22342))
@@ -4343,6 +4359,11 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...HEAD
 [11.10.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.3...v11.10.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.4...HEAD
+[11.9.4]: https://github.com/MetaMask/metamask-extension/compare/v11.9.3...v11.9.4
+[11.9.3]: https://github.com/MetaMask/metamask-extension/compare/v11.9.2...v11.9.3
+[11.9.2]: https://github.com/MetaMask/metamask-extension/compare/v11.9.1...v11.9.2
+[11.9.1]: https://github.com/MetaMask/metamask-extension/compare/v11.9.0...v11.9.1
 [11.9.0]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...v11.9.0
 [11.8.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.5...v11.8.0
 [11.7.5]: https://github.com/MetaMask/metamask-extension/compare/v11.7.4...v11.7.5
