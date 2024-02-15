@@ -12,6 +12,7 @@ import {
   AddressLookupResult,
   Snap as TruncatedSnap,
 } from '@metamask/snaps-sdk';
+// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
 import {
