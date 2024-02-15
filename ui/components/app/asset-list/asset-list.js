@@ -18,6 +18,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
+  getIsMainnet,
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -62,6 +63,7 @@ const AssetList = ({ onClickAsset }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const chainId = useSelector(getCurrentChainId);
+  const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
@@ -121,6 +123,12 @@ const AssetList = ({ onClickAsset }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IF
+
+  let isStakeable = isMainnet;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -211,6 +219,7 @@ const AssetList = ({ onClickAsset }) => {
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
+        isStakeable={isStakeable}
       />
       <TokenList
         tokens={tokensWithBalances}
