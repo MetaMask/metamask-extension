@@ -1477,7 +1477,7 @@ export default class MetamaskController extends EventEmitter {
           allowedActions: [
             `${this.approvalController.name}:addRequest`,
             'NetworkController:getNetworkClientById',
-            'NetworkController:findNetworkClientIdByChainId'
+            'NetworkController:findNetworkClientIdByChainId',
           ],
           allowedEvents: [`NetworkController:stateChange`],
         }),
