@@ -39,7 +39,10 @@ describe('Wallet Revoke Permissions', function () {
         await driver.clickElement('#getPermissions');
 
         // Eth_accounts permissions removed
-        assert.equal(await permissionsResult.getText(), 'No permissions found.');
+        assert.equal(
+          await permissionsResult.getText(),
+          'No permissions found.',
+        );
       },
     );
   });
