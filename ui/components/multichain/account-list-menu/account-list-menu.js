@@ -284,6 +284,14 @@ export const AccountListMenu = ({
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          location: 'Main Menu',
+                        },
+                      });
                       global.platform.openTab({
                         url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
                       });
