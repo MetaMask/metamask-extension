@@ -243,7 +243,7 @@ describe('Blockaid Banner Alert', () => {
 
     const elm = getByRole('link', { name: 'Report an issue' });
     expect(elm.href).toBe(
-      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
+      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.1%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
     );
   });
 
@@ -264,7 +264,7 @@ describe('Blockaid Banner Alert', () => {
 
         const elm = getByRole('link', { name: 'Report an issue' });
         expect(elm.href).toBe(
-          'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom',
+          'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.1%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom',
         );
       });
     });
