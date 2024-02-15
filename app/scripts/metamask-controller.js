@@ -2826,10 +2826,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       // PreferencesController
       setSelectedAddress: (address) => {
-        this.preferencesController.setSelectedAddress(address);
         const account = this.accountsController.getAccountByAddress(address);
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
+          this.preferencesController.setSelectedAddress(address);
         } else {
           throw new Error(`No account found for address: ${address}`);
         }
@@ -2874,8 +2874,13 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
 
       // AccountsController
-      setSelectedInternalAccount:
-        accountsController.setSelectedAccount.bind(accountsController),
+      setSelectedInternalAccount: (id) => {
+        const account = this.accountsController.getAccount(id);
+        if (account) {
+          this.preferencesController.setSelectedAddress(account.address);
+          this.accountsController.setSelectedAccount(id);
+        }
+      },
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
@@ -3165,7 +3170,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
-      updateCaveat: this.updateCaveat.bind(this),
+      disconnectOriginFromSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:disconnectOrigin',
+      ),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
