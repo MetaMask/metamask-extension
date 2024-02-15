@@ -1189,7 +1189,7 @@ export const getSnapMetadata = createDeepEqualSelector(
     return {
       // The snap manifest may not be available if the Snap is not installed, so
       // we use the snap ID as the name in that case.
-      name: manifest?.proposedName ?? stripSnapPrefix(snapId),
+      name: manifest?.proposedName ?? (snapId ? stripSnapPrefix(snapId) : null),
       description: manifest?.description,
     };
   },
