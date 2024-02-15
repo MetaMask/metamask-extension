@@ -13,6 +13,7 @@ type Custodian = {
   version: number;
 };
 
+// TODO (Bernardo) - There can be multiple custodian with the same name, envName should be used instead
 export function findCustodianByDisplayName(
   displayName: string,
   custodians: Custodian[],
