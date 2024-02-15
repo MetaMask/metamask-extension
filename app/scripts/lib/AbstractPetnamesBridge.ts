@@ -114,12 +114,40 @@ export abstract class AbstractPetnamesBridge {
   /**
    * Update the Source with the given entry. To be overridden by two-way subclasses.
    *
-   * @param type
-   * @param entry
+   * @param _type
+   * @param _entry
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected updateSourceEntry(type: ChangeType, entry: PetnameEntry): void {
+  protected updateSourceEntry(_type: ChangeType, _entry: PetnameEntry): void {
     throw new Error('updateSourceEntry must be overridden for two-way bridges');
+  }
+
+  /**
+   * This predicate describes a subset of Petnames state that is relevant
+   * to the bridge.
+   *
+   * By default, the shouldSyncPetname method returns true for all Petnames,
+   * meaning every PetnameEntry in the NameController state is considered for
+   * synchronization. This would result in Petnames state being a mirror of
+   * the source entries or vice versa after synchronization.
+   *
+   * If you override this method to return false for some Petnames, those
+   * entries are effectively 'masked' or excluded from the synchronization
+   * process. This has a couple of implications:
+   *
+   * Source->Petnames direction: Masked Petname entries will not be deleted.
+   * If shouldSyncPetname returns false for some target Petname,that entry
+   * will not be deleted from Petnames state during synchronization.
+   *
+   * Petnames->Source direction: Masked Petname entries will not be added to
+   * Source.  If shouldSyncPetname returns false for some Petname, that entry
+   * will not be added to the Source list during synchronization.
+   *
+   * @param _targetEntry - The entry from Petname state to check for membership.
+   * @returns true iff the target Petname entry should participate in synchronization.
+   */
+  protected shouldSyncPetname(_targetEntry: PetnameEntry): boolean {
+    // All petname entries are sync participants by default.
+    return true;
   }
 
   /**
@@ -159,18 +187,21 @@ export abstract class AbstractPetnamesBridge {
     for (const type of Object.values(NameType)) {
       for (const value of Object.keys(names[type])) {
         for (const variation of Object.keys(names[type][value])) {
-          const entry = names[type][value][variation];
-          if (!entry.name) {
+          const { name, sourceId, origin } = names[type][value][variation];
+          if (!name) {
             continue;
           }
-          entries.push({
+          const entry = {
             value,
             type,
-            name: entry.name,
+            name,
             variation,
-            sourceId: entry.sourceId ?? undefined,
-            origin: entry.origin ?? undefined,
-          });
+            sourceId: sourceId ?? undefined,
+            origin: origin ?? undefined,
+          };
+          if (this.shouldSyncPetname(entry)) {
+            entries.push(entry);
+          }
         }
       }
     }
@@ -226,13 +257,11 @@ export abstract class AbstractPetnamesBridge {
       }
     });
 
-    if (this.#isTwoWay) {
-      prevEntriesMap.forEach((oldEntry, oldKey) => {
-        if (!newEntriesMap.has(oldKey)) {
-          deleted.push(oldEntry);
-        }
-      });
-    }
+    prevEntriesMap.forEach((oldEntry, oldKey) => {
+      if (!newEntriesMap.has(oldKey)) {
+        deleted.push(oldEntry);
+      }
+    });
 
     return {
       [ChangeType.ADDED]: added,

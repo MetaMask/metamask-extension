@@ -77,6 +77,7 @@ function blockedDomainCheck() {
     'ani.gamer.com.tw',
     'blueskybooking.com',
     'sharefile.com',
+    'battle.net',
   ];
   const currentUrl = window.location.href;
   let currentRegex;

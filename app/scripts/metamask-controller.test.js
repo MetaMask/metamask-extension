@@ -25,7 +25,7 @@ import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
-import * as tokenUtils from '../../shared/lib/token-util.ts';
+import * as tokenUtils from '../../shared/lib/token-util';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -1084,6 +1084,9 @@ describe('MetaMaskController', () => {
 
       beforeEach(() => {
         initializeMockMiddlewareLog();
+        metamaskController.preferencesController.setSecurityAlertsEnabled(
+          false,
+        );
       });
 
       afterAll(() => {

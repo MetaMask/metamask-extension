@@ -46,7 +46,6 @@ describe('Test Snap Installed', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -55,12 +54,17 @@ describe('Test Snap Installed', function () {
 
         // navigate to test snaps page and connect to dialogs snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const confirmButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(confirmButton);
         await driver.delay(500);
         await driver.clickElement('#connectdialogs');
-        await driver.delay(500);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(

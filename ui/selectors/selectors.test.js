@@ -1022,21 +1022,72 @@ describe('Selectors', () => {
     const expectedResult = [
       {
         address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-        balance: '0x0',
         name: 'Test Account 2',
+        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+        metadata: {
+          name: 'Test Account 2',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        balance: '0x0',
         pinned: true,
         hidden: false,
       },
       {
-        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-        balance: '0x0',
         name: 'Test Account 3',
+        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+        metadata: {
+          name: 'Test Account 3',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        balance: '0x0',
         pinned: true,
         hidden: false,
       },
       {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         name: 'Test Account',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1044,6 +1095,23 @@ describe('Selectors', () => {
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         name: 'Test Ledger 1',
+        id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+        metadata: {
+          name: 'Ledger Hardware 2',
+          keyring: {
+            type: 'Ledger Hardware',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
         balance: '0x0',
         pinned: false,
         hidden: false,
@@ -1051,6 +1119,23 @@ describe('Selectors', () => {
       {
         name: 'Custody test',
         address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        id: '694225f4-d30b-4e77-a900-c8bbce735b42',
+        metadata: {
+          name: 'Test Account 4',
+          keyring: {
+            type: 'Custody test',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
         balance: '0x0',
         pinned: false,
         hidden: false,
