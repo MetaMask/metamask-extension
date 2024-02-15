@@ -443,6 +443,7 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
           type: TransactionType.swap,
         });
 
@@ -465,6 +466,7 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
           type: TransactionType.swapApproval,
         });
 
