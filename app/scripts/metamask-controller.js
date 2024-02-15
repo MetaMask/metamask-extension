@@ -1474,7 +1474,11 @@ export default class MetamaskController extends EventEmitter {
         },
         messenger: this.controllerMessenger.getRestricted({
           name: 'TransactionController',
-          allowedActions: [`${this.approvalController.name}:addRequest`],
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            'NetworkController:getNetworkClientById',
+            'NetworkController:findNetworkClientIdByChainId'
+          ],
           allowedEvents: [`NetworkController:stateChange`],
         }),
         onNetworkStateChange: (listener) => {
@@ -1485,13 +1489,6 @@ export default class MetamaskController extends EventEmitter {
         },
         provider: this.provider,
         isMultichainEnabled: true,
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
         getNetworkClientRegistry:
           this.networkController.getNetworkClientRegistry.bind(
             this.networkController,
