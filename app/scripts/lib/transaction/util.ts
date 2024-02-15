@@ -85,7 +85,6 @@ export async function addDappTransaction(
 ): Promise<string> {
   const { dappRequest } = request;
   const { id: actionId, method, origin } = dappRequest;
-  console.log('addDappTransaction', request);
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const { securityAlertResponse } = dappRequest;
