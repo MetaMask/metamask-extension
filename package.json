@@ -116,7 +116,6 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'"
   },
   "resolutions": {
-    "@metamask/transaction-controller@^21.2.0": "npm:@metamask-previews/transaction-controller@21.2.0-preview.280e51c7",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.23.2#~/.yarn/patches/@babel-runtime-npm-7.23.2-d013d6cf7e.patch",
@@ -296,7 +295,7 @@
     "@metamask/snaps-rpc-methods": "^5.0.0",
     "@metamask/snaps-sdk": "^1.4.0",
     "@metamask/snaps-utils": "^5.2.0",
-    "@metamask/transaction-controller": "^21.2.0",
+    "@metamask/transaction-controller": "^23.0.0",
     "@metamask/user-operation-controller": "^1.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
