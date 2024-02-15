@@ -1484,7 +1484,7 @@ export default class MetamaskController extends EventEmitter {
           );
         },
         provider: this.provider,
-        enableMultichain: true,
+        isMultichainEnabled: true,
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
