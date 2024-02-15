@@ -35,7 +35,9 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
 
   const { name, iconUrl, aggregators } =
     Object.values(tokenList).find(
-      (t) => t.symbol === symbol && isEqualCaseInsensitive(t.address, address),
+      (t) =>
+        isEqualCaseInsensitive(t.symbol, symbol) &&
+        isEqualCaseInsensitive(t.address, address),
     ) ?? {};
 
   const { tokensWithBalances }: { tokensWithBalances: { string: string }[] } =
