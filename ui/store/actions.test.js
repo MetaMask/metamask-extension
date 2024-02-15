@@ -889,15 +889,20 @@ describe('Actions', () => {
       const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb());
+      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         setSelectedInternalAccount: setSelectedInternalAccountSpy,
+        setSelectedAddress: setSelectedAddressSpy,
       });
 
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setSelectedAccount('0x123'));
       expect(setSelectedInternalAccountSpy.callCount).toStrictEqual(1);
+      expect(setSelectedInternalAccountSpy.calledWith('mock-id')).toBe(true);
+      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
+      expect(setSelectedAddressSpy.calledWith('0x123')).toBe(true);
     });
 
     it('displays warning if setSelectedAccount throws', async () => {
@@ -936,9 +941,11 @@ describe('Actions', () => {
       const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
+      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         setSelectedInternalAccount: setSelectedInternalAccountSpy,
+        setSelectedAddress: setSelectedAddressSpy,
       });
 
       setBackgroundConnection(background.getApi());

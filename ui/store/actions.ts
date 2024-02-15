@@ -1295,6 +1295,28 @@ export function revokeDynamicSnapPermissions(
   };
 }
 
+/**
+ * Disconnects a given origin from a snap.
+ *
+ * This revokes the permission granted to the origin
+ * that provides the capability to communicate with a snap.
+ *
+ * @param origin - The origin.
+ * @param snapId - The snap ID.
+ */
+export function disconnectOriginFromSnap(
+  origin: string,
+  snapId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('disconnectOriginFromSnap', [
+      origin,
+      snapId,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
 
@@ -1758,6 +1780,7 @@ export function setSelectedAccount(
       !currentTabIsConnectedToNextAddress;
 
     try {
+      await _setSelectedAddress(address);
       await _setSelectedInternalAccount(internalAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
@@ -2639,6 +2662,16 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+/**
+ * An action creator for display a warning to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @deprecated This way of displaying a warning is confusing for users and
+ * should no longer be used.
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
 export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
     return {
@@ -3241,6 +3274,19 @@ export function setIpfsGateway(
   };
 }
 
+export function setIsIpfsGatewayEnabled(
+  val: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setIsIpfsGatewayEnabled`);
+    callBackgroundMethod('setIsIpfsGatewayEnabled', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 export function setUseAddressBarEnsResolution(
   val: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -3266,7 +3312,7 @@ export function updateCurrentLocale(
       const textDirection = await submitRequestToBackground<
         'rtl' | 'ltr' | 'auto'
       >('setCurrentLocale', [key]);
-      await switchDirection(textDirection);
+      switchDirection(textDirection);
       dispatch(setCurrentLocale(key, localeMessages));
     } catch (error) {
       dispatch(displayWarning(error));
@@ -3678,35 +3724,6 @@ export function updateHiddenAccountsList(
     ]);
   };
 }
-
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-/**
- * Updates the caveat value for the specified origin, permission and caveat type.
- *
- * @param origin
- * @param target
- * @param caveatType
- * @param caveatValue
- */
-export function updateCaveat(
-  origin: string,
-  target: string,
-  caveatType: string,
-  caveatValue: Record<string, Json>,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    callBackgroundMethod(
-      'updateCaveat',
-      [origin, target, caveatType, caveatValue],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-  };
-}
-///: END:ONLY_INCLUDE_IF
 
 // Pending Approvals
 

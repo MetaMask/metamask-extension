@@ -63,7 +63,7 @@ describe('Custom RPC history', function () {
           '.networks-tab__add-network-form-footer .btn-primary',
         );
 
-        await driver.findElement({ text: networkName, tag: 'span' });
+        await driver.findElement({ text: networkName, tag: 'h6' });
       },
     );
   });
@@ -114,7 +114,6 @@ describe('Custom RPC history', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -262,7 +261,6 @@ describe('Custom RPC history', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);

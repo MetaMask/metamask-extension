@@ -14,7 +14,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
+import {
+  getInternalAccountByAddress,
+  getMetaMaskAccountsOrdered,
+  getUseBlockie,
+} from '../../../selectors';
 import {
   clearAccountDetails,
   hideWarning,
@@ -31,6 +35,7 @@ import {
   Text,
   ModalContent,
   ModalHeader,
+  ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
@@ -43,7 +48,9 @@ export const AccountDetails = ({ address }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const { name } = accounts.find((account) => account.address === address);
+  const {
+    metadata: { name },
+  } = useSelector((state) => getInternalAccountByAddress(state, address));
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [attemptingExport, setAttemptingExport] = useState(false);
 
@@ -91,47 +98,49 @@ export const AccountDetails = ({ address }) => {
           >
             {attemptingExport ? t('showPrivateKey') : avatar}
           </ModalHeader>
-          {attemptingExport ? (
-            <>
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Column}
-              >
-                {avatar}
-                <Text
-                  marginTop={2}
-                  marginBottom={2}
-                  variant={TextVariant.bodyLgMedium}
-                  style={{ wordBreak: 'break-word' }}
+          <ModalBody>
+            {attemptingExport ? (
+              <>
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  flexDirection={FlexDirection.Column}
                 >
-                  {name}
-                </Text>
-                <AddressCopyButton address={address} shorten />
-              </Box>
-              {privateKey ? (
-                <AccountDetailsKey
-                  accountName={name}
-                  onClose={onClose}
-                  privateKey={privateKey}
-                />
-              ) : (
-                <AccountDetailsAuthenticate
-                  address={address}
-                  onCancel={onClose}
-                  setPrivateKey={setPrivateKey}
-                  setShowHoldToReveal={setShowHoldToReveal}
-                />
-              )}
-            </>
-          ) : (
-            <AccountDetailsDisplay
-              accounts={accounts}
-              accountName={name}
-              address={address}
-              onExportClick={() => setAttemptingExport(true)}
-            />
-          )}
+                  {avatar}
+                  <Text
+                    marginTop={2}
+                    marginBottom={2}
+                    variant={TextVariant.bodyLgMedium}
+                    style={{ wordBreak: 'break-word' }}
+                  >
+                    {name}
+                  </Text>
+                  <AddressCopyButton address={address} shorten />
+                </Box>
+                {privateKey ? (
+                  <AccountDetailsKey
+                    accountName={name}
+                    onClose={onClose}
+                    privateKey={privateKey}
+                  />
+                ) : (
+                  <AccountDetailsAuthenticate
+                    address={address}
+                    onCancel={onClose}
+                    setPrivateKey={setPrivateKey}
+                    setShowHoldToReveal={setShowHoldToReveal}
+                  />
+                )}
+              </>
+            ) : (
+              <AccountDetailsDisplay
+                accounts={accounts}
+                accountName={name}
+                address={address}
+                onExportClick={() => setAttemptingExport(true)}
+              />
+            )}
+          </ModalBody>
         </ModalContent>
       </Modal>
 

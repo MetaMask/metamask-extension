@@ -314,4 +314,44 @@ describe('AppStateController', () => {
       updateStateSpy.mockRestore();
     });
   });
+
+  describe('institutional', () => {
+    it('set the interactive replacement token with a url and the old refresh token', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = { url: 'https://example.com', oldRefreshToken: 'old' };
+
+      appStateController.showInteractiveReplacementTokenBanner(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        interactiveReplacementToken: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+
+    it('set the setCustodianDeepLink with the fromAddress and custodyId', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      const mockParams = { fromAddress: '0x', custodyId: 'custodyId' };
+
+      appStateController.setCustodianDeepLink(mockParams);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        custodianDeepLink: mockParams,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+  });
 });
