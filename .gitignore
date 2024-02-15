@@ -49,9 +49,6 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
-# TypeScript
-tsout/
-
 # Test results
 test-results/
 
