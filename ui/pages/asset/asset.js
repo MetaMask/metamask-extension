@@ -39,11 +39,21 @@ const Asset = () => {
   if (nft) {
     content = <NftDetails nft={nft} />;
   } else if (token) {
-    // content = <TokenAsset token={token} />;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    content = <TokenAsset token={token} />;
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     content = <TokenAssetV2 token={token} />;
+    ///: END:ONLY_INCLUDE_IF
   } else if (asset === nativeCurrency) {
-    // content = <NativeAsset nativeCurrency={nativeCurrency} />;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    content = <NativeAsset nativeCurrency={nativeCurrency} />;
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     content = <NativeAssetV2 />;
+    ///: END:ONLY_INCLUDE_IF
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }

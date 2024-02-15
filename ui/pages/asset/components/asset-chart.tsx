@@ -1,4 +1,9 @@
-import React, { useEffect, MouseEvent, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  MouseEvent as ReactMouseEvent,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   Chart,
@@ -214,7 +219,7 @@ const AssetChart = ({
               data={data}
               options={chartOptions}
               updateMode="none"
-              onMouseMove={({ nativeEvent: e }: MouseEvent) => {
+              onMouseMove={({ nativeEvent: e }: ReactMouseEvent) => {
                 if (chartRef.current) {
                   const index = Math.max(
                     0,

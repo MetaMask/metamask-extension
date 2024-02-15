@@ -33,20 +33,23 @@
 }
 
 .time-range-button {
-  height:24px;
+  height: 24px;
 
   &:hover {
-    background-color: var(--color-background-default-hover) !important;;
+    background-color: var(--color-background-default-hover) !important;
     color: var(--color-text-alternative) !important;
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default) !important;
   }
+
   &:active {
     border-color: transparent;
   }
+
   &:focus {
     background-color: var(--color-background-default);
     color: var(--color-text-alternative) !important;
   }
+
   &__selected {
     background-color: var(--color-background-default-pressed) !important;;
   }
@@ -61,14 +64,14 @@
 }
 
 .asset-tooltip {
-  width:100%;
+  width: 100%;
 }
 
 .asset-footer {
   position: sticky;
   bottom: 0;
-  box-shadow: 0px 0px 15px 0px var(--color-shadow-default);
+  box-shadow: 0 0 15px 0 var(--color-shadow-default);
 }
 
-.chart-up { stroke: var(--color-success-default) }
-.chart-down { stroke: var(--color-error-default) }
+.chart-up { stroke: var(--color-success-default); }
+.chart-down { stroke: var(--color-error-default); }

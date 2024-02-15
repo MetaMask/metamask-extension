@@ -64,9 +64,6 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import AssetChart from './asset-chart';
 import { getPricePrecision, localizeLargeNumber } from './util';
 import AssetHeader from './asset-header';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-// import { getMmiPortfolioUrl } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
 
 const renderRow = (leftColumn: string, rightColumn: ReactNode) => (
   <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -120,20 +117,12 @@ const AssetV2 = ({
   const currency = useSelector(getCurrentCurrency);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  ///: END:ONLY_INCLUDE_IF
-
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const { openBuyCryptoInPdapp } = useRamps();
-  ///: END:ONLY_INCLUDE_IF
 
   const [marketData, setMarketData] = useState<any>();
   const [balanceInView, setBalanceInView] = useState(true);
@@ -231,7 +220,12 @@ const AssetV2 = ({
               />
             )}
           </Box>
-          <Box display={Display.Flex} gap={[4,12]} paddingLeft={[4,12]} paddingRight={[4,12]}>
+          <Box
+            display={Display.Flex}
+            gap={[4, 12]}
+            paddingLeft={[4, 12]}
+            paddingRight={[4, 12]}
+          >
             {renderTooltip(
               <ButtonSecondary
                 disabled={!isBridgeChain}
@@ -428,12 +422,10 @@ const AssetV2 = ({
       <Box
         className="asset-footer"
         padding={4}
-        paddingLeft={[4,12]}
-        paddingRight={[4,12]}
+        paddingLeft={[4, 12]}
+        paddingRight={[4, 12]}
         backgroundColor={BackgroundColor.backgroundDefault}
       >
-        {/* TODO is this code fenced elsewhere? */}
-        {/* TODO is this even useful? it just buys eth not the specific token.  for that its swap */}
         <Box display={Display.Flex} gap={[4, 12]}>
           {renderTooltip(
             <ButtonSecondary
@@ -466,13 +458,6 @@ const AssetV2 = ({
               padding={5}
               width={BlockSize.Full}
               onClick={() => {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                // global.platform.openTab({
-                //   url: `${mmiPortfolioUrl}/swap`,
-                // });
-                ///: END:ONLY_INCLUDE_IF
-
-                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
@@ -493,10 +478,9 @@ const AssetV2 = ({
                           address,
                           decimals: 18,
                           iconUrl: image,
-                          // todo shows bal the other reveals 'max' button so may need
-                          // separate numeric and string balances
-                          // balance: balance,
-                          // string: balance,
+                          // todo
+                          // balance:
+                          // string:
                         },
                   ),
                 );
@@ -506,11 +490,9 @@ const AssetV2 = ({
                 } else {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
-                ///: END:ONLY_INCLUDE_IF
               }}
             >
               {t('swap')}
-              {/* TODO: Implement swap onClick */}
             </ButtonPrimary>,
             t('currentlyUnavailable'),
             !isBridgeChain,
