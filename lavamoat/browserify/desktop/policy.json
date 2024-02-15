@@ -20,9 +20,9 @@
     "@ensdomains/content-hash>cids": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
+        "@ensdomains/content-hash>cids>multicodec": true,
         "@ensdomains/content-hash>cids>multihashes": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multicodec": true
+        "@ensdomains/content-hash>cids>uint8arrays": true
       }
     },
     "@ensdomains/content-hash>cids>multibase": {
@@ -34,11 +34,27 @@
         "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true
       }
     },
+    "@ensdomains/content-hash>cids>multicodec": {
+      "packages": {
+        "@ensdomains/content-hash>cids>multicodec>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec>varint": true
+      }
+    },
+    "@ensdomains/content-hash>cids>multicodec>uint8arrays": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/assets-controllers>multiformats": true
+      }
+    },
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multihashes>varint": true
+        "@ensdomains/content-hash>cids>multihashes>varint": true,
+        "@ensdomains/content-hash>cids>uint8arrays": true
       }
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
@@ -47,7 +63,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/assets-controllers>multiformats": true
+        "@ensdomains/content-hash>cids>multibase": true
       }
     },
     "@ensdomains/content-hash>js-base64": {
@@ -70,13 +86,15 @@
       }
     },
     "@ensdomains/content-hash>multicodec>uint8arrays": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
       "packages": {
-        "@metamask/assets-controllers>multiformats": true
+        "@ensdomains/content-hash>multicodec>uint8arrays>multibase": true,
+        "@ensdomains/content-hash>multihashes>web-encoding": true
+      }
+    },
+    "@ensdomains/content-hash>multicodec>uint8arrays>multibase": {
+      "packages": {
+        "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true,
+        "@ensdomains/content-hash>multihashes>web-encoding": true
       }
     },
     "@ensdomains/content-hash>multihashes": {

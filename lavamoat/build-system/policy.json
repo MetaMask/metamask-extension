@@ -1485,13 +1485,34 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
+        "autoprefixer>browserslist": true,
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>fraction.js": true,
         "autoprefixer>normalize-range": true,
         "postcss": true,
         "postcss>picocolors": true,
-        "stylelint>postcss-value-parser": true,
-        "webpack>browserslist": true
+        "stylelint>postcss-value-parser": true
+      }
+    },
+    "autoprefixer>browserslist": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "autoprefixer>browserslist>electron-to-chromium": true,
+        "autoprefixer>browserslist>node-releases": true,
+        "autoprefixer>caniuse-lite": true
       }
     },
     "babelify": {
@@ -8854,7 +8875,7 @@
         "process.versions.node": true
       },
       "packages": {
-        "autoprefixer>caniuse-lite": true,
+        "webpack>browserslist>caniuse-lite": true,
         "webpack>browserslist>electron-to-chromium": true,
         "webpack>browserslist>node-releases": true
       }
