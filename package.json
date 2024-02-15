@@ -224,7 +224,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
-    "@blockaid/ppom_release": "^1.4.0",
+    "@blockaid/ppom_release": "^1.4.1",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",
     "@ethereumjs/tx": "^4.1.1",
