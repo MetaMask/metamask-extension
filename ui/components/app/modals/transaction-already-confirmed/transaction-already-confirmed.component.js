@@ -15,6 +15,9 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
 
+/*
+ * This modal is displayed when user tries to submit a cancel transaction when the original transaction has been already confirmed
+ */
 export default function TransactionAlreadyConfirmed({
   hideModal,
   viewTransaction,
