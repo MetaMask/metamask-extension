@@ -141,8 +141,24 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
+        });
+      });
+
+      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
+        process.env.TRANSACTION_MULTICHAIN = '1';
+
+        await addTransaction(request);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
           networkClientId: 'mockNetworkClientId',
         });
+        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction meta', async () => {
@@ -388,7 +404,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
           securityAlertResponse: {
             reason: 'loading',
             result_type: 'validation_in_progress',
@@ -421,7 +436,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
         });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
@@ -443,7 +457,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
           type: TransactionType.swap,
         });
 
@@ -466,7 +479,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
           type: TransactionType.swapApproval,
         });
 
@@ -489,7 +501,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
         });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
@@ -509,7 +520,6 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          networkClientId: 'mockNetworkClientId',
         });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
@@ -529,12 +539,32 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
+          method: DAPP_REQUEST_MOCK.method,
+          requireApproval: true,
+          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
+          type: undefined,
+        });
+      });
+
+      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
+        process.env.TRANSACTION_MULTICHAIN = '1';
+
+        await addDappTransaction(dappRequest);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
           networkClientId: 'mockNetworkClientId',
           method: DAPP_REQUEST_MOCK.method,
           requireApproval: true,
           securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
           type: undefined,
         });
+        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction hash', async () => {
