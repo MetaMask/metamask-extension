@@ -179,6 +179,9 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+      - testrail-upload-mmi-results:
+          requires:
+            - test-e2e-mmi-playwright - OPTIONAL
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -1153,6 +1156,26 @@ jobs:
       - store_test_results:
           name: report for pipeline integration
           path: public/playwright/playwright-reports/junit/test-results.xml
+
+  testrail-upload-mmi-results:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+     - attach_workspace:
+         at: .
+     - run:
+         name: Install TR CLI and upload the test results to TestRail
+         command: |
+           pip install trcli
+           trcli -y \
+             -h https://mmig.testrail.io/ \
+             --project "MetaMask Extension" \
+             -u mmig_qa@consensys.net \
+             -p v##&FgS!4J \
+             parse_junit \
+             --title "Automated Playwright Tests from CircleCI workflow" \
+             --run-description $CIRCLE_BUILD_URL \
+             -f "public/playwright/playwright-reports/junit/test-results.xml"
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
