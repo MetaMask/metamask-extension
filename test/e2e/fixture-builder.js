@@ -9,7 +9,7 @@ const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 
-function defaultFixture() {
+function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
     data: {
       AccountsController: {
@@ -123,7 +123,7 @@ function defaultFixture() {
           },
         },
         providerConfig: {
-          chainId: CHAIN_IDS.LOCALHOST,
+          chainId: inputChainId,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
@@ -133,7 +133,7 @@ function defaultFixture() {
         },
         networkConfigurations: {
           networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
+            chainId: inputChainId,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -337,8 +337,9 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
-  constructor({ onboarding = false } = {}) {
-    this.fixture = onboarding === true ? onboardingFixture() : defaultFixture();
+  constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
+    this.fixture =
+      onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
   withAddressBookController(data) {
