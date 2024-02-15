@@ -1175,7 +1175,6 @@ jobs:
              -p v##&FgS!4J \
              parse_junit \
              --title "Automated Playwright Tests from CircleCI workflow" \
-             --run-description $CIRCLE_BUILD_URL \
              -f "public/playwright/playwright-reports/junit/test-results.xml"
 
   test-e2e-firefox:
