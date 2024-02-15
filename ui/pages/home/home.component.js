@@ -25,6 +25,10 @@ import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+console.log("inside fence home.component.js")
+///: END:ONLY_INCLUDE_IF
+
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
   FontWeight,

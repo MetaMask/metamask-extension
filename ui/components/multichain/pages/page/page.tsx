@@ -12,6 +12,10 @@ import {
 
 import type { StyleUtilityProps } from '../../../component-library/box';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+console.log("inside fence page.tsx")
+///: END:ONLY_INCLUDE_IF
+
 interface PageProps extends StyleUtilityProps {
   /**
    * Elements that go in the page footer
