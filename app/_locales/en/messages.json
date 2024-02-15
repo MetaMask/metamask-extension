@@ -362,6 +362,9 @@
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
+  "allPermissions": {
+    "message": "All Permissions"
+  },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
