@@ -30970,7 +30970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks@npm:^2.7.3":
+"socks@npm:^2.6.1, socks@npm:^2.6.2, socks@npm:^2.7.1":
   version: 2.8.0
   resolution: "socks@npm:2.8.0"
   dependencies:
