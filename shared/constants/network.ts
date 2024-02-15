@@ -1031,3 +1031,9 @@ export enum NetworkStatus {
    */
   Blocked = 'blocked',
 }
+
+export const TEST_NETWORKS = [
+  GOERLI_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
+];

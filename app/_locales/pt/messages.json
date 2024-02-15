@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Substituir token custodiante"
   },
-  "custodyApiUrl": {
-    "message": "URL da API $1"
-  },
   "custodyDeeplinkDescription": {
     "message": "Aprove a transação no app $1. Quando forem dadas todas as aprovações de custódia exigidas, a transação será concluída. Veja o status no seu app $1."
   },

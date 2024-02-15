@@ -1078,8 +1078,17 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return getTransaction(state, transactionId);
   },
-  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, customTxParamsData) => {
+  (
+    _state,
+    _transactionId,
+    _status,
+    customTxParamsData,
+    hexTransactionAmount,
+  ) => ({
+    customTxParamsData,
+    hexTransactionAmount,
+  }),
+  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -1090,6 +1099,15 @@ export const getFullTxData = createDeepEqualSelector(
         txParams: {
           ...fullTxData.txParams,
           data: customTxParamsData,
+        },
+      };
+    }
+    if (hexTransactionAmount) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          value: hexTransactionAmount,
         },
       };
     }

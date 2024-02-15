@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import { getMetaMaskAccounts } from '../../../selectors';
 import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
 import PulseLoader from '../../../components/ui/pulse-loader';
@@ -66,9 +67,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
     custodians.find((item) => item.envName === custodianName) || {};
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const metaMaskAccounts = useSelector(getMetaMaskAccounts);
-  const connectRequests = useSelector(
-    (state) => state.metamask.institutionalFeatures?.connectRequests,
-  );
+  const connectRequests = useSelector(getInstitutionalConnectRequests);
   const [isLoading, setIsLoading] = useState(false);
   const [tokenAccounts, setTokenAccounts] = useState([]);
   const [error, setError] = useState(false);
@@ -100,7 +99,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
         const custodianAccounts = await dispatch(
           getCustodianAccounts(
             connectRequest.token,
-            connectRequest.apiUrl,
+            connectRequest.environment,
             connectRequest.service,
             false,
           ),
@@ -152,11 +151,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
     return null;
   }
 
-  const onRemoveAddTokenConnectRequest = ({ origin, apiUrl, token }) => {
+  const onRemoveAddTokenConnectRequest = ({ origin, environment, token }) => {
     dispatch(
       removeAddTokenConnectRequest({
         origin,
-        apiUrl,
+        environment,
         token,
       }),
     );
@@ -184,10 +183,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
           await dispatch(
             setCustodianNewRefreshToken({
               address: account.address,
-              newAuthDetails: {
-                refreshToken: connectRequest.token,
-                refreshTokenUrl: connectRequest.apiUrl,
-              },
+              refreshToken: connectRequest.token,
             }),
           );
         }),
