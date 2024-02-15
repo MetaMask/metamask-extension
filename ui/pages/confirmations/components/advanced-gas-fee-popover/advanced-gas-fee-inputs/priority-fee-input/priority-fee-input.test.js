@@ -16,6 +16,8 @@ import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import PriorityfeeInput from './priority-fee-input';
 
+const LOW_PRIORITY_FEE = 0.000000001;
+
 jest.mock('../../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
@@ -83,13 +85,33 @@ describe('PriorityfeeInput', () => {
     );
   });
 
-  it('should renders priorityfee value from transaction if current estimate used is custom', () => {
-    render({
-      txParams: {
+  describe('renders priorityFee if current estimate used is custom', () => {
+    const testCases = [
+      {
+        description: 'with a high value',
         maxPriorityFeePerGas: '0x77359400',
+        expectedValue: 2,
       },
-    });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
+      {
+        description: 'with a low value',
+        maxPriorityFeePerGas: '0x1',
+        expectedValue: LOW_PRIORITY_FEE,
+      },
+    ];
+
+    it.each(testCases)(
+      '$description',
+      ({ maxPriorityFeePerGas, expectedValue }) => {
+        render({
+          txParams: {
+            maxPriorityFeePerGas,
+          },
+        });
+        expect(document.getElementsByTagName('input')[0]).toHaveValue(
+          expectedValue,
+        );
+      },
+    );
   });
 
   it('should show current priority fee range in subtext', () => {
@@ -149,13 +171,14 @@ describe('PriorityfeeInput', () => {
 
       expect(input.value).toBe('1');
     });
-    it('handles small numbers', () => {
+
+    it('handles low numbers', () => {
       const { getByTestId } = render(<PriorityfeeInput />);
       const input = getByTestId('priority-fee-input');
 
-      fireEvent.change(input, { target: { value: 0.0000000001 } });
+      fireEvent.change(input, { target: { value: LOW_PRIORITY_FEE } });
 
-      expect(input.value).toBe('0.0000000001');
+      expect(input.value).toBe('1e-9');
     });
   });
 });

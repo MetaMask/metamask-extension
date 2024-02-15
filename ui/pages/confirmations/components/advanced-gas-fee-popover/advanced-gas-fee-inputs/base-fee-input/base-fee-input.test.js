@@ -15,6 +15,8 @@ import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import BaseFeeInput from './base-fee-input';
 
+const LOW_BASE_FEE = 0.000000001;
+
 jest.mock('../../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
@@ -91,6 +93,32 @@ describe('BaseFeeInput', () => {
     expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
 
+  describe('renders baseFee if current estimate used is custom', () => {
+    const testCases = [
+      {
+        description: 'with a high value',
+        maxFeePerGas: '0x2E90EDD000',
+        expectedValue: 200,
+      },
+      {
+        description: 'with a low value',
+        maxFeePerGas: '0x1',
+        expectedValue: LOW_BASE_FEE,
+      },
+    ];
+
+    it.each(testCases)('$description', ({ maxFeePerGas, expectedValue }) => {
+      render({
+        txParams: {
+          maxFeePerGas,
+        },
+      });
+      expect(document.getElementsByTagName('input')[0]).toHaveValue(
+        expectedValue,
+      );
+    });
+  });
+
   it('should show current value of estimatedBaseFee in users primary currency in right side of input box', () => {
     render({
       txParams: {
@@ -157,13 +185,14 @@ describe('BaseFeeInput', () => {
 
       expect(input.value).toBe('1');
     });
-    it('handles small numbers', () => {
+
+    it('handles low numbers', () => {
       const { getByTestId } = render(<BaseFeeInput />);
       const input = getByTestId('base-fee-input');
 
-      fireEvent.change(input, { target: { value: 0.0000000001 } });
+      fireEvent.change(input, { target: { value: LOW_BASE_FEE } });
 
-      expect(input.value).toBe('0.0000000001');
+      expect(input.value).toBe('1e-9');
     });
   });
 });
