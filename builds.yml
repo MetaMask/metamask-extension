@@ -260,6 +260,8 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
+  # Determines if feature flagged Multichain Transactions should be used
+  - TRANSACTION_MULTICHAIN: ''
 
   ###
   # Meta variables
