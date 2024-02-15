@@ -108,7 +108,7 @@ describe('AccountDetails', () => {
     );
 
     const hook = queryByText(textHook);
-    const rootNode = hook.parentElement.querySelector('span span');
+    const rootNode = hook.parentElement.querySelector('span');
     expect(LavaDomeDebug.getTextByRoot(rootNode)).toContain(samplePrivateKey);
   });
 
@@ -118,5 +118,13 @@ describe('AccountDetails', () => {
     fireEvent.click(screen.getByLabelText('Close'));
 
     expect(screen.queryByText('Account 1')).toBeNull();
+  });
+
+  it('should show the snap account name', async () => {
+    render({ address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d' });
+
+    const accountName = screen.getByText('Snap Account 1');
+
+    expect(accountName).toBeInTheDocument();
   });
 });

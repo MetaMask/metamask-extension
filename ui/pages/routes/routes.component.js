@@ -8,9 +8,9 @@ import IdleTimer from 'react-idle-timer';
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IF
 
-import SendTransactionScreen from '../send';
+import SendTransactionScreen from '../confirmations/send';
 import Swaps from '../swaps';
-import ConfirmTransaction from '../confirm-transaction';
+import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
 import { AllConnections, Connections } from '../../components/multichain/pages';
 import Settings from '../settings';
@@ -111,7 +111,7 @@ import {
 } from '../../../shared/constants/app';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import ConfirmationPage from '../confirmation';
+import ConfirmationPage from '../confirmations/confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';

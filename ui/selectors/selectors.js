@@ -64,7 +64,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -93,6 +93,7 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
@@ -206,6 +207,18 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
   return Boolean(keyring?.type?.includes('Hardware'));
+}
+
+/**
+ * Checks if the account supports smart transactions.
+ *
+ * @param {object} state - The state object.
+ * @returns {boolean}
+ */
+export function accountSupportsSmartTx(state) {
+  const accountType = getAccountType(state);
+
+  return Boolean(accountType !== 'hardware' && accountType !== 'snap');
 }
 
 /**
@@ -403,11 +416,22 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskIdentities,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
+  getInternalAccounts,
+  (keyrings, identities, accounts, internalAccounts) =>
     keyrings
       .reduce((list, keyring) => list.concat(keyring.accounts), [])
       .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+      .map((address) => {
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, address),
+        );
+
+        return {
+          ...identities[address],
+          ...internalAccount,
+          ...accounts[address],
+        };
+      }),
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -529,7 +553,7 @@ export function accountsWithSendEtherInfoSelector(state) {
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
-    ({ address, name, balance }) => ({
+    ({ address, balance, metadata: { name } }) => ({
       address,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT
@@ -1054,8 +1078,17 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return getTransaction(state, transactionId);
   },
-  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, customTxParamsData) => {
+  (
+    _state,
+    _transactionId,
+    _status,
+    customTxParamsData,
+    hexTransactionAmount,
+  ) => ({
+    customTxParamsData,
+    hexTransactionAmount,
+  }),
+  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -1069,6 +1102,15 @@ export const getFullTxData = createDeepEqualSelector(
         },
       };
     }
+    if (hexTransactionAmount) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          value: hexTransactionAmount,
+        },
+      };
+    }
     return fullTxData;
   },
 );
@@ -1078,6 +1120,31 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
   },
+);
+
+export const getMemoizedCurrentChainId = createDeepEqualSelector(
+  getCurrentChainId,
+  (chainId) => chainId,
+);
+
+export const getMemoizedTxId = createDeepEqualSelector(
+  (state) => state.appState.txId,
+  (txId) => txId,
+);
+
+export const getMemoizedUnapprovedMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedMsgs,
+  (unapprovedMsgs) => unapprovedMsgs,
+);
+
+export const getMemoizedUnapprovedPersonalMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedPersonalMsgs,
+  (unapprovedPersonalMsgs) => unapprovedPersonalMsgs,
+);
+
+export const getMemoizedUnapprovedTypedMessages = createDeepEqualSelector(
+  (state) => state.metamask.unapprovedTypedMessages,
+  (unapprovedTypedMessages) => unapprovedTypedMessages,
 );
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -1110,6 +1177,21 @@ export const getInsightSnaps = createDeepEqualSelector(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
     );
   },
+);
+
+export const getSignatureInsightSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions['endowment:signature-insight'],
+    );
+  },
+);
+
+export const getSignatureInsightSnapIds = createDeepEqualSelector(
+  getSignatureInsightSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
 );
 
 export const getInsightSnapIds = createDeepEqualSelector(
@@ -1197,31 +1279,8 @@ function getAllowedAnnouncementIds(state) {
   const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-    6: false,
-    7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    9: false,
-    10: false,
-    11: false,
-    12: false,
-    13: false,
-    14: false,
-    15: false,
-    16: false,
-    17: false,
-    18: false,
-    19: false,
     20: currentKeyringIsLedger && isFirefox,
-    21: false,
-    22: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: false,
-    ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
@@ -1231,6 +1290,7 @@ function getAllowedAnnouncementIds(state) {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: true,
   };
 }
 
