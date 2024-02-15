@@ -57,7 +57,7 @@ export default class PermissionPageContainer extends Component {
   state = {};
 
   getRequestedPermissions() {
-    return Object.entries(this.props.request.permissions).reduce(
+    return Object.entries(this.props.request.permissions ?? {}).reduce(
       (acc, [permissionName, permissionValue]) => {
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         if (permissionName === RestrictedMethods.wallet_snap) {

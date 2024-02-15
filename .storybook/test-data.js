@@ -25,9 +25,6 @@ const state = {
       22: {
         id: 22,
         date: null,
-        image: {
-          src: 'images/global-menu-block-explorer.svg',
-        },
       },
     },
     orderedNetworkList: [],
