@@ -470,10 +470,14 @@ export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
   const selectedAccount = getSelectedInternalAccount(state);
 
-  return {
-    ...selectedAccount,
-    ...accounts[selectedAccount.address],
-  };
+  // At the time of onboarding there is no selected account
+  if (selectedAccount) {
+    return {
+      ...selectedAccount,
+      ...accounts[selectedAccount.address],
+    };
+  }
+  return undefined;
 }
 
 export function getTargetAccount(state, targetAddress) {
