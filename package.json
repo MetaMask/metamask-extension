@@ -217,8 +217,7 @@
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@trezor/connect-web": "9.0.11",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
-    "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch",
-    "socks": "^2.7.3"
+    "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -237,10 +236,10 @@
     "@lavamoat/lavadome-react": "0.0.14",
     "@lavamoat/snow": "^2.0.1",
     "@material-ui/core": "^4.11.0",
-    "@metamask-institutional/custody-controller": "^0.2.18",
-    "@metamask-institutional/custody-keyring": "^1.0.7",
-    "@metamask-institutional/extension": "^0.3.12",
-    "@metamask-institutional/institutional-features": "^1.2.9",
+    "@metamask-institutional/custody-controller": "^0.2.20",
+    "@metamask-institutional/custody-keyring": "^1.0.10",
+    "@metamask-institutional/extension": "^0.3.13",
+    "@metamask-institutional/institutional-features": "^1.2.11",
     "@metamask-institutional/portfolio-dashboard": "^1.4.0",
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
     "@metamask-institutional/sdk": "^0.1.23",

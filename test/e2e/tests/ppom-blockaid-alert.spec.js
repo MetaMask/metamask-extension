@@ -263,6 +263,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           await driver.delay(500);
           await switchToNotificationWindow(driver, 3);
 
+          await driver.waitForElementNotPresent('.loading-indicator');
+
           // Find element by title
           const bannerAlertFoundByTitle = await driver.findElement({
             css: bannerAlertSelector,
@@ -316,6 +318,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
         await switchToNotificationWindow(driver, 3);
 
         const expectedTitle = 'Request may not be safe';
+
+        await driver.waitForElementNotPresent('.loading-indicator');
 
         const bannerAlert = await driver.findElement({
           css: bannerAlertSelector,
