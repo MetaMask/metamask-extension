@@ -1436,9 +1436,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const noop = () => undefined;
-
     this.txController = new TransactionController(
       {
         blockTracker: this.blockTracker,
@@ -1481,7 +1478,7 @@ export default class MetamaskController extends EventEmitter {
           allowedActions: [
             `${this.approvalController.name}:addRequest`,
             'NetworkController:getNetworkClientById',
-            'NetworkController:findNetworkClientIdByChainId'
+            'NetworkController:findNetworkClientIdByChainId',
           ],
           allowedEvents: [`NetworkController:stateChange`],
         }),
@@ -5234,7 +5231,7 @@ export default class MetamaskController extends EventEmitter {
   async getPendingNonce(address, networkClientId) {
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
-      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
     );
 
     const pendingNonce = nonceDetails.params.highestSuggested;
@@ -5253,7 +5250,7 @@ export default class MetamaskController extends EventEmitter {
   async getNextNonce(address, networkClientId) {
     const nonceLock = await this.txController.getNonceLock(
       address,
-      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
