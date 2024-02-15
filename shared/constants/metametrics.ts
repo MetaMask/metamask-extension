@@ -676,6 +676,8 @@ export enum MetaMetricsEventName {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
+  AddSnapAccountClicked = 'Add Snap Account Clicked',
+  AddSnapAccountViewed = 'Add Snap Account Viewed',
   ///: END:ONLY_INCLUDE_IF
 }
 
