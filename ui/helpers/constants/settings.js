@@ -195,6 +195,20 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
+    tabMessage: (t) => t('security'),
+    sectionMessage: (t) => t('blockaid'),
+    descriptionMessage: (t) => t('blockaidMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('security'),
+    sectionMessage: (t) => t('openSeaLabel'),
+    descriptionMessage: (t) => t('openSeaMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-opensea`,
+    icon: 'fa fa-lock',
+  },
+  {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
     descriptionMessage: (t) =>
