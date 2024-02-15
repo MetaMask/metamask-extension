@@ -243,7 +243,7 @@ async function addTransactionWithController(
   const { result, transactionMeta } =
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
-      networkClientId,
+      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
     });
 
   return {

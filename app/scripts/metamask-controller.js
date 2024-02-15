@@ -1506,7 +1506,7 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        isMultichainEnabled: true,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
