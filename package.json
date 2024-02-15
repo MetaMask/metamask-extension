@@ -221,7 +221,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
-    "@blockaid/ppom_release": "^1.4.0",
+    "@blockaid/ppom_release": "^1.4.1",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",
     "@ethereumjs/tx": "^4.1.1",
@@ -259,7 +259,7 @@
     "@metamask/eth-keyring-controller": "^15.1.0",
     "@metamask/eth-ledger-bridge-keyring": "^2.0.1",
     "@metamask/eth-query": "^4.0.0",
-    "@metamask/eth-snap-keyring": "^2.1.1",
+    "@metamask/eth-snap-keyring": "^2.1.2",
     "@metamask/eth-token-tracker": "^7.0.1",
     "@metamask/eth-trezor-keyring": "^3.0.0",
     "@metamask/etherscan-link": "^3.0.0",
