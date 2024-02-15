@@ -5245,7 +5245,7 @@ export default class MetamaskController extends EventEmitter {
   async getPendingNonce(address, networkClientId) {
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
-      networkClientId,
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined
     );
 
     const pendingNonce = nonceDetails.params.highestSuggested;
@@ -5265,7 +5265,7 @@ export default class MetamaskController extends EventEmitter {
   async getNextNonce(address, networkClientId) {
     const nonceLock = await this.txController.getNonceLock(
       address,
-      networkClientId,
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
