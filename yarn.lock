@@ -24214,7 +24214,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.3.4"
     "@metamask/ethjs-query": "npm:^0.5.3"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^12.0.0"
+    "@metamask/gas-fee-controller": "npm:^13.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch"
@@ -24223,7 +24223,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^4.2.0"
-    "@metamask/network-controller": "npm:^17.1.0"
+    "@metamask/network-controller": "npm:^17.2.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^7.1.0"
@@ -31149,7 +31149,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks@npm:^2.7.3":
+"socks@npm:^2.6.1, socks@npm:^2.6.2, socks@npm:^2.7.1":
   version: 2.8.0
   resolution: "socks@npm:2.8.0"
   dependencies:
