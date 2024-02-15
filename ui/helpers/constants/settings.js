@@ -7,7 +7,8 @@ import {
   ABOUT_US_ROUTE,
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
-  EXPERIMENTAL_ROUTE,
+  /** commenting out rather than removing since I believe we should support searching experimental settings */
+  // EXPERIMENTAL_ROUTE,
 } from './routes';
 
 export const SETTINGS_CONSTANTS = [
@@ -187,6 +188,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
+    tabMessage: (t) => t('security'),
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${SECURITY_ROUTE}#security-alerts`,
+    icon: 'fa fa-lock',
+  },
+  {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
     descriptionMessage: (t) =>
@@ -358,12 +366,5 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('restoreUserDataDescription'),
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('securityAlerts'),
-    descriptionMessage: (t) => t('securityAlertsDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#security-alerts`,
-    icon: 'fa fa-flask',
   },
 ];
