@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.9.5]
+### Fixed
+- Fixed sometimes failing confirmation screen security validation checks ([$22978](https://github.com/MetaMask/metamask-extension/pull/22978))
+
 ## [11.9.4]
 ### Fixed
 - Fix security advisory https://github.com/advisories/GHSA-78xj-cgh5-2h22 ([#22910](https://github.com/MetaMask/metamask-extension/pull/22890))
@@ -4355,7 +4359,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.5...HEAD
+[11.9.5]: https://github.com/MetaMask/metamask-extension/compare/v11.9.4...v11.9.5
 [11.9.4]: https://github.com/MetaMask/metamask-extension/compare/v11.9.3...v11.9.4
 [11.9.3]: https://github.com/MetaMask/metamask-extension/compare/v11.9.2...v11.9.3
 [11.9.2]: https://github.com/MetaMask/metamask-extension/compare/v11.9.1...v11.9.2
