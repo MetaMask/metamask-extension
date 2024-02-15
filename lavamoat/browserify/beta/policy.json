@@ -1333,8 +1333,20 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/polling-controller": true,
+        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "ethereumjs-util": true,
+        "uuid": true
+      }
+    },
+    "@metamask/gas-fee-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
       }
     },
