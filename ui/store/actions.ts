@@ -4238,6 +4238,31 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
   ]);
 }
 
+/**
+ * Informs the GasFeeController that the UI requires gas fee polling
+ *
+ * @param networkClientId - unique identifier for the network client
+ * @returns polling token that can be used to stop polling
+ */
+export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
+  return submitRequestToBackground('gasFeeStartPollingByNetworkClientId', [
+    networkClientId,
+  ]);
+}
+
+/**
+ * Informs the GasFeeController that the UI no longer requires gas fee polling
+ * for the given network client.
+ * If all network clients unsubscribe, the controller stops polling.
+ *
+ * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ */
+export function gasFeeStopPollingByPollingToken(pollingToken: string) {
+  return submitRequestToBackground('gasFeeStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+}
+
 export function getGasFeeTimeEstimate(
   maxPriorityFeePerGas: string,
   maxFeePerGas: string,
