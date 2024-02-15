@@ -683,6 +683,9 @@ export enum MetaMetricsEventAccountType {
   Default = 'metamask',
   Hardware = 'hardware',
   Imported = 'imported',
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  Snap = 'snap',
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum MetaMetricsEventAccountImportType {
