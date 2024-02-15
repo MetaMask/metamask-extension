@@ -63,3 +63,12 @@
 .asset-tooltip {
   width:100%;
 }
+
+.asset-footer {
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0px 0px 15px 0px var(--color-shadow-default);
+}
+
+.chart-up { stroke: var(--color-success-default) }
+.chart-down { stroke: var(--color-error-default) }

@@ -24,6 +24,7 @@ import {
   TextColor,
   TextVariant,
   FlexDirection,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -201,73 +202,63 @@ const AssetChart = ({
       <Box style={{ opacity: prices && loading ? 0.2 : 1 }}>
         <ChartTooltip ref={maxPriceTooltip} />
         <Box
-          backgroundColor={
-            prices
-              ? BackgroundColor.transparent
-              : BackgroundColor.backgroundAlternative
-          }
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
           style={{
             aspectRatio: `${chartOptions.aspectRatio}`,
           }}
         >
-          {(function () {
-            if (prices) {
-              return (
-                <Line
-                  ref={chartRef}
-                  data={data}
-                  options={chartOptions}
-                  updateMode="none"
-                  onMouseMove={({ nativeEvent: e }: MouseEvent) => {
-                    if (chartRef.current) {
-                      const index = Math.max(
-                        0,
-                        Math.min(
-                          prices.length - 1,
-                          Math.round(
-                            (e.offsetX / chartRef.current.width) *
-                              prices.length,
-                          ),
-                        ),
-                      );
-                      priceRef?.current?.setPrices({
-                        price: prices[index]?.y,
-                        comparePrice: prices[0]?.y,
-                        date: prices[index]?.x,
-                      });
-                    }
-                  }}
-                  onMouseOut={() => {
-                    priceRef?.current?.setPrices({
-                      price: undefined,
-                      comparePrice: prices?.[0]?.y,
-                      date: Date.now(),
-                    });
-                  }}
-                />
-              );
-            }
-
-            return loading ? (
-              <Box
-                backgroundColor={BackgroundColor.backgroundAlternative}
-              ></Box>
-            ) : (
-              <Box
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                gap={1}
-                paddingTop={10}
-              >
-                <Icon name={IconName.Info} size={IconSize.Xl} />
-                <Text>{t('noChartData')}</Text>
-                <Text>{t('couldNotFetchDataForToken')}</Text>
-              </Box>
-            );
-          })()}
+          {prices ? (
+            <Line
+              ref={chartRef}
+              data={data}
+              options={chartOptions}
+              updateMode="none"
+              onMouseMove={({ nativeEvent: e }: MouseEvent) => {
+                if (chartRef.current) {
+                  const index = Math.max(
+                    0,
+                    Math.min(
+                      prices.length - 1,
+                      Math.round(
+                        (e.offsetX / chartRef.current.width) * prices.length,
+                      ),
+                    ),
+                  );
+                  priceRef?.current?.setPrices({
+                    price: prices[index]?.y,
+                    comparePrice: prices[0]?.y,
+                    date: prices[index]?.x,
+                  });
+                }
+              }}
+              onMouseOut={() => {
+                priceRef?.current?.setPrices({
+                  price: undefined,
+                  comparePrice: prices?.[0]?.y,
+                  date: Date.now(),
+                });
+              }}
+            />
+          ) : (
+            <Box
+              width={BlockSize.Full}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              gap={1}
+            >
+              {!loading && (
+                <>
+                  <Icon name={IconName.Info} size={IconSize.Xl} />
+                  <Text>{t('noChartData')}</Text>
+                  <Text>{t('couldNotFetchDataForToken')}</Text>
+                </>
+              )}
+            </Box>
+          )}
         </Box>
         <ChartTooltip ref={minPriceTooltip} />
       </Box>

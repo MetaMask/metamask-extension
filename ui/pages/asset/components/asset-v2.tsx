@@ -5,10 +5,13 @@ import { ReactNode } from 'react-markdown';
 import {
   getCurrentChainId,
   getCurrentCurrency,
+  getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getIsSwapsChain,
+  getMetaMetricsId,
   getPreferences,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 import {
   BackgroundColor,
@@ -44,16 +47,26 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import { SEND_ROUTE } from '../../../helpers/constants/routes';
+import {
+  BUILD_QUOTE_ROUTE,
+  SEND_ROUTE,
+} from '../../../helpers/constants/routes';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../../shared/constants/time';
 import TokenCell from '../../../components/app/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import Tooltip from '../../../components/ui/tooltip';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import useRamps from '../../../hooks/experiences/useRamps';
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import AssetChart from './asset-chart';
 import { getPricePrecision, localizeLargeNumber } from './util';
 import AssetHeader from './asset-header';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+// import { getMmiPortfolioUrl } from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IF
 
 const renderRow = (leftColumn: string, rightColumn: ReactNode) => (
   <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
@@ -106,8 +119,21 @@ const AssetV2 = ({
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  // const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
+  ///: END:ONLY_INCLUDE_IF
+
+  const keyring = useSelector(getCurrentKeyring);
+  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const { openBuyCryptoInPdapp } = useRamps();
+  ///: END:ONLY_INCLUDE_IF
 
   const [marketData, setMarketData] = useState<any>();
   const [balanceInView, setBalanceInView] = useState(true);
@@ -161,7 +187,9 @@ const AssetV2 = ({
       />
       <Box padding={4} paddingBottom={0}>
         <Text color={TextColor.textAlternative}>
-          {name ? `${name} (${symbol})` : symbol}
+          {name && symbol && name !== symbol
+            ? `${name} (${symbol})`
+            : name ?? symbol}
         </Text>
       </Box>
       <AssetChart address={address} currentPrice={marketData?.price} />
@@ -170,8 +198,6 @@ const AssetV2 = ({
         flexDirection={FlexDirection.Column}
         paddingTop={6}
         gap={6}
-        // todo this shadow on dark theme
-        style={{ boxShadow: '0px -15px 15px -15px gray inset' }}
       >
         <Box>
           <Text
@@ -205,13 +231,34 @@ const AssetV2 = ({
               />
             )}
           </Box>
-          <Box display={Display.Flex} gap={4} paddingLeft={4} paddingRight={4}>
+          <Box display={Display.Flex} gap={[4,12]} paddingLeft={[4,12]} paddingRight={[4,12]}>
             {renderTooltip(
               <ButtonSecondary
                 disabled={!isBridgeChain}
                 padding={5}
                 width={BlockSize.Full}
-                // TODO: bridge onclick
+                onClick={() => {
+                  const portfolioUrl = getPortfolioUrl(
+                    'bridge',
+                    'ext_bridge_button',
+                    metaMetricsId,
+                  );
+                  global.platform.openTab({
+                    url: `${portfolioUrl}&token=${
+                      type === AssetType.native ? 'native' : address
+                    }`,
+                  });
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.BridgeLinkClicked,
+                    properties: {
+                      location: 'Asset Overview',
+                      text: 'Bridge',
+                      chain_id: chainId,
+                      token_symbol: symbol,
+                    },
+                  });
+                }}
               >
                 {t('bridge')}
               </ButtonSecondary>,
@@ -363,7 +410,7 @@ const AssetV2 = ({
             </Box>
           </Box>
         )}
-        <Box marginBottom={7}>
+        <Box marginBottom={8}>
           <Text
             paddingLeft={4}
             paddingRight={4}
@@ -379,25 +426,36 @@ const AssetV2 = ({
         </Box>
       </Box>
       <Box
+        className="asset-footer"
         padding={4}
+        paddingLeft={[4,12]}
+        paddingRight={[4,12]}
         backgroundColor={BackgroundColor.backgroundDefault}
-        style={{
-          position: 'sticky',
-          bottom: 0,
-          // todo shadow on dark theme
-          boxShadow: 'lightgrey 0px 0px 12px 0px',
-        }}
       >
-        <Box display={Display.Flex} gap={4}>
+        {/* TODO is this code fenced elsewhere? */}
+        {/* TODO is this even useful? it just buys eth not the specific token.  for that its swap */}
+        <Box display={Display.Flex} gap={[4, 12]}>
           {renderTooltip(
             <ButtonSecondary
               disabled={!isBuyableChain}
               size={ButtonSecondarySize.Md}
               padding={5}
               width={BlockSize.Full}
+              onClick={() => {
+                openBuyCryptoInPdapp();
+                trackEvent({
+                  event: MetaMetricsEventName.NavBuyButtonClicked,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Token Overview',
+                    text: 'Buy',
+                    chain_id: chainId,
+                    token_symbol: symbol,
+                  },
+                });
+              }}
             >
               {t('buy')}
-              {/* TODO: Implement buy onClick */}
             </ButtonSecondary>,
             t('currentlyUnavailable'),
             !isBuyableChain,
@@ -407,6 +465,49 @@ const AssetV2 = ({
               disabled={!isSwapsChain}
               padding={5}
               width={BlockSize.Full}
+              onClick={() => {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                // global.platform.openTab({
+                //   url: `${mmiPortfolioUrl}/swap`,
+                // });
+                ///: END:ONLY_INCLUDE_IF
+
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                trackEvent({
+                  event: MetaMetricsEventName.NavSwapButtonClicked,
+                  category: MetaMetricsEventCategory.Swaps,
+                  properties: {
+                    token_symbol: symbol,
+                    location: MetaMetricsSwapsEventSource.TokenView,
+                    text: 'Swap',
+                    chain_id: chainId,
+                  },
+                });
+                dispatch(
+                  setSwapsFromToken(
+                    asset.type === AssetType.native
+                      ? defaultSwapsToken
+                      : {
+                          symbol,
+                          name,
+                          address,
+                          decimals: 18,
+                          iconUrl: image,
+                          // todo shows bal the other reveals 'max' button so may need
+                          // separate numeric and string balances
+                          // balance: balance,
+                          // string: balance,
+                        },
+                  ),
+                );
+
+                if (usingHardwareWallet) {
+                  global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+                } else {
+                  history.push(BUILD_QUOTE_ROUTE);
+                }
+                ///: END:ONLY_INCLUDE_IF
+              }}
             >
               {t('swap')}
               {/* TODO: Implement swap onClick */}
