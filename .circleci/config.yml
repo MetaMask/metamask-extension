@@ -1159,7 +1159,7 @@ jobs:
 
   testrail-upload-mmi-results:
     docker:
-      - image: cimg/python:3.11
+      - image: cimg/python:3.12
     steps:
      - attach_workspace:
          at: .
