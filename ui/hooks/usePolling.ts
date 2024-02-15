@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import stringify from 'fast-json-stable-stringify';
 
 type UsePollingOptions = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
@@ -43,7 +44,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
       isMounted = false;
       cleanup();
     };
-  }, [usePollingOptions.networkClientId, usePollingOptions.options]);
+  }, [usePollingOptions.networkClientId, stringify(usePollingOptions.options)]);
 };
 
 export default usePolling;
