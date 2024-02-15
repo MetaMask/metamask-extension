@@ -9,7 +9,6 @@ import TransactionAlreadyConfirmed from './transaction-already-confirmed.compone
 
 function mapDispatchToProps(dispatch) {
   return {
-    hideModal: () => dispatch(hideModal()),
     viewTransaction: (transaction, rpcPrefs) => {
       const blockExplorerLink = getBlockExplorerLink(transaction, rpcPrefs);
       global.platform.openTab({
