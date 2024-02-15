@@ -468,11 +468,8 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
     });
-    this.networkController.initializeProvider();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
+    this.provider = {};
+    this.blockTracker = {};
 
     // TODO: Delete when ready to remove `networkVersion` from provider object
     this.deprecatedNetworkId = null;
@@ -1338,7 +1335,15 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           this.triggerNetworkrequests();
-        }
+          this.networkProviderInitialization();
+              this.networkController.initializeProvider();
+              this.provider =
+                this.networkController.getProviderAndBlockTracker().provider;
+              this.blockTracker =
+                this.networkController.getProviderAndBlockTracker().blockTracker;
+                  }
+              this.accountTracker.init();
+              this.transactionController.init();
       }, this.onboardingController.store.getState()),
     );
 
@@ -2073,6 +2078,10 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+
+    if (onboardingComplete) {
+      this.networkProviderInitialization();
+    }
   }
 
   triggerNetworkrequests() {
