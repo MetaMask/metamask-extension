@@ -70,12 +70,13 @@ describe('MetaMask Responsive UI', function () {
         // pin extension
         await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
-
+        await driver.isElementPresent('.loading-overlay__spinner');
+        await driver.waitForElementNotPresent('.loading-overlay__spinner');
         // assert balance
         const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
+          '.eth-overview__primary-container',
         );
-        assert.ok(/^0\sETH$/u.test(await balance.getText()));
+        assert.equal(await balance.getText(), '$0.00\nUSD');
       },
     );
   });

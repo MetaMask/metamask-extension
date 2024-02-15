@@ -940,17 +940,6 @@ export default class MetamaskController extends EventEmitter {
           ),
         ),
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
-        additionalKeyrings.push(
-          mmiKeyringBuilderFactory(
-            CUSTODIAN_TYPES[custodianType].keyringClass,
-            { mmiConfigurationController: this.mmiConfigurationController },
-          ),
-        );
-      }
-      ///: END:ONLY_INCLUDE_IF
     } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
@@ -958,6 +947,16 @@ export default class MetamaskController extends EventEmitter {
         keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+      additionalKeyrings.push(
+        mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass, {
+          mmiConfigurationController: this.mmiConfigurationController,
+        }),
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
@@ -2826,10 +2825,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       // PreferencesController
       setSelectedAddress: (address) => {
-        this.preferencesController.setSelectedAddress(address);
         const account = this.accountsController.getAccountByAddress(address);
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
+          this.preferencesController.setSelectedAddress(address);
         } else {
           throw new Error(`No account found for address: ${address}`);
         }
@@ -2874,8 +2873,13 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
 
       // AccountsController
-      setSelectedInternalAccount:
-        accountsController.setSelectedAccount.bind(accountsController),
+      setSelectedInternalAccount: (id) => {
+        const account = this.accountsController.getAccount(id);
+        if (account) {
+          this.preferencesController.setSelectedAddress(account.address);
+          this.accountsController.setSelectedAccount(id);
+        }
+      },
 
       setAccountName:
         accountsController.setAccountName.bind(accountsController),
