@@ -12,6 +12,7 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getOriginOfCurrentTab,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -34,6 +35,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  addPermittedAccount,
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
@@ -41,7 +43,6 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
-import { connectAccount } from '../../../ducks/alerts/unconnected-account';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -160,6 +161,8 @@ export const AccountListItemMenu = ({
     dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
 
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -179,7 +182,7 @@ export const AccountListItemMenu = ({
             <MenuItem
               data-testid="account-list-menu-connect-account"
               onClick={() => {
-                dispatch(connectAccount(identity.address));
+                dispatch(addPermittedAccount(activeTabOrigin, identity.address));
                 onClose();
               }}
               iconName={IconName.UserCircleLink}
