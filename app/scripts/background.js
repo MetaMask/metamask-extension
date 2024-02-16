@@ -273,6 +273,7 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   try {
     const initData = await loadStateFromPersistence();
     const initState = initData.data;
@@ -797,7 +798,7 @@ export function setupController(
     updateBadge,
   );
 
-  controller.txController.initApprovals();
+  // controller.txController.initApprovals();
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.

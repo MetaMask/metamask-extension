@@ -153,8 +153,14 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.provider = provider;
-    this.ethersProvider = new Web3Provider(provider);
+
     this._ethersProviderChainId = this._getCurrentChainId();
+  }
+
+  delayedInit(passedProvider) {
+    this.provider = passedProvider;
+
+    this.ethersProvider = new Web3Provider(passedProvider);
   }
 
   async fetchSwapsNetworkConfig(chainId) {

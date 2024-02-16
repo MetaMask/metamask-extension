@@ -55,6 +55,8 @@ export default class AccountTracker {
 
   #currentBlockNumberByChainId = {};
 
+  #getGlobalProviderAndBlockTracker = () => {}
+
   constructor(opts = {}) {
     const initState = {
       accounts: {},
@@ -68,9 +70,6 @@ export default class AccountTracker {
       this.store.updateState(initState);
     };
 
-    this.#provider = opts.provider;
-    this.#blockTracker = opts.blockTracker;
-
     this.getCurrentChainId = opts.getCurrentChainId;
     this.getNetworkClientById = opts.getNetworkClientById;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
@@ -78,13 +77,10 @@ export default class AccountTracker {
     this.onboardingController = opts.onboardingController;
     this.controllerMessenger = opts.controllerMessenger;
 
-    // blockTracker.currentBlock may be null
-    this.#currentBlockNumberByChainId = {
-      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
-    };
-    this.#blockTracker.once('latest', (blockNumber) => {
-      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
-    });
+    // this.#provider = opts.provider;
+    // this.#blockTracker = opts.blockTracker;
+
+    this.#getGlobalProviderAndBlockTracker = opts.getGlobalProviderAndBlockTracker;
 
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccounts([address]));
@@ -136,6 +132,10 @@ export default class AccountTracker {
    * Stops polling with global selected network
    */
   stop() {
+    if (!this.#blockTracker) {
+      console.log('Cannot get block tracker as selected network client is unavailable');
+      return undefined;
+    }
     // remove listener
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
   }
@@ -164,6 +164,33 @@ export default class AccountTracker {
       blockTracker: this.#blockTracker,
       identifier: this.getNetworkIdentifier(),
     };
+  }
+
+  /**
+   * Updates the `#currentBlockNumberByChainId` object with the latest block
+   * number.
+   *
+   * This relies on the block tracker and provider being defined which
+   * may not have been the case at the time the Account Tracker Controller was
+   * instantiated.
+   */
+  delayedInit() {
+    const providerAndBlockTracker = this.#getGlobalProviderAndBlockTracker();
+    if (!providerAndBlockTracker) {
+      console.log('Cannot get provider and block tracker as selected network client is unavailable');
+      return undefined
+    }
+
+    this.#blockTracker = providerAndBlockTracker.blockTracker;
+    this.#provider = providerAndBlockTracker.provider;
+
+    // blockTracker.currentBlock may be null
+    this.#currentBlockNumberByChainId = {
+      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
+    };
+    this.#provider.once('latest', (blockNumber) => {
+      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
+    });
   }
 
   /**

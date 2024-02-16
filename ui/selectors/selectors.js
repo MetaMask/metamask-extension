@@ -124,11 +124,16 @@ import { createDeepEqualSelector } from './util';
  */
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  return (
-    selectedNetworkClientId &&
-    state.metamask.networksMetadata[selectedNetworkClientId].status !==
-      NetworkStatus.Available
-  );
+  console.log({
+    selectedNetworkClientId,
+    networksMetadata: state.metamask.networksMetadata
+  });
+
+  if (selectedNetworkClientId && state.metamask.networksMetadata[selectedNetworkClientId]) {
+    return state.metamask.networksMetadata[selectedNetworkClientId].status !== NetworkStatus.Available
+  }
+
+  return false
 }
 
 export function getSelectedNetworkClientId(state) {
@@ -996,10 +1001,13 @@ export function getIpfsGateway(state) {
 }
 
 export function getInfuraBlocked(state) {
-  return (
-    state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
-      .status === NetworkStatus.Blocked
-  );
+  if (state.metamask.networksMetadata[getSelectedNetworkClientId(state)]) {
+    return (
+      state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
+        .status === NetworkStatus.Blocked
+    );
+  }
+  return false;
 }
 
 export function getUSDConversionRate(state) {

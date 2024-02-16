@@ -334,6 +334,7 @@ export default class MetamaskController extends EventEmitter {
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
+    this.delayNetworkClient = true;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -470,15 +471,7 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
     });
-    this.networkController.initializeProvider();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
 
-    // TODO: Delete when ready to remove `networkVersion` from provider object
-    this.deprecatedNetworkId = null;
-    this.updateDeprecatedNetworkId();
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       () => this.updateDeprecatedNetworkId(),
@@ -1357,8 +1350,12 @@ export default class MetamaskController extends EventEmitter {
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
+      // provider: this.provider,
+      // blockTracker: this.blockTracker,
+      getGlobalProviderAndBlockTracker: () =>
+          this.delayNetworkClient
+            ? undefined
+            : this.networkController.getProviderAndBlockTracker(),
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
       getNetworkIdentifier: (providerConfig) => {
@@ -1396,6 +1393,8 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          console.log({ prevCompletedOnboarding, currCompletedOnboarding });
+          this.networkProviderInitialization();
           this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
@@ -1428,6 +1427,7 @@ export default class MetamaskController extends EventEmitter {
           this.accountsController,
         ),
       assetsContractController: this.assetsContractController,
+      onboardingController: this.onboardingController,
       network: this.networkController,
       tokenList: this.tokenListController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1499,8 +1499,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController = new TransactionController(
       {
-        blockTracker: this.blockTracker,
-        cancelMultiplier: 1.1,
+        // blockTracker: this.blockTracker,
+        // provider: this.provider,
+        // cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
             this.networkController,
@@ -1509,6 +1510,10 @@ export default class MetamaskController extends EventEmitter {
           this.getCurrentAccountEIP1559Compatibility.bind(this),
         getExternalPendingTransactions:
           this.getExternalPendingTransactions.bind(this),
+        getGlobalProviderAndBlockTracker: () =>
+          this.delayNetworkClient
+            ? undefined
+            : this.networkController.getProviderAndBlockTracker(),
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
@@ -1516,6 +1521,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkClientRegistry.bind(
             this.networkController,
           ),
+        getNetworkState: () =>
+          this.delayNetworkClient ? undefined : this.networkController.state,
         getNetworkState: () => this.networkController.state,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSavedGasFees: () =>
@@ -1553,7 +1560,11 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        provider: this.provider,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
@@ -1756,7 +1767,7 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+        getNonceLock: this.txController.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
         confirmExternalTransaction:
@@ -2151,6 +2162,12 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+
+    // this.networkProviderInitialization();
+    if (this.onboardingController.store.getState().completedOnboarding) {
+      console.log('end of the constructor')
+      this.networkProviderInitialization();
+    }
   }
 
   triggerNetworkrequests() {
@@ -2296,6 +2313,38 @@ export default class MetamaskController extends EventEmitter {
     const { currentLocale } = this.preferencesController.store.getState();
 
     return currentLocale;
+  }
+
+  /**
+   * Initializes the provider on the Network Controller. It also runs
+   * controllers' logic that relies on that provider being initialized, passing
+   * it in.
+   */
+  networkProviderInitialization() {
+    console.log("networkProviderInitialization")
+    this.networkController.initializeProvider();
+    console.log("finish initializeProvider")
+
+    console.log('before initApprovals')
+    this.delayNetworkClient = false;
+    this.txController.initApprovals();
+    console.log('after initApprovals')
+
+    this.provider =
+      this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker =
+      this.networkController.getProviderAndBlockTracker().blockTracker;
+
+    // TODO: Delete when ready to remove `networkVersion` from provider object
+    this.deprecatedNetworkId = null;
+    this.updateDeprecatedNetworkId();
+
+    this.ensController.delayedInit(this.provider);
+    this.accountTracker.delayedInit();
+
+
+    this.swapsController.delayedInit(this.provider);
+    this.detectTokensController.restartTokenDetection();
   }
 
   /**
