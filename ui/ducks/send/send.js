@@ -503,7 +503,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
   'send/computeEstimatedGasLimit',
   async (_, thunkApi) => {
     const state = thunkApi.getState();
-    const { send, metamask } = state;
+    const { send } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
     const unapprovedTxs = getUnapprovedTransactions(state);
@@ -538,7 +538,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
@@ -546,7 +545,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         data: draftTransaction.userInputHexData,
         isNonStandardEthChain,
         chainId,
-        gasLimit: draftTransaction.gas.gasLimit,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
@@ -604,7 +602,7 @@ export const initializeSendState = createAsyncThunk(
       eip1559support = await getCurrentNetworkEIP1559Compatibility();
     }
     const account = getSelectedAccount(state);
-    const { send: sendState, metamask } = state;
+    const { send: sendState } = state;
     const draftTransaction =
       sendState.draftTransactions[sendState.currentTransactionUUID];
 
@@ -672,7 +670,6 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress:
           draftTransaction.fromAccount?.address ??
           sendState.selectedAccount.address ??
