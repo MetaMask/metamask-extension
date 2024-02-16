@@ -25,6 +25,7 @@ import { SnapUIImage } from '../snaps/snap-ui-image';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
+import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
 import {
   RemoveSnapAccount,
@@ -72,6 +73,7 @@ export const safeComponentList = {
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountSuccessMessage,
+  SnapAccountErrorMessage,
   SnapAuthorshipHeader,
   SnapAccountRedirect,
   SnapAccountCard,
