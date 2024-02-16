@@ -14,6 +14,7 @@ import { PageContainerFooter } from '../../../../../components/ui/page-container
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
+  USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../../helpers/constants/design-system';
 
@@ -191,6 +192,9 @@ export default class ConfirmPageContainerContent extends Component {
     const showIsSigningOrSubmittingError =
       errorKey === IS_SIGNING_OR_SUBMITTING;
 
+    const showUserOpContractDeployError =
+      errorKey === USER_OP_CONTRACT_DEPLOY_ERROR_KEY;
+
     return (
       <div
         className={classnames('confirm-page-container-content', {
@@ -219,6 +223,7 @@ export default class ConfirmPageContainerContent extends Component {
         {!supportsEIP1559 &&
           !showInsuffienctFundsError &&
           !showIsSigningOrSubmittingError &&
+          !showUserOpContractDeployError &&
           (errorKey || errorMessage) && (
             <BannerAlert
               severity={Severity.Danger}
@@ -257,7 +262,7 @@ export default class ConfirmPageContainerContent extends Component {
             }
           />
         )}
-        {showIsSigningOrSubmittingError && (
+        {(showIsSigningOrSubmittingError || showUserOpContractDeployError) && (
           <BannerAlert
             severity={Severity.Danger}
             description={t(errorKey)}
