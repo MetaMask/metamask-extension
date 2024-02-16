@@ -48,8 +48,9 @@
 
   "postAttachCommand": "/usr/local/share/desktop-init.sh && git pull --rebase; yarn download-builds",
 
-  //this is a working Infura key created just for Codespace testing
-  "postCreateCommand": "echo 'INFURA_PROJECT_ID=3d110a0fce9e49b08d2ee584e19a05ba' > .metamaskrc",
+  // This is a working Infura key, but it's on the Free Plan and has very limited requests per second
+  // If you want to use your own INFURA_PROJECT_ID, follow the instructions in README.md
+  "postCreateCommand": "if [ -z \"$INFURA_PROJECT_ID\" ]; then echo 'INFURA_PROJECT_ID=3d110a0fce9e49b08d2ee584e19a05ba' > .metamaskrc; fi",
 
   "runArgs": ["--shm-size=1g"],
 
