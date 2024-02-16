@@ -51,7 +51,7 @@ class ChromeDriver {
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
     // Allow disabling DoT local testing
-    if (process.env.SELENIUM_DISABLE_DOT) {
+    if (process.env.SELENIUM_USE_SYSTEM_DN) {
       options.setLocalState({
         'dns_over_https.mode': 'off',
         'dns_over_https.templates': '',
