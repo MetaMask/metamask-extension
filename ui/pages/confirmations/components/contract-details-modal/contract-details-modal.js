@@ -10,6 +10,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { Text, Box, Button } from '../../../../components/component-library';
+
 export default function ContractDetailsModal({ onClose, ...props }) {
   const t = useI18nContext();
 

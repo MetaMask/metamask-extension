@@ -286,6 +286,14 @@ export default function ContractDetailsModal({
 
 ContractDetailsModal.propTypes = {
   /**
+   * If this component is being displayed inline to a page
+   */
+  inline: PropTypes.bool,
+  /**
+   * Additional content to show with the control (optional)
+   */
+  children: PropTypes.node,
+  /**
    * Name of the token that is waiting to be allowed
    */
   tokenName: PropTypes.string,

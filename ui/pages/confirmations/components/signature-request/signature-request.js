@@ -287,7 +287,7 @@ const SignatureRequest = ({
           </Text>
           {verifyingContract ? (
             <ContractDetails
-              inline={true}
+              inline
               toAddress={verifyingContract}
               chainId={chainId}
               rpcPrefs={rpcPrefs}
