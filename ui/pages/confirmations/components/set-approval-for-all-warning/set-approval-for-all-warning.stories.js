@@ -3,7 +3,7 @@ import React from 'react';
 import SetApproveForAllWarning from '.';
 
 export default {
-  title: 'Components/App/SetApproveForAllWarning',
+  title: 'Confirmations/Components/SetApproveForAllWarning',
 
   argTypes: {
     collectionName: {
