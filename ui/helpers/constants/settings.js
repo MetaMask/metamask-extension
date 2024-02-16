@@ -210,27 +210,6 @@ export const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[8]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('securityAlerts'),
-    descriptionMessage: (t) => t('securityAlertsDescription'),
-    route: `${SECURITY_ROUTE}#security-alerts`,
-    icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('blockaid'),
-    descriptionMessage: (t) => t('blockaidMessage'),
-    route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
-    icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('openSeaLabel'),
-    descriptionMessage: (t) => t('openSeaMessage'),
-    route: `${SECURITY_ROUTE}#security-alerts-opensea`,
-    icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
     descriptionMessage: (t) =>
       t('useMultiAccountBalanceCheckerSettingDescription'),
@@ -285,11 +264,30 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#proposed-nicknames`,
     icon: 'fa fa-lock',
   },
-  /**
-   * settingsRefs 15-17 will be handled in a future PR
-   *
-   * @see {@link https://github.com/MetaMask/metamask-extension/pull/22967}
-   */
+  // securityAndPrivacy settingsRefs[15]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${SECURITY_ROUTE}#security-alerts`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[16]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('blockaid'),
+    descriptionMessage: (t) => t('blockaidMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[17]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('openSeaLabel'),
+    descriptionMessage: (t) => t('openSeaMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-opensea`,
+    icon: 'fa fa-lock',
+  },
   {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
