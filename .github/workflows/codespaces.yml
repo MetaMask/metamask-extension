@@ -1,14 +1,12 @@
-name: Codespaces
+name: 'Codespaces: update yarn cache'
 
 on:
   push:
-    # Update this to build images for other branches
     branches:
       - 'codespaces**'
-
-    # Update this list of there are other files you want to watch to do cache updates
-    # paths:
-    #   - '**/yarn.lock'
+      - 'develop'
+    paths:
+      - '**/yarn.lock'
 
 jobs:
   yarn-cache:
