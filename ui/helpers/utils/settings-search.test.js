@@ -159,7 +159,7 @@ describe('Settings Search Utils', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
-    it('returns "Security & Privacy" section count', () => {
+    it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
       ).toStrictEqual(18);

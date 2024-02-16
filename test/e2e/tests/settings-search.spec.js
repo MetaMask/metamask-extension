@@ -98,7 +98,7 @@ describe('Settings Search', function () {
       },
     );
   });
-  it('should find element inside the Security & Privacy tab', async function () {
+  it('should find element inside the "Security & privacy" tab', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
