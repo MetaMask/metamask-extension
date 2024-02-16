@@ -211,7 +211,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
     descriptionMessage: (t) =>
       t('useMultiAccountBalanceCheckerSettingDescription'),
-    route: `${SECURITY_ROUTE}#use-multi-account-balance-checker`,
+    route: `${SECURITY_ROUTE}#batch-account-balance-requests`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[9]
