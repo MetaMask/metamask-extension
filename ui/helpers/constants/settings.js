@@ -246,6 +246,27 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[13]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useSafeChainsListValidation'),
+    descriptionMessage: (t) => t('useSafeChainsListValidationDescription'),
+    route: `${SECURITY_ROUTE}#network-details-check`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[14]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('externalNameSourcesSetting'),
+    descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
+    route: `${SECURITY_ROUTE}#proposed-nicknames`,
+    icon: 'fa fa-lock',
+  },
+  /**
+   * settingsRefs 15-17 will be handled in a future PR
+   *
+   * @see {@link https://github.com/MetaMask/metamask-extension/pull/22967}
+   */
   {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
