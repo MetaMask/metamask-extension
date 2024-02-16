@@ -45,10 +45,11 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
     };
   }, [
     usePollingOptions.networkClientId,
-    JSON.stringify(
-      usePollingOptions.options,
-      Object.keys(usePollingOptions.options).sort(),
-    ),
+    usePollingOptions.options &&
+      JSON.stringify(
+        usePollingOptions.options,
+        Object.keys(usePollingOptions.options).sort(),
+      ),
   ]);
 };
 
