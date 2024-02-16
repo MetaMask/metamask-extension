@@ -139,7 +139,7 @@ const t = (key) => {
 };
 
 describe('Settings Search Utils', () => {
-  describe('settingsRoutes', () => {
+  describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
       expect(getSettingsRoutes().length).toBeGreaterThan(0);
     });
