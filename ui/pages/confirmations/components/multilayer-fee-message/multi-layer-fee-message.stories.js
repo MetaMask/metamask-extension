@@ -2,7 +2,7 @@ import React from 'react';
 import MultilayerFeeMessage from './multi-layer-fee-message';
 
 export default {
-  title: 'Components/App/MultilayerFeeMessage',
+  title: 'Confirmations/Components/MultilayerFeeMessage',
   component: MultilayerFeeMessage,
   argTypes: {
     transaction: {

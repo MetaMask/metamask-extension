@@ -30,7 +30,7 @@ describe('Settings', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.multichain-account-list-item .currency-display-component__text',
+          '.multichain-account-list-item .multichain-account-list-item__avatar-currency .currency-display-component__text',
         );
 
         assert.equal(await accountTokenValue.getText(), '0', 'ETH');
@@ -73,7 +73,7 @@ describe('Settings', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.multichain-account-list-item .currency-display-component__text',
+          '.multichain-account-list-item .multichain-account-list-item__avatar-currency .currency-display-component__text',
         );
 
         assert.equal(await accountTokenValue.getText(), '0', 'ETH');

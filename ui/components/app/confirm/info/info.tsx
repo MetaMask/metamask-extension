@@ -30,6 +30,7 @@ export enum ConfirmInfoRowType {
   Text = 'text',
   UrlType = 'url',
   ValueDouble = 'value-double',
+  UrlType = 'url',
 }
 
 type ConfirmInfoTypeProps =
