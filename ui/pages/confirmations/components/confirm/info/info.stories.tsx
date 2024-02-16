@@ -1,10 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
+import { TransactionType } from '@metamask/transaction-controller';
+
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
-
-import Header from './header';
+import Info from './info';
 
 const store = configureStore({
   metamask: {
@@ -12,21 +13,24 @@ const store = configureStore({
   },
   confirm: {
     currentConfirmation: {
+      type: TransactionType.personalSign,
       msgParams: {
-        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        origin: 'https://metamask.github.io',
       },
     },
   },
 });
 
 const Story = {
-  title: 'Confirmations/Components/Confirm/Header',
-  component: Header,
-  decorators: [(story: any) => <Provider store={store}>{story()}</Provider>],
+  title: 'Confirmations/Components/Confirm/Info',
+  component: Info,
+  decorators: [
+    (story: () => any) => <Provider store={store}>{story()}</Provider>,
+  ],
 };
 
 export default Story;
 
-export const DefaultStory = () => <Header />;
+export const DefaultStory = () => <Info />;
 
 DefaultStory.storyName = 'Default';

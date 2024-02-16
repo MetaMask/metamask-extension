@@ -3,7 +3,7 @@ import React from 'react';
 import AdvancedGasControls from '.';
 
 export default {
-  title: 'Components/App/AdvancedGasControls',
+  title: 'Confirmations/Components/AdvancedGasControls',
 };
 
 export const DefaultStory = () => {
