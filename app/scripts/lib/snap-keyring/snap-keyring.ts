@@ -9,6 +9,7 @@ import type {
   ShowError,
   ShowSuccess,
   StartFlow,
+  ErrorResult,
 } from '@metamask/approval-controller';
 import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
 import browser from 'webextension-polyfill';
@@ -24,7 +25,7 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
-import { getSnapName } from '../../../../ui/helpers/utils/util';
+import { getSnapName as getSnapNameFromSubjectMetadata } from '../../../../ui/helpers/utils/util';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -92,6 +93,51 @@ export const snapKeyringBuilder = (
         key: 'snapHeader',
         properties: { snapId },
       } as ResultComponent;
+    };
+
+    const getSnapName = (snapId: string): string => {
+      const subjectMetadata = controllerMessenger.call(
+        'SubjectMetadataController:getSubjectMetadata',
+        snapId,
+      );
+
+      return getSnapNameFromSubjectMetadata(snapId, subjectMetadata);
+    };
+
+    const showError = (
+      snapId: string,
+      title: string,
+      icon: IconName,
+      properties: Record<string, any>,
+    ): Promise<ErrorResult> => {
+      return controllerMessenger.call('ApprovalController:showError', {
+        header: [snapAuthorshipHeader(snapId)],
+        title,
+        icon,
+        error: {
+          key: 'snapAccountErrorMessage',
+          name: 'SnapAccountErrorMessage',
+          properties,
+        },
+      });
+    };
+
+    const showSuccess = (
+      snapId: string,
+      title: string,
+      icon: IconName,
+      properties: Record<string, any>,
+    ): Promise<ErrorResult> => {
+      return controllerMessenger.call('ApprovalController:showSuccess', {
+        header: [snapAuthorshipHeader(snapId)],
+        title,
+        icon,
+        message: {
+          key: 'snapAccountSuccessMessage',
+          name: 'SnapAccountSuccessMessage',
+          properties,
+        },
+      });
     };
 
     return new SnapKeyring(getSnapController() as any, {
@@ -185,46 +231,35 @@ export const snapKeyringBuilder = (
                 'AccountsController:setSelectedAccount',
                 internalAccount.id,
               );
-              await controllerMessenger.call('ApprovalController:showSuccess', {
-                header: [snapAuthorshipHeader(snapId)],
-                title: t('snapAccountCreated') as string,
-                icon: IconName.UserCircleAdd,
-                message: {
-                  name: 'SnapAccountSuccessMessage',
-                  key: 'SnapAccountSuccessMessage',
-                  properties: {
-                    message: t('snapAccountCreatedDescription') as string,
-                    address,
-                    learnMoreLink,
-                  },
+
+              await showSuccess(
+                snapId,
+                t('snapAccountCreated') as string,
+                IconName.UserCircleAdd,
+                {
+                  message: t('snapAccountCreatedDescription') as string,
+                  address,
+                  learnMoreLink,
                 },
-              });
+              );
             } catch (e) {
               const error = (e as Error).message;
-              const subjectMetadata = controllerMessenger.call(
-                'SubjectMetadataController:getSubjectMetadata',
+
+              const snapName = getSnapName(snapId);
+              await showError(
                 snapId,
+                t('snapAccountCreationFailed') as string,
+                IconName.UserCircleAdd,
+                {
+                  message: t(
+                    'snapAccountCreationFailedDescription',
+                    snapName,
+                  ) as string,
+                  learnMoreLink,
+                  error,
+                },
               );
 
-              const snapName = getSnapName(snapId, subjectMetadata);
-
-              await controllerMessenger.call('ApprovalController:showError', {
-                header: [snapAuthorshipHeader(snapId)],
-                title: t('snapAccountCreationFailed') as string,
-                icon: IconName.UserCircleAdd,
-                error: {
-                  name: 'SnapAccountErrorMessage',
-                  key: 'SnapAccountErrorMessage',
-                  properties: {
-                    message: t(
-                      'snapAccountCreationFailedDescription',
-                      snapName,
-                    ) as string,
-                    learnMoreLink,
-                    error,
-                  },
-                },
-              });
               throw new Error(
                 `Error occurred while creating snap account: ${error}`,
               );
@@ -269,46 +304,35 @@ export const snapKeyringBuilder = (
               await removeAccountHelper(address);
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
+
               // This isn't actually an error, but we show it as one for styling reasons
-              await controllerMessenger.call('ApprovalController:showError', {
-                header: [snapAuthorshipHeader(snapId)],
-                icon: IconName.UserCircleRemove,
-                title: t('snapAccountRemoved') as string,
-                error: {
-                  name: 'SnapAccountErrorMessage',
-                  key: 'snapAccountErrorMessage',
-                  properties: {
-                    message: t('snapAccountRemovedDescription') as string,
-                    learnMoreLink,
-                  },
+              await showError(
+                snapId,
+                t('snapAccountRemoved') as string,
+                IconName.UserCircleRemove,
+                {
+                  message: t('snapAccountRemovedDescription') as string,
+                  learnMoreLink,
                 },
-              });
+              );
             } catch (e) {
               const error = (e as Error).message;
-              const subjectMetadata = controllerMessenger.call(
-                'SubjectMetadataController:getSubjectMetadata',
+
+              const snapName = getSnapName(snapId);
+              await showError(
                 snapId,
+                t('snapAccountRemovalFailed') as string,
+                IconName.UserCircleRemove,
+                {
+                  message: t(
+                    'snapAccountRemovalFailedDescription',
+                    snapName,
+                  ) as string,
+                  learnMoreLink,
+                  error,
+                },
               );
 
-              const snapName = getSnapName(snapId, subjectMetadata);
-
-              await controllerMessenger.call('ApprovalController:showError', {
-                header: [snapAuthorshipHeader(snapId)],
-                icon: IconName.UserCircleRemove,
-                title: t('snapAccountRemovalFailed') as string,
-                error: {
-                  name: 'SnapAccountErrorMessage',
-                  key: 'snapAccountErrorMessage',
-                  properties: {
-                    message: t(
-                      'snapAccountRemovalFailedDescription',
-                      snapName,
-                    ) as string,
-                    learnMoreLink,
-                    error,
-                  },
-                },
-              });
               throw new Error(
                 `Error occurred while removing snap account: ${error}`,
               );
