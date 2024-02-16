@@ -141,6 +141,7 @@ export const SETTINGS_CONSTANTS = [
     route: CONTACT_LIST_ROUTE,
     iconName: IconName.Book,
   },
+  // securityAndPrivacy settingsRefs[0]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('revealSeedWords'),
@@ -148,6 +149,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[1]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('showIncomingTransactions'),
@@ -155,6 +157,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#incoming-transaction`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('usePhishingDetection'),
@@ -162,6 +165,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#phishing-detection`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[3]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('use4ByteResolution'),
@@ -169,6 +173,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#decode-smart-contracts`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[4]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('participateInMetaMetrics'),
@@ -176,6 +181,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#metametrics`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[5]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('chooseYourNetwork'),
@@ -183,6 +189,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#choose-your-network`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[6]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('ipfsGateway'),
@@ -190,6 +197,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[7]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('autoDetectTokens'),
@@ -197,6 +205,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#auto-detect-tokens`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[8]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
@@ -205,6 +214,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#use-multi-account-balance-checker`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[9]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('currencyRateCheckToggle'),
@@ -212,6 +222,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#price-checker`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[10]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('ensDomainsSettingTitle'),
@@ -219,6 +230,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#ens-domains`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[11]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('displayNftMedia'),
@@ -226,6 +238,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#display-nft-media`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[12]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useNftDetection'),
