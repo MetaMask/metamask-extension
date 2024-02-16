@@ -76,7 +76,7 @@ export function useGasEstimates({
       maxPriorityFeePerGas: decGWEIToHexWEI(
         maxPriorityFeePerGas || maxFeePerGas || gasPrice || '0',
       ),
-      baseFeePerGas: decGWEIToHexWEI(gasFeeEstimates.estimatedBaseFee ?? '0'),
+      baseFeePerGas: decGWEIToHexWEI(gasFeeEstimates?.estimatedBaseFee ?? '0'),
     };
   } else {
     gasSettings = {
