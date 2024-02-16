@@ -32,7 +32,7 @@ import usePolling from './usePolling';
  * GasFeeController that it is done requiring new gas estimates. Also checks
  * the returned gas estimate for validity on the current network.
  *
- * @param _networkClientId
+ * @param _networkClientId - The optional network client ID to get gas fee estimates for. Defaults to the currently selected network.
  * @returns {GasEstimates} GasEstimates object
  */
 export function useGasFeeEstimates(_networkClientId) {
