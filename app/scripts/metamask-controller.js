@@ -2990,6 +2990,7 @@ export default class MetamaskController extends EventEmitter {
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
+      estimateGasBuffered: this.estimateGasBuffered.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
       addTransaction: (transactionParams, transactionOptions) =>
         addTransaction(
@@ -4252,6 +4253,13 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     });
+  }
+
+  async estimateGasBuffered(transactionParams, multiplier) {
+    return await this.txController.estimateGasBuffered(
+      transactionParams,
+      multiplier,
+    );
   }
 
   handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {

@@ -1,3 +1,4 @@
+import pify from 'pify';
 import { Numeric } from './Numeric';
 
 /**
@@ -103,4 +104,12 @@ export function getMinimumGasTotalInHexWei({
   return new Numeric(gasLimit, 16)
     .times(new Numeric(minimumFeePerGas, 16))
     .toPrefixedHexString();
+}
+
+export async function getBlockGasLimit(ethQuery) {
+  const { gasLimit } = await pify(ethQuery.getBlockByNumber.bind(ethQuery))(
+    'latest',
+    false,
+  );
+  return gasLimit;
 }

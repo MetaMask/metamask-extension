@@ -4189,6 +4189,13 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
+export function estimateGasBuffered(
+  params: TransactionParams,
+  multiplier: number,
+) {
+  return submitRequestToBackground('estimateGasBuffered', [params, multiplier]);
+}
+
 export async function updateTokenType(
   tokenAddress: string,
 ): Promise<Token | undefined> {
