@@ -41,7 +41,7 @@ describe('Confirm Add Custodian Token', () => {
             token: 'testToken',
             feature: 'custodian',
             service: 'Jupiter',
-            apiUrl: 'https://',
+            environment: 'jupiter',
             chainId: 1,
           },
         ],
@@ -77,7 +77,7 @@ describe('Confirm Add Custodian Token', () => {
               token: '',
               feature: 'custodian',
               service: 'Jupiter',
-              apiUrl: 'https://',
+              environment: 'jupiter',
               chainId: 1,
             },
           ],
@@ -129,7 +129,7 @@ describe('Confirm Add Custodian Token', () => {
     await waitFor(() => {
       expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
         origin: 'origin',
-        apiUrl: 'https://',
+        environment: 'jupiter',
         token: 'testToken',
       });
     });
@@ -157,7 +157,6 @@ describe('Confirm Add Custodian Token', () => {
               token: '',
               feature: 'custodian',
               service: 'JSONRPC',
-              apiUrl: 'https://',
               environment: 'jsonrpc',
             },
           ],
@@ -183,9 +182,8 @@ describe('Confirm Add Custodian Token', () => {
     await waitFor(() => {
       expect(mockedSetCustodianConnectRequest).toHaveBeenCalledWith({
         token: '',
-        apiUrl: 'https://',
-        custodianName: 'jsonrpc',
         custodianType: 'JSONRPC',
+        envName: 'jsonrpc',
       });
     });
   });
