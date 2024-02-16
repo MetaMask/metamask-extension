@@ -1,4 +1,5 @@
 import React from 'react';
+import { SETTINGS_CONSTANTS } from '../constants/settings';
 import {
   getSettingsRoutes,
   getNumberOfSettingsInSection,
@@ -141,7 +142,7 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      expect(getSettingsRoutes().length).toBeGreaterThan(0);
+      expect(getSettingsRoutes()).toHaveLength(SETTINGS_CONSTANTS.length);
     });
   });
 
