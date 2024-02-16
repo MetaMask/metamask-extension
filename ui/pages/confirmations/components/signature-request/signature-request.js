@@ -287,7 +287,6 @@ const SignatureRequest = ({
             {t('signatureRequestGuidance')}
           </Text>
           {verifyingContract ? (
-            <Box margin={2}>
             <ContractDetails
               inline={true}
               toAddress={verifyingContract}
@@ -295,7 +294,6 @@ const SignatureRequest = ({
               rpcPrefs={rpcPrefs}
               isContractRequestingSignature
             />
-</Box>
           ) : null}
         </div>
         {isLedgerWallet ? (

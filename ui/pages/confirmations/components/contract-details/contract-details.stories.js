@@ -1,13 +1,10 @@
 import React from 'react';
-import ContractDetailsModal from './contract-details-modal';
+import ContractDetails from './contract-details';
 
 export default {
   title: 'Components/App/ContractDetails',
 
   argTypes: {
-    onClose: {
-      action: 'onClose',
-    },
     tokenName: {
       control: {
         type: 'text',
@@ -44,7 +41,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <ContractDetailsModal {...args} />;
+  return <ContractDetails {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
