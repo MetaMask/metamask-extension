@@ -2164,7 +2164,7 @@ export function createCancelTransaction(
   customGasSettings: CustomGasSettings,
   options: { estimatedBaseFee?: string } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug('background.cancelTransaction');
+  log.debug('background.createCancelTransaction');
   let newTxId: string;
 
   return (dispatch: MetaMaskReduxDispatch) => {
