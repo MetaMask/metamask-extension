@@ -702,4 +702,32 @@ describe('Confirm Transaction Base', () => {
       });
     });
   });
+  describe('error states', () => {
+    describe('user op contract deploy attempt', () => {
+      it('should show error and disable Confirm button', () => {
+        const newMockedStore = {
+          ...mockedStore,
+          confirmTransaction: {
+            ...mockedStore.confirmTransaction,
+            txData: {
+              ...mockedStore.confirmTransaction.txData,
+              isUserOperation: true,
+              txParams: {
+                ...mockedStore.confirmTransaction.txData.txParams,
+                to: undefined,
+                data: '0xa22cb46500000000000000', // this is the data for a contract deployment.
+              },
+            },
+          },
+        };
+        const store = configureMockStore(middleware)(newMockedStore);
+        const { getByText } = renderWithProvider(
+          <ConfirmTransactionBase actionKey="confirm" />,
+          store,
+        );
+
+        expect(getByText('Invalid recipient address')).toBeInTheDocument();
+      });
+    });
+  });
 });

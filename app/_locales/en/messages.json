@@ -5490,6 +5490,9 @@
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
   },
+  "userOpContractDeployError": {
+    "message": "Contract deployment from a smart contract account is not supported."
+  },
   "useSafeChainsListValidation": {
     "message": "Network details check"
   },

@@ -13,6 +13,7 @@ import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
+  USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 
@@ -155,6 +156,7 @@ export default class ConfirmTransactionBase extends Component {
     updateTransaction: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
+    isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
   };
@@ -258,6 +260,7 @@ export default class ConfirmTransactionBase extends Component {
       noGasPrice,
       gasFeeIsCustom,
       isSigningOrSubmitting,
+      isUserOpContractDeployError,
     } = this.props;
 
     const insufficientBalance =
@@ -294,6 +297,13 @@ export default class ConfirmTransactionBase extends Component {
       return {
         valid: false,
         errorKey: IS_SIGNING_OR_SUBMITTING,
+      };
+    }
+
+    if (isUserOpContractDeployError) {
+      return {
+        valid: false,
+        errorKey: USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
       };
     }
 
