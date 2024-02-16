@@ -171,7 +171,7 @@ export enum IconName {
   Bold = 'bold',
   CircleX = 'circle-x',
   Download = 'download',
-  FileType = 'file',
+  FileIcon = 'file',
   Flask = 'flask',
   Plug = 'plug',
   Share = 'share',

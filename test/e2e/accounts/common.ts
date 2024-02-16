@@ -9,11 +9,10 @@ import {
   unlockWallet,
   validateContractDetails,
   multipleGanacheOptions,
+  regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-
-export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
-  'https://metamask.github.io/snap-simple-keyring/1.0.1/';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../ui/helpers/constants/common';
 
 /**
  * These are fixtures specific to Account Snap E2E tests:
@@ -35,7 +34,6 @@ export const accountSnapFixtures = (title: string | undefined) => {
       })
       .build(),
     ganacheOptions: multipleGanacheOptions,
-    failOnConsoleError: false,
     title,
   };
 };
@@ -97,10 +95,7 @@ export async function installSnapSimpleKeyring(
 async function toggleAsyncFlow(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
-  // click the parent of #use-sync-flow-toggle (trying to click the element itself gives "ElementNotInteractableError: could not be scrolled into view")
-  await driver.clickElement({
-    xpath: '//input[@id="use-sync-flow-toggle"]/..',
-  });
+  await driver.clickElement('[data-testid="use-sync-flow-toggle"]');
 }
 
 export async function importKeyAndSwitch(driver: Driver) {
@@ -187,6 +182,7 @@ export async function connectAccountToTestDapp(driver: Driver) {
   await switchToOrOpenDapp(driver);
   await driver.clickElement('#connectButton');
 
+  await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Next',

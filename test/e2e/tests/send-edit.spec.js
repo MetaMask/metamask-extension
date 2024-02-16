@@ -16,7 +16,6 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -86,7 +85,6 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);

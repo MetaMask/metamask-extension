@@ -23,7 +23,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -78,7 +77,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);

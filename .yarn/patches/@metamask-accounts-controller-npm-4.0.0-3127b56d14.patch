@@ -8,10 +8,11 @@ index 810f229841ffff83f7a28191bc558862b1809e01..31047fd3387693f30a76807d596a8de8
  function keyringTypeToName(keyringType) {
 +
 +    // Custody Keyrings follow this pattern
-+    if (/^Custody.*/.test(keyringType)) { 
++    if (/^Custody.*/.test(keyringType)) {
 +        return "Custody";
 +    }
 +
      switch (keyringType) {
          case keyring_controller_1.KeyringTypes.simple: {
              return 'Account';
+

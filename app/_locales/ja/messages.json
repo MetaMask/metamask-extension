@@ -586,12 +586,6 @@
   "bridge": {
     "message": "ブリッジ"
   },
-  "bridgeDescription": {
-    "message": "別のネットワークからトークンを転送します"
-  },
-  "bridgeDisabled": {
-    "message": "ブリッジはこのネットワークで利用できません"
-  },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
@@ -652,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "このチェーンIDは現在$1ネットワークで使用されています。"
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "チェーンID $1 のネットワークは、入力されたものとは異なる通貨記号 ($2) を使用している可能性があります。続行する前に確認してください。",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "ネットワークを選択してください"
@@ -828,9 +818,6 @@
   "connectionRequest": {
     "message": "接続リクエスト"
   },
-  "connections": {
-    "message": "接続"
-  },
   "contactUs": {
     "message": "お問い合わせ"
   },
@@ -982,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "カストディアントークンを置き換える"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "$1アプリでトランザクションを承認してください。必要なカストディ承認がすべて行われると、トランザクションが完了します。ステータスは$1アプリで確認できます。"
@@ -2520,108 +2504,6 @@
   "notifications": {
     "message": "通知"
   },
-  "notifications10ActionText": {
-    "message": "設定に移動",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "改善されたトークン検出は現在、イーサリアムメインネット、Polygon、BSC、Avalancheネットワークで利用できます。他のネットワークも追加される予定です！"
-  },
-  "notifications10DescriptionThree": {
-    "message": "トークン検出機能は現在デフォルトでオフになっていますが、設定で有効にできます。"
-  },
-  "notifications10DescriptionTwo": {
-    "message": "トークンの情報は、サードパーティのトークンリストから取得されています。3つ以上のトークンリストに掲載されているトークンは自動的に検出されます。"
-  },
-  "notifications10Title": {
-    "message": "トークン検出が改善されました"
-  },
-  "notifications11Description": {
-    "message": "トークンは誰にでも作れるため、名前が同じ場合もあります。信頼できないトークンや取引したことのないトークンが表示された場合は、信頼しない方が無難です。"
-  },
-  "notifications11Title": {
-    "message": "詐欺やセキュリティのリスク"
-  },
-  "notifications12ActionText": {
-    "message": "ダークモードを有効にする"
-  },
-  "notifications12Description": {
-    "message": "拡張機能のダークモードがついに追加されました！オンにするには、「設定」>「試験運用」の順に移動し、ライト、ダーク、システムの表示オプションから一つを選択してください。"
-  },
-  "notifications12Title": {
-    "message": "いつダークモードに？今ダークモードです！🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "カスタムネットワークリストを表示"
-  },
-  "notifications13Description": {
-    "message": "人気のカスタムネットワーク (Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、Optimism、Palm、Polygon) が簡単に追加できるようになりました！この機能を有効にするには、「設定」>「試験運用」に移動し、「カスタムネットワークリストを表示」をオンにしてください！",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "人気のネットワークを追加"
-  },
-  "notifications14ActionText": {
-    "message": "バックアップの設定を表示"
-  },
-  "notifications14Description": {
-    "message": "3Boxデータ機能は10月の初めに非推奨になります。ウォレットを手動でバックアップ・復元するには、「高度な設定」の「今すぐバックアップ」を使用してください。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Boxの非推奨化"
-  },
-  "notifications15Description": {
-    "message": "ユーザー側での作業は必要ないため、ウォレットは引き続き通常通りご使用いただけます。「マージ」関連の詐欺にご注意ください。",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "イーサリアムの「マージ」が完了しました！"
-  },
-  "notifications18ActionText": {
-    "message": "セキュリティアラートを有効にする"
-  },
-  "notifications18DescriptionOne": {
-    "message": "悪質なリクエストを受けた可能性がある場合、サードパーティからアラートを受信します。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "リクエストを承認する前に、必ず独自のデューデリジェンスを行ってください。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSeaは、この機能の最初のプロバイダーです。他のプロバイダーも近日追加予定です！",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "セキュリティアラートで安全を確保"
-  },
-  "notifications19ActionText": {
-    "message": "NFTの自動検出を有効にする"
-  },
-  "notifications19DescriptionOne": {
-    "message": "始めるには次の2通りの方法があります:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "現在当社はERC-721のみをサポートしています。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "手動でNFTを追加するか、「設定」>「試験運用」でNFTの自動検出をオンにします。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "NFTが今までにない形で表示されます"
-  },
-  "notifications1Description": {
-    "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "モバイルでのスワッピングが可能になりました！\n",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "詳細",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2634,37 +2516,6 @@
     "message": "LedgerとFirefoxのユーザーに発生している接続の問題について",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "試す"
-  },
-  "notifications21Description": {
-    "message": "MetaMask拡張機能のSwapsをアップデートして、より素早く簡単に使えるようにしました。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "新しくなったSwapsをご紹介します！"
-  },
-  "notifications22ActionText": {
-    "message": "了解"
-  },
-  "notifications22Description": {
-    "message": "💡 グローバルメニューまたはアカウントメニューをクリックするだけで見つかります！"
-  },
-  "notifications22Title": {
-    "message": "アカウント情報またはブロックエクスプローラーURLをお探しですか？"
-  },
-  "notifications23ActionText": {
-    "message": "セキュリティアラートを有効にする"
-  },
-  "notifications23DescriptionOne": {
-    "message": "イーサリアムメインネットで、Blockaidによるセキュリティアラートを使用して、プライバシーを守りつつ既知の詐欺を回避しましょう。"
-  },
-  "notifications23DescriptionTwo": {
-    "message": "リクエストを承認する前に、必ず独自のデューデリジェンスを行ってください。"
-  },
-  "notifications23Title": {
-    "message": "セキュリティアラートで安全を確保"
-  },
   "notifications24ActionText": {
     "message": "了解"
   },
@@ -2673,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "ネットワークごとの高度なガス代設定"
-  },
-  "notifications3ActionText": {
-    "message": "続きを表示",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "MetaMaskの最新のセキュリティベストプラクティスについて学び、MetaMaskの公式サポートから最新のセキュリティ情報を入手してください。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "安全の維持",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "スワッピングの開始",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "ウォレットのトークンのスワップに最高の価格をご利用ください。MetaMaskで、Binance Smart Chainの複数の分散型取引所アグリゲーターや専門のマーケットメーカーと接続できるようになりました。",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Binance Smart Chainでのスワップ",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "これでシードフレーズが「シークレットリカバリーフレーズ」と呼ばれるようになりました。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Chromeバージョン91以降は、Ledgerのサポートを可能にしていたAPI (U2F) がハードウェアウォレットをサポートしなくなります。MetaMaskでは、ユーザーがLedger Liveのデスクトップアプリを介してLedgerデバイスに継続的に接続できる、新しいLedger Liveサポートを導入しました。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "MetaMaskでLedgerアカウントを使用する際は、新しいタブが開き、Ledger Liveアプリを開くよう指示されます。アプリが開いたら、MetaMaskアカウントへのWebSocket接続を許可するよう指示されます。以上です。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "「設定」>「詳細」>「Ledger Liveを使用」の順にクリックすることで、Ledger Liveのサポートを有効にできます。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Chromeユーザー向けのLedgerサポートの更新",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0には、Ledgerデバイスを使用時のEIP-1559トランザクションのサポートが新たに追加されました。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "イーサリアムメインネットでトランザクションを完了させるには、Ledgerデバイスに最新のファームウェアがインストールされていることを確認してください。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledgerファームウェアのアップデート",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "「設定」>「高度な設定」に移動します",
@@ -2745,15 +2540,6 @@
   "notifications8Title": {
     "message": "Ledgerの接続の改善",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "スマートコントラクトトランザクションの承認の際に、「データ」タブでより多くの情報が提供されるようになりました。"
-  },
-  "notifications9DescriptionTwo": {
-    "message": "確定する前に、トランザクションの詳細をよりよく理解できるようになりました。また、アドレス帳にトランザクションアドレスを簡単に追加できるようにもなり、安全かつ情報に基づいた意思決定が可能になりました。"
-  },
-  "notifications9Title": {
-    "message": "👓 トランザクションが読みやすくなりました。"
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "FirefoxはU2Fをサポートしなくなったため、LedgerはFirefox版の MetaMaskでは機能しません。代わりにGoogle Chrome版のMetaMaskをお試しください。",
@@ -3569,9 +3355,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutionalで使用するカストディアンアカウントを選択します。"
   },
-  "selectAnAction": {
-    "message": "アクションを選択してください"
-  },
   "selectHdPath": {
     "message": "HDパスを選択"
   },
@@ -3595,9 +3378,6 @@
   },
   "sendBugReport": {
     "message": "バグの報告をお送りください。"
-  },
-  "sendDescription": {
-    "message": "仮想通貨を任意のアカウントに送金します"
   },
   "sendSpecifiedTokens": {
     "message": "$1を送金",
@@ -3948,9 +3728,6 @@
   "stake": {
     "message": "ステーク"
   },
-  "stakeDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
   },
@@ -4136,14 +3913,8 @@
   "swapDecentralizedExchange": {
     "message": "分散型取引所"
   },
-  "swapDescription": {
-    "message": "トークンのスワップや取引を行います"
-  },
   "swapDirectContract": {
     "message": "ダイレクトコントラクト"
-  },
-  "swapDisabled": {
-    "message": "このネットワークではスワップが利用できません"
   },
   "swapEditLimit": {
     "message": "限度額を編集"

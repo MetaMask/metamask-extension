@@ -99,7 +99,14 @@ describe('Address Book', function () {
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement({
+            text: 'Test Name 1',
+            css: '.address-list-item__label',
+          });
+        } else {
+          await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        }
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         const inputUsername = await driver.findElement('#nickname');

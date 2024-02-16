@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -18,26 +17,20 @@ import {
   Display,
   IconColor,
   Size,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
-import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountPicker = ({
   address,
   name,
   onClick,
   disabled = false,
-  showAddress = false,
-  addressProps = {},
   labelProps = {},
   textProps = {},
   className = '',
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
     <ButtonBase
@@ -50,10 +43,10 @@ export const AccountPicker = ({
       textProps={{
         display: Display.Flex,
         alignItems: AlignItems.center,
-        gap: 1,
+        gap: 2,
         ...textProps,
       }}
-      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
+      size={ButtonBaseSize.Sm}
       disabled={disabled}
       endIconName={IconName.ArrowDown}
       endIconProps={{
@@ -61,6 +54,7 @@ export const AccountPicker = ({
         size: Size.SM,
       }}
       {...props}
+      gap={2}
     >
       <AvatarAccount
         variant={
@@ -69,7 +63,7 @@ export const AccountPicker = ({
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={Size.SM}
+        size={Size.XS}
         borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
       <Text
@@ -82,16 +76,6 @@ export const AccountPicker = ({
         )}
       >
         {name}
-        {showAddress ? (
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            ellipsis
-            {...addressProps}
-          >
-            {shortenedAddress}
-          </Text>
-        ) : null}
       </Text>
     </ButtonBase>
   );
@@ -115,17 +99,9 @@ AccountPicker.propTypes = {
    */
   disabled: PropTypes.bool,
   /**
-   * Represents if the account address should display
-   */
-  showAddress: PropTypes.bool,
-  /**
    * Represents if the AccountPicker should take full width
    */
   block: PropTypes.bool,
-  /**
-   * Props to be added to the address element
-   */
-  addressProps: PropTypes.object,
   /**
    * Props to be added to the label element
    */

@@ -20,7 +20,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getCurrentNetwork,
   getOpenSeaEnabled,
 } from '../../../selectors';
@@ -62,7 +62,7 @@ export default function NftsItems({
   const collectionsKeys = Object.keys(collections);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
@@ -211,7 +211,8 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
-              const { image, address, tokenId, name, imageOriginal } = nft;
+              const { image, address, tokenId, name, imageOriginal, tokenURI } =
+                nft;
               const nftImage = getAssetImageURL(
                 imageOriginal ?? image,
                 ipfsGateway,
@@ -221,8 +222,11 @@ export default function NftsItems({
               const nftImageURL = imageOriginal?.startsWith('ipfs')
                 ? nftImage
                 : image;
-              const nftSrcUrl = imageOriginal ?? image;
-              const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+              const isIpfsURL = (
+                imageOriginal ??
+                image ??
+                tokenURI
+              )?.startsWith('ipfs:');
               const handleImageClick = () => {
                 if (isModal) {
                   return onSendNft(nft);

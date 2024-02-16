@@ -22,17 +22,25 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
+  FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
+  Size,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
+  ButtonBase,
+  ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Text,
 } from '../../component-library';
 import {
   getCurrentChainId,
@@ -67,12 +75,13 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
-  const menuRef = useRef(false);
+  const menuRef = useRef(null);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isHomePage = location.pathname === DEFAULT_ROUTE;
@@ -82,6 +91,9 @@ export const AppHeader = ({ location }) => {
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
+  const shortenedAddress =
+    internalAccount &&
+    shortenAddress(toChecksumHexAddress(internalAccount.address));
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -96,16 +108,17 @@ export const AppHeader = ({ location }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
+
+  // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showConnectedStatus =
-    process.env.MULTICHAIN ||
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      origin &&
-      origin !== browser.runtime.id);
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    origin &&
+    origin !== browser.runtime.id;
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
@@ -279,24 +292,65 @@ export const AppHeader = ({ location }) => {
               ) : null}
 
               {internalAccount ? (
-                <AccountPicker
-                  address={internalAccount.address}
-                  name={internalAccount.metadata.name}
-                  onClick={() => {
-                    dispatch(toggleAccountMenu());
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                >
+                  <AccountPicker
+                    address={internalAccount.address}
+                    name={internalAccount.metadata.name}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
 
-                    trackEvent({
-                      event: MetaMetricsEventName.NavAccountMenuOpened,
-                      category: MetaMetricsEventCategory.Navigation,
-                      properties: {
-                        location: 'Home',
-                      },
-                    });
-                  }}
-                  disabled={disableAccountPicker}
-                  showAddress={Boolean(process.env.MULTICHAIN)}
-                  labelProps={{ fontWeight: FontWeight.Bold }}
-                />
+                      trackEvent({
+                        event: MetaMetricsEventName.NavAccountMenuOpened,
+                        category: MetaMetricsEventCategory.Navigation,
+                        properties: {
+                          location: 'Home',
+                        },
+                      });
+                    }}
+                    disabled={disableAccountPicker}
+                    labelProps={{ fontWeight: FontWeight.Bold }}
+                  />
+                  <Tooltip
+                    position="left"
+                    title={copied ? t('addressCopied') : t('copyToClipboard')}
+                  >
+                    <ButtonBase
+                      className="multichain-app-header__address-copy-button"
+                      onClick={() => handleCopy(checksummedCurrentAddress)}
+                      size={ButtonBaseSize.Sm}
+                      backgroundColor={BackgroundColor.transparent}
+                      borderRadius={BorderRadius.LG}
+                      endIconName={
+                        copied ? IconName.CopySuccess : IconName.Copy
+                      }
+                      endIconProps={{
+                        color: IconColor.iconAlternative,
+                        size: Size.SM,
+                      }}
+                      ellipsis
+                      textProps={{
+                        display: Display.Flex,
+                        alignItems: AlignItems.center,
+                        gap: 2,
+                      }}
+                      style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                      data-testid="app-header-copy-button"
+                    >
+                      <Text
+                        color={TextColor.textAlternative}
+                        variant={TextVariant.bodySm}
+                        ellipsis
+                        as="span"
+                      >
+                        {shortenedAddress}
+                      </Text>
+                    </ButtonBase>
+                  </Tooltip>
+                </Box>
               ) : null}
               <Box
                 display={Display.Flex}
@@ -304,35 +358,19 @@ export const AppHeader = ({ location }) => {
                 justifyContent={JustifyContent.flexEnd}
               >
                 <Box display={Display.Flex} gap={4}>
-                  {showConnectedStatus &&
-                    (process.env.MULTICHAIN ? (
-                      <Tooltip
-                        position="left"
-                        title={copied ? t('addressCopied') : null}
-                      >
-                        <ButtonIcon
-                          onClick={() => handleCopy(checksummedCurrentAddress)}
-                          iconName={
-                            copied ? IconName.CopySuccess : IconName.Copy
-                          }
-                          size={IconSize.Sm}
-                          data-testid="app-header-copy-button"
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Box ref={menuRef}>
-                        <ConnectedStatusIndicator
-                          onClick={() => {
-                            history.push(CONNECTED_ACCOUNTS_ROUTE);
-                            trackEvent({
-                              event:
-                                MetaMetricsEventName.NavConnectedSitesOpened,
-                              category: MetaMetricsEventCategory.Navigation,
-                            });
-                          }}
-                        />
-                      </Box>
-                    ))}{' '}
+                  {showConnectedStatus ? (
+                    <Box ref={menuRef}>
+                      <ConnectedStatusIndicator
+                        onClick={() => {
+                          history.push(CONNECTED_ACCOUNTS_ROUTE);
+                          trackEvent({
+                            event: MetaMetricsEventName.NavConnectedSitesOpened,
+                            category: MetaMetricsEventCategory.Navigation,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : null}{' '}
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"

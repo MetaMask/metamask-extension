@@ -13,7 +13,6 @@ describe('Test Snap Homepage', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -21,14 +20,18 @@ describe('Test Snap Homepage', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the honmepage test and connect
         const snapButton1 = await driver.findElement('#connecthomepage');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connecthomepage');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
