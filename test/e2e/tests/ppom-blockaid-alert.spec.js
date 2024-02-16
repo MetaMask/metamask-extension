@@ -105,12 +105,12 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
       method: 'debug_traceCall',
       params: [{ accessList: [], data: '0x00000000' }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             calls: [
               {
@@ -263,6 +263,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           await driver.delay(500);
           await switchToNotificationWindow(driver, 3);
 
+          await driver.waitForElementNotPresent('.loading-indicator');
+
           // Find element by title
           const bannerAlertFoundByTitle = await driver.findElement({
             css: bannerAlertSelector,
@@ -316,6 +318,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
         await switchToNotificationWindow(driver, 3);
 
         const expectedTitle = 'Request may not be safe';
+
+        await driver.waitForElementNotPresent('.loading-indicator');
 
         const bannerAlert = await driver.findElement({
           css: bannerAlertSelector,

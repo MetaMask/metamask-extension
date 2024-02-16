@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Container should render the Container without crashing 1`] = `
+<div>
+  <div
+    class="mm-box mm-container mm-container--max-width-lg"
+  >
+     Test
+  </div>
+</div>
+`;

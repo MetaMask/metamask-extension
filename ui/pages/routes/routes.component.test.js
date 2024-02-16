@@ -60,6 +60,10 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock(
+  '../../components/app/metamask-template-renderer/safe-component-list',
+);
+
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
   afterEach(() => {
@@ -134,10 +138,18 @@ describe('Routes Component', () => {
           pendingApprovals: {},
           approvalFlows: [],
           announcements: {},
+          providerConfig: {
+            chainId: CHAIN_IDS.MAINNET,
+            ticker: 'ETH',
+            type: NETWORK_TYPES.MAINNET,
+          },
         },
         send: {
           ...mockSendState.send,
           stage: SEND_STAGES.INACTIVE,
+        },
+        localeMessages: {
+          currentLocale: 'en',
         },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store);

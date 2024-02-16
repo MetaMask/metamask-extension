@@ -1,18 +1,17 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  generateGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { GAS_API_BASE_URL } = require('../../../shared/constants/swaps');
 
 describe('Gas API fallback', function () {
   async function mockGasApiDown(mockServer) {
     await mockServer
-      .forGet(
-        'https://gas-api.metaswap.codefi.network/networks/1337/suggestedGasFees',
-      )
+      .forGet(`${GAS_API_BASE_URL}/networks/1337/suggestedGasFees`)
       .always()
       .thenCallback(() => {
         return {
@@ -48,23 +47,12 @@ describe('Gas API fallback', function () {
       });
   }
 
-  const ganacheOptions = {
-    hardfork: 'london',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('network error message is displayed if network is congested', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockGasApiDown,
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {

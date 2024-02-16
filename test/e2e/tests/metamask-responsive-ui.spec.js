@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE_TWO,
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   locateAccountBalanceDOM,
   openActionMenuAndStartSendFlow,
@@ -18,7 +18,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -71,14 +70,13 @@ describe('MetaMask Responsive UI', function () {
         // pin extension
         await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
-
+        await driver.isElementPresent('.loading-overlay__spinner');
+        await driver.waitForElementNotPresent('.loading-overlay__spinner');
         // assert balance
         const balance = await driver.findElement(
-          process.env.MULTICHAIN
-            ? '[data-testid="token-balance-overview-currency-display"]'
-            : '[data-testid="eth-overview__primary-currency"]',
+          '.eth-overview__primary-container',
         );
-        assert.ok(/^0\sETH$/u.test(await balance.getText()));
+        assert.equal(await balance.getText(), '$0.00\nUSD');
       },
     );
   });
@@ -91,7 +89,6 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
@@ -120,20 +117,11 @@ describe('MetaMask Responsive UI', function () {
 
   it('Send Transaction from responsive window', async function () {
     const driverOptions = { openDevToolsForTabs: true };
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

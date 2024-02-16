@@ -15,9 +15,9 @@ import {
   Text,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 
 const ConfirmConnectCustodianModal = ({
   onModalClose,

@@ -31,6 +31,191 @@ exports[`Security Tab should match snapshot 1`] = `
         Reveal Secret Recovery Phrase
       </button>
     </div>
+    <div
+      class="settings-page__security-tab-sub-header"
+    >
+      <span
+        class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
+      >
+        Security alerts
+      </span>
+      <div
+        class="settings-page__content-padded"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+        >
+          This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use.
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-top-4 mm-box--color-text-alternative"
+        >
+          Select your preferred provider
+        </p>
+        <div
+          class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          data-testid="settings-toggle-security-alert-blockaid"
+        >
+          <div>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                Blockaid
+              </p>
+              <div
+                class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+                >
+                  Recommended
+                </p>
+              </div>
+            </div>
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
+            >
+              Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon.
+            </h6>
+          </div>
+          <div
+            data-testid="securityAlert"
+          >
+            <label
+              class="toggle-button toggle-button--off"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  />
+                </div>
+                <input
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                />
+                <span
+                  class="toggle-button__label-on"
+                />
+              </div>
+            </label>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+        >
+          <div>
+            <div
+              class="mm-box mm-box--display-flex"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              >
+                OpenSea + Blockaid
+              </p>
+              <div
+                class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+                >
+                  Beta
+                </p>
+              </div>
+            </div>
+            <div
+              class="settings-page__content-description"
+              data-testid="termsOfUse"
+            >
+              <span>
+                 
+                Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. 
+                <a
+                  href="https://opensea.io/securityproviderterms"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  Terms of use
+                </a>
+                
+                 
+              </span>
+            </div>
+          </div>
+          <div
+            data-testid="transactionSecurityCheck"
+          >
+            <label
+              class="toggle-button toggle-button--off"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  />
+                </div>
+                <input
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                />
+                <span
+                  class="toggle-button__label-on"
+                />
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
     <span
       class="settings-page__security-tab-sub-header__bold"
     >
@@ -230,7 +415,7 @@ exports[`Security Tab should match snapshot 1`] = `
               </a>
                APIs to display your balance and token price. 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -318,7 +503,7 @@ exports[`Security Tab should match snapshot 1`] = `
               <img
                 alt="Custom Mainnet RPC logo"
                 class="mm-avatar-network__network-image"
-                src="./images/eth_logo.png"
+                src="./images/eth_logo.svg"
               />
             </div>
             <div
@@ -405,7 +590,7 @@ exports[`Security Tab should match snapshot 1`] = `
               <img
                 alt="Linea Mainnet logo"
                 class="mm-avatar-network__network-image"
-                src="./images/linea-logo-mainnet.png"
+                src="./images/linea-logo-mainnet.svg"
               />
             </div>
             <div
@@ -759,7 +944,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -1072,7 +1257,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -1314,81 +1499,6 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                 type="checkbox"
                 value="true"
-              />
-            </div>
-            <div
-              class="toggle-button__status"
-            >
-              <span
-                class="toggle-button__label-off"
-              >
-                Off
-              </span>
-              <span
-                class="toggle-button__label-on"
-              >
-                On
-              </span>
-            </div>
-          </label>
-        </div>
-      </div>
-    </div>
-    <span
-      class="settings-page__security-tab-sub-header"
-    >
-      Signature requests
-    </span>
-    <div
-      class="settings-page__content-padded"
-    >
-      <div
-        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-      >
-        <div
-          class="settings-page__content-item"
-        >
-          <span>
-            Suggest address names
-          </span>
-          <div
-            class="settings-page__content-description"
-          >
-            We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties.
-          </div>
-        </div>
-        <div
-          class="settings-page__content-item-col"
-          data-testid="useExternalNameSources"
-        >
-          <label
-            class="toggle-button toggle-button--off"
-            tabindex="0"
-          >
-            <div
-              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-            >
-              <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-              >
-                <div
-                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                />
-                <div
-                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                />
-              </div>
-              <div
-                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-              >
-                <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                />
-              </div>
-              <input
-                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                type="checkbox"
-                value="false"
               />
             </div>
             <div

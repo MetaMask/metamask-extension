@@ -14,7 +14,7 @@ import {
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
 import {
-  BaseControllerV2,
+  BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import {
@@ -125,7 +125,7 @@ export type DecryptMessageControllerOptions = {
 /**
  * Controller for decrypt signing requests requiring user approval.
  */
-export default class DecryptMessageController extends BaseControllerV2<
+export default class DecryptMessageController extends BaseController<
   typeof controllerName,
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger

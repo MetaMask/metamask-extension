@@ -3,7 +3,7 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   generateGanacheOptions,
-  DEFAULT_GANACHE_OPTIONS,
+  defaultGanacheOptions,
   unlockWallet,
   genRandInitBal,
   getCleanAppState,
@@ -26,7 +26,7 @@ describe('MetaMetrics ID persistence', function () {
         ganacheOptions: generateGanacheOptions({
           accounts: [
             {
-              secretKey: DEFAULT_GANACHE_OPTIONS.accounts[0].secretKey,
+              secretKey: defaultGanacheOptions.accounts[0].secretKey,
               balance: initialBalanceInHex,
             },
           ],

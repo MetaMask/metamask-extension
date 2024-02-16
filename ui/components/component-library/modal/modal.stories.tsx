@@ -9,14 +9,15 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   Text,
   Button,
   ButtonLink,
   ButtonLinkSize,
+  TextFieldSearch,
   IconName,
   Box,
 } from '..';
-import { TextFieldSearch } from '../text-field-search/deprecated';
 import { Modal } from './modal';
 
 import README from './README.mdx';
@@ -130,7 +131,6 @@ const Template: StoryFn<typeof Modal> = (args) => {
             >
               {showMoreModalContent ? 'Hide' : 'Show more'}
             </ButtonLink>
-
             {showMoreModalContent && (
               <>
                 <LoremIpsum marginTop={8} />
@@ -142,6 +142,7 @@ const Template: StoryFn<typeof Modal> = (args) => {
               </>
             )}
           </ModalBody>
+          <ModalFooter onSubmit={handleOnClose} onCancel={handleOnClose} />
         </ModalContent>
       </Modal>
       {showLoremIpsum && (
@@ -185,7 +186,7 @@ IsClosedOnEscapeKey.args = {
 };
 
 export const InitialFocusRef: StoryFn<typeof Modal> = (args) => {
-  const inputRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const [{ isOpen }, updateArgs] = useArgs();
   const handleOnClick = () => {
     updateArgs({ isOpen: true });

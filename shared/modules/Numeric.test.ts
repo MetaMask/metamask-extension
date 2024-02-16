@@ -473,7 +473,7 @@ describe('Numeric', () => {
     });
   });
 
-  describe('Positive and Negative determination', () => {
+  describe('Positive and Negative and Float determination', () => {
     it('should correctly identify a negative number with isNegative', () => {
       expect(new Numeric(-10, 10).isNegative()).toStrictEqual(true);
       expect(new Numeric('-10', 10).isNegative()).toStrictEqual(true);
@@ -493,6 +493,12 @@ describe('Numeric', () => {
       expect(new Numeric(-10, 10).isPositive()).toStrictEqual(false);
       expect(new Numeric('-10', 10).isPositive()).toStrictEqual(false);
       expect(new Numeric('-0xa', 16).isPositive()).toStrictEqual(false);
+    });
+    it('should correctly identify a float number with isFloat', () => {
+      expect(new Numeric(1.2, 10).isFloat()).toStrictEqual(true);
+      expect(new Numeric('1.2', 10).isFloat()).toStrictEqual(true);
+      expect(new Numeric('-10', 10).isFloat()).toStrictEqual(false);
+      expect(new Numeric('0xa', 16).isFloat()).toStrictEqual(false);
     });
   });
 

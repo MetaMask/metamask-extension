@@ -12,7 +12,7 @@ import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/ut
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
-import GasDetailsItem from '../gas-details-item';
+import GasDetailsItem from '../../../pages/confirmations/components/gas-details-item';
 import Box from '../../ui/box';
 import InfoTooltip from '../../ui/info-tooltip';
 import AppLoadingSpinner from '../app-loading-spinner';
@@ -22,9 +22,9 @@ import {
   ButtonLink,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CancelSpeedupPopover = () => {
   const {

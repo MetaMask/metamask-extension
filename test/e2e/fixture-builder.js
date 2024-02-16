@@ -9,7 +9,7 @@ const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 
-function defaultFixture() {
+function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
     data: {
       AccountsController: {
@@ -50,139 +50,19 @@ function defaultFixture() {
       },
       AnnouncementController: {
         announcements: {
-          1: {
-            date: '2021-03-17',
-            id: 1,
-            image: {
-              height: '230px',
-              placeImageBelowDescription: true,
-              src: 'images/mobile-link-qr.svg',
-              width: '230px',
-            },
-            isShown: false,
-          },
-          3: {
-            date: '2021-03-08',
-            id: 3,
-            isShown: false,
-          },
-          4: {
-            date: '2021-05-11',
-            id: 4,
-            image: {
-              src: 'images/source-logos-bsc.svg',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          5: {
-            date: '2021-06-09',
-            id: 5,
-            isShown: false,
-          },
-          6: {
-            date: '2021-05-26',
-            id: 6,
-            isShown: false,
-          },
-          7: {
-            date: '2021-09-17',
-            id: 7,
-            isShown: false,
-          },
           8: {
             date: '2021-11-01',
             id: 8,
             isShown: false,
           },
-          9: {
-            date: '2021-12-07',
-            id: 9,
-            image: {
-              src: 'images/txinsights.png',
-              width: '80%',
-            },
-            isShown: false,
-          },
-          10: {
-            date: '2022-09-15',
-            id: 10,
-            image: {
-              src: 'images/token-detection.svg',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          11: {
-            date: '2022-09-15',
-            id: 11,
-            isShown: false,
-          },
-          12: {
-            date: '2022-05-18',
-            id: 12,
-            image: {
-              src: 'images/darkmode-banner.png',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          13: {
-            date: '2022-09-15',
-            id: 13,
-            isShown: false,
-          },
-          14: {
-            date: '2022-09-15',
-            id: 14,
-            isShown: false,
-          },
-          15: {
-            date: '2022-09-15',
-            id: 15,
-            isShown: false,
-          },
-          16: {
-            date: null,
-            id: 16,
-            isShown: false,
-          },
-          17: {
-            date: null,
-            id: 17,
-            isShown: false,
-          },
-          18: {
-            date: null,
-            id: 18,
-            isShown: true,
-          },
-          19: {
-            date: null,
-            id: 19,
-            isShown: true,
-          },
-          21: {
-            date: null,
-            id: 21,
-            isShown: true,
-          },
-          22: {
-            date: null,
-            id: 22,
-            isShown: true,
-          },
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          23: {
-            date: null,
-            id: 23,
-            isShown: false,
-          },
-          ///: END:ONLY_INCLUDE_IF
         },
       },
       NetworkOrderController: {
         orderedNetworkList: [],
+      },
+      AccountOrderController: {
+        pinnedAccountList: [],
+        hiddenAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -207,11 +87,6 @@ function defaultFixture() {
           [CHAIN_IDS.LOCALHOST]: true,
         },
         snapsInstallPrivacyWarningShown: true,
-      },
-      CachedBalancesController: {
-        cachedBalances: {
-          [CHAIN_IDS.LOCALHOST]: {},
-        },
       },
       CurrencyController: {
         currentCurrency: 'usd',
@@ -248,7 +123,7 @@ function defaultFixture() {
           },
         },
         providerConfig: {
-          chainId: CHAIN_IDS.LOCALHOST,
+          chainId: inputChainId,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
@@ -258,7 +133,7 @@ function defaultFixture() {
         },
         networkConfigurations: {
           networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
+            chainId: inputChainId,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -296,9 +171,11 @@ function defaultFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          petnamesEnabled: true,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -417,9 +294,11 @@ function onboardingFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          petnamesEnabled: true,
         },
         theme: 'light',
         useBlockie: false,
@@ -458,8 +337,9 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
-  constructor({ onboarding = false } = {}) {
-    this.fixture = onboarding === true ? onboardingFixture() : defaultFixture();
+  constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
+    this.fixture =
+      onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
   withAddressBookController(data) {
@@ -487,13 +367,13 @@ class FixtureBuilder {
     return this;
   }
 
-  withAppStateController(data) {
-    merge(this.fixture.data.AppStateController, data);
+  withAccountOrderController(data) {
+    merge(this.fixture.data.AccountOrderController, data);
     return this;
   }
 
-  withCachedBalancesController(data) {
-    merge(this.fixture.data.CachedBalancesController, data);
+  withAppStateController(data) {
+    merge(this.fixture.data.AppStateController, data);
     return this;
   }
 
@@ -820,6 +700,14 @@ class FixtureBuilder {
         },
       },
       selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withPreferencesControllerPetnamesDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: false,
+      },
     });
   }
 

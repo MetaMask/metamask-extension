@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
+// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {
@@ -10,12 +11,12 @@ import {
   ButtonSize,
   ButtonVariant,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
   TextField,
 } from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   BlockSize,
   Display,
