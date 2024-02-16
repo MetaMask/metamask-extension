@@ -8,14 +8,9 @@ const mockedRemoveAddTokenConnectRequest = jest
   .fn()
   .mockReturnValue({ type: 'TYPE' });
 
-const mockedSetCustodianConnectRequest = jest
-  .fn()
-  .mockReturnValue({ type: 'TYPE' });
-
 jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
     removeAddTokenConnectRequest: mockedRemoveAddTokenConnectRequest,
-    setCustodianConnectRequest: mockedSetCustodianConnectRequest,
   }),
 }));
 
@@ -131,59 +126,6 @@ describe('Confirm Add Custodian Token', () => {
         origin: 'origin',
         environment: 'jupiter',
         token: 'testToken',
-      });
-    });
-  });
-
-  it('clicks the confirm button without chainId and calls setCustodianConnectRequest with custodianName comming from the environment connectRequest', async () => {
-    const customMockedStore = {
-      metamask: {
-        providerConfig: {
-          type: 'test',
-        },
-        preferences: {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        },
-        institutionalFeatures: {
-          connectRequests: [
-            {
-              labels: [
-                {
-                  key: 'service',
-                  value: 'test',
-                },
-              ],
-              origin: 'origin',
-              token: '',
-              feature: 'custodian',
-              service: 'JSONRPC',
-              environment: 'jsonrpc',
-            },
-          ],
-        },
-      },
-      history: {
-        push: '/',
-        mostRecentOverviewPage: '/',
-      },
-    };
-
-    const customStore = configureMockStore()(customMockedStore);
-
-    renderWithProvider(<ConfirmAddCustodianToken />, customStore);
-
-    await waitFor(() => {
-      const confirmButton = screen.getByTestId('confirm-btn');
-      fireEvent.click(confirmButton);
-    });
-
-    expect(screen.getByTestId('pulse-loader')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(mockedSetCustodianConnectRequest).toHaveBeenCalledWith({
-        token: '',
-        custodianType: 'JSONRPC',
-        envName: 'jsonrpc',
       });
     });
   });
