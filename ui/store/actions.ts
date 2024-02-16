@@ -2590,6 +2590,18 @@ export function hideAlert(): Action {
   };
 }
 
+export function showDeprecatedNetworkModal(): Action {
+  return {
+    type: actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN,
+  };
+}
+
+export function hideDeprecatedNetworkModal(): Action {
+  return {
+    type: actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE,
+  };
+}
+
 /**
  * TODO: this should be moved somewhere else when it makese sense to do so
  */

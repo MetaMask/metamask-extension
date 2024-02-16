@@ -50,7 +50,6 @@ describe('migration #55', () => {
           [CHAIN_IDS.MAINNET]: 1,
           '0x3': 2,
           '0x4': 3,
-          [CHAIN_IDS.GOERLI]: 4,
           '0x2a': 5,
         },
       },

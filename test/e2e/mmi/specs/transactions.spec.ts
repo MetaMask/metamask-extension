@@ -42,13 +42,13 @@ const sendTransaction = async (
   // Check network
   const networkPage = new MMINetworkPage(page);
   await networkPage.open();
-  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK || 'Goerli');
+  await networkPage.selectNetwork(
+    process.env.MMI_E2E_TEST_NETWORK || 'Sepolia',
+  );
 
   // Get account from and to name
   const accountFrom = await client.getAccountFrom();
   const accounTo = await client.getAccountTo();
-
-  await mainMenuPage.closeDeprecatedNetworksBanner();
 
   const accountsPopup = new MMIAccountMenuPage(page);
   await accountsPopup.accountsMenu();
