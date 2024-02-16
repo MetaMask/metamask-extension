@@ -10,6 +10,17 @@ import {
   EXPERIMENTAL_ROUTE,
 } from './routes';
 
+/**
+ * @typedef SettingRouteConfig
+ * # @param {Function} tabMessage
+ * # @param {Function} sectionMessage
+ * # @param {Function} descriptionMessage
+ * # @param {string} route
+ * # @param {string} iconName
+ * # @param {string} featureFlag ENV variable name. If the ENV value exists, the route will be searchable; else, route will not be searchable.
+ */
+
+/** @type {SettingRouteConfig[]} */
 export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
