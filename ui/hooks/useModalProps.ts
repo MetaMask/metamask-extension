@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { hideModal } from '../store/actions';
-import { MetaMaskReduxState } from '../store/store';
 
 interface ModalProps {
   props: Record<string, any>;
