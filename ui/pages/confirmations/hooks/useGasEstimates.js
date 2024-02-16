@@ -53,8 +53,9 @@ export function useGasEstimates({
   transaction,
 }) {
   const supportsEIP1559 =
-    useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction?.txParams);
+    useSelector((state) =>
+      checkNetworkAndAccountSupports1559(state, transaction?.networkClientId),
+    ) && !isLegacyTransaction(transaction?.txParams);
 
   const {
     currency: primaryCurrency,
