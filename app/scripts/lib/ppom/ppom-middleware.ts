@@ -69,26 +69,35 @@ export function createPPOMMiddleware(
         // eslint-disable-next-line require-atomic-updates
         const securityAlertId = uuid();
 
-        ppomController.usePPOM(async (ppom: PPOM) => {
-          try {
-            const securityAlertResponse = await ppom.validateJsonRpc(req);
-            securityAlertResponse.securityAlertId = securityAlertId;
-            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
-          } catch (error: any) {
-            sentry?.captureException(error);
-            console.error('Error validating JSON RPC using PPOM: ', error);
-            const securityAlertResponse = {
-              result_type: BlockaidResultType.Failed,
-              reason: BlockaidReason.failed,
-              description:
-                'Validating the confirmation failed by throwing error.',
-            };
-            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
-          }
-        });
+        ppomController
+          .usePPOM(async (ppom: PPOM) => {
+            try {
+              const securityAlertResponse = await ppom.validateJsonRpc(req);
+              return securityAlertResponse;
+            } catch (error: any) {
+              sentry?.captureException(error);
+              console.error('Error validating JSON RPC using PPOM: ', error);
+              const securityAlertResponse = {
+                result_type: BlockaidResultType.Failed,
+                reason: BlockaidReason.failed,
+                description:
+                  'Validating the confirmation failed by throwing error.',
+              };
+
+              return securityAlertResponse;
+            }
+          })
+          .then((securityAlertResponse) => {
+            updateSecurityAlertResponseByTxId(req, {
+              ...securityAlertResponse,
+              securityAlertId,
+            });
+          });
 
         if (SIGNING_METHODS.includes(req.method)) {
           req.securityAlertResponse = {
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
             securityAlertId,
           };
           appStateController.addSignatureSecurityAlertResponse({
