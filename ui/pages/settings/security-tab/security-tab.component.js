@@ -432,7 +432,6 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
         display={Display.Flex}
@@ -1071,7 +1070,10 @@ export default class SecurityTab extends PureComponent {
           {this.renderIncomingTransactionsOptIn()}
         </div>
 
-        <span className="settings-page__security-tab-sub-header">
+        <span
+          className="settings-page__security-tab-sub-header"
+          ref={this.settingsRefs[5]}
+        >
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">

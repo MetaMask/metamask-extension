@@ -184,9 +184,10 @@ export const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[5]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('chooseYourNetwork'),
-    descriptionMessage: (t) => t('chooseYourNetworkDescription'),
-    route: `${SECURITY_ROUTE}#choose-your-network`,
+    sectionMessage: (t) => t('networkProvider'),
+    descriptionMessage: (t) =>
+      `${t('chooseYourNetwork')} ${t('chooseYourNetworkDescription')}`,
+    route: `${SECURITY_ROUTE}#network-provider`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[6]
