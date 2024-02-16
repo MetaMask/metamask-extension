@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import { Button, ButtonProps } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
@@ -12,7 +12,7 @@ export const SnapUIButton: FunctionComponent<
 > = ({ name, children, type, ...props }) => {
   const { handleEvent } = useSnapInterfaceContext();
 
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
+  const handleClick = (event: ReactMouseEvent<HTMLElement>) => {
     if (type === ButtonType.Button) {
       event.preventDefault();
     }
