@@ -10,7 +10,7 @@ import 'react-devtools';
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
-import Eth from 'ethjs';
+import Eth from '@metamask/ethjs';
 import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
 import log from 'loglevel';

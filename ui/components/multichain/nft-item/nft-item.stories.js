@@ -31,7 +31,7 @@ export default {
     name: 'Monkey Trip #2422',
     src: 'https://i.seadn.io/gcs/files/878e670c38e0f02e58bf730c51c30d0c.jpg',
     networkName: 'Ethereum Mainnet',
-    networkSrc: './images/eth_logo.png',
+    networkSrc: './images/eth_logo.svg',
     tokenId: '2422',
   },
 };

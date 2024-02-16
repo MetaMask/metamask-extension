@@ -10,14 +10,7 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import PreferencesController from '../../controllers/preferences';
-
-type SecurityAlertResponse = {
-  reason: string;
-  features?: string[];
-  result_type: string;
-  providerRequestsCount?: Record<string, number>;
-  securityAlertId?: string;
-};
+import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
@@ -26,6 +19,16 @@ const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
+
+export const SUPPORTED_CHAIN_IDS: string[] = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.AVALANCHE,
+  CHAIN_IDS.LINEA_MAINNET,
+];
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -61,31 +64,40 @@ export function createPPOMMiddleware(
       if (
         securityAlertsEnabled &&
         CONFIRMATION_METHODS.includes(req.method) &&
-        chainId === CHAIN_IDS.MAINNET
+        SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         // eslint-disable-next-line require-atomic-updates
         const securityAlertId = uuid();
 
-        ppomController.usePPOM(async (ppom: PPOM) => {
-          try {
-            const securityAlertResponse = await ppom.validateJsonRpc(req);
-            securityAlertResponse.securityAlertId = securityAlertId;
-            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
-          } catch (error: any) {
-            sentry?.captureException(error);
-            console.error('Error validating JSON RPC using PPOM: ', error);
-            const securityAlertResponse = {
-              result_type: BlockaidResultType.Failed,
-              reason: BlockaidReason.failed,
-              description:
-                'Validating the confirmation failed by throwing error.',
-            };
-            updateSecurityAlertResponseByTxId(req, securityAlertResponse);
-          }
-        });
+        ppomController
+          .usePPOM(async (ppom: PPOM) => {
+            try {
+              const securityAlertResponse = await ppom.validateJsonRpc(req);
+              return securityAlertResponse;
+            } catch (error: any) {
+              sentry?.captureException(error);
+              console.error('Error validating JSON RPC using PPOM: ', error);
+              const securityAlertResponse = {
+                result_type: BlockaidResultType.Failed,
+                reason: BlockaidReason.failed,
+                description:
+                  'Validating the confirmation failed by throwing error.',
+              };
+
+              return securityAlertResponse;
+            }
+          })
+          .then((securityAlertResponse) => {
+            updateSecurityAlertResponseByTxId(req, {
+              ...securityAlertResponse,
+              securityAlertId,
+            });
+          });
 
         if (SIGNING_METHODS.includes(req.method)) {
           req.securityAlertResponse = {
+            reason: BlockaidResultType.Loading,
+            result_type: BlockaidReason.inProgress,
             securityAlertId,
           };
           appStateController.addSignatureSecurityAlertResponse({

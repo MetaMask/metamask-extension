@@ -1,6 +1,6 @@
 .confirm_header {
   &__wrapper {
-    box-shadow: 0 2px 16px 0 #0000001a;
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
     height: 64px;
   }
 

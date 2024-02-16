@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -6,7 +6,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
-import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
+import { getCurrentChainId, getSelectedAccount } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -113,7 +113,7 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
@@ -217,26 +217,24 @@ export default function TransactionList({
                     TransactionType.smart
                   ) {
                     return (
-                      <>
+                      <Fragment key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
                         <SmartTransactionListItem
                           isEarliestNonce={index === 0}
                           smartTransaction={transactionGroup.initialTransaction}
                           transactionGroup={transactionGroup}
-                          key={`${transactionGroup.nonce}:${index}`}
                         />
-                      </>
+                      </Fragment>
                     );
                   }
                   return (
-                    <>
+                    <Fragment key={`${transactionGroup.nonce}:${index}`}>
                       {renderDateStamp(index, dateGroup)}
                       <TransactionListItem
                         isEarliestNonce={index === 0}
                         transactionGroup={transactionGroup}
-                        key={`${transactionGroup.nonce}:${index}`}
                       />
-                    </>
+                    </Fragment>
                   );
                 },
               );
@@ -254,7 +252,13 @@ export default function TransactionList({
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
                     return (
-                      <>
+                      <Fragment
+                        key={`${transactionGroup.nonce}:${
+                          transactionGroup.initialTransaction
+                            ? index
+                            : limit + index - 10
+                        }`}
+                      >
                         {renderDateStamp(index, dateGroup)}
                         {transactionGroup.initialTransaction
                           ?.transactionType === TransactionType.smart ? (
@@ -263,17 +267,13 @@ export default function TransactionList({
                             smartTransaction={
                               transactionGroup.initialTransaction
                             }
-                            key={`${transactionGroup.nonce}:${index}`}
                           />
                         ) : (
                           <TransactionListItem
                             transactionGroup={transactionGroup}
-                            key={`${transactionGroup.nonce}:${
-                              limit + index - 10
-                            }`}
                           />
                         )}
-                      </>
+                      </Fragment>
                     );
                   },
                 );

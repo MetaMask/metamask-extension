@@ -49,6 +49,8 @@ import {
   getFullTxData,
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
+  getInternalAccountByAddress,
+  getApprovedAndSignedTransactions,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -81,8 +83,13 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
+// eslint-disable-next-line import/no-duplicates
+import { getIsUsingPaymaster } from '../../selectors/account-abstraction';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+// eslint-disable-next-line import/no-duplicates
 import { getAccountType } from '../../selectors/selectors';
+
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
@@ -130,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
   const conversionRate = getConversionRate(state);
-  const { identities, addressBook, nextNonce } = metamask;
+  const { addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -151,7 +158,8 @@ const mapStateToProps = (state, ownProps) => {
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];
-  const { name: fromName } = identities[fromAddress];
+  const fromName = getInternalAccountByAddress(state, fromAddress)?.metadata
+    .name;
   const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
@@ -166,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
 
   const toName =
-    identities[toAddress]?.name ||
+    getInternalAccountByAddress(state, toAddress)?.metadata.name ||
     tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
@@ -238,6 +246,11 @@ const mapStateToProps = (state, ownProps) => {
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+  const isUsingPaymaster = getIsUsingPaymaster(state);
+
+  const isSigningOrSubmitting = Boolean(
+    getApprovedAndSignedTransactions(state).length,
+  );
 
   return {
     balance,
@@ -290,6 +303,8 @@ const mapStateToProps = (state, ownProps) => {
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
+    isUsingPaymaster,
+    isSigningOrSubmitting,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
