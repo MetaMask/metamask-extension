@@ -7,6 +7,7 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
+  Color,
   Display,
   JustifyContent,
   Size,
@@ -23,11 +24,11 @@ import {
 import Tooltip from '../../ui/tooltip';
 
 export const BadgeStatus = ({
-  className,
-  badgeBackgroundColor,
-  badgeBorderColor,
+  className = '',
+  badgeBackgroundColor = Color.borderMuted,
+  badgeBorderColor = BackgroundColor.backgroundDefault,
   address,
-  isConnectedAndNotActive,
+  isConnectedAndNotActive = false,
   text,
 }) => {
   const useBlockie = useSelector(getUseBlockie);
