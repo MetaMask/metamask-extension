@@ -60,7 +60,9 @@ class FirefoxDriver {
     }
     if (process.env.SELENIUM_HEADLESS) {
       // TODO: Remove notice and consider non-experimental when results are consistent
-      console.warn('*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons');
+      console.warn(
+        '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
+      );
       options.headless();
     }
     const builder = new Builder()
