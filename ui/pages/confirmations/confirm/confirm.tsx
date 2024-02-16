@@ -1,4 +1,4 @@
-import 'react';
+import React from 'react';
 
 import { Content, Page } from '../../../components/multichain/pages/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
