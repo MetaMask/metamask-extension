@@ -586,7 +586,7 @@
     "yargs": "^17.0.1"
   },
   "engines": {
-    "node": ">= 20",
+    "node": ">= 18",
     "yarn": "^4.0.2"
   },
   "lavamoat": {
