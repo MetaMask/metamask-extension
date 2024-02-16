@@ -3,7 +3,7 @@ import { Icon, IconName } from '../../../../components/component-library';
 import ApproveContentCard from './approve-content-card';
 
 export default {
-  title: 'Components/App/ApproveContentCard',
+  title: 'Confirmations/Components/ApproveContentCard',
 
   argTypes: {
     showHeader: {
