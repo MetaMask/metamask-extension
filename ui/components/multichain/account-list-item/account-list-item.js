@@ -59,6 +59,7 @@ import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { ConnectedStatus } from '../connected-status/connected-status';
+import { BadgeStatus } from '../badge-status/badge-status';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;

@@ -21,8 +21,6 @@ export default {
     },
   },
   args: {
-    badgeBackgroundColor: BackgroundColor.successDefault,
-    badgeBorderColor: BackgroundColor.backgroundDefault,
     address: '0x1',
     text: 'Tooltip',
   },
