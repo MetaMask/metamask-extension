@@ -727,6 +727,7 @@ describe('Confirm Transaction Base', () => {
         );
 
         expect(getByText('Invalid recipient address')).toBeInTheDocument();
+        expect(getByText('Confirm')).toBeDisabled();
       });
     });
   });
