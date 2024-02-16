@@ -17,7 +17,7 @@ import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
@@ -106,7 +106,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   );
 
   if (metamaskState.textDirection === 'rtl') {
-    await switchDirection('rtl');
+    switchDirection('rtl');
   }
 
   const draftInitialState = {
@@ -131,7 +131,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress = getSelectedAddress(draftInitialState);
+    const selectedAddress =
+      getSelectedInternalAccount(draftInitialState)?.address ?? '';
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -164,6 +165,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
+    metamaskState.networkId,
     metamaskState.providerConfig.chainId,
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;

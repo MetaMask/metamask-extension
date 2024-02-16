@@ -91,9 +91,11 @@ export default class PreferencesController {
         showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      isIpfsGatewayEnabled: true,
       useAddressBarEnsResolution: true,
       // Ledger transport type is deprecated. We currently only support webhid
       // on chrome, and u2f on firefox.
@@ -107,9 +109,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       isLineaMainnetReleased: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -271,7 +271,6 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -282,7 +281,6 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property
@@ -578,6 +576,15 @@ export default class PreferencesController {
   async setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
     return domain;
+  }
+
+  /**
+   * A setter for the `isIpfsGatewayEnabled` property
+   *
+   * @param {boolean} enabled - Whether or not IPFS is enabled
+   */
+  async setIsIpfsGatewayEnabled(enabled) {
+    this.store.updateState({ isIpfsGatewayEnabled: enabled });
   }
 
   /**

@@ -14,6 +14,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getAddressBook,
   getSelectedNetworkClientId,
+  getSelectedInternalAccount,
 } from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -44,6 +45,7 @@ const initialState = {
     showFiatInTestnets: false,
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
+    petnamesEnabled: true,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -271,8 +273,10 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: { allNfts, selectedAddress },
+    metamask: { allNfts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
   const { chainId } = getProviderConfig(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
@@ -280,10 +284,10 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: { allNftContracts, selectedAddress },
+    metamask: { allNftContracts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 

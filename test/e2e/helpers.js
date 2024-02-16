@@ -37,7 +37,7 @@ async function withFixtures(options, testSuite) {
     driverOptions,
     dappOptions,
     title,
-    failOnConsoleError = true,
+    ignoredConsoleErrors = [],
     dappPath = undefined,
     dappPaths,
     testSpecificMock = function () {
@@ -125,8 +125,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(failOnConsoleError);
-      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
 
     let driverProxy;
@@ -149,7 +149,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    console.log(`\nExecuting testcase: ${title}\n`);
+    console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
       driver: driverProxy ?? driver,
@@ -158,6 +158,11 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
+    if (errorsAndExceptions) {
+      throw new Error(errorsAndExceptions);
+    }
 
     // At this point the suite has executed successfully, so we can log out a success message
     // (Note: a Chrome browser error will unfortunately pop up after this success message)
@@ -218,6 +223,12 @@ async function withFixtures(options, testSuite) {
         await driver.navigate(PAGES.BACKGROUND);
       }
     }
+
+    // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
+    if (process.env.CIRCLE_NODE_INDEX) {
+      error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
+    }
+
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
@@ -685,14 +696,18 @@ const generateGanacheOptions = ({
   };
 };
 
+// Edit priority gas fee form
+const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+  const inputs = await driver.findElements('input[type="number"]');
+  const gasLimitInput = inputs[0];
+  const gasPriceInput = inputs[1];
+  await gasLimitInput.fill(gasLimit);
+  await gasPriceInput.fill(gasPrice);
+  await driver.clickElement({ text: 'Save', tag: 'button' });
+};
+
 const openActionMenuAndStartSendFlow = async (driver) => {
-  // TODO: Update Test when Multichain Send Flow is added
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement('[data-testid="app-footer-actions-button"]');
-    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
-  } else {
-    await driver.clickElement('[data-testid="eth-overview-send"]');
-  }
+  await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
 const sendScreenToConfirmScreen = async (
@@ -703,11 +718,18 @@ const sendScreenToConfirmScreen = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+  } else {
+    await driver.clickElement({
+      text: 'Next',
+      tag: 'button',
+      css: '[data-testid="page-container-footer-next"]',
+    });
+  }
 };
 
 const sendTransaction = async (
@@ -768,29 +790,23 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement(`[data-testid="home__asset-tab"]`);
-    await driver.findElement({
-      css: '[data-testid="token-balance-overview-currency-display"]',
-      text: `${balance} ETH`,
-    });
-  } else {
-    await driver.findElement({
-      css: '[data-testid="eth-overview__primary-currency"]',
-      text: `${balance} ETH`,
-    });
-  }
+  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
+    undefined,
+    {
+      minimumFractionDigits: 2,
+    },
+  );
+
+  await driver.findElement({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `$ ${balance} USD`,
+  });
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 async function waitForAccountRendered(driver) {
-  await driver.waitForSelector(
-    process.env.MULTICHAIN
-      ? '[data-testid="token-balance-overview-currency-display"]'
-      : '[data-testid="eth-overview__primary-currency"]',
-  );
+  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
 }
 
 /**
@@ -924,21 +940,31 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(async () => {
-    let isPending = true;
+  await driver.wait(
+    async () => {
+      let isPending = true;
 
-    for (const mockedEndpoint of mockedEndpoints) {
-      isPending = await mockedEndpoint.isPending();
-    }
+      for (const mockedEndpoint of mockedEndpoints) {
+        isPending = await mockedEndpoint.isPending();
+      }
 
-    return isPending === !hasRequest;
-  }, driver.timeout);
+      return isPending === !hasRequest;
+    },
+    driver.timeout,
+    true,
+  );
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
 
-  return mockedRequests.map((req) => req.body.json?.batch).flat();
+  return (
+    await Promise.all(
+      mockedRequests.map(async (req) => {
+        return (await req.body?.getJson())?.batch;
+      }),
+    )
+  ).flat();
 }
 
 // Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
@@ -1039,4 +1065,5 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
+  editGasfeeForm,
 };

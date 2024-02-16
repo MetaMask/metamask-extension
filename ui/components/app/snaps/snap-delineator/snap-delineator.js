@@ -65,9 +65,14 @@ export const SnapDelineator = ({
         padding={1}
         style={{ borderBottomWidth: isCollapsed ? 0 : 1 }}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          className="snap-delineator__header__container"
+        >
           <AvatarIcon
             iconName={IconName.Snaps}
+            className="snap-delineator__header__icon"
             size={AvatarIconSize.Xs}
             backgroundColor={
               isError ? IconColor.errorDefault : IconColor.infoDefault
@@ -83,6 +88,8 @@ export const SnapDelineator = ({
             marginLeft={1}
             marginTop={0}
             marginBottom={0}
+            marginRight={1}
+            display="block"
           >
             {t(getDelineatorTitle(type), [snapName])}
           </Text>
@@ -97,6 +104,7 @@ export const SnapDelineator = ({
           />
         )}
       </Box>
+
       <Box
         className="snap-delineator__content"
         padding={4}

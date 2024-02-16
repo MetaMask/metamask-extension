@@ -9,15 +9,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import PreferencesController from '../../controllers/preferences';
-
-type SecurityAlertResponse = {
-  reason: string;
-  features?: string[];
-  result_type: string;
-  providerRequestsCount?: Record<string, number>;
-  securityAlertId?: string;
-};
+import { PreferencesController } from '../../controllers/preferences';
+import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
@@ -26,6 +19,16 @@ const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
+
+export const SUPPORTED_CHAIN_IDS: string[] = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.AVALANCHE,
+  CHAIN_IDS.LINEA_MAINNET,
+];
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -61,7 +64,7 @@ export function createPPOMMiddleware(
       if (
         securityAlertsEnabled &&
         CONFIRMATION_METHODS.includes(req.method) &&
-        chainId === CHAIN_IDS.MAINNET
+        SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         // eslint-disable-next-line require-atomic-updates
         const securityAlertId = uuid();

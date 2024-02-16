@@ -6,7 +6,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
-import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
+import { SnapInsight } from '../components/app/snaps/snap-insight/snap-insight';
 import {
   getInsightSnapIds,
   getInsightSnaps,

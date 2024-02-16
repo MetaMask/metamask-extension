@@ -25,9 +25,6 @@ const state = {
       22: {
         id: 22,
         date: null,
-        image: {
-          src: 'images/global-menu-block-explorer.svg',
-        },
       },
     },
     orderedNetworkList: [],
@@ -115,7 +112,7 @@ const state = {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'ETH',
         decimals: 18,
-        image: './images/eth_logo.png',
+        image: './images/eth_logo.svg',
         unlisted: false,
       },
       '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
@@ -659,7 +656,7 @@ const state = {
     providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
-      nickname: '',
+      nickname: 'Goerli',
       rpcUrl: '',
       chainId: '0x5',
     },
