@@ -6,7 +6,8 @@ import {
   getIsGasEstimatesLoading,
   getIsNetworkBusy,
 } from '../ducks/metamask/metamask';
-import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
+import usePolling from './usePolling';
+import { gasFeeStartPollingByNetworkClientId, gasFeeStopPollingByPollingToken } from '../store/actions';
 
 /**
  * @typedef {object} GasEstimates
@@ -27,12 +28,18 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  *
  * @returns {GasEstimates} GasEstimates object
  */
-export function useGasFeeEstimates() {
+export function useGasFeeEstimates(networkClientId) {
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates, isEqual);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
   const isNetworkBusy = useSelector(getIsNetworkBusy);
-  useSafeGasEstimatePolling();
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+
+  usePolling({
+    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+    stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+    networkClientId: networkClientId ?? selectedNetworkClientId,
+  });
 
   return {
     gasFeeEstimates,
