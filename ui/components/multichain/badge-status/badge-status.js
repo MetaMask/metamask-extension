@@ -18,9 +18,7 @@ import {
   BadgeWrapper,
   Box,
 } from '../../component-library';
-import {
-  getUseBlockie,
-} from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 
 export const BadgeStatus = ({
