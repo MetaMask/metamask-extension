@@ -70,8 +70,8 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
  *
  * @param controllerMessenger - The controller messenger instance.
  * @param getSnapController - A function that retrieves the Snap Controller instance.
- * @param persistKeyringHelper - A function that retrieves the Keyring Controller instance.
- * @param setSelectedAccountHelper - A function that retrieves the Preferences Controller instance.
+ * @param persistKeyringHelper - A function that persists all keyrings in the vault.
+ * @param setSelectedAccountHelper - A function to update current selected account.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
