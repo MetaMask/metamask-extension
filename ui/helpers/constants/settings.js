@@ -15,7 +15,7 @@ import {
  * # @param {Function} tabMessage
  * # @param {Function} sectionMessage
  * # @param {Function} descriptionMessage
- * # @param {string} route
+ * # @param {string} route tab route with appended arbitrary, unique anchor tag / hash route
  * # @param {string} iconName
  * # @param {string} featureFlag ENV variable name. If the ENV value exists, the route will be searchable; else, route will not be searchable.
  */
