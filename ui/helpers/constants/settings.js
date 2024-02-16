@@ -7,8 +7,7 @@ import {
   ABOUT_US_ROUTE,
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
-  /** commenting out rather than removing since I believe we should support searching experimental settings */
-  // EXPERIMENTAL_ROUTE,
+  EXPERIMENTAL_ROUTE,
 } from './routes';
 
 /**
@@ -425,4 +424,24 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
+  // experimental settingsRefs[0]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('petnamesEnabledToggle'),
+    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
+    icon: 'fas fa-flask',
+  },
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
+  // experimental settingsRefs[1]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('snaps'),
+    descriptionMessage: (t) => t('addSnapAccountToggle'),
+    route: `${EXPERIMENTAL_ROUTE}#snaps`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];
