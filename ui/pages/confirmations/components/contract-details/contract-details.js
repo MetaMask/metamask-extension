@@ -4,12 +4,10 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import Box from '../../../../components/ui/box';
-import Button from '../../../../components/ui/button/button.component';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../../components/ui/identicon';
 import { ellipsify } from '../../send/send.utils';
-import Popover from '../../../../components/ui/popover';
 import {
   FontWeight,
   TextVariant,

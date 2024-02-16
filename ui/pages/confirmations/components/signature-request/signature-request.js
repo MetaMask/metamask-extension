@@ -35,7 +35,6 @@ import {
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
-import Box from '../../../../components/ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
 

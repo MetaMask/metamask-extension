@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Popover from '../../../../components/ui/popover';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ContractDetails from '../contract-details';
 import {
   FontWeight,
@@ -8,8 +9,10 @@ import {
   Display,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../../components/component-library';
+import { Text, Box, Button } from '../../../../components/component-library';
 export default function ContractDetailsModal({ onClose, ...props }) {
+  const t = useI18nContext();
+
   return (
     <Popover className="contract-details-modal">
       <ContractDetails {...props}>

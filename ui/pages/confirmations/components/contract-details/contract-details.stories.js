@@ -15,6 +15,11 @@ export default {
         type: 'text',
       },
     },
+    isContractRequestingSignature: {
+      control: {
+        type: 'boolean',
+      },
+    },
     toAddress: {
       control: {
         type: 'text',
