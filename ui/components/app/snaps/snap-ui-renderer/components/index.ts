@@ -1,4 +1,3 @@
-import { NodeType } from '@metamask/snaps-sdk';
 import { panel } from './panel';
 import { heading } from './heading';
 import { text } from './text';
@@ -11,9 +10,8 @@ import { copyable } from './copyable';
 import { button } from './button';
 import { form } from './form';
 import { input } from './input';
-import { UIComponentFactory } from './types';
 
-export const COMPONENT_MAPPING: Record<NodeType, UIComponentFactory<any>> = {
+export const COMPONENT_MAPPING = {
   panel,
   heading,
   text,
