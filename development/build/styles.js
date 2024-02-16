@@ -74,8 +74,8 @@ async function buildScssPipeline(src, dest, devMode) {
         // folders over `node_modules`
         includePaths: [
           // enables shortcuts to `@use design-system`, `@use utilities`, etc.
-          './ui/css',
-          './node_modules',
+          'ui/css/',
+          'node_modules/',
         ],
         functions: {
           // Tell sass where to find the font-awesome font files

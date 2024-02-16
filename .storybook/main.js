@@ -71,7 +71,7 @@ module.exports = {
             sourceMap: true,
             implementation: require('sass-embedded'),
             sassOptions: {
-              includePaths: ['ui/css/'],
+              includePaths: ['ui/css/', 'node_modules/',],
             },
           },
         },
