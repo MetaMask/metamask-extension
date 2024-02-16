@@ -218,20 +218,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  const initialTxData = getFullTxData(
+  const fullTxData = getFullTxData(
     state,
     txId,
     TransactionStatus.unapproved,
     customTxParamsData,
+    hexTransactionAmount,
   );
-
-  const fullTxData = {
-    ...initialTxData,
-    txParams: {
-      ...txData.txParams,
-      value: hexTransactionAmount,
-    },
-  };
 
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);

@@ -3,7 +3,7 @@ import { sanitizeMessage } from '../../../../../helpers/utils/util';
 import SignatureRequestData from './signature-request-data';
 
 export default {
-  title: 'Components/App/SignatureRequest/SignatureRequestData',
+  title: 'Confirmations/Components/SignatureRequest/SignatureRequestData',
 
   component: SignatureRequestData,
   argTypes: {

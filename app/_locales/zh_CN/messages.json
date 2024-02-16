@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "替换托管代币"
   },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "在 $1 应用程序中批准交易。一旦执行了所有所需的托管批准，交易即完成。在您的 $1 应用程序中查看状态。"
   },

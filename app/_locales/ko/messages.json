@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "수탁 토큰 대체"
   },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "$1 앱에서 트랜잭션을 승인하세요. 필요한 수탁자 승인이 모두 완료되면 트랜잭션이 완료됩니다. $1 앱 상태를 확인하세요."
   },
