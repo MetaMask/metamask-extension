@@ -59,7 +59,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
           })
           .build(),
         defaultGanacheOptions,
-        testSpecificMock: mockInfuraWithMaliciousResponses,
+        // testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
 
