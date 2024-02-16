@@ -95,6 +95,7 @@ import {
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1078,8 +1079,17 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return getTransaction(state, transactionId);
   },
-  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, customTxParamsData) => {
+  (
+    _state,
+    _transactionId,
+    _status,
+    customTxParamsData,
+    hexTransactionAmount,
+  ) => ({
+    customTxParamsData,
+    hexTransactionAmount,
+  }),
+  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -1090,6 +1100,15 @@ export const getFullTxData = createDeepEqualSelector(
         txParams: {
           ...fullTxData.txParams,
           data: customTxParamsData,
+        },
+      };
+    }
+    if (hexTransactionAmount) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          value: hexTransactionAmount,
         },
       };
     }
@@ -1269,6 +1288,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF

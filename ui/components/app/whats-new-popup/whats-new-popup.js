@@ -18,6 +18,7 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   getTranslatedUINotifications,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -66,6 +67,9 @@ function getActionFunctionById(id, history) {
     },
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
+    },
+    [NOTIFICATION_STAKING_PORTFOLIO]: () => {
+      updateViewedNotifications({ [NOTIFICATION_STAKING_PORTFOLIO]: true });
     },
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: () => {
@@ -296,6 +300,7 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
+    [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IF

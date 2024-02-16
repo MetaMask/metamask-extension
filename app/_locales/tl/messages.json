@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Palitan ang custodian token"
   },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "Aprubahan ang transaksyon sa $1 app. Kapag naisagawa na ang lahat ng kailangang pahintulot sa kustodiya ang transaksyon ay makukumpleto. Tingnan ang iyong $1 app para sa katayuan."
   },

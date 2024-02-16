@@ -970,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Saklayıcı kurum tokenini değiştir"
   },
-  "custodyApiUrl": {
-    "message": "$1 API URL adresi"
-  },
   "custodyDeeplinkDescription": {
     "message": "İşlemi $1 uygulamasında onaylayın. Gerekli tüm saklayıcı kurum onayları gerçekleştikten sonra işlem tamamlanacaktır. Durum için $1 kontrolünüzü yapın."
   },

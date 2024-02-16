@@ -112,10 +112,9 @@ export default class DetectTokensController extends StaticIntervalPollingControl
   }
 
   async _executePoll(networkClientId, options) {
-    const networkClient = this.getNetworkClientById(networkClientId);
     await this.detectNewTokens({
       ...options,
-      chainId: networkClient.configuration.chainId,
+      networkClientId,
     });
   }
 
@@ -125,11 +124,24 @@ export default class DetectTokensController extends StaticIntervalPollingControl
    * @param options
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
    * @param options.chainId - the chainId against which to detect for token balances
+   * @param options.networkClientId
    */
-  async detectNewTokens({ selectedAddress, chainId } = {}) {
+  async detectNewTokens({ selectedAddress, chainId, networkClientId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect =
-      chainId ?? this.getChainIdFromNetworkStore();
+    let chainIdAgainstWhichToDetect;
+    let networkClientIdAgainstWhichToDetect;
+
+    if (networkClientId) {
+      networkClientIdAgainstWhichToDetect = networkClientId;
+      const networkClient = this.getNetworkClientById(networkClientId);
+      chainIdAgainstWhichToDetect = networkClient.configuration.chainId;
+    } else {
+      chainIdAgainstWhichToDetect =
+        chainId ?? this.getChainIdFromNetworkStore();
+      networkClientIdAgainstWhichToDetect =
+        this.network.findNetworkClientIdByChainId(chainIdAgainstWhichToDetect);
+    }
+
     if (!this.isActive) {
       return;
     }
@@ -184,9 +196,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
         result = await this.assetsContractController.getBalancesInSingleCall(
           addressAgainstWhichToDetect,
           tokensSlice,
-          this.network.findNetworkClientIdByChainId(
-            chainIdAgainstWhichToDetect,
-          ),
+          networkClientIdAgainstWhichToDetect,
         );
       } catch (error) {
         warn(
