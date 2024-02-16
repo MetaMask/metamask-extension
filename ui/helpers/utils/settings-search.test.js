@@ -147,39 +147,39 @@ describe('Settings Search Utils', () => {
   });
 
   describe('getNumberOfSettingsInSection', () => {
-    it('should get good general section number', () => {
+    it('returns "General" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
     });
 
-    it('should get good advanced section number', () => {
+    it('returns "Advanced" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
     });
 
-    it('should get good contact section number', () => {
+    it('returns "Contact" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('contacts'))).toStrictEqual(1);
     });
 
-    it('should get good security & privacy section number', () => {
+    it('returns "Security & Privacy" section count', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
       ).toStrictEqual(15);
     });
 
-    it('should get good alerts section number', () => {
+    it('returns "Alerts" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('alerts'))).toStrictEqual(2);
     });
 
-    it('should get good network section number', () => {
+    it('returns "Network" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
     });
 
-    it('should get good experimental section number', () => {
+    it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
         1,
       );
     });
 
-    it('should get good about section number', () => {
+    it('returns "About" section count', () => {
       expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
     });
   });
