@@ -5243,17 +5243,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/snaps-sdk@npm:2.0.0"
+"@metamask/snaps-sdk@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/snaps-sdk@npm:2.1.0"
   dependencies:
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/utils": "npm:^8.3.0"
-    is-svg: "npm:^4.4.0"
+    fast-xml-parser: "npm:^4.3.4"
     superstruct: "npm:^1.0.3"
-  checksum: ca7c0b6e73602536f50d1a3f3d3fa3899653767fd06b7cd288b2909b7bbf1b58b53b1c0f0c196b14994ac090fbae1f7a5b3368cb90368fa2600e7d9b9240395f
+  checksum: 539e1a478c89a249c0ed56d705fd4c3614c4d45d0fd8fa9a2c0d781b18d171d60944d3106e65afc68a9f52997d5ff1a4728be697e2405e56bcf2df8bf9af0bea
   languageName: node
   linkType: hard
 
@@ -5287,9 +5287,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/snaps-utils@npm:6.0.0"
+"@metamask/snaps-utils@npm:^6.0.0, @metamask/snaps-utils@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/snaps-utils@npm:6.1.0"
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -5299,7 +5299,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/slip44": "npm:^3.1.0"
     "@metamask/snaps-registry": "npm:^3.0.0"
-    "@metamask/snaps-sdk": "npm:^2.0.0"
+    "@metamask/snaps-sdk": "npm:^2.1.0"
     "@metamask/utils": "npm:^8.3.0"
     "@noble/hashes": "npm:^1.3.1"
     "@scure/base": "npm:^1.1.1"
@@ -5307,13 +5307,12 @@ __metadata:
     cron-parser: "npm:^4.5.0"
     fast-deep-equal: "npm:^3.1.3"
     fast-json-stable-stringify: "npm:^2.1.0"
-    is-svg: "npm:^4.4.0"
     rfdc: "npm:^1.3.0"
     semver: "npm:^7.5.4"
     ses: "npm:^1.1.0"
     superstruct: "npm:^1.0.3"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 1cfa32180e3d074068cd6ae02ffb2657708bf2e58982f67ae40419001f24fa72e835bf54440c986046648a0f439d13be455cbea4408b55f3a3b7a412d0e75206
+  checksum: 8e2b25abbca14571de58eb5c4aa8d1289ed7f2406bb1961214e1a04bbb29bba99c49c59f43fec227c07cca4c6506a1446c4163e4cd8f1ddf3d25b6fd4ff1b697
   languageName: node
   linkType: hard
 
@@ -17935,7 +17934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^4.1.3":
+"fast-xml-parser@npm:^4.1.3, fast-xml-parser@npm:^4.3.4":
   version: 4.3.4
   resolution: "fast-xml-parser@npm:4.3.4"
   dependencies:
@@ -24639,8 +24638,8 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^5.0.0"
     "@metamask/snaps-rpc-methods": "npm:^6.0.0"
-    "@metamask/snaps-sdk": "npm:^2.0.0"
-    "@metamask/snaps-utils": "npm:^6.0.0"
+    "@metamask/snaps-sdk": "npm:^2.1.0"
+    "@metamask/snaps-utils": "npm:^6.1.0"
     "@metamask/test-dapp": "npm:^7.3.1"
     "@metamask/transaction-controller": "npm:^22.0.0"
     "@metamask/user-operation-controller": "npm:^1.0.0"

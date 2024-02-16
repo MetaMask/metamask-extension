@@ -2101,7 +2101,7 @@
       },
       "packages": {
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk>is-svg": true,
+        "@metamask/snaps-sdk>fast-xml-parser": true,
         "@metamask/utils": true,
         "superstruct": true
       }
@@ -2137,18 +2137,13 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/snaps-sdk>is-svg": {
-      "packages": {
-        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
-      }
-    },
-    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
+    "@metamask/snaps-sdk>fast-xml-parser": {
       "globals": {
         "entityName": true,
         "val": true
       },
       "packages": {
-        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
+        "@metamask/snaps-sdk>fast-xml-parser>strnum": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2170,7 +2165,6 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/snaps-sdk>is-svg": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
