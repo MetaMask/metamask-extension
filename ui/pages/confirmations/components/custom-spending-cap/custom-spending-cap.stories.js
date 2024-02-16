@@ -4,7 +4,7 @@ import { useArgs } from '@storybook/client-api';
 import CustomSpendingCap from './custom-spending-cap';
 
 export default {
-  title: 'Components/App/CustomSpendingCap',
+  title: 'Confirmations/Components/CustomSpendingCap',
   argTypes: {
     txParams: {
       control: 'object',

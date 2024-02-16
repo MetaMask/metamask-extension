@@ -940,17 +940,6 @@ export default class MetamaskController extends EventEmitter {
           ),
         ),
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
-        additionalKeyrings.push(
-          mmiKeyringBuilderFactory(
-            CUSTODIAN_TYPES[custodianType].keyringClass,
-            { mmiConfigurationController: this.mmiConfigurationController },
-          ),
-        );
-      }
-      ///: END:ONLY_INCLUDE_IF
     } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
@@ -958,6 +947,16 @@ export default class MetamaskController extends EventEmitter {
         keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+      additionalKeyrings.push(
+        mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass, {
+          mmiConfigurationController: this.mmiConfigurationController,
+        }),
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
@@ -4724,6 +4723,9 @@ export default class MetamaskController extends EventEmitter {
             'AccountsController:getSelectedAccount',
           ],
         }),
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        appStateController: this.appStateController,
+        ///: END:ONLY_INCLUDE_IF
       }),
     );
 

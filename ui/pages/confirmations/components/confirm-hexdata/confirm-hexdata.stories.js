@@ -3,7 +3,7 @@ import README from './README.mdx';
 import ConfirmHexData from './confirm-hexdata';
 
 export default {
-  title: 'Components/App/ConfirmHexData',
+  title: 'Confirmations/Components/ConfirmHexData',
 
   component: ConfirmHexData,
   parameters: {
