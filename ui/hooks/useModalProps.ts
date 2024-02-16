@@ -8,8 +8,8 @@ interface ModalProps {
 }
 
 export function useModalProps(): ModalProps {
-  const modalProps = useSelector((state: MetaMaskReduxState) => {
-    return state.appState.modal.modalState.props;
+  const modalProps = useSelector((state: any) => {
+    return state.appState.modal.modalState?.props;
   });
 
   const dispatch = useDispatch();

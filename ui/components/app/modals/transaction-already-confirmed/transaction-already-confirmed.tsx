@@ -33,7 +33,7 @@ export default function TransactionAlreadyConfirmed() {
   const { transaction, rpcPrefs } = useSelector((state: MetaMaskReduxState) => {
     const tx: TransactionMeta = state.metamask.transactions.find(
       ({ id }) => id === originalTransactionId,
-    );
+    ) as unknown as TransactionMeta;
     const prefs: NetworkClientConfiguration =
       getRpcPrefsForCurrentProvider(state);
 
