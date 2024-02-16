@@ -152,9 +152,9 @@ const useTransactionInsights = ({ txData }) => {
     if (promise.response?.severity === SeverityLevel.Critical) {
       const {
         snapId,
-        response: { content },
+        response: { id },
       } = promise;
-      warningsArr.push({ snapId, content });
+      warningsArr.push({ snapId, id });
     }
     return warningsArr;
   }, []);
