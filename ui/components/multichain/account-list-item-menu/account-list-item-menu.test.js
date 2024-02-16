@@ -8,12 +8,14 @@ import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
 
 const mockShowModal = jest.fn();
+const mockAddPermittedAccount = jest.fn();
 
 jest.mock('../../../store/institutional/institution-background');
 
 jest.mock('../../../store/actions', () => {
   return {
     showModal: () => mockShowModal,
+    addPermittedAccount: () => mockAddPermittedAccount,
   };
 });
 
@@ -21,7 +23,6 @@ const identity = {
   ...mockState.metamask.identities[
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
   ],
-  balance: '0x152387ad22c3f0',
 };
 
 const DEFAULT_PROPS = {
@@ -36,6 +37,9 @@ const render = (props = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+    },
+    activeTab: {
+      origin: 'https://uniswap.org/',
     },
   });
   const allProps = { ...DEFAULT_PROPS, ...props };

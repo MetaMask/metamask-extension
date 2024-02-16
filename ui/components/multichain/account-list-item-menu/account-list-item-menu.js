@@ -23,6 +23,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
+  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -40,7 +41,7 @@ import {
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { Display, TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
@@ -179,16 +180,20 @@ export const AccountListItemMenu = ({
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           {process.env.MULTICHAIN ? (
-            <MenuItem
-              data-testid="account-list-menu-connect-account"
-              onClick={() => {
-                dispatch(addPermittedAccount(activeTabOrigin, identity.address));
-                onClose();
-              }}
-              iconName={IconName.UserCircleLink}
-            >
-              <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
-            </MenuItem>
+            <Box display={[Display.Flex, Display.None]}>
+              <MenuItem
+                data-testid="account-list-menu-connect-account"
+                onClick={() => {
+                  dispatch(
+                    addPermittedAccount(activeTabOrigin, identity.address),
+                  );
+                  onClose();
+                }}
+                iconName={IconName.UserCircleLink}
+              >
+                <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
+              </MenuItem>
+            </Box>
           ) : null}
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
