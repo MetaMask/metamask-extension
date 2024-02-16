@@ -1159,14 +1159,13 @@ jobs:
 
   testrail-upload-mmi-results:
     docker:
-      - image: cimg/python:3.12.1
+      - image: cimg/python:3.10.4
     steps:
      - attach_workspace:
          at: .
      - run:
          name: Install TR CLI and upload the test results to TestRail
          command: |
-           pip install --upgrade pip
            pip install trcli
            trcli -y \
              -h https://mmig.testrail.io/ \
