@@ -8,6 +8,7 @@ import {
 } from '../ducks/metamask/metamask';
 import usePolling from './usePolling';
 import { gasFeeStartPollingByNetworkClientId, gasFeeStopPollingByPollingToken } from '../store/actions';
+import { getSelectedNetworkClientId } from '../selectors';
 
 /**
  * @typedef {object} GasEstimates

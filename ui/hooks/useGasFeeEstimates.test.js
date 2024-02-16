@@ -7,19 +7,17 @@ import {
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
 } from '../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559 } from '../selectors';
+import { checkNetworkAndAccountSupports1559, getSelectedNetworkClientId } from '../selectors';
 import {
-  disconnectGasFeeEstimatePoller,
-  getGasFeeEstimatesAndStartPolling,
+  gasFeeStopPollingByPollingToken,
+  gasFeeStartPollingByNetworkClientId,
 } from '../store/actions';
 
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 jest.mock('../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  gasFeeStartPollingByNetworkClientId: jest.fn(),
 }));
 
 jest.mock('react-redux', () => {
@@ -51,6 +49,9 @@ const generateUseSelectorRouter =
         DEFAULT_OPTS.checkNetworkAndAccountSupports1559
       );
     }
+    if (selector === getSelectedNetworkClientId) {
+      return 'selectedNetworkClientId';
+    }
     if (selector === getGasEstimateType) {
       return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
     }
@@ -68,12 +69,12 @@ describe('useGasFeeEstimates', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     tokens = [];
-    getGasFeeEstimatesAndStartPolling.mockImplementation(() => {
+    gasFeeStartPollingByNetworkClientId.mockImplementation(() => {
       const token = createRandomId();
       tokens.push(token);
       return Promise.resolve(token);
     });
-    disconnectGasFeeEstimatePoller.mockImplementation((token) => {
+    gasFeeStopPollingByPollingToken.mockImplementation((token) => {
       tokens = tokens.filter((tkn) => tkn !== token);
     });
   });
@@ -90,9 +91,23 @@ describe('useGasFeeEstimates', () => {
     expect(tokens).toHaveLength(1);
     const expectedToken = tokens[0];
     await cleanup();
-    expect(getGasFeeEstimatesAndStartPolling).toHaveBeenCalledTimes(1);
-    expect(disconnectGasFeeEstimatePoller).toHaveBeenCalledWith(expectedToken);
+    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledTimes(1);
+    expect(gasFeeStopPollingByPollingToken).toHaveBeenCalledWith(expectedToken);
     expect(tokens).toHaveLength(0);
+  });
+
+  it('polls the selected networkClientId by default', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
+    renderHook(() => useGasFeeEstimates());
+    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledTimes(1);
+    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledWith('selectedNetworkClientId', undefined)
+  });
+
+  it('polls the passed in networkClientId when provided', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
+    renderHook(() => useGasFeeEstimates('networkClientId1'));
+    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledTimes(1);
+    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledWith('networkClientId1', undefined)
   });
 
   it('works with LEGACY gas prices', () => {
