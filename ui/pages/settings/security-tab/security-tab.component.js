@@ -39,7 +39,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -101,7 +101,7 @@ export default class SecurityTab extends PureComponent {
   settingsRefCounter = 0;
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(
+    getNumberOfSettingRoutesInTab(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),

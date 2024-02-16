@@ -2,7 +2,7 @@ import React from 'react';
 import { SETTINGS_CONSTANTS } from '../constants/settings';
 import {
   getSettingsRoutes,
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from './settings-search';
 
@@ -146,48 +146,48 @@ describe('Settings Search Utils', () => {
     });
   });
 
-  describe('getNumberOfSettingsInSection', () => {
+  describe('getNumberOfSettingRoutesInTab', () => {
     it('returns "General" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(12);
     });
 
     it('returns "Contact" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('contacts'))).toStrictEqual(1);
+      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
     it('returns "Security & Privacy" section count', () => {
       expect(
-        getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
+        getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
       ).toStrictEqual(15);
     });
 
     it('returns "Alerts" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('alerts'))).toStrictEqual(2);
+      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(2);
     });
 
     it('returns "Network" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
+      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(6);
     });
 
     it('returns "Experimental" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
+      expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
         1,
       );
     });
 
     it('returns "About" section count', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
+      expect(getNumberOfSettingRoutesInTab(t, t('about'))).toStrictEqual(9);
     });
   });
 
   // Can't be tested without DOM element
   describe('handleSettingsRefs', () => {
     it('should handle general refs', () => {
-      const settingsRefs = Array(getNumberOfSettingsInSection(t, t('general')))
+      const settingsRefs = Array(getNumberOfSettingRoutesInTab(t, t('general')))
         .fill(undefined)
         .map(() => {
           return React.createRef();

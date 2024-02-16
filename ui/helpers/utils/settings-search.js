@@ -30,7 +30,7 @@ function getFilteredSettingsRoutes(t, tabMessage) {
  * @param {string} tabMessage
  * @returns {number}
  */
-export function getNumberOfSettingsInSection(t, tabMessage) {
+export function getNumberOfSettingRoutesInTab(t, tabMessage) {
   return getFilteredSettingsRoutes(t, tabMessage).length;
 }
 
