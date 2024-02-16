@@ -3,7 +3,7 @@ import ConfirmPageContainerSummary from '.';
 
 export default {
   title:
-    'Components/App/ConfirmPageContainer/ConfirmPageContainerContent/ConfirmPageContainerSummary',
+    'Confirmations/Components/ConfirmPageContainer/ConfirmPageContainerContent/ConfirmPageContainerSummary',
   argTypes: {
     action: {
       control: 'text',
