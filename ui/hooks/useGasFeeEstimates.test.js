@@ -1,23 +1,49 @@
-import { cleanup, renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { GasEstimateTypes } from '../../shared/constants/gas';
-import createRandomId from '../../shared/modules/random-id';
 import {
-  getGasEstimateType,
-  getGasFeeEstimates,
-  getIsGasEstimatesLoading,
+  getGasEstimateTypeByChainId,
+  getGasFeeEstimatesByChainId,
+  getIsGasEstimatesLoadingByChainId,
+  getIsNetworkBusyByChainId,
 } from '../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559, getSelectedNetworkClientId } from '../selectors';
 import {
-  gasFeeStopPollingByPollingToken,
   gasFeeStartPollingByNetworkClientId,
+  gasFeeStopPollingByPollingToken,
+  getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
 
 import { useGasFeeEstimates } from './useGasFeeEstimates';
+import usePolling from './usePolling';
+
+jest.mock('./usePolling', () => jest.fn());
 
 jest.mock('../store/actions', () => ({
-  gasFeeStopPollingByPollingToken: jest.fn(),
-  gasFeeStartPollingByNetworkClientId: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn(),
+}));
+
+jest.mock('../ducks/metamask/metamask', () => ({
+  getGasEstimateTypeByChainId: jest
+    .fn()
+    .mockReturnValue('getGasEstimateTypeByChainId'),
+  getGasFeeEstimatesByChainId: jest
+    .fn()
+    .mockReturnValue('getGasFeeEstimatesByChainId'),
+  getIsGasEstimatesLoadingByChainId: jest
+    .fn()
+    .mockReturnValue('getIsGasEstimatesLoadingByChainId'),
+  getIsNetworkBusyByChainId: jest
+    .fn()
+    .mockReturnValue('getIsNetworkBusyByChainId'),
+}));
+
+jest.mock('../selectors', () => ({
+  checkNetworkAndAccountSupports1559: jest
+    .fn()
+    .mockReturnValue('checkNetworkAndAccountSupports1559'),
+  getSelectedNetworkClientId: jest
+    .fn()
+    .mockReturnValue('getSelectedNetworkClientId'),
 }));
 
 jest.mock('react-redux', () => {
@@ -40,93 +66,105 @@ const DEFAULT_OPTS = {
   isGasEstimatesLoading: true,
 };
 
+const MOCK_STATE = {};
+
 const generateUseSelectorRouter =
   (opts = DEFAULT_OPTS) =>
   (selector) => {
-    if (selector === checkNetworkAndAccountSupports1559) {
+    const selectorId = selector(MOCK_STATE);
+    if (selectorId === 'checkNetworkAndAccountSupports1559') {
       return (
         opts.checkNetworkAndAccountSupports1559 ??
         DEFAULT_OPTS.checkNetworkAndAccountSupports1559
       );
     }
-    if (selector === getSelectedNetworkClientId) {
+    if (selectorId === 'getSelectedNetworkClientId') {
       return 'selectedNetworkClientId';
     }
-    if (selector === getGasEstimateType) {
+    if (selectorId === 'getGasEstimateTypeByChainId') {
       return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
     }
-    if (selector === getGasFeeEstimates) {
+    if (selectorId === 'getGasFeeEstimatesByChainId') {
       return opts.gasFeeEstimates ?? DEFAULT_OPTS.gasFeeEstimates;
     }
-    if (selector === getIsGasEstimatesLoading) {
+    if (selectorId === 'getIsGasEstimatesLoadingByChainId') {
       return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
     }
     return undefined;
   };
 
 describe('useGasFeeEstimates', () => {
-  let tokens = [];
   beforeEach(() => {
     jest.clearAllMocks();
-    tokens = [];
-    gasFeeStartPollingByNetworkClientId.mockImplementation(() => {
-      const token = createRandomId();
-      tokens.push(token);
-      return Promise.resolve(token);
+    getNetworkConfigurationByNetworkClientId.mockImplementation(
+      (networkClientId) => {
+        if (!networkClientId) {
+          return Promise.resolve(undefined);
+        }
+
+        return Promise.resolve({
+          chainId: '0xa',
+        });
+      },
+    );
+  });
+
+  it('polls the selected networkClientId by default', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
+    await act(async () => {
+      renderHook(() => useGasFeeEstimates());
     });
-    gasFeeStopPollingByPollingToken.mockImplementation((token) => {
-      tokens = tokens.filter((tkn) => tkn !== token);
+    expect(usePolling).toHaveBeenCalledWith({
+      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+      networkClientId: 'selectedNetworkClientId',
     });
   });
 
-  it('registers with the controller', () => {
+  it('polls the passed in networkClientId when provided', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter());
-    renderHook(() => useGasFeeEstimates());
-    expect(tokens).toHaveLength(1);
+    await act(async () => {
+      renderHook(() => useGasFeeEstimates('networkClientId1'));
+    });
+    expect(usePolling).toHaveBeenCalledWith({
+      startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+      stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+      networkClientId: 'networkClientId1',
+    });
   });
 
-  it('clears token with the controller on unmount', async () => {
+  it('reads state with the right chainId and networkClientId', async () => {
     useSelector.mockImplementation(generateUseSelectorRouter());
-    renderHook(() => useGasFeeEstimates());
-    expect(tokens).toHaveLength(1);
-    const expectedToken = tokens[0];
-    await cleanup();
-    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledTimes(1);
-    expect(gasFeeStopPollingByPollingToken).toHaveBeenCalledWith(expectedToken);
-    expect(tokens).toHaveLength(0);
+
+    await act(async () =>
+      renderHook(() => useGasFeeEstimates('networkClientId1')),
+    );
+    expect(getGasEstimateTypeByChainId).toHaveBeenCalledWith(MOCK_STATE, '0xa');
+    expect(getGasFeeEstimatesByChainId).toHaveBeenCalledWith(MOCK_STATE, '0xa');
+    expect(getIsGasEstimatesLoadingByChainId).toHaveBeenCalledWith(MOCK_STATE, {
+      chainId: '0xa',
+      networkClientId: 'networkClientId1',
+    });
+    expect(getIsNetworkBusyByChainId).toHaveBeenCalledWith(MOCK_STATE, '0xa');
   });
 
-  it('polls the selected networkClientId by default', () => {
-    useSelector.mockImplementation(generateUseSelectorRouter());
-    renderHook(() => useGasFeeEstimates());
-    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledTimes(1);
-    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledWith('selectedNetworkClientId', undefined)
-  });
-
-  it('polls the passed in networkClientId when provided', () => {
-    useSelector.mockImplementation(generateUseSelectorRouter());
-    renderHook(() => useGasFeeEstimates('networkClientId1'));
-    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledTimes(1);
-    expect(gasFeeStartPollingByNetworkClientId).toHaveBeenCalledWith('networkClientId1', undefined)
-  });
-
-  it('works with LEGACY gas prices', () => {
+  it('works with LEGACY gas prices', async () => {
     useSelector.mockImplementation(
       generateUseSelectorRouter({
         isGasEstimatesLoading: false,
       }),
     );
-    const {
-      result: { current },
-    } = renderHook(() => useGasFeeEstimates());
-    expect(current).toMatchObject({
+
+    let hook;
+    await act(async () => (hook = renderHook(() => useGasFeeEstimates())));
+    expect(hook.result.current).toMatchObject({
       gasFeeEstimates: DEFAULT_OPTS.gasFeeEstimates,
       gasEstimateType: GasEstimateTypes.legacy,
       isGasEstimatesLoading: false,
     });
   });
 
-  it('works with ETH_GASPRICE gas prices', () => {
+  it('works with ETH_GASPRICE gas prices', async () => {
     const gasFeeEstimates = { gasPrice: '10' };
     useSelector.mockImplementation(
       generateUseSelectorRouter({
@@ -136,17 +174,16 @@ describe('useGasFeeEstimates', () => {
       }),
     );
 
-    const {
-      result: { current },
-    } = renderHook(() => useGasFeeEstimates());
-    expect(current).toMatchObject({
+    let hook;
+    await act(async () => (hook = renderHook(() => useGasFeeEstimates())));
+    expect(hook.result.current).toMatchObject({
       gasFeeEstimates,
       gasEstimateType: GasEstimateTypes.ethGasPrice,
       isGasEstimatesLoading: false,
     });
   });
 
-  it('works with FEE_MARKET gas prices', () => {
+  it('works with FEE_MARKET gas prices', async () => {
     const gasFeeEstimates = {
       low: {
         minWaitTimeEstimate: 180000,
@@ -177,17 +214,16 @@ describe('useGasFeeEstimates', () => {
       }),
     );
 
-    const {
-      result: { current },
-    } = renderHook(() => useGasFeeEstimates());
-    expect(current).toMatchObject({
+    let hook;
+    await act(async () => (hook = renderHook(() => useGasFeeEstimates())));
+    expect(hook.result.current).toMatchObject({
       gasFeeEstimates,
       gasEstimateType: GasEstimateTypes.feeMarket,
       isGasEstimatesLoading: false,
     });
   });
 
-  it('indicates that gas estimates are loading when gasEstimateType is NONE', () => {
+  it('indicates that gas estimates are loading when gasEstimateType is NONE', async () => {
     useSelector.mockImplementation(
       generateUseSelectorRouter({
         gasEstimateType: GasEstimateTypes.none,
@@ -195,17 +231,16 @@ describe('useGasFeeEstimates', () => {
       }),
     );
 
-    const {
-      result: { current },
-    } = renderHook(() => useGasFeeEstimates());
-    expect(current).toMatchObject({
+    let hook;
+    await act(async () => (hook = renderHook(() => useGasFeeEstimates())));
+    expect(hook.result.current).toMatchObject({
       gasFeeEstimates: {},
       gasEstimateType: GasEstimateTypes.none,
       isGasEstimatesLoading: true,
     });
   });
 
-  it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET or ETH_GASPRICE, but network supports EIP-1559', () => {
+  it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET or ETH_GASPRICE, but network supports EIP-1559', async () => {
     useSelector.mockImplementation(
       generateUseSelectorRouter({
         checkNetworkAndAccountSupports1559: true,
@@ -216,17 +251,16 @@ describe('useGasFeeEstimates', () => {
       }),
     );
 
-    const {
-      result: { current },
-    } = renderHook(() => useGasFeeEstimates());
-    expect(current).toMatchObject({
+    let hook;
+    await act(async () => (hook = renderHook(() => useGasFeeEstimates())));
+    expect(hook.result.current).toMatchObject({
       gasFeeEstimates: { gasPrice: '10' },
       gasEstimateType: GasEstimateTypes.legacy,
       isGasEstimatesLoading: true,
     });
   });
 
-  it('indicates that gas estimates are loading when gasEstimateType is FEE_MARKET but network does not support EIP-1559', () => {
+  it('indicates that gas estimates are loading when gasEstimateType is FEE_MARKET but network does not support EIP-1559', async () => {
     const gasFeeEstimates = {
       low: {
         minWaitTimeEstimate: 180000,
@@ -256,10 +290,9 @@ describe('useGasFeeEstimates', () => {
       }),
     );
 
-    const {
-      result: { current },
-    } = renderHook(() => useGasFeeEstimates());
-    expect(current).toMatchObject({
+    let hook;
+    await act(async () => (hook = renderHook(() => useGasFeeEstimates())));
+    expect(hook.result.current).toMatchObject({
       gasFeeEstimates,
       gasEstimateType: GasEstimateTypes.feeMarket,
       isGasEstimatesLoading: true,

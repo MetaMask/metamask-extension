@@ -2823,6 +2823,10 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
         ),
+      getNetworkConfigurationByNetworkClientId:
+        this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+          this.networkController,
+        ),
       // PreferencesController
       setSelectedAddress: (address) => {
         const account = this.accountsController.getAccountByAddress(address);

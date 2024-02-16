@@ -31,7 +31,10 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { NetworkClientId } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -4764,6 +4767,22 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
     console.error(error);
   }
   return networkEIP1559Compatibility;
+}
+
+export async function getNetworkConfigurationByNetworkClientId(
+  networkClientId: NetworkClientId,
+): Promise<NetworkConfiguration | undefined> {
+  let networkConfiguration;
+  try {
+    networkConfiguration =
+      await submitRequestToBackground<NetworkConfiguration>(
+        'getNetworkConfigurationByNetworkClientId',
+        [networkClientId],
+      );
+  } catch (error) {
+    console.error(error);
+  }
+  return networkConfiguration;
 }
 
 export function updateProposedNames(
