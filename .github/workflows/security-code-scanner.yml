@@ -28,6 +28,8 @@ jobs:
             '**/*.test.jsx'
             '**/*.test.tsx'
             '**/*.stories.tsx'
+            development/chromereload.js
+            node_modules
           rules_excluded:
             example
           mixpanel_project_token: ${{secrets.SECURITY_CODE_SCANNER_MIXPANEL_TOKEN}}
