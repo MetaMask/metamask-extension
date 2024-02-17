@@ -717,6 +717,7 @@ export const initializeSendState = createAsyncThunk(
     return {
       account,
       newEnsAddress,
+      ens,
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
@@ -1636,6 +1637,9 @@ const slice = createSlice({
           }
           if (action.payload.newEnsAddress) {
             draftTransaction.recipient.address = action.payload.newEnsAddress;
+          }
+          if (action.payload.ens) {
+            draftTransaction.recipient.nickname = action.payload.ens;
           }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
