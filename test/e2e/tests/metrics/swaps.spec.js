@@ -29,7 +29,7 @@ const {
   FEATURE_FLAGS_API_MOCK_RESULT,
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
-} = require('./mock-data');
+} = require('../../../data/mock-data');
 
 const numberOfSegmentRequests = 19;
 
