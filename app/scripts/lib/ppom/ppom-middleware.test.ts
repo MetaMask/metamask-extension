@@ -35,10 +35,16 @@ const createMiddleWare = (
   const networkController = {
     state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
   };
+  const appStateController = {
+    addSignatureSecurityAlertResponse: () => undefined,
+  };
+
   return createPPOMMiddleware(
     ppomController as any,
     preferenceController as any,
     networkController as any,
+    appStateController as any,
+    () => undefined,
   );
 };
 

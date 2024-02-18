@@ -74,7 +74,6 @@ export function createPPOMMiddleware(
             try {
               const securityAlertResponse = await ppom.validateJsonRpc(req);
               securityAlertResponse.securityAlertId = securityAlertId;
-              updateSecurityAlertResponseByTxId(req, securityAlertResponse);
               return securityAlertResponse;
             } catch (error: any) {
               sentry?.captureException(error);
@@ -83,11 +82,9 @@ export function createPPOMMiddleware(
               const securityAlertResponse = {
                 result_type: BlockaidResultType.Errored,
                 reason: BlockaidReason.failed,
-                description:
-                  'Validating the confirmation failed by throwing error.',
+                description: `${errorObject.name}: ${errorObject.message}`,
               };
 
-              updateSecurityAlertResponseByTxId(req, securityAlertResponse);
               return securityAlertResponse;
             }
           })

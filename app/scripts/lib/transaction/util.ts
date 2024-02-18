@@ -119,7 +119,7 @@ const PPOM_EXCLUDED_TRANSACTION_TYPES = [
 export async function addTransaction(
   request: AddTransactionRequest,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  updateSecurityAlertResponseByTxId: (
+  updateSecurityAlertResponseByTxId?: (
     req: AddTransactionOptions | undefined,
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
@@ -160,7 +160,6 @@ export async function addTransaction(
 
       const securityAlertId = uuid();
 
-<<<<<<< HEAD
       ppomController
         .usePPOM(async (ppom) => {
           try {
@@ -170,47 +169,23 @@ export async function addTransaction(
             return securityAlertResponse;
           } catch (e) {
             captureException(e);
+            const errorObject = e as unknown as Error;
             console.error('Error validating JSON RPC using PPOM: ', e);
             const securityAlertResponse = {
               securityAlertId,
-              result_type: BlockaidResultType.Failed,
+              result_type: BlockaidResultType.Errored,
               reason: BlockaidReason.failed,
-              description:
-                'Validating the confirmation failed by throwing error.',
+              description: `${errorObject.name}: ${errorObject.message}`,
             };
             return securityAlertResponse;
           }
         })
         .then((securityAlertResponse) => {
-          updateSecurityAlertResponseByTxId(request.transactionOptions, {
+          updateSecurityAlertResponseByTxId?.(request.transactionOptions, {
             ...securityAlertResponse,
             securityAlertId,
           });
         });
-=======
-      ppomController.usePPOM(async (ppom) => {
-        try {
-          const securityAlertResponse = await ppom.validateJsonRpc(ppomRequest);
-          updateSecurityAlertResponseByTxId(
-            request.transactionOptions,
-            securityAlertResponse,
-          );
-        } catch (e) {
-          captureException(e);
-          const errorObject = e as unknown as Error;
-          console.error('Error validating JSON RPC using PPOM: ', e);
-          const securityAlertResponse = {
-            result_type: BlockaidResultType.Errored,
-            reason: BlockaidReason.failed,
-            description: `${errorObject.name}: ${errorObject.message}`,
-          };
-          updateSecurityAlertResponseByTxId(
-            request.transactionOptions,
-            securityAlertResponse,
-          );
-        }
-      });
->>>>>>> cc58a564d4 (if validateJsonRPC fails, send to sentry and add response to SAR.)
 
       request.transactionOptions.securityAlertResponse = {
         reason: BlockaidResultType.Loading,
