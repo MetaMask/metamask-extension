@@ -3,7 +3,6 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const {
   withFixtures,
   openDapp,
-  locateAccountBalanceDOM,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -157,16 +156,13 @@ describe('Send ETH', function () {
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry, ganacheServer }) => {
+        async ({ driver, contractRegistry }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
-          await logInWithBalanceValidation(driver, ganacheServer);
+          await unlockWallet(driver);
 
-          await openActionMenuAndStartSendFlow(driver);
-          if (process.env.MULTICHAIN) {
-            return;
-          }
+          await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or ENS name"]',
             contractAddress,
@@ -176,11 +172,25 @@ describe('Send ETH', function () {
           await inputAmount.fill('1');
 
           // Continue to next screen
-          await driver.clickElement({ text: 'Next', tag: 'button' });
+          if (process.env.MULTICHAIN) {
+            await driver.clickElement({ text: 'Continue', tag: 'button' });
+          } else {
+            // We need to wait for the text "Max Fee: 0.000xxxx ETH" before clicking Next
+            await driver.findElement({ text: '0.000', tag: 'span' });
+
+            await driver.findClickableElement({
+              text: 'Next',
+              tag: 'button',
+            });
+            await driver.clickElement({ text: 'Next', tag: 'button' });
+          }
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          await locateAccountBalanceDOM(driver, ganacheServer);
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.equal(await balance.getText(), '$42,496.38\nUSD');
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
@@ -200,12 +210,17 @@ describe('Send ETH', function () {
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
-        async ({ driver, ganacheServer }) => {
+        async ({ driver }) => {
           if (process.env.MULTICHAIN) {
             return;
           }
-
-          await logInWithBalanceValidation(driver, ganacheServer);
+          await unlockWallet(driver);
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          await driver.isElementPresent('.loading-overlay__spinner');
+          await driver.waitForElementNotPresent('.loading-overlay__spinner');
+          assert.equal(await balance.getText(), '$42,500.00\nUSD');
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
@@ -402,8 +417,15 @@ describe('Send ETH', function () {
             ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
           },
-          async ({ driver, ganacheServer }) => {
-            await logInWithBalanceValidation(driver, ganacheServer);
+          async ({ driver }) => {
+            await unlockWallet(driver);
+            const balance = await driver.findElement(
+              '[data-testid="eth-overview__primary-currency"]',
+            );
+
+            await driver.isElementPresent('.loading-overlay__spinner');
+            await driver.waitForElementNotPresent('.loading-overlay__spinner');
+            assert.equal(await balance.getText(), '$42,500.00\nUSD');
 
             await openActionMenuAndStartSendFlow(driver);
             if (process.env.MULTICHAIN) {
@@ -418,9 +440,19 @@ describe('Send ETH', function () {
               'textarea[placeholder="Optional',
               '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
             );
-
-            await driver.findClickableElement({ text: 'Next', tag: 'button' });
-            await driver.clickElement({ text: 'Next', tag: 'button' });
+            if (process.env.MULTICHAIN) {
+              await driver.findClickableElement({
+                text: 'Continue',
+                tag: 'button',
+              });
+              await driver.clickElement({ text: 'Continue', tag: 'button' });
+            } else {
+              await driver.findClickableElement({
+                text: 'Next',
+                tag: 'button',
+              });
+              await driver.clickElement({ text: 'Next', tag: 'button' });
+            }
 
             await driver.findClickableElement(
               '[data-testid="sender-to-recipient__name"]',

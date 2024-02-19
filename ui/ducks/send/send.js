@@ -24,13 +24,13 @@ import {
   NEGATIVE_ETH_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
-} from '../../pages/send/send.constants';
+} from '../../pages/confirmations/send/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/send/send.utils';
+} from '../../pages/confirmations/send/send.utils';
 import {
   getAdvancedInlineGasShown,
   getCurrentChainId,
@@ -412,7 +412,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
- * @property {Object<string, DraftTransaction>} draftTransactions - An object keyed
+ * @property {{[key: string]: DraftTransaction}} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
  *  supports EIP 1559 transactions.

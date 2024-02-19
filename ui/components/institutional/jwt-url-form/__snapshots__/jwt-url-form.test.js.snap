@@ -25,34 +25,6 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
         />
       </div>
     </div>
-    <div
-      class="mm-box mm-box--width-full"
-    >
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--display-block mm-box--color-text-default"
-      />
-      <div
-        class="mm-box mm-box--margin-top-4"
-      >
-        <div
-          class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
-        >
-          <div
-            class="MuiInputBase-root MuiInput-root TextField-inputRoot-57 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
-          >
-            <input
-              aria-invalid="false"
-              class="MuiInputBase-input MuiInput-input"
-              data-testid="jwt-api-url-input"
-              dir="auto"
-              id="api-url-box"
-              type="text"
-              value="url"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 `;
