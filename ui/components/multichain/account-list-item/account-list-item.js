@@ -81,7 +81,6 @@ export const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-  const origin = useSelector(getOriginOfCurrentTab);
 
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
