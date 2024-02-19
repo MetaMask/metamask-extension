@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import browser from 'webextension-polyfill';
 
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
@@ -60,6 +61,8 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { ConnectedStatus } from '../connected-status/connected-status';
 import { BadgeStatus } from '../badge-status/badge-status';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
