@@ -4,7 +4,7 @@ Step,Test Steps,Test Data,Expected Result,Notes
 3,Click on the right corner setting(three dots).,,General settings page appears,
 4,Check the default language selected in the drop down For example :- local time in the Mac machine is set to 3:30 pm EST,,Default selected language should be English,
 5,Check the language drop down has a scroll functionality and resize the browser window,,Drop down works as expected and the scroll is working,
-6,User selects "Español" language and verify that changing the language from the default,,Spanish changes the language of the application,
+6,User selects Spanish language and verify that changing the language from the default,,Spanish changes the language of the application,
 7,Verify that language persists with page refresh,sessions,logout,login,The language persists,
 8,Select "Dansk" language and verify that navigating to a different page does not affect,,Danish the language of the application,
 9,Navigate to the send screen and enter invalid account and verify that error messages are updated with the selected language,,Error messages are updated with the selected language change,
