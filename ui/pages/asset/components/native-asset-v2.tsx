@@ -19,6 +19,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetOptions from './asset-options';
 import AssetV2 from './asset-v2';
 
@@ -40,7 +41,7 @@ const NativeAssetV2 = () => {
     type,
   );
 
-  const [balanceDisplay] = useCurrencyDisplay(balance, {
+  const [, { value: balanceDisplay }] = useCurrencyDisplay(balance, {
     currency: nativeCurrency,
   });
   const [fiatDisplay] = useCurrencyDisplay(balance, {
@@ -53,10 +54,12 @@ const NativeAssetV2 = () => {
         type: AssetType.native,
         symbol: nativeCurrency,
         image,
-        balance: balanceDisplay,
+        balance: {
+          value: hexToDecimal(balance),
+          display: balanceDisplay,
+          fiat: showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
+        },
         isOriginalNativeSymbol: isOriginalNativeSymbol === true,
-        fiatDisplay:
-          showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
         optionsButton: (
           <AssetOptions
             isNativeAsset={true}

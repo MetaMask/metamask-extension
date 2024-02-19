@@ -19,22 +19,20 @@ import {
   Text,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 const AssetHeader = ({
   image,
   showBalance,
   balance,
-  fiatDisplay,
   optionsButton,
 }: {
-  type: AssetType;
-  symbol: string;
   image: string;
   showBalance: boolean;
-  balance: string;
-  fiatDisplay: string;
+  balance: {
+    display: string;
+    fiat?: string;
+  };
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
@@ -62,14 +60,14 @@ const AssetHeader = ({
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
         >
-          <Text variant={TextVariant.bodyMdBold}>{fiatDisplay}</Text>
+          <Text variant={TextVariant.bodyMdBold}>{balance.fiat}</Text>
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             <AvatarToken src={image} size={AvatarTokenSize.Xs} />
             <Text
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {balance}
+              {balance.display}
             </Text>
           </Box>
         </Box>

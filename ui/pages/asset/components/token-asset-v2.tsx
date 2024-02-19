@@ -40,11 +40,13 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
         isEqualCaseInsensitive(t.address, address),
     ) ?? {};
 
-  const { tokensWithBalances }: { tokensWithBalances: { string: string }[] } =
+  const {
+    tokensWithBalances,
+  }: { tokensWithBalances: { string: string; balance: string }[] } =
     useTokenTracker({ tokens: [token], address: undefined });
 
-  const balance = tokensWithBalances?.[0]?.string;
-  const fiatDisplay = useTokenFiatAmount(address, balance, symbol, {}, false);
+  const balance = tokensWithBalances?.[0];
+  const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
@@ -63,9 +65,15 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
         name,
         decimals: token.decimals,
         image: iconUrl,
-        balance: `${roundToDecimalPlacesRemovingExtraZeroes(balance, 5)}`,
-        fiatDisplay,
         aggregators,
+        balance: {
+          value: balance?.balance,
+          display: `${roundToDecimalPlacesRemovingExtraZeroes(
+            balance?.string,
+            5,
+          )}`,
+          fiat,
+        },
         optionsButton: (
           <AssetOptions
             isNativeAsset={false}

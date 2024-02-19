@@ -10,7 +10,6 @@ import {
   getIsBuyableChain,
   getIsSwapsChain,
   getMetaMetricsId,
-  getPreferences,
   getSwapsDefaultToken,
 } from '../../../selectors';
 import {
@@ -102,8 +101,22 @@ const AssetV2 = ({
     symbol: string;
     name?: string;
     image: string;
-    balance?: string;
-    fiatDisplay?: string;
+    balance: {
+      /**
+       * A decimal representation of the balance before applying
+       * decimals e.g. '12300000000000000' for 0.0123 ETH
+       */
+      value: string;
+
+      /**
+       * A displayable representation of the balance after applying
+       * decimals e.g. '0.0123' for 12300000000000000 WEI
+       */
+      display: string;
+
+      /** The balance's localized value in fiat e.g. '$12.34' or '56,78 €' */
+      fiat?: string;
+    };
     optionsButton: React.ReactNode;
   };
 }) => {
@@ -112,7 +125,6 @@ const AssetV2 = ({
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
   const isSwapsChain = useSelector(getIsSwapsChain);
@@ -129,8 +141,7 @@ const AssetV2 = ({
 
   const balanceRef = useRef(null);
 
-  const { type, symbol, name, image, balance, fiatDisplay, optionsButton } =
-    asset;
+  const { type, symbol, name, image, balance, optionsButton } = asset;
 
   const address =
     type === AssetType.token
@@ -166,12 +177,9 @@ const AssetV2 = ({
   return (
     <>
       <AssetHeader
-        type={type}
-        symbol={symbol}
         image={image}
-        showBalance={!balanceInView}
         balance={balance}
-        fiatDisplay={fiatDisplay}
+        showBalance={!balanceInView}
         optionsButton={optionsButton}
       />
       <Box padding={4} paddingBottom={0}>
@@ -197,26 +205,22 @@ const AssetV2 = ({
             {t('yourBalance')}
           </Text>
           <Box ref={balanceRef}>
-            {asset.type === AssetType.native ? (
+            {type === AssetType.native ? (
               <TokenListItem
                 title={symbol}
                 tokenSymbol={symbol}
-                primary={
-                  useNativeCurrencyAsPrimaryCurrency ? balance : fiatDisplay
-                }
-                secondary={
-                  useNativeCurrencyAsPrimaryCurrency ? fiatDisplay : balance
-                }
+                primary={balance.display}
+                secondary={balance.fiat}
                 tokenImage={image}
                 isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
-                isNativeCurrency
+                isNativeCurrency={true}
               />
             ) : (
               <TokenCell
                 address={address}
                 image={image}
                 symbol={symbol}
-                string={balance}
+                string={balance.display}
               />
             )}
           </Box>
@@ -470,17 +474,16 @@ const AssetV2 = ({
                 });
                 dispatch(
                   setSwapsFromToken(
-                    asset.type === AssetType.native
+                    type === AssetType.native
                       ? defaultSwapsToken
                       : {
                           symbol,
                           name,
                           address,
-                          decimals: 18,
+                          decimals: asset.decimals,
                           iconUrl: image,
-                          // todo
-                          // balance:
-                          // string:
+                          balance: balance.value,
+                          string: balance.display,
                         },
                   ),
                 );
