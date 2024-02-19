@@ -5275,6 +5275,9 @@
   "tooltipSatusConnected": {
     "message": "connected"
   },
+  "tooltipSatusConnectedUpperCase": {
+    "message": "Connected"
+  },
   "tooltipSatusNotConnected": {
     "message": "not connected"
   },
