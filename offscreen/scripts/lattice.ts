@@ -24,7 +24,9 @@ export default function init() {
    *
    * When receiving a message from the service worker script targeting the
    * lattice iframe, this listener will execute and open the new tab for
-   * connecting to the lattice device. The response from the
+   * connecting to the lattice device. The response from the lattice connector
+   * is then sent back to the offscreen bridge for lattice, which extends from
+   * the eth-lattice-keyring Keyring class.
    */
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.target !== OffscreenCommunicationTarget.latticeOffscreen) {
