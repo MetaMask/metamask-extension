@@ -13,6 +13,7 @@ The selected network is Ethereum Mainnet.",
 10,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
 11,Proceed to Connect with MetaMask.,,,
 12,Connect with the current account.,,,
-13,"Sign ""Sign Typed Data V4"" transaction",,The info modal for signing with the hardware wallet is displayed. The signature message is in JSON formatting,"Verify that v4 of Sign Typed Data messages are shown and formatted correctly."
+13,"Sign ""Sign Typed Data V4"" transaction",,"The info modal for signing with the hardware wallet is displayed.
+The signature message is in JSON formatting","Verify that v4 of Sign Typed Data messages are shown and formatted correctly."
 14, Accept the Signature in the Hardware Wallet device.,, The signature hash is displayed on the test dapp.
-15,Verify signed hash.,,The signed address is verified.,
+15,Verify signed hash.,,The signed address is correctly verified., This means that the address shown in the test dapp is the same as the hardware wallet account.
