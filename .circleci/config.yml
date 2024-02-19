@@ -1156,13 +1156,17 @@ jobs:
       - store_test_results:
           name: report for pipeline integration
           path: public/playwright/playwright-reports/junit/test-results.xml
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - public/playwright/playwright-reports/junit/test-results.xml
 
   testrail-upload-mmi-results:
     docker:
       - image: cimg/python:3.10.4
     steps:
      - attach_workspace:
-         at: .
+        at: ~/project
      - run:
          name: Install TR CLI and upload the test results to TestRail
          command: |
@@ -1174,7 +1178,8 @@ jobs:
              -p "v##&FgS!4J" \
              parse_junit \
              --title "Automated Playwright Tests from CircleCI workflow" \
-             -f "public/playwright/playwright-reports/junit/test-results.xml"
+             --run-description $CIRCLE_BUILD_URL \
+             -f "~/project/public/playwright/playwright-reports/junit/test-results.xml"
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
