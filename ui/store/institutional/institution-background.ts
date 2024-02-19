@@ -219,20 +219,6 @@ export function mmiActionsFactory() {
         environment,
         token,
       }),
-    setCustodianConnectRequest: ({
-      token,
-      custodianType,
-      envName,
-    }: {
-      token: string;
-      custodianType: string;
-      envName: string;
-    }) =>
-      createAsyncAction('setCustodianConnectRequest', [
-        { token, custodianType, envName },
-      ]),
-    getCustodianConnectRequest: () =>
-      createAsyncAction('getCustodianConnectRequest', []),
     getMmiConfiguration: () => createAsyncAction('getMmiConfiguration', []),
     getAllCustodianAccountsWithToken: (custodyType: string, token: string) =>
       createAsyncAction('getAllCustodianAccountsWithToken', [

@@ -95,6 +95,7 @@ import {
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1121,6 +1122,41 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
     return Object.keys(connectedSubjects);
   },
 );
+export const getConnectedSitesList = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  getAllConnectedAccounts,
+  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+    const sitesList = {};
+    connectedAddresses.forEach((connectedAddress) => {
+      connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
+        const siteKey = app.origin;
+
+        if (sitesList[siteKey]) {
+          sitesList[siteKey].addresses.push(connectedAddress);
+        } else {
+          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+        }
+      });
+    });
+
+    return sitesList;
+  },
+);
+
+export const getConnectedSnapsList = createDeepEqualSelector(
+  getSnapsList,
+  (snapsData) => {
+    const snapsList = {};
+
+    Object.values(snapsData).forEach((snap) => {
+      if (!snapsList[snap.name]) {
+        snapsList[snap.name] = snap;
+      }
+    });
+
+    return snapsList;
+  },
+);
 
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
@@ -1287,6 +1323,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
@@ -1380,6 +1417,10 @@ export function getShowOutdatedBrowserWarning(state) {
 
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
+}
+
+export function getShowPermissionsTour(state) {
+  return state.metamask.showPermissionsTour;
 }
 
 export function getShowProductTour(state) {

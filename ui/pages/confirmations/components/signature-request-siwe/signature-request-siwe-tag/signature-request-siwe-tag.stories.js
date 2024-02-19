@@ -2,7 +2,8 @@ import React from 'react';
 import SignatureRequestSIWETag from '.';
 
 export default {
-  title: 'Components/App/SignatureRequestSIWE/SignatureRequestSIWETag',
+  title:
+    'Confirmations/Components/SignatureRequestSIWE/SignatureRequestSIWETag',
 
   argTypes: {
     text: { control: 'text' },

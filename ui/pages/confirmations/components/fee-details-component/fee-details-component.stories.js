@@ -2,7 +2,7 @@ import React from 'react';
 import FeeDetailsComponent from '.';
 
 export default {
-  title: 'Components/App/FeeDetailsComponent',
+  title: 'Confirmations/Components/FeeDetailsComponent',
   argTypes: {
     shouldShow: {
       control: 'boolean',

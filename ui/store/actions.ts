@@ -1,3 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck `redux-thunk` and `@reduxjs/toolkit` are not compatible with
+// TypeScript 5.3.3. We can't update them because we rely on an old version of
+// @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
+// I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
@@ -3232,7 +3237,7 @@ export function detectNfts(): ThunkAction<
 }
 
 export function setAdvancedGasFee(
-  val: { chainId: Hex; maxBaseFee?: Hex; priorityFee?: Hex } | null,
+  val: { chainId: Hex; maxBaseFee?: string; priorityFee?: string } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -4563,6 +4568,10 @@ export function hideTestNetMessage() {
 
 export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
+}
+
+export function hidePermissionsTour() {
+  return submitRequestToBackground('setShowPermissionsTour', [false]);
 }
 
 export function hideProductTour() {
