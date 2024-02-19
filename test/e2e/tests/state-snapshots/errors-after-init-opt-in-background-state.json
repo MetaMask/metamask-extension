@@ -34,6 +34,7 @@
     "showTestnetMessageInDropdown": true,
     "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
+    "showPermissionsTour": true,
     "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,

@@ -1122,6 +1122,41 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
     return Object.keys(connectedSubjects);
   },
 );
+export const getConnectedSitesList = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  getAllConnectedAccounts,
+  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+    const sitesList = {};
+    connectedAddresses.forEach((connectedAddress) => {
+      connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
+        const siteKey = app.origin;
+
+        if (sitesList[siteKey]) {
+          sitesList[siteKey].addresses.push(connectedAddress);
+        } else {
+          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+        }
+      });
+    });
+
+    return sitesList;
+  },
+);
+
+export const getConnectedSnapsList = createDeepEqualSelector(
+  getSnapsList,
+  (snapsData) => {
+    const snapsList = {};
+
+    Object.values(snapsData).forEach((snap) => {
+      if (!snapsList[snap.name]) {
+        snapsList[snap.name] = snap;
+      }
+    });
+
+    return snapsList;
+  },
+);
 
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
@@ -1382,6 +1417,10 @@ export function getShowOutdatedBrowserWarning(state) {
 
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
+}
+
+export function getShowPermissionsTour(state) {
+  return state.metamask.showPermissionsTour;
 }
 
 export function getShowProductTour(state) {
