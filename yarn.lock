@@ -5199,9 +5199,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/snaps-controllers@npm:5.0.0"
+"@metamask/snaps-controllers@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/snaps-controllers@npm:5.0.1"
   dependencies:
     "@metamask/approval-controller": "npm:^5.1.2"
     "@metamask/base-controller": "npm:^4.1.0"
@@ -5213,8 +5213,8 @@ __metadata:
     "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/snaps-registry": "npm:^3.0.0"
     "@metamask/snaps-rpc-methods": "npm:^6.0.0"
-    "@metamask/snaps-sdk": "npm:^2.0.0"
-    "@metamask/snaps-utils": "npm:^6.0.0"
+    "@metamask/snaps-sdk": "npm:^2.1.0"
+    "@metamask/snaps-utils": "npm:^6.1.0"
     "@metamask/utils": "npm:^8.3.0"
     "@xstate/fsm": "npm:^2.0.0"
     browserify-zlib: "npm:^0.2.0"
@@ -5227,11 +5227,11 @@ __metadata:
     readable-web-to-node-stream: "npm:^3.0.2"
     tar-stream: "npm:^3.1.7"
   peerDependencies:
-    "@metamask/snaps-execution-environments": ^4.0.0
+    "@metamask/snaps-execution-environments": ^4.0.1
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: a4f5ebde086e0e0d067da5c61c1fabf8377d9342c05b71de088f7b5e590bd6c70b0b76e4324bfa97cb79755bb1a1748371dce93ceecd7bd4212e6e43e0afbb3a
+  checksum: b6607a5f15081b62273282d9b462be945277db54b1e772f75df4d68d01a7a3b1d5214d9b4bb619759ac2159121bbe59bfbbeab0513f27e663984afee26060187
   languageName: node
   linkType: hard
 
@@ -24688,7 +24688,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^6.0.0"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
-    "@metamask/snaps-controllers": "npm:^5.0.0"
+    "@metamask/snaps-controllers": "npm:^5.0.1"
     "@metamask/snaps-rpc-methods": "npm:^6.0.0"
     "@metamask/snaps-sdk": "npm:^2.1.0"
     "@metamask/snaps-utils": "npm:^6.1.0"
