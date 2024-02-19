@@ -1,12 +1,12 @@
 const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
-const {
-  getGlobalProperties,
-  testIntrinsic,
-} = require('../../helpers/protect-intrinsics-helpers');
 const { convertToHexValue, withFixtures } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 const FixtureBuilder = require('../../fixture-builder');
+const {
+  getGlobalProperties,
+  testIntrinsic,
+} = require('../../../helpers/protect-intrinsics-helpers');
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 

@@ -7,7 +7,7 @@ const {
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
-const FixtureBuilder = require('../../ixture-builder');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {

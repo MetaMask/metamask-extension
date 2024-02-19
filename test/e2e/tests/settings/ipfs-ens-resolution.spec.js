@@ -1,6 +1,6 @@
-const { buildWebDriver } = require('../webdriver');
-const { withFixtures, tinyDelayMs, unlockWallet } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const { buildWebDriver } = require('../../webdriver');
+const { withFixtures, tinyDelayMs, unlockWallet } = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('IPFS settings', function () {
   const ENS_NAME = 'metamask.eth';

@@ -307,7 +307,6 @@ describe('Import flow @no-mmi', function () {
         const fileInput = await driver.findElement('input[type="file"]');
         const importJsonFile = path.join(
           __dirname,
-          '..',
           'import-utc-json',
           'test-json-import-account-file.json',
         );

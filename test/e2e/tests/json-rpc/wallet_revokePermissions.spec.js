@@ -5,8 +5,8 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   openDapp,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Revoke Dapp Permissions', function () {
   it('should revoke dapp permissions ', async function () {

@@ -1,13 +1,12 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-const { mockServerJsonRpc } = require('./mock-server-json-rpc');
-
 const {
   defaultGanacheOptions,
   withFixtures,
   sendScreenToConfirmScreen,
   unlockWallet,
 } = require('../../helpers');
+const { mockServerJsonRpc } = require('./mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
