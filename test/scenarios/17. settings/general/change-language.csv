@@ -1,5 +1,3 @@
-Verify that the change language functionality in settings
-
 Step,Test Steps,Test Data,Expected Result,Notes
 1,Open the extension.,,The Welcome Back screen is shown,
 2,Proceed to Unlock the wallet.,password (8 characters min),,
