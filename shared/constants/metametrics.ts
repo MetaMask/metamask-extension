@@ -659,8 +659,14 @@ export enum MetaMetricsEventName {
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  SnapInstallStarted = 'Snap Install Started',
+  SnapInstallFailed = 'Snap Install Failed',
+  SnapInstallRejected = 'Snap Update Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
+  SnapUpdateStarted = 'Snap Update Started',
+  SnapUpdateRejected = 'Snap Update Rejected',
+  SnapUpdateFailed = 'Snap Update Failed',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   ///: END:ONLY_INCLUDE_IF
