@@ -1,12 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import {
+  AlignItems,
+  BorderColor,
+  BorderRadius,
+  Display,
+  IconColor,
+  JustifyContent,
   OverflowWrap,
   Severity,
+  TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
@@ -14,11 +21,17 @@ import {
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../../shared/constants/security-provider';
-import { Text } from '../../../../../components/component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../../components/component-library';
+import Spinner from '../../../../../components/ui/spinner';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
-import LoadingIndicator from '../../../../../components/ui/loading-indicator';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
@@ -59,6 +72,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const [isLoadingDisplayed, setIsLoadingDisplayed] = useState(false);
+
+  useEffect(() => {
+    if (securityAlertResponse?.reason === 'loading') {
+      setIsLoadingDisplayed(true);
+    }
+  }, [securityAlertResponse]);
 
   if (
     !securityAlertResponse ||
@@ -66,7 +86,20 @@ function BlockaidBannerAlert({ txData, ...props }) {
   ) {
     return null;
   } else if (securityAlertResponse.reason === 'loading') {
-    return <LoadingIndicator isLoading />;
+    return (
+      <Box
+        alignItems={AlignItems.center}
+        borderColor={BorderColor.borderDefault}
+        borderRadius={BorderRadius.SM}
+        padding={2}
+        display={Display.Flex}
+      >
+        <Spinner className="blockaid_banner__spinner" color="#24272a" />
+        <Text color={TextColor.textDefault} marginLeft={2}>
+          {t('blockaidAlertLoading')}
+        </Text>
+      </Box>
+    );
   }
 
   const {
@@ -77,6 +110,35 @@ function BlockaidBannerAlert({ txData, ...props }) {
   } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
+    if (isLoadingDisplayed) {
+      return (
+        <Box
+          alignItems={AlignItems.center}
+          borderColor={BorderColor.borderDefault}
+          borderRadius={BorderRadius.SM}
+          padding={2}
+          display={Display.Flex}
+        >
+          <Box
+            alignItems={AlignItems.center}
+            backgroundColor={TextColor.textDefault}
+            borderRadius={BorderRadius.full}
+            className="blockaid_banner__icon_wrapper"
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+          >
+            <Icon
+              name={IconName.Check}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
+          </Box>
+          <Text color={TextColor.textDefault} marginLeft={2}>
+            {t('blockaidNoAlerts')}
+          </Text>
+        </Box>
+      );
+    }
     return null;
   }
 

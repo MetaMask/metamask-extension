@@ -54,6 +54,21 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
+  it('should render spinner when securityAlertResponse is loading', () => {
+    const { container } = renderWithProvider(
+      <BlockaidBannerAlert
+        txData={{
+          securityAlertResponse: {
+            reason: 'loading',
+          },
+        }}
+      />,
+      configureStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it(`should not render when securityAlertResponse.result_type is '${BlockaidResultType.Benign}'`, () => {
     const { container } = renderWithProvider(
       <BlockaidBannerAlert

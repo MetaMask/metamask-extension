@@ -628,6 +628,12 @@
   "blockaidTitleSuspicious": {
     "message": "This is a suspicious request"
   },
+  "blockaidAlertLoading": {
+    "message": "Waiting for security alerts"
+  },
+  "blockaidNoAlerts": {
+    "message": "No alerts received"
+  },
   "blockies": {
     "message": "Blockies"
   },
