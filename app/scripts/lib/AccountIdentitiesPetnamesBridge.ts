@@ -4,10 +4,7 @@ import {
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
-import {
-  PreferencesController,
-  AccountIdentityEntry,
-} from '../controllers/preferences';
+import { InternalAccount } from '@metamask/keyring-api';
 import {
   PetnameEntry,
   AbstractPetnamesBridge,
@@ -18,30 +15,27 @@ import {
  * A petnames bridge that uses the account identities from the preferences controller as the source.
  */
 export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge {
-  #preferencesController: PreferencesController;
-
   constructor({
-    preferencesController,
     nameController,
     messenger,
   }: {
-    preferencesController: PreferencesController;
     nameController: NameController;
     messenger: PetnamesBridgeMessenger;
   }) {
     super({ isTwoWay: false, nameController, messenger });
-    this.#preferencesController = preferencesController;
   }
 
   /**
    * @override
    */
   protected getSourceEntries(): PetnameEntry[] {
-    const { identities } = this.#preferencesController.store.getState();
-    return Object.values(identities).map((identity: AccountIdentityEntry) => ({
-      value: identity.address,
+    const internalAccounts = this.messenger.call(
+      'AccountsController:listAccounts',
+    );
+    return internalAccounts.map((internalAccount: InternalAccount) => ({
+      value: internalAccount.address,
       type: NameType.ETHEREUM_ADDRESS,
-      name: identity.name,
+      name: internalAccount.metadata.name,
       sourceId: undefined,
       variation: FALLBACK_VARIATION,
       origin: NameOrigin.ACCOUNT_IDENTITY,
@@ -52,7 +46,7 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge {
    * @override
    */
   protected onSourceChange(listener: () => void): void {
-    this.#preferencesController.store.subscribe(listener);
+    this.messenger.subscribe('AccountsController:stateChange', listener);
   }
 
   /**

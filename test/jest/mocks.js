@@ -1,3 +1,7 @@
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { v4 as uuidv4 } from 'uuid';
+import { keyringTypeToName } from '@metamask/accounts-controller';
 import {
   draftTransactionInitialState,
   initialState,
@@ -148,3 +152,39 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
     },
   },
 });
+
+export function createMockInternalAccount({
+  address = '0xd5e099c71b797516c10ed0f0d895f429c2781111',
+  name,
+  is4337 = false,
+  keyringType = KeyringTypes.hd,
+  snapOptions,
+}) {
+  return {
+    address,
+    id: uuidv4(),
+    metadata: {
+      name: name ?? `${keyringTypeToName(keyringType)} 1`,
+      keyring: {
+        type: keyringType,
+      },
+      snap: snapOptions,
+    },
+    options: {},
+    methods: is4337
+      ? [
+          EthMethod.PrepareUserOperation,
+          EthMethod.PatchUserOperation,
+          EthMethod.SignUserOperation,
+        ]
+      : [
+          EthMethod.PersonalSign,
+          EthMethod.Sign,
+          EthMethod.SignTransaction,
+          EthMethod.SignTypedDataV1,
+          EthMethod.SignTypedDataV3,
+          EthMethod.SignTypedDataV4,
+        ],
+    type: is4337 ? EthAccountType.Erc4337 : EthAccountType.Eoa,
+  };
+}

@@ -6,14 +6,31 @@ import {
   NameOrigin,
 } from '@metamask/name-controller';
 import {
-  PreferencesController,
-  PreferencesControllerState,
-} from '../controllers/preferences';
+  AccountsController,
+  AccountsControllerMessenger,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
 import { AccountIdentitiesPetnamesBridge } from './AccountIdentitiesPetnamesBridge';
-import { PetnameEntry } from './AbstractPetnamesBridge';
+import {
+  PetnameEntry,
+  PetnamesBridgeMessenger,
+} from './AbstractPetnamesBridge';
+import {
+  KeyringControllerMessenger,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 
 const ADDRESS_MOCK = '0xabc';
-const NAME_MOCK = 'name1';
+const NAME_MOCK = 'Account 1';
+
+const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
+  address: ADDRESS_MOCK,
+  name: NAME_MOCK,
+  keyringType: KeyringTypes.hd,
+  is4337: false,
+});
 
 /**
  * Creates a PetnameEntry with the given name and address.
@@ -75,48 +92,54 @@ function createNameStateWithPetname(
   };
 }
 
-const EMPTY_PREFERENCES_STATE = {
-  identities: {},
-} as PreferencesControllerState;
+const EMPTY_ACCOUNTS_CONTROLLER_STATE: AccountsControllerState = {
+  internalAccounts: { accounts: {}, selectedAccount: '' },
+};
 
-/**
- * Creates PreferencesControllerState containing a single identity with the given name and address.
- *
- * @param address
- * @param name
- */
-function createPreferencesStateWithIdentity(
-  address: string,
-  name: string,
-): PreferencesControllerState {
-  return {
-    ...EMPTY_PREFERENCES_STATE,
-    identities: {
-      [address]: {
-        address,
-        name,
-      },
-    },
-  };
+function setupAccountsController(
+  messenger,
+  state = EMPTY_ACCOUNTS_CONTROLLER_STATE,
+) {
+  return new AccountsController({ state, messenger });
 }
 
-function createPreferencesControllerMock(
-  initialState: PreferencesControllerState,
-): jest.Mocked<PreferencesController> & {
-  store: jest.Mocked<PreferencesController['store']>;
-  updateMockStateAndTriggerListener(newState: PreferencesControllerState): void;
-} {
-  let state = initialState;
-  return {
-    store: {
-      getState: jest.fn(() => state),
-      subscribe: jest.fn(),
-    },
-    updateMockStateAndTriggerListener(newState) {
-      state = newState;
-      this.store.subscribe.mock.calls[0][0](state);
-    },
-  };
+function buildKeyringControllerMessenger(
+  messenger,
+): KeyringControllerMessenger {
+  return messenger.getRestricted({
+    name: 'KeyringController',
+    allowedEvents: ['KeyringController:stateChange'],
+    allowedActions: ['KeyringController:getKeyringsByType'],
+  });
+}
+
+function buildAccountsControllerMessenger(
+  messenger,
+): AccountsControllerMessenger {
+  return messenger.getRestricted({
+    name: 'AccountsController',
+    allowedEvents: [
+      'SnapController:stateChange',
+      'KeyringController:accountRemoved',
+      'KeyringController:stateChange',
+    ],
+    allowedActions: [
+      'KeyringController:getAccounts',
+      'KeyringController:getKeyringForAccount',
+      'KeyringController:getKeyringsByType',
+    ],
+  });
+}
+
+function buildPetNamesBridgeMessenger(messenger): PetnamesBridgeMessenger {
+  return messenger.getRestricted({
+    name: 'PetnamesBridge',
+    allowedEvents: [
+      'NameController:stateChange',
+      'AccountsController:stateChange',
+    ],
+    allowedActions: ['AccountsController:listAccounts'],
+  });
 }
 
 function createNameControllerMock(
@@ -129,51 +152,77 @@ function createNameControllerMock(
 }
 
 describe('AccountIdentitiesPetnamesBridge', () => {
+  let messenger;
+  let accountsControllerMessenger: AccountsControllerMessenger;
+  let petnamesBridgeMessenger: PetnamesBridgeMessenger;
+
   beforeEach(() => {
+    messenger = new ControllerMessenger();
+    accountsControllerMessenger = buildAccountsControllerMessenger(messenger);
+    petnamesBridgeMessenger = buildPetNamesBridgeMessenger(messenger);
+  });
+
+  afterEach(() => {
     jest.resetAllMocks();
   });
 
   it('adds petnames entry when account id entry added', () => {
-    const preferencesController = createPreferencesControllerMock(
-      EMPTY_PREFERENCES_STATE,
+    const keyringControllerMessenger =
+      buildKeyringControllerMessenger(messenger);
+    const accountsController = setupAccountsController(
+      accountsControllerMessenger,
+      EMPTY_ACCOUNTS_CONTROLLER_STATE,
     );
     const nameController = createNameControllerMock(EMPTY_NAME_STATE);
     const bridge = new AccountIdentitiesPetnamesBridge({
-      preferencesController,
       nameController,
-      messenger: {} as any,
+      messenger: petnamesBridgeMessenger,
     });
     bridge.init();
 
-    preferencesController.updateMockStateAndTriggerListener(
-      createPreferencesStateWithIdentity(ADDRESS_MOCK, NAME_MOCK),
+    keyringControllerMessenger.publish(
+      'KeyringController:stateChange',
+      {
+        isUnlocked: true,
+        keyrings: [
+          {
+            type: KeyringTypes.hd,
+            accounts: [ADDRESS_MOCK],
+          },
+        ],
+      },
+      [],
     );
 
-    expect(nameController.setName).toHaveBeenCalledTimes(1);
+    // Two events are published from the accounts controller when a new account is added
+    // thus setName is called twice
+    expect(nameController.setName).toHaveBeenCalledTimes(2);
     expect(nameController.setName).toHaveBeenCalledWith(
       createAccountIdentityPetnameEntry(ADDRESS_MOCK, NAME_MOCK),
     );
   });
 
   it('updates entry when account id is updated', () => {
-    const preferencesController = createPreferencesControllerMock(
-      createPreferencesStateWithIdentity(ADDRESS_MOCK, NAME_MOCK),
+    const accountsController = setupAccountsController(
+      accountsControllerMessenger,
+      {
+        internalAccounts: {
+          accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
+          selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
+        },
+      },
     );
     const nameController = createNameControllerMock(
       createNameStateWithPetname(ADDRESS_MOCK, NAME_MOCK),
     );
     const bridge = new AccountIdentitiesPetnamesBridge({
-      preferencesController,
       nameController,
-      messenger: {} as any,
+      messenger: petnamesBridgeMessenger,
     });
     bridge.init();
 
     const UPDATED_NAME = 'updatedName';
-
-    preferencesController.updateMockStateAndTriggerListener(
-      createPreferencesStateWithIdentity(ADDRESS_MOCK, UPDATED_NAME),
-    );
+    accountsController.setAccountName(MOCK_INTERNAL_ACCOUNT.id, UPDATED_NAME);
 
     expect(nameController.setName).toHaveBeenCalledTimes(1);
     expect(nameController.setName).toHaveBeenCalledWith(
@@ -199,14 +248,10 @@ describe('AccountIdentitiesPetnamesBridge', () => {
             return super.shouldSyncPetname(entry);
           }
         }
-        const preferencesController = createPreferencesControllerMock(
-          EMPTY_PREFERENCES_STATE,
-        );
         const nameController = createNameControllerMock(EMPTY_NAME_STATE);
         const bridge = new TestBridge({
-          preferencesController,
           nameController,
-          messenger: {} as any,
+          messenger: petnamesBridgeMessenger,
         });
         bridge.init();
         expect(bridge.shouldSyncPetname({ origin } as PetnameEntry)).toBe(

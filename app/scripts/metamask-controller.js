@@ -1735,7 +1735,11 @@ export default class MetamaskController extends EventEmitter {
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
       name: 'PetnamesBridge',
-      allowedEvents: ['NameController:stateChange'],
+      allowedEvents: [
+        'NameController:stateChange',
+        'AccountsController:stateChange',
+      ],
+      allowedActions: ['AccountsController:listAccounts'],
     });
 
     new AddressBookPetnamesBridge({

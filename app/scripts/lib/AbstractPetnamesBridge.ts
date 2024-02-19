@@ -5,6 +5,10 @@ import {
   SetNameRequest,
 } from '@metamask/name-controller';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import {
+  AccountsControllerChangeEvent,
+  AccountsControllerListAccountsAction,
+} from '@metamask/accounts-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {
@@ -28,13 +32,14 @@ enum SyncDirection {
 // A list of changes, grouped by type.
 type ChangeList = Record<ChangeType, PetnameEntry[]>;
 
-type AllowedEvents = NameStateChange;
+type AllowedEvents = NameStateChange | AccountsControllerChangeEvent;
+type AllowedActions = AccountsControllerListAccountsAction;
 
 export type PetnamesBridgeMessenger = RestrictedControllerMessenger<
   'PetnamesBridge',
-  never,
+  AllowedActions,
   AllowedEvents,
-  never,
+  AllowedActions['type'],
   AllowedEvents['type']
 >;
 
@@ -63,7 +68,7 @@ export abstract class AbstractPetnamesBridge {
 
   #synchronizingDirection: SyncDirection | null = null;
 
-  #messenger: PetnamesBridgeMessenger;
+  protected messenger: PetnamesBridgeMessenger;
 
   /**
    * @param options
@@ -82,13 +87,13 @@ export abstract class AbstractPetnamesBridge {
   }) {
     this.#isTwoWay = isTwoWay;
     this.#nameController = nameController;
-    this.#messenger = messenger;
+    this.messenger = messenger;
   }
 
   // Initializes listeners
   init(): void {
     if (this.#isTwoWay) {
-      this.#messenger.subscribe('NameController:stateChange', () =>
+      this.messenger.subscribe('NameController:stateChange', () =>
         this.#synchronize(SyncDirection.PETNAMES_TO_SOURCE),
       );
     }
