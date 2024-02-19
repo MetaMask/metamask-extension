@@ -52,7 +52,10 @@ export default function init() {
         'message',
         (event) => {
           // Ensure origin
-          if (event.origin !== KnownOrigins.lattice) {
+          if (
+            event.origin !== KnownOrigins.lattice &&
+            event.source === browserTab
+          ) {
             return;
           }
 
