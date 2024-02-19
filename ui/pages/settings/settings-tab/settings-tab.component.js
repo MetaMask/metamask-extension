@@ -21,7 +21,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -73,7 +73,7 @@ export default class SettingsTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('general')),
+    getNumberOfSettingRoutesInTab(this.context.t, this.context.t('general')),
   )
     .fill(undefined)
     .map(() => {
