@@ -24,6 +24,7 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
+import { getSnapName } from '../../../../ui/helpers/utils/util';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -219,7 +220,7 @@ export const snapKeyringBuilder = (
                 origin,
               );
 
-              const snapName = subjectMetadata?.name;
+              const snapName = getSnapName(origin, subjectMetadata);
 
               await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
@@ -232,8 +233,7 @@ export const snapKeyringBuilder = (
                     children: [
                       t(
                         'snapAccountCreationFailedDescription',
-                        // should be guaranteed to be a string as snap metadata is added when a snap is installed
-                        snapName as string,
+                        snapName,
                       ) as string,
                       ' ',
                       learnMoreLink,
@@ -336,7 +336,7 @@ export const snapKeyringBuilder = (
                 snapId,
               );
 
-              const snapName = subjectMetadata?.name;
+              const snapName = getSnapName(snapId, subjectMetadata);
 
               await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
@@ -349,8 +349,7 @@ export const snapKeyringBuilder = (
                     children: [
                       t(
                         'snapAccountRemovalFailedDescription',
-                        // should be guaranteed to be a string as snap metadata is added when a snap is installed
-                        snapName as string,
+                        snapName,
                       ) as string,
                       ' ',
                       learnMoreLink,
