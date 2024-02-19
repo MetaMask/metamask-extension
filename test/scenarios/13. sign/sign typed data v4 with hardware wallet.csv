@@ -17,5 +17,5 @@ Your imported hardware wallet account is selected.",
 You are connected to the test dapp.",
 13,Click "Sign Typed Data V4",,"The info modal instructions for signing with hardware wallet is displayed.
 The signature message is in JSON formatting.",
-14, Accept the Signature in the Hardware Wallet device.,, The signature hash is displayed on the test dapp.
-15,Verify signed hash.,,The signed address is correctly verified., The address shown in the test dapp is the same as the hardware wallet account.
+14,Accept the Signature in the Hardware Wallet device.,,The signature hash is displayed on the test dapp.,
+15,Verify signed hash.,,The signed address is correctly verified.,The address shown in the test dapp is the same as the hardware wallet account.,
