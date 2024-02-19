@@ -1171,7 +1171,7 @@ jobs:
              -h https://mmig.testrail.io/ \
              --project "MetaMask Extension" \
              -u mmig_qa@consensys.net \
-             -p v##&FgS!4J \
+             -p "v##&FgS!4J" \
              parse_junit \
              --title "Automated Playwright Tests from CircleCI workflow" \
              -f "public/playwright/playwright-reports/junit/test-results.xml"
