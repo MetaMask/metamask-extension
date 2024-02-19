@@ -4,14 +4,17 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import { getPendingApprovals } from './approvals';
 
-type Confirmation = {
+type SignatureRequestType = {
   chainId?: string;
   id: string;
   msgParams?: {
     from: string;
+    origin: string;
   };
   type: TransactionType;
 };
+
+type Confirmation = SignatureRequestType;
 
 type ConfirmMetamaskState = {
   confirm: {

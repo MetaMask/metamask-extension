@@ -12,7 +12,10 @@ import SendTransactionScreen from '../confirmations/send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
-import { AllConnections, Connections } from '../../components/multichain/pages';
+import {
+  PermissionsPage,
+  Connections,
+} from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
@@ -79,7 +82,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   CONNECTIONS,
-  ALL_CONNECTIONS,
+  PERMISSIONS,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -378,11 +381,7 @@ export default class Routes extends Component {
           <Authenticated path={CONNECTIONS} component={Connections} />
         )}
         {process.env.MULTICHAIN && (
-          <Authenticated
-            path={ALL_CONNECTIONS}
-            component={AllConnections}
-            exact
-          />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
         )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
@@ -474,14 +473,14 @@ export default class Routes extends Component {
       return true;
     }
 
-    const isAllConnectionsPage = Boolean(
+    const isPermissionsPage = Boolean(
       matchPath(location.pathname, {
-        path: ALL_CONNECTIONS,
+        path: PERMISSIONS,
         exact: false,
       }),
     );
 
-    if (isAllConnectionsPage) {
+    if (isPermissionsPage) {
       return true;
     }
 

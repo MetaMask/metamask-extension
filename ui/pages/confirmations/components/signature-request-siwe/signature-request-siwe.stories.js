@@ -7,7 +7,7 @@ const { identities, selectedAddress } = testData.metamask;
 const otherIdentity = Object.values(identities)[0];
 
 export default {
-  title: 'Components/App/SignatureRequestSIWE',
+  title: 'Confirmations/Components/SignatureRequestSIWE',
 
   component: SignatureRequestSIWE,
   parameters: {
