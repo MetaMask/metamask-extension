@@ -1,4 +1,5 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { applyPatches } from 'immer';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -84,6 +85,9 @@ export default function reduceMetamask(state = initialState, action) {
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
+
+    case actionConstants.PATCH_METAMASK_STATE:
+      return applyPatches(state, action.value);
 
     case actionConstants.LOCK_METAMASK:
       return {
