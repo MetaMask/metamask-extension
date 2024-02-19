@@ -1163,13 +1163,13 @@ jobs:
 
   testrail-upload-mmi-results:
     docker:
-      - image: cimg/python:3.11
+      - image: cimg/python:3.10.4
     steps:
      - attach_workspace:
         at: ~/project
-    - run:
-      name: List test result files
-      command: ls -la public/playwright/playwright-reports/junit/
+     - run:
+         name: List test result files
+         command: ls -la public/playwright/playwright-reports/junit/
      - run:
          name: Install TR CLI and upload the test results to TestRail
          command: |
