@@ -81,7 +81,7 @@ export function createPPOMMiddleware(
               console.error('Error validating JSON RPC using PPOM: ', error);
               const securityAlertResponse = {
                 result_type: BlockaidResultType.Errored,
-                reason: BlockaidReason.failed,
+                reason: BlockaidReason.errored,
                 description: `${errorObject.name}: ${errorObject.message}`,
               };
 
@@ -120,7 +120,7 @@ export function createPPOMMiddleware(
       console.error('Error validating JSON RPC using PPOM: ', error);
       req.securityAlertResponse = {
         result_type: BlockaidResultType.Errored,
-        reason: BlockaidReason.failed,
+        reason: BlockaidReason.errored,
         description: `${errorObject.name}: ${errorObject.message}`,
       };
     } finally {

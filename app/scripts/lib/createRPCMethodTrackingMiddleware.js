@@ -218,7 +218,7 @@ export default function createRPCMethodTrackingMiddleware({
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
 
         if (
-          req.securityAlertResponse?.reason === BlockaidReason.failed &&
+          req.securityAlertResponse?.result_type === BlockaidResultType.Errored &&
           req.securityAlertResponse?.description
         ) {
           eventProperties.security_alert_description =

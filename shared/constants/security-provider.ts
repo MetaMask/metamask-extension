@@ -47,7 +47,7 @@ export enum BlockaidReason {
   other = 'other',
 
   // MetaMask defined reasons
-  failed = 'Failed',
+  errored = 'Error',
   notApplicable = 'NotApplicable',
   inProgress = 'validation_in_progress',
 }

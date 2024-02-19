@@ -93,7 +93,7 @@ describe('PPOMMiddleware', () => {
     expect(req.securityAlertResponse).toBeUndefined();
   });
 
-  it('should set Failed type in response if usePPOM throw error', async () => {
+  it('should set error type in response if usePPOM throw error', async () => {
     const usePPOM = async () => {
       throw new Error('some error');
     };
@@ -107,7 +107,7 @@ describe('PPOMMiddleware', () => {
       BlockaidResultType.Errored,
     );
     expect((req.securityAlertResponse as any)?.reason).toBe(
-      BlockaidReason.failed,
+      BlockaidReason.errored,
     );
   });
 

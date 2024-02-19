@@ -174,7 +174,7 @@ export async function addTransaction(
             const securityAlertResponse = {
               securityAlertId,
               result_type: BlockaidResultType.Errored,
-              reason: BlockaidReason.failed,
+              reason: BlockaidReason.errored,
               description: `${errorObject.name}: ${errorObject.message}`,
             };
             return securityAlertResponse;

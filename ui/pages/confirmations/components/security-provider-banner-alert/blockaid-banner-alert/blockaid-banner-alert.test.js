@@ -140,13 +140,13 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
-  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.failed}"`, () => {
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.errored}"`, () => {
     const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
-            reason: BlockaidReason.failed,
+            reason: BlockaidReason.errored,
           },
         }}
       />,
@@ -276,7 +276,7 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams might take all your assets.',
       [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
-      [BlockaidReason.failed]:
+      [BlockaidReason.errored]:
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",
