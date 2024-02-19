@@ -544,14 +544,18 @@ export default class MMIController extends EventEmitter {
   }
 
   async handleMmiCheckIfTokenIsPresent(req) {
-    const { token, envName } = req.params;
-    // TODO (Bernardo) - Check if this is the case
-    const custodyType = 'Custody - JSONRPC'; // Only JSONRPC is supported for now
+    const { token, envName, address } = req.params;
+
+    const currentAddress =
+      address || this.preferencesController.getSelectedAddress();
+    const currentCustodyType = this.custodyController.getCustodyTypeByAddress(
+      toChecksumHexAddress(currentAddress),
+    );
 
     // This can only work if the extension is unlocked
     await this.appStateController.getUnlockPromise(true);
 
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(currentCustodyType);
 
     return await this.custodyController.handleMmiCheckIfTokenIsPresent({
       token,
