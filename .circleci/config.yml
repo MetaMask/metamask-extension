@@ -1155,7 +1155,7 @@ jobs:
           path: public/playwright/playwright-reports
       - store_test_results:
           name: report for pipeline integration
-          path: public/playwright/playwright-reports/junit/test-results.xml
+          path: public/playwright/playwright-reports/junit/test-results-${CIRCLE_NODE_INDEX}.xml
       - persist_to_workspace:
           root: ~/project
           paths:
