@@ -65,7 +65,9 @@ export async function estimateGasLimitForSend({
       const { isContractAddress } = to
         ? await readAddressAsContract(global.eth, to)
         : {};
-      if (!isContractAddress && isNonStandardEthChain) {
+      if (!isContractAddress && !isNonStandardEthChain) {
+        return GAS_LIMITS.SIMPLE;
+      } else if (!isContractAddress && isNonStandardEthChain) {
         isSimpleSendOnNonStandardNetwork = true;
       }
     }
