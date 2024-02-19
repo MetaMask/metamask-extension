@@ -29,7 +29,7 @@ import * as tokenUtils from '../../shared/lib/token-util';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
-const { Ganache } = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
 

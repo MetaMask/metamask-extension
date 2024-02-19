@@ -76,7 +76,7 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['./tests/phishing-detection/mock-page-with-iframe'],
+        dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
         dappOptions: {
           numberOfDapps: 2,
         },
@@ -115,7 +115,7 @@ describe('Phishing Detection', function () {
         },
         dapp: true,
         dappPaths: [
-          './tests/phishing-detection/mock-page-with-disallowed-iframe',
+          './tests/phishing-controller/mock-page-with-disallowed-iframe',
         ],
         dappOptions: {
           numberOfDapps: 2,
@@ -263,7 +263,7 @@ describe('Phishing Detection', function () {
         },
         dapp: true,
         dappPaths: [
-          './tests/phishing-detection/mock-page-with-disallowed-iframe',
+          './tests/phishing-controller/mock-page-with-disallowed-iframe',
         ],
         dappOptions: {
           numberOfDapps: 2,
