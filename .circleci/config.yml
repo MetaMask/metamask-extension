@@ -1159,7 +1159,7 @@ jobs:
       - persist_to_workspace:
           root: ~/project
           paths:
-            - public/playwright/playwright-reports/junit/test-results.xml
+            - public/playwright/playwright-reports/junit/results-${CIRCLE_NODE_INDEX}.xml
 
   testrail-upload-mmi-results:
     docker:
@@ -1174,15 +1174,20 @@ jobs:
          name: Install TR CLI and upload the test results to TestRail
          command: |
            pip install trcli
-           trcli -y \
-             -h https://mmig.testrail.io/ \
-             --project "MetaMask Extension" \
-             -u mmig_qa@consensys.net \
-             -p "v##&FgS!4J" \
-             parse_junit \
-             --title "Automated Playwright Tests from CircleCI workflow" \
-             --run-description $CIRCLE_BUILD_URL \
-             -f "public/playwright/playwright-reports/junit/test-results.xml"
+           FILES=public/playwright/playwright-reports/junit/results-*.xml
+           for result_file in $FILES
+           do
+             echo "Uploading $result_file"
+             trcli -y \
+               -h https://mmig.testrail.io/ \
+               --project "MetaMask Extension" \
+               -u mmig_qa@consensys.net \
+               -p "v##&FgS!4J" \
+               parse_junit \
+               --title "Automated Playwright Tests from CircleCI workflow" \
+               --run-description $CIRCLE_BUILD_URL \
+               -f "$result_file"
+           done
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
