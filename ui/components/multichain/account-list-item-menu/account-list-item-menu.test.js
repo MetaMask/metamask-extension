@@ -52,6 +52,16 @@ describe('AccountListItem', () => {
     expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();
   });
 
+  it('renders Connect account button', () => {
+    const { getByTestId } = render({ isRemovable: true });
+    const connectAccountButton = getByTestId(
+      'account-list-menu-connect-account',
+    );
+    expect(connectAccountButton).toBeInTheDocument()
+    fireEvent.click(connectAccountButton);
+    expect(mockAddPermittedAccount).toHaveBeenCalled();
+  });
+
   it('should render remove JWT menu item if the user is custodian and click the button', async () => {
     const mockedGetCustodianToken = jest
       .fn()
