@@ -341,6 +341,10 @@ AccountListItemMenu.propTypes = {
    */
   isHidden: PropTypes.bool,
   /**
+   * Represents connected status
+   */
+  isConnected: PropTypes.bool,
+  /**
    * Identity of the account
    */
   identity: PropTypes.shape({
