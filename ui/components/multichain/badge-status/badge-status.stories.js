@@ -1,6 +1,10 @@
 import React from 'react';
-import { BackgroundColor, BorderColor, Color } from '../../../helpers/constants/design-system';
-import { BadgeStatus } from "./badge-status";
+import {
+  BackgroundColor,
+  BorderColor,
+  Color,
+} from '../../../helpers/constants/design-system';
+import { BadgeStatus } from './badge-status';
 
 export default {
   title: 'Components/Multichain/BadgeStatus',
@@ -26,7 +30,7 @@ export default {
     badgeBackgroundColor: BackgroundColor.successDefault,
     badgeBorderColor: BackgroundColor.backgroundDefault,
     address: '0x1',
-    text: 'Tooltip'
+    text: 'Tooltip',
   },
 };
 
@@ -48,4 +52,3 @@ ConnectedNotActiveStory.args = {
   badgeBorderColor: BorderColor.successDefault,
   isConnectedAndNotActive: true,
 };
-
