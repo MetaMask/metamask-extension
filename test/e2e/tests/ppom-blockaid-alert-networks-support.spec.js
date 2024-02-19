@@ -65,7 +65,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
 
       async ({ driver }) => {
         const expectedTitle = 'This is a deceptive request';
-        const expectedDescription=
+        const expectedDescription =
           'If you approve this request, you might lose your assets.';
 
         await unlockWallet(driver);
