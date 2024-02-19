@@ -22,7 +22,7 @@ function buildTransactionCommon(txMeta) {
     // Optimism only supports type-0 transactions; it does not support any of
     // the newer EIPs since EIP-155. Source:
     // <https://github.com/ethereum-optimism/optimism/blob/develop/specs/l2geth/transaction-types.md>
-    defaultHardfork: Hardfork.SpuriousDragon,
+    defaultHardfork: Hardfork.London,
   });
 }
 

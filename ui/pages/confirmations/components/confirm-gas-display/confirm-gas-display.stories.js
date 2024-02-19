@@ -2,7 +2,7 @@ import React from 'react';
 import ConfirmGasDisplay from './confirm-gas-display';
 
 export default {
-  title: 'Components/App/ConfirmGasDisplay',
+  title: 'Confirmations/Components/ConfirmGasDisplay',
   component: ConfirmGasDisplay,
   argTypes: {
     userAcknowledgedGasMissing: {

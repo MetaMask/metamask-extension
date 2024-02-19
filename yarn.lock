@@ -1683,10 +1683,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@blockaid/ppom_release@npm:1.4.0"
-  checksum: 8df77b05151eab036fa8f45ae9bf1ff37bdb325e7c95628d0930cc320996387a38e3a6f56d715ee36aa10d8a7a2712ae34a5c1e0edce4be2aeb204963ad2b3dc
+"@blockaid/ppom_release@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@blockaid/ppom_release@npm:1.4.1"
+  checksum: 6fff1d24cdfe5a1457b7f64b169f225e67ccbed48c3f5d61b4d24514b7b60cf67bbf130808d7b9cd88d490a86d689afd4b90820929d140526fcd8759b3a4bc6b
   languageName: node
   linkType: hard
 
@@ -3804,10 +3804,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.12.0, @metamask/design-tokens@npm:^1.13.0":
+"@metamask/design-tokens@npm:^1.12.0":
   version: 1.13.0
   resolution: "@metamask/design-tokens@npm:1.13.0"
   checksum: a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
+  languageName: node
+  linkType: hard
+
+"@metamask/design-tokens@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@metamask/design-tokens@npm:2.0.3"
+  checksum: 83dc20a911981050719861319837c5945d48668d21efe0e6b508f485f914fb2793415df8b32ec8e4ebde29f73cb4d489460b4b477e0fd4eed679abc5095bed04
   languageName: node
   linkType: hard
 
@@ -4034,20 +4041,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@metamask/eth-snap-keyring@npm:2.1.1"
+"@metamask/eth-snap-keyring@npm:^2.1.1, @metamask/eth-snap-keyring@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "@metamask/eth-snap-keyring@npm:2.1.2"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/keyring-api": "npm:^2.0.0"
-    "@metamask/snaps-controllers": "npm:^3.4.1"
-    "@metamask/snaps-sdk": "npm:^1.2.0"
+    "@metamask/snaps-controllers": "npm:^4.1.0"
+    "@metamask/snaps-sdk": "npm:^1.4.0"
+    "@metamask/snaps-utils": "npm:^5.2.0"
     "@metamask/utils": "npm:^8.1.0"
     "@types/uuid": "npm:^9.0.1"
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
-  checksum: 7958f5beedddee9d74b46ee91e214e0e4893ddc981b7d713f85037b3efddd3368954b946b21056f1bdde08aa93c0a088e848d21ba6f06c9d8643bd39cc29a2c2
+  checksum: f2106954475c4f6bcbae5ba371b84963bf12b3a1540790bf9e9941eed82b3ad7cf52e3ee70c632691f363e6e3179b5d54aeb6567933ffa4d6790613e708459aa
   languageName: node
   linkType: hard
 
@@ -24049,7 +24057,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
-    "@blockaid/ppom_release": "npm:^1.4.0"
+    "@blockaid/ppom_release": "npm:^1.4.1"
     "@ensdomains/content-hash": "npm:^2.5.6"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24086,7 +24094,7 @@ __metadata:
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
     "@metamask/controller-utils": "npm:^8.0.1"
-    "@metamask/design-tokens": "npm:^1.13.0"
+    "@metamask/design-tokens": "npm:^2.0.3"
     "@metamask/desktop": "npm:^0.3.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
@@ -24097,7 +24105,7 @@ __metadata:
     "@metamask/eth-keyring-controller": "npm:^15.1.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/eth-snap-keyring": "npm:^2.1.1"
+    "@metamask/eth-snap-keyring": "npm:^2.1.2"
     "@metamask/eth-token-tracker": "npm:^7.0.1"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
