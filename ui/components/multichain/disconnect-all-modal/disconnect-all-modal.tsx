@@ -1,5 +1,15 @@
 import React from 'react';
-import { Button, IconName, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from '../../component-library';
+import {
+  Button,
+  IconName,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 // Maps to localizations for title and text
