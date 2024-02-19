@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import browser from 'webextension-polyfill';
 
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
@@ -86,10 +85,7 @@ export const AccountListItem = ({
 
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
-  const showBadge =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-    origin &&
-    origin !== browser.runtime.id;
+  const showBadge = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
