@@ -234,7 +234,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
-    "@lavamoat/lavadome-react": "0.0.15",
+    "@lavamoat/lavadome-react": "0.0.16",
     "@lavamoat/snow": "^2.0.1",
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "^0.2.20",
