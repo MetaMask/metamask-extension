@@ -68,9 +68,6 @@ export default class AccountTracker {
       this.store.updateState(initState);
     };
 
-    this.#provider = opts.provider;
-    this.#blockTracker = opts.blockTracker;
-
     this.getCurrentChainId = opts.getCurrentChainId;
     this.getNetworkClientById = opts.getNetworkClientById;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
@@ -78,13 +75,8 @@ export default class AccountTracker {
     this.onboardingController = opts.onboardingController;
     this.controllerMessenger = opts.controllerMessenger;
 
-    // blockTracker.currentBlock may be null
-    this.#currentBlockNumberByChainId = {
-      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
-    };
-    this.#blockTracker.once('latest', (blockNumber) => {
-      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
-    });
+    this.#provider = opts.provider;
+    this.#blockTracker = opts.blockTracker;
 
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccounts([address]));
@@ -164,6 +156,17 @@ export default class AccountTracker {
       blockTracker: this.#blockTracker,
       identifier: this.getNetworkIdentifier(),
     };
+  }
+
+  delayedInit(blockTracker) {
+    console.log({blockTracker})
+    // blockTracker.currentBlock may be null
+    this.#currentBlockNumberByChainId = {
+      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
+    };
+    this.#blockTracker.once('latest', (blockNumber) => {
+      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
+    });
   }
 
   /**
