@@ -57,7 +57,7 @@ describe('AccountListItem', () => {
     const connectAccountButton = getByTestId(
       'account-list-menu-connect-account',
     );
-    expect(connectAccountButton).toBeInTheDocument()
+    expect(connectAccountButton).toBeInTheDocument();
     fireEvent.click(connectAccountButton);
     expect(mockAddPermittedAccount).toHaveBeenCalled();
   });
