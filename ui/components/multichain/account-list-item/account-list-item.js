@@ -56,9 +56,9 @@ import {
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
-import { BadgeStatus } from '../badge-status/badge-status';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { ConnectedStatus } from '../connected-status/connected-status';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -146,7 +146,7 @@ export const AccountListItem = ({
         />
       )}
       {showBadge ? (
-        <BadgeStatus address={identity.address} isActive={isActive} />
+        <ConnectedStatus address={identity.address} isActive={isActive} />
       ) : (
         <AvatarAccount
           borderColor={BorderColor.transparent}
