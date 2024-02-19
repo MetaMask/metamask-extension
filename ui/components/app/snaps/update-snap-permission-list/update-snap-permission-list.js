@@ -1,11 +1,9 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
 import { Box } from '../../../component-library';
-import { getSnapMetadata } from '../../../../selectors';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -14,12 +12,10 @@ export default function UpdateSnapPermissionList({
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
-  const snapId = targetSubjectMetadata?.origin;
-  const snapName = useSelector((state) => getSnapMetadata(state, snapId))?.name;
 
   return (
     <Box paddingTop={1}>
-      {getWeightedPermissions(t, newPermissions, snapName).map(
+      {getWeightedPermissions(t, newPermissions, targetSubjectMetadata).map(
         (permission, index) => (
           <PermissionCell
             permissionName={permission.permissionName}
@@ -32,7 +28,7 @@ export default function UpdateSnapPermissionList({
           />
         ),
       )}
-      {getWeightedPermissions(t, revokedPermissions, snapName).map(
+      {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
         (permission, index) => (
           <PermissionCell
             permissionName={permission.permissionName}
@@ -46,19 +42,21 @@ export default function UpdateSnapPermissionList({
           />
         ),
       )}
-      {getWeightedPermissions(t, approvedPermissions, snapName).map(
-        (permission, index) => (
-          <PermissionCell
-            permissionName={permission.permissionName}
-            title={permission.label}
-            description={permission.description}
-            weight={permission.weight}
-            avatarIcon={permission.leftIcon}
-            dateApproved={permission?.permissionValue?.date}
-            key={`${permission.permissionName}-${index}`}
-          />
-        ),
-      )}
+      {getWeightedPermissions(
+        t,
+        approvedPermissions,
+        targetSubjectMetadata,
+      ).map((permission, index) => (
+        <PermissionCell
+          permissionName={permission.permissionName}
+          title={permission.label}
+          description={permission.description}
+          weight={permission.weight}
+          avatarIcon={permission.leftIcon}
+          dateApproved={permission?.permissionValue?.date}
+          key={`${permission.permissionName}-${index}`}
+        />
+      ))}
     </Box>
   );
 }
