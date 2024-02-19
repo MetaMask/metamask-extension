@@ -1123,10 +1123,10 @@ jobs:
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
-          at: .
+          at: ~/project
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-mmi-playwright ./dist
+          command: mv ~/project/dist-test-mmi-playwright ~/project/dist
       - run:
           name: Install chromium
           command: |
@@ -1152,12 +1152,12 @@ jobs:
           channel: C05QXJA7NP8
       - store_artifacts:
           name: html-report and artifacts
-          path: public/playwright/playwright-reports
+          path: ~/project/public/playwright/playwright-reports
       - store_test_results:
           name: report for pipeline integration
-          path: public/playwright/playwright-reports/junit/test-results.xml
+          path: ~/project/public/playwright/playwright-reports/junit/test-results.xml
       - persist_to_workspace:
-          root: ./
+          root: ~/project
           paths:
             - public/playwright/playwright-reports/junit/test-results.xml
 
