@@ -11,7 +11,7 @@ mockState.metamask.preferences.showFiatInTestnets = true;
 const store = configureStore(mockState);
 
 export default {
-  title: 'Components/App/ConfirmSubTitle',
+  title: 'Confirmations/Components/ConfirmSubTitle',
 
   component: ConfirmSubTitle,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],

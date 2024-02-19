@@ -2,7 +2,7 @@ import React from 'react';
 import LedgerInstructionField from '.';
 
 export default {
-  title: 'Components/App/LedgerInstructionField',
+  title: 'Confirmations/Components/LedgerInstructionField',
   argTypes: {
     showDataInstruction: {
       control: {
