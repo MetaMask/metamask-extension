@@ -56,6 +56,7 @@ export const AccountListItemMenu = ({
   isOpen,
   isPinned,
   isHidden,
+  isConnected,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -179,7 +180,7 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          {process.env.MULTICHAIN || process.env.IN_TEST ? (
+          {(process.env.MULTICHAIN && !isConnected) || process.env.IN_TEST ? (
             <Box display={[Display.Flex, Display.None]}>
               <MenuItem
                 data-testid="account-list-menu-connect-account"

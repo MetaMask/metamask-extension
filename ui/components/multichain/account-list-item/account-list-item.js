@@ -48,8 +48,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getCurrentNetwork,
+  getAddressConnectedSubjectMap,
   getNativeCurrencyImage,
+  getOriginOfCurrentTab,
   getUseBlockie,
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -100,6 +101,14 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const currentTabOrigin = useSelector(getOriginOfCurrentTab);
+  const selectedAddressSubjectMap =
+    addressConnectedSubjectMap[identity.address];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  );
+  const isConnected = currentTabIsConnectedToSelectedAddress;
 
   return (
     <Box
@@ -308,6 +317,7 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
+          isConnected={isConnected}
         />
       ) : null}
     </Box>
