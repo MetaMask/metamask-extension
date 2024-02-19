@@ -1126,7 +1126,7 @@ jobs:
           at: ~/project
       - run:
           name: Move test build to dist
-          command: mv ~/project/dist-test-mmi-playwright ~/project/dist
+          command: mv dist-test-mmi-playwright dist
       - run:
           name: Install chromium
           command: |
@@ -1152,10 +1152,10 @@ jobs:
           channel: C05QXJA7NP8
       - store_artifacts:
           name: html-report and artifacts
-          path: ~/project/public/playwright/playwright-reports
+          path: public/playwright/playwright-reports
       - store_test_results:
           name: report for pipeline integration
-          path: ~/project/public/playwright/playwright-reports/junit/test-results.xml
+          path: public/playwright/playwright-reports/junit/test-results.xml
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -1167,6 +1167,9 @@ jobs:
     steps:
      - attach_workspace:
         at: ~/project
+    - run:
+      name: List test result files
+      command: ls -la public/playwright/playwright-reports/junit/
      - run:
          name: Install TR CLI and upload the test results to TestRail
          command: |
@@ -1179,7 +1182,7 @@ jobs:
              parse_junit \
              --title "Automated Playwright Tests from CircleCI workflow" \
              --run-description $CIRCLE_BUILD_URL \
-             -f "~/project/public/playwright/playwright-reports/junit/test-results.xml"
+             -f "public/playwright/playwright-reports/junit/test-results.xml"
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
