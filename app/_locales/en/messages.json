@@ -595,6 +595,9 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertLoading": {
+    "message": "Waiting for security alerts"
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },
@@ -619,6 +622,9 @@
   "blockaidMessage": {
     "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
+  "blockaidNoAlerts": {
+    "message": "No alerts received"
+  },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
   },
@@ -627,12 +633,6 @@
   },
   "blockaidTitleSuspicious": {
     "message": "This is a suspicious request"
-  },
-  "blockaidAlertLoading": {
-    "message": "Waiting for security alerts"
-  },
-  "blockaidNoAlerts": {
-    "message": "No alerts received"
   },
   "blockies": {
     "message": "Blockies"
