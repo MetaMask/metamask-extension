@@ -180,7 +180,7 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          {(process.env.MULTICHAIN && !isConnected) || process.env.IN_TEST ? (
+          {process.env.MULTICHAIN = 1 && !isConnected ? (
             <Box display={[Display.Flex, Display.None]}>
               <MenuItem
                 data-testid="account-list-menu-connect-account"

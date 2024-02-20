@@ -49,6 +49,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getAddressConnectedSubjectMap,
+  getCurrentNetwork,
   getNativeCurrencyImage,
   getOriginOfCurrentTab,
   getUseBlockie,
