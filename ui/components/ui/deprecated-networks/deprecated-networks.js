@@ -61,11 +61,7 @@ function getDeprecationWarningCopy(t, currentChainID) {
   if (currentChainID === CHAIN_IDS.AURORA) {
     bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
     actionBtnLinkURL = 'https://mainnet.aurora.dev/';
-  } else if (
-    currentChainID === CHAIN_IDS.GOERLI ||
-    currentChainID === CHAIN_IDS.ARBITRUM_GOERLI ||
-    currentChainID === CHAIN_IDS.OPTIMISM_TESTNET
-  ) {
+  } else if (DEPRECATED_NETWORKS.includes(currentChainID)) {
     bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
     actionBtnLinkURL =
       'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
