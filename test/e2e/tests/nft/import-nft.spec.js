@@ -103,10 +103,6 @@ describe('Import NFT', function () {
         assert.equal(await importedNft.isDisplayed(), true);
         assert.equal(await importedNftImage.isDisplayed(), true);
 
-<<<<<<< HEAD
-        await driver.clickElement({ text: 'Tokens', tag: 'button' });
-=======
->>>>>>> origin/develop
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -131,10 +127,6 @@ describe('Import NFT', function () {
         await waitForAccountRendered(driver);
         await driver.clickElement(accountOneSelector);
 
-<<<<<<< HEAD
-        await driver.clickElement({ text: 'NFTs', tag: 'button' });
-=======
->>>>>>> origin/develop
         const nftIsStillDisplayed = await driver.isElementPresentAndVisible({
           css: 'h5',
           text: 'TestDappNFTs',

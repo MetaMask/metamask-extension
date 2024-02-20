@@ -7,14 +7,8 @@ import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network'
 import {
   OverflowWrap,
   Severity,
-<<<<<<< HEAD:ui/components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.js
-} from '../../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../contexts/i18n';
-import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-=======
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
->>>>>>> origin/develop:ui/pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.js
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -143,26 +137,6 @@ function BlockaidBannerAlert({ txData, ...props }) {
     );
   };
 
-<<<<<<< HEAD:ui/components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.js
-  const jsonData = JSON.stringify(reportData);
-
-  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
-
-  const reportUrl = getReportUrl(encodedData);
-
-  const onClickSupportLink = () => {
-    updateTransactionEventFragment(
-      {
-        properties: {
-          external_link_clicked: 'security_alert_support_link',
-        },
-      },
-      txData.id,
-    );
-  };
-
-=======
->>>>>>> origin/develop:ui/pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.js
   return (
     <SecurityProviderBannerAlert
       description={description}
@@ -171,10 +145,6 @@ function BlockaidBannerAlert({ txData, ...props }) {
       reportUrl={reportUrl}
       severity={severity}
       title={title}
-<<<<<<< HEAD:ui/components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.js
-      reportUrl={reportUrl}
-=======
->>>>>>> origin/develop:ui/pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.js
       onClickSupportLink={onClickSupportLink}
       {...props}
     />

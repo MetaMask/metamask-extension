@@ -2,16 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-<<<<<<< HEAD:ui/components/app/transaction-alerts/transaction-alerts.js
-import { PriorityLevels } from '../../../../shared/constants/gas';
-import { submittedPendingTransactionsSelector } from '../../../selectors';
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BannerAlert, ButtonLink, Text } from '../../component-library';
-import SimulationErrorMessage from '../../ui/simulation-error-message';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-=======
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -24,22 +14,15 @@ import {
 import SimulationErrorMessage from '../simulation-error-message';
 import { SEVERITIES } from '../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
->>>>>>> origin/develop:ui/pages/confirmations/components/transaction-alerts/transaction-alerts.js
 
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-<<<<<<< HEAD:ui/components/app/transaction-alerts/transaction-alerts.js
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
-import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
-=======
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../../shared/lib/metamask-controller-utils';
->>>>>>> origin/develop:ui/pages/confirmations/components/transaction-alerts/transaction-alerts.js
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,

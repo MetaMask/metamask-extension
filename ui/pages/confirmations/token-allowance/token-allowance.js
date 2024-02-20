@@ -63,11 +63,7 @@ import {
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-<<<<<<< HEAD:ui/pages/token-allowance/token-allowance.js
-import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-=======
 import BlockaidBannerAlert from '../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
->>>>>>> origin/develop:ui/pages/confirmations/token-allowance/token-allowance.js
 ///: END:ONLY_INCLUDE_IF
 
 import { ConfirmPageContainerNavigation } from '../components/confirm-page-container';

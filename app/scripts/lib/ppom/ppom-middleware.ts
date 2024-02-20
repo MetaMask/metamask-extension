@@ -9,11 +9,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-<<<<<<< HEAD
-import PreferencesController from '../../controllers/preferences';
-=======
 import { PreferencesController } from '../../controllers/preferences';
->>>>>>> origin/develop
 import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;

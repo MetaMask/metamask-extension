@@ -13,13 +13,8 @@ import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
-<<<<<<< HEAD:ui/pages/confirm-transaction-base/confirm-transaction-base.component.js
-} from '../../helpers/constants/error-keys';
-import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
-=======
 } from '../../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
->>>>>>> origin/develop:ui/pages/confirmations/confirm-transaction-base/confirm-transaction-base.component.js
 
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import TextField from '../../../components/ui/text-field';
@@ -160,11 +155,8 @@ export default class ConfirmTransactionBase extends Component {
     updateTransaction: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
-<<<<<<< HEAD:ui/pages/confirm-transaction-base/confirm-transaction-base.component.js
-=======
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
->>>>>>> origin/develop:ui/pages/confirmations/confirm-transaction-base/confirm-transaction-base.component.js
   };
 
   state = {

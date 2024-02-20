@@ -738,10 +738,6 @@
         "@metamask/address-book-controller>@metamask/controller-utils>@metamask/utils": true,
         "@metamask/address-book-controller>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-<<<<<<< HEAD
-        "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": true,
-=======
->>>>>>> origin/develop
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
@@ -1568,23 +1564,6 @@
         "uuid": true
       }
     },
-<<<<<<< HEAD
-    "@metamask/logging-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": {
-      "packages": {
-        "@metamask/ethjs>number-to-bn": true,
-        "bn.js": true
-      }
-    },
-=======
->>>>>>> origin/develop
     "@metamask/logo": {
       "globals": {
         "addEventListener": true,
@@ -2005,34 +1984,6 @@
         "webpack>events": true
       }
     },
-<<<<<<< HEAD
-    "@metamask/signature-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true
-      }
-    },
-=======
->>>>>>> origin/develop
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -2071,10 +2022,6 @@
       "packages": {
         "@metamask/address-book-controller>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-<<<<<<< HEAD
-        "@metamask/logging-controller>@metamask/controller-utils>ethjs-unit": true,
-=======
->>>>>>> origin/develop
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
@@ -3793,28 +3740,6 @@
         "@metamask/ppom-validator>elliptic": true
       }
     },
-<<<<<<< HEAD
-    "globalthis>define-properties": {
-      "packages": {
-        "globalthis>define-properties>define-data-property": true,
-        "globalthis>define-properties>has-property-descriptors": true,
-        "globalthis>define-properties>object-keys": true
-      }
-    },
-    "globalthis>define-properties>define-data-property": {
-      "packages": {
-        "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>call-bind>es-errors": true,
-        "string.prototype.matchall>es-abstract>gopd": true
-      }
-    },
-    "globalthis>define-properties>has-property-descriptors": {
-      "packages": {
-        "string.prototype.matchall>call-bind>es-define-property": true
-      }
-    },
-=======
->>>>>>> origin/develop
     "gulp>vinyl-fs>object.assign": {
       "packages": {
         "@lavamoat/lavapack>json-stable-stringify>object-keys": true,

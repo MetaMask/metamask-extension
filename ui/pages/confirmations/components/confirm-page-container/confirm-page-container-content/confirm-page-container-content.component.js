@@ -9,15 +9,6 @@ import {
   BUTTON_VARIANT,
   ///: END:ONLY_INCLUDE_IF
   BannerAlert,
-<<<<<<< HEAD:ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js
-} from '../../../component-library';
-import { PageContainerFooter } from '../../../ui/page-container';
-import {
-  INSUFFICIENT_FUNDS_ERROR_KEY,
-  IS_SIGNING_OR_SUBMITTING,
-} from '../../../../helpers/constants/error-keys';
-import { Severity } from '../../../../helpers/constants/design-system';
-=======
 } from '../../../../../components/component-library';
 import { PageContainerFooter } from '../../../../../components/ui/page-container';
 import {
@@ -25,7 +16,6 @@ import {
   IS_SIGNING_OR_SUBMITTING,
 } from '../../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../../helpers/constants/design-system';
->>>>>>> origin/develop:ui/pages/confirmations/components/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 

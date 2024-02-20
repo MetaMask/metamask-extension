@@ -1640,11 +1640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@babel/traverse@npm:7.23.9, @babel/traverse@npm:^7.1.6, @babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.22.8, @babel/traverse@npm:^7.23.2, @babel/traverse@npm:^7.7.2":
-=======
 "@babel/traverse@npm:7.23.9, @babel/traverse@npm:^7.1.6, @babel/traverse@npm:^7.12.5, @babel/traverse@npm:^7.22.8, @babel/traverse@npm:^7.23.2":
->>>>>>> origin/develop
   version: 7.23.9
   resolution: "@babel/traverse@npm:7.23.9"
   dependencies:
@@ -3407,8 +3403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-=======
 "@lavamoat/lavadome-core@npm:0.0.10":
   version: 0.0.10
   resolution: "@lavamoat/lavadome-core@npm:0.0.10"
@@ -3438,7 +3432,6 @@ __metadata:
   languageName: node
   linkType: hard
 
->>>>>>> origin/develop
 "@lavamoat/lavapack@npm:^6.1.0":
   version: 6.1.0
   resolution: "@lavamoat/lavapack@npm:6.1.0"
@@ -3453,8 +3446,6 @@ __metadata:
     through2: "npm:4.0.2"
     umd: "npm:3.0.3"
   checksum: faf4425e740c5abb9a441b6e872921943d48129f8f2120ce26672119824cea5dfcbcb7ae7113ece639a34c924794e3f6088564281672421bf31b40c25cfc93dc
-<<<<<<< HEAD
-=======
   languageName: node
   linkType: hard
 
@@ -3462,7 +3453,6 @@ __metadata:
   version: 2.0.0
   resolution: "@lavamoat/preinstall-always-fail@npm:2.0.0"
   checksum: a69c712e9a01029cacc8f77f7b9a944a285d9532583c09fc6050baef098d962d7dea18f17f446ca1f0ec3cd1eea07bfaedd583a704e016889cae1eba7f3552fd
->>>>>>> origin/develop
   languageName: node
   linkType: hard
 
@@ -4538,11 +4528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.5":
-=======
 "@metamask/message-manager@npm:^7.3.0, @metamask/message-manager@npm:^7.3.8":
->>>>>>> origin/develop
   version: 7.3.8
   resolution: "@metamask/message-manager@npm:7.3.8"
   dependencies:
@@ -24353,11 +24339,8 @@ __metadata:
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.1"
-<<<<<<< HEAD
-=======
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.11"
->>>>>>> origin/develop
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
@@ -32723,11 +32706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"through2@npm:^2.0.0, through2@npm:^2.0.1, through2@npm:^2.0.3, through2@npm:^2.0.5, through2@npm:~2.0.0, through2@npm:~2.0.3":
-=======
 "through2@npm:^2.0.0, through2@npm:^2.0.1, through2@npm:^2.0.3, through2@npm:~2.0.0, through2@npm:~2.0.3":
->>>>>>> origin/develop
   version: 2.0.5
   resolution: "through2@npm:2.0.5"
   dependencies:

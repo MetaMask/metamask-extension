@@ -221,9 +221,6 @@ export const TokenListItem = ({
                     variant={TextVariant.bodyMd}
                     ellipsis
                   >
-<<<<<<< HEAD
-                    {tokenTitle}
-=======
                     {isStakeable ? (
                       <>
                         {tokenSymbol} {stakeableTitle}
@@ -231,7 +228,6 @@ export const TokenListItem = ({
                     ) : (
                       tokenSymbol
                     )}
->>>>>>> origin/develop
                   </Text>
                 </Tooltip>
               ) : (
@@ -241,9 +237,6 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-<<<<<<< HEAD
-                  {tokenTitle}
-=======
                   {isStakeable ? (
                     <Box display={Display.InlineBlock}>
                       {tokenSymbol} {stakeableTitle}
@@ -251,7 +244,6 @@ export const TokenListItem = ({
                   ) : (
                     tokenSymbol
                   )}
->>>>>>> origin/develop
                 </Text>
               )}
             </Box>

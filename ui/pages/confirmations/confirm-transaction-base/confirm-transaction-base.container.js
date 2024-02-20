@@ -51,13 +51,8 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-<<<<<<< HEAD:ui/pages/confirm-transaction-base/confirm-transaction-base.container.js
-} from '../../selectors';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-=======
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
->>>>>>> origin/develop:ui/pages/confirmations/confirm-transaction-base/confirm-transaction-base.container.js
 import {
   isAddressLedger,
   updateGasFees,
@@ -319,11 +314,8 @@ const mapStateToProps = (state, ownProps) => {
     keyringForAccount: keyring,
     isUsingPaymaster,
     isSigningOrSubmitting,
-<<<<<<< HEAD:ui/pages/confirm-transaction-base/confirm-transaction-base.container.js
-=======
     useMaxValue,
     maxValue,
->>>>>>> origin/develop:ui/pages/confirmations/confirm-transaction-base/confirm-transaction-base.container.js
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

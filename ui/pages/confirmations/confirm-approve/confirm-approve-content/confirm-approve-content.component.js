@@ -20,11 +20,7 @@ import {
 import { ConfirmPageContainerWarning } from '../../components/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../components/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-<<<<<<< HEAD:ui/pages/confirm-approve/confirm-approve-content/confirm-approve-content.component.js
-import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-=======
 import BlockaidBannerAlert from '../../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
->>>>>>> origin/develop:ui/pages/confirmations/confirm-approve/confirm-approve-content/confirm-approve-content.component.js
 ///: END:ONLY_INCLUDE_IF
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 

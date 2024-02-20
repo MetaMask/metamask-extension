@@ -398,10 +398,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
     "@lavamoat/allow-scripts": "^3.0.1",
-<<<<<<< HEAD
-=======
     "@lavamoat/lavadome-core": "0.0.10",
->>>>>>> origin/develop
     "@lavamoat/lavapack": "^6.1.0",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/build-utils": "^1.0.0",

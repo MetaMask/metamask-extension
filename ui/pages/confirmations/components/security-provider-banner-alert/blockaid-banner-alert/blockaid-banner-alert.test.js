@@ -1,17 +1,11 @@
 import React from 'react';
 import * as Sentry from '@sentry/browser';
 import { fireEvent, screen } from '@testing-library/react';
-<<<<<<< HEAD:ui/components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.test.js
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { Severity } from '../../../../helpers/constants/design-system';
-import configureStore from '../../../../store/store';
-=======
 
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import configureStore from '../../../../../store/store';
 
->>>>>>> origin/develop:ui/pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.test.js
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -25,11 +19,7 @@ jest.mock('zlib', () => ({
 
 const mockUpdateTransactionEventFragment = jest.fn();
 
-<<<<<<< HEAD:ui/components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.test.js
-jest.mock('../../../../hooks/useTransactionEventFragment', () => {
-=======
 jest.mock('../../../hooks/useTransactionEventFragment', () => {
->>>>>>> origin/develop:ui/pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert.test.js
   return {
     useTransactionEventFragment: () => {
       return {
