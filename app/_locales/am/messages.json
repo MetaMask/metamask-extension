@@ -615,6 +615,9 @@
   "send": {
     "message": "ላክ"
   },
+  "sendTokens": {
+    "message": "ተለዋጭ ስሞችን ላክ"
+  },
   "settings": {
     "message": "ቅንብሮች"
   },
