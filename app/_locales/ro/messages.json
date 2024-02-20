@@ -617,6 +617,9 @@
   "send": {
     "message": "Trimite"
   },
+  "sendTokens": {
+    "message": "Trimiteți indicative"
+  },
   "settings": {
     "message": "Setări"
   },
