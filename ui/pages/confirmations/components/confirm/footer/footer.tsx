@@ -1,16 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import {
-  Box,
   Button,
   ButtonSize,
   ButtonVariant,
 } from '../../../../../components/component-library';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
 
@@ -19,13 +15,7 @@ const Footer = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      gap={4}
-      padding={4}
-      width={BlockSize.Full}
-    >
+    <PageFooter>
       <Button
         block
         data-testid="confirm-footer-cancel-button"
@@ -42,7 +32,7 @@ const Footer = () => {
       >
         {t('confirm')}
       </Button>
-    </Box>
+    </PageFooter>
   );
 };
 

@@ -40,8 +40,6 @@ describe('Institution Actions', () => {
         getCustodianToken: jest.fn(),
         getCustodianJWTList: jest.fn(),
         removeAddTokenConnectRequest: jest.fn(),
-        setCustodianConnectRequest: jest.fn(),
-        getCustodianConnectRequest: jest.fn(),
         getMmiConfiguration: jest.fn(),
         getAllCustodianAccountsWithToken: jest.fn(),
         setWaitForConfirmDeepLinkDialog: jest.fn(),
@@ -85,7 +83,6 @@ describe('Institution Actions', () => {
         custodians: [],
       });
       mmiActions.getCustodianToken({});
-      mmiActions.getCustodianConnectRequest();
       mmiActions.getCustodianTransactionDeepLink('0xAddress', 'txId');
       mmiActions.getCustodianConfirmDeepLink('txId');
       mmiActions.getCustodianSignMessageDeepLink('0xAddress', 'custodyTxId');
@@ -98,11 +95,6 @@ describe('Institution Actions', () => {
         origin: 'origin',
         token: 'token',
         environment: 'jupiter',
-      });
-      mmiActions.setCustodianConnectRequest({
-        token: 'token',
-        custodianType: 'custodianType',
-        envName: 'jupiter',
       });
       const setWaitForConfirmDeepLinkDialog =
         mmiActions.setWaitForConfirmDeepLinkDialog(true);

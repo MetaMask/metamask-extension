@@ -74,14 +74,6 @@ const ConfirmAddCustodianToken = () => {
 
             await dispatch(setProviderType(networkType));
           }
-
-          await dispatch(
-            mmiActions.setCustodianConnectRequest({
-              token: connectRequest.token,
-              envName: connectRequest.environment,
-              custodianType: connectRequest.service,
-            }),
-          );
         }
 
         await dispatch(
