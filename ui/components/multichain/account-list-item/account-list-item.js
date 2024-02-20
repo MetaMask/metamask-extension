@@ -85,8 +85,8 @@ export const AccountListItem = ({
   );
 
   const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork?.nickname)
-    ? totalWeiBalance
-    : identity.balance;
+    ? identity.balance
+    : totalWeiBalance;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
