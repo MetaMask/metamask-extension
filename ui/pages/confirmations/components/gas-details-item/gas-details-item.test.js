@@ -34,7 +34,8 @@ const render = async ({ contextProps } = {}) => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      gasFeeEstimates:
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
       gasFeeEstimatesByChainId: {
         ...mockState.metamask.gasFeeEstimatesByChainId,
         '0x5': {
@@ -49,24 +50,21 @@ const render = async ({ contextProps } = {}) => {
 
   let result;
 
-  await act(
-    async () =>
-      (result = renderWithProvider(
-        <GasFeeContextProvider
-          transaction={{
-            txParams: {
-              gas: '0x5208',
-              maxFeePerGas: '0x59682f10',
-              maxPriorityFeePerGas: '0x59682f00',
-            },
-            userFeeLevel: 'medium',
-          }}
-          {...contextProps}
-        >
-          <GasDetailsItem userAcknowledgedGasMissing={false} />
-        </GasFeeContextProvider>,
-        store,
-      )),
+  await act(async () =>
+    renderWithProvider(
+      <GasFeeContextProvider
+        transaction={{
+          txParams: {
+            gas: '0x5208',
+          },
+          userFeeLevel: 'medium',
+        }}
+        {...contextProps}
+      >
+        <GasDetailsItem userAcknowledgedGasMissing={false} />
+      </GasFeeContextProvider>,
+      store,
+    ),
   );
 
   return result;
@@ -158,10 +156,10 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it.only('should render gas fee details', async () => {
+  it('should render gas fee details', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByTitle('0.00147 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
@@ -181,7 +179,7 @@ describe('GasDetailsItem', () => {
       },
     });
     await waitFor(() => {
-      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByTitle('0.001113 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
@@ -200,7 +198,7 @@ describe('GasDetailsItem', () => {
       },
     });
     await waitFor(() => {
-      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByTitle('0.001113 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });

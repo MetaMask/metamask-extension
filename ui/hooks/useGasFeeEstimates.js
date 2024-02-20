@@ -49,7 +49,10 @@ export function useGasFeeEstimates(_networkClientId) {
     isEqual,
   );
   const isGasEstimatesLoading = useSelector((state) =>
-    getIsGasEstimatesLoadingByChainId(state, { chainId: '0x5', networkClientId }),
+    getIsGasEstimatesLoadingByChainId(state, {
+      chainId: '0x5',
+      networkClientId,
+    }),
   );
   const isNetworkBusy = useSelector((state) =>
     getIsNetworkBusyByChainId(state, '0x5'),

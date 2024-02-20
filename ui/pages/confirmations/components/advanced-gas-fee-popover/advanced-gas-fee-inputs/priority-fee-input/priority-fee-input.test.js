@@ -16,6 +16,8 @@ import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import PriorityfeeInput from './priority-fee-input';
 
+const LOW_PRIORITY_FEE = 0.000000001;
+
 jest.mock('../../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
@@ -99,13 +101,33 @@ describe('PriorityfeeInput', () => {
     );
   });
 
-  it('should renders priorityfee value from transaction if current estimate used is custom', async () => {
-    await render({
-      txParams: {
+  describe('renders priorityFee if current estimate used is custom', () => {
+    const testCases = [
+      {
+        description: 'with a high value',
         maxPriorityFeePerGas: '0x77359400',
+        expectedValue: 2,
       },
-    });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
+      {
+        description: 'with a low value',
+        maxPriorityFeePerGas: '0x1',
+        expectedValue: LOW_PRIORITY_FEE,
+      },
+    ];
+
+    it.each(testCases)(
+      '$description',
+      async ({ maxPriorityFeePerGas, expectedValue }) => {
+        await render({
+          txParams: {
+            maxPriorityFeePerGas,
+          },
+        });
+        expect(document.getElementsByTagName('input')[0]).toHaveValue(
+          expectedValue,
+        );
+      },
+    );
   });
 
   it('should show current priority fee range in subtext', async () => {
@@ -154,5 +176,25 @@ describe('PriorityfeeInput', () => {
     expect(
       screen.queryByText('Priority fee must be greater than 0.'),
     ).not.toBeInTheDocument();
+  });
+
+  describe('updatePriorityFee', () => {
+    it('updates base fee correctly', () => {
+      const { getByTestId } = render(<PriorityfeeInput />);
+      const input = getByTestId('priority-fee-input');
+
+      fireEvent.change(input, { target: { value: '1' } });
+
+      expect(input.value).toBe('1');
+    });
+
+    it('handles low numbers', () => {
+      const { getByTestId } = render(<PriorityfeeInput />);
+      const input = getByTestId('priority-fee-input');
+
+      fireEvent.change(input, { target: { value: LOW_PRIORITY_FEE } });
+
+      expect(input.value).toBe('1e-9');
+    });
   });
 });

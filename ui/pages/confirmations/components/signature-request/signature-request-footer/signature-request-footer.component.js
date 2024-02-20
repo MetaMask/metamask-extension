@@ -8,6 +8,7 @@ export default class SignatureRequestFooter extends PureComponent {
     cancelAction: PropTypes.func.isRequired,
     signAction: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
+    submitButtonType: PropTypes.string,
   };
 
   static contextTypes = {
@@ -15,7 +16,12 @@ export default class SignatureRequestFooter extends PureComponent {
   };
 
   render() {
-    const { cancelAction, signAction, disabled = false } = this.props;
+    const {
+      submitButtonType,
+      cancelAction,
+      signAction,
+      disabled = false,
+    } = this.props;
     return (
       <PageContainerFooter
         cancelText={this.context.t('reject')}
@@ -23,6 +29,7 @@ export default class SignatureRequestFooter extends PureComponent {
         onCancel={cancelAction}
         onSubmit={signAction}
         disabled={disabled}
+        submitButtonType={submitButtonType}
       />
     );
   }

@@ -89,7 +89,7 @@ describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default values are set', async () => {
     await render({
       advancedGasFee: {
-        [CHAIN_IDS.GOERLI]: { maxBaseFee: 50, priorityFee: 2 },
+        [CHAIN_IDS.GOERLI]: { maxBaseFee: '50', priorityFee: '2' },
       },
     });
     expect(screen.queryByText(TEXT_SELECTOR)).toBeInTheDocument();
@@ -97,7 +97,7 @@ describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default values are set and the maxBaseFee values are updated', async () => {
     await render({
       advancedGasFee: {
-        [CHAIN_IDS.GOERLI]: { maxBaseFee: 50, priorityFee: 2 },
+        [CHAIN_IDS.GOERLI]: { maxBaseFee: '50', priorityFee: '2' },
       },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
@@ -112,7 +112,7 @@ describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default values are set and the priorityFee values are updated', async () => {
     await render({
       advancedGasFee: {
-        [CHAIN_IDS.GOERLI]: { maxBaseFee: 50, priorityFee: 2 },
+        [CHAIN_IDS.GOERLI]: { maxBaseFee: '50', priorityFee: '2' },
       },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();

@@ -201,7 +201,12 @@ export default class SecurityTab extends PureComponent {
           ref={this.settingsRefs[15]}
           className="settings-page__security-tab-sub-header"
         >
-          <Text variant={TextVariant.inherit} color={TextColor.textAlternative}>
+          <span ref={this.settingsRefs[16]} />
+          <Text
+            ref={this.settingsRefs[17]}
+            variant={TextVariant.inherit}
+            color={TextColor.textAlternative}
+          >
             {t('securityAlerts')}
           </Text>
           <div className="settings-page__content-padded">
