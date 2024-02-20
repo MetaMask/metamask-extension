@@ -36,6 +36,10 @@ export const ConnectionListItem = ({ connection, onClick }) => {
     avatarValue: address,
   }));
 
+  const addressIconList = connection.addresses?.map((address) => ({
+    avatarType: AvatarType.ACCOUNT,
+    avatarValue: address,
+  }));
   return (
     <Box
       as="button"
