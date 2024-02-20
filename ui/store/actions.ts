@@ -4577,6 +4577,10 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
+export function hidePermissionsTour() {
+  return submitRequestToBackground('setShowPermissionsTour', [false]);
+}
+
 export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
