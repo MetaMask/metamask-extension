@@ -623,6 +623,9 @@
   "send": {
     "message": "Küldés"
   },
+  "sendTokens": {
+    "message": "Token küldése"
+  },
   "settings": {
     "message": "Beállítások"
   },
