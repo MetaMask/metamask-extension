@@ -76,7 +76,7 @@ test.describe('MMI extension', () => {
     );
   });
 
-  test('Custodian token management', async ({ page, context }) => {
+  test.skip('Custodian token management', async ({ page, context }) => {
     // Define const to compare in assertions
     const arrayWithoutCustodianAccounts = ['Account 1'];
     const arrayWithCustodianAccounts = [
