@@ -620,6 +620,9 @@
   "send": {
     "message": "Saada"
   },
+  "sendTokens": {
+    "message": "Saada lube"
+  },
   "settings": {
     "message": "Seaded"
   },

@@ -627,6 +627,9 @@
   "send": {
     "message": "Lähetä"
   },
+  "sendTokens": {
+    "message": "Lähetä tietueita"
+  },
   "settings": {
     "message": "Asetukset"
   },

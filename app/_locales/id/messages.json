@@ -618,6 +618,9 @@
   "cancel": {
     "message": "Batal"
   },
+  "cancelEdit": {
+    "message": "Batalkan pengeditan"
+  },
   "cancelPopoverTitle": {
     "message": "Batalkan transaksi"
   },
@@ -3379,6 +3382,12 @@
   "sendSpecifiedTokens": {
     "message": "Kirim $1",
     "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "Kirim ke"
+  },
+  "sendTokens": {
+    "message": "Kirim token"
   },
   "sendingDisabled": {
     "message": "Belum mendukung pengiriman aset NFT ERC-1155."

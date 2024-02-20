@@ -266,6 +266,9 @@
   "send": {
     "message": "भेजें"
   },
+  "sendTokens": {
+    "message": "भेजें टोकन"
+  },
   "settings": {
     "message": "सेटिंग्स"
   },

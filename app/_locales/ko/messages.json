@@ -618,6 +618,9 @@
   "cancel": {
     "message": "취소"
   },
+  "cancelEdit": {
+    "message": "편집 취소"
+  },
   "cancelPopoverTitle": {
     "message": "트랜잭션 취소"
   },
@@ -3379,6 +3382,12 @@
   "sendSpecifiedTokens": {
     "message": "$1 보내기",
     "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "보낼 대상:"
+  },
+  "sendTokens": {
+    "message": "토큰 보내기"
   },
   "sendingDisabled": {
     "message": "ERC-1155 NFT 자산은 아직 지원되지 않습니다."
