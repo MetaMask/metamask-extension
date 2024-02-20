@@ -712,28 +712,28 @@ jobs:
         - image: cimg/python:3.10.4
       steps:
         - attach_workspace:
-          at: .
+            at: .
         - run:
-          name: List test result files
-          command: ls -la test/test-results-chrome/junit/
+            name: List test result files
+            command: ls -la test/test-results-chrome/junit/
         - run:
-          name: Install TR CLI and upload the test results to TestRail
-          command: |
-            pip install trcli
-            FILES=$(ls test/test-results-chrome/junit/*.xml)
-            for result_file in $FILES
-            do
-              echo "Uploading $result_file"
-              trcli -y \
-                -h https://mmig.testrail.io/ \
-                --project "MetaMask Extension" \
-                -u mmig_qa@consensys.net \
-                -p "v##&FgS!4J" \
-                parse_junit \
-                --title "Automated Chrome Tests from CircleCI workflow" \
-                --run-description $CIRCLE_BUILD_URL \
-                -f "$result_file"
-            done
+            name: Install TR CLI and upload the test results to TestRail
+            command: |
+              pip install trcli
+              FILES=$(ls test/test-results-chrome/junit/*.xml)
+              for result_file in $FILES
+              do
+                echo "Uploading $result_file"
+                trcli -y \
+                  -h https://mmig.testrail.io/ \
+                  --project "MetaMask Extension" \
+                  -u mmig_qa@consensys.net \
+                  -p "v##&FgS!4J" \
+                  parse_junit \
+                  --title "Automated Chrome Tests from CircleCI workflow" \
+                  --run-description $CIRCLE_BUILD_URL \
+                  -f "$result_file"
+              done
 
   test-e2e-chrome-multichain:
     executor: node-browsers-medium-plus
