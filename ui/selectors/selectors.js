@@ -111,10 +111,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
-<<<<<<< HEAD
   ///: END:ONLY_INCLUDE_IF
-=======
->>>>>>> f986a8e4d2 (updated tests)
   getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
