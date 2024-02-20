@@ -690,18 +690,18 @@ jobs:
               timeout 20m yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          name: report for pipeline integration
-          path: test/test-results-chrome/junit/
       - run:
           name: List generated test result files
           command: ls -la test/test-results-chrome/junit/
       - run:
           name: Echo CIRCLE_NODE_INDEX
           command: echo ${CIRCLE_NODE_INDEX}
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          name: report for pipeline integration
+          path: test/test-results-chrome/junit/
       - persist_to_workspace:
           root: .
           paths:
