@@ -73,8 +73,7 @@ export const AccountListItemMenu = ({
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
-  const shouldRenderConnectAccount =
-    process.env.MULTICHAIN === 1 && !isConnected;
+  const shouldRenderConnectAccount = process.env.MULTICHAIN && !isConnected;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;

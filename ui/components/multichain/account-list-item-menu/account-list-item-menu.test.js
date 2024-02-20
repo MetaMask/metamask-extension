@@ -53,6 +53,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders Connect account button', () => {
+    process.env.MULTICHAIN = 1;
     const { getByTestId } = render({ isRemovable: true });
     const connectAccountButton = getByTestId(
       'account-list-menu-connect-account',
@@ -60,6 +61,8 @@ describe('AccountListItem', () => {
     expect(connectAccountButton).toBeInTheDocument();
     fireEvent.click(connectAccountButton);
     expect(mockAddPermittedAccount).toHaveBeenCalled();
+
+    delete process.env.MULTICHAIN;
   });
 
   it('should render remove JWT menu item if the user is custodian and click the button', async () => {
