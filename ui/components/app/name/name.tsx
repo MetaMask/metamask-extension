@@ -18,6 +18,8 @@ export interface NameProps {
   /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
 
+  iconOnly?: boolean;
+
   /** Whether this is being rendered inside the NameDetails modal. */
   internal?: boolean;
 
@@ -42,6 +44,7 @@ export default function Name({
   value,
   type,
   disableEdit,
+  iconOnly,
   internal,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -98,7 +101,8 @@ export default function Name({
             size={IconSize.Lg}
           />
         )}
-        {hasDisplayName ? (
+
+        {iconOnly ? null : hasDisplayName ? (
           <Text className="name__name" variant={TextVariant.bodyMd}>
             {name}
           </Text>

@@ -218,7 +218,8 @@
     "@trezor/connect-web": "9.0.11",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
     "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch",
-    "socks": "^2.7.3"
+    "socks": "^2.7.3",
+    "@metamask/transaction-controller@npm:^20.0.0": "patch:@metamask/transaction-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-22.0.0-cbdbc4c742.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -296,7 +297,7 @@
     "@metamask/snaps-rpc-methods": "^5.0.0",
     "@metamask/snaps-sdk": "^1.4.0",
     "@metamask/snaps-utils": "^5.2.0",
-    "@metamask/transaction-controller": "^21.1.0",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A22.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-22.0.0-cbdbc4c742.patch",
     "@metamask/user-operation-controller": "^1.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",

@@ -1,0 +1,267 @@
+diff --git a/dist/TransactionController.js b/dist/TransactionController.js
+index 731d0f5a9b077f7969c728bd30ce08e70052322c..65dd9cb20d4c726c2a6da845427e80653bec8a20 100644
+--- a/dist/TransactionController.js
++++ b/dist/TransactionController.js
+@@ -36,6 +36,7 @@ const gas_1 = require("./utils/gas");
+ const gas_fees_1 = require("./utils/gas-fees");
+ const history_1 = require("./utils/history");
+ const nonce_1 = require("./utils/nonce");
++const simulation_1 = require("./utils/simulation");
+ const swaps_1 = require("./utils/swaps");
+ const transaction_type_1 = require("./utils/transaction-type");
+ const utils_1 = require("./utils/utils");
+@@ -292,6 +293,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 type: transactionType,
+             };
+             yield this.updateGasProperties(transactionMeta);
++            transactionMeta.simulationData = yield (0, simulation_1.getSimulationData)(Object.assign({ chainId }, txParams));
++            (0, logger_1.projectLogger)('Retrieved simulation data', transactionMeta.simulationData);
+             // Checks if a transaction already exists with a given actionId
+             if (!existingTransactionMeta) {
+                 // Set security provider response
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index d80d057d48112d9047fc6fe419c132c44a53c509..f4087796e65ee736b50ee620f8343b1f2ba264b4 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -270,6 +270,7 @@ declare type TransactionMetaBase = {
+      * This is purely attached to state logs for troubleshooting and support.
+      */
+     sendFlowHistory?: SendFlowHistoryEntry[];
++    simulationData?: SimulationData;
+     /**
+      * If the gas estimation fails, an object containing error and block information.
+      */
+@@ -799,5 +800,74 @@ export declare type SecurityAlertResponse = {
+     result_type: string;
+     providerRequestsCount?: Record<string, number>;
+ };
++export declare type SimulationBalanceChanges = {
++    [address: Hex]: {
++        before: Hex;
++        after: Hex;
++        difference: Hex;
++        isDecrease: boolean;
++    };
++};
++export declare type SimulationEvents = {
++    erc20Transfer?: SimulationERC20TransferEvent[];
++    erc20Approval?: SimulationERC20ApprovalEvent[];
++    erc721Transfer?: SimulationERC721TransferEvent[];
++    erc721Approval?: SimulationERC721ApprovalEvent[];
++    erc721ApprovalForAll?: SimulationERC721ApprovalForAllEvent[];
++    erc1155TransferSingle?: SimulationERC1155TransferSingleEvent[];
++    erc1155TransferBatch?: SimulationERC1155TransferBatchEvent[];
++    erc1155ApprovalForAll?: SimulationERC1155ApprovalForAllEvent[];
++};
++export declare type SimulationEvent = {
++    contractAddress: Hex;
++};
++export declare type SimulationERC20TransferEvent = SimulationEvent & {
++    from: Hex;
++    to: Hex;
++    value: Hex;
++};
++export declare type SimulationERC20ApprovalEvent = SimulationEvent & {
++    owner: Hex;
++    spender: Hex;
++    value: Hex;
++};
++export declare type SimulationERC721TransferEvent = SimulationEvent & {
++    from: Hex;
++    to: Hex;
++    tokenId: Hex;
++};
++export declare type SimulationERC721ApprovalEvent = SimulationEvent & {
++    owner: Hex;
++    approved: Hex;
++    tokenId: Hex;
++};
++export declare type SimulationERC721ApprovalForAllEvent = SimulationEvent & {
++    owner: Hex;
++    operator: Hex;
++    approved: Hex;
++};
++export declare type SimulationERC1155TransferSingleEvent = SimulationEvent & {
++    operator: Hex;
++    from: Hex;
++    to: Hex;
++    id: Hex;
++    value: Hex;
++};
++export declare type SimulationERC1155TransferBatchEvent = SimulationEvent & {
++    operator: Hex;
++    from: Hex;
++    to: Hex;
++    ids: Hex[];
++    values: Hex[];
++};
++export declare type SimulationERC1155ApprovalForAllEvent = SimulationEvent & {
++    account: Hex;
++    operator: Hex;
++    approved: boolean;
++};
++export declare type SimulationData = {
++    balanceChanges: SimulationBalanceChanges;
++    events: SimulationEvents;
++};
+ export {};
+ //# sourceMappingURL=types.d.ts.map
+\ No newline at end of file
+diff --git a/dist/utils/simulation.d.ts b/dist/utils/simulation.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..1a9bb5bb0ad4acd263e50e8d09254ea5ebc79fb5
+--- /dev/null
++++ b/dist/utils/simulation.d.ts
+@@ -0,0 +1,10 @@
++import { type Hex } from '@metamask/utils';
++import type { SimulationData } from '../types';
++export declare function getSimulationData({ chainId, from, to, value, data, }: {
++    chainId: Hex;
++    from: string;
++    to?: string;
++    value?: string;
++    data?: string;
++}): Promise<SimulationData>;
++//# sourceMappingURL=simulation.d.ts.map
+\ No newline at end of file
+diff --git a/dist/utils/simulation.js b/dist/utils/simulation.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..b7a0d07837c093120a1c71d2692a309944433ace
+--- /dev/null
++++ b/dist/utils/simulation.js
+@@ -0,0 +1,134 @@
++"use strict";
++/* eslint-disable @typescript-eslint/no-explicit-any */
++/* eslint-disable jsdoc/require-jsdoc */
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.getSimulationData = void 0;
++const abi_1 = require("@ethersproject/abi");
++const providers_1 = require("@ethersproject/providers");
++const controller_utils_1 = require("@metamask/controller-utils");
++const metamask_eth_abis_1 = require("@metamask/metamask-eth-abis");
++const utils_1 = require("@metamask/utils");
++const logger_1 = require("../logger");
++const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'simulation');
++const RPC_METHOD = 'infura_simulateTransactions';
++const URLS_BY_CHAIN_ID = {
++    '0x1': 'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/',
++    '0x5': 'https://tx-sentinel-ethereum-goerli.api.cx.metamask.io/',
++};
++function getSimulationData({ chainId, from, to, value, data, }) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const response = yield simulateTransactions(chainId, {
++            transactions: [{ from, to, value, data }],
++            withCallTrace: true,
++            withLogs: true,
++        });
++        const balanceChanges = getBalanceChanges(response);
++        const events = getEvents(response);
++        return {
++            balanceChanges,
++            events,
++        };
++    });
++}
++exports.getSimulationData = getSimulationData;
++function getBalanceChanges(response) {
++    var _a;
++    const { stateDiff } = (_a = response.transactions[0]) !== null && _a !== void 0 ? _a : { pre: {}, post: {} };
++    return Object.keys(stateDiff.pre).reduce((result, address) => {
++        const addressHex = address;
++        const before = stateDiff.pre[addressHex].balance;
++        const after = stateDiff.post[addressHex].balance;
++        if (!before || !after) {
++            return result;
++        }
++        const differenceBN = (0, controller_utils_1.hexToBN)(after).sub((0, controller_utils_1.hexToBN)(before));
++        const isDecrease = differenceBN.isNeg();
++        const difference = (0, controller_utils_1.toHex)(differenceBN.abs());
++        result[addressHex] = {
++            before,
++            after,
++            difference,
++            isDecrease,
++        };
++        return result;
++    }, {});
++}
++function getEvents(response) {
++    var _a;
++    const logs = getLogs((_a = response.transactions[0]) === null || _a === void 0 ? void 0 : _a.callTrace);
++    log('Extracted logs', logs);
++    const erc20Interface = new abi_1.Interface(metamask_eth_abis_1.abiERC20);
++    const erc721Interface = new abi_1.Interface(metamask_eth_abis_1.abiERC721);
++    const erc1155Interface = new abi_1.Interface(metamask_eth_abis_1.abiERC1155);
++    return logs.reduce((result, currentLog) => {
++        var _a, _b;
++        const event = parseLog(currentLog, erc20Interface, erc721Interface, erc1155Interface);
++        if (!event) {
++            log('Failed to parse log', currentLog);
++            return result;
++        }
++        const inputs = (_a = event.abi.find((e) => e.name === event.name)) === null || _a === void 0 ? void 0 : _a.inputs;
++        if (!inputs) {
++            log('Failed to find inputs for event', event);
++            return result;
++        }
++        const args = event.args.reduce((argsResult, arg, index) => (Object.assign(Object.assign({}, argsResult), { [inputs[index].name.replace('_', '')]: (arg.toHexString
++                ? arg.toHexString()
++                : arg).toLowerCase() })), {});
++        const key = `${event.standard}${event.name}`;
++        result[key] = (_b = result[key]) !== null && _b !== void 0 ? _b : [];
++        result[key].push(Object.assign({ contractAddress: currentLog.address }, args));
++        return result;
++    }, {});
++}
++function parseLog(eventLog, erc20, erc721, erc1155) {
++    try {
++        return Object.assign(Object.assign({}, erc20.parseLog(eventLog)), { abi: metamask_eth_abis_1.abiERC20, standard: 'erc20' });
++    }
++    catch (e) {
++        // Intentionally empty
++    }
++    try {
++        return Object.assign(Object.assign({}, erc721.parseLog(eventLog)), { abi: metamask_eth_abis_1.abiERC721, standard: 'erc721' });
++    }
++    catch (e) {
++        // Intentionally empty
++    }
++    try {
++        return Object.assign(Object.assign({}, erc1155.parseLog(eventLog)), { abi: metamask_eth_abis_1.abiERC1155, standard: 'erc1155' });
++    }
++    catch (e) {
++        // Intentionally empty
++    }
++    return undefined;
++}
++function getLogs(call) {
++    var _a, _b;
++    const logs = (_a = call.logs) !== null && _a !== void 0 ? _a : [];
++    const nestedCalls = (_b = call.calls) !== null && _b !== void 0 ? _b : [];
++    return [
++        ...logs,
++        ...nestedCalls.map((nestedCall) => getLogs(nestedCall)).flat(),
++    ];
++}
++function simulateTransactions(chainId, request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const url = URLS_BY_CHAIN_ID[chainId];
++        if (!url) {
++            throw new Error(`Chain does not support simulations: ${chainId}`);
++        }
++        const jsonRpc = new providers_1.JsonRpcProvider(url);
++        const response = yield jsonRpc.send(RPC_METHOD, [request]);
++        return response;
++    });
++}
++//# sourceMappingURL=simulation.js.map
+\ No newline at end of file
