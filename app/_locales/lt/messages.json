@@ -630,6 +630,9 @@
   "send": {
     "message": "Siųsti"
   },
+  "sendTokens": {
+    "message": "Siųsti žetonus"
+  },
   "settings": {
     "message": "Nustatymai"
   },

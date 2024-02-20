@@ -256,6 +256,9 @@
   "send": {
     "message": "Sturen"
   },
+  "sendTokens": {
+    "message": "Stuur tokens"
+  },
   "settings": {
     "message": "instellingen"
   },
