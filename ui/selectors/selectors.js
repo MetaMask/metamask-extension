@@ -111,9 +111,9 @@ import {
 import {
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
-  getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
 ///: END:ONLY_INCLUDE_IF
+import { getOrderedConnectedAccountsForActiveTab } from './permissions';
 import { createDeepEqualSelector } from './util';
 
 /**
