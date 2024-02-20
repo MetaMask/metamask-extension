@@ -64,11 +64,13 @@ export default function NewNetworkInfo() {
     setIsLoading(false);
   }, [providerConfig.chainId]);
 
+  /*
   useEffect(() => {
     checkTokenDetection();
     // we want to only fetch once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  */
 
   return (
     !isLoading &&
