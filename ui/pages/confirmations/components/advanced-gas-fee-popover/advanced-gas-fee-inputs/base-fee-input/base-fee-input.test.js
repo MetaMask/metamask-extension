@@ -1,7 +1,6 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 
-import { act } from 'react-dom/test-utils';
 import {
   EditGasModes,
   GasEstimateTypes,
