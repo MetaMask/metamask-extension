@@ -10,10 +10,10 @@ import {
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
-import NativeAsset from './components/native-asset';
-import TokenAsset from './components/token-asset';
+import TokenAssetV2 from './components/token-asset-v2';
+import NativeAssetV2 from './components/native-asset-v2';
 
-const Asset = () => {
+const AssetV2 = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const tokens = useSelector(getTokens);
   const nfts = useSelector(getNfts);
@@ -33,17 +33,18 @@ const Asset = () => {
     el.scroll(0, 0);
   }, []);
 
-  let content;
   if (nft) {
-    content = <NftDetails nft={nft} />;
+    return (
+      <div className="main-container asset__container">
+        <NftDetails nft={nft} />
+      </div>
+    );
   } else if (token) {
-    content = <TokenAsset token={token} />;
+    return <TokenAssetV2 token={token} />;
   } else if (asset === nativeCurrency) {
-    content = <NativeAsset nativeCurrency={nativeCurrency} />;
-  } else {
-    content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+    return <NativeAssetV2 />;
   }
-  return <div className="main-container asset__container">{content}</div>;
+  return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
 };
 
-export default Asset;
+export default AssetV2;

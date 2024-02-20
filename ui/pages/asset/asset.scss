@@ -6,6 +6,12 @@
   &__overview {
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
+
+  &__wrapper {
+    @media screen and (max-width: $screen-sm-max) {
+      width:100%;
+    }
+  }
 }
 
 .asset-navigation {
@@ -23,12 +29,6 @@
 
   &__asset {
     font-weight: bold;
-  }
-}
-
-.asset-options {
-  &__button {
-    padding: 2px 0 2px 8px;
   }
 }
 
@@ -56,10 +56,8 @@
 }
 
 .asset-header {
-  position: sticky;
-  top: 0;
+  min-height: 70px;
   z-index: 55;
-  height: 64px;
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 }
 
@@ -69,6 +67,7 @@
 
 .asset-footer {
   position: sticky;
+  z-index: 55;
   bottom: 0;
   box-shadow: 0 0 15px 0 var(--color-shadow-default);
 }

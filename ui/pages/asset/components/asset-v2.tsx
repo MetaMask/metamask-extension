@@ -137,8 +137,8 @@ const AssetV2 = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const [marketData, setMarketData] = useState<any>();
-  const [balanceInView, setBalanceInView] = useState(true);
 
+  const headerRef = useRef(null);
   const balanceRef = useRef(null);
 
   const { type, symbol, name, image, balance, optionsButton } = asset;
@@ -154,273 +154,280 @@ const AssetV2 = ({
     // TODO: Consider exposing HTTP request through a controller
     fetchWithCache({
       url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
-      cacheOptions: { cacheRefreshTime: MINUTE },
+      // cacheOptions: { cacheRefreshTime: MINUTE },
+      cacheOptions: { cacheRefreshTime: 0 },
       functionName: 'GetAssetMarketData',
     })
       .catch(() => null)
       .then((data) => setMarketData(data?.[address.toLowerCase()]));
   }, [chainId, address, currency]);
 
-  // Show balance in header when it's no longer in view
-  useEffect(() => {
-    if (balanceRef?.current) {
-      const observer = new IntersectionObserver(
-        (entries) => setBalanceInView(entries[0].isIntersecting),
-        { threshold: 1 },
-      );
-      observer.observe(balanceRef.current);
-      return () => observer.disconnect();
-    }
-    return undefined;
-  }, [balanceRef]);
-
   return (
-    <>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      className="asset__wrapper"
+    >
       <AssetHeader
+        ref={headerRef}
         image={image}
         balance={balance}
-        showBalance={!balanceInView}
         optionsButton={optionsButton}
       />
-      <Box padding={4} paddingBottom={0}>
-        <Text color={TextColor.textAlternative}>
-          {name && symbol && name !== symbol
-            ? `${name} (${symbol})`
-            : name ?? symbol}
-        </Text>
-      </Box>
-      <AssetChart address={address} currentPrice={marketData?.price} />
       <Box
+        // Fade balance in/out of header
+        onScroll={(e) =>
+          headerRef?.current?.setBalanceOpacity(
+            Math.max(0, Math.min(1, (e.target.scrollTop - 394) / 55)),
+          )
+        }
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        paddingTop={6}
-        gap={6}
+        className="main-container asset__container"
+        style={{ overflowY: 'auto' }}
       >
-        <Box>
-          <Text
-            variant={TextVariant.headingMd}
-            paddingBottom={2}
-            paddingLeft={4}
-          >
-            {t('yourBalance')}
+        <Box padding={4} paddingBottom={1}>
+          <Text color={TextColor.textAlternative}>
+            {name && symbol && name !== symbol
+              ? `${name} (${symbol})`
+              : name ?? symbol}
           </Text>
-          <Box ref={balanceRef}>
-            {type === AssetType.native ? (
-              <TokenListItem
-                title={symbol}
-                tokenSymbol={symbol}
-                primary={balance.display}
-                secondary={balance.fiat}
-                tokenImage={image}
-                isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
-                isNativeCurrency={true}
-              />
-            ) : (
-              <TokenCell
-                address={address}
-                image={image}
-                symbol={symbol}
-                string={balance.display}
-              />
-            )}
-          </Box>
-          <Box
-            display={Display.Flex}
-            gap={[4, 12]}
-            paddingLeft={[4, 12]}
-            paddingRight={[4, 12]}
-          >
-            {renderTooltip(
-              <ButtonSecondary
-                disabled={!isBridgeChain}
-                padding={5}
-                width={BlockSize.Full}
-                onClick={() => {
-                  const portfolioUrl = getPortfolioUrl(
-                    'bridge',
-                    'ext_bridge_button',
-                    metaMetricsId,
-                  );
-                  global.platform.openTab({
-                    url: `${portfolioUrl}&token=${
-                      type === AssetType.native ? 'native' : address
-                    }`,
-                  });
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.BridgeLinkClicked,
-                    properties: {
-                      location: 'Asset Overview',
-                      text: 'Bridge',
-                      chain_id: chainId,
-                      token_symbol: symbol,
-                    },
-                  });
-                }}
-              >
-                {t('bridge')}
-              </ButtonSecondary>,
-              t('currentlyUnavailable'),
-              !isBridgeChain,
-            )}
-
-            <Box width={BlockSize.Full}>
-              <ButtonSecondary
-                padding={5}
-                width={BlockSize.Full}
-                onClick={async () => {
-                  trackEvent({
-                    event: MetaMetricsEventName.NavSendButtonClicked,
-                    category: MetaMetricsEventCategory.Navigation,
-                    properties: {
-                      token_symbol: symbol,
-                      location: MetaMetricsSwapsEventSource.TokenView,
-                      text: 'Send',
-                      chain_id: chainId,
-                    },
-                  });
-                  try {
-                    await dispatch(
-                      startNewDraftTransaction({
-                        type,
-                        details:
-                          type === AssetType.native
-                            ? undefined
-                            : {
-                                standard: TokenStandard.ERC20,
-                                decimals: asset.decimals,
-                                symbol,
-                                address,
-                              },
-                      }),
-                    );
-                    history.push(SEND_ROUTE);
-                  } catch (err: any) {
-                    if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
-                      throw err;
-                    }
-                  }
-                }}
-              >
-                {t('send')}
-              </ButtonSecondary>
-            </Box>
-          </Box>
         </Box>
-        {type === AssetType.token && (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            paddingLeft={4}
-            paddingRight={4}
-          >
-            <Text variant={TextVariant.headingMd} paddingBottom={4}>
-              {t('tokenDetails')}
-            </Text>
-            {renderRow(
-              t('contractAddress'),
-              <AddressCopyButton address={address} shorten />,
-            )}
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={2}
+        <AssetChart address={address} currentPrice={marketData?.price} />
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          paddingTop={6}
+          gap={6}
+        >
+          <Box>
+            <Text
+              variant={TextVariant.headingMd}
+              paddingBottom={2}
+              paddingLeft={4}
             >
-              {asset.decimals !== undefined &&
-                renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
-              {asset.aggregators && asset.aggregators?.length > 0 && (
-                <Box>
-                  <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodyMdMedium}
-                  >
-                    {'Token list'} {/* TODO localize */}
-                  </Text>
-                  <Text>{asset.aggregators?.join(', ')}</Text>
-                </Box>
+              {t('yourBalance')}
+            </Text>
+            <Box ref={balanceRef}>
+              {type === AssetType.native ? (
+                <TokenListItem
+                  title={symbol}
+                  tokenSymbol={symbol}
+                  primary={balance.display}
+                  secondary={balance.fiat}
+                  tokenImage={image}
+                  isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
+                  isNativeCurrency={true}
+                />
+              ) : (
+                <TokenCell
+                  address={address}
+                  image={image}
+                  symbol={symbol}
+                  string={balance.display}
+                />
               )}
             </Box>
+            <Box
+              display={Display.Flex}
+              gap={[4, 12]}
+              paddingLeft={[4, 12]}
+              paddingRight={[4, 12]}
+            >
+              {renderTooltip(
+                <ButtonSecondary
+                  disabled={!isBridgeChain}
+                  padding={5}
+                  width={BlockSize.Full}
+                  onClick={() => {
+                    const portfolioUrl = getPortfolioUrl(
+                      'bridge',
+                      'ext_bridge_button',
+                      metaMetricsId,
+                    );
+                    global.platform.openTab({
+                      url: `${portfolioUrl}&token=${
+                        type === AssetType.native ? 'native' : address
+                      }`,
+                    });
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.BridgeLinkClicked,
+                      properties: {
+                        location: 'Asset Overview',
+                        text: 'Bridge',
+                        chain_id: chainId,
+                        token_symbol: symbol,
+                      },
+                    });
+                  }}
+                >
+                  {t('bridge')}
+                </ButtonSecondary>,
+                t('currentlyUnavailable'),
+                !isBridgeChain,
+              )}
+
+              <Box width={BlockSize.Full}>
+                <ButtonSecondary
+                  padding={5}
+                  width={BlockSize.Full}
+                  onClick={async () => {
+                    trackEvent({
+                      event: MetaMetricsEventName.NavSendButtonClicked,
+                      category: MetaMetricsEventCategory.Navigation,
+                      properties: {
+                        token_symbol: symbol,
+                        location: MetaMetricsSwapsEventSource.TokenView,
+                        text: 'Send',
+                        chain_id: chainId,
+                      },
+                    });
+                    try {
+                      await dispatch(
+                        startNewDraftTransaction({
+                          type,
+                          details:
+                            type === AssetType.native
+                              ? undefined
+                              : {
+                                  standard: TokenStandard.ERC20,
+                                  decimals: asset.decimals,
+                                  symbol,
+                                  address,
+                                },
+                        }),
+                      );
+                      history.push(SEND_ROUTE);
+                    } catch (err: any) {
+                      if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
+                        throw err;
+                      }
+                    }
+                  }}
+                >
+                  {t('send')}
+                </ButtonSecondary>
+              </Box>
+            </Box>
           </Box>
-        )}
-        {(marketData?.marketCap > 0 ||
-          marketData?.totalVolume > 0 ||
-          marketData?.circulatingSupply > 0 ||
-          marketData?.allTimeHigh > 0 ||
-          marketData?.allTimeLow > 0) && (
-          <Box paddingLeft={4} paddingRight={4}>
-            <Text variant={TextVariant.headingMd} paddingBottom={4}>
-              {t('marketDetails')}
-            </Text>
+          {type === AssetType.token && (
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
-              gap={2}
+              paddingLeft={4}
+              paddingRight={4}
             >
-              {marketData?.marketCap > 0 &&
-                renderRow(
-                  t('marketCap'),
-                  <Text>{localizeLargeNumber(t, marketData.marketCap)}</Text>,
+              <Text variant={TextVariant.headingMd} paddingBottom={4}>
+                {t('tokenDetails')}
+              </Text>
+              {renderRow(
+                t('contractAddress'),
+                <AddressCopyButton address={address} shorten />,
+              )}
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={2}
+              >
+                {asset.decimals !== undefined &&
+                  renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
+                {asset.aggregators && asset.aggregators?.length > 0 && (
+                  <Box>
+                    <Text
+                      color={TextColor.textAlternative}
+                      variant={TextVariant.bodyMdMedium}
+                    >
+                      {'Token list'} {/* TODO localize */}
+                    </Text>
+                    <Text>{asset.aggregators?.join(', ')}</Text>
+                  </Box>
                 )}
-              {marketData?.totalVolume > 0 &&
-                renderRow(
-                  t('totalVolume'),
-                  <Text>{localizeLargeNumber(t, marketData.totalVolume)}</Text>,
-                )}
-              {marketData?.totalVolume > 0 &&
-                marketData?.marketCap > 0 &&
-                renderRow(
-                  `${t('volume')} / ${t('marketCap')}`,
-                  <Text>
-                    {(
-                      marketData.totalVolume / marketData.marketCap
-                    ).toPrecision(4)}
-                  </Text>,
-                )}
-              {marketData?.circulatingSupply > 0 &&
-                renderRow(
-                  t('circulatingSupply'),
-                  <Text>
-                    {localizeLargeNumber(t, marketData.circulatingSupply)}
-                  </Text>,
-                )}
-              {marketData?.allTimeHigh > 0 &&
-                renderRow(
-                  t('allTimeHigh'),
-                  <Text>
-                    {formatCurrency(
-                      marketData.allTimeHigh,
-                      currency,
-                      getPricePrecision(marketData.allTimeHigh),
-                    )}
-                  </Text>,
-                )}
-              {marketData?.allTimeLow > 0 &&
-                renderRow(
-                  t('allTimeLow'),
-                  <Text>
-                    {formatCurrency(
-                      marketData.allTimeLow,
-                      currency,
-                      getPricePrecision(marketData.allTimeLow),
-                    )}
-                  </Text>,
-                )}
+              </Box>
             </Box>
-          </Box>
-        )}
-        <Box marginBottom={8}>
-          <Text
-            paddingLeft={4}
-            paddingRight={4}
-            variant={TextVariant.headingMd}
-          >
-            {t('yourActivity')}
-          </Text>
-          {type === AssetType.native ? (
-            <TransactionList hideTokenTransactions />
-          ) : (
-            <TransactionList tokenAddress={address} />
           )}
+          {(marketData?.marketCap > 0 ||
+            marketData?.totalVolume > 0 ||
+            marketData?.circulatingSupply > 0 ||
+            marketData?.allTimeHigh > 0 ||
+            marketData?.allTimeLow > 0) && (
+            <Box paddingLeft={4} paddingRight={4}>
+              <Text variant={TextVariant.headingMd} paddingBottom={4}>
+                {t('marketDetails')}
+              </Text>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={2}
+              >
+                {marketData?.marketCap > 0 &&
+                  renderRow(
+                    t('marketCap'),
+                    <Text>{localizeLargeNumber(t, marketData.marketCap)}</Text>,
+                  )}
+                {marketData?.totalVolume > 0 &&
+                  renderRow(
+                    t('totalVolume'),
+                    <Text>
+                      {localizeLargeNumber(t, marketData.totalVolume)}
+                    </Text>,
+                  )}
+                {marketData?.totalVolume > 0 &&
+                  marketData?.marketCap > 0 &&
+                  renderRow(
+                    `${t('volume')} / ${t('marketCap')}`,
+                    <Text>
+                      {(
+                        marketData.totalVolume / marketData.marketCap
+                      ).toPrecision(4)}
+                    </Text>,
+                  )}
+                {marketData?.circulatingSupply > 0 &&
+                  renderRow(
+                    t('circulatingSupply'),
+                    <Text>
+                      {localizeLargeNumber(t, marketData.circulatingSupply)}
+                    </Text>,
+                  )}
+                {marketData?.allTimeHigh > 0 &&
+                  renderRow(
+                    t('allTimeHigh'),
+                    <Text>
+                      {formatCurrency(
+                        marketData.allTimeHigh,
+                        currency,
+                        getPricePrecision(marketData.allTimeHigh),
+                      )}
+                    </Text>,
+                  )}
+                {marketData?.allTimeLow > 0 &&
+                  renderRow(
+                    t('allTimeLow'),
+                    <Text>
+                      {formatCurrency(
+                        marketData.allTimeLow,
+                        currency,
+                        getPricePrecision(marketData.allTimeLow),
+                      )}
+                    </Text>,
+                  )}
+              </Box>
+            </Box>
+          )}
+          <Box marginBottom={5}>
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              variant={TextVariant.headingMd}
+            >
+              {t('yourActivity')}
+            </Text>
+            {type === AssetType.native ? (
+              <TransactionList hideTokenTransactions />
+            ) : (
+              <TransactionList tokenAddress={address} />
+            )}
+          </Box>
         </Box>
       </Box>
       <Box
@@ -502,7 +509,7 @@ const AssetV2 = ({
           )}
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

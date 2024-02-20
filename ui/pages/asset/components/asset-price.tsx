@@ -1,6 +1,8 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  BackgroundColor,
+  BorderRadius,
   Display,
   TextColor,
   TextVariant,
@@ -74,7 +76,18 @@ const AssetPrice = forwardRef(
 
     return (
       <Box>
-        <Text paddingLeft={4} variant={TextVariant.headingLg}>
+        <Text
+          style={{ width: '100px' }}
+          marginLeft={4}
+          variant={TextVariant.headingLg}
+          borderRadius={BorderRadius.LG}
+          marginBottom={1}
+          backgroundColor={
+            displayPrice === undefined
+              ? BackgroundColor.backgroundAlternative
+              : BackgroundColor.backgroundDefault
+          }
+        >
           {displayPrice === undefined
             ? '\u00A0'
             : formatCurrency(
@@ -83,13 +96,9 @@ const AssetPrice = forwardRef(
                 getPricePrecision(displayPrice),
               )}
         </Text>
-        <Box
-          paddingLeft={4}
-          paddingBottom={4}
-          style={{ opacity: loading ? 0.2 : 1 }}
-        >
+        <Box paddingLeft={4} paddingBottom={3}>
           {priceDelta !== undefined && comparePrice !== undefined ? (
-            <>
+            <Box style={{ opacity: loading ? 0.2 : 1 }}>
               {priceDelta >= 0 ? chartUp : chartDown}
               <Text
                 display={Display.InlineBlock}
@@ -117,9 +126,16 @@ const AssetPrice = forwardRef(
               >
                 {shortDateFormatter.format(date)}
               </Text>
-            </>
+            </Box>
           ) : (
-            <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
+            <Text
+              style={{ width: '200px' }}
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              borderRadius={BorderRadius.LG}
+              variant={TextVariant.bodyMdMedium}
+            >
+              {'\u00A0'}
+            </Text>
           )}
         </Box>
       </Box>

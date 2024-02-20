@@ -19,6 +19,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
+import { useTheme } from '../../../hooks/useTheme';
 import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
@@ -59,13 +60,31 @@ const crosshairPlugin = {
   },
   afterDraw(chart: Chart) {
     if (chart.crosshairX !== undefined) {
-      const { y } = chart.scales;
-      chart.ctx.lineWidth = 2;
+      const { x: xAxis, y: yAxis } = chart.scales;
+
+      const { data } = chart.data.datasets[0];
+      const index = Math.max(
+        0,
+        Math.min(
+          data.length - 1,
+          Math.round((chart.crosshairX / chart.width) * data.length),
+        ),
+      );
+
+      const x = xAxis.getPixelForValue(data[index].x);
+      const y = yAxis.getPixelForValue(data[index].y);
+
+      chart.ctx.lineWidth = 1;
       chart.ctx.strokeStyle = '#BBC0C5';
       chart.ctx.beginPath();
-      chart.ctx.moveTo(chart.crosshairX, y.getPixelForValue(y.max));
-      chart.ctx.lineTo(chart.crosshairX, y.getPixelForValue(y.min));
+      chart.ctx.moveTo(x, 0);
+      chart.ctx.lineTo(x, chart.height);
       chart.ctx.stroke();
+
+      chart.ctx.beginPath();
+      chart.ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      chart.ctx.fillStyle = chart.options.borderColor;
+      chart.ctx.fill();
     }
   },
 };
@@ -82,15 +101,14 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.5,
+  aspectRatio: 2.7,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
-  borderColor: '#0376c9',
-  backgroundColor: ({ chart }: { chart: Chart }) => {
+  backgroundColor: ({ chart }) => {
     const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
-    gradient.addColorStop(0, '#0376c94C');
-    gradient.addColorStop(1, '#D9D9D900');
+    gradient.addColorStop(0, `${chart.options.borderColor}60`);
+    gradient.addColorStop(1, `${chart.options.borderColor}00`);
     return gradient;
   },
   elements: {
@@ -118,6 +136,7 @@ const AssetChart = ({
   const t = useI18nContext();
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
+  const theme = useTheme();
 
   const [data, setData] = useState<ChartData<'line', Point[]>>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -145,57 +164,58 @@ const AssetChart = ({
     // TODO: Consider exposing HTTP request through a controller
     fetchWithCache({
       url: `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-      cacheOptions: { cacheRefreshTime: MINUTE },
+      // cacheOptions: { cacheRefreshTime: MINUTE },
+      cacheOptions: { cacheRefreshTime: 0 },
       functionName: 'GetAssetHistoricalPrices',
     })
       .catch(() => ({}))
-      .then((resp) => {
-        setLoading(false);
-
+      .then((resp?: { prices?: number[][] }) => {
         const prices = resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] }));
-        if (!prices || prices.length === 0) {
-          return;
+
+        if (prices && prices?.length > 0) {
+          priceRef?.current?.setPrices({
+            price: undefined,
+            comparePrice: prices[0].y,
+            date: Date.now(),
+          });
+
+          let [xMin, xMax, yMin, yMax]: Point[] = [];
+          for (const p of prices) {
+            xMin = !xMin || p.x < xMin.x ? p : xMin;
+            xMax = !xMax || p.x > xMax.x ? p : xMax;
+            yMin = !yMin || p.y < yMin.y ? p : yMin;
+            yMax = !yMax || p.y > yMax.y ? p : yMax;
+          }
+
+          const drawTooltips = () => {
+            maxPriceTooltip.current?.setTooltip({
+              xAxisPercent: (yMax.x - xMin.x) / (xMax.x - xMin.x),
+              price: yMax.y,
+            });
+            minPriceTooltip.current?.setTooltip({
+              xAxisPercent: (yMin.x - xMin.x) / (xMax.x - xMin.x),
+              price: yMin.y,
+            });
+          };
+
+          setChartOptions((options) => ({
+            ...options,
+            borderColor: theme === 'dark' ? '#1098fc' : '#0376c9',
+            onResize: () => drawTooltips(),
+            scales: {
+              x: { min: xMin.x, max: xMax.x, display: false, type: 'linear' },
+              y: { min: yMin.y - 2, max: yMax.y + 2, display: false },
+            },
+          }));
+          setData({ datasets: [{ data: prices }] });
+          drawTooltips();
         }
 
-        priceRef?.current?.setPrices({
-          price: undefined,
-          comparePrice: prices[0].y,
-          date: Date.now(),
-        });
-
-        let [xMin, xMax, yMin, yMax]: Point[] = [];
-        for (const p of prices) {
-          xMin = !xMin || p.x < xMin.x ? p : xMin;
-          xMax = !xMax || p.x > xMax.x ? p : xMax;
-          yMin = !yMin || p.y < yMin.y ? p : yMin;
-          yMax = !yMax || p.y > yMax.y ? p : yMax;
-        }
-
-        const drawTooltips = () => {
-          maxPriceTooltip.current?.setTooltip({
-            xAxisPercent: (yMax.x - xMin.x) / (xMax.x - xMin.x),
-            price: yMax.y,
-          });
-          minPriceTooltip.current?.setTooltip({
-            xAxisPercent: (yMin.x - xMin.x) / (xMax.x - xMin.x),
-            price: yMin.y,
-          });
-        };
-
-        setChartOptions((options) => ({
-          ...options,
-          onResize: () => drawTooltips(),
-          scales: {
-            x: { min: xMin.x, max: xMax.x, display: false, type: 'linear' },
-            y: { min: yMin.y, max: yMax.y, display: false },
-          },
-        }));
-        setData({ datasets: [{ data: prices }] });
-        drawTooltips();
+        setLoading(false);
       });
   }, [chainId, address, currency, timeRange]);
 
-  const prices = data?.datasets?.[0]?.data;
+  const prices = chartRef?.current?.data?.datasets?.[0]?.data;
 
   return (
     <Box>
@@ -213,14 +233,14 @@ const AssetChart = ({
             aspectRatio: `${chartOptions.aspectRatio}`,
           }}
         >
-          {prices ? (
+          {data ? (
             <Line
               ref={chartRef}
               data={data}
               options={chartOptions}
               updateMode="none"
               onMouseMove={({ nativeEvent: e }: ReactMouseEvent) => {
-                if (chartRef.current) {
+                if (prices) {
                   const index = Math.max(
                     0,
                     Math.min(
@@ -268,7 +288,7 @@ const AssetChart = ({
         <ChartTooltip ref={minPriceTooltip} />
       </Box>
 
-      {prices ? (
+      {data ? (
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceEvenly}

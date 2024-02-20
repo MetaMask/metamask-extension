@@ -40,7 +40,8 @@ import {
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
-import Asset from '../asset';
+import Asset from '../asset/asset';
+import AssetV2 from '../asset/asset-v2';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -366,8 +367,23 @@ export default class Routes extends Component {
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
         />
+
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        }
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
+        {
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        }
+        <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={AssetV2} />
+        <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={AssetV2} />
+        {
+          ///: END:ONLY_INCLUDE_IF
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           <Authenticated
