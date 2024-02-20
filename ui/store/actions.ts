@@ -1,3 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck `redux-thunk` and `@reduxjs/toolkit` are not compatible with
+// TypeScript 5.3.3. We can't update them because we rely on an old version of
+// @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
+// I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
@@ -1289,6 +1294,28 @@ export function revokeDynamicSnapPermissions(
     await submitRequestToBackground('revokeDynamicSnapPermissions', [
       snapId,
       permissionNames,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+/**
+ * Disconnects a given origin from a snap.
+ *
+ * This revokes the permission granted to the origin
+ * that provides the capability to communicate with a snap.
+ *
+ * @param origin - The origin.
+ * @param snapId - The snap ID.
+ */
+export function disconnectOriginFromSnap(
+  origin: string,
+  snapId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('disconnectOriginFromSnap', [
+      origin,
+      snapId,
     ]);
     await forceUpdateMetamaskState(dispatch);
   };
@@ -2639,6 +2666,16 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+/**
+ * An action creator for display a warning to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @deprecated This way of displaying a warning is confusing for users and
+ * should no longer be used.
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
 export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
     return {
@@ -2886,6 +2923,10 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
 
 export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
+}
+
+export function setPetnamesEnabled(value: boolean) {
+  return setPreference('petnamesEnabled', value);
 }
 
 export function setShowExtensionInFullSizeView(value: boolean) {
@@ -3196,7 +3237,7 @@ export function detectNfts(): ThunkAction<
 }
 
 export function setAdvancedGasFee(
-  val: { chainId: Hex; maxBaseFee?: Hex; priorityFee?: Hex } | null,
+  val: { chainId: Hex; maxBaseFee?: string; priorityFee?: string } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -3237,6 +3278,19 @@ export function setIpfsGateway(
   };
 }
 
+export function setIsIpfsGatewayEnabled(
+  val: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setIsIpfsGatewayEnabled`);
+    callBackgroundMethod('setIsIpfsGatewayEnabled', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 export function setUseAddressBarEnsResolution(
   val: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -3262,7 +3316,7 @@ export function updateCurrentLocale(
       const textDirection = await submitRequestToBackground<
         'rtl' | 'ltr' | 'auto'
       >('setCurrentLocale', [key]);
-      await switchDirection(textDirection);
+      switchDirection(textDirection);
       dispatch(setCurrentLocale(key, localeMessages));
     } catch (error) {
       dispatch(displayWarning(error));
@@ -3350,6 +3404,11 @@ export function setSwapsFeatureFlags(
   };
 }
 
+type Quotes = [
+  { destinationAmount: string; decimals: number; aggregator: string },
+  string,
+];
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3366,19 +3425,9 @@ export function fetchAndSetQuotes(
     accountBalance: string;
     chainId: string;
   },
-): ThunkAction<
-  Promise<
-    [
-      { destinationAmount: string; decimals: number; aggregator: string },
-      string,
-    ]
-  >,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<Quotes>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const [quotes, selectedAggId] = await submitRequestToBackground(
+    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
       'fetchAndSetQuotes',
       [fetchParams, fetchParamsMetaData],
     );
@@ -3679,35 +3728,6 @@ export function updateHiddenAccountsList(
     ]);
   };
 }
-
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-/**
- * Updates the caveat value for the specified origin, permission and caveat type.
- *
- * @param origin
- * @param target
- * @param caveatType
- * @param caveatValue
- */
-export function updateCaveat(
-  origin: string,
-  target: string,
-  caveatType: string,
-  caveatValue: Record<string, Json>,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    callBackgroundMethod(
-      'updateCaveat',
-      [origin, target, caveatType, caveatValue],
-      (err) => {
-        if (err) {
-          dispatch(displayWarning(err));
-        }
-      },
-    );
-  };
-}
-///: END:ONLY_INCLUDE_IF
 
 // Pending Approvals
 
@@ -4550,6 +4570,10 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
+export function hidePermissionsTour() {
+  return submitRequestToBackground('setShowPermissionsTour', [false]);
+}
+
 export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
@@ -4630,7 +4654,6 @@ export function setUseRequestQueue(val: boolean): void {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
@@ -4638,7 +4661,6 @@ export function setUseExternalNameSources(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);

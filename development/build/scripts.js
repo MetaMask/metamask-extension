@@ -2,7 +2,7 @@
 
 const { callbackify } = require('util');
 const path = require('path');
-const { writeFileSync, readFileSync } = require('fs');
+const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const EventEmitter = require('events');
 const assert = require('assert');
 const gulp = require('gulp');
@@ -43,6 +43,7 @@ const {
   getBuildName,
   getBuildAppId,
   getBuildIcon,
+  makeSelfInjecting,
 } = require('./utils');
 
 const {
@@ -471,6 +472,26 @@ function createScriptTasks({
         version,
         applyLavaMoat,
       }),
+      () => {
+        // MV3 injects inpage into the tab's main world, but in MV2 we need
+        // to do it manually:
+        if (process.env.ENABLE_MV3) {
+          return;
+        }
+        // stringify inpage.js into itself, and then make it inject itself into the page
+        browserPlatforms.forEach((browser) => {
+          makeSelfInjecting(
+            path.join(__dirname, `../../dist/${browser}/${inpage}.js`),
+          );
+        });
+        // delete the inpage.js source map, as it no longer represents inpage.js
+        // and so `yarn source-map-explorer` can't handle it. It's also not
+        // useful anyway, as inpage.js is injected as a `script.textContent`,
+        // and not tracked in Sentry or browsers devtools anyway.
+        unlinkSync(
+          path.join(__dirname, `../../dist/sourcemaps/${inpage}.js.map`),
+        );
+      },
       createNormalBundle({
         buildTarget,
         buildType,
@@ -1309,7 +1330,6 @@ function renderJavaScriptLoader({
   const requiredScripts = [
     './snow.js',
     './use-snow.js',
-    './globalthis.js',
     './sentry-install.js',
     ...securityScripts,
     ...jsBundles,

@@ -14,6 +14,7 @@ import {
   getMMIAddressFromModalOrAddress,
   getMMIConfiguration,
   getInteractiveReplacementToken,
+  getCustodianDeepLink,
   getIsNoteToTraderSupported,
 } from './selectors';
 
@@ -671,6 +672,34 @@ describe('Institutional selectors', () => {
       };
 
       const token = getInteractiveReplacementToken(state);
+
+      expect(token).toStrictEqual({});
+    });
+  });
+
+  describe('getCustodianDeepLink', () => {
+    it('returns custodianDeepLink if it exists', () => {
+      const custodianDeepLink = {
+        fromAddress: '0x',
+        custodyId: 'custodyId',
+      };
+      const state = {
+        metamask: {
+          custodianDeepLink,
+        },
+      };
+
+      const token = getCustodianDeepLink(state);
+
+      expect(token).toStrictEqual(custodianDeepLink);
+    });
+
+    it('returns an empty object if custodianDeepLink does not exist', () => {
+      const state = {
+        metamask: {},
+      };
+
+      const token = getCustodianDeepLink(state);
 
       expect(token).toStrictEqual({});
     });

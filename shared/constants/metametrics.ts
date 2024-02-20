@@ -467,9 +467,7 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   PetnameAddressCount = 'petname_addresses_count',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -516,6 +514,12 @@ export enum MetaMetricsEventName {
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
+  EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
+  EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
+  EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
+  EmptyNftsBannerDisplayed = 'Empty NFTs Banner Displayed',
+  EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -538,6 +542,7 @@ export enum MetaMetricsEventName {
   NavAccountDetailsOpened = 'Account Details Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
+  NavPermissionsOpened = 'Permissions Opened',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
   NavAccountSwitched = 'Account Switched',
@@ -597,6 +602,7 @@ export enum MetaMetricsEventName {
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
+  StakingEntryPointClicked = 'Stake Button Clicked',
   SupportLinkClicked = 'Support Link Clicked',
   TermsOfUseShown = 'Terms of Use Shown',
   TermsOfUseAccepted = 'Terms of Use Accepted',
@@ -654,8 +660,14 @@ export enum MetaMetricsEventName {
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  SnapInstallStarted = 'Snap Install Started',
+  SnapInstallFailed = 'Snap Install Failed',
+  SnapInstallRejected = 'Snap Update Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
+  SnapUpdateStarted = 'Snap Update Started',
+  SnapUpdateRejected = 'Snap Update Rejected',
+  SnapUpdateFailed = 'Snap Update Failed',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   ///: END:ONLY_INCLUDE_IF

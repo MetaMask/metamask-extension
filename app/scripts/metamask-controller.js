@@ -115,7 +115,7 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
+
 import {
   NameController,
   ENSNameProvider,
@@ -123,7 +123,6 @@ import {
   TokenNameProvider,
   LensNameProvider,
 } from '@metamask/name-controller';
-///: END:ONLY_INCLUDE_IF
 
 import {
   QueuedRequestController,
@@ -193,7 +192,7 @@ import {
   getTokenIdParam,
   fetchTokenBalance,
   fetchERC1155Balance,
-} from '../../shared/lib/token-util.ts';
+} from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -228,10 +227,9 @@ import {
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-///: END:ONLY_INCLUDE_IF
+import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -571,9 +569,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
-      ),
-      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
-        this.assetsContractController,
       ),
       config: {
         provider: this.provider,
@@ -945,17 +940,6 @@ export default class MetamaskController extends EventEmitter {
           ),
         ),
       );
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
-        additionalKeyrings.push(
-          mmiKeyringBuilderFactory(
-            CUSTODIAN_TYPES[custodianType].keyringClass,
-            { mmiConfigurationController: this.mmiConfigurationController },
-          ),
-        );
-      }
-      ///: END:ONLY_INCLUDE_IF
     } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
@@ -963,6 +947,16 @@ export default class MetamaskController extends EventEmitter {
         keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+      additionalKeyrings.push(
+        mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass, {
+          mmiConfigurationController: this.mmiConfigurationController,
+        }),
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
@@ -1707,7 +1701,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     const isExternalNameSourcesEnabled = () =>
       this.preferencesController.store.getState().useExternalNameSources;
 
@@ -1740,15 +1733,22 @@ export default class MetamaskController extends EventEmitter {
       state: initState.NameController,
     });
 
+    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
+      name: 'PetnamesBridge',
+      allowedEvents: ['NameController:stateChange'],
+    });
+
     new AddressBookPetnamesBridge({
       addressBookController: this.addressBookController,
       nameController: this.nameController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AddressBookPetnamesBridge',
-        allowedEvents: ['NameController:stateChange'],
-      }),
+      messenger: petnamesBridgeMessenger,
     }).init();
-    ///: END:ONLY_INCLUDE_IF
+
+    new AccountIdentitiesPetnamesBridge({
+      preferencesController: this.preferencesController,
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
 
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
@@ -1955,9 +1955,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       NameController: this.nameController,
-      ///: END:ONLY_INCLUDE_IF
       UserOperationController: this.userOperationController,
       ...resetOnRestartStore,
     });
@@ -2004,9 +2002,7 @@ export default class MetamaskController extends EventEmitter {
           this.institutionalFeaturesController.store,
         MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         NameController: this.nameController,
-        ///: END:ONLY_INCLUDE_IF
         UserOperationController: this.userOperationController,
         ...resetOnRestartStore,
       },
@@ -2395,6 +2391,49 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapInstallStarted`,
+      (snapId, origin, isUpdate) => {
+        const snapCategory = this._getSnapMetadata(snapId)?.category;
+        this.metaMetricsController.trackEvent({
+          event: isUpdate
+            ? MetaMetricsEventName.SnapUpdateStarted
+            : MetaMetricsEventName.SnapInstallStarted,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: snapId,
+            origin,
+            snap_category: snapCategory,
+          },
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapInstallFailed`,
+      (snapId, origin, isUpdate, error) => {
+        const isRejected = error.includes('User rejected the request.');
+        const failedEvent = isUpdate
+          ? MetaMetricsEventName.SnapUpdateFailed
+          : MetaMetricsEventName.SnapInstallFailed;
+        const rejectedEvent = isUpdate
+          ? MetaMetricsEventName.SnapUpdateRejected
+          : MetaMetricsEventName.SnapInstallRejected;
+
+        const snapCategory = this._getSnapMetadata(snapId)?.category;
+        this.metaMetricsController.trackEvent({
+          event: isRejected ? rejectedEvent : failedEvent,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: snapId,
+            origin,
+            snap_category: snapCategory,
+          },
+        });
+      },
+    );
+
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap, origin) => {
@@ -2731,16 +2770,18 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
+      setIsIpfsGatewayEnabled:
+        preferencesController.setIsIpfsGatewayEnabled.bind(
+          preferencesController,
+        ),
       setUseAddressBarEnsResolution:
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
@@ -2964,6 +3005,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
+      setShowPermissionsTour:
+        appStateController.setShowPermissionsTour.bind(appStateController),
       setShowProductTour:
         appStateController.setShowProductTour.bind(appStateController),
       setShowAccountBanner:
@@ -3116,14 +3159,6 @@ export default class MetamaskController extends EventEmitter {
         this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
           this.custodyController,
         ),
-      setCustodianConnectRequest:
-        this.custodyController.setCustodianConnectRequest.bind(
-          this.custodyController,
-        ),
-      getCustodianConnectRequest:
-        this.custodyController.getCustodianConnectRequest.bind(
-          this.custodyController,
-        ),
       getMmiConfiguration:
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
@@ -3136,6 +3171,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.showInteractiveReplacementTokenBanner.bind(
           appStateController,
         ),
+      setCustodianDeepLink:
+        appStateController.setCustodianDeepLink.bind(appStateController),
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -3169,7 +3206,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
-      updateCaveat: this.updateCaveat.bind(this),
+      disconnectOriginFromSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:disconnectOrigin',
+      ),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
@@ -3342,12 +3382,10 @@ export default class MetamaskController extends EventEmitter {
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-      ///: END:ONLY_INCLUDE_IF
     };
   }
 

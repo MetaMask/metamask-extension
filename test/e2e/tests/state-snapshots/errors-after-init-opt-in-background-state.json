@@ -34,6 +34,7 @@
     "showTestnetMessageInDropdown": true,
     "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
+    "showPermissionsTour": true,
     "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -92,6 +93,7 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "providerConfig": {
@@ -128,9 +130,7 @@
   },
   "PPOMController": {
     "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "versionInfo": [] }
-    },
+    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
@@ -167,9 +167,11 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": true
     },
     "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
@@ -177,6 +179,7 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
+    "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {

@@ -45,6 +45,7 @@ import {
   ModalOverlay,
   Text,
   BannerBase,
+  IconName,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
@@ -426,6 +427,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               disabled={!isUnlocked}
+              startIconName={IconName.Add}
               block
               onClick={() => {
                 if (isFullScreen) {

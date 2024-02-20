@@ -90,6 +90,7 @@ const prefixChainId = (chainId) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  setActiveOnSubmit = false,
   restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
@@ -453,9 +454,7 @@ const NetworksForm = ({
             formTickerSymbol.toLowerCase()
           ) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
-            warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              returnedTickerSymbol,
-            ]);
+            warningMessage = t('chainListReturnedDifferentTickerSymbol');
             setSuggestedTicker(returnedTickerSymbol);
           }
         }
@@ -607,20 +606,11 @@ const NetworksForm = ({
               },
             },
             {
-              setActive: true,
+              setActive: setActiveOnSubmit,
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
-      }
-      if (addNewNetwork) {
-        dispatch(
-          setNewNetworkAdded({
-            nickname: networkName,
-            networkConfigurationId,
-          }),
-        );
-
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -633,9 +623,17 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
-
-        submitCallback?.();
       }
+
+      if (addNewNetwork && !setActiveOnSubmit) {
+        dispatch(
+          setNewNetworkAdded({
+            nickname: networkName,
+            networkConfigurationId,
+          }),
+        );
+      }
+      submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
       throw error;
@@ -848,6 +846,7 @@ NetworksForm.propTypes = {
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
+  setActiveOnSubmit: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {

@@ -22,6 +22,7 @@
     "warning": null,
     "customTokenAmount": "10"
   },
+  "confirm": {},
   "confirmTransaction": {
     "txData": {
       "txParams": {
@@ -111,7 +112,8 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": false
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -232,6 +234,31 @@
             "name": "Test Account 4",
             "keyring": {
               "type": "Custody test"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "a59e7df7-c6cb-4198-a6dd-36386a409551": {
+          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+          "id": "a59e7df7-c6cb-4198-a6dd-36386a409551",
+          "metadata": {
+            "name": "Snap Account 1",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "mock-id",
+              "name": "mock-snap",
+              "enabled": true
             }
           },
           "options": {},

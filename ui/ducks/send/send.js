@@ -24,13 +24,13 @@ import {
   NEGATIVE_ETH_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
-} from '../../pages/send/send.constants';
+} from '../../pages/confirmations/send/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/send/send.utils';
+} from '../../pages/confirmations/send/send.utils';
 import {
   getAdvancedInlineGasShown,
   getCurrentChainId,
@@ -114,6 +114,7 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -411,7 +412,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
- * @property {Object<string, DraftTransaction>} draftTransactions - An object keyed
+ * @property {{[key: string]: DraftTransaction}} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
  *  supports EIP 1559 transactions.
@@ -2307,10 +2308,11 @@ export function resetSendState() {
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
-    const { stage, eip1559support } = state[name];
+    const { stage, eip1559support, amountMode } = state[name];
     const txParams = generateTransactionParams(state[name]);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
@@ -2381,11 +2383,19 @@ export function signTransaction() {
         ),
       );
 
-      dispatch(
+      const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           sendFlowHistory: draftTransaction.history,
           type: transactionType,
         }),
+      );
+
+      await dispatch(
+        setMaxValueMode(
+          transactionId,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.asset.type === AssetType.native,
+        ),
       );
     }
   };
