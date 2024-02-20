@@ -65,6 +65,7 @@ const ConfirmTxScreen = ({ match }) => {
     blockGasLimit,
     signatureSecurityAlertResponses,
   } = useSelector((state) => state.metamask);
+
   const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
   const unapprovedPersonalMsgs = useSelector(
     getMemoizedUnapprovedPersonalMessages,

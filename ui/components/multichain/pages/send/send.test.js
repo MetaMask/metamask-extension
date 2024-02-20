@@ -217,7 +217,6 @@ describe('SendPage', () => {
       expect(
         getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
-
       expect(container).toMatchSnapshot();
       expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
       expect(getByTestId('send-page-account-picker')).toBeInTheDocument();
