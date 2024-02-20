@@ -681,14 +681,14 @@ jobs:
           path: public/chrome/chrome-reports
       - store_test_results:
           name: report for pipeline integration
-          path: public/chrome/chrome-reports/junit/test-results-${CIRCLE_NODE_INDEX}.xml
+          path: public/chrome/chrome-reports/junit/test-results.xml
       - run:
           name: List generated test result files
           command: ls -la public/chrome/chrome-reports/junit/
       - persist_to_workspace:
           root: ~/project
           paths:
-            - public/chrome/chrome-reports/junit/test-results-${CIRCLE_NODE_INDEX}.xml
+            - public/chrome/chrome-reports/junit/test-results.xml
 
 
   testrail-upload-chrome-results:
