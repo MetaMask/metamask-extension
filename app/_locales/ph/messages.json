@@ -1211,6 +1211,9 @@
     "message": "Magpadala ng $1",
     "description": "Symbol of the specified token"
   },
+  "sendTokens": {
+    "message": "Magpadala ng Mga Token"
+  },
   "settings": {
     "message": "Mga Setting"
   },
