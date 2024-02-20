@@ -106,14 +106,14 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 // eslint-disable-next-line import/order
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
+  ///: END:ONLY_INCLUDE_IF
+  getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
-///: END:ONLY_INCLUDE_IF
-import { getOrderedConnectedAccountsForActiveTab } from './permissions';
 import { createDeepEqualSelector } from './util';
 
 /**
