@@ -626,6 +626,9 @@
   "send": {
     "message": "Изпращане"
   },
+  "sendTokens": {
+    "message": "Изпращане на жетони"
+  },
   "settings": {
     "message": "Настройки"
   },
