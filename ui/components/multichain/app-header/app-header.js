@@ -14,6 +14,7 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  CONNECTIONS,
   DEFAULT_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -364,11 +365,22 @@ export const AppHeader = ({ location }) => {
                     <Box ref={menuRef}>
                       <ConnectedStatusIndicator
                         onClick={() => {
-                          history.push(CONNECTED_ACCOUNTS_ROUTE);
-                          trackEvent({
-                            event: MetaMetricsEventName.NavConnectedSitesOpened,
-                            category: MetaMetricsEventCategory.Navigation,
-                          });
+                          if (process.env.MULTICHAIN) {
+                            history.push(CONNECTIONS);
+                            trackEvent({
+                              event:
+                                MetaMetricsEventName.NavConnectedSitesOpened,
+                              category: MetaMetricsEventCategory.Navigation,
+                            });
+                          }
+                          else {
+                            history.push(CONNECTED_ACCOUNTS_ROUTE);
+                            trackEvent({
+                              event:
+                                MetaMetricsEventName.NavConnectedSitesOpened,
+                              category: MetaMetricsEventCategory.Navigation,
+                            });
+                          }
                         }}
                       />
                     </Box>

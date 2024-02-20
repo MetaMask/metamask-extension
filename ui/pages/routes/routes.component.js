@@ -484,6 +484,17 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECTIONS,
+        exact: false,
+      }),
+    );
+
+    if (isConnectionsPage) {
+      return true;
+    }
+
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
     }
