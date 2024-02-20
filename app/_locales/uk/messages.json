@@ -630,6 +630,9 @@
   "send": {
     "message": "Надіслати"
   },
+  "sendTokens": {
+    "message": "Надіслати токени"
+  },
   "settings": {
     "message": "Налаштування"
   },

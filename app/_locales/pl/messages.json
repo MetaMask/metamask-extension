@@ -127,6 +127,9 @@
   "cancel": {
     "message": "Anuluj"
   },
+  "cancelEdit": {
+    "message": "Cancelar edição"
+  },
   "cancelled": {
     "message": "Anulowano"
   },
@@ -623,6 +626,9 @@
   },
   "send": {
     "message": "Wyślij"
+  },
+  "sendTokens": {
+    "message": "Wyślij tokeny"
   },
   "settings": {
     "message": "Ustawienia"
