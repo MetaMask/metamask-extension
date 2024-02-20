@@ -467,9 +467,7 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   PetnameAddressCount = 'petname_addresses_count',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -492,6 +490,11 @@ export const REJECT_NOTIFICATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTIFICATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
 
+/**
+ * The name of the event. Event definitions with corresponding properties can be found in the following document:
+ *
+ * @see {@link https://www.notion.so/f2997ab32326441793ff790ba5c60a6a?v=267d984721cd4a26be610b5caa3e25b7&pvs=4}
+ */
 export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
@@ -511,6 +514,12 @@ export enum MetaMetricsEventName {
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
+  EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
+  EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
+  EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
+  EmptyNftsBannerDisplayed = 'Empty NFTs Banner Displayed',
+  EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
@@ -533,6 +542,7 @@ export enum MetaMetricsEventName {
   NavAccountDetailsOpened = 'Account Details Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
+  NavPermissionsOpened = 'Permissions Opened',
   NavNetworkMenuOpened = 'Network Menu Opened',
   NavSettingsOpened = 'Settings Opened',
   NavAccountSwitched = 'Account Switched',
@@ -650,8 +660,14 @@ export enum MetaMetricsEventName {
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  SnapInstallStarted = 'Snap Install Started',
+  SnapInstallFailed = 'Snap Install Failed',
+  SnapInstallRejected = 'Snap Update Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
+  SnapUpdateStarted = 'Snap Update Started',
+  SnapUpdateRejected = 'Snap Update Rejected',
+  SnapUpdateFailed = 'Snap Update Failed',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   ///: END:ONLY_INCLUDE_IF
@@ -755,7 +771,9 @@ export enum MetaMetricsEventLocation {
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
+  FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  SecurityAlertFailed = 'security_alert_failed',
   Siwe = 'sign_in_with_ethereum',
 }
 

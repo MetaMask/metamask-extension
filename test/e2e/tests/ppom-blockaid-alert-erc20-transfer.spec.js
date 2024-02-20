@@ -180,7 +180,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
       async ({ driver }) => {
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, a third party known for scams will take all your assets.';
+          'If you approve this request, you might lose your assets.';
 
         await unlockWallet(driver);
         await openDapp(driver);
@@ -191,6 +191,8 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForElementNotPresent('.loading-indicator');
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,

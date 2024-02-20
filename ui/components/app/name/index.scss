@@ -8,15 +8,31 @@
   max-width: 100%;
 
   &__missing {
-    background-color: var(--color-warning-muted);
+    background-color: var(--color-error-muted);
+
+    .name__value {
+      color: var(--color-error-default);
+    }
   }
 
   &__saved {
     background-color: var(--color-info-muted);
+
+    .name__name {
+      color: var(--color-info-default);
+    }
+  }
+
+  &__recognized_unsaved {
+    background-color: var(--color-background-alternative);
+
+    .name__name {
+      color: var(--color-text-default);
+    }
   }
 
   &__missing &__icon {
-    color: var(--color-warning-default);
+    color: var(--color-error-default);
   }
 
   &__saved &__icon {
@@ -28,13 +44,5 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  &__value {
-    color: var(--color-warning-default);
-  }
-
-  &__name {
-    color: var(--color-info-default);
   }
 }

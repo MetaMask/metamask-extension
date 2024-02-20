@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
-import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetail from '../../confirmations/components/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../../confirmations/components/transaction-detail-item/transaction-detail-item.component';
 import {
   TextColor,
   TextVariant,

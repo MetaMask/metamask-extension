@@ -19,7 +19,8 @@ export const ERC_4337_ACCOUNT = '0x8FCd29A7887f82463E0eA7332CB1ce431A4430F7';
 export const BUNDLER_URL = 'http://localhost:3000/rpc';
 
 /* URL of the 4337 account snap site. */
-export const ERC_4337_ACCOUNT_SNAP_URL = 'http://localhost:8001';
+export const ERC_4337_ACCOUNT_SNAP_URL =
+  'https://metamask.github.io/snap-account-abstraction-keyring/latest/';
 
 /* Salt used to generate the 4337 account. */
 export const ERC_4337_ACCOUNT_SALT = '0x1';

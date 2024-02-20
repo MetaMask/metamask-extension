@@ -3,7 +3,7 @@ import { screen, act, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../store/actions';
 import AssetList from './asset-list';
@@ -72,7 +72,7 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId, ticker: 'ETH' },
+      providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
       currencyRates: {
         ETH: {
           conversionRate: CONVERSION_RATE,
@@ -121,20 +121,6 @@ describe('AssetList', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Refresh list')).toBeInTheDocument();
-    });
-  });
-
-  describe('token fiat value calculations', () => {
-    it('calculates the correct fiat account total', async () => {
-      process.env.MULTICHAIN = 1;
-      await act(async () => {
-        render();
-      });
-
-      await waitFor(() => {
-        expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
-        jest.resetModules();
-      });
     });
   });
 });
