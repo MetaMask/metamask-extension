@@ -630,6 +630,9 @@
   "send": {
     "message": "ارسال"
   },
+  "sendTokens": {
+    "message": "رمزیاب ها را ارسال کنید"
+  },
   "settings": {
     "message": "تنظیمات"
   },
