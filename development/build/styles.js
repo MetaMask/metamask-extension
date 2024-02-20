@@ -80,8 +80,7 @@ async function buildScssPipeline(src, dest, devMode) {
         functions: {
           // Tell sass where to find the font-awesome font files
           // update this location in static.js if it changes
-          '-mm-fa-path()': () =>
-            new sass.SassString('./fonts/fontawesome'),
+          '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
       postcss([autoprefixer(), rtlcss()]),
