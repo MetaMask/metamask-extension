@@ -781,7 +781,7 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     subdomain: `${defaultEtherscanSubdomainPrefix}-mumbai`,
   },
   [CHAIN_IDS.AVALANCHE]: {
-    domain: 'snowtrace.io',
+    domain: 'snowscan.xyz',
     subdomain: defaultEtherscanSubdomainPrefix,
   },
   [CHAIN_IDS.AVALANCHE_TESTNET]: {
@@ -938,7 +938,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.AVALANCHE,
     rpcPrefs: {
-      blockExplorerUrl: 'https://snowtrace.io/',
+      blockExplorerUrl: 'https://snowscan.xyz/',
       imageUrl: AVAX_TOKEN_IMAGE_URL,
     },
   },

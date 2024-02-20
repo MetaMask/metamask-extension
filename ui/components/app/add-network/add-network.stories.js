@@ -42,7 +42,7 @@ export default {
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
         ticker: 'AVAX',
         rpcPrefs: {
-          blockExplorerUrl: 'https://snowtrace.io/',
+          blockExplorerUrl: 'https://snowscan.xyz/',
           imageUrl: AVALANCHE_IMAGE_URL,
         },
       },
