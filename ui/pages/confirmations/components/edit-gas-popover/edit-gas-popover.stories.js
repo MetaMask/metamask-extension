@@ -13,7 +13,7 @@ import EditGasPopover from '.';
 const store = configureStore(testData);
 
 export default {
-  title: 'Components/App/EditGasPopover',
+  title: 'Confirmations/Components/EditGasPopover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 
   argTypes: {

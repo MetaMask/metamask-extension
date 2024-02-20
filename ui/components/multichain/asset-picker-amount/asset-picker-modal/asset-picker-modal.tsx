@@ -232,6 +232,8 @@ export function AssetPickerModal({
     onClose();
   };
 
+  const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
+
   return (
     <Modal
       className="asset-picker-modal"
@@ -245,7 +247,10 @@ export function AssetPickerModal({
           {t('selectAToken')}
         </ModalHeader>
         <Box style={{ flexGrow: '1' }}>
-          <Tabs defaultActiveTabKey="details" tabsClassName="modal-tab__tabs">
+          <Tabs
+            defaultActiveTabKey={defaultActiveTabKey}
+            tabsClassName="modal-tab__tabs"
+          >
             {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore

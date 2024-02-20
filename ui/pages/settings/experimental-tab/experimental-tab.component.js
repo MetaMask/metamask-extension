@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -57,7 +57,7 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(
+    getNumberOfSettingRoutesInTab(
       this.context.t,
       this.context.t('experimental'),
     ),

@@ -65,11 +65,8 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
 
       async ({ driver }) => {
         const expectedTitle = 'This is a deceptive request';
-        const expectedDescriptionMainnet =
+        const expectedDescription =
           'If you approve this request, you might lose your assets.';
-
-        const expectedDescriptionArbitrum =
-          'If you approve this request, a third party known for scams will take all your assets.';
 
         await unlockWallet(driver);
         await openDapp(driver);
@@ -97,8 +94,8 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
           `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: approval_farming\n`,
         );
         assert(
-          bannerAlertText.includes(expectedDescriptionMainnet),
-          `Unexpected banner alert description. Expected: ${expectedDescriptionMainnet} \nExpected reason: approval_farming\n`,
+          bannerAlertText.includes(expectedDescription),
+          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: approval_farming\n`,
         );
 
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -144,8 +141,8 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
           `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: raw_native_token_transfer\n`,
         );
         assert(
-          bannerAlertText.includes(expectedDescriptionArbitrum),
-          `Unexpected banner alert description. Expected: ${expectedDescriptionArbitrum} \nExpected reason: raw_native_token_transfer\n`,
+          bannerAlertText.includes(expectedDescription),
+          `Unexpected banner alert description. Expected: ${expectedDescription} \nExpected reason: raw_native_token_transfer\n`,
         );
       },
     );

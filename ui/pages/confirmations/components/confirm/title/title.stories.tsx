@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 
-import mockState from '../../../../../test/data/mock-state.json';
-import configureStore from '../../../../store/store';
+import mockState from '../../../../../../test/data/mock-state.json';
+import configureStore from '../../../../../store/store';
 
 import ConfirmTitle from './title';
 
