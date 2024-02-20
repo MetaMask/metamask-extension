@@ -126,7 +126,9 @@ export default class PreferencesController {
           accounts.add(address);
         }
       }
-      this.syncAddresses(Array.from(accounts));
+      if (accounts.size > 0) {
+        this.syncAddresses(Array.from(accounts));
+      }
     });
 
     global.setPreference = (key, value) => {
