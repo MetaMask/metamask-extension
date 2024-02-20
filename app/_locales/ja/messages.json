@@ -618,6 +618,9 @@
   "cancel": {
     "message": "キャンセル"
   },
+  "cancelEdit": {
+    "message": "編集をキャンセル"
+  },
   "cancelPopoverTitle": {
     "message": "トランザクションをキャンセル"
   },
@@ -3379,6 +3382,12 @@
   "sendSpecifiedTokens": {
     "message": "$1を送金",
     "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "送金先:"
+  },
+  "sendTokens": {
+    "message": "トークンを送信"
   },
   "sendingDisabled": {
     "message": "ERC-1155 NFTアセットの送信は、まだサポートされていません。"

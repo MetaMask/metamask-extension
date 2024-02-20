@@ -323,6 +323,9 @@
   "send": {
     "message": "ส่ง"
   },
+  "sendTokens": {
+    "message": "ส่งโทเค็น"
+  },
   "settings": {
     "message": "การตั้งค่า"
   },
