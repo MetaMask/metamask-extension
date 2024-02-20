@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -11,7 +11,6 @@ import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
-import { act } from 'react-dom/test-utils';
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
