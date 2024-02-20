@@ -1,4 +1,17 @@
+const fs = require('fs');
+
 const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
+
+const CDN_CONFIG_PATH = 'test/e2e/tests/mock-cdn/cdn-config.txt';
+const CDN_STALE_DIFF_PATH = 'test/e2e/tests/mock-cdn/cdn-stale-diff.txt';
+const CDN_STALE_PATH = 'test/e2e/tests/mock-cdn/cdn-stale.txt';
+
+const CDN_CONFIG_RES_HEADERS_PATH =
+  'test/e2e/tests/mock-cdn/cdn-config-res-headers.json';
+const CDN_STALE_DIFF_RES_HEADERS_PATH =
+  'test/e2e/tests/mock-cdn/cdn-stale-diff-res-headers.json';
+const CDN_STALE_RES_HEADERS_PATH =
+  'test/e2e/tests/mock-cdn/cdn-stale-res-headers.json';
 
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
@@ -433,6 +446,51 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
         json: {
           USD: '1700',
         },
+      };
+    });
+
+  const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
+  const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
+  const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
+  const CDN_CONFIG_RES_HEADERS = fs.readFileSync(CDN_CONFIG_RES_HEADERS_PATH);
+  const CDN_STALE_RES_HEADERS = fs.readFileSync(CDN_STALE_RES_HEADERS_PATH);
+  const CDN_STALE_DIFF_RES_HEADERS = fs.readFileSync(
+    CDN_STALE_DIFF_RES_HEADERS_PATH,
+  );
+
+  await server
+    .forGet(
+      /^https:\/\/static.metafi.codefi.network\/api\/v1\/confirmations\/ppom\/config\/0x1\/(.*)/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        rawBody: CDN_CONFIG,
+        headers: JSON.parse(CDN_CONFIG_RES_HEADERS),
+      };
+    });
+
+  await server
+    .forGet(
+      /^https:\/\/static.metafi.codefi.network\/api\/v1\/confirmations\/ppom\/stale_diff\/0x1\/(.*)/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        rawBody: CDN_STALE_DIFF,
+        headers: JSON.parse(CDN_STALE_DIFF_RES_HEADERS),
+      };
+    });
+
+  await server
+    .forGet(
+      /^https:\/\/static.metafi.codefi.network\/api\/v1\/confirmations\/ppom\/stale\/0x1\/(.*)/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        rawBody: CDN_STALE,
+        headers: JSON.parse(CDN_STALE_RES_HEADERS),
       };
     });
 
