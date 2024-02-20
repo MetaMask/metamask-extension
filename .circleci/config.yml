@@ -692,7 +692,7 @@ jobs:
           name: Echo CIRCLE_NODE_INDEX
           command: echo ${CIRCLE_NODE_INDEX}
       - store_artifacts:
-          path: html-report and artifacts
+          name: html-report and artifacts
           path: test-artifacts
       - store_test_results:
           name: report for pipeline integration
