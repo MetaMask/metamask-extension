@@ -47,14 +47,14 @@ const render = async (defaultGasParams, contextParams) => {
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-        gasFeeEstimatesByChainId: {
-          ...mockState.metamask.gasFeeEstimatesByChainId,
-          '0x5': {
-            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
-            gasFeeEstimates:
-              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-          },
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
         },
+      },
     },
   });
 
@@ -62,20 +62,21 @@ const render = async (defaultGasParams, contextParams) => {
 
   await act(
     async () =>
-    result = renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        userFeeLevel: 'medium',
-      }}
-      {...contextParams}
-    >
-      <AdvancedGasFeePopoverContextProvider>
-        <AdvancedGasFeeInputs />
-        <AdvancedGasFeeDefaults />
-      </AdvancedGasFeePopoverContextProvider>
-    </GasFeeContextProvider>,
-    store,
-  ))
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            userFeeLevel: 'medium',
+          }}
+          {...contextParams}
+        >
+          <AdvancedGasFeePopoverContextProvider>
+            <AdvancedGasFeeInputs />
+            <AdvancedGasFeeDefaults />
+          </AdvancedGasFeePopoverContextProvider>
+        </GasFeeContextProvider>,
+        store,
+      )),
+  );
 
   return result;
 };

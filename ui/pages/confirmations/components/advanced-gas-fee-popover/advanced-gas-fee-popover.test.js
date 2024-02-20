@@ -42,14 +42,14 @@ const render = async () => {
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-        gasFeeEstimatesByChainId: {
-          ...mockState.metamask.gasFeeEstimatesByChainId,
-          '0x5': {
-            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
-            gasFeeEstimates:
-              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-          },
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
         },
+      },
     },
   });
 
@@ -57,19 +57,20 @@ const render = async () => {
 
   await act(
     async () =>
-    result = renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        userFeeLevel: 'high',
-        txParams: { gas: '0x5208' },
-      }}
-    >
-      <AdvancedGasFeePopover />
-    </GasFeeContextProvider>,
-    store,
-    ))
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            userFeeLevel: 'high',
+            txParams: { gas: '0x5208' },
+          }}
+        >
+          <AdvancedGasFeePopover />
+        </GasFeeContextProvider>,
+        store,
+      )),
+  );
 
-    return result;
+  return result;
 };
 
 describe('AdvancedGasFeePopover', () => {

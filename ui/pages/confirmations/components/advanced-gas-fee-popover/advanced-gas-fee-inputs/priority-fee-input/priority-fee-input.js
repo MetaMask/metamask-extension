@@ -60,14 +60,12 @@ const PriorityFeeInput = () => {
   } = gasFeeEstimates ?? {};
   const [priorityFeeError, setPriorityFeeError] = useState();
 
-
   const defaultPriorityFee =
-  estimateUsed !== PriorityLevels.custom &&
-  advancedGasFeeValues?.priorityFee &&
-  editGasMode !== EditGasModes.swaps
-    ? advancedGasFeeValues.priorityFee
-    : maxPriorityFeePerGas;
-
+    estimateUsed !== PriorityLevels.custom &&
+    advancedGasFeeValues?.priorityFee &&
+    editGasMode !== EditGasModes.swaps
+      ? advancedGasFeeValues.priorityFee
+      : maxPriorityFeePerGas;
 
   const [priorityFee, setPriorityFee] = useState(defaultPriorityFee);
   useEffect(() => {

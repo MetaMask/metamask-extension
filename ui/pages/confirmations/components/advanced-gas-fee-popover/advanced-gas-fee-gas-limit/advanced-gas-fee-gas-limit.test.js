@@ -22,8 +22,6 @@ jest.mock('../../../../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
 }));
 
-
-
 const render = async (contextProps) => {
   const store = configureStore({
     metamask: {
@@ -39,13 +37,13 @@ const render = async (contextProps) => {
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
       gasFeeEstimatesByChainId: {
-          ...mockState.metamask.gasFeeEstimatesByChainId,
-          '0x5': {
-            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
-            gasFeeEstimates:
-              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
-          },
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
         },
+      },
     },
   });
 
@@ -53,20 +51,21 @@ const render = async (contextProps) => {
 
   await act(
     async () =>
-    result = renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        userFeeLevel: 'custom',
-        txParams: { gas: '0x5208' },
-      }}
-      {...contextProps}
-    >
-      <AdvancedGasFeePopoverContextProvider>
-        <AdvancedGasFeeGasLimit />
-      </AdvancedGasFeePopoverContextProvider>
-    </GasFeeContextProvider>,
-    store,
-  ))
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            userFeeLevel: 'custom',
+            txParams: { gas: '0x5208' },
+          }}
+          {...contextProps}
+        >
+          <AdvancedGasFeePopoverContextProvider>
+            <AdvancedGasFeeGasLimit />
+          </AdvancedGasFeePopoverContextProvider>
+        </GasFeeContextProvider>,
+        store,
+      )),
+  );
 
   return result;
 };
