@@ -31,7 +31,7 @@ const render = ({ componentProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 

@@ -87,16 +87,16 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
           >
-            Advanced
+            Unknown processing time
           </p>
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-error-default"
           >
             <span
               data-testid="gas-timing-time"
             >
               ~
-              1 sec
+              
             </span>
           </p>
         </div>

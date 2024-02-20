@@ -36,7 +36,7 @@ const render = ({ transactionProp = {}, contextProps = {} } = {}) => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 
