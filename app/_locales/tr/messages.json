@@ -618,6 +618,9 @@
   "cancel": {
     "message": "İptal"
   },
+  "cancelEdit": {
+    "message": "Düzenlemeyi İptal Et"
+  },
   "cancelPopoverTitle": {
     "message": "İşlemi iptal et"
   },
@@ -3379,6 +3382,12 @@
   "sendSpecifiedTokens": {
     "message": "$1 Gönder",
     "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "Şuraya gönder:"
+  },
+  "sendTokens": {
+    "message": "Token gönder"
   },
   "sendingDisabled": {
     "message": "ERC-1155 NFT varlıklarının gönderilmesi henüz desteklenmemektedir."

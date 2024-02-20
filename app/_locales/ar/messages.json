@@ -627,6 +627,9 @@
   "send": {
     "message": "إرسال"
   },
+  "sendTokens": {
+    "message": "إرسال عملات رمزية"
+  },
   "settings": {
     "message": "الإعدادات"
   },
