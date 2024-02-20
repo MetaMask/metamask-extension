@@ -145,6 +145,7 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
+  ARBITRUM_GOERLI: '0x66eed',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -203,7 +204,12 @@ const CHAINLIST_CHAIN_IDS_MAP = {
 // To add a deprecation warning to a network, add it to the array
 // `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy() in
 // `ui/components/ui/deprecated-networks/deprecated-networks.js`.
-export const DEPRECATED_NETWORKS = [CHAIN_IDS.AURORA, CHAIN_IDS.GOERLI];
+export const DEPRECATED_NETWORKS = [
+  CHAIN_IDS.AURORA,
+  CHAIN_IDS.GOERLI,
+  CHAIN_IDS.ARBITRUM_GOERLI,
+  CHAIN_IDS.OPTIMISM_TESTNET
+];
 
 /**
  * The largest possible chain ID we can handle.
