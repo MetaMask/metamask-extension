@@ -200,9 +200,9 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     // If we have a match, "silently" switch networks
     if (networkForThisDomain) {
       if (Object.keys(NETWORK_TYPES).includes(networkForThisDomain)) {
-        store.dispatch(actions.setProviderType(networkForThisDomain));
+        await store.dispatch(actions.setProviderType(networkForThisDomain));
       } else {
-        store.dispatch(actions.setActiveNetwork(networkForThisDomain));
+        await store.dispatch(actions.setActiveNetwork(networkForThisDomain));
       }
       // TODO: Show toast notifying user of network change
       console.log('Switched network to ', networkForThisDomain);
