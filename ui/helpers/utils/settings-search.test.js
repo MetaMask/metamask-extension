@@ -1,7 +1,8 @@
 import React from 'react';
+import { SETTINGS_CONSTANTS } from '../constants/settings';
 import {
   getSettingsRoutes,
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from './settings-search';
 
@@ -139,54 +140,54 @@ const t = (key) => {
 };
 
 describe('Settings Search Utils', () => {
-  describe('settingsRoutes', () => {
+  describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      expect(getSettingsRoutes().length).toBeGreaterThan(0);
+      expect(getSettingsRoutes()).toHaveLength(SETTINGS_CONSTANTS.length);
     });
   });
 
-  describe('getNumberOfSettingsInSection', () => {
-    it('should get good general section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
+  describe('getNumberOfSettingRoutesInTab', () => {
+    it('returns "General" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
     });
 
-    it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
+    it('returns "Advanced" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(12);
     });
 
-    it('should get good contact section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('contacts'))).toStrictEqual(1);
+    it('returns "Contact" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
-    it('should get good security & privacy section number', () => {
+    it('returns "Security & privacy" section count', () => {
       expect(
-        getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(13);
+        getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
+      ).toStrictEqual(18);
     });
 
-    it('should get good alerts section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('alerts'))).toStrictEqual(2);
+    it('returns "Alerts" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(2);
     });
 
-    it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
+    it('returns "Network" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(6);
     });
 
-    it('should get good experimental section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        1,
+    it('returns "Experimental" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
+        2,
       );
     });
 
-    it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
+    it('returns "About" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('about'))).toStrictEqual(9);
     });
   });
 
   // Can't be tested without DOM element
   describe('handleSettingsRefs', () => {
     it('should handle general refs', () => {
-      const settingsRefs = Array(getNumberOfSettingsInSection(t, t('general')))
+      const settingsRefs = Array(getNumberOfSettingRoutesInTab(t, t('general')))
         .fill(undefined)
         .map(() => {
           return React.createRef();

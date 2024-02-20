@@ -74,27 +74,12 @@ const ConfirmAddCustodianToken = () => {
 
             await dispatch(setProviderType(networkType));
           }
-
-          let custodianName = connectRequest.service.toLowerCase();
-
-          if (connectRequest.service === 'JSONRPC') {
-            custodianName = connectRequest.environment;
-          }
-
-          await dispatch(
-            mmiActions.setCustodianConnectRequest({
-              token: connectRequest.token,
-              apiUrl: connectRequest.apiUrl,
-              custodianName,
-              custodianType: connectRequest.service,
-            }),
-          );
         }
 
         await dispatch(
           mmiActions.removeAddTokenConnectRequest({
             origin: connectRequest.origin,
-            apiUrl: connectRequest.apiUrl,
+            environment: connectRequest.environment,
             token: connectRequest.token,
           }),
         );
@@ -107,7 +92,7 @@ const ConfirmAddCustodianToken = () => {
               ? 'Custodian RPC confirm'
               : 'Custodian RPC cancel',
             custodian: connectRequest.custodian,
-            apiUrl: connectRequest.apiUrl,
+            envName: connectRequest.environment,
           },
         });
 
@@ -133,7 +118,7 @@ const ConfirmAddCustodianToken = () => {
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
-      apiUrl: connectRequest.apiUrl,
+      envName: connectRequest.environment,
     },
   });
 
