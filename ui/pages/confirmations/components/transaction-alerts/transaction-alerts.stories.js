@@ -89,7 +89,7 @@ const customStore = ({
 };
 
 export default {
-  title: 'Components/App/TransactionAlerts',
+  title: 'Confirmations/Components/TransactionAlerts',
   argTypes: {
     userAcknowledgedGasMissing: {
       control: 'boolean',

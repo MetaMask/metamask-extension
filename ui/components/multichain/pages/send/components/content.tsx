@@ -7,23 +7,11 @@ import {
 } from '../../../../component-library';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import {
-  GAS_INPUT_MODES,
   acknowledgeRecipientWarning,
-  getGasInputMode,
-  getGasLimit,
-  getGasPrice,
-  getIsBalanceInsufficient,
-  getMinimumGasLimitForSend,
   getSendAsset,
 } from '../../../../../ducks/send';
-import AdvancedGasInputs from '../../../../../pages/confirmations/components/advanced-gas-inputs';
 import { ConfirmGasDisplay } from '../../../../../pages/confirmations/components/confirm-gas-display';
 import { AssetType } from '../../../../../../shared/constants/transaction';
-import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
-import {
-  setCustomGasLimit,
-  setCustomGasPrice,
-} from '../../../../../ducks/gas/gas.duck';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -48,23 +36,6 @@ export const SendPageContent = ({
 
   // Gas data
   const dispatch = useDispatch();
-  const gasPrice = useSelector(getGasPrice);
-  const gasLimit = useSelector(getGasLimit);
-  const minimumGasLimitForSend = useSelector(getMinimumGasLimitForSend);
-  const minimumGasLimit = hexToDecimal(minimumGasLimitForSend);
-
-  const gasInputMode = useSelector(getGasInputMode);
-  const insufficientBalance = useSelector(getIsBalanceInsufficient);
-
-  const updateGasPrice = (newGasPrice: string) => {
-    dispatch(updateGasPrice(newGasPrice));
-    dispatch(setCustomGasPrice(newGasPrice));
-  };
-
-  const updateGasLimit = (newLimit: string) => {
-    dispatch(updateGasLimit(newLimit));
-    dispatch(setCustomGasLimit(newLimit));
-  };
 
   return (
     <Box>
@@ -97,20 +68,6 @@ export const SendPageContent = ({
         <AssetPickerAmount />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
-      {gasInputMode === GAS_INPUT_MODES.INLINE ? (
-        <SendPageRow>
-          <AdvancedGasInputs
-            updateCustomGasPrice={updateGasPrice}
-            updateCustomGasLimit={updateGasLimit}
-            customGasPrice={gasPrice}
-            customGasLimit={gasLimit}
-            insufficientBalance={insufficientBalance}
-            minimumGasLimit={minimumGasLimit}
-            customPriceIsSafe
-            isSpeedUp={false}
-          />
-        </SendPageRow>
-      ) : null}
       <SendPageRow>
         <ConfirmGasDisplay />
       </SendPageRow>

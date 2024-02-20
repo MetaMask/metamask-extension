@@ -44,7 +44,7 @@ const mockedRemoveAddTokenConnectRequest = jest
 const mockedSetCustodianNewRefreshToken = jest
   .fn()
   .mockReturnValue({ type: 'TYPE' });
-let mockedGetCustodianConnectRequest = jest
+let mockedGetCustodianAccounts = jest
   .fn()
   .mockReturnValue(async () => await custodianAccounts);
 
@@ -52,7 +52,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
     removeAddTokenConnectRequest: mockedRemoveAddTokenConnectRequest,
     setCustodianNewRefreshToken: mockedSetCustodianNewRefreshToken,
-    getCustodianAccounts: mockedGetCustodianConnectRequest,
+    getCustodianAccounts: mockedGetCustodianAccounts,
   }),
   showInteractiveReplacementTokenBanner: () =>
     mockedShowInteractiveReplacementTokenBanner,
@@ -203,7 +203,7 @@ describe('Interactive Replacement Token Page', function () {
   });
 
   it('should reject if there are errors', async () => {
-    mockedGetCustodianConnectRequest = jest.fn().mockReturnValue(async () => {
+    mockedGetCustodianAccounts = jest.fn().mockReturnValue(async () => {
       throw new Error();
     });
 
