@@ -10,7 +10,7 @@ import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
 const store = configureStore(mockState);
 
 export default {
-  title: 'Components/App/ConfirmLegacyGasDisplay',
+  title: 'Confirmations/Components/ConfirmLegacyGasDisplay',
 
   component: ConfirmLegacyGasDisplay,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],

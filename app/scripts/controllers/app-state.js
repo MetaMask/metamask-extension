@@ -47,6 +47,7 @@ export default class AppStateController extends EventEmitter {
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
+      showPermissionsTour: true,
       showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
@@ -365,6 +366,15 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the permissions tour should be shown to the user
+   *
+   * @param showPermissionsTour
+   */
+  setShowPermissionsTour(showPermissionsTour) {
+    this.store.updateState({ showPermissionsTour });
+  }
+
+  /**
    * Sets whether the product tour should be shown
    *
    * @param showProductTour
@@ -458,6 +468,12 @@ export default class AppStateController extends EventEmitter {
   }
 
   ///: END:ONLY_INCLUDE_IF
+
+  getSignatureSecurityAlertResponse(securityAlertId) {
+    return this.store.getState().signatureSecurityAlertResponses[
+      securityAlertId
+    ];
+  }
 
   addSignatureSecurityAlertResponse(securityAlertResponse) {
     const currentState = this.store.getState();

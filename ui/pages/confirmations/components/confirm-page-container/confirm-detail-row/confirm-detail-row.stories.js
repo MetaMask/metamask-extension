@@ -2,7 +2,7 @@ import React from 'react';
 import ConfirmDetailRow from '.';
 
 export default {
-  title: 'Components/App/ConfirmPageContainer/ConfirmDetailRow',
+  title: 'Confirmations/Components/ConfirmPageContainer/ConfirmDetailRow',
 
   argTypes: {
     headerText: {

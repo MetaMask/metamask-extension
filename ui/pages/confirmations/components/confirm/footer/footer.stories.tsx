@@ -2,7 +2,7 @@ import React from 'react';
 import { Footer } from '.';
 
 const Story = {
-  title: 'Components/App/Confirm/Footer',
+  title: 'Confirmations/Components/Confirm/Footer',
   component: Footer,
   args: {},
 };
