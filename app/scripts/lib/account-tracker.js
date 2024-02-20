@@ -158,15 +158,22 @@ export default class AccountTracker {
     };
   }
 
-  delayedInit(blockTracker) {
-    console.log({blockTracker})
+  delayedInit(passedBlockTracker) {
+    this.#blockTracker = passedBlockTracker;
+
     // blockTracker.currentBlock may be null
     this.#currentBlockNumberByChainId = {
-      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
+      [this.getCurrentChainId()]: passedBlockTracker.getCurrentBlock(),
     };
-    this.#blockTracker.once('latest', (blockNumber) => {
+    // this.#currentBlockNumberByChainId = {
+    //   [this.getCurrentChainId()]: passedBlockTracker?.getCurrentBlock(),
+    // };
+    passedBlockTracker.once('latest', (blockNumber) => {
       this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
     });
+    // passedBlockTracker?.once('latest', (blockNumber) => {
+    //   this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
+    // });
   }
 
   /**

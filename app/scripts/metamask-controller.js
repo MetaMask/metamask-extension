@@ -471,7 +471,6 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController.trackEvent(...args),
     });
 
-
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       () => this.updateDeprecatedNetworkId(),
@@ -1478,6 +1477,7 @@ export default class MetamaskController extends EventEmitter {
     this.txController = new TransactionController(
       {
         blockTracker: this.blockTracker,
+        provider: this.provider,
         cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
@@ -1531,7 +1531,11 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        provider: this.provider,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
@@ -2289,40 +2293,22 @@ export default class MetamaskController extends EventEmitter {
   networkProviderInitialization() {
     this.networkController.initializeProvider();
 
-    this.provider = this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker;
+    this.provider =
+      this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker =
+      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     // TODO: Delete when ready to remove `networkVersion` from provider object
     this.deprecatedNetworkId = null;
     this.updateDeprecatedNetworkId();
 
-    console.log("networkProviderInitialization")
-    console.log({ blockTracker: this.blockTracker });
-    console.log({ provider: this.provider });
-
-    // Initialize each of the controllers code that relies on network
-    // controllers and providers
-    this.ensController.delayedInit();
-
-    function checkCondition(p) {
-      console.log({ p })
-
-      return true
-      const isUninitialized = Object.keys(p).length !== 1;
-      console.log({keys: Object.keys(p)})
-      return isUninitialized;
-    }
-
-    let pollingInterval = setInterval(() => {
-      if (checkCondition(this.networkController.getProviderAndBlockTracker())) {
-        clearInterval(pollingInterval);
-        this.accountTracker.delayedInit(this.networkController.getProviderAndBlockTracker().blockTracker);
-      }
-    }, 5000);
-
-    // this.txController.delayedInit();
-    // this.swapsController.delayedInit();
-    // this.smartTransactionsController.delayedInit()
+    // Initialize each of the controllers code that relies on network provider
+    // and blockTracker
+    this.ensController.delayedInit(this.provider);
+    this.accountTracker.delayedInit(this.blockTracker);
+    this.txController.delayedInit(this.provider, this.blockTracker);
+    this.swapsController.delayedInit(this.provider);
+    this.smartTransactionsController.delayedInit(this.provider);
   }
 
   /**

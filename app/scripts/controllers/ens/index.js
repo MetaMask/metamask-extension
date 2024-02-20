@@ -37,18 +37,16 @@ export default class EnsController {
     });
   }
 
-  delayedInit = () => {
+  delayedInit = (passedProvider) => {
     if (!this._ens) {
       const chainId = this.getCurrentChainId();
       if (Ens.getChainEnsSupport(chainId)) {
         this._ens = new Ens({
           chainId,
-          provider,
+          provider: passedProvider,
         });
       }
     }
-
-    console.log("delayed init")
   }
 
   reverseResolveAddress(address) {
