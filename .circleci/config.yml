@@ -689,21 +689,21 @@ jobs:
             fi
           no_output_timeout: 5m
       - run:
-          name: List generated test result files
-          command: ls -la test/test-results-chrome/junit/
-      - run:
           name: Echo CIRCLE_NODE_INDEX
           command: echo ${CIRCLE_NODE_INDEX}
       - store_artifacts:
+          path: html-report and artifacts
           path: test-artifacts
-          destination: test-artifacts
       - store_test_results:
           name: report for pipeline integration
-          path: test/test-results-chrome/junit/
+          path: test-artifacts/junit/
+      - run:
+          name: List generated test result files
+          command: ls -la test-artifacts/junit/
       - persist_to_workspace:
           root: .
           paths:
-            - test/test-results-chrome/junit/
+            - test-artifacts/junit/
 
   testrail-upload-chrome-results:
     docker:
@@ -713,12 +713,12 @@ jobs:
           at: .
       - run:
           name: List test result files
-          command: ls -la test/test-results-chrome/junit/
+          command: ls -la test-artifacts/junit/
       - run:
           name: Install TR CLI and upload the test results to TestRail
           command: |
             pip install trcli
-            FILES=$(ls test/test-results-chrome/junit/*.xml)
+            FILES=$(ls test-artifacts/junit/*.xml)
             for result_file in $FILES
             do
               echo "Uploading $result_file"
