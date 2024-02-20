@@ -81,16 +81,16 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
 
   let balanceToTranslate = totalWeiBalance;
-  if (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets) {
+  if (showFiat) {
     balanceToTranslate = identity.balance;
   }
-  const showFiat =
-    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
