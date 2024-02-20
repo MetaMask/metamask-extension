@@ -2265,6 +2265,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "lavaDomeCopyWarning": {
+    "message": "For your safety, selecting this text is not available right now."
+  },
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
