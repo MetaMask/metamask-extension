@@ -23,11 +23,11 @@ export const SnapHomeRenderer = ({ snapId }) => {
   const snapName = getSnapName(snapId, targetSubjectMetadata);
   const { data, error, loading } = useSnapHome({ snapId });
 
-  const interfaceId = !loading && !error && data?.id;
+  const interfaceId = !loading && !error ? data?.id : undefined;
 
   useEffect(() => {
     return () => interfaceId && dispatch(deleteInterface(interfaceId));
-  }, []);
+  }, [interfaceId]);
 
   return (
     <Box>

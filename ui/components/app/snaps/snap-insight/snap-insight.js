@@ -71,7 +71,7 @@ export const SnapInsight = ({
     return () => {
       interfaceId && dispatch(deleteInterface(interfaceId));
     };
-  }, []);
+  }, [interfaceId]);
   ///: END:ONLY_INCLUDE_IF
 
   const targetSubjectMetadata = useSelector((state) =>

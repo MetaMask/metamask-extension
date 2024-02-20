@@ -117,7 +117,7 @@ export function useSignatureInsights({ txData }) {
           response?.id && dispatch(deleteInterface(response.id)),
       );
     };
-  }, []);
+  }, [data]);
 
   return { data, loading, warnings };
 }

@@ -79,7 +79,7 @@ const useTransactionInsights = ({ txData }) => {
           response?.id && dispatch(deleteInterface(response.id)),
       );
     };
-  }, []);
+  }, [data]);
   ///: END:ONLY_INCLUDE_IF
 
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
