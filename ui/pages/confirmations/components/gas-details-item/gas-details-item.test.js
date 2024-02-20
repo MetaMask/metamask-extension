@@ -50,21 +50,22 @@ const render = async ({ contextProps } = {}) => {
 
   let result;
 
-  await act(async () =>
-    renderWithProvider(
-      <GasFeeContextProvider
-        transaction={{
-          txParams: {
-            gas: '0x5208',
-          },
-          userFeeLevel: 'medium',
-        }}
-        {...contextProps}
-      >
-        <GasDetailsItem userAcknowledgedGasMissing={false} />
-      </GasFeeContextProvider>,
-      store,
-    ),
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            txParams: {
+              gas: '0x5208',
+            },
+            userFeeLevel: 'medium',
+          }}
+          {...contextProps}
+        >
+          <GasDetailsItem userAcknowledgedGasMissing={false} />
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
 
   return result;
