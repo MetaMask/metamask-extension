@@ -624,6 +624,9 @@
   "send": {
     "message": "পাঠান"
   },
+  "sendTokens": {
+    "message": "টোকেনগুলি পাঠান"
+  },
   "settings": {
     "message": "সেটিংস"
   },
