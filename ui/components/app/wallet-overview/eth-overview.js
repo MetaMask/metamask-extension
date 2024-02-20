@@ -40,6 +40,7 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getShowFiatInTestnets,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -106,10 +107,15 @@ const EthOverview = ({ className, showAddress }) => {
     selectedAddress,
     shouldHideZeroBalanceTokens,
   );
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
 
-  const balanceToUse = TEST_NETWORKS.includes(currentNetwork?.nickname)
-    ? balance
-    : totalWeiBalance;
+  let balanceToUse = totalWeiBalance;
+
+  if (TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets) {
+    balanceToUse = balance;
+  }
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
 
   const isSwapsChain = useSelector(getIsSwapsChain);
 
@@ -196,7 +202,10 @@ const EthOverview = ({ className, showAddress }) => {
                       ? PRIMARY
                       : SECONDARY
                   }
-                  showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
+                  showFiat={
+                    !showFiat ||
+                    !TEST_NETWORKS.includes(currentNetwork?.nickname)
+                  }
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
