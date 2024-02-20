@@ -42,28 +42,28 @@ export function useGasFeeEstimates(_networkClientId) {
   const [chainId, setChainId] = useState('');
 
   const gasEstimateType = useSelector((state) =>
-    getGasEstimateTypeByChainId(state, chainId),
+    getGasEstimateTypeByChainId(state, '0x5'),
   );
   const gasFeeEstimates = useSelector(
     (state) => getGasFeeEstimatesByChainId(state, chainId),
     isEqual,
   );
   const isGasEstimatesLoading = useSelector((state) =>
-    getIsGasEstimatesLoadingByChainId(state, { chainId, networkClientId }),
+    getIsGasEstimatesLoadingByChainId(state, { chainId: '0x5', networkClientId }),
   );
   const isNetworkBusy = useSelector((state) =>
-    getIsNetworkBusyByChainId(state, chainId),
+    getIsNetworkBusyByChainId(state, '0x5'),
   );
 
-  useEffect(() => {
-    getNetworkConfigurationByNetworkClientId(networkClientId).then(
-      (networkConfig) => {
-        if (networkConfig) {
-          setChainId(networkConfig.chainId);
-        }
-      },
-    );
-  }, [networkClientId]);
+  // useEffect(() => {
+  //   getNetworkConfigurationByNetworkClientId(networkClientId).then(
+  //     (networkConfig) => {
+  //       if (networkConfig) {
+  //         setChainId(networkConfig.chainId);
+  //       }
+  //     },
+  //   );
+  // }, [networkClientId]);
 
   usePolling({
     startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,

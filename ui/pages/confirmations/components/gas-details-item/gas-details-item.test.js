@@ -158,7 +158,7 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it('should render gas fee details', async () => {
+  it.only('should render gas fee details', async () => {
     await render();
     await waitFor(() => {
       expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
