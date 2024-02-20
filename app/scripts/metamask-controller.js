@@ -1439,7 +1439,6 @@ export default class MetamaskController extends EventEmitter {
     this.txController = new TransactionController(
       {
         blockTracker: this.blockTracker,
-        provider: this.provider,
         cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
@@ -1452,6 +1451,10 @@ export default class MetamaskController extends EventEmitter {
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
         getNetworkState: () => this.networkController.state,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSavedGasFees: () =>
@@ -1460,6 +1463,7 @@ export default class MetamaskController extends EventEmitter {
           ],
         getSelectedAddress: () =>
           this.accountsController.getSelectedAccount().address,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
         incomingTransactions: {
           includeTokenTransfers: false,
           isEnabled: () =>
@@ -1477,8 +1481,8 @@ export default class MetamaskController extends EventEmitter {
           name: 'TransactionController',
           allowedActions: [
             `${this.approvalController.name}:addRequest`,
-            'NetworkController:getNetworkClientById',
             'NetworkController:findNetworkClientIdByChainId',
+            'NetworkController:getNetworkClientById',
           ],
           allowedEvents: [`NetworkController:stateChange`],
         }),
@@ -1488,11 +1492,7 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-        getNetworkClientRegistry:
-          this.networkController.getNetworkClientRegistry.bind(
-            this.networkController,
-          ),
+        provider: this.provider,
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
