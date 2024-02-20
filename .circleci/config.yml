@@ -658,7 +658,7 @@ jobs:
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
-          at: ~/project
+          at: .
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
@@ -677,18 +677,17 @@ jobs:
           name: Echo CIRCLE_NODE_INDEX
           command: echo ${CIRCLE_NODE_INDEX}
       - store_artifacts:
-          name: html-report and artifacts
-          path: public/chrome/chrome-reports
+          path: test-artifacts
+          destination: test-artifacts
       - store_test_results:
-          name: report for pipeline integration
-          path: public/chrome/chrome-reports/junit/test-results.xml
+          path: test/test-results/e2e
       - run:
           name: List generated test result files
-          command: ls -la public/chrome/chrome-reports/junit/
+          command: ls -la test/test-results/e2e/
       - persist_to_workspace:
-          root: ~/project
+          root: .
           paths:
-            - public/chrome/chrome-reports/junit/test-results.xml
+            - test/test-results/e2e/
 
 
   testrail-upload-chrome-results:
@@ -696,15 +695,15 @@ jobs:
       - image: cimg/python:3.10.4
     steps:
       - attach_workspace:
-          at: ~/project
+          at: .
       - run:
           name: List test result files
-          command: ls -la public/chrome/chrome-reports/junit/
+          command: ls -la test/test-results/e2e/
       - run:
           name: Install TR CLI and upload the test results to TestRail
           command: |
             pip install trcli
-            FILES=$(ls public/chrome/chrome-reports/junit/*.xml)
+            FILES=$(ls test/test-results/e2e/*.xml)
             for result_file in $FILES
             do
               echo "Uploading $result_file"
