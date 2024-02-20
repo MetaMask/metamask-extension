@@ -2,7 +2,7 @@ import React from 'react';
 import ContractDetailsModal from './contract-details-modal';
 
 export default {
-  title: 'Components/App/Modals/ContractDetailsModal',
+  title: 'Confirmations/Components/Modals/ContractDetailsModal',
 
   argTypes: {
     onClose: {

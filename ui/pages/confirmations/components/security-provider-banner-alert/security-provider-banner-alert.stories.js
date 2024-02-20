@@ -30,7 +30,7 @@ const MockDetailsList = () => (
 );
 
 export default {
-  title: 'Components/App/SecurityProviderBannerAlert',
+  title: 'Confirmations/Components/SecurityProviderBannerAlert',
   argTypes: {
     description: {
       control: {

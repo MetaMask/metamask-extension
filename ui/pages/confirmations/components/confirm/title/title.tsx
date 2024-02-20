@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Text } from '../../../component-library';
+import { Text } from '../../../../../components/component-library';
 import {
   TextVariant,
   TextAlign,
   TextColor,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { currentConfirmationSelector } from '../../../../selectors';
+} from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../../selectors';
 
 const typeToTitleTKey: Partial<Record<TransactionType, string>> = {
   [TransactionType.personalSign]: 'confirmTitleSignature',

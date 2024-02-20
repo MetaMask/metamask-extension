@@ -270,7 +270,7 @@ describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, a third party known for scams might take all your assets.';
+          'If you approve this request, you might lose your assets.';
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousSetApprovalForAll');
@@ -278,6 +278,8 @@ describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.waitForElementNotPresent('.loading-indicator');
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,
