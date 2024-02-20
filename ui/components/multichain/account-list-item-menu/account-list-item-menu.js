@@ -76,7 +76,6 @@ export const AccountListItemMenu = ({
   const shouldRenderConnectAccount =
     process.env.MULTICHAIN === 1 && !isConnected;
 
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
   const accounts = useSelector(getMetaMaskAccountsOrdered);
