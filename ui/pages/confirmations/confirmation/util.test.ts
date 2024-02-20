@@ -1,5 +1,13 @@
 import { ResultComponent } from '@metamask/approval-controller';
-import { processError, processHeader, processString } from './util';
+import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ResultContext,
+  TemplateRendererComponent,
+  attachResultContext,
+  processError,
+  processHeader,
+  processString,
+} from './util';
 
 const FALLBACK_MESSAGE = 'Fallback Message';
 const mockResultComponent: ResultComponent = {
@@ -7,6 +15,10 @@ const mockResultComponent: ResultComponent = {
   name: 'mock-component',
   properties: { message: 'mock1', message2: 'mock2' },
   children: 'Mock child',
+};
+const mockResultContext: ResultContext = {
+  type: ApprovalType.ResultSuccess,
+  onSubmit: new Promise((_resolve, _reject) => {}),
 };
 
 const expectedTemplateRendererComponent = {
@@ -17,6 +29,14 @@ const expectedTemplateRendererComponent = {
   },
   children: 'Mock child',
   element: 'mock-component',
+};
+
+const expectedTemplateRendererComponentWithResultContext = {
+  ...expectedTemplateRendererComponent,
+  props: {
+    ...expectedTemplateRendererComponent.props,
+    resultContext: mockResultContext,
+  },
 };
 
 describe('processError', () => {
@@ -70,5 +90,65 @@ describe('processHeader', () => {
   it('returns array when input is array', () => {
     const result = processHeader(['Hello', mockResultComponent]);
     expect(result).toEqual(['Hello', expectedTemplateRendererComponent]);
+  });
+});
+
+describe('attachResultContext', () => {
+  it('returns undefined when input is not defined', () => {
+    const result = attachResultContext(undefined, mockResultContext);
+    expect(result).toBeUndefined();
+  });
+
+  it('returns component when input is a component', () => {
+    const result = attachResultContext(
+      processString(mockResultComponent, ''),
+      mockResultContext,
+    );
+    expect(result).toEqual(expectedTemplateRendererComponentWithResultContext);
+  });
+
+  it('returns array when input is array', () => {
+    const result = attachResultContext(
+      processString([mockResultComponent, mockResultComponent], ''),
+      mockResultContext,
+    );
+    expect(result).toEqual([
+      expectedTemplateRendererComponentWithResultContext,
+      expectedTemplateRendererComponentWithResultContext,
+    ]);
+  });
+
+  it('submit promise is resolvable', () => {
+    let resolveOnSubmit: () => void = () => {
+      // noop
+    };
+
+    const resultContext: ResultContext = {
+      type: ApprovalType.ResultSuccess,
+      onSubmit: new Promise((resolve, _reject) => {
+        resolveOnSubmit = resolve;
+      }),
+    };
+
+    const result = attachResultContext(
+      processString(mockResultComponent, ''),
+      resultContext,
+    );
+
+    // Check if the computed component is able to "register" to the
+    // main approval onSubmit
+    const component = result as TemplateRendererComponent;
+    const afterOnSubmit = jest.fn();
+
+    // Retrieve attached context
+    const componentResultContext = component.props
+      ?.resultContext as ResultContext;
+    componentResultContext.onSubmit.then(afterOnSubmit);
+
+    // Resolve the main approval onSubmit
+    resolveOnSubmit();
+    resultContext.onSubmit.then(() => {
+      expect(afterOnSubmit).toBeCalled();
+    });
   });
 });

@@ -1,4 +1,7 @@
+import { ApprovalType } from '@metamask/controller-utils';
 import { ResultComponent } from '@metamask/approval-controller';
+import metamaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
+
 
 export type TemplateRendererComponent = {
   key: string;
@@ -8,6 +11,20 @@ export type TemplateRendererComponent = {
     | string
     | TemplateRendererComponent
     | (undefined | string | TemplateRendererComponent)[];
+};
+
+/**
+ * Type of result page being shown.
+ */
+export type ResultType = ApprovalType.ResultSuccess | ApprovalType.ResultError;
+
+/**
+ * Context of a ResultTemplate. This can be used by its children/templates to get
+ * information about the result page being used.
+ */
+export type ResultContext = {
+  type: ResultType;
+  onSubmit: Promise<void>;
 };
 
 /**
@@ -131,6 +148,56 @@ function findMarkdown(
   }
 
   return elements;
+}
+
+/**
+ * Attach (or inject) a ResultContext to every underlying children of a ResultTemplate
+ * component.
+ *
+ * @param input - The component(s) to update.
+ * @param resultContext - The context being injected.
+ * @returns The updated component(s).
+ */
+export function attachResultContext(
+  input:
+    | undefined
+    | string
+    | TemplateRendererComponent
+    | (undefined | string | TemplateRendererComponent)[],
+  resultContext: ResultContext,
+): string | TemplateRendererComponent | (string | TemplateRendererComponent)[] {
+  // TemplateRendererComponent's children might be undefined
+  if (input === undefined) {
+    return input;
+  }
+
+  if (typeof input === 'string') {
+    return input;
+  }
+
+  if (Array.isArray(input)) {
+    return input.map((x) => attachResultContext(x, resultContext)) as (
+      | undefined
+      | string
+      | TemplateRendererComponent
+    )[];
+  }
+
+  if (input.props?.resultContext) {
+    throw new Error(
+      'Children of a ResultTemplate cannot have manually bound .resultContext property',
+    );
+  }
+
+  return {
+    key: input.key,
+    element: input.element,
+    props: {
+      ...input.props,
+      resultContext,
+    },
+    children: attachResultContext(input.children, resultContext),
+  };
 }
 
 function convertResultComponents(

@@ -21,14 +21,15 @@ import {
   processError,
   processHeader,
   processString,
+  attachResultContext,
   TemplateRendererComponent,
+  ResultType,
+  ResultContext,
 } from './util';
 
 export type ResultTemplateActions = {
   resolvePendingApproval: typeof resolvePendingApproval;
 };
-
-export type ResultType = ApprovalType.ResultSuccess | ApprovalType.ResultError;
 
 export class ResultTemplate {
   #type: ResultType;
@@ -42,16 +43,31 @@ export class ResultTemplate {
     t: (key: string) => string,
     actions: any,
   ) {
-    const content = this.#getContent(pendingApproval.requestData || {}, t);
+    // Setup result context
+    let resolveOnSubmit: () => void;
+    const resultContext: ResultContext = {
+      type: this.#type,
+      onSubmit: new Promise<void>((resolve, _reject) => {
+        resolveOnSubmit = resolve;
+      }),
+    };
+
+    const content = this.#getContent(
+      pendingApproval.requestData || {},
+      t,
+      resultContext,
+    );
 
     return {
       content,
       submitText: t('ok'),
-      onSubmit: () =>
+      onSubmit: () => {
+        resolveOnSubmit();
         actions.resolvePendingApproval(
           pendingApproval.id,
           pendingApproval.requestData,
-        ),
+        );
+      },
       networkDisplay: false,
     };
   }
@@ -59,6 +75,7 @@ export class ResultTemplate {
   #getContent(
     requestData: SuccessOptions | ErrorOptions,
     t: any,
+    resultContext: ResultContext,
   ): (undefined | string | TemplateRendererComponent)[] {
     const { error, header, icon, message, title } = requestData as any;
     const isSuccess = this.#type === ApprovalType.ResultSuccess;
@@ -132,9 +149,15 @@ export class ResultTemplate {
                   flexDirection: FlexDirection.Column,
                   width: BlockSize.Full,
                 },
-                children: isSuccess
-                  ? processString(message, t('resultPageSuccessDefaultMessage'))
-                  : processError(error, t('resultPageErrorDefaultMessage')),
+                children: attachResultContext(
+                  isSuccess
+                    ? processString(
+                        message,
+                        t('resultPageSuccessDefaultMessage'),
+                      )
+                    : processError(error, t('resultPageErrorDefaultMessage')),
+                  resultContext,
+                ),
               },
             ],
           },
