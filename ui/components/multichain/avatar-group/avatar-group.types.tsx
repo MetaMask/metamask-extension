@@ -9,8 +9,10 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   limit: number;
   /** * List of Avatar Tokens */
   members: {
+    /** * Type of Avatar: Token/Account */
+    avatarType?: AvatarType;
     /** * Image of Avatar Token */
-    iconUrl: string;
+    avatarValue: string;
     /** * Symbol of Avatar Token */
     symbol?: string;
   }[];
@@ -18,4 +20,9 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   size?: AvatarTokenSize;
   /** * Border Color of Avatar Tokens */
   borderColor?: BorderColor;
+}
+
+export enum AvatarType {
+  TOKEN = 'TOKEN',
+  ACCOUNT = 'ACCOUNT',
 }

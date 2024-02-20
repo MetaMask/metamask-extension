@@ -25,11 +25,18 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
+import { AvatarGroup } from '../../avatar-group';
+import { AvatarType } from '../../avatar-group/avatar-group.types';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
+  const AVATAR_GROUP_LIMIT = 5;
 
+  const addressIconList = connection.addresses?.map((address) => ({
+    avatarType: AvatarType.ACCOUNT,
+    avatarValue: address,
+  }));
   return (
     <Box
       as="button"
@@ -69,41 +76,32 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         width={BlockSize.FiveTwelfths}
         style={{ flexGrow: '1' }}
       >
-        <Text
-          variant={TextVariant.bodyLgMedium}
-          textAlign={TextAlign.Left}
-          ellipsis
-        >
-          {connection.name}
-        </Text>
-        <Text
-          display={Display.Flex}
-          alignItems={AlignItems.flexStart}
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodyMd}
-        >
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
           {isSnap ? connection.packageName : getURLHost(connection.origin)}
         </Text>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+          <Text
+            as="span"
+            width={BlockSize.Max}
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyMd}
+          >
+            {t('connectedWith')}
+          </Text>
+          <AvatarGroup
+            members={addressIconList}
+            limit={AVATAR_GROUP_LIMIT}
+            borderColor={BackgroundColor.backgroundDefault}
+          />
+        </Box>
       </Box>
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}
         alignItems={AlignItems.center}
-        style={{ flex: '1' }}
+        style={{ flex: '1', alignSelf: 'center' }}
         gap={2}
       >
-        {!isSnap && (
-          <Text
-            width={BlockSize.Max}
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMd}
-          >
-            {connection.addresses?.length}{' '}
-            {connection.addresses?.length > 1
-              ? t('connectedaccounts')
-              : t('connectedaccount')}
-          </Text>
-        )}
         <Icon
           display={Display.Flex}
           name={IconName.ArrowRight}

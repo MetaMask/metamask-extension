@@ -50,6 +50,28 @@ ChaosStory.args = {
     name: 'Connect'.repeat(100),
     origin: 'https://portfolio.metamask.io',
     subjectType: 'website',
+    addresses: [
+      '0x809F07C80ce267F3132cE7e6048B66E6E669365B',
+      '0xD8AD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+    ],
+  },
+  onClick: () => console.log('clicked'),
+};
+
+export const SnapStory = (args) => (
+  <div
+    style={{ width: '350px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <ConnectionListItem {...args} />
+  </div>
+);
+SnapStory.args = {
+  connection: {
+    extensionId: null,
+    iconUrl: 'https://portfolio.metamask.io/favicon.png',
+    name: 'Connect'.repeat(100),
+    packageName: '@metamask/storybooksnap',
+    subjectType: 'snap',
     addresses: ['OxTestAddress1', 'OxTestAddress2'],
   },
   onClick: () => console.log('clicked'),

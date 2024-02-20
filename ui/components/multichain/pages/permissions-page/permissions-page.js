@@ -1,11 +1,5 @@
 import classnames from 'classnames';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Content, Header, Page } from '../page';
@@ -67,10 +61,9 @@ export const PermissionsPage = () => {
     );
   }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
 
-  const handleConnectionClick = useCallback((connection) => {
-    // TODO: go to connection details page
-    console.log('connection clicked: ', connection);
-  }, []);
+  const handleConnectionClick = (connection) => {
+    history.push(`/permissions/${connection.origin}`);
+  };
 
   const renderConnectionsList = (connectionList) =>
     Object.entries(connectionList).map(([itemKey, connection]) => {

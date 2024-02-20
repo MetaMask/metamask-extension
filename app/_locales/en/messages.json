@@ -872,11 +872,8 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
-  "connectedaccount": {
-    "message": "account"
-  },
-  "connectedaccounts": {
-    "message": "accounts"
+  "connectedWith": {
+    "message": "Connected with"
   },
   "connecting": {
     "message": "Connecting..."
@@ -3500,7 +3497,6 @@
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
   },
-
   "permissionsPageTourDescription": {
     "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
   },
