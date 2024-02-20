@@ -116,26 +116,11 @@ workflows:
       - testrail-upload-chrome-results:
           requires:
             - test-e2e-chrome
-      - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - develop
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
-          requires:
-            - prep-build
       - all-tests-pass:
           requires:
             - test-lint
             - test-e2e-chrome
             - test-e2e-firefox
-      - benchmark:
-          requires:
-            - prep-build-test
-      - user-actions-benchmark:
-          requires:
-            - prep-build-test
-
 
 
 jobs:
@@ -673,7 +658,7 @@ jobs:
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
-          at: .
+          at: ~/project
       - run:
           name: Move test build to dist
           command: mv ./dist-test ./dist
@@ -693,32 +678,33 @@ jobs:
           command: echo ${CIRCLE_NODE_INDEX}
       - store_artifacts:
           name: html-report and artifacts
-          path: test-artifacts
+          path: public/chrome/chrome-reports
       - store_test_results:
           name: report for pipeline integration
-          path: test-artifacts/junit/
+          path: public/chrome/chrome-reports/junit/test-results-${CIRCLE_NODE_INDEX}.xml
       - run:
           name: List generated test result files
-          command: ls -la test-artifacts/junit/
+          command: ls -la public/chrome/chrome-reports/junit/
       - persist_to_workspace:
-          root: .
+          root: ~/project
           paths:
-            - test-artifacts/junit/
+            - public/chrome/chrome-reports/junit/test-results-${CIRCLE_NODE_INDEX}.xml
+
 
   testrail-upload-chrome-results:
     docker:
       - image: cimg/python:3.10.4
     steps:
       - attach_workspace:
-          at: .
+          at: ~/project
       - run:
           name: List test result files
-          command: ls -la test-artifacts/junit/
+          command: ls -la public/chrome/chrome-reports/junit/
       - run:
           name: Install TR CLI and upload the test results to TestRail
           command: |
             pip install trcli
-            FILES=$(ls test-artifacts/junit/*.xml)
+            FILES=$(ls public/chrome/chrome-reports/junit/*.xml)
             for result_file in $FILES
             do
               echo "Uploading $result_file"
