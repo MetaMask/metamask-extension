@@ -21,7 +21,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
 
-export const ConnectedStatus = ({ address, isActive = false }) => {
+export const ConnectedStatus = ({ address='', isActive = false }) => {
   const t = useSelector(useI18nContext);
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
@@ -29,13 +29,14 @@ export const ConnectedStatus = ({ address, isActive = false }) => {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const addressConnectedSubjectMap: any = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
   const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
   const currentTabIsConnectedToSelectedAddress = Boolean(
     selectedAddressSubjectMap && selectedAddressSubjectMap[originOfCurrentTab],
   );
+
 
   let status;
   if (isActive) {
@@ -48,11 +49,11 @@ export const ConnectedStatus = ({ address, isActive = false }) => {
     status = STATUS_NOT_CONNECTED;
   }
 
-  let badgeBorderColor = BackgroundColor.backgroundDefault;
-  let badgeBackgroundColor = Color.borderMuted;
+  let badgeBorderColor = BorderColor.borderDefault;
+  let badgeBackgroundColor = BackgroundColor.backgroundAlternative;
   let tooltipText = t('statusNotConnected');
   if (status === STATUS_CONNECTED) {
-    badgeBorderColor = BackgroundColor.backgroundDefault;
+    badgeBorderColor = BorderColor.borderDefault;
     badgeBackgroundColor = BackgroundColor.successDefault;
     tooltipText = t('active');
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
