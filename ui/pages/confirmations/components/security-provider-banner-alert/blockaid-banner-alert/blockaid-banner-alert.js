@@ -6,7 +6,6 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import {
   AlignItems,
-  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
