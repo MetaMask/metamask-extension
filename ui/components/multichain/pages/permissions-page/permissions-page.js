@@ -22,7 +22,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERMISSIONS,
+} from '../../../../helpers/constants/routes';
 import {
   getOnboardedInThisUISession,
   getShowPermissionsTour,
@@ -62,7 +65,8 @@ export const PermissionsPage = () => {
   }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
 
   const handleConnectionClick = (connection) => {
-    history.push(`/permissions/${connection.origin}`);
+    const safeEncodedOrigin = encodeURIComponent(connection.origin);
+    history.push(`${PERMISSIONS}/${safeEncodedOrigin}`);
   };
 
   const renderConnectionsList = (connectionList) =>

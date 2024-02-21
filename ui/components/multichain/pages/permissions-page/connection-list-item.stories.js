@@ -1,4 +1,5 @@
 import React from 'react';
+import { PERMISSIONS } from '../../../../helpers/constants/routes';
 import { ConnectionListItem } from './connection-list-item';
 
 export default {
@@ -63,7 +64,11 @@ ChaosStory.args = {
       '0x666D671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
     ],
   },
-  onClick: () => console.log('clicked'),
+  onClick: () => {
+    console.log(
+      `${PERMISSIONS}/${encodeURIComponent(ChaosStory.args.connection.origin)}`,
+    );
+  },
 };
 
 export const SnapStory = (args) => (
@@ -82,5 +87,8 @@ SnapStory.args = {
     subjectType: 'snap',
     addresses: ['OxTestAddress1', 'OxTestAddress2'],
   },
-  onClick: () => console.log('clicked'),
+  onClick: () =>
+    console.log(
+      `${PERMISSIONS}/${encodeURIComponent(SnapStory.args.connection.origin)}`,
+    ),
 };
