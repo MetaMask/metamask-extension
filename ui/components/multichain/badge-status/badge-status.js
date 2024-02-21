@@ -55,7 +55,8 @@ export const BadgeStatus = ({
           badge={
             <Box
               className={classNames('multichain-badge-status__badge', {
-                'not-connected': isConnectedAndNotActive,
+                'multichain-badge-status__badge-not-connected':
+                  isConnectedAndNotActive,
               })}
               backgroundColor={badgeBackgroundColor}
               borderRadius={BorderRadius.full}
