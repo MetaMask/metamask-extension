@@ -50,6 +50,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getCurrentNetwork,
   getNativeCurrencyImage,
+  getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -79,14 +80,17 @@ export const AccountListItem = ({
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
-
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
 
-  const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork?.nickname)
-    ? totalWeiBalance
-    : identity.balance;
+  let balanceToTranslate = totalWeiBalance;
+  if (showFiat) {
+    balanceToTranslate = identity.balance;
+  }
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -209,7 +213,9 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
+                showFiat={
+                  !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
+                }
               />
             </Text>
           </Box>
