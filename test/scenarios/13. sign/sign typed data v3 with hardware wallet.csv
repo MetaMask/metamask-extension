@@ -1,0 +1,25 @@
+Steps,Test Steps,Preconditions,Test Data,Expected Result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.",
+3,"Click on account menu icon. Click ""Add account or hardware wallet"".",,,"The ""Add account"" modal is shown.",
+4,"On ""Add account"" modal, click ""Add hardware wallet"" button.",,,"""Connect a hardware wallet"" screen is shown. User can choose between different options to connect a hardware: Ledger, Trezor, Lattice, or QR-based. ""Continue"" button is disabled.",
+5,Choose an option to connect hardware wallet.,We need to have a QR-based hardware wallet set up to test this functionality.,"e.g. choose ""QR-based""","""Continue"" button is enabled.",
+6,"Unlock the QR-based wallet and sync it with MetaMask.",,Password for hardware wallet,"Hardware wallet is detected by MetaMask. ""Select an account"" screen is shown on MetaMask, accounts on hardware wallet are shown on this screen.","Note: using Ledger or Trezor won't work for this flow, since they don't support Sign Typed Data V3."
+7,"Choose one or multiples accounts that user wants to connect. Then click ""Unlock"".",,,,
+8,Click account menu icon to open accounts list.,,,"In accounts list, all selected hardware wallet accounts are shown, and they are all flagged with harware wallet name to be distinguished from other accounts.",
+9,Select one hardware wallet account.,,,"The Ether balance for the selected hardware wallet account is shown on the overview.
+The selected account address is shown on the overview.",
+10,Open the test dapp in another tab.,,https://metamask.github.io/test-dapp/,,
+11,Click Connect.,,,"The MetaMask popup is opened with the Connect with MetaMask screen displayed.
+Your imported hardware wallet account is selected.",
+12,Click Next and Connect with the hardware wallet account.,,,"The MetaMask popup is closed.
+You are connected to the test dapp.",
+13,"Click ""Sign Typed Data V3"".",,,"The MetaMask popup is open.
+The signature message is displayed in JSON formatting.",
+14,"Click ""Sign"".",,,The QR code modal with the signature request is displayed.,
+15,"Scan the QR code with the QR-based wallet.",,,The signature QR code is displayed in the QR-based wallet.,
+15,"Click ""Get Signature"".",,,The computer camera is opened.,
+16,Scan the Signature from the QR-based wallet.,,,"The signature hash is displayed in the test-dapp result.
+The MetaMask popup is closed.",
+17,Verify signed hash.,,,The signed address is correctly verified.,The address shown in the test dapp is the same as the hardware wallet account.
