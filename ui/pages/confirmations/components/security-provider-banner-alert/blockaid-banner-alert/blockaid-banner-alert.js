@@ -89,7 +89,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     return (
       <Box
         alignItems={AlignItems.center}
-        borderColor={BorderColor.borderDefault}
+        borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.SM}
         padding={2}
         display={Display.Flex}
