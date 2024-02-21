@@ -9,3 +9,4 @@ Step,Test Steps,Test Data,Expected Result,Notes
 7,Click on the 'Ethereum Mainnet' drop down on the left top,,Select a network dialog box appears,
 8,Validate that the 'Show test networks' toggle is selected by default.,,The 'Show test networks' toggle is selected by default,
 9,"Validate that the test networks - 'Goerli',  'Sepolia' and 'Linea Goerli' appear",,The test networks is shown as expected,
+10,Toggle the 'Show test networks' switch in the select network dialog.,,The switch is turned off as expected in the settings page,
