@@ -335,6 +335,12 @@ export default function ConfirmationPage({
   ]);
 
   useEffect(() => {
+    if (templatedValues.onLoad) {
+      templatedValues.onLoad();
+    }
+  }, [templatedValues]);
+
+  useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently

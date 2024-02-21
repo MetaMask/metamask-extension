@@ -50,6 +50,7 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'content',
+  'onLoad',
   'onCancel',
   'onSubmit',
   'networkDisplay',
