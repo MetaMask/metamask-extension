@@ -14,7 +14,7 @@ describe('Settings Search', function () {
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Security alerts',
+    experimental: 'Nicknames',
     about: 'Terms of Use',
   };
 
@@ -98,7 +98,7 @@ describe('Settings Search', function () {
       },
     );
   });
-  it('should find element inside the Security tab', async function () {
+  it('should find element inside the "Security & privacy" tab', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

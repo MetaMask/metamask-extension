@@ -1396,6 +1396,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.custodyController = new CustodyController({
       initState: initState.CustodyController,
+      captureException,
     });
     this.institutionalFeaturesController = new InstitutionalFeaturesController({
       initState: initState.InstitutionalFeaturesController,

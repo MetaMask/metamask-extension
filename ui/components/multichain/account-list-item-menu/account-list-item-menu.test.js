@@ -8,12 +8,14 @@ import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
 
 const mockShowModal = jest.fn();
+const mockAddPermittedAccount = jest.fn();
 
 jest.mock('../../../store/institutional/institution-background');
 
 jest.mock('../../../store/actions', () => {
   return {
     showModal: () => mockShowModal,
+    addPermittedAccount: () => mockAddPermittedAccount,
   };
 });
 
@@ -21,7 +23,6 @@ const identity = {
   ...mockState.metamask.identities[
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
   ],
-  balance: '0x152387ad22c3f0',
 };
 
 const DEFAULT_PROPS = {
@@ -37,6 +38,9 @@ const render = (props = {}) => {
     metamask: {
       ...mockState.metamask,
     },
+    activeTab: {
+      origin: 'https://uniswap.org/',
+    },
   });
   const allProps = { ...DEFAULT_PROPS, ...props };
   return renderWithProvider(<AccountListItemMenu {...allProps} />, store);
@@ -46,6 +50,19 @@ describe('AccountListItem', () => {
   it('renders remove icon with isRemovable', () => {
     const { getByTestId } = render({ isRemovable: true });
     expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();
+  });
+
+  it('renders Connect account button', () => {
+    process.env.MULTICHAIN = 1;
+    const { getByTestId } = render({ isRemovable: true });
+    const connectAccountButton = getByTestId(
+      'account-list-menu-connect-account',
+    );
+    expect(connectAccountButton).toBeInTheDocument();
+    fireEvent.click(connectAccountButton);
+    expect(mockAddPermittedAccount).toHaveBeenCalled();
+
+    delete process.env.MULTICHAIN;
   });
 
   it('should render remove JWT menu item if the user is custodian and click the button', async () => {

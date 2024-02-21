@@ -159,10 +159,10 @@ describe('Settings Search Utils', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
-    it('returns "Security & Privacy" section count', () => {
+    it('returns "Security & privacy" section count', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
-      ).toStrictEqual(15);
+      ).toStrictEqual(18);
     });
 
     it('returns "Alerts" section count', () => {
@@ -175,7 +175,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        1,
+        2,
       );
     });
 

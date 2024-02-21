@@ -601,7 +601,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -799,6 +799,9 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connectAccount": {
+    "message": "Connect account"
   },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"

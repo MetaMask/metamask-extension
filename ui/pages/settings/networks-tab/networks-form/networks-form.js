@@ -709,6 +709,7 @@ const NetworksForm = ({
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
+          dataTestId="network-form-network-name"
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
@@ -723,6 +724,7 @@ const NetworksForm = ({
               : rpcUrl
           }
           disabled={viewOnly}
+          dataTestId="network-form-rpc-url"
         />
         <FormField
           warning={warnings.chainId?.msg || ''}
@@ -736,6 +738,7 @@ const NetworksForm = ({
           value={chainId}
           disabled={viewOnly}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
+          dataTestId="network-form-chain-id"
         />
         <FormTextField
           data-testid="network-form-ticker"
@@ -802,6 +805,7 @@ const NetworksForm = ({
           value={blockExplorerUrl}
           disabled={viewOnly}
           autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
+          dataTestId="network-form-block-explorer-url"
         />
       </div>
       <div
