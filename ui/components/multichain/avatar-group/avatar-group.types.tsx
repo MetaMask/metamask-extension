@@ -11,8 +11,6 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   avatarType?: AvatarType;
   /** * List of Avatar Tokens */
   members: {
-    /** * Type of Avatar: Token/Account */
-    avatarType?: AvatarType;
     /** * Image of Avatar Token */
     avatarValue: string;
     /** * Symbol of Avatar Token */
