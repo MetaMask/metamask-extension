@@ -55,12 +55,12 @@ const render = async ({ componentProps, contextProps } = {}) => {
   await act(
     async () =>
       (result = renderWithProvider(
-    <GasFeeContextProvider {...contextProps}>
-      <EditGasFeeButton {...componentProps} />
-    </GasFeeContextProvider>,
-    store,
-    )),
-    );
+        <GasFeeContextProvider {...contextProps}>
+          <EditGasFeeButton {...componentProps} />
+        </GasFeeContextProvider>,
+        store,
+      )),
+  );
 
   return result;
 };
