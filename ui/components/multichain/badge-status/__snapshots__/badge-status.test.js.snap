@@ -31,10 +31,10 @@ exports[`Badge Status should render correctly 1`] = `
           </div>
           <div
             class="mm-box mm-badge-wrapper__badge-container"
-            style="bottom: 2px; right: 5px; z-index: 1;"
+            style="bottom: 2px; right: 5px;"
           >
             <div
-              class="mm-box multichain-badge-status__badge not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
+              class="mm-box multichain-badge-status__badge multichain-badge-status__badge-not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
             />
           </div>
         </div>

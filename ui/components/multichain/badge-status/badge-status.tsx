@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
@@ -14,21 +13,25 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarAccount,
+  AvatarAccountSize,
   AvatarAccountVariant,
   BadgeWrapper,
   Box,
+  BoxProps,
 } from '../../component-library';
 import { getUseBlockie } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
+import { BadgeStatusProps } from './badge-status.types';
 
-export const BadgeStatus = ({
+export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   className = '',
-  badgeBackgroundColor = Color.borderMuted,
-  badgeBorderColor = BackgroundColor.backgroundDefault,
+  badgeBackgroundColor = BackgroundColor.backgroundAlternative,
+  badgeBorderColor = BorderColor.borderMuted,
   address,
   isConnectedAndNotActive = false,
   text,
-}) => {
+  ...props
+}): JSX.Element => {
   const useBlockie = useSelector(getUseBlockie);
 
   return (
@@ -40,6 +43,7 @@ export const BadgeStatus = ({
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundDefault}
+      {...(props as BoxProps<'div'>)}
     >
       <Tooltip
         title={text}
@@ -49,8 +53,8 @@ export const BadgeStatus = ({
         <BadgeWrapper
           positionObj={
             isConnectedAndNotActive
-              ? { bottom: 2, right: 5, zIndex: 1 }
-              : { bottom: -1, right: 2, zIndex: 1 }
+              ? { bottom: 2, right: 5}
+              : { bottom: -1, right: 2}
           }
           badge={
             <Box
@@ -67,7 +71,7 @@ export const BadgeStatus = ({
         >
           <AvatarAccount
             borderColor={BorderColor.transparent}
-            size={Size.MD}
+            size={AvatarAccountSize.Md}
             address={address}
             variant={
               useBlockie
@@ -82,29 +86,3 @@ export const BadgeStatus = ({
   );
 };
 
-BadgeStatus.propTypes = {
-  /**
-   * Additional classNames to be added to the BadgeStatus
-   */
-  className: PropTypes.string,
-  /**
-   * Border color based on the connection status
-   */
-  badgeBorderColor: PropTypes.string.isRequired,
-  /**
-   * Background Color of Badge
-   */
-  badgeBackgroundColor: PropTypes.string.isRequired,
-  /**
-   * Connection status message on Tooltip
-   */
-  text: PropTypes.string,
-  /**
-   * To determine connection status
-   */
-  isConnectedAndNotActive: PropTypes.bool,
-  /**
-   * Address for AvatarAccount
-   */
-  address: PropTypes.string.isRequired,
-};
