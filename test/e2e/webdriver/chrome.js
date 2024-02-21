@@ -7,14 +7,22 @@ const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-l
  *
  * @type {string}
  */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const HTTPS_PROXY_HOST = `${
+  process.env.SELENIUM_HTTPS_PROXY || '127.0.0.1:8000'
+}`;
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
   static async build({ openDevToolsForTabs, port }) {
-    const args = [`--proxy-server=${HTTPS_PROXY_HOST}`]; // Set proxy in the way that doesn't interfere with Selenium Manager
+    const args = [
+      `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPredicition,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
+      '--disable-component-update', // Stop chrome from calling home so much (auto-update)
+      `--disable-gpu`,
+      `--disable-dev-shm-usage`,
+    ];
 
     if (process.env.MULTIPROVIDER) {
       args.push(
@@ -23,6 +31,7 @@ class ChromeDriver {
     } else {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
+
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }
@@ -34,11 +43,25 @@ class ChromeDriver {
     } else {
       args.push('--log-level=3');
     }
+    if (process.env.SELENIUM_HEADLESS) {
+      // TODO: Remove notice and consider non-experimental when results are consistent
+      console.warn(
+        '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
+      );
+      args.push('--headless=new');
+    }
     const options = new chrome.Options().addArguments(args);
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
+    // Allow disabling DoT local testing
+    if (process.env.SELENIUM_USE_SYSTEM_DN) {
+      options.setLocalState({
+        'dns_over_https.mode': 'off',
+        'dns_over_https.templates': '',
+      });
+    }
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
