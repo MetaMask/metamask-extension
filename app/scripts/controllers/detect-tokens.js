@@ -28,6 +28,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
    * @param {object} [config] - Options to configure controller
    * @param config.interval
    * @param config.preferences
+   * @param config.onboardingController
    * @param config.network
    * @param config.tokenList
    * @param config.tokensController
@@ -42,6 +43,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     messenger,
     interval = DEFAULT_INTERVAL,
     preferences,
+    onboardingController,
     network,
     tokenList,
     tokensController,
@@ -60,6 +62,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     if (!disableLegacyInterval) {
       this.interval = interval;
     }
+    this.onboardingController = onboardingController;
     this.network = network;
     this.tokenList = tokenList;
     this.useTokenDetection =
@@ -143,6 +146,10 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     }
 
     if (!this.isActive) {
+      return;
+    }
+    const { completedOnboarding } = this.onboardingController.store.getState();
+    if (!completedOnboarding) {
       return;
     }
     if (!isTokenDetectionEnabledForNetwork(chainIdAgainstWhichToDetect)) {

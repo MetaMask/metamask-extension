@@ -1405,6 +1405,7 @@ export default class MetamaskController extends EventEmitter {
           this.accountsController,
         ),
       assetsContractController: this.assetsContractController,
+      onboardingController: this.onboardingController,
       network: this.networkController,
       tokenList: this.tokenListController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -2309,6 +2310,7 @@ export default class MetamaskController extends EventEmitter {
     this.txController.delayedInit(this.provider, this.blockTracker);
     this.swapsController.delayedInit(this.provider);
     this.smartTransactionsController.delayedInit(this.provider);
+    this.detectTokensController.restartTokenDetection();
   }
 
   /**
