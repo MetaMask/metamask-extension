@@ -11,9 +11,15 @@ import {
   AccountsControllerState,
 } from '@metamask/accounts-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { AccountIdentitiesPetnamesBridge } from './AccountIdentitiesPetnamesBridge';
+import {
+  AccountIdentitiesPetNamesBridgeAllowedActions,
+  AccountIdentitiesPetNamesBridgeAllowedEvents,
+  AccountIdentitiesPetnamesBridge,
+} from './AccountIdentitiesPetnamesBridge';
 import {
   PetnameEntry,
+  PetnamesBridgeAllowedEvents,
+  PetnamesBridgeAllowedActions,
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
 import {
@@ -97,7 +103,7 @@ const EMPTY_ACCOUNTS_CONTROLLER_STATE: AccountsControllerState = {
 };
 
 function setupAccountsController(
-  messenger,
+  messenger: AccountsControllerMessenger,
   state = EMPTY_ACCOUNTS_CONTROLLER_STATE,
 ) {
   return new AccountsController({ state, messenger });
@@ -131,7 +137,12 @@ function buildAccountsControllerMessenger(
   });
 }
 
-function buildPetNamesBridgeMessenger(messenger): PetnamesBridgeMessenger {
+function buildPetNamesBridgeMessenger(
+  messenger,
+): PetnamesBridgeMessenger<
+  PetnamesBridgeAllowedEvents<AccountIdentitiesPetNamesBridgeAllowedEvents>,
+  PetnamesBridgeAllowedActions<AccountIdentitiesPetNamesBridgeAllowedActions>
+> {
   return messenger.getRestricted({
     name: 'PetnamesBridge',
     allowedEvents: [
@@ -154,7 +165,10 @@ function createNameControllerMock(
 describe('AccountIdentitiesPetnamesBridge', () => {
   let messenger;
   let accountsControllerMessenger: AccountsControllerMessenger;
-  let petnamesBridgeMessenger: PetnamesBridgeMessenger;
+  let petnamesBridgeMessenger: PetnamesBridgeMessenger<
+    PetnamesBridgeAllowedEvents<AccountIdentitiesPetNamesBridgeAllowedEvents>,
+    PetnamesBridgeAllowedActions<AccountIdentitiesPetNamesBridgeAllowedActions>
+  >;
 
   beforeEach(() => {
     messenger = new ControllerMessenger();

@@ -1749,7 +1749,6 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     new AccountIdentitiesPetnamesBridge({
-      preferencesController: this.preferencesController,
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
