@@ -895,6 +895,9 @@ export const getAnySnapUpdateAvailable = createSelector(
   },
 );
 
+/**
+ * Get a Memoized version of the target subject metadata.
+ */
 export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
   getTargetSubjectMetadata,
   (interfaces) => interfaces,
@@ -941,11 +944,17 @@ export const getMemoizedInterface = createDeepEqualSelector(
   (snapInterface) => snapInterface,
 );
 
+/**
+ * Get the content from a Snap interface with a given ID.
+ */
 export const getInterfaceContent = createSelector(
   [getMemoizedInterfaces, selectInterfaceId],
   (interfaces, id) => interfaces[id]?.content,
 );
 
+/**
+ * Get a memoized verison of the content from a Snap interface with a given ID.
+ */
 export const getMemoizedInterfaceContent = createDeepEqualSelector(
   getInterfaceContent,
   (content) => content,
