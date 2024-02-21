@@ -6,8 +6,15 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
+<<<<<<< HEAD
   Display,
   JustifyContent,
+=======
+  Color,
+  Display,
+  JustifyContent,
+  Size,
+>>>>>>> f7380e849e (converted components to typescript)
 } from '../../../helpers/constants/design-system';
 import {
   AvatarAccount,
@@ -51,8 +58,13 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
         <BadgeWrapper
           positionObj={
             isConnectedAndNotActive
+<<<<<<< HEAD
               ? { bottom: 2, right: 5 }
               : { bottom: -1, right: 2 }
+=======
+              ? { bottom: 2, right: 5}
+              : { bottom: -1, right: 2}
+>>>>>>> f7380e849e (converted components to typescript)
           }
           badge={
             <Box
@@ -83,3 +95,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
     </Box>
   );
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> f7380e849e (converted components to typescript)
