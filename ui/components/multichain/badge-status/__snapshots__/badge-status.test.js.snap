@@ -31,24 +31,10 @@ exports[`Badge Status should render correctly 1`] = `
           </div>
           <div
             class="mm-box mm-badge-wrapper__badge-container"
-<<<<<<< HEAD
-<<<<<<< HEAD
             style="bottom: 2px; right: 5px;"
           >
             <div
               class="mm-box multichain-badge-status__badge multichain-badge-status__badge-not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
-=======
-            style="bottom: 2px; right: 5px; z-index: 1;"
-          >
-            <div
-              class="mm-box multichain-badge-status__badge not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
->>>>>>> a57a8bd8ce (updated test)
-=======
-            style="bottom: 2px; right: 5px;"
-          >
-            <div
-              class="mm-box multichain-badge-status__badge multichain-badge-status__badge-not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
->>>>>>> f7380e849e (converted components to typescript)
             />
           </div>
         </div>
