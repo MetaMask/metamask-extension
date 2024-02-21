@@ -138,8 +138,8 @@ describe('BaseFeeInput', () => {
     );
   });
 
-  it('should show current value of estimatedBaseFee in users primary currency in right side of input box', () => {
-    render({
+  it('should show current value of estimatedBaseFee in users primary currency in right side of input box', async () => {
+    await render({
       txParams: {
         gas: '0x5208',
         maxFeePerGas: '0x2E90EDD000',
@@ -196,8 +196,8 @@ describe('BaseFeeInput', () => {
   });
 
   describe('updateBaseFee', () => {
-    it('updates base fee correctly', () => {
-      const { getByTestId } = render(<BaseFeeInput />);
+    it('updates base fee correctly', async () => {
+      const { getByTestId } = await render(<BaseFeeInput />);
       const input = getByTestId('base-fee-input');
 
       fireEvent.change(input, { target: { value: '1' } });
@@ -205,8 +205,8 @@ describe('BaseFeeInput', () => {
       expect(input.value).toBe('1');
     });
 
-    it('handles low numbers', () => {
-      const { getByTestId } = render(<BaseFeeInput />);
+    it('handles low numbers', async () => {
+      const { getByTestId } = await render(<BaseFeeInput />);
       const input = getByTestId('base-fee-input');
 
       fireEvent.change(input, { target: { value: LOW_BASE_FEE } });
