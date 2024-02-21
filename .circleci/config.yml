@@ -676,9 +676,6 @@ jobs:
               timeout 20m yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 5m
-      - run:
-          name: Echo CIRCLE_NODE_INDEX
-          command: echo ${CIRCLE_NODE_INDEX}
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -717,8 +714,9 @@ jobs:
                 -p "v##&FgS!4J" \
                 parse_junit \
                 --title "Automated Chrome Tests from CircleCI workflow" \
-                --run-id "47" \
+                --run-id "48" \
                 --run-description $CIRCLE_BUILD_URL \
+                --case-fields type_id:3 \
                 -f "$result_file"
             done
 
