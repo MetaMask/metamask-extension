@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { AllConnections } from './all-connections';
+import { PermissionsPage } from './permissions-page';
 
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
@@ -84,16 +84,16 @@ describe('All Connections', () => {
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = renderWithProvider(
-        <AllConnections />,
+        <PermissionsPage />,
         store,
       );
       expect(container).toMatchSnapshot();
 
-      expect(getByTestId('all-connections')).toBeInTheDocument();
+      expect(getByTestId('permissions-page')).toBeInTheDocument();
     });
 
     it('renders sections when user has 5 or less connections', () => {
-      const { getByTestId } = renderWithProvider(<AllConnections />, store);
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('sites-connections')).toBeInTheDocument();
       expect(getByTestId('snaps-connections')).toBeInTheDocument();
     });
@@ -134,16 +134,16 @@ describe('All Connections', () => {
         },
       };
       store = configureStore(mockState);
-      const { getByTestId } = renderWithProvider(<AllConnections />, store);
-      expect(getByTestId('all-connections-sites-tab')).toBeInTheDocument();
-      expect(getByTestId('all-connections-snaps-tab')).toBeInTheDocument();
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
+      expect(getByTestId('permissions-page-sites-tab')).toBeInTheDocument();
+      expect(getByTestId('permissions-page-snaps-tab')).toBeInTheDocument();
     });
     it('renders no connections message when user has no connections', () => {
       mockState.metamask.snaps = {};
       mockState.metamask.subjectMetadata = {};
       mockState.metamask.subjects = {};
       store = configureStore(mockState);
-      const { getByTestId } = renderWithProvider(<AllConnections />, store);
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('no-connections')).toBeInTheDocument();
     });
   });

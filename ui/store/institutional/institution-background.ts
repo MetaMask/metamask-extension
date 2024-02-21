@@ -147,25 +147,26 @@ export function mmiActionsFactory() {
       ),
     getCustodianAccounts: (
       token: string,
-      apiUrl: string,
+      envName: string,
       custody: string,
       getNonImportedAccounts: boolean,
     ) =>
       createAsyncAction(
         'getCustodianAccounts',
-        [token, apiUrl, custody, getNonImportedAccounts],
+        [token, envName, custody, getNonImportedAccounts],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
+    // TODO (Bernardo) - It doesn't look like this is being used
     getCustodianAccountsByAddress: (
       jwt: string,
-      apiUrl: string,
+      envName: string,
       address: string,
       custody: string,
     ) =>
       createAsyncAction(
         'getCustodianAccountsByAddress',
-        [jwt, apiUrl, address, custody],
+        [jwt, envName, address, custody],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
@@ -206,30 +207,18 @@ export function mmiActionsFactory() {
       ),
     removeAddTokenConnectRequest: ({
       origin,
-      apiUrl,
+      environment,
       token,
     }: {
       origin: string;
-      apiUrl: string;
+      environment: string;
       token: string;
     }) =>
-      createAction('removeAddTokenConnectRequest', { origin, apiUrl, token }),
-    setCustodianConnectRequest: ({
-      token,
-      apiUrl,
-      custodianType,
-      custodianName,
-    }: {
-      token: string;
-      apiUrl: string;
-      custodianType: string;
-      custodianName: string;
-    }) =>
-      createAsyncAction('setCustodianConnectRequest', [
-        { token, apiUrl, custodianType, custodianName },
-      ]),
-    getCustodianConnectRequest: () =>
-      createAsyncAction('getCustodianConnectRequest', []),
+      createAction('removeAddTokenConnectRequest', {
+        origin,
+        environment,
+        token,
+      }),
     getMmiConfiguration: () => createAsyncAction('getMmiConfiguration', []),
     getAllCustodianAccountsWithToken: (custodyType: string, token: string) =>
       createAsyncAction('getAllCustodianAccountsWithToken', [
@@ -238,19 +227,13 @@ export function mmiActionsFactory() {
       ]),
     setCustodianNewRefreshToken: ({
       address,
-      oldAuthDetails,
-      oldApiUrl,
-      newAuthDetails,
-      newApiUrl,
+      refreshToken,
     }: {
       address: string;
-      oldAuthDetails: string;
-      oldApiUrl: string;
-      newAuthDetails: string;
-      newApiUrl: string;
+      refreshToken: string;
     }) =>
       createAsyncAction('setCustodianNewRefreshToken', [
-        { address, oldAuthDetails, oldApiUrl, newAuthDetails, newApiUrl },
+        { address, refreshToken },
       ]),
   };
 }

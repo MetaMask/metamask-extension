@@ -95,6 +95,7 @@ import {
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1078,8 +1079,17 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return getTransaction(state, transactionId);
   },
-  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, customTxParamsData) => {
+  (
+    _state,
+    _transactionId,
+    _status,
+    customTxParamsData,
+    hexTransactionAmount,
+  ) => ({
+    customTxParamsData,
+    hexTransactionAmount,
+  }),
+  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -1093,6 +1103,15 @@ export const getFullTxData = createDeepEqualSelector(
         },
       };
     }
+    if (hexTransactionAmount) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          value: hexTransactionAmount,
+        },
+      };
+    }
     return fullTxData;
   },
 );
@@ -1101,6 +1120,41 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
+  },
+);
+export const getConnectedSitesList = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  getAllConnectedAccounts,
+  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+    const sitesList = {};
+    connectedAddresses.forEach((connectedAddress) => {
+      connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
+        const siteKey = app.origin;
+
+        if (sitesList[siteKey]) {
+          sitesList[siteKey].addresses.push(connectedAddress);
+        } else {
+          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+        }
+      });
+    });
+
+    return sitesList;
+  },
+);
+
+export const getConnectedSnapsList = createDeepEqualSelector(
+  getSnapsList,
+  (snapsData) => {
+    const snapsList = {};
+
+    Object.values(snapsData).forEach((snap) => {
+      if (!snapsList[snap.name]) {
+        snapsList[snap.name] = snap;
+      }
+    });
+
+    return snapsList;
   },
 );
 
@@ -1261,37 +1315,15 @@ function getAllowedAnnouncementIds(state) {
   const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-    6: false,
-    7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    9: false,
-    10: false,
-    11: false,
-    12: false,
-    13: false,
-    14: false,
-    15: false,
-    16: false,
-    17: false,
-    18: false,
-    19: false,
     20: currentKeyringIsLedger && isFirefox,
-    21: false,
-    22: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: false,
-    ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
@@ -1385,6 +1417,10 @@ export function getShowOutdatedBrowserWarning(state) {
 
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
+}
+
+export function getShowPermissionsTour(state) {
+  return state.metamask.showPermissionsTour;
 }
 
 export function getShowProductTour(state) {

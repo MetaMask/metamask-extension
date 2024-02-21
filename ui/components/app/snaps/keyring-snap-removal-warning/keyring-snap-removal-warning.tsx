@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
+// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {

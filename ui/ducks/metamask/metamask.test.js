@@ -2,7 +2,7 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import {
   TransactionStatus,
-  mergeGasFeeControllerAndTransactionGasFeeEstimates,
+  mergeGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
@@ -21,7 +21,7 @@ import reduceMetamask, {
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
-  mergeGasFeeControllerAndTransactionGasFeeEstimates: jest.fn(),
+  mergeGasFeeEstimates: jest.fn(),
 }));
 
 const GAS_FEE_CONTROLLER_ESTIMATES_MOCK = {
@@ -46,9 +46,7 @@ const TRANSACTION_ESTIMATES_MOCK = {
 };
 
 describe('MetaMask Reducers', () => {
-  const mergeGasFeeControllerAndTransactionGasFeeEstimatesMock = jest.mocked(
-    mergeGasFeeControllerAndTransactionGasFeeEstimates,
-  );
+  const mergeGasFeeEstimatesMock = jest.mocked(mergeGasFeeEstimates);
 
   const mockState = {
     metamask: reduceMetamask(
@@ -525,20 +523,14 @@ describe('MetaMask Reducers', () => {
         },
       };
 
-      mergeGasFeeControllerAndTransactionGasFeeEstimatesMock.mockReturnValue(
-        TRANSACTION_ESTIMATES_MOCK,
-      );
+      mergeGasFeeEstimatesMock.mockReturnValue(TRANSACTION_ESTIMATES_MOCK);
 
       expect(getGasFeeEstimates(state)).toStrictEqual(
         TRANSACTION_ESTIMATES_MOCK,
       );
 
-      expect(
-        mergeGasFeeControllerAndTransactionGasFeeEstimatesMock,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        mergeGasFeeControllerAndTransactionGasFeeEstimatesMock,
-      ).toHaveBeenCalledWith(
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith(
         GAS_ESTIMATE_TYPES.FEE_MARKET,
         GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         TRANSACTION_ESTIMATES_MOCK,

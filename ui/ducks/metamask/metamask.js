@@ -1,6 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
-import { mergeGasFeeControllerAndTransactionGasFeeEstimates } from '@metamask/transaction-controller';
+import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -16,6 +16,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getAddressBook,
   getSelectedNetworkClientId,
+  getSelectedInternalAccount,
 } from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -274,8 +275,10 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: { allNfts, selectedAddress },
+    metamask: { allNfts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
   const { chainId } = getProviderConfig(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
@@ -283,10 +286,10 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: { allNftContracts, selectedAddress },
+    metamask: { allNftContracts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
-
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
@@ -362,11 +365,11 @@ export const getGasFeeEstimates = createSelector(
     transactionGasFeeEstimates,
   ) => {
     if (transactionGasFeeEstimates) {
-      return mergeGasFeeControllerAndTransactionGasFeeEstimates(
+      return mergeGasFeeEstimates({
         gasFeeControllerEstimateType,
         gasFeeControllerEstimates,
         transactionGasFeeEstimates,
-      );
+      });
     }
 
     return gasFeeControllerEstimates;
