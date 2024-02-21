@@ -718,6 +718,7 @@ jobs:
                 parse_junit \
                 --title "Automated Chrome Tests from CircleCI workflow" \
                 --run-description $CIRCLE_BUILD_URL \
+                --run-id "32"
                 -f "$result_file"
             done
 
