@@ -50,6 +50,9 @@ describe('remove-snap-account confirmation', () => {
           },
         },
       },
+      activeTab: {
+        origin: 'https://uniswap.org/',
+      },
     };
     const store = configureMockStore(middleware)(testStore);
     const { container, getByText } = renderWithProvider(
