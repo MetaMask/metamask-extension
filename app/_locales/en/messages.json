@@ -5506,9 +5506,6 @@
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
   },
-  "userOpContractDeployError": {
-    "message": "You cannot deploy an arbitrary contract from a smart contract account."
-  },
   "useSafeChainsListValidation": {
     "message": "Network details check"
   },
@@ -5530,6 +5527,9 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "userOpContractDeployError": {
+    "message": "Contract deployment from a smart contract account is not supported"
   },
   "verifyContractDetails": {
     "message": "Verify third-party details"

@@ -744,7 +744,7 @@ describe('Confirm Transaction Base', () => {
         'confirm-page-container-content-error-banner-2',
       );
       expect(banner).toHaveTextContent(
-        /You cannot deploy an arbitrary contract from a smart contract account/u,
+        /Contract deployment from a smart contract account is not supported/u,
       );
 
       const confirmButton = getByTestId('page-container-footer-next');
