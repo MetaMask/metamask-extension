@@ -14,7 +14,7 @@ export interface BadgeStatusProps extends StyleUtilityProps {
   /**
    * Background Color of Badge
    */
-  badgeBackgroundColor?: BackgroundColor | string;
+  badgeBackgroundColor?: BackgroundColor;
   /**
    * Connection status message on Tooltip
    */
