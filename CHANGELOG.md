@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.10.0]
+### Added
+- Added preset network image avatars in the 'Select a network' pop-up ([#22643](https://github.com/MetaMask/metamask-extension/pull/22643))
+- Expanded Blockaid banner support to include send requests from wallets ([#22321](https://github.com/MetaMask/metamask-extension/pull/22321))
+- Expanded Blockaid banner support to include BNB chain, Polygon, Arbitrum, Optimism, Avalanche, and Linea networks ([#22633](https://github.com/MetaMask/metamask-extension/pull/22633))
+- Added support for imToken Wallet using EIP-4527 ([#21804](https://github.com/MetaMask/metamask-extension/pull/21804))
+- [FLASK] Introduced user operation support, enhancing transaction handling and alert display for user operations ([#22469](https://github.com/MetaMask/metamask-extension/pull/22469))
+- [FLASK] Added support for the Lattice hardware wallet in MV3 ([#22528](https://github.com/MetaMask/metamask-extension/pull/22528))
+- [FLASK] Added a 'You're sending to a contract' warning to the new send page ([#22551](https://github.com/MetaMask/metamask-extension/pull/22551))
+
+### Changed
+- Improved error messaging for Ledger connection issues ([#21038](https://github.com/MetaMask/metamask-extension/pull/21038))
+- Updated 'What's New' and 'Settings' to communicate the extension's additional network coverage ([#22618](https://github.com/MetaMask/metamask-extension/pull/22618))
+- Enhanced Token List layout for clearer token name and value display ([#22601](https://github.com/MetaMask/metamask-extension/pull/22601))
+- Updated the date for the upcoming user survey displayed on the home screen ([#22581](https://github.com/MetaMask/metamask-extension/pull/22581))
+- Improved QR code density for compatibility with the ZERO hardware wallet ([#22135](https://github.com/MetaMask/metamask-extension/pull/22135))
+- Updated snaps packages to the latest versions ([#22595](https://github.com/MetaMask/metamask-extension/pull/22595))
+- Updated the Gas API URL to ensure accurate gas fee calculations for Send and Swap transactions ([#22544](https://github.com/MetaMask/metamask-extension/pull/22544))
+
+### Fixed
+- Fixed an issue where clicking on the redirection link did not close the notification window ([#22583](https://github.com/MetaMask/metamask-extension/pull/22583))
+- Improved Blockaid 'What's New' image display for users in OS dark mode ([#22649](https://github.com/MetaMask/metamask-extension/pull/22649))
+- Added Blockaid dark mode support in the 'What's New' feature and introduced a new theme management utility ([#22613](https://github.com/MetaMask/metamask-extension/pull/22613))
+- Ensured all security alert banners correctly trigger events ([#22553](https://github.com/MetaMask/metamask-extension/pull/22553))
+- Updated 'What's New' Blockaid image to have a transparent background ([#22539](https://github.com/MetaMask/metamask-extension/pull/22539))
+- Fixed unresponsiveness on the phishing warning page ([#22645](https://github.com/MetaMask/metamask-extension/pull/22645))
+- Improved Trezor integration by updating to the correct version of the SDK ([#22591](https://github.com/MetaMask/metamask-extension/pull/22591))
+- Improved account list links to display the correct explorer domain based on the selected network ([#22483](https://github.com/MetaMask/metamask-extension/pull/22483))
+- Improved the reliability of snap installations by resolving an underlying technical issue ([#22602](https://github.com/MetaMask/metamask-extension/pull/22602))
+
 ## [11.9.5]
 ### Fixed
 - Fixed sometimes failing confirmation screen security validation checks ([$22978](https://github.com/MetaMask/metamask-extension/pull/22978))
@@ -4359,7 +4389,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.9.5...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...HEAD
+[11.10.0]: https://github.com/MetaMask/metamask-extension/compare/v11.9.5...v11.10.0
 [11.9.5]: https://github.com/MetaMask/metamask-extension/compare/v11.9.4...v11.9.5
 [11.9.4]: https://github.com/MetaMask/metamask-extension/compare/v11.9.3...v11.9.4
 [11.9.3]: https://github.com/MetaMask/metamask-extension/compare/v11.9.2...v11.9.3
