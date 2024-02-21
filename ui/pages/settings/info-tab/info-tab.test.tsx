@@ -38,7 +38,6 @@ describe('InfoTab', () => {
 
     it('should have correct href for "Contact us" link', () => {
         const contactUsLink = getByText('Contact us');
-        console.log(contactUsLink);
         expect(contactUsLink).toHaveAttribute('href', 'https://metamask.zendesk.com/hc/en-us');
     });
   });
