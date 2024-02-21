@@ -573,7 +573,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
 exports[`Blockaid Banner Alert should render spinner when securityAlertResponse is loading 1`] = `
 <div>
   <div
-    class="mm-box blockaid_banner__wrapper mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+    class="mm-box blockaid_banner__wrapper mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
   >
     <div
       class="spinner blockaid_banner__spinner"
@@ -592,7 +592,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(0 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -613,7 +613,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(30 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -634,7 +634,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(60 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -655,7 +655,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(90 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -676,7 +676,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(120 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -697,7 +697,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(150 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -718,7 +718,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(180 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -739,7 +739,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(210 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -760,7 +760,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(240 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -781,7 +781,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(270 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -802,7 +802,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(300 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
@@ -823,7 +823,7 @@ exports[`Blockaid Banner Alert should render spinner when securityAlertResponse 
           transform="rotate(330 50 50)"
         >
           <rect
-            fill="#24272a"
+            fill="border-muted"
             height="30"
             rx="0"
             ry="0"
