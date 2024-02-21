@@ -6,10 +6,8 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  Color,
   Display,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarAccount,
@@ -53,8 +51,8 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
         <BadgeWrapper
           positionObj={
             isConnectedAndNotActive
-              ? { bottom: 2, right: 5}
-              : { bottom: -1, right: 2}
+              ? { bottom: 2, right: 5 }
+              : { bottom: -1, right: 2 }
           }
           badge={
             <Box
@@ -85,4 +83,3 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
     </Box>
   );
 };
-
