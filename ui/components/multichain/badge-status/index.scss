@@ -6,12 +6,12 @@
     width: 16px;
   }
 
-  &__badge.not-connected {
+  &__badge-not-connected {
     height: 10px;
     width: 10px;
   }
 
-  &__badge.not-connected::after {
+  &__badge-not-connected::after {
     content: '';
     position: absolute;
     top: -3px;
