@@ -702,33 +702,53 @@ describe('Confirm Transaction Base', () => {
       });
     });
   });
-  describe('error states', () => {
-    describe('user op contract deploy attempt', () => {
-      it('should show error and disable Confirm button', () => {
-        const newMockedStore = {
-          ...mockedStore,
-          confirmTransaction: {
-            ...mockedStore.confirmTransaction,
-            txData: {
-              ...mockedStore.confirmTransaction.txData,
-              isUserOperation: true,
-              txParams: {
-                ...mockedStore.confirmTransaction.txData.txParams,
-                to: undefined,
-                data: '0xa22cb46500000000000000', // this is the data for a contract deployment.
-              },
+  describe('user op contract deploy attempt', () => {
+    it('should show error and disable Confirm button', () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+      };
+      const newMockedStore = {
+        ...mockedStore,
+        metamask: {
+          ...mockedStore.metamask,
+          transactions: [
+            {
+              id: mockedStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
             },
+          ],
+        },
+        confirmTransaction: {
+          ...mockedStore.confirmTransaction,
+          txData: {
+            ...mockedStore.confirmTransaction.txData,
+            type: TransactionType.deployContract,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
           },
-        };
-        const store = configureMockStore(middleware)(newMockedStore);
-        const { getByText } = renderWithProvider(
-          <ConfirmTransactionBase actionKey="confirm" />,
-          store,
-        );
+        },
+      };
 
-        expect(getByText('Invalid recipient address')).toBeInTheDocument();
-        expect(getByText('Confirm')).toBeDisabled();
-      });
+      const store = configureMockStore(middleware)(newMockedStore);
+      const { getByTestId } = renderWithProvider(
+        <ConfirmTransactionBase actionKey="confirm" />,
+        store,
+      );
+
+      const banner = getByTestId(
+        'confirm-page-container-content-error-banner-2',
+      );
+      expect(banner).toHaveTextContent(
+        /You cannot deploy an arbitrary contract from a smart contract account/u,
+      );
+
+      const confirmButton = getByTestId('page-container-footer-next');
+      expect(confirmButton).toBeDisabled();
     });
   });
 });

@@ -263,6 +263,13 @@ export default class ConfirmTransactionBase extends Component {
       isUserOpContractDeployError,
     } = this.props;
 
+    if (isUserOpContractDeployError) {
+      return {
+        valid: false,
+        errorKey: USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
+      };
+    }
+
     const insufficientBalance =
       balance &&
       !isBalanceSufficient({
@@ -297,13 +304,6 @@ export default class ConfirmTransactionBase extends Component {
       return {
         valid: false,
         errorKey: IS_SIGNING_OR_SUBMITTING,
-      };
-    }
-
-    if (isUserOpContractDeployError) {
-      return {
-        valid: false,
-        errorKey: USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
       };
     }
 

@@ -273,6 +273,7 @@ export default class ConfirmPageContainerContent extends Component {
         )}
         {(showIsSigningOrSubmittingError || showUserOpContractDeployError) && (
           <BannerAlert
+            data-testid="confirm-page-container-content-error-banner-2"
             severity={Severity.Danger}
             description={t(errorKey)}
             marginBottom={4}
