@@ -121,7 +121,6 @@
   "resolutions": {
     "@metamask/transaction-controller@^21.1.0": "file:../core/packages/transaction-controller",
     "@metamask/smart-transactions-controller@^6.2.2": "file:../smart-transactions-controller",
-    "@metamask/network-controller@^17.2.0": "file:../core/packages/network-controller",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.23.2#~/.yarn/patches/@babel-runtime-npm-7.23.2-d013d6cf7e.patch",
