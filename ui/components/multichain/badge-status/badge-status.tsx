@@ -40,7 +40,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BackgroundColor.transparent}
       {...(props as BoxProps<'div'>)}
     >
       <Tooltip

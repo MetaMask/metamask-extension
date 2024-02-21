@@ -29,7 +29,7 @@ export const ConnectedStatus = ({ address='', isActive = false }) => {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  const addressConnectedSubjectMap: any = useSelector(getAddressConnectedSubjectMap);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
   const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
@@ -49,11 +49,11 @@ export const ConnectedStatus = ({ address='', isActive = false }) => {
     status = STATUS_NOT_CONNECTED;
   }
 
-  let badgeBorderColor = BorderColor.borderDefault;
-  let badgeBackgroundColor = BackgroundColor.backgroundAlternative;
+  let badgeBorderColor = BackgroundColor.backgroundDefault;
+  let badgeBackgroundColor = Color.borderMuted;
   let tooltipText = t('statusNotConnected');
   if (status === STATUS_CONNECTED) {
-    badgeBorderColor = BorderColor.borderDefault;
+    badgeBorderColor = BackgroundColor.backgroundDefault;
     badgeBackgroundColor = BackgroundColor.successDefault;
     tooltipText = t('active');
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
