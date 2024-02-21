@@ -2,6 +2,11 @@ import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../shared/constants/metametrics';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
@@ -106,9 +111,22 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
+        const snapName = getSnapName(controllerMessenger, snapId);
         const { id: addAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
         );
+
+        const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
+          trackEvent({
+            event,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Snap,
+              snap_id: snapId,
+              snap_name: snapName,
+            },
+          });
+        };
 
         const learnMoreLink =
           'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet';
@@ -144,6 +162,10 @@ export const snapKeyringBuilder = (
                 internalAccount.id,
               );
 
+              // User should now see the "Successfuly added account" page
+              trackSnapAccountEvent(
+                MetaMetricsEventName.AddSnapAccountSuccessViewed,
+              );
               await showSuccess(
                 controllerMessenger,
                 snapId,
@@ -157,10 +179,14 @@ export const snapKeyringBuilder = (
                   learnMoreLink,
                 },
               );
+
+              // User has clicked on "OK"
+              trackSnapAccountEvent(
+                MetaMetricsEventName.AddSnapAccountSuccessClicked,
+              );
             } catch (e) {
               const error = (e as Error).message;
 
-              const snapName = getSnapName(controllerMessenger, snapId);
               await showError(
                 controllerMessenger,
                 snapId,
@@ -183,7 +209,10 @@ export const snapKeyringBuilder = (
               );
             }
           } else {
+            // User has cancelled account creation
             await handleUserInput(confirmationResult);
+            trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCancelled);
+
             throw new Error('User denied account creation');
           }
         } finally {
