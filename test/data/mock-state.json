@@ -1621,5 +1621,12 @@
       "balance": "0x0"
     },
     "stage": "INACTIVE"
+  },
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
   }
 }
