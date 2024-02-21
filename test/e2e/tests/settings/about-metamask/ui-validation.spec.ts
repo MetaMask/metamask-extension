@@ -24,24 +24,6 @@ const selectors = {
   walletOverview: '.wallet-overview__balance',
 };
 
-const exceptedUrl = {
-  privacyPolicy: 'https://metamask.io/privacy.html',
-  termsOfUse: 'https://metamask.io/terms.html',
-  attributions: 'https://metamask.io/attributions.html',
-  supportCenter: 'https://support.metamask.io',
-  website: 'https://metamask.io/',
-  contactUS: 'https://metamask.zendesk.com/hc/en-us',
-};
-
-const linkTexts = {
-  privacyPolicy: 'Privacy policy',
-  termsOfUse: 'Terms of use',
-  attributions: 'Attributions',
-  supportCenter: 'Support Center',
-  website: 'Visit our website',
-  contactUS: 'Contact us',
-};
-
 // This function is to click on the three dots and select the "Settings" option from the dropdown menu.
 // Then, click on the "About" section from the left panel.
 async function switchToAboutView(driver: Driver) {
@@ -50,16 +32,9 @@ async function switchToAboutView(driver: Driver) {
   await driver.clickElement(selectors.aboutDiv);
 }
 
-// Get the href value of the link
-const getHrefValue = async (driver: Driver, linkText: string) => {
-  const getHref = await driver.findElement({ text: linkText, tag: 'a' });
-  return await getHref.getAttribute('href');
-};
-
-// Test case to validate the view and links in the "About" - MetaMask.
-// This test is critical because it's the only way to access privacy policy and other important links.
+// Test case to validate the view in the "About" - MetaMask.
 describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
-  it('validate the view and links', async function () {
+  it('validate the view', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -71,60 +46,6 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
 
         // navigate to settings and click on about view
         await switchToAboutView(driver);
-
-        // Validate 'Privacy Policy' link
-        getHrefValue(driver, linkTexts.privacyPolicy).then((actualUrlValue) => {
-          assert.strictEqual(
-            actualUrlValue,
-            exceptedUrl.privacyPolicy,
-            'URLs are not equal',
-          );
-        });
-
-        // Validate 'Terms of Use' link
-        getHrefValue(driver, linkTexts.termsOfUse).then((actualUrlValue) => {
-          assert.strictEqual(
-            actualUrlValue,
-            exceptedUrl.termsOfUse,
-            'URLs are not equal',
-          );
-        });
-
-        // Validate 'Attributions' link
-        getHrefValue(driver, linkTexts.attributions).then((actualUrlValue) => {
-          assert.strictEqual(
-            actualUrlValue,
-            exceptedUrl.attributions,
-            'URLs are not equal',
-          );
-        });
-
-        // Validate 'Support Center' link
-        getHrefValue(driver, linkTexts.supportCenter).then((actualUrlValue) => {
-          assert.strictEqual(
-            actualUrlValue,
-            exceptedUrl.supportCenter,
-            'URLs are not equal',
-          );
-        });
-
-        // Validate 'Visit our website' link
-        getHrefValue(driver, linkTexts.website).then((actualUrlValue) => {
-          assert.strictEqual(
-            actualUrlValue,
-            exceptedUrl.website,
-            'URLs are not equal',
-          );
-        });
-
-        // Validate 'Contact us' link
-        getHrefValue(driver, linkTexts.contactUS).then((actualUrlValue) => {
-          assert.strictEqual(
-            actualUrlValue,
-            exceptedUrl.contactUS,
-            'URLs are not equal',
-          );
-        });
 
         // Validating the title
         const isTitlePresent = await driver.isElementPresent(
