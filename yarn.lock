@@ -1910,15 +1910,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/content-hash@npm:^2.5.6":
-  version: 2.5.6
-  resolution: "@ensdomains/content-hash@npm:2.5.6"
+"@ensdomains/content-hash@npm:^2.5.7":
+  version: 2.5.7
+  resolution: "@ensdomains/content-hash@npm:2.5.7"
   dependencies:
     cids: "npm:^1.1.5"
     js-base64: "npm:^3.6.0"
-    multicodec: "npm:^2.1.0"
+    multicodec: "npm:^3.2.0"
     multihashes: "npm:^2.0.0"
-  checksum: b93714894574eadfc9bc84dc34548f8cf99172714bc9d55f1fc4768fe840743981c1e005249b5aca165670a66a2df7cebfb0cf8c1c5ba652acc64028d61fd200
+  checksum: 819e64301ea20bb40ad934ab65e7a7391d401a933f256a38e7e4fd981b00b831f0b4704fac07c62dd6a3eb3dede35daaf91a6055d1520c88a05de3c841ffbe52
   languageName: node
   linkType: hard
 
@@ -24428,7 +24428,7 @@ __metadata:
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
     "@blockaid/ppom_release": "npm:^1.4.1"
-    "@ensdomains/content-hash": "npm:^2.5.6"
+    "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"
@@ -25803,16 +25803,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multibase@npm:^3.0.0":
-  version: 3.1.2
-  resolution: "multibase@npm:3.1.2"
-  dependencies:
-    "@multiformats/base-x": "npm:^4.0.1"
-    web-encoding: "npm:^1.0.6"
-  checksum: 92d1dd2dcf63d9a54027ca1aa2d06160765d1457bb207e30e9c9bf5c8d111eab5014c858ec30bcb99b38cb16244919bd93c9b881e90765a1e462c8fac8413d0e
-  languageName: node
-  linkType: hard
-
 "multibase@npm:^4.0.1":
   version: 4.0.4
   resolution: "multibase@npm:4.0.4"
@@ -25822,17 +25812,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multicodec@npm:^2.1.0":
-  version: 2.1.3
-  resolution: "multicodec@npm:2.1.3"
-  dependencies:
-    uint8arrays: "npm:1.1.0"
-    varint: "npm:^6.0.0"
-  checksum: dbf149d0c44b9dd5a354cacd5d7743326e9972744715c349e4a32cc0b048d90df847e850acd9b118d4b986bc85ddf3e8d481ac75aafa8df596d75df873e459ff
-  languageName: node
-  linkType: hard
-
-"multicodec@npm:^3.0.1":
+"multicodec@npm:^3.0.1, multicodec@npm:^3.2.0":
   version: 3.2.1
   resolution: "multicodec@npm:3.2.1"
   dependencies:
@@ -33559,16 +33539,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uint8arrays@npm:1.1.0":
-  version: 1.1.0
-  resolution: "uint8arrays@npm:1.1.0"
-  dependencies:
-    multibase: "npm:^3.0.0"
-    web-encoding: "npm:^1.0.2"
-  checksum: 839e17a24ae3e0f8dd12e6edc04bc52763ad402bf1db46ea3057d032efdac017ea810e1d7ea28068c58533f57fb6985833c323bac287498cace7608a115abb6e
-  languageName: node
-  linkType: hard
-
 "uint8arrays@npm:^2.1.3":
   version: 2.1.5
   resolution: "uint8arrays@npm:2.1.5"
@@ -34757,7 +34727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web-encoding@npm:^1.0.2, web-encoding@npm:^1.0.6":
+"web-encoding@npm:^1.0.2":
   version: 1.1.5
   resolution: "web-encoding@npm:1.1.5"
   dependencies:
