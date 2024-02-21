@@ -202,23 +202,6 @@ exports[`All Connections render renders correctly 1`] = `
             >
               @metamask/testSnap1
             </p>
-            <div
-              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row"
-            >
-              <span
-                class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
-              >
-                Connected with
-              </span>
-              <div
-                class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-                data-testid="avatar-group"
-              >
-                <div
-                  class="mm-box mm-box--display-flex"
-                />
-              </div>
-            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -264,23 +247,6 @@ exports[`All Connections render renders correctly 1`] = `
             >
               @metamask/testSnap2
             </p>
-            <div
-              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row"
-            >
-              <span
-                class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
-              >
-                Connected with
-              </span>
-              <div
-                class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-                data-testid="avatar-group"
-              >
-                <div
-                  class="mm-box mm-box--display-flex"
-                />
-              </div>
-            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -326,23 +292,6 @@ exports[`All Connections render renders correctly 1`] = `
             >
               @metamask/testSnap3
             </p>
-            <div
-              class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row"
-            >
-              <span
-                class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
-              >
-                Connected with
-              </span>
-              <div
-                class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
-                data-testid="avatar-group"
-              >
-                <div
-                  class="mm-box mm-box--display-flex"
-                />
-              </div>
-            </div>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"

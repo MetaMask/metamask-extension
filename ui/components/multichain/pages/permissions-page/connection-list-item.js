@@ -78,22 +78,24 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
           {isSnap ? connection.packageName : getURLHost(connection.origin)}
         </Text>
-        <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
-          <Text
-            as="span"
-            width={BlockSize.Max}
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMd}
-          >
-            {t('connectedWith')}
-          </Text>
-          <AvatarGroup
-            members={addressIconList}
-            limit={AVATAR_GROUP_LIMIT}
-            avatarType={AvatarType.ACCOUNT}
-            borderColor={BackgroundColor.backgroundDefault}
-          />
-        </Box>
+        {isSnap ? null : (
+          <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+            <Text
+              as="span"
+              width={BlockSize.Max}
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMd}
+            >
+              {t('connectedWith')}
+            </Text>
+            <AvatarGroup
+              members={addressIconList}
+              limit={AVATAR_GROUP_LIMIT}
+              avatarType={AvatarType.ACCOUNT}
+              borderColor={BackgroundColor.backgroundDefault}
+            />
+          </Box>
+        )}
       </Box>
       <Box
         display={Display.Flex}

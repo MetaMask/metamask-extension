@@ -56,7 +56,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
           return (
             <Box
               borderRadius={BorderRadius.full}
-              key={member.symbol}
+              key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >
               {avatarType === AvatarType.TOKEN ? (
