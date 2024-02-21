@@ -6,6 +6,7 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import {
   AlignItems,
+  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -91,8 +92,12 @@ function BlockaidBannerAlert({ txData, ...props }) {
         alignItems={AlignItems.center}
         borderColor={BorderColor.borderDefault}
         borderRadius={BorderRadius.SM}
-        padding={2}
+        className="blockaid_banner__wrapper"
         display={Display.Flex}
+        margin={props.margin}
+        marginLeft={props.marginLeft}
+        marginRight={props.marginRight}
+        padding={2}
       >
         <Spinner className="blockaid_banner__spinner" color="#24272a" />
         <Text color={TextColor.textDefault} marginLeft={2}>
@@ -116,8 +121,12 @@ function BlockaidBannerAlert({ txData, ...props }) {
           alignItems={AlignItems.center}
           borderColor={BorderColor.borderDefault}
           borderRadius={BorderRadius.SM}
-          padding={2}
+          className="blockaid_banner__wrapper"
           display={Display.Flex}
+          margin={props.margin}
+          marginLeft={props.marginLeft}
+          marginRight={props.marginRight}
+          padding={2}
         >
           <Box
             alignItems={AlignItems.center}
@@ -215,6 +224,10 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
 BlockaidBannerAlert.propTypes = {
   txData: PropTypes.object,
+  marginLeft: PropTypes.number,
+  marginRight: PropTypes.number,
+  marginBottom: PropTypes.number,
+  margin: PropTypes.number,
 };
 
 export default BlockaidBannerAlert;

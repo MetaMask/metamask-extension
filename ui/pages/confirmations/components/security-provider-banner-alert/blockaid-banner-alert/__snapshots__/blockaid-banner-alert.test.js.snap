@@ -573,7 +573,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
 exports[`Blockaid Banner Alert should render spinner when securityAlertResponse is loading 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+    class="mm-box blockaid_banner__wrapper mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-default box--border-style-solid box--border-width-1"
   >
     <div
       class="spinner blockaid_banner__spinner"
