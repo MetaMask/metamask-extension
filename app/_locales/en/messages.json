@@ -806,6 +806,9 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
+  "connectAccounts": {
+    "message": "Connect accounts"
+  },
   "connectCustodialAccountMenu": {
     "message": "Connect Custodial Account"
   },
@@ -2809,6 +2812,12 @@
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
+  },
+  "noConnectedAccountDescription": {
+    "message": "Select an account you want to use on this site to continue."
+  },
+  "noConnectedAccountTitle": {
+    "message": "MetaMask isn’t connected to this site"
   },
   "noConversionDateAvailable": {
     "message": "No currency conversion date available"

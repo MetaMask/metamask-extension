@@ -378,7 +378,10 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {process.env.MULTICHAIN && (
-          <Authenticated path={CONNECTIONS} component={Connections} />
+          <Authenticated
+            path={`${CONNECTIONS}/:origin`}
+            component={Connections}
+          />
         )}
         {process.env.MULTICHAIN && (
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
