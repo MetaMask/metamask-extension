@@ -89,7 +89,7 @@ async function mockInfura(mockServer) {
   ]);
 }
 
-describe.skip('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
+describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert', async function () {
     await withFixtures(
