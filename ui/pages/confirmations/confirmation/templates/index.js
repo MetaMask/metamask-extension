@@ -54,6 +54,7 @@ const ALLOWED_TEMPLATE_KEYS = [
   'networkDisplay',
   'submitText',
   'loadingText',
+  'hideSubmitButton',
 ];
 
 /**
@@ -148,7 +149,7 @@ function getAttenuatedDispatch(dispatch) {
  * @param {object} history - The application's history object.
  * @param {Function} setInputState - A function that can be used to record the
  * state of input fields in the templated component.
- * @param {object} data - The data object passed into the template from the confimation page.
+ * @param {object} data - The data object passed into the template from the confirmation page.
  */
 export function getTemplateValues(
   pendingApproval,

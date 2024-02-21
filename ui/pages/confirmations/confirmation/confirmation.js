@@ -193,6 +193,7 @@ function useTemplateState(pendingConfirmation) {
 
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
+  hideSubmitButton = false,
 }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -541,6 +542,7 @@ export default function ConfirmationPage({
             <MetaMaskTemplateRenderer sections={alert.content} />
           </Callout>
         ))}
+        hideSubmitButton={templatedValues.hideSubmitButton ?? hideSubmitButton}
       />
     </div>
   );
@@ -548,4 +550,5 @@ export default function ConfirmationPage({
 
 ConfirmationPage.propTypes = {
   redirectToHomeOnZeroConfirmations: PropTypes.bool,
+  hideSubmitButton: PropTypes.bool,
 };

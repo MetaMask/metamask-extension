@@ -14,6 +14,7 @@ export default function ConfirmationFooter({
   submitAlerts,
   actionsStyle,
   style,
+  hideSubmitButton,
 }) {
   return (
     <div className="confirmation-footer" style={style}>
@@ -29,7 +30,7 @@ export default function ConfirmationFooter({
             {cancelText}
           </Button>
         ) : null}
-        {onSubmit && submitText ? (
+        {!hideSubmitButton && onSubmit && submitText ? (
           <Button
             data-testid="confirmation-submit-button"
             disabled={Boolean(loading)}
@@ -58,4 +59,5 @@ ConfirmationFooter.propTypes = {
   submitAlerts: PropTypes.node,
   style: PropTypes.object,
   actionsStyle: PropTypes.object,
+  hideSubmitButton: PropTypes.bool,
 };
