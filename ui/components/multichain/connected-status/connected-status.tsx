@@ -21,12 +21,14 @@ import { BadgeStatus } from '../badge-status';
 export const ConnectedStatus = ({ address = '', isActive = false }) => {
   const t = useSelector(useI18nContext);
 
-  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const addressConnectedSubjectMap: any = useSelector(
+    getAddressConnectedSubjectMap,
+  );
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
   const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
   const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressSubjectMap && selectedAddressSubjectMap[originOfCurrentTab],
+    selectedAddressSubjectMap?.[originOfCurrentTab],
   );
 
   let status;
@@ -38,15 +40,21 @@ export const ConnectedStatus = ({ address = '', isActive = false }) => {
     status = STATUS_NOT_CONNECTED;
   }
 
-  let badgeBorderColor = BackgroundColor.backgroundDefault; //TODO: Replace it once border-color has this value.
-  let badgeBackgroundColor = Color.borderMuted; ////TODO: Replace it once Background color has this value.
+  let badgeBorderColor = BackgroundColor.backgroundDefault; // TODO: Replace it once border-color has this value.
+  let badgeBackgroundColor = Color.borderMuted; // //TODO: Replace it once Background color has this value.
   let tooltipText = t('statusNotConnected');
   if (status === STATUS_CONNECTED) {
     badgeBorderColor = BackgroundColor.backgroundDefault;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: type 'string' can't be used to index type '{}'
     badgeBackgroundColor = BackgroundColor.successDefault;
     tooltipText = t('active');
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: type 'string' can't be used to index type '{}'
     badgeBorderColor = BorderColor.successDefault;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: type 'string' can't be used to index type '{}'
     badgeBackgroundColor = BackgroundColor.backgroundDefault;
     tooltipText = t('tooltipSatusConnectedUpperCase');
   }
@@ -57,7 +65,11 @@ export const ConnectedStatus = ({ address = '', isActive = false }) => {
   return (
     <BadgeStatus
       address={address}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: type 'string' can't be used to index type '{}'
       badgeBackgroundColor={badgeBackgroundColor}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: type 'string' can't be used to index type '{}'
       badgeBorderColor={badgeBorderColor}
       text={tooltipText}
       isConnectedAndNotActive={connectedAndNotActive}
