@@ -20,21 +20,17 @@ import {
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-interface Props {
+interface DeprecatedNetworkModalProps {
   onClose: () => void;
 }
 
-export const DeprecatedNetworkModal = ({ onClose }: Props) => {
+export const DeprecatedNetworkModal = ({
+  onClose,
+}: DeprecatedNetworkModalProps) => {
   const t = useI18nContext();
 
   return (
-    <Modal
-      isOpen
-      isClosedOnOutsideClick={false}
-      onClose={() => {
-        onClose();
-      }}
-    >
+    <Modal isOpen isClosedOnOutsideClick={false} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader paddingTop={2} paddingBottom={2}>
@@ -71,9 +67,7 @@ export const DeprecatedNetworkModal = ({ onClose }: Props) => {
           <ButtonPrimary
             block
             size={ButtonPrimarySize.Lg}
-            onClick={() => {
-              onClose();
-            }}
+            onClick={onClose}
             textProps={{ variant: TextVariant.bodyMdMedium }}
             style={{ fontSize: '14px' }}
           >

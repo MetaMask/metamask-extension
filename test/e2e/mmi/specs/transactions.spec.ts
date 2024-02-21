@@ -7,6 +7,7 @@ import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
+import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 const sendTransaction = async (
   page: Page,
@@ -43,7 +44,7 @@ const sendTransaction = async (
   const networkPage = new MMINetworkPage(page);
   await networkPage.open();
   await networkPage.selectNetwork(
-    process.env.MMI_E2E_TEST_NETWORK || 'Sepolia',
+    process.env.MMI_E2E_TEST_NETWORK || SEPOLIA_DISPLAY_NAME,
   );
 
   // Get account from and to name
