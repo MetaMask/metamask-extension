@@ -48,6 +48,7 @@ function transformState(state: Record<string, any>) {
     hasProperty(state, 'NetworkController') &&
     isObject(state.NetworkController) &&
     hasProperty(state.NetworkController, 'providerConfig') &&
+    isObject(state.NetworkController.providerConfig) &&
     hasProperty(state.NetworkController.providerConfig, 'chainId') &&
     state.NetworkController.providerConfig.chainId === CHAIN_IDS.GOERLI
   ) {
