@@ -55,6 +55,7 @@ const ESTIMATE_MOCK = {
   maxPriorityFeePerGas: '0x59682f00',
 };
 
+//
 const renderComponent = ({
   componentProps,
   transactionProps,
