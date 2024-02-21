@@ -115,6 +115,7 @@ workflows:
       - testrail-upload-chrome-results:
           requires:
             - test-e2e-chrome
+          when: always
       - all-tests-pass:
           requires:
             - test-lint
