@@ -896,7 +896,7 @@ export const getAnySnapUpdateAvailable = createSelector(
 );
 
 /**
- * Get a Memoized version of the target subject metadata.
+ * Get a memoized version of the target subject metadata.
  */
 export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
   getTargetSubjectMetadata,
