@@ -32,11 +32,10 @@ export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
   const AVATAR_GROUP_LIMIT = 5;
-
   const addressIconList = connection.addresses?.map((address) => ({
-    avatarType: AvatarType.ACCOUNT,
     avatarValue: address,
   }));
+
   return (
     <Box
       as="button"
@@ -91,6 +90,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
           <AvatarGroup
             members={addressIconList}
             limit={AVATAR_GROUP_LIMIT}
+            avatarType={AvatarType.ACCOUNT}
             borderColor={BackgroundColor.backgroundDefault}
           />
         </Box>

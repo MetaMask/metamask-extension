@@ -7,10 +7,10 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   className?: string;
   /** * Limit to show only a certain number of tokens and extras in Text */
   limit: number;
+  /** * Type of Avatar: Token/Account */
+  avatarType: AvatarType;
   /** * List of Avatar Tokens */
   members: {
-    /** * Type of Avatar: Token/Account */
-    avatarType?: AvatarType;
     /** * Image of Avatar Token */
     avatarValue: string;
     /** * Symbol of Avatar Token */

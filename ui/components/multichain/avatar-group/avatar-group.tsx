@@ -26,6 +26,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   limit = 4,
   members = [],
   size = AvatarTokenSize.Xs,
+  avatarType = AvatarType.TOKEN,
   borderColor = BorderColor.borderDefault,
 }): JSX.Element => {
   const membersCount = members.length;
@@ -52,7 +53,6 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
     >
       <Box display={Display.Flex}>
         {visibleMembers.map((member, i) => {
-          const avatarType = member.avatarType || AvatarType.TOKEN;
           return (
             <Box
               borderRadius={BorderRadius.full}
