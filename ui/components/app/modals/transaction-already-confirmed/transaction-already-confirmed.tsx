@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { type TransactionMeta } from '@metamask/transaction-controller';
 import { type NetworkClientConfiguration } from '@metamask/network-controller';
-import { getRpcPrefsForCurrentProvider } from '../../../../selectors';
+import {
+  getRpcPrefsForCurrentProvider,
+  getTransaction,
+} from '../../../../selectors';
 import { useModalProps } from '../../../../hooks/useModalProps';
 
 import {
@@ -29,19 +32,13 @@ export default function TransactionAlreadyConfirmed() {
   } = useModalProps();
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-
-  const { transaction, rpcPrefs } = useSelector((state: MetaMaskReduxState) => {
-    const tx: TransactionMeta = state.metamask.transactions.find(
-      ({ id }) => id === originalTransactionId,
-    ) as unknown as TransactionMeta;
-    const prefs: NetworkClientConfiguration =
-      getRpcPrefsForCurrentProvider(state);
-
-    return {
-      rpcPrefs: prefs,
-      transaction: tx,
-    };
-  });
+  const transaction: TransactionMeta = useSelector(
+    (state: MetaMaskReduxState) =>
+      (getTransaction as any)(state, originalTransactionId),
+  );
+  const rpcPrefs: NetworkClientConfiguration = useSelector(
+    getRpcPrefsForCurrentProvider,
+  );
 
   const viewTransaction = () => {
     // TODO: Fix getBlockExplorerLink arguments compatible with the actual controller types
