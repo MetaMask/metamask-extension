@@ -131,8 +131,10 @@ export const snapKeyringBuilder = (
         const learnMoreLink =
           'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet';
 
+        // Since we use this in the finally, better to give it a default value if the controller call fails
+        let confirmationResult = false;
         try {
-          const confirmationResult = Boolean(
+          confirmationResult = Boolean(
             await controllerMessenger.call(
               'ApprovalController:addRequest',
               {
@@ -216,6 +218,12 @@ export const snapKeyringBuilder = (
             throw new Error('User denied account creation');
           }
         } finally {
+          trackSnapAccountEvent(
+            confirmationResult
+              ? MetaMetricsEventName.AccountAdded
+              : MetaMetricsEventName.AccountAddFailed,
+          );
+
           controllerMessenger.call('ApprovalController:endFlow', {
             id: addAccountApprovalId,
           });
