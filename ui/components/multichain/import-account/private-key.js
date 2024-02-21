@@ -9,12 +9,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   FormTextField,
-  TEXT_FIELD_TYPES,
-  TextFieldSize
+  TextFieldType,
+  TextFieldSize,
 } from '../../component-library';
 
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
+
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
@@ -45,14 +47,13 @@ export default function PrivateKeyImportView({
         display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
+        padding={0}
       >
         <FormTextField
           id="private-key-box"
           size={TextFieldSize.Lg}
           autoFocus
-          type={
-            showPrivateKey ? TEXT_FIELD_TYPES.TEXT : TEXT_FIELD_TYPES.PASSWORD
-          }
+          type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
           helpText={warning}
           error
           label={t('pastePrivateKey')}
