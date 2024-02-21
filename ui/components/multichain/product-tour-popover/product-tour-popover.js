@@ -111,7 +111,9 @@ export const ProductTour = ({
             color={TextColor.infoInverse}
             variant={TextVariant.bodyMd}
           >
-            {currentStep}/{totalSteps}
+            {currentStep && totalSteps
+              ? { currentStep } / { totalSteps }
+              : null}
           </Text>
           <ButtonBase
             backgroundColor={BackgroundColor.primaryInverse}

@@ -47,6 +47,7 @@ export default class AppStateController extends EventEmitter {
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
+      showPermissionsTour: true,
       showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
@@ -362,6 +363,15 @@ export default class AppStateController extends EventEmitter {
    */
   setShowBetaHeader(showBetaHeader) {
     this.store.updateState({ showBetaHeader });
+  }
+
+  /**
+   * Sets whether the permissions tour should be shown to the user
+   *
+   * @param showPermissionsTour
+   */
+  setShowPermissionsTour(showPermissionsTour) {
+    this.store.updateState({ showPermissionsTour });
   }
 
   /**

@@ -222,8 +222,8 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
 
         await sendScreenToConfirmScreen(
           driver,
-          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-          '1',
+          '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+          '1.1',
         );
         // await driver.delay(100000)
         const expectedTitle = 'Request may not be safe';

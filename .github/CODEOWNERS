@@ -40,3 +40,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # that agreement and can only be approved by those with the knowledge
 # and responsibility to publish libraries under the MetaMask name.
 .github/CODEOWNERS                   @MetaMask/library-admins @kumavis
+
+# For now, restricting approvals inside the .devcontainer folder to devs
+# who were involved with the Codespaces project.
+.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral @brad-decker
