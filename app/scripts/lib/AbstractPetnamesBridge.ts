@@ -32,21 +32,17 @@ enum SyncDirection {
 // A list of changes, grouped by type.
 type ChangeList = Record<ChangeType, PetnameEntry[]>;
 
-export type PetnamesBridgeAllowedEvents<Event extends EventConstraint> =
-  | NameStateChange
-  | Event;
-export type PetnamesBridgeAllowedActions<Action extends ActionConstraint> =
-  Action;
+type PetnamesBridgeAllowedEvents = NameStateChange;
 
 export type PetnamesBridgeMessenger<
   Event extends EventConstraint,
-  Action extends ActionConstraint | never,
+  Action extends ActionConstraint,
 > = RestrictedControllerMessenger<
   'PetnamesBridge',
-  PetnamesBridgeAllowedActions<Action>,
-  PetnamesBridgeAllowedEvents<Event>,
-  PetnamesBridgeAllowedActions<Action>['type'],
-  PetnamesBridgeAllowedEvents<Event>['type']
+  Action,
+  PetnamesBridgeAllowedEvents | Event,
+  Action['type'],
+  (PetnamesBridgeAllowedEvents | Event)['type']
 >;
 
 /**
@@ -69,7 +65,7 @@ function getKey({ type, variation, value }: PetnameEntry): string {
  */
 export abstract class AbstractPetnamesBridge<
   Event extends EventConstraint,
-  Action extends ActionConstraint | never,
+  Action extends ActionConstraint,
 > {
   #isTwoWay: boolean;
 
