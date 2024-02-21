@@ -158,6 +158,17 @@ export default class AccountTracker {
     };
   }
 
+  /**
+   * Updates the `#currentBlockNumberByChainId` object with the latest block
+   * number.
+   *
+   * This relies on the block tracker and provider being defined which
+   * may not have been the case at the time the Account Tracker Controller was
+   * instantiated.
+   *
+   * @param passedBlockTracker - Reference to the block tracker proxy object
+   * @param passedProvider - Reference to the provider proxy object
+   */
   delayedInit(passedBlockTracker, passedProvider) {
     this.#blockTracker = passedBlockTracker;
     this.#provider = passedProvider;
@@ -166,15 +177,9 @@ export default class AccountTracker {
     this.#currentBlockNumberByChainId = {
       [this.getCurrentChainId()]: passedBlockTracker.getCurrentBlock(),
     };
-    // this.#currentBlockNumberByChainId = {
-    //   [this.getCurrentChainId()]: passedBlockTracker?.getCurrentBlock(),
-    // };
     passedBlockTracker.once('latest', (blockNumber) => {
       this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
     });
-    // passedBlockTracker?.once('latest', (blockNumber) => {
-    //   this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
-    // });
   }
 
   /**
