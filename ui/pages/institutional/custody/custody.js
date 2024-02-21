@@ -53,7 +53,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
-import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
+import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedAddress } from '../../../store/actions';
 
 const GK8_DISPLAY_NAME = 'gk8';
@@ -125,8 +125,8 @@ const CustodyPage = () => {
 
     async function handleButtonClick(custodian) {
       try {
-        const custodianByDisplayName = findCustodianByDisplayName(
-          custodian.displayName,
+        const custodianByDisplayName = findCustodianByEnvName(
+          custodian.envName,
           custodians,
         );
 
