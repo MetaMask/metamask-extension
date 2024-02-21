@@ -12,8 +12,9 @@ import {
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
+import mockEncryptor from '../../test/lib/mock-encryptor';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -96,15 +97,7 @@ describe('MetaMaskController', function () {
       );
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
-      encryptor: {
-        encrypt(_, object) {
-          this.object = object;
-          return Promise.resolve('mock-encrypted');
-        },
-        decrypt() {
-          return Promise.resolve(this.object);
-        },
-      },
+      encryptor: mockEncryptor,
       initLangCode: 'en_US',
       platform: {
         showTransactionNotification: () => undefined,
@@ -177,7 +170,7 @@ describe('MetaMaskController', function () {
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
-            metamaskController.coreKeyringController.state,
+            metamaskController.keyringController.state,
           );
           metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
@@ -185,7 +178,7 @@ describe('MetaMaskController', function () {
         }),
         Promise.resolve(2).then(() => {
           keyringControllerState2 = JSON.stringify(
-            metamaskController.coreKeyringController.state,
+            metamaskController.keyringController.state,
           );
         }),
       ]);

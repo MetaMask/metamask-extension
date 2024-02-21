@@ -2,10 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   fireEvent,
 } from '../../../../test/jest';
 import {
@@ -37,8 +37,8 @@ setBackgroundConnection({
   setFromTokenInputValue: jest.fn(),
 });
 
-jest.mock('../../../../shared/lib/token-util.ts', () => {
-  const actual = jest.requireActual('../../../../shared/lib/token-util.ts');
+jest.mock('../../../../shared/lib/token-util', () => {
+  const actual = jest.requireActual('../../../../shared/lib/token-util');
   return {
     ...actual,
     fetchTokenBalance: jest.fn(() => Promise.resolve()),

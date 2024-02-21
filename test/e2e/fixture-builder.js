@@ -5,16 +5,41 @@ const {
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
-const { CHAIN_IDS } = require('../../shared/constants/network');
-const {
-  ACTION_QUEUE_METRICS_E2E_TEST,
-} = require('../../shared/constants/test-flags');
+const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 
-function defaultFixture() {
+function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
     data: {
+      AccountsController: {
+        internalAccounts: {
+          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
       AlertController: {
         alertEnabledness: {
           unconnectedAccount: true,
@@ -25,136 +50,19 @@ function defaultFixture() {
       },
       AnnouncementController: {
         announcements: {
-          1: {
-            date: '2021-03-17',
-            id: 1,
-            image: {
-              height: '230px',
-              placeImageBelowDescription: true,
-              src: 'images/mobile-link-qr.svg',
-              width: '230px',
-            },
-            isShown: false,
-          },
-          3: {
-            date: '2021-03-08',
-            id: 3,
-            isShown: false,
-          },
-          4: {
-            date: '2021-05-11',
-            id: 4,
-            image: {
-              src: 'images/source-logos-bsc.svg',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          5: {
-            date: '2021-06-09',
-            id: 5,
-            isShown: false,
-          },
-          6: {
-            date: '2021-05-26',
-            id: 6,
-            isShown: false,
-          },
-          7: {
-            date: '2021-09-17',
-            id: 7,
-            isShown: false,
-          },
           8: {
             date: '2021-11-01',
             id: 8,
             isShown: false,
           },
-          9: {
-            date: '2021-12-07',
-            id: 9,
-            image: {
-              src: 'images/txinsights.png',
-              width: '80%',
-            },
-            isShown: false,
-          },
-          10: {
-            date: '2022-09-15',
-            id: 10,
-            image: {
-              src: 'images/token-detection.svg',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          11: {
-            date: '2022-09-15',
-            id: 11,
-            isShown: false,
-          },
-          12: {
-            date: '2022-05-18',
-            id: 12,
-            image: {
-              src: 'images/darkmode-banner.png',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          13: {
-            date: '2022-09-15',
-            id: 13,
-            isShown: false,
-          },
-          14: {
-            date: '2022-09-15',
-            id: 14,
-            isShown: false,
-          },
-          15: {
-            date: '2022-09-15',
-            id: 15,
-            isShown: false,
-          },
-          16: {
-            date: null,
-            id: 16,
-            isShown: false,
-          },
-          17: {
-            date: null,
-            id: 17,
-            isShown: false,
-          },
-          18: {
-            date: null,
-            id: 18,
-            isShown: true,
-          },
-          19: {
-            date: null,
-            id: 19,
-            isShown: true,
-          },
-          21: {
-            date: null,
-            id: 21,
-            isShown: true,
-          },
-          22: {
-            date: null,
-            id: 22,
-            isShown: true,
-          },
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-          23: {
-            date: null,
-            id: 23,
-            isShown: false,
-          },
-          ///: END:ONLY_INCLUDE_IN
         },
+      },
+      NetworkOrderController: {
+        orderedNetworkList: [],
+      },
+      AccountOrderController: {
+        pinnedAccountList: [],
+        hiddenAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -180,17 +88,15 @@ function defaultFixture() {
         },
         snapsInstallPrivacyWarningShown: true,
       },
-      CachedBalancesController: {
-        cachedBalances: {
-          [CHAIN_IDS.LOCALHOST]: {},
-        },
-      },
       CurrencyController: {
-        conversionDate: 1665507600.0,
-        conversionRate: 1300.0,
         currentCurrency: 'usd',
-        nativeCurrency: 'ETH',
-        usdConversionRate: 1300.0,
+        currencyRates: {
+          ETH: {
+            conversionDate: 1665507600.0,
+            conversionRate: 1300.0,
+            usdConversionRate: 1300.0,
+          },
+        },
       },
       GasFeeController: {
         estimatedGasFeeTimeBounds: {},
@@ -199,7 +105,7 @@ function defaultFixture() {
       },
       KeyringController: {
         vault:
-          '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
+          '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
@@ -209,7 +115,6 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        networkId: '1337',
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
           networkConfigurationId: {
@@ -218,7 +123,7 @@ function defaultFixture() {
           },
         },
         providerConfig: {
-          chainId: CHAIN_IDS.LOCALHOST,
+          chainId: inputChainId,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
@@ -228,7 +133,7 @@ function defaultFixture() {
         },
         networkConfigurations: {
           networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
+            chainId: inputChainId,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -266,9 +171,11 @@ function defaultFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          petnamesEnabled: true,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -279,6 +186,7 @@ function defaultFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
+        useRequestQueue: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -343,10 +251,8 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
-        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
-        networkId: '1337',
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
           networkConfigurationId: {
@@ -388,9 +294,11 @@ function onboardingFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          petnamesEnabled: true,
         },
         theme: 'light',
         useBlockie: false,
@@ -400,6 +308,7 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
+        useRequestQueue: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -428,8 +337,9 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
-  constructor({ onboarding = false } = {}) {
-    this.fixture = onboarding === true ? onboardingFixture() : defaultFixture();
+  constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
+    this.fixture =
+      onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
   withAddressBookController(data) {
@@ -452,13 +362,18 @@ class FixtureBuilder {
     return this;
   }
 
-  withAppStateController(data) {
-    merge(this.fixture.data.AppStateController, data);
+  withNetworkOrderController(data) {
+    merge(this.fixture.data.NetworkOrderController, data);
     return this;
   }
 
-  withCachedBalancesController(data) {
-    merge(this.fixture.data.CachedBalancesController, data);
+  withAccountOrderController(data) {
+    merge(this.fixture.data.AccountOrderController, data);
+    return this;
+  }
+
+  withAppStateController(data) {
+    merge(this.fixture.data.AppStateController, data);
     return this;
   }
 
@@ -480,14 +395,21 @@ class FixtureBuilder {
   withKeyringControllerAdditionalAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"n1LbLX7D4CdnFjYkyvn8Vfv0VQ0spMTdzCP+bsrZX2cQXiz+GXb9AKaIjbcR0EHuQ5/VulkrpbZFDSYJ5VlZ5VRVVUngckHCNgzw73Jo3D+fVrmwEn6HhBbA+STHRMdjf3eEL/eiS5HbkQ0zutoj8KU/nMPfTz6iuV+WGa0hcOKZa+mqYkSzeYuqVCnWYspjF9hKE5NKnl5Vrnvu3/eFi6PiDeaUbIfs0ccttopnTdQya5e3KB23tu0ORa48EJawK0JeKurLlFfNNNqq+tg3HRgxUyiVp6mCns8GBdsd9Wx3HP00qIJa4OAFV2TtDvSSuek1XAWlIqjKegZbnXosB0t3IABhqWnSozXRFvsHe8oHVZP++B/2pJPzz5kkAgK9Ya/quy/7ok/GN5qw0n9Q6cCexfm9hGC3MI53ClEg08yq2w/eVKMDeEdES6IqidpRxOanIAsrcDjPIw6yP7tXqzo7d4A/50GyBb5MJYeTD7r9bV5/5VWcHtILDyGt4CROgM9/U/wdKduNJy5Igfhh0nvA0399Ber9jvWmtmQxiWAxAgrcf9Xi0SZXWewH/ZEnAOkIOmTVX9hpAGkbDqIvK1Zt2bIK5X/At2KiZ5DqAFet9AiyLZTPR5YQ2KaB8AarEjUthTa7EcDSpAPsr9jLPZwlKuMZO2I29xZHx4ht4ozlcqU+zMF8JBojtP73cRQKc0Chqm8xY9I9K6jANdZn9lT+q20RDgwJAfkp+UUSTTqUgZ3ruej2FyY9F+GWuOZJY1zPN0KG7j7uPXaP5Gqq","iv":"XxlC9CCaul7U0F6JRNyH9A==","salt":"gQOYCUFPAPVJITl0gxIs8TdgNQNl2ltzu4OAHajj+tM="}',
+        '{"data":"XBb1KJiGsxNOhcTC/xtzaNmpDqnMibJ/HCIjMGUHF/jPIghM63+xkoGcko9T2NKjeMyt2QLbl7K9tr0/qQgbAJP/LUn6gfovkajBdeBQ5N/qztdw7uGJsnrKnzo1krmb2wWeFstwoolcZ9GYwhYVSmCO/tYba50eanY2XvmFheT1ghowtiFmTIGRWV2X1HacnpI4n0rW88ZyBaVuOJOIJGEBiiTD+b0V5l9Tv4sFEms4jvatJwhjDQnx1HmyQE3K64+W5yJe764B0ZdcQ6j2dyIaGgutcz8PoQLBJR1uo78fufZeFzk1gk/BreXn2+4vQnPxQ3prhnXHO4S+7Kj1h2ticxYb3XWnprFLWyksu9ChMyqDXwgM6edLBRDH2jz/IMuC5g9JhABl7PsSH+001z/uBx3GvRTFviFF9dztf195/EPy8YbuYUVbYtJy1aPSju84efWYvb7GrzrmgFnbeh2BpjyWqHoCTdw8fhdm7HQO8GFF7JdGtoIpjkhwPrudIQeIYhGCezd+n5GFp3mdmFNrLbOVFgxufTdY6hlYkg6c5XuHC2VnWCSPwWKIn6t9VuvuyIxXBnol/bgYC8R/d99ctkPDHykigQcgr6cCnhPOwUFOLwrmXqm9HQeWiKb8WxwdGeRnblS+fhFhB+lSy7RvyTUb7HFogDPnDLP/LlUFxdSNNBgqNJU1Dc07Np65PZrpsPvSCfkFttzTytHswhtTEMOg/faaH2D6AwIGbh5Z9cubiNcMrdD75aT1WGuecJ8P7uOMYJq9C7e5l/35","iv":"U81Cv/oryQ1DI9lRezx1iw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"ejIn0xx5qZMA0m2ekjvXJF2pJa8ocL11wEdNIFJsKZQ="}',
     });
   }
 
   withKeyringControllerImportedAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=","iv":"lbsyPeGYWU6U1+jvmW9UHg==","salt":"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg="}',
+        '{"data":"NlxYVSDJJV4B1DWM+fZ0KX1K2lIU9ozK3WMbbL23WEY036umZ9//qB+bN9R1jKMm6xqHGSGgq9EteFMy2Ix5Bx1/c4hV2QquFRTEzPB4TkQ6+P5eJUvgvZ7vqvVU+2W8719T1oz/O7DH7HbO05JPLD1RBY+XOyHzUzAgwmXq0mwxNpqji3ejHyrjZ/1l06igircW/qysLcjZFZ52Vv4a/q1zCL37/4heHDRVmfEob//ulUbJ/5M=","iv":"b9n77dsUqvww9nGcWfPuIA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"XrmM930Jqnb7C9Ow5NErAMkSGR3vuMLsqUrkGjzpwaY="}',
+    });
+  }
+
+  withKeyringControllerOldVault() {
+    return this.withKeyringController({
+      vault:
+        '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
     });
   }
 
@@ -499,6 +421,41 @@ class FixtureBuilder {
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
     return this;
+  }
+
+  withNetworkControllerOnMainnet() {
+    merge(this.fixture.data.NetworkController, {
+      providerConfig: {
+        chainId: CHAIN_IDS.MAINNET,
+        nickname: '',
+        rpcUrl: '',
+        type: NETWORK_TYPES.MAINNET,
+      },
+    });
+    return this;
+  }
+
+  withNetworkControllerDoubleGanache() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LOCALHOST,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+        },
+        '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
+          id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+          rpcUrl: 'http://localhost:8546',
+          chainId: '0x53a',
+          ticker: 'ETH',
+          nickname: 'Localhost 8546',
+          rpcPrefs: {},
+        },
+      },
+    });
   }
 
   withNftController(data) {
@@ -614,6 +571,55 @@ class FixtureBuilder {
     });
   }
 
+  withPermissionControllerConnectedToTwoTestDapps(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+        [DAPP_ONE_URL]: {
+          origin: DAPP_ONE_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'AqPEWxyhNCJYACFw93jE4',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_ONE_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
   withPermissionControllerConnectedToSnapDapp() {
     return this.withPermissionController({
       subjects: {
@@ -694,6 +700,149 @@ class FixtureBuilder {
         },
       },
       selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withPreferencesControllerPetnamesDisabled() {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: false,
+      },
+    });
+  }
+
+  withAccountsController(data) {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
+  withAccountsControllerImportedAccount() {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          '58093703-57e9-4ea9-8545-49e8a75cb084': {
+            id: '58093703-57e9-4ea9-8545-49e8a75cb084',
+            address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 2',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 3',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withAccountsControllerAdditionalAccountIdentities() {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 2',
+              lastSelected: 1665507500000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withPreferencesControllerNftDetectionEnabled() {
+    return this.withPreferencesController({
+      openSeaEnabled: true,
+      useNftDetection: true,
     });
   }
 
@@ -795,7 +944,6 @@ class FixtureBuilder {
               },
               id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545991949,
@@ -821,7 +969,6 @@ class FixtureBuilder {
           ],
           id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545991949,
@@ -852,7 +999,6 @@ class FixtureBuilder {
               },
               id: '6eab4240-3762-4581-abc5-cd91eab6964e',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545994578,
@@ -878,7 +1024,6 @@ class FixtureBuilder {
           ],
           id: '6eab4240-3762-4581-abc5-cd91eab6964e',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545994578,
@@ -909,7 +1054,6 @@ class FixtureBuilder {
               },
               id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545996673,
@@ -935,7 +1079,6 @@ class FixtureBuilder {
           ],
           id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545996673,
@@ -966,7 +1109,6 @@ class FixtureBuilder {
               },
               id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545998675,
@@ -992,7 +1134,6 @@ class FixtureBuilder {
           ],
           id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545998675,
@@ -1020,7 +1161,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1617228030067,
@@ -1045,13 +1185,11 @@ class FixtureBuilder {
           ],
           id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
-            metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
             time: 1617228030067,
@@ -1089,7 +1227,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1617228030067,
@@ -1116,13 +1253,11 @@ class FixtureBuilder {
           ],
           id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
-            metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
             time: 1617228030067,
@@ -1164,7 +1299,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1617228030067,
@@ -1200,13 +1334,11 @@ class FixtureBuilder {
           ],
           id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
-            metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'approved',
             time: 1617228030067,
@@ -1248,7 +1380,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '0c9342ce-ef3f-4cab-9425-8e57144256a6',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1671635506502,
@@ -1360,7 +1491,6 @@ class FixtureBuilder {
           ],
           id: '0c9342ce-ef3f-4cab-9425-8e57144256a6',
           loadingDefaults: false,
-          metamaskNetworkId: '5',
           origin: 'metamask',
           status: 'confirmed',
           submittedTime: 1671635510753,
@@ -1372,6 +1502,7 @@ class FixtureBuilder {
             type: '0x2',
             value: '0xde0b6b3a7640000',
           },
+          hash: '0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
           txReceipt: {
             blockNumber: {
               length: 1,
@@ -1397,7 +1528,6 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
           id: '8a13fd36-fdad-48ae-8b6a-c8991026d550',
-          metamaskNetworkId: '1337',
           status: 'confirmed',
           time: 1671635520000,
           txParams: {
@@ -1426,6 +1556,137 @@ class FixtureBuilder {
       transactions: {
         ...completedTransaction,
         ...incomingTransaction,
+      },
+    });
+  }
+
+  /*   Steps to create fixture:
+   1. Reinstall clean metamask & Onboard
+   2. Create 4 more accounts in the wallet
+   3. Connected to ENS dapp on Account 1 and 3
+   4. Connected to Uniswap dapp on Accounts 1 and 4
+   5. Connected to Dextools dapp on Accounts 1, 2, and 3
+   6. Connected to Coinmarketcap dapp on Account 1 (didnt log in)
+   7. opened devtools and ran stateHooks.getCleanAppState() in console
+  */
+  withConnectionsToManyDapps() {
+    return this.withPermissionController({
+      subjects: {
+        'https://app.ens.domains': {
+          origin: 'https://app.ens.domains',
+          permissions: {
+            eth_accounts: {
+              id: 'oKXoF_MNlffiR2u1Y3mDE',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://app.ens.domains',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xb9504634e5788208933b51ae7440b478bfadf865',
+                  ],
+                },
+              ],
+              date: 1708029792962,
+            },
+          },
+        },
+        'https://app.uniswap.org': {
+          origin: 'https://app.uniswap.org',
+          permissions: {
+            eth_accounts: {
+              id: 'vaa88u5Iv3VmsJwG3bDKW',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://app.uniswap.org',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xd1ca923697a701cba1364d803d72b4740fc39bc9',
+                  ],
+                },
+              ],
+              date: 1708029870079,
+            },
+          },
+        },
+        'https://www.dextools.io': {
+          origin: 'https://www.dextools.io',
+          permissions: {
+            eth_accounts: {
+              id: 'bvvPcFtIhkFyHyW0Tmwi4',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://www.dextools.io',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xa5c5293e124d04e2f85e8553851001fd2f192647',
+                    '0xb9504634e5788208933b51ae7440b478bfadf865',
+                  ],
+                },
+              ],
+              date: 1708029948170,
+            },
+          },
+        },
+        'https://coinmarketcap.com': {
+          origin: 'https://coinmarketcap.com',
+          permissions: {
+            eth_accounts: {
+              id: 'AiblK84K1Cic-Y0FDSzMD',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://coinmarketcap.com',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0xbee150bdc171c7d4190891e78234f791a3ac7b24'],
+                },
+              ],
+              date: 1708030049641,
+            },
+          },
+        },
+      },
+      subjectMetadata: {
+        'https://ens.domains': {
+          iconUrl: null,
+          name: 'ens.domains',
+          subjectType: 'website',
+          origin: 'https://ens.domains',
+          extensionId: null,
+        },
+        'https://app.ens.domains': {
+          iconUrl: 'https://app.ens.domains/favicon-32x32.png',
+          name: 'ENS',
+          subjectType: 'website',
+          origin: 'https://app.ens.domains',
+          extensionId: null,
+        },
+        'https://app.uniswap.org': {
+          iconUrl: 'https://app.uniswap.org/favicon.png',
+          name: 'Uniswap Interface',
+          subjectType: 'website',
+          origin: 'https://app.uniswap.org',
+          extensionId: null,
+        },
+        'https://www.dextools.io': {
+          iconUrl: 'https://www.dextools.io/app/favicon.ico',
+          name: 'DEXTools.io',
+          subjectType: 'website',
+          origin: 'https://www.dextools.io',
+          extensionId: null,
+        },
+        'https://coinmarketcap.com': {
+          iconUrl: 'https://coinmarketcap.com/favicon.ico',
+          name: 'CoinMarketCap',
+          subjectType: 'website',
+          origin: 'https://coinmarketcap.com',
+          extensionId: null,
+        },
       },
     });
   }

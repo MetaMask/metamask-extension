@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Προσθήκη των NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Ανακαλύψτε επιλογές για να διατηρήσετε τον λογαριασμό σας ασφαλή με το MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Προσθήκη προτεινόμενων NFT"
   },
@@ -442,10 +439,6 @@
   "attemptSendingAssets": {
     "message": "Εάν επιχειρήσετε να στείλετε περιουσιακά στοιχεία απευθείας από ένα δίκτυο σε ένα άλλο, αυτό ενδέχεται να οδηγήσει σε μόνιμη απώλεια περιουσιακών στοιχείων. Βεβαιωθείτε ότι χρησιμοποιείτε μια διασύνδεση."
   },
-  "attemptToCancelSwap": {
-    "message": "Προσπάθεια ακύρωσης της ανταλλαγής για ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Προσπάθεια σύνδεσης στο blockchain."
   },
@@ -563,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, κάποιος μπορεί να κλέψει τα περιουσιακά σας στοιχεία που είναι καταχωρημένα στο Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Λόγω κάποιου σφάλματος, αυτό το αίτημα δεν επαληθεύτηκε από τον πάροχο ασφαλείας. Προχωρήστε με προσοχή."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -592,12 +585,6 @@
   },
   "bridge": {
     "message": "Διασύνδεση"
-  },
-  "bridgeDescription": {
-    "message": "Μεταφορά tokens από διαφορετικά δίκτυα"
-  },
-  "bridgeDisabled": {
-    "message": "Η διασύνδεση δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
@@ -659,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Αυτό το αναγνωριστικό αλυσίδας χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Το δίκτυο με αναγνωριστικό αλυσίδας $1 ενδέχεται να χρησιμοποιεί διαφορετικό σύμβολο νομίσματος ($2) από αυτό που έχετε εισαγάγει. Παρακαλούμε επιβεβαιώστε το πριν συνεχίσετε.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chooseYourNetwork": {
     "message": "Επιλέξτε το δίκτυό σας"
@@ -835,9 +818,6 @@
   "connectionRequest": {
     "message": "Αίτημα σύνδεσης"
   },
-  "connections": {
-    "message": "Συνδέσεις"
-  },
   "contactUs": {
     "message": "Επικοινωνήστε μαζί μας"
   },
@@ -990,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Αντικατάσταση token θεματοφύλακα"
   },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "Εγκρίνετε τη συναλλαγή στην εφαρμογή $1. Μόλις πραγματοποιηθούν όλες οι απαιτούμενες εγκρίσεις σχετικά με τον θεματοφύλακα, η συναλλαγή θα ολοκληρωθεί. Ελέγξτε την κατάσταση στην εφαρμογή $1."
   },
@@ -1130,12 +1107,6 @@
   },
   "deposit": {
     "message": "Κατάθεση"
-  },
-  "deprecatedTestNetworksLink": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Λόγω των αλλαγών στο πρωτόκολλο του Ethereum: τα δοκιμαστικά δίκτυα Rinkeby, Ropsten και Kovan μπορεί να μη λειτουργούν τόσο αξιόπιστα και θα καταργηθούν σύντομα."
   },
   "description": {
     "message": "Περιγραφή"
@@ -1402,15 +1373,6 @@
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ενεργοποίηση OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
-  },
-  "enableSmartSwaps": {
-    "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
-  },
   "enableSnap": {
     "message": "Ενεργοποίηση"
   },
@@ -1440,12 +1402,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Μη έγκυρος χαρακτήρας για το ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Το δίκτυο δεν υποστηρίζει ENS"
   },
   "ensRegistrationError": {
     "message": "Σφάλμα στην καταχώριση ονόματος ENS"
@@ -1680,42 +1636,19 @@
     "message": "$1 ώρες",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 λεπτά",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 λεπτά",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Ίσως σε $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Πιθανό σε < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 δευτερόλεπτα",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 δευτ",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Πολύ πιθανό σε < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Τέλος συναλλαγής που χρησιμοποιήθηκε"
   },
   "general": {
     "message": "Γενικά"
-  },
-  "getStarted": {
-    "message": "Ξεκινήστε"
   },
   "globalTitle": {
     "message": "Γενικό μενού"
@@ -2119,25 +2052,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ενεργοποιήστε τα \"δεδομένα έξυπνων συμβολαίων\" ή την \"τυφλή υπογραφή\" στη συσκευή σας Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ενεργοποιήστε την χρήση του Ledger Live στην ενότητα Ρυθμίσεις > Για προχωρημένους."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Βεβαιωθείτε ότι το Ledger είναι συνδεδεμένο και επιλέξτε την εφαρμογή Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ανοίξτε και ξεκλειδώστε την εφαρμογή Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Προσαρμόστε τον τρόπο με τον οποίο συνδέετε το Ledger σας με το MetaMask. Συνιστάται το $1, αλλά υπάρχουν και άλλες επιλογές. Διαβάστε περισσότερα εδώ: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Η συσκευή Ledger απέτυχε να ανοίξει. Το Ledger σας μπορεί να είναι συνδεδεμένο με άλλο λογισμικό. Παρακαλούμε κλείστε το Ledger Live ή άλλες εφαρμογές που είναι συνδεδεμένες με τη συσκευή Ledger και προσπαθήστε να συνδεθείτε ξανά."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Εφαρμογή Ledger Live"
@@ -2147,9 +2066,6 @@
   },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Αν η εφαρμογή Ledger Live είναι ανοιχτή, αποσυνδέστε κάθε ανοιχτή σύνδεση στο Ledger Live και κλείστε την εφαρμογή Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Η συσκευή Ledger δεν συνδέθηκε. Εάν επιθυμείτε να συνδέσετε το Ledger σας, κάντε ξανά κλικ στο 'Συνέχεια' και εγκρίνετε τη σύνδεση HID.",
@@ -2229,9 +2145,6 @@
   "makeSureNoOneWatching": {
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "Εσφαλμένα δεδομένα"
   },
   "max": {
     "message": "Μέγ."
@@ -2387,9 +2300,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2528,9 +2438,6 @@
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
   },
-  "noThanksVariant2": {
-    "message": "Όχι, ευχαριστώ."
-  },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"
   },
@@ -2597,108 +2504,6 @@
   "notifications": {
     "message": "Ειδοποιήσεις"
   },
-  "notifications10ActionText": {
-    "message": "Μετάβαση στις Ρυθμίσεις",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Ο βελτιωμένος εντοπισμός των tokens είναι προς το παρόν διαθέσιμος στα δίκτυα Ethereum Mainnet, Polygon, BSC και Avalanche. Περισσότερα προσεχώς!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Η λειτουργία εντοπισμού των tokens είναι προς το παρόν ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΗ από προεπιλογή. Μπορείτε να την ενεργοποιήσετε από τις Ρυθμίσεις."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Σας βρίσκουμε tokens από λίστες tokens τρίτων. Τα tokens που περιλαμβάνονται σε περισσότερες από δύο λίστες tokens θα εντοπίζονται αυτόματα."
-  },
-  "notifications10Title": {
-    "message": "Ο βελτιωμένος εντοπισμός των tokens είναι εδώ"
-  },
-  "notifications11Description": {
-    "message": "Τα tokens μπορούν να δημιουργηθούν από οποιονδήποτε και ενδέχεται να έχουν διπλά ονόματα. Αν δείτε να εμφανίζεται ένα token που δεν εμπιστεύεστε ή με το οποίο δεν έχετε αλληλεπιδράσει, η ασφαλέστερη επιλογή είναι να μην το εμπιστευτείτε."
-  },
-  "notifications11Title": {
-    "message": "Κίνδυνοι εξαπάτησης και ασφάλειας"
-  },
-  "notifications12ActionText": {
-    "message": "Ενεργοποίηση της σκοτεινής λειτουργίας"
-  },
-  "notifications12Description": {
-    "message": "Η \"σκοτεινή λειτουργία\" στην Επέκταση είναι επιτέλους εδώ! Για να την ενεργοποιήσετε, μεταβείτε στις Ρυθμίσεις > Πειραματικά και επιλέξτε μία από τις επιλογές εμφάνισης: Ανοιχτόχρωμη, Σκούρα, Σύστημα."
-  },
-  "notifications12Title": {
-    "message": "Θέλετε \"σκοτεινή λειτουργία\"; Τώρα έχετε την \"σκοτεινή λειτουργία\"! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Προβολή λίστας προσαρμοσμένων δικτύων"
-  },
-  "notifications13Description": {
-    "message": "Τώρα μπορείτε να προσθέσετε εύκολα τα ακόλουθα δημοφιλή προσαρμοσμένα δίκτυα: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm και Polygon! Για να ενεργοποιήσετε αυτή τη λειτουργία, μεταβείτε στις Ρυθμίσεις -> Πειραματικά και ενεργοποιήστε την επιλογή «Προβολή λίστας προσαρμοσμένων δικτύων»!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Προσθήκη Δημοφιλών Δικτύων"
-  },
-  "notifications14ActionText": {
-    "message": "Εμφάνιση ρυθμίσεων αντιγράφων ασφαλείας"
-  },
-  "notifications14Description": {
-    "message": "Θα καταργήσουμε τη λειτουργία δεδομένων στο 3Box στις αρχές Οκτωβρίου. Για να δημιουργήσετε αντίγραφα ασφαλείας και να επαναφέρετε το πορτοφόλι σας χειροκίνητα, χρησιμοποιήστε το κουμπί «Δημιουργία Αντιγράφων Ασφαλείας τώρα» στις Ρυθμίσεις για Προχωρημένους.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Κατάργηση του 3Box"
-  },
-  "notifications15Description": {
-    "message": "Δεν απαιτείται καμία ενέργεια εκ μέρους σας, οπότε συνεχίστε να χρησιμοποιείτε το πορτοφόλι σας ως συνήθως. Να προσέχετε για πιθανές απάτες κατά την Συγχώνευση.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
-  },
-  "notifications18ActionText": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Λάβετε ειδοποιήσεις από τρίτους όταν μπορεί να έχετε λάβει ένα κακόβουλο αίτημα.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Φροντίστε πάντα να κάνετε τη δική σας επιμελή έρευνα προτού εγκρίνετε οποιαδήποτε αιτήματα.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "Το OpenSea είναι ο πρώτος πάροχος με αυτή τη λειτουργία. Σύντομα θα προστεθούν και άλλοι πάροχοι!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Μείνετε ασφαλείς με ειδοποιήσεις ασφαλείας"
-  },
-  "notifications19ActionText": {
-    "message": "Ενεργοποίηση αυτόματης ανίχνευσης NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Δύο τρόποι για να ξεκινήσετε:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Προς το παρόν υποστηρίζουμε μόνο το ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Προσθέστε χειροκίνητα τα NFT σας ή ενεργοποιήστε την αυτόματη ανίχνευση NFT στις Ρυθμίσεις > Πειραματικά.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Δείτε τα NFT σας όπως ποτέ άλλοτε"
-  },
-  "notifications1Description": {
-    "message": "Οι χρήστες του MetaMask Mobile μπορούν τώρα να ανταλλάσσουν tokens μέσα στο κινητό τους πορτοφόλι. Σαρώστε τον κωδικό QR για να κατεβάσετε την εφαρμογή για κινητά και να ξεκινήσετε τις ανταλλαγές.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Η ανταλλαγή στο κινητό είναι εδώ!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Μάθετε περισσότερα",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2711,37 +2516,6 @@
     "message": "Οι χρήστες του Ledger και του Firefox αντιμετωπίζουν προβλήματα σύνδεσης",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Δοκιμάστε το"
-  },
-  "notifications21Description": {
-    "message": "Ενημερώσαμε τις Ανταλλαγές στην επέκταση του MetaMask ώστε να είναι ευκολότερη και ταχύτερη η χρήση τους.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Παρουσιάζουμε τις νέες και ανανεωμένες Ανταλλαγές!"
-  },
-  "notifications22ActionText": {
-    "message": "Εντάξει"
-  },
-  "notifications22Description": {
-    "message": "💡 Απλά κάντε κλικ στο γενικό μενού ή στο μενού λογαριασμού για να τα βρείτε!"
-  },
-  "notifications22Title": {
-    "message": "Ψάχνετε τα στοιχεία του λογαριασμού σας ή τη διεύθυνση URL στο Block Explorer;"
-  },
-  "notifications23ActionText": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Αποφύγετε τις γνωστές απάτες, διατηρώντας παράλληλα το απόρρητό σας με τις ειδοποιήσεις ασφαλείας της Blockaid στο Κύριο Δίκτυο του Ethereum."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Κάνετε πάντα τον δικό σας επιμελή έλεγχο προτού εγκρίνετε τα αιτήματα."
-  },
-  "notifications23Title": {
-    "message": "Μείνετε ασφαλείς με ειδοποιήσεις ασφαλείας"
-  },
   "notifications24ActionText": {
     "message": "Κατάλαβα"
   },
@@ -2750,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Προηγμένα τέλη συναλλαγών ανά δίκτυο"
-  },
-  "notifications3ActionText": {
-    "message": "Διαβάστε περισσότερα",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Μείνετε ενημερωμένοι σχετικά με τις βέλτιστες πρακτικές ασφάλειας του MetaMask και λάβετε τις πιο πρόσφατες συμβουλές ασφάλειας από την επίσημη υποστήριξη του MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Μείνετε ασφαλείς",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Ξεκινήστε τις ανταλλαγές",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Λάβετε τις καλύτερες τιμές για ανταλλαγές tokens μέσα στο πορτοφόλι σας. Το MetaMask σας συνδέει τώρα με πολλαπλά αποκεντρωμένα ανταλλακτήρια συναλλάγματος και επαγγελματίες ειδικούς διαπραγματευτές στο Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Εναλλαγή στο Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Η φράση \"Seed Phrase\" ονομάζεται τώρα \"Μυστική Φράση Ανάκτησης\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Από την έκδοση 91 του Chrome, το API που επέτρεψε την υποστήριξη του Ledger (U2F) δεν υποστηρίζει πλέον πορτοφόλια υλικού. Το MetaMask έχει υλοποιήσει μια νέα υποστήριξη του Ledger Live που σας επιτρέπει να συνεχίσετε να συνδέεστε με τη συσκευή Ledger μέσω της εφαρμογής Ledger Live στην επιφάνεια εργασίας.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Κατά την αλληλεπίδραση με τον λογαριασμό σας Ledger στο MetaMask, θα ανοίξει μια νέα καρτέλα και θα σας ζητηθεί να ανοίξετε την εφαρμογή Ledger Live.  Μόλις ανοίξει η εφαρμογή, θα σας ζητηθεί να επιτρέψετε μια σύνδεση WebSocket με τον λογαριασμό σας MetaMask.  Αυτό είναι όλο!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Μπορείτε να ενεργοποιήσετε την υποστήριξη του Ledger Live κάνοντας κλικ στις Ρυθμίσεις > Για προχωρημένους > Χρήση του Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Ενημέρωση υποστήριξης του Ledger για χρήστες του Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "Το MetaMask v10.1.0 περιελάμβανε νέα υποστήριξη για συναλλαγές EIP-1559 κατά τη χρήση συσκευών Ledger.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Για να ολοκληρώσετε τις συναλλαγές στο Ethereum Mainnet, βεβαιωθείτε ότι η συσκευή σας Ledger διαθέτει το πιο πρόσφατο υλικολογισμικό.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ενημέρωση υλικολογισμικού του Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Μεταβείτε στις Ρυθμίσεις > Για Προχωρημένους",
@@ -2822,15 +2540,6 @@
   "notifications8Title": {
     "message": "Βελτίωση της σύνδεσης στο Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Τώρα σας παρέχουμε περισσότερες πληροφορίες στην καρτέλα \"Δεδομένα\" κατά την επιβεβαίωση των συναλλαγών έξυπνων συμβολαίων."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Μπορείτε πλέον να κατανοήσετε καλύτερα τις λεπτομέρειες της συναλλαγής σας πριν την επιβεβαίωση και να προσθέσετε ευκολότερα διευθύνσεις συναλλαγών στο βιβλίο διευθύνσεών σας, βοηθώντας σας να λαμβάνετε ασφαλείς και τεκμηριωμένες αποφάσεις."
-  },
-  "notifications9Title": {
-    "message": "👓 Κάνουμε τις συναλλαγές πιο κατανοητές."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Ο Firefox δεν υποστηρίζει πλέον το U2F, οπότε το Ledger δεν θα λειτουργεί με το MetaMask στον Firefox. Δοκιμάστε αντ' αυτού το MetaMask στο Google Chrome.",
@@ -3022,9 +2731,6 @@
   "openInBlockExplorer": {
     "message": "Άνοιγμα στο Block Explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Δοκιμαστικά)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3130,10 +2836,6 @@
     "message": "Πρόσβαση στο διαδίκτυο.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Επιτρέψτε στο snap να έχει πρόσβαση στο διαδίκτυο. Αυτό μπορεί να χρησιμοποιηθεί τόσο για την αποστολή όσο και για τη λήψη δεδομένων με διακομιστές τρίτων.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Συνδεθείτε στο snap $1.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3146,17 +2848,9 @@
     "message": "Προγραμματισμός και εκτέλεση περιοδικών ενεργειών.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Επιτρέψτε στο snap να εκτελεί ενέργειες που εκτελούνται περιοδικά σε καθορισμένες ώρες, ημερομηνίες ή διαστήματα. Αυτό μπορεί να χρησιμοποιηθεί για την ενεργοποίηση αλληλεπιδράσεων ή ειδοποιήσεων που σχετίζονται με το χρόνο.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Εμφάνιση παραθύρων διαλόγου στο MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Επιτρέψτε στο snap να εμφανίζει αναδυόμενα παράθυρα του MetaMask με προσαρμοσμένο κείμενο, πεδίο εισαγωγής και κουμπιά για την έγκριση ή την απόρριψη μιας ενέργειας.\nΜπορεί να χρησιμοποιηθεί για τη δημιουργία π.χ. ειδοποιήσεων, επιβεβαιώσεων και ροών επιλογής για το snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Δείτε τη διεύθυνση, το υπόλοιπο του λογαριασμού, τη δραστηριότητα και προτείνετε συναλλαγές προς έγκριση.",
@@ -3166,89 +2860,29 @@
     "message": "Πρόσβαση στον πάροχο του Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Επιτρέψτε στο snap να επικοινωνεί απευθείας με το MetaMask, προκειμένου να διαβάζει δεδομένα από το blockchain και να προτείνει μηνύματα και συναλλαγές.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Δημιουργία τυχαίων κλειδιών μοναδικών σε αυτό το snap.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Επιτρέψτε στο snap να παράγει τυχαία κλειδιά μοναδικά για αυτό το snap, χωρίς να τα εκθέτει. Αυτά τα κλειδιά είναι ξεχωριστά από τον λογαριασμό (-ους) σας στο MetaMask και δεν σχετίζονται με τα ιδιωτικά σας κλειδιά ή τη Μυστική Φράση Ανάκτησης. Άλλα snaps δεν μπορούν να έχουν πρόσβαση σε αυτές τις πληροφορίες.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Χρησιμοποιήστε επιχειρηματικά μοντέλα.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Επιτρέψτε στο snap να χρησιμοποιεί επιχειρηματικά μοντέλα για την εκτέλεση κώδικα σε συγκεκριμένες χρονικές στιγμές κατά τη διάρκεια του κύκλου ζωής του.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Προσθήκη και έλεγχος λογαριασμών στο Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Ελέγξτε τους λογαριασμούς και τα περιουσιακά σας στοιχεία στο $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Επιτρέψτε στο snap να εξάγει ζεύγη κλειδιών BIP-32 με βάση τη Μυστική Φράση Ανάκτησης, χωρίς να την αποκαλύψετε. Αυτό παρέχει πλήρη πρόσβαση σε όλους τους λογαριασμούς και τα περιουσιακά στοιχεία στο $1.\nΜε τη δυνατότητα διαχείρισης των κλειδιών, το snap μπορεί να υποστηρίξει μια ποικιλία πρωτοκόλλων blockchain πέραν του Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Ελέγξτε τους $1 λογαριασμούς και τα περιουσιακά σας στοιχεία.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Επιτρέψτε στο snap να εξάγει ζεύγη κλειδιών BIP-44 με βάση τη Μυστική Φράση Ανάκτησης, χωρίς να την αποκαλύψετε. Αυτό παρέχει πλήρη πρόσβαση σε όλους τους λογαριασμούς και τα περιουσιακά στοιχεία στο $1.\nΜε τη δυνατότητα διαχείρισης των κλειδιών, το συμπληρωματικό πρόγραμμα μπορεί να υποστηρίξει μια ποικιλία πρωτοκόλλων blockchain πέραν του Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Ελέγξτε τους $1 λογαριασμούς σας και τα περιουσιακά σας στοιχεία.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Αποθηκεύστε και διαχειριστείτε τα δεδομένα του στη συσκευή σας.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Επιτρέψτε στο snap να αποθηκεύει, να ενημερώνει και να ανακτά δεδομένα με ασφάλεια και με κρυπτογράφηση. Άλλα snaps δεν μπορούν να έχουν πρόσβαση σε αυτές τις πληροφορίες.",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "Εμφάνιση ειδοποιήσεων.",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Επιτρέψτε στο snap να εμφανίζει ειδοποιήσεις εντός του MetaMask. Ένα σύντομο κείμενο ειδοποίησης μπορεί να ενεργοποιηθεί από το snap για πληροφορίες που μπορούν να ληφθούν υπόψη ή σχετίζονται με το χρόνο.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Επιτρέψτε στο $1 να επικοινωνήσει απευθείας με αυτό το snap.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Επιτρέψτε στο $1 να στέλνει μηνύματα στο snap και να λαμβάνει απάντηση από το snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "Λήψη και εμφάνιση πληροφοριών σχετικά με τις συναλλαγές.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Επιτρέψτε στο snap να αποκωδικοποιεί τις συναλλαγές και να εμφανίζει πληροφορίες εντός του MetaMask UI. Αυτό μπορεί να χρησιμοποιηθεί για λύσεις προστασίας κατά της εξαπάτησης και της ασφάλειας.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Δείτε την προέλευση των ιστότοπων που προτείνουν συναλλαγές",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Επιτρέψτε στο snap να βλέπει την προέλευση (URI) των ιστότοπων που προτείνουν συναλλαγές. Αυτό μπορεί να χρησιμοποιηθεί για λύσεις προστασίας κατά της εξαπάτησης και της ασφάλειας.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Άγνωστη άδεια: $1",
@@ -3258,10 +2892,6 @@
     "message": "Δείτε το δημόσιο κλειδί σας για το $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Επιτρέψτε στο snap να δει τα δημόσια κλειδιά (και τις διευθύνσεις) σας για το $1. Αυτό δεν παραχωρεί κανέναν έλεγχο λογαριασμών ή περιουσιακών στοιχείων.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Δείτε το δημόσιο κλειδί σας για το $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3269,10 +2899,6 @@
   "permission_webAssembly": {
     "message": "Υποστήριξη για το WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Επιτρέψτε στο snap να έχει πρόσβαση σε περιβάλλοντα εκτέλεσης χαμηλού επιπέδου μέσω του WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Άδειες"
@@ -3301,10 +2927,6 @@
   },
   "portfolioDashboard": {
     "message": "Πίνακας ελέγχου χαρτοφυλακίου"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Προτιμώμενος τύπος σύνδεσης στο Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
@@ -3627,9 +3249,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση λογαριασμών"
   },
-  "searchResults": {
-    "message": "Αποτελέσματα αναζήτησης"
-  },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
   },
@@ -3736,9 +3355,6 @@
   "selectAnAccountHelp": {
     "message": "Επιλέξτε τους λογαριασμούς θεματοφύλακα που θα χρησιμοποιηθούν στο MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Επιλέξτε μια ενέργεια"
-  },
   "selectHdPath": {
     "message": "Επιλέξτε τη διαδρομή HD"
   },
@@ -3762,9 +3378,6 @@
   },
   "sendBugReport": {
     "message": "Στείλτε μας μια αναφορά σφάλματος."
-  },
-  "sendDescription": {
-    "message": "Στείλτε κρυπτονομίσματα σε οποιονδήποτε λογαριασμό"
   },
   "sendSpecifiedTokens": {
     "message": "Αποστολή $1",
@@ -3885,9 +3498,6 @@
   "smartContracts": {
     "message": "Έξυπνα συμβόλαια"
   },
-  "smartSwap": {
-    "message": "Έξυπνες ανταλλαγές"
-  },
   "smartSwapsAreHere": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι εδώ!"
   },
@@ -3900,12 +3510,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι προσωρινά μη διαθέσιμες."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Οι Έξυπνες Ανταλλαγές θα προσπαθήσουν να υποβάλουν τη συναλλαγή σας ιδιωτικά, πολλές φορές. Εάν αποτύχουν όλες οι προσπάθειες, η συναλλαγή θα μεταδοθεί δημόσια για να διασφαλιστεί ότι η Ανταλλαγή σας θα πραγματοποιηθεί με επιτυχία."
-  },
-  "snapConfigure": {
-    "message": "Διαμόρφωση"
-  },
   "snapConnectionWarning": {
     "message": "Το $1 θέλει να συνδεθεί με το $2. Συνεχίστε μόνο αν εμπιστεύεστε αυτόν τον ιστότοπο.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3914,53 +3518,8 @@
     "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Επιλέξτε πώς θα προστατεύσετε τον νέο σας λογαριασμό χρησιμοποιώντας το MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Δημιουργήστε έναν $1 λογαριασμό",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Από το MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Έλεγχος"
-  },
-  "snapDetailDeveloper": {
-    "message": "Προγραμματιστής"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Ενημερώθηκε"
-  },
-  "snapDetailManageSnap": {
-    "message": "Διαχείριση του snap"
-  },
-  "snapDetailTags": {
-    "message": "Ετικέτες"
-  },
-  "snapDetailVersion": {
-    "message": "Έκδοση"
-  },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Δημιουργήστε έναν λογαριασμό στο Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Εγκαταστάθηκε"
-  },
-  "snapError": {
-    "message": "Σφάλμα Snap: '$1'. Κωδικός Σφάλματος: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
-  "snapInstall": {
-    "message": "Εγκατάσταση του snap"
   },
   "snapInstallRequest": {
     "message": "Με την εγκατάσταση, εκχωρούνται στο $1 οι ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
@@ -3969,24 +3528,8 @@
   "snapInstallSuccess": {
     "message": "Η εγκατάσταση ολοκληρώθηκε"
   },
-  "snapInstallWarningCheck": {
-    "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Προχωρήστε με προσοχή"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Δώστε τον έλεγχο λογαριασμού $2 στο $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Δώστε πρόσβαση με το δημόσιο κλειδί $2 στο $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Το $1 δεν μπόρεσε να εγκατασταθεί.",
@@ -3996,9 +3539,6 @@
     "message": "Η εγκατάσταση απέτυχε",
     "description": "Error title used when snap installation fails."
   },
-  "snapIsAudited": {
-    "message": "Ελέγχθηκε"
-  },
   "snapResultError": {
     "message": "Σφάλμα"
   },
@@ -4007,9 +3547,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "Το $1 είναι έτοιμο για χρήση"
-  },
-  "snapUpdate": {
-    "message": "Ενημέρωση του snap"
   },
   "snapUpdateAvailable": {
     "message": "Διαθέσιμη ενημέρωση"
@@ -4022,18 +3559,11 @@
     "message": "Η ενημέρωση απέτυχε",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "Το $1 θέλει να ενημερώσει το $2 στο $3, το οποίο του δίνει τις ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Η ενημέρωση ολοκληρώθηκε"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Φόρτωση πληροφοριών συναλλαγών..."
   },
   "snapsInvalidUIError": {
     "message": "Το UI που καθορίζεται από το snap δεν είναι έγκυρο."
@@ -4044,9 +3574,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Οποιεσδήποτε πληροφορίες μοιράζεστε με τις Υπηρεσίες Τρίτων θα συλλέγονται απευθείας από τις εν λόγω Υπηρεσίες Τρίτων σύμφωνα με τις πολιτικές απορρήτου τους. Ανατρέξτε στις πολιτικές απορρήτου τους για περισσότερες πληροφορίες.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Διαχειριστείτε τα Snaps σας"
   },
   "snapsTermsOfUse": {
     "message": "Όροι Χρήσης"
@@ -4201,9 +3728,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Κρατήστε τα κρυπτονομίσματά σας και κερδίστε πιθανά κέρδη"
-  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
   },
@@ -4304,9 +3828,6 @@
     "message": "Η Ανταλλαγή θα ολοκληρωθεί σε <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Προσομοίωση συναλλαγών πριν από την υποβολή για μείωση του κόστους συναλλαγής και των αποτυχιών."
-  },
   "stxTryingToCancel": {
     "message": "Γίνεται προσπάθεια ακύρωσης της συναλλαγής σας..."
   },
@@ -4321,9 +3842,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Η συναλλαγή σας ακυρώθηκε και δεν πληρώσατε περιττά τέλη συναλλαγής."
-  },
-  "stxYouCanOptOut": {
-    "message": "Μπορείτε να εξαιρεθείτε από τις ρυθμίσεις για προχωρημένους ανά πάσα στιγμή."
   },
   "submit": {
     "message": "Υποβολή"
@@ -4395,14 +3913,8 @@
   "swapDecentralizedExchange": {
     "message": "Αποκεντρωμένη ανταλλαγή"
   },
-  "swapDescription": {
-    "message": "Ανταλλάξτε και διαπραγματευτείτε τα tokens σας"
-  },
   "swapDirectContract": {
     "message": "Άμεσο συμβόλαιο"
-  },
-  "swapDisabled": {
-    "message": "Η ανταλλαγή δεν είναι διαθέσιμη σε αυτό το δίκτυο"
   },
   "swapEditLimit": {
     "message": "Επεξεργασία ορίου"
@@ -4642,9 +4154,6 @@
   "swapSource": {
     "message": "Πηγή ρευστότητας"
   },
-  "swapSourceInfo": {
-    "message": "Αναζητούμε πολλαπλές πηγές ρευστότητας (χρηματιστήρια, ανταλλακτήρια και επαγγελματίες διαπραγματευτές της αγοράς) για να βρούμε τις καλύτερες τιμές και τις χαμηλότερες χρεώσεις δικτύου."
-  },
   "swapSuggested": {
     "message": "Προτεινόμενη ανταλλαγή"
   },
@@ -4799,9 +4308,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "termsOfUse": {
-    "message": "όροι χρήσης"
-  },
   "termsOfUseAgreeText": {
     "message": " Συμφωνώ με τους Όρους Χρήσης, οι οποίοι ισχύουν για τη χρήση του MetaMask και όλων των λειτουργιών του"
   },
@@ -4829,10 +4335,6 @@
   },
   "thisCollection": {
     "message": "αυτή η συλλογή"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Η υπηρεσία αυτή είναι πειραματική. Ενεργοποιώντας αυτή τη λειτουργία, συμφωνείτε με τους $1 του OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Ώρα"
@@ -4962,18 +4464,6 @@
   "transactionCreated": {
     "message": "Η συναλλαγή δημιουργήθηκε με αξία $1 στις $2."
   },
-  "transactionData": {
-    "message": "Δεδομένα συναλλαγής"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Αποκωδικοποιήθηκε από Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Επαληθευμένο συμβόλαιο σε $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Η αποκωδικοποίηση συναλλαγών δεν είναι διαθέσιμη για chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Προτεινόμενος ιστότοπος"
   },
@@ -4982,9 +4472,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Εκτιμώμενο τέλος συναλλαγής"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "εκτιμώμενο"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Μάθετε περισσότερα για τα τέλη συναλλαγών"
@@ -5049,12 +4536,6 @@
   "transactionResubmitted": {
     "message": "Η συναλλαγή υποβλήθηκε ξανά με το εκτιμώμενο τέλος συναλλαγής να έχει αυξηθεί στα $1 στις $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για τον εντοπισμό και την εμφάνιση των κινδύνων που ενέχουν τα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών πριν τα υπογράψετε. Αυτές οι υπηρεσίες θα έχουν πρόσβαση στα ανυπόγραφα αιτήματα συναλλαγών και υπογραφών σας, στη διεύθυνση του λογαριασμού σας και στην προτιμώμενη γλώσσα σας."
-  },
   "transactionSettings": {
     "message": "Ρυθμίσεις συναλλαγών"
   },
@@ -5111,9 +4592,6 @@
   "twelveHrTitle": {
     "message": "12ώρες:"
   },
-  "txInsightsNotSupported": {
-    "message": "Οι αναλύσεις συναλλαγών δεν υποστηρίζονται προς το παρόν για τo συγκεκριμένo συμβόλαιο."
-  },
   "typeYourSRP": {
     "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"
   },
@@ -5129,12 +4607,6 @@
   },
   "unknown": {
     "message": "Άγνωστο"
-  },
-  "unknownCameraError": {
-    "message": "Προέκυψε ένα σφάλμα κατά την προσπάθεια πρόσβασης στην κάμερά σας. Προσπαθήστε ξανά..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ουπς! Κάτι πήγε στραβά...."
   },
   "unknownCollection": {
     "message": "Ανώνυμη συλλογή"
@@ -5157,10 +4629,6 @@
   "unrecognizedChain": {
     "message": "Αυτό το προσαρμοσμένο δίκτυο δεν αναγνωρίζεται",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Μη αναγνωρισμένο πρωτόκολλο)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Η αποστολή NFT (ERC-721) tokens δεν υποστηρίζεται προς το παρόν",
@@ -5220,10 +4688,6 @@
   "verifyContractDetails": {
     "message": "Επαλήθευση στοιχείων τρίτων"
   },
-  "verifyThisTokenDecimalOn": {
-    "message": "Το token με δεκαδικά ψηφία μπορεί να βρεθεί στο $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "verifyThisTokenOn": {
     "message": "Επαλήθευση αυτού του token στο $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5272,9 +4736,6 @@
   },
   "viewOnOpensea": {
     "message": "Προβολή στο Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Προβολή πίνακα ελέγχου χαρτοφυλακίου"
   },
   "viewinCustodianApp": {
     "message": "Προβολή στην εφαρμογή θεματοφύλακα"

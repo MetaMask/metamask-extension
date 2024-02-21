@@ -157,9 +157,9 @@ export default class UnlockPage extends Component {
 
     let needHelpText = t('appNameMmi');
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     needHelpText = t('needHelpLinkText');
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <div className="unlock-page__container">

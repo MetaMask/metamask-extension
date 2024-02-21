@@ -47,10 +47,14 @@ describe('ModalContent', () => {
         <Modal isOpen onClose={onClose}>
           <ModalContent>default</ModalContent>
           <ModalContent size={ModalContentSize.Sm}>sm</ModalContent>
+          <ModalContent size={ModalContentSize.Md}>md</ModalContent>
+          <ModalContent size={ModalContentSize.Lg}>lg</ModalContent>
         </Modal>
       </>,
     );
     expect(getByText('sm')).toHaveClass('mm-modal-content__dialog--size-sm');
+    expect(getByText('md')).toHaveClass('mm-modal-content__dialog--size-md');
+    expect(getByText('lg')).toHaveClass('mm-modal-content__dialog--size-lg');
     expect(getByText('default')).toHaveClass(
       'mm-modal-content__dialog--size-sm',
     );

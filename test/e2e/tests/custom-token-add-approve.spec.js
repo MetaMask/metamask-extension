@@ -1,20 +1,18 @@
 const { strict: assert } = require('assert');
 
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+  editGasfeeForm,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Create token, approve token and approve token without gas', function () {
   const smartContract = SMART_CONTRACTS.HST;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('imports and renders the balance for the new token', async function () {
     await withFixtures(
@@ -23,17 +21,15 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -88,17 +84,15 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -113,7 +107,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -206,17 +200,15 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -232,7 +224,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -261,27 +253,36 @@ describe('Create token, approve token and approve token without gas', function (
           '5 TST',
           'Default value is not correctly set',
         );
+        await driver.waitForSelector(
+          {
+            css: '.box--flex-direction-row > h6',
+            text: '0.000895 ETH',
+          },
+          { timeout: 15000 },
+        );
 
         // editing gas fee
-        const editBtn = await driver.findElements({
+        const editBtn = await driver.findElement({
           text: 'Edit',
-          class: 'btn-link > h6',
+          tag: 'h6',
         });
 
-        editBtn[1].click();
+        editBtn.click();
 
         await driver.clickElement({
           text: 'Edit suggested gas fee',
           tag: 'button',
         });
-        const [gasLimitInput, gasPriceInput] = await driver.findElements(
-          'input[type="number"]',
-        );
-        await gasPriceInput.clear();
-        await gasPriceInput.fill('10');
-        await gasLimitInput.clear();
-        await gasLimitInput.fill('60001');
-        await driver.clickElement({ text: 'Save', tag: 'button' });
+
+        await driver.waitForSelector({
+          text: 'Edit priority',
+        });
+        await driver.waitForSelector({
+          text: '0.00089526 ETH',
+          tag: 'h1',
+        });
+
+        await editGasfeeForm(driver, '60001', '10');
 
         await driver.waitForSelector(
           {
@@ -348,17 +349,15 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // create token
         await openDapp(driver, contractAddress);
@@ -432,17 +431,15 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);
         const windowHandles = await driver.getAllWindowHandles();

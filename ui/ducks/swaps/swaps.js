@@ -4,6 +4,7 @@ import log from 'loglevel';
 
 import { captureMessage } from '@sentry/browser';
 
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -59,6 +60,7 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
+  accountSupportsSmartTx,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
@@ -78,7 +80,6 @@ import {
   Slippage,
 } from '../../../shared/constants/swaps';
 import {
-  TransactionType,
   IN_PROGRESS_TRANSACTION_STATUSES,
   SmartTransactionStatus,
 } from '../../../shared/constants/transaction';
@@ -209,7 +210,10 @@ const slice = createSlice({
       state.customGas.fallBackPrice = action.payload;
     },
     setCurrentSmartTransactionsError: (state, action) => {
-      const errorType = Object.values(StxErrorTypes).includes(action.payload)
+      const isValidCurrentStxError =
+        Object.values(StxErrorTypes).includes(action.payload) ||
+        action.payload === undefined;
+      const errorType = isValidCurrentStxError
         ? action.payload
         : StxErrorTypes.unavailable;
       state.currentSmartTransactionsError = errorType;
@@ -319,7 +323,7 @@ export const getSmartTransactionsErrorMessageDismissed = (state) =>
   state.appState.smartTransactionsErrorMessageDismissed;
 
 export const getSmartTransactionsEnabled = (state) => {
-  const hardwareWalletUsed = isHardwareWallet(state);
+  const supportedAccount = accountSupportsSmartTx(state);
   const chainId = getCurrentChainId(state);
   const isAllowedNetwork =
     ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
@@ -330,7 +334,7 @@ export const getSmartTransactionsEnabled = (state) => {
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
     isAllowedNetwork &&
-      !hardwareWalletUsed &&
+      supportedAccount &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness,
   );
@@ -431,7 +435,7 @@ export const getApproveTxParams = (state) => {
 };
 
 export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.smartTransactionsState?.userOptIn;
+  return state.metamask.smartTransactionsState?.userOptInV2;
 };
 
 export const getCurrentSmartTransactions = (state) => {
@@ -596,6 +600,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
+        await dispatch(setCurrentSmartTransactionsError(undefined));
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {

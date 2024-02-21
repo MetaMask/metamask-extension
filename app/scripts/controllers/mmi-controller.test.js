@@ -5,7 +5,6 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { SignatureController } from '@metamask/signature-controller';
 
 import MMIController from './mmi-controller';
-import TransactionController from './transactions';
 import PreferencesController from './preferences';
 import AppStateController from './app-state';
 
@@ -18,6 +17,7 @@ describe('MMIController', function () {
         catch: jest.fn(),
       })),
       registerActionHandler: jest.fn(),
+      registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
       subscribe: jest.fn(),
     };
@@ -30,19 +30,6 @@ describe('MMIController', function () {
       }),
       transactionUpdateController: new TransactionUpdateController({
         getCustodyKeyring: jest.fn(),
-      }),
-      txController: new TransactionController({
-        initState: {},
-        provider: {
-          chainId: 'fail',
-          nickname: '',
-          rpcTarget: 'https://api.myetherwallet.com/eth',
-          ticker: 'ETH',
-          type: 'rinkeby',
-        },
-        getCurrentChainId: jest.fn(),
-        getNetworkId: jest.fn(),
-        onNetworkStateChange: jest.fn(),
       }),
       signatureController: new SignatureController({
         messenger: mockMessenger,
@@ -78,6 +65,13 @@ describe('MMIController', function () {
         messenger: mockMessenger,
       }),
       custodianEventHandlerFactory: jest.fn(),
+        getTransactions: jest.fn(),
+        updateTransactionHash: jest.fn(),
+        trackTransactionEvents: jest.fn(),
+        setTxStatusSigned: jest.fn(),
+        setTxStatusSubmitted: jest.fn(),
+        setTxStatusFailed: jest.fn(),
+        updateTransaction: jest.fn(),
     });
   });
 
@@ -107,16 +101,17 @@ describe('MMIController', function () {
   });
 
   describe('trackTransactionEventFromCustodianEvent', function () {
-    it('should call txController._trackTransactionMetricsEvent', function () {
-      const txMeta = {};
+    it('should call trackTransactionEvents', function () {
       const event = 'event';
-      mmiController.txController._trackTransactionMetricsEvent = jest.fn();
 
-      mmiController.trackTransactionEventFromCustodianEvent(txMeta, event);
+      mmiController.trackTransactionEventFromCustodianEvent({}, event);
 
-      expect(
-        mmiController.txController._trackTransactionMetricsEvent,
-      ).toHaveBeenCalledWith(txMeta, event);
+      expect(mmiController.trackTransactionEvents).toHaveBeenCalledWith(
+        {
+          transactionMeta: {},
+        },
+        event,
+      );
     });
   });
 

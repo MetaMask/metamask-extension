@@ -7,7 +7,6 @@
 }
 
 .token-list-item {
-  padding: 8px;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -15,7 +14,7 @@
   padding: 8px;
 
   &:hover {
-    background-color: rgba($alto, 0.2);
+    background-color: var(--color-background-hover);
   }
 
   &__data {

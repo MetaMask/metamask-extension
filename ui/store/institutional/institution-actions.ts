@@ -1,5 +1,6 @@
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   closeCurrentNotificationWindow,
   hideModal,
@@ -13,7 +14,6 @@ import {
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getCurrentNetworkTransactions } from '../../selectors';
-import { TransactionMeta } from '../../../shared/constants/transaction';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -93,6 +93,7 @@ export function updateCustodyState(
 
       return (
         tx.custodyId === state.appState.modal.modalState.props?.custodyId &&
+        tx.custodyStatus &&
         (state.metamask.custodyStatusMaps[custody][tx.custodyStatus]
           ?.mmStatus !== 'approved' ||
           tx.custodyStatus === 'created')

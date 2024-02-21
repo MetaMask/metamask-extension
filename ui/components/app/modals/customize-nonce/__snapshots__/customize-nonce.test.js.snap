@@ -99,15 +99,11 @@ exports[`Customize Nonce should match snapshot 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         Save
       </button>

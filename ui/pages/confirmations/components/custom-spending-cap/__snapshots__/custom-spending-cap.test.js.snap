@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomSpendingCap should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box custom-spending-cap mm-box--padding-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full"
+    >
+      <div>
+        <label
+          class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-right-1 mm-box--display-inline mm-box--align-items-center mm-box--color-text-default"
+          for="custom-spending-cap"
+        >
+          Custom spending cap
+        </label>
+        <div
+          class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
+        >
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="null"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+    >
+      <input
+        autocomplete="off"
+        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--padding-inline-end-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+        data-testid="custom-spending-cap-input"
+        focused="true"
+        id="custom-spending-cap"
+        placeholder="Enter a number"
+        type="text"
+        value="7"
+      />
+      <button
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="custom-spending-cap-max-button"
+      >
+        Max
+      </button>
+    </div>
+    <div
+      class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
+    >
+      <span>
+         
+        This allows the third party to spend 
+        <span
+          class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
+        >
+          7
+           
+          TST
+        </span>
+         from your current balance.
+         
+      </span>
+    </div>
+    <a
+      class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      Learn more
+    </a>
+  </div>
+</div>
+`;

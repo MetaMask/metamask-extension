@@ -3,22 +3,22 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderRadius,
-  BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
   Size,
+  TextAlign,
   TextColor,
   TextVariant,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   ButtonBase,
   ButtonIcon,
   IconName,
-  Box,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -111,7 +111,9 @@ export const ProductTour = ({
             color={TextColor.infoInverse}
             variant={TextVariant.bodyMd}
           >
-            {currentStep}/{totalSteps}
+            {currentStep && totalSteps
+              ? { currentStep } / { totalSteps }
+              : null}
           </Text>
           <ButtonBase
             backgroundColor={BackgroundColor.primaryInverse}

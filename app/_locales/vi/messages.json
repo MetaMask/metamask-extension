@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Thêm NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Khám phá các tùy chọn để đảm bảo an toàn cho tài khoản của bạn với MetaMask Snap"
-  },
   "addSuggestedNFTs": {
     "message": "Thêm NFT được đề xuất"
   },
@@ -442,10 +439,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancelSwap": {
-    "message": "Cố gắng hủy hoán đổi với giá ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },
@@ -563,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên Blur của bạn."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Do có lỗi, yêu cầu này đã không được nhà cung cấp dịch vụ bảo mật xác minh. Hãy thực hiện cẩn thận."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -592,12 +585,6 @@
   },
   "bridge": {
     "message": "Cầu nối"
-  },
-  "bridgeDescription": {
-    "message": "Chuyển token từ các mạng khác nhau"
-  },
-  "bridgeDisabled": {
-    "message": "Cầu không khả dụng trong mạng này"
   },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
@@ -659,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng ID chuỗi này."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Mạng có ID chuỗi $1 có thể sử dụng một ký hiệu tiền tệ ($2) khác với ký hiệu mà bạn đã nhập. Vui lòng xác minh trước khi tiếp tục.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chooseYourNetwork": {
     "message": "Chọn mạng của bạn"
@@ -835,9 +818,6 @@
   "connectionRequest": {
     "message": "Yêu cầu kết nối"
   },
-  "connections": {
-    "message": "Kết nối"
-  },
   "contactUs": {
     "message": "Liên hệ với chúng tôi"
   },
@@ -990,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Thay thế token lưu ký"
   },
-  "custodyApiUrl": {
-    "message": "URL API $1"
-  },
   "custodyDeeplinkDescription": {
     "message": "Chấp thuận giao dịch trong ứng dụng $1. Sau khi đã chấp thuận tất cả hình thức lưu ký bắt buộc, giao dịch sẽ hoàn tất. Kiểm tra ứng dụng $1 của bạn để biết trạng thái."
   },
@@ -1130,12 +1107,6 @@
   },
   "deposit": {
     "message": "Nạp"
-  },
-  "deprecatedTestNetworksLink": {
-    "message": "Tìm hiểu thêm"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Do những thay đổi trong giao thức của Ethereum: các mạng thử nghiệm Rinkeby, Ropsten và Kovan có thể không hoạt động đáng tin cậy và sẽ sớm bị ngừng sử dụng."
   },
   "description": {
     "message": "Mô tả"
@@ -1402,15 +1373,6 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
-  "enableSmartSwaps": {
-    "message": "Kích hoạt hoán đổi thông minh"
-  },
   "enableSnap": {
     "message": "Bật"
   },
@@ -1440,12 +1402,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Ký tự không hợp lệ đối với ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Không tìm thấy tên ENS trên mạng hiện tại. Đang chuyển sang Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Mạng không hỗ trợ ENS"
   },
   "ensRegistrationError": {
     "message": "Lỗi khi đăng ký tên ENS"
@@ -1680,42 +1636,19 @@
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 phút",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Có thể sau $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Có khả năng sau < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 giây",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 giây",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Nhiều khả năng sau < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas đã dùng"
   },
   "general": {
     "message": "Chung"
-  },
-  "getStarted": {
-    "message": "Bắt đầu"
   },
   "globalTitle": {
     "message": "Trình đơn chung"
@@ -2119,25 +2052,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Bật \"dữ liệu hợp đồng thông minh\" hoặc \"ký mù\" trên thiết bị Ledger của bạn."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Bật Sử dụng Ledger Live trong Cài đặt > Nâng cao."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Nhớ cắm thiết bị Ledger và chọn ứng dụng Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Mở và mở khóa Ứng dụng Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Tùy chỉnh cách thức kết nối Ledger với MetaMask. Nên dùng $1, nhưng cũng có sẵn các tùy chọn khác. Đọc thêm tại đây: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Mở thiết bị Ledger không thành công. Ledger của bạn có thể đã được kết nối với phần mềm khác. Vui lòng đóng Ledger Live hoặc các ứng dụng khác được kết nối với thiết bị Ledger của bạn và thử kết nối lại."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
@@ -2147,9 +2066,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Nếu ứng dụng Ledger Live của bạn đang mở, vui lòng ngắt mọi kết nối Ledger Live đang mở và đóng ứng dụng Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấp lại vào \"Tiếp tục\" và chấp thuận kết nối HID",
@@ -2229,9 +2145,6 @@
   "makeSureNoOneWatching": {
     "message": "Đảm bảo không có ai đang nhìn",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "Dữ liệu không đúng định dạng"
   },
   "max": {
     "message": "Tối đa"
@@ -2387,9 +2300,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2528,9 +2438,6 @@
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
   },
-  "noThanksVariant2": {
-    "message": "Không, cảm ơn."
-  },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"
   },
@@ -2597,108 +2504,6 @@
   "notifications": {
     "message": "Thông báo"
   },
-  "notifications10ActionText": {
-    "message": "Xem trong phần Cài đặt",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Tính năng phát hiện token cải tiến hiện đã có sẵn trên mạng Ethereum Mainnet, Polygon, BSC và Avalanche. Sẽ sớm có thêm nhiều mạng khác!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Theo mặc định, tính năng phát hiện token hiện đang TẮT. Bạn có thể bật tính năng này trong phần Cài đặt."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Chúng tôi lấy token từ các danh sách token của bên thứ ba. Những token được liệt kê trong 2 danh sách token trở lên sẽ tự động được phát hiện."
-  },
-  "notifications10Title": {
-    "message": "Tính năng phát hiện token cải tiến đã ra mắt"
-  },
-  "notifications11Description": {
-    "message": "Token có thể được tạo bởi bất kỳ ai và có thể có tên trùng lặp. Nếu bạn thấy một token mà bạn không tin tưởng hoặc chưa từng tương tác - để đảm bảo an toàn, đừng tin tưởng token đó."
-  },
-  "notifications11Title": {
-    "message": "Rủi ro về bảo mật và lừa đảo"
-  },
-  "notifications12ActionText": {
-    "message": "Bật chế độ tối"
-  },
-  "notifications12Description": {
-    "message": "Tiện ích mở rộng Chế độ tối hiện đã ra mắt! Để bật, hãy vào Cài đặt > Thử nghiệm và chọn một trong các tùy chọn hiển thị: Sáng, Tối, Hệ thống."
-  },
-  "notifications12Title": {
-    "message": "Dùng chế độ tối khi nào? Ngay bây giờ! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Hiển thị danh sách mạng tùy chỉnh"
-  },
-  "notifications13Description": {
-    "message": "Giờ đây, bạn có thể dễ dàng thêm các mạng tùy chỉnh phổ biến sau: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm và Polygon! Để bật tính năng này, hãy chuyển đến Cài đặt > Thử nghiệm và bật \"Hiển thị danh sách mạng tùy chỉnh\"!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Thêm các mạng phổ biến"
-  },
-  "notifications14ActionText": {
-    "message": "Hiển thị chế độ cài đặt sao lưu"
-  },
-  "notifications14Description": {
-    "message": "Chúng tôi sẽ ngừng sử dụng tính năng dữ liệu 3Box vào đầu tháng 10. Để sao lưu và khôi phục ví của bạn theo cách thủ công, hãy sử dụng nút \"Sao lưu ngay\" trong phần Cài đặt nâng cao.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Ngừng sử dụng 3Box"
-  },
-  "notifications15Description": {
-    "message": "Bạn không cần thực hiện bất kỳ hành động nào, vì vậy hãy tiếp tục sử dụng ví của bạn như bình thường. Hãy đề phòng những trò gian lận có thể xảy ra xung quanh quá trình Hợp nhất.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Sự kiện hợp nhất Ethereum Merge đã được triển khai!"
-  },
-  "notifications18ActionText": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Nhận cảnh báo từ bên thứ ba khi bạn có thể đã nhận được một yêu cầu độc hại.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Nhớ luôn tự thẩm định trước khi chấp thuận bất kỳ yêu cầu nào.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea là nhà cung cấp đầu tiên cho tính năng này. Sắp có thêm nhiều nhà cung cấp khác!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Đảm bảo an toàn với cảnh báo bảo mật"
-  },
-  "notifications19ActionText": {
-    "message": "Bật tự động phát hiện NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Hai cách để bạn có thể bắt đầu:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Hiện chúng tôi chỉ hỗ trợ ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Thêm NFT của bạn theo cách thủ công hoặc bật tính năng tự động phát hiện NFT trong phần Cài đặt > Thử nghiệm.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Xem NFT của bạn theo cách mới mẻ nhất"
-  },
-  "notifications1Description": {
-    "message": "Giờ đây, người dùng MetaMask trên điện thoại di động có thể hoán đổi token trong ví di động của họ. Quét mã QR để tải ứng dụng di động và bắt đầu hoán đổi.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Tính năng hoán đổi trên điện thoại di động đã sẵn sàng!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Tìm hiểu thêm",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2711,37 +2516,6 @@
     "message": "Người dùng Ledger và Firefox gặp sự cố kết nối",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Thử ngay"
-  },
-  "notifications21Description": {
-    "message": "Chúng tôi đã cập nhật Hoán đổi trong tiện ích mở rộng MetaMask để sử dụng dễ dàng và nhanh hơn.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Giới thiệu chức năng Hoán đổi mới cải tiến!"
-  },
-  "notifications22ActionText": {
-    "message": "Đã hiểu"
-  },
-  "notifications22Description": {
-    "message": "💡 Chỉ cần nhấp vào trình đơn chung hoặc trình đơn tài khoản để tìm chúng!"
-  },
-  "notifications22Title": {
-    "message": "Muốn tìm thông tin tài khoản của bạn hoặc URL của trình khám phá khối?"
-  },
-  "notifications23ActionText": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Tránh xa các hành vi gian lận đã biết trong khi vẫn bảo vệ quyền riêng tư của bạn với các cảnh báo bảo mật do Blockaid cung cấp trên Ethereum Mainnet."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Luôn tự thẩm định trước khi chấp thuận các yêu cầu."
-  },
-  "notifications23Title": {
-    "message": "Đảm bảo an toàn với cảnh báo bảo mật"
-  },
   "notifications24ActionText": {
     "message": "Đã hiểu"
   },
@@ -2750,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Phí gas nâng cao theo mạng"
-  },
-  "notifications3ActionText": {
-    "message": "Đọc thêm",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Luôn cập nhật các phương pháp bảo mật tốt nhất của MetaMask và nhận các mẹo mới nhất về bảo mật từ nhóm hỗ trợ chính thức của MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Luôn bảo mật",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Bắt đầu hoán đổi",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Nhận giá hoán đổi token tốt nhất ngay trong ví của bạn. Giờ đây, MetaMask sẽ kết nối bạn với nhiều nền tảng tổng hợp thanh khoản của sàn giao dịch phi tập trung và nhà tạo lập thị trường chuyên nghiệp trên Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Hoán đổi trên Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Từ giờ, \"Cụm từ khôi phục\" sẽ được gọi là \"Cụm từ khôi phục bí mật.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Kể từ phiên bản Chrome 91, API từng cho phép hỗ trợ Ledger (U2F) của chúng tôi không còn hỗ trợ ví cứng nữa. MetaMask đã triển khai một tính năng hỗ trợ Ledger Live mới cho phép bạn tiếp tục kết nối với thiết bị Ledger của mình thông qua ứng dụng Ledger Live trên máy tính.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Khi tương tác với tài khoản Ledger của bạn trong MetaMask, một tab mới sẽ mở ra và bạn sẽ được yêu cầu mở ứng dụng Ledger Live.  Khi ứng dụng này mở ra, bạn sẽ được yêu cầu cho phép kết nối WebSocket với tài khoản MetaMask của mình.  Đơn giản vậy thôi!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Bạn có thể kích hoạt tính năng hỗ trợ Ledger Live bằng cách nhấp vào phần Cài đặt > Nâng cao > Sử dụng Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Thông tin cập nhật về việc hỗ trợ Ledger cho người dùng Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 bao gồm chức năng hỗ trợ mới cho các giao dịch EIP-1559 khi sử dụng thiết bị Ledger.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Để hoàn thành các giao dịch trên Ethereum Mainnet, hãy chắc chắn thiết bị Ledger của bạn đã được cập nhật lên phiên bản phần mềm mới nhất.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Cập nhật phiên bản phần mềm Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Đến Cài đặt > Nâng cao",
@@ -2822,15 +2540,6 @@
   "notifications8Title": {
     "message": "Cải thiện kết nối Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Giờ đây chúng tôi sẽ cung cấp cho bạn thêm nhiều thông tin chi tiết hơn trong thẻ \"Dữ liệu\" khi xác nhận các giao dịch hợp đồng thông minh."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Giờ đây bạn có thể hiểu rõ hơn về các chi tiết trong giao dịch của mình và dễ dàng thêm địa chỉ giao dịch vào sổ địa chỉ, giúp bạn đưa ra những quyết định an toàn và sáng suốt."
-  },
-  "notifications9Title": {
-    "message": "👓 Chúng tôi đang làm cho các giao dịch dễ đọc hơn."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox không còn hỗ trợ U2F nên Ledger sẽ không hoạt động với MetaMask trên Firefox. Thay vào đó hãy dùng thử MetaMask trên Google Chrome.",
@@ -3022,9 +2731,6 @@
   "openInBlockExplorer": {
     "message": "Mở trên trình khám phá khối"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3130,10 +2836,6 @@
     "message": "Truy cập Internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Cho phép Snap truy cập Internet. Điều này có thể được sử dụng để gửi và nhận dữ liệu với máy chủ của bên thứ ba.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Kết nối với Snap $1.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3146,17 +2848,9 @@
     "message": "Lên lịch và thực hiện các hành động theo định kỳ.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Cho phép Snap thực hiện các hành động định kỳ vào thời gian, ngày hoặc khoảng thời gian cố định. Điều này có thể được sử dụng để kích hoạt các tương tác hoặc thông báo nhạy cảm với thời gian.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Hiển thị cửa sổ hộp thoại trong MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Cho phép Snap hiển thị cửa sổ bật lên MetaMask cùng với văn bản tùy chỉnh, trường nhập và nút để chấp nhận hoặc từ chối một hành động.\nCó thể được sử dụng để tạo cảnh báo, xác nhận và quy trình đồng ý tham gia cho một Snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Xem địa chỉ, số dư tài khoản, hoạt động và đề xuất giao dịch để chấp thuận",
@@ -3166,89 +2860,29 @@
     "message": "Truy cập nhà cung cấp Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Cho phép Snap giao tiếp trực tiếp với MetaMask để đọc dữ liệu từ chuỗi khối và đề xuất các tin nhắn và giao dịch.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Lấy các khóa tùy ý duy nhất cho Snap này.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Cho phép Snap lấy các khóa tùy ý duy nhất cho Snap này mà không để lộ. Các khóa này tách biệt với tài khoản MetaMask của bạn và không liên quan đến khóa riêng tư hoặc Cụm từ khôi phục bí mật của bạn. Các Snap khác không thể truy cập thông tin này.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Sử dụng hook vòng đời.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Cho phép Snap sử dụng hook vòng đời để chạy mã vào những thời điểm cụ thể trong vòng đời của nó.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Thêm và kiểm soát các tài khoản Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Kiểm soát các tài khoản và tài sản của bạn ở $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Cho phép Snap lấy các cặp khóa BIP-32 dựa trên Cụm từ khôi phục bí mật của bạn mà không để lộ. Điều này sẽ cấp toàn quyền truy cập vào tất cả các tài khoản và tài sản trên $1.\nVới khả năng quản lý khóa, Snap có thể hỗ trợ nhiều giao thức chuỗi khối ngoài Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Kiểm soát các tài khoản và tài sản $1 của bạn.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Cho phép Snap lấy các cặp khóa BIP-44 dựa trên Cụm từ khôi phục bí mật của bạn mà không để lộ. Điều này sẽ cấp toàn quyền truy cập vào tất cả các tài khoản và tài sản trên $1.\nVới khả năng quản lý khóa, Snap có thể hỗ trợ nhiều giao thức chuỗi khối ngoài Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Kiểm soát các tài khoản và tài sản $1 của bạn.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Lưu trữ và quản lý dữ liệu trong thiết bị.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Cho phép Snap lưu trữ, cập nhật và truy xuất dữ liệu một cách an toàn bằng mã hóa. Các Snap khác không thể truy cập thông tin này.",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "Hiển thị thông báo.",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Cho phép Snap hiển thị thông báo trong MetaMask. Một văn bản thông báo ngắn có thể được kích hoạt bằng Snap đối với thông tin có thể thao tác hoặc nhạy cảm với thời gian.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Cho phép $1 giao tiếp trực tiếp với Snap này.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Cho phép $1 gửi tin nhắn đến Snap và nhận phản hồi từ Snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "Tìm nạp và hiển thị thông tin chi tiết về giao dịch.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Cho phép Snap giải mã các giao dịch và hiển thị thông tin chi tiết trong giao diện người dùng MetaMask. Điều này có thể được sử dụng cho các giải pháp bảo mật và chống lừa đảo.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Xem nguồn gốc của các trang web đề xuất giao dịch",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Cho phép Snap xem nguồn gốc (URI) của các trang web đề xuất giao dịch. Điều này có thể được sử dụng cho các giải pháp bảo mật và chống lừa đảo.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Quyền không xác định: $1",
@@ -3258,10 +2892,6 @@
     "message": "Xem khóa công khai của bạn cho $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Cho phép Snap xem khóa công khai (và địa chỉ) của bạn đối với $1. Điều này sẽ không cấp bất kỳ quyền kiểm soát tài khoản hoặc tài sản nào.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Xem khóa công khai của bạn cho $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3269,10 +2899,6 @@
   "permission_webAssembly": {
     "message": "Hỗ trợ dành cho WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Cho phép Snap truy cập vào các môi trường thực thi cấp thấp thông qua WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Quyền"
@@ -3301,10 +2927,6 @@
   },
   "portfolioDashboard": {
     "message": "Trang tổng quan Danh mục đầu tư"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Dạng kết nối Ledger ưu tiên",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
@@ -3627,9 +3249,6 @@
   "searchAccounts": {
     "message": "Tìm kiếm tài khoản"
   },
-  "searchResults": {
-    "message": "Kết quả tìm kiếm"
-  },
   "secretRecoveryPhrase": {
     "message": "Cụm từ khôi phục bí mật"
   },
@@ -3736,9 +3355,6 @@
   "selectAnAccountHelp": {
     "message": "Chọn tài khoản lưu ký để sử dụng trong MetaMask Institutional."
   },
-  "selectAnAction": {
-    "message": "Chọn một hành động"
-  },
   "selectHdPath": {
     "message": "Chọn đường dẫn HD"
   },
@@ -3762,9 +3378,6 @@
   },
   "sendBugReport": {
     "message": "Gửi báo cáo lỗi."
-  },
-  "sendDescription": {
-    "message": "Gửi tiền mã hóa đến bất kỳ tài khoản nào"
   },
   "sendSpecifiedTokens": {
     "message": "Gửi $1",
@@ -3885,9 +3498,6 @@
   "smartContracts": {
     "message": "Hợp đồng thông minh"
   },
-  "smartSwap": {
-    "message": "Hoán đổi thông minh"
-  },
   "smartSwapsAreHere": {
     "message": "Hoán đổi thông minh đã ra mắt!"
   },
@@ -3900,12 +3510,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Hoán đổi thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần một cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
-  },
-  "snapConfigure": {
-    "message": "Định cấu hình"
-  },
   "snapConnectionWarning": {
     "message": "$1 muốn kết nối với $2. Chỉ tiếp tục nếu bạn tin tưởng trang web này.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3914,53 +3518,8 @@
     "message": "Nội dung này đến từ $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Chọn cách bảo mật tài khoản mới của bạn bằng MetaMask Snap."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Tạo tài khoản $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Bởi MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Kiểm tra"
-  },
-  "snapDetailDeveloper": {
-    "message": "Nhà phát triển"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Đã cập nhật"
-  },
-  "snapDetailManageSnap": {
-    "message": "Quản lý Snap"
-  },
-  "snapDetailTags": {
-    "message": "Thẻ"
-  },
-  "snapDetailVersion": {
-    "message": "Phiên bản"
-  },
   "snapDetailWebsite": {
     "message": "Trang web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Tạo tài khoản Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Đã cài đặt"
-  },
-  "snapError": {
-    "message": "Lỗi Snap: \"$1\". Mã lỗi: \"$2\"",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
-  "snapInstall": {
-    "message": "Cài đặt Snap"
   },
   "snapInstallRequest": {
     "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
@@ -3969,24 +3528,8 @@
   "snapInstallSuccess": {
     "message": "Cài đặt hoàn tất"
   },
-  "snapInstallWarningCheck": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Hãy tiến hành thận trọng"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Cấp quyền truy cập $1 cho khóa công khai $2",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Không thể cài đặt $1.",
@@ -3996,9 +3539,6 @@
     "message": "Cài đặt thất bại",
     "description": "Error title used when snap installation fails."
   },
-  "snapIsAudited": {
-    "message": "Đã kiểm tra"
-  },
   "snapResultError": {
     "message": "Lỗi"
   },
@@ -4007,9 +3547,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 đã sẵn sàng để sử dụng"
-  },
-  "snapUpdate": {
-    "message": "Cập nhật Snap"
   },
   "snapUpdateAvailable": {
     "message": "Có cập nhật mới"
@@ -4022,18 +3559,11 @@
     "message": "Cập nhật thất bại",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 muốn cập nhật $2 lên $3 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Cập nhật hoàn tất"
   },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightLoading": {
-    "message": "Đang tải thông tin chi tiết về giao dịch..."
   },
   "snapsInvalidUIError": {
     "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
@@ -4044,9 +3574,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Mọi thông tin mà bạn chia sẻ với Dịch vụ bên thứ ba sẽ được Dịch vụ bên thứ ba đó thu thập trực tiếp theo chính sách quyền riêng tư của họ. Vui lòng tham khảo chính sách quyền riêng tư của họ để biết thêm thông tin.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Quản lý Snap"
   },
   "snapsTermsOfUse": {
     "message": "Điều khoản sử dụng"
@@ -4201,9 +3728,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Giữ tiền mã hóa và kiếm lợi nhuận tiềm năng"
-  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },
@@ -4304,9 +3828,6 @@
     "message": "Hoán đổi sẽ hoàn tất sau <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Mô phỏng giao dịch trước khi gửi để giảm chi phí giao dịch và tỷ lệ thất bại."
-  },
   "stxTryingToCancel": {
     "message": "Đang cố gắng hủy giao dịch của bạn..."
   },
@@ -4321,9 +3842,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Giao dịch của bạn đã bị hủy và bạn không phải trả bất kỳ phí gas không cần thiết nào."
-  },
-  "stxYouCanOptOut": {
-    "message": "Bạn có thể chọn không tham gia trong mục cài đặt nâng cao bất cứ lúc nào."
   },
   "submit": {
     "message": "Gửi"
@@ -4395,14 +3913,8 @@
   "swapDecentralizedExchange": {
     "message": "Sàn giao dịch phi tập trung"
   },
-  "swapDescription": {
-    "message": "Hoán đổi và giao dịch token của bạn"
-  },
   "swapDirectContract": {
     "message": "Hợp đồng trực tiếp"
-  },
-  "swapDisabled": {
-    "message": "Hoán đổi không khả dụng trong mạng này"
   },
   "swapEditLimit": {
     "message": "Chỉnh sửa giới hạn"
@@ -4642,9 +4154,6 @@
   "swapSource": {
     "message": "Nguồn thanh khoản"
   },
-  "swapSourceInfo": {
-    "message": "Chúng tôi tìm kiếm nhiều nguồn thanh khoản (các sàn giao dịch, trình tổng hợp và nhà tạo lập thị trường) để tìm được mức tỷ giá tốt nhất và phí mạng thấp nhất."
-  },
   "swapSuggested": {
     "message": "Hoán đổi gợi ý"
   },
@@ -4799,9 +4308,6 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
-  "termsOfUse": {
-    "message": "điều khoản sử dụng"
-  },
   "termsOfUseAgreeText": {
     "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của MetaMask"
   },
@@ -4829,10 +4335,6 @@
   },
   "thisCollection": {
     "message": "bộ sưu tập này"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Đây là dịch vụ thử nghiệm. Bằng cách bật tính năng này, bạn đồng ý với $1 của OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Thời gian"
@@ -4962,18 +4464,6 @@
   "transactionCreated": {
     "message": "Đã tạo giao dịch với giá trị $1 lúc $2."
   },
-  "transactionData": {
-    "message": "Dữ liệu giao dịch"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Được giải mã bởi Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Đã xác minh hợp đồng trên $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Giải ID giao dịch hiện không khả dụng cho ID chuỗi $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Trang web gợi ý"
   },
@@ -4982,9 +4472,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Phí gas ước tính"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "ước tính"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Tìm hiểu thêm về phí gas"
@@ -5049,12 +4536,6 @@
   "transactionResubmitted": {
     "message": "Đã gửi lại giao dịch với mức phí gas ước tính tăng lên $1 lúc $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị những rủi ro liên quan đến các yêu cầu chữ ký và giao dịch chưa ký trước khi bạn ký. Những dịch vụ này sẽ có quyền truy cập vào các yêu cầu chữ ký và giao dịch chưa ký, địa chỉ tài khoản và ngôn ngữ yêu thích của bạn."
-  },
   "transactionSettings": {
     "message": "Cài đặt giao dịch"
   },
@@ -5111,9 +4592,6 @@
   "twelveHrTitle": {
     "message": "12 giờ:"
   },
-  "txInsightsNotSupported": {
-    "message": "Thông tin chi tiết về giao dịch không được hỗ trợ cho hợp đồng này tại thời điểm này."
-  },
   "typeYourSRP": {
     "message": "Nhập Cụm từ khôi phục bí mật của bạn"
   },
@@ -5129,12 +4607,6 @@
   },
   "unknown": {
     "message": "Không xác định"
-  },
-  "unknownCameraError": {
-    "message": "Đã xảy ra lỗi khi cố gắng truy cập máy ảnh của bạn. Vui lòng thử lại..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Rất tiếc! Đã xảy ra sự cố...."
   },
   "unknownCollection": {
     "message": "Bộ sưu tập chưa có tên"
@@ -5157,10 +4629,6 @@
   "unrecognizedChain": {
     "message": "Không thể nhận diện mạng tùy chỉnh này",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Giao thức chưa được công nhận)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Hiện không hỗ trợ gửi token NFT (ERC-721)",
@@ -5220,10 +4688,6 @@
   "verifyContractDetails": {
     "message": "Xác minh thông tin bên thứ ba"
   },
-  "verifyThisTokenDecimalOn": {
-    "message": "Không tìm thấy số thập phân của token trên $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "verifyThisTokenOn": {
     "message": "Xác minh token này trên $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5272,9 +4736,6 @@
   },
   "viewOnOpensea": {
     "message": "Xem trên Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Xem Trang tổng quan Danh mục đầu tư"
   },
   "viewinCustodianApp": {
     "message": "Xem trong ứng dụng lưu ký"

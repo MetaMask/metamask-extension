@@ -334,7 +334,6 @@
   "ui/components/app/account-menu/account-menu.container.js",
   "ui/components/app/account-menu/account-menu.test.js",
   "ui/components/app/account-menu/index.js",
-  "ui/components/app/account-menu/keyring-label.js",
   "ui/components/app/add-network/add-network.js",
   "ui/components/app/add-network/add-network.stories.js",
   "ui/components/app/add-network/add-network.test.js",

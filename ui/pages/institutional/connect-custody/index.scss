@@ -1,13 +1,12 @@
 .custody-account-list {
   flex: 1;
-  max-height: 50vh;
   overflow: auto;
 
   &__item {
-    border-bottom: 1px solid #d2d8dd;
+    border-bottom: 1px solid var(--color-border-muted);
 
     input {
-      margin: 12px 0 0 10px;
+      margin: 12px 0 0 4px;
     }
 
     &__title {
@@ -28,7 +27,7 @@
   }
 
   &__item:first-child {
-    border-top: 1px solid #d2d8dd;
+    border-top: 1px solid var(--color-border-muted);
   }
 
   &__item:last-child {
@@ -36,11 +35,11 @@
   }
 
   &__item:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: var(--color-background-hover);
   }
 
   &__buttons {
-    border-top: 1px solid #d2d8dd;
+    border-top: 1px solid var(--color-border-muted);
   }
 
   &__button:not(:last-child) {

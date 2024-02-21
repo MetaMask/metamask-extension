@@ -42,6 +42,7 @@ export type StyleDeclarationType =
   | 'align-items'
   | 'text-align'
   | 'width'
+  | 'min-width'
   | 'height'
   | 'color'
   | 'background-color'
@@ -391,6 +392,12 @@ export interface StyleUtilityProps {
    * Accepts responsive props in the form of an array.
    */
   width?: BlockSize | BlockSizeArray;
+  /**
+   * The min-width of the component.
+   * Use BlockSize enum from '../../../helpers/constants/design-system';
+   * Accepts responsive props in the form of an array.
+   */
+  minWidth?: BlockSize | BlockSizeArray;
   /**
    * The height of the component.
    * Use BlockSize enum from '../../../helpers/constants/design-system';

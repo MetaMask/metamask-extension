@@ -1,0 +1,59 @@
+import { Canvas, Controls } from '@storybook/addon-docs';
+import * as ContainerStories from './container.stories';
+
+# Container
+
+Containers are used to constrain a content's width to the current breakpoint, while keeping it fluid
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas of={ContainerStories.DefaultStory} />
+
+## Props
+
+<Controls of={ContainerStories.DefaultStory} />
+
+### MaxWidth
+
+Using the `maxWidth` prop with `ContainerMaxWidth` enum values, you can set the maximum width of the container
+
+Possible values are:
+
+- `ContainerMaxWidth.Sm` (max-width: 360px)
+- `ContainerMaxWidth.Md` (max-width: 480px)
+- `ContainerMaxWidth.Lg` (max-width: 720px)
+
+<Canvas of={ContainerStories.MaxWidth} />
+
+```jsx
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { Container, ContainerMaxWidth } from '../../component-library';
+
+<Container
+  maxWidth={ContainerMaxWidth.Sm}
+  backgroundColor={BackgroundColor.primaryMuted}
+  padding={4}
+>
+  Size "sm" container
+</Container>
+<Container
+  maxWidth={ContainerMaxWidth.Md}
+  backgroundColor={BackgroundColor.successMuted}
+  padding={4}
+>
+  Size "md" container
+</Container>
+<Container
+  maxWidth={ContainerMaxWidth.Lg}
+  backgroundColor={BackgroundColor.warningMuted}
+  padding={4}
+>
+  Size "lg" container
+</Container>
+<Container
+  backgroundColor={BackgroundColor.errorMuted}
+  padding={4}
+>
+  no max-width container
+</Container>
+```

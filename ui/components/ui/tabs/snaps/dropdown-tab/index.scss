@@ -1,0 +1,55 @@
+%select-box-padding {
+  padding: 8px 20px 0 4px;
+}
+
+%select-box-text-styles {
+  font-size: 0.75rem;
+  overflow: hidden !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.transaction-insight-dropdown-wrapper {
+  &::before {
+    @extend %select-box-padding;
+    @extend %select-box-text-styles;
+
+    content: attr(title);
+    visibility: hidden;
+    pointer-events: none;
+    display: inline-block;
+    max-width: 150px;
+  }
+}
+
+.transaction-insight-dropdown {
+  cursor: pointer;
+
+  &,
+  select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  select {
+    @extend %select-box-text-styles;
+
+    border: none;
+    cursor: pointer;
+  }
+
+  select:focus {
+    outline: none;
+  }
+
+  .dropdown__icon-caret-down {
+    right: 4px;
+    cursor: pointer;
+  }
+
+  .dropdown__select {
+    @extend %select-box-padding;
+  }
+}

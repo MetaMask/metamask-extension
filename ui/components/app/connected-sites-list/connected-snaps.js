@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { SnapCaveatType } from '@metamask/rpc-methods';
 import { Box, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';
-import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import SnapAvatar from '../snaps/snap-avatar';
 import {
   AlignItems,
@@ -18,42 +15,19 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
-import {
-  getOriginOfCurrentTab,
-  getPermissionSubjects,
-} from '../../../selectors';
-import { removePermissionsFor, updateCaveat } from '../../../store/actions';
+import { getOriginOfCurrentTab } from '../../../selectors';
+import { disconnectOriginFromSnap } from '../../../store/actions';
+import { getSnapRoute } from '../../../helpers/utils/util';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const subjects = useSelector(getPermissionSubjects);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
 
   const onDisconnect = (snapId) => {
-    const caveatValue =
-      subjects[connectedOrigin].permissions[WALLET_SNAP_PERMISSION_KEY]
-        .caveats[0].value;
-    const newCaveatValue = { ...caveatValue };
-    delete newCaveatValue[snapId];
-    if (Object.keys(newCaveatValue).length > 0) {
-      dispatch(
-        updateCaveat(
-          connectedOrigin,
-          WALLET_SNAP_PERMISSION_KEY,
-          SnapCaveatType.SnapIds,
-          newCaveatValue,
-        ),
-      );
-    } else {
-      dispatch(
-        removePermissionsFor({
-          [connectedOrigin]: [WALLET_SNAP_PERMISSION_KEY],
-        }),
-      );
-    }
+    dispatch(disconnectOriginFromSnap(connectedOrigin, snapId));
   };
 
   const renderListItemOptions = (snapId) => {
@@ -74,9 +48,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         </MenuItem>
         <MenuItem
           iconName={IconName.Setting}
-          onClick={() =>
-            history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`)
-          }
+          onClick={() => history.push(getSnapRoute(snapId))}
         >
           {t('snapsSettings')}
         </MenuItem>

@@ -1,9 +1,11 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, act, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getTokenSymbol } from '../../../store/actions';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
@@ -49,6 +51,18 @@ jest.mock('../../../hooks/useTokenTracker', () => {
   };
 });
 
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
+jest.mock('../../../store/actions', () => {
+  return {
+    getTokenSymbol: jest.fn(),
+  };
+});
+
 const render = (
   selectedAddress = mockState.metamask.selectedAddress,
   balance = ETH_BALANCE,
@@ -58,11 +72,15 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId },
-      conversionRate: CONVERSION_RATE,
-      cachedBalances: {
+      providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
+      currencyRates: {
+        ETH: {
+          conversionRate: CONVERSION_RATE,
+        },
+      },
+      accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: balance,
+          [selectedAddress]: { balance },
         },
       },
       contractExchangeRates: {
@@ -81,18 +99,28 @@ const render = (
 };
 
 describe('AssetList', () => {
-  it('renders AssetList component and shows Refresh List text', () => {
-    render();
-    expect(screen.getByText('Refresh list')).toBeInTheDocument();
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
+  getTokenSymbol.mockImplementation(async (address) => {
+    if (address === USDC_CONTRACT) {
+      return 'USDC';
+    }
+    if (address === LINK_CONTRACT) {
+      return 'LINK';
+    }
+    if (address === WBTC_CONTRACT) {
+      return 'WBTC';
+    }
+    return null;
   });
 
-  describe('token fiat value calculations', () => {
-    it('calculates the correct fiat account total', () => {
-      process.env.MULTICHAIN = 1;
-      const { container } = render();
-      expect(container).toMatchSnapshot();
-      expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
-      jest.resetModules();
+  it('renders AssetList component and shows Refresh List text', async () => {
+    await act(async () => {
+      render();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Refresh list')).toBeInTheDocument();
     });
   });
 });

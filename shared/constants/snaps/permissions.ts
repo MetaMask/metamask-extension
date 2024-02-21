@@ -5,34 +5,32 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  'endowment:page-home': 'endowment:page-home',
+  'endowment:signature-insight': 'endowment:signature-insight',
   'endowment:name-lookup': 'endowment:name-lookup',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  'endowment:keyring': 'endowment:keyring',
+  ///: END:ONLY_INCLUDE_IF
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
 export const ExcludedSnapPermissions = Object.freeze({
-  // TODO: Enable in Flask
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-  snap_getLocale:
-    'This permission is still in development and therefore not available.',
-  snap_manageAccounts:
-    'This permission is still in development and therefore not available.',
-  ///: END:ONLY_INCLUDE_IN
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps/issues/990.',
 });
 
 export const ExcludedSnapEndowments = Object.freeze({
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-  'endowment:keyring':
-    'This endowment is still in development therefore not available.',
-  'endowment:lifecycle-hooks':
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  'endowment:page-home':
     'This endowment is experimental and therefore not available.',
   'endowment:name-lookup':
-    'This permission is still in development and therefore not available.',
-  ///: END:ONLY_INCLUDE_IN
+    'This endowment is experimental and therefore not available.',
+  'endowment:signature-insight':
+    'This endowment is experimental and therefore not available.',
+  ///: END:ONLY_INCLUDE_IF
 });
 
 export const DynamicSnapPermissions = Object.freeze(['eth_accounts']);

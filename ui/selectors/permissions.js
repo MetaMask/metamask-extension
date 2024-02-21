@@ -1,13 +1,15 @@
 import { ApprovalType } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+///: END:ONLY_INCLUDE_IF
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
+import { createDeepEqualSelector } from './util';
 import {
+  getInternalAccount,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
@@ -15,7 +17,29 @@ import {
 // selectors
 
 /**
- * Get the permission subjects object.
+ * Deep equal selector to get the permission subjects object.
+ *
+ * @param {object} state - The current state.
+ * @returns {object} The permissions subjects object.
+ */
+export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
+  (state) => state.metamask.subjects || {},
+  (subjects) => subjects,
+);
+
+/**
+ * Deep equal selector to get the subject metadata object.
+ *
+ * @param {object} state - The current state.
+ * @returns {object} The subject metadata object.
+ */
+export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
+  (state) => state.metamask.subjectMetadata,
+  (metadata) => metadata,
+);
+
+/**
+ * Selector to get the permission subjects object.
  *
  * @param {object} state - The current state.
  * @returns {object} The permissions subjects object.
@@ -141,7 +165,7 @@ export function getSubjectsWithPermission(state, permissionName) {
   return connectedSubjects;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSubjectsWithSnapPermission(state, snapId) {
   const subjects = getPermissionSubjects(state);
 
@@ -161,7 +185,7 @@ export function getSubjectsWithSnapPermission(state, snapId) {
       };
     });
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Returns an object mapping addresses to objects mapping origins to connected
@@ -227,23 +251,26 @@ function subjectSelector(state, origin) {
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const selectedAddress = getSelectedAddress(state);
+  const selectedInternalAccount = getSelectedInternalAccount(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
 
   const {
-    metamask: { identities },
+    metamask: {
+      internalAccounts: { accounts },
+    },
   } = state;
-  const numberOfAccounts = Object.keys(identities).length;
+  const numberOfAccounts = Object.keys(accounts).length;
 
   if (
     connectedAccounts.length &&
     connectedAccounts.length !== numberOfAccounts
   ) {
     if (
-      connectedAccounts.findIndex((address) => address === selectedAddress) ===
-      -1
+      connectedAccounts.findIndex(
+        (address) => address === selectedInternalAccount.address,
+      ) === -1
     ) {
-      return identities[selectedAddress];
+      return getInternalAccount(state, selectedInternalAccount.id);
     }
   }
 
@@ -325,7 +352,7 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
@@ -340,7 +367,7 @@ export function getSnapInstallOrUpdateRequests(state) {
 export function getFirstSnapInstallOrUpdateRequest(state) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getPermissionsRequests(state) {
   return getApprovalRequestsByType(

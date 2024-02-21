@@ -1,6 +1,13 @@
 import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner';
+import { Box } from '../../component-library';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 
 const LoadingScreen = ({
   header,
@@ -15,23 +22,30 @@ const LoadingScreen = ({
     return isValidElement(loadingMessage) ? (
       loadingMessage
     ) : (
-      <span>{loadingMessage}</span>
+      <span style={{ textAlign: 'center' }}>{loadingMessage}</span>
     );
   };
 
   return (
-    <div className="loading-overlay">
+    <Box className="loading-overlay">
       {header}
-      <div className="loading-overlay__container">
+      <Box className="loading-overlay__container" marginBottom={3}>
         {showLoadingSpinner && (
           <Spinner
             color="var(--color-warning-default)"
             className="loading-overlay__spinner"
           />
         )}
+      </Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
         {renderMessage()}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

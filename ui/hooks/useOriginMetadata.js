@@ -1,4 +1,4 @@
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
 import { getTargetSubjectMetadata } from '../selectors';
 

@@ -14,6 +14,7 @@ const custodianAccounts = [
     address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     balance: '0x',
     name: 'Jupiter',
+    envName: 'Jupiter',
     labels: [
       {
         key: 'service',
@@ -25,6 +26,7 @@ const custodianAccounts = [
     address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
     balance: '0x',
     name: 'Jupiter',
+    envName: 'Jupiter',
     labels: [
       {
         key: 'service',
@@ -42,7 +44,7 @@ const mockedRemoveAddTokenConnectRequest = jest
 const mockedSetCustodianNewRefreshToken = jest
   .fn()
   .mockReturnValue({ type: 'TYPE' });
-let mockedGetCustodianConnectRequest = jest
+let mockedGetCustodianAccounts = jest
   .fn()
   .mockReturnValue(async () => await custodianAccounts);
 
@@ -50,7 +52,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
   mmiActionsFactory: () => ({
     removeAddTokenConnectRequest: mockedRemoveAddTokenConnectRequest,
     setCustodianNewRefreshToken: mockedSetCustodianNewRefreshToken,
-    getCustodianAccounts: mockedGetCustodianConnectRequest,
+    getCustodianAccounts: mockedGetCustodianAccounts,
   }),
   showInteractiveReplacementTokenBanner: () =>
     mockedShowInteractiveReplacementTokenBanner,
@@ -69,7 +71,7 @@ const connectRequests = [
   {
     labels,
     origin: 'origin',
-    apiUrl: 'apiUrl',
+    environment: 'environment',
   },
 ];
 
@@ -97,6 +99,7 @@ const render = ({ newState } = {}) => {
           {
             production: true,
             name: 'Jupiter',
+            envName: 'Jupiter',
             type: 'Jupiter',
             iconUrl: 'iconUrl',
             displayName: 'displayName',
@@ -167,7 +170,7 @@ describe('Interactive Replacement Token Page', function () {
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalled();
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
       origin: connectRequests[0].origin,
-      apiUrl: connectRequests[0].apiUrl,
+      environment: connectRequests[0].environment,
       token: connectRequests[0].token,
     });
   });
@@ -192,7 +195,7 @@ describe('Interactive Replacement Token Page', function () {
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalled();
     expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
       origin: connectRequests[0].origin,
-      apiUrl: connectRequests[0].apiUrl,
+      environment: connectRequests[0].environment,
       token: connectRequests[0].token,
     });
     expect(props.history.push).toHaveBeenCalled();
@@ -200,7 +203,7 @@ describe('Interactive Replacement Token Page', function () {
   });
 
   it('should reject if there are errors', async () => {
-    mockedGetCustodianConnectRequest = jest.fn().mockReturnValue(async () => {
+    mockedGetCustodianAccounts = jest.fn().mockReturnValue(async () => {
       throw new Error();
     });
 

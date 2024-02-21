@@ -1,24 +1,23 @@
-const path = require('path');
-
+const { readFileSync } = require('node:fs');
+const path = require('node:path');
+const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
 
+const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
+const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
+const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
+
+/**
+ * @type {import('eslint').Linter.Config }
+ */
 module.exports = {
   root: true,
   // Suggested addition from the storybook 6.5 update
   extends: ['plugin:storybook/recommended'],
   // Ignore files which are also in .prettierignore
-  ignorePatterns: [
-    'app/vendor/**',
-    'builds/**/*',
-    'development/chromereload.js',
-    'development/charts/**',
-    'development/ts-migration-dashboard/build/**',
-    'dist/**/*',
-    'node_modules/**/*',
-    'storybook-build/**/*',
-    'jest-coverage/**/*',
-    'coverage/**/*',
-  ],
+  ignorePatterns: readFileSync('.prettierignore', 'utf8').trim().split('\n'),
+  // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
+  parser: '@babel/eslint-parser',
   overrides: [
     /**
      * == Modules ==
@@ -83,6 +82,7 @@ module.exports = {
         'shared/**/*.js',
         'shared/**/*.ts',
         'ui/**/*.js',
+        'offscreen/**/*.ts',
         '**/*.test.js',
         'test/lib/**/*.js',
         'test/mocks/**/*.js',
@@ -123,13 +123,39 @@ module.exports = {
      * TypeScript files
      */
     {
-      files: ['*.{ts,tsx}'],
+      files: tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
+      parserOptions: {
+        project: tsconfigPath,
+        // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
+        tsconfigRootDir: path.dirname(tsconfigPath),
+      },
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         '@metamask/eslint-config-typescript',
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
+        // this rule is new, but we didn't use it before, so it's off now
+        '@typescript-eslint/no-duplicate-enum-values': 'off',
+        '@typescript-eslint/no-shadow': [
+          'error',
+          {
+            builtinGlobals: true,
+            allow: [
+              'ErrorOptions',
+              'Text',
+              'Screen',
+              'KeyboardEvent',
+              'Lock',
+              'Notification',
+              'CSS',
+            ],
+          },
+        ],
+        // `no-parameter-properties` was removed in favor of `parameter-properties`
+        // Yeah, they have opposite names but do the same thing?!
+        '@typescript-eslint/no-parameter-properties': 'off',
+        '@typescript-eslint/parameter-properties': 'error',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
         'import/named': 'off',
@@ -238,6 +264,7 @@ module.exports = {
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.js',
+        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -272,6 +299,7 @@ module.exports = {
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
+        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
@@ -281,6 +309,7 @@ module.exports = {
         'shared/**/*.test.ts',
         'test/helpers/*.js',
         'test/jest/*.js',
+        'test/lib/timer-helpers.js',
         'test/e2e/helpers.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
@@ -293,13 +322,12 @@ module.exports = {
       rules: {
         'import/unambiguous': 'off',
         'import/named': 'off',
-        'jest/no-large-snapshots': [
-          'error',
-          {
-            maxSize: 50,
-            inlineMaxSize: 50,
-          },
-        ],
+        // *.snap files weren't parsed by previous versions of this eslint
+        // config section, but something got fixed somewhere, and now this rule
+        // causes failures. We need to turn it off instead of fix them because
+        // we aren't even remotely close to being in alignment. If it bothers
+        // you open a PR to fix it yourself.
+        'jest/no-large-snapshots': 'off',
         'jest/no-restricted-matchers': 'off',
 
         /**
@@ -388,6 +416,26 @@ module.exports = {
           'asc',
           {
             natural: true,
+          },
+        ],
+      },
+    },
+    {
+      files: ['ui/components/multichain/**/*.{js}'],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        path.resolve(__dirname, '.eslintrc.node.js'),
+        path.resolve(__dirname, '.eslintrc.babel.js'),
+      ],
+      rules: {
+        'sort-imports': [
+          'error',
+          {
+            ignoreCase: false,
+            ignoreDeclarationSort: true,
+            ignoreMemberSort: true,
+            memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+            allowSeparatedGroups: false,
           },
         ],
       },

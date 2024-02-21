@@ -23,7 +23,6 @@ export default class MMIController extends EventEmitter {
     this.opts = opts;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.txController = opts.txController;
     this.securityProviderRequest = opts.securityProviderRequest;
     this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
@@ -37,8 +36,19 @@ export default class MMIController extends EventEmitter {
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
+    this.accountsController = opts.accountsController;
     this.platform = opts.platform;
     this.extension = opts.extension;
+
+    this.updateTransactionHash = opts.updateTransactionHash;
+    this.trackTransactionEvents = opts.trackTransactionEvents;
+    this.txStateManager = {
+      getTransactions: opts.getTransactions,
+      setTxStatusSigned: opts.setTxStatusSigned,
+      setTxStatusSubmitted: opts.setTxStatusSubmitted,
+      setTxStatusFailed: opts.setTxStatusFailed,
+      updateTransaction: opts.updateTransaction,
+    };
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
@@ -75,7 +85,13 @@ export default class MMIController extends EventEmitter {
   }
 
   async trackTransactionEventFromCustodianEvent(txMeta, event) {
-    this.txController._trackTransactionMetricsEvent(txMeta, event);
+    // transactionMetricsRequest parameter is already bound in the constructor
+    this.trackTransactionEvents(
+      {
+        transactionMeta: txMeta,
+      },
+      event,
+    );
   }
 
   async addKeyringIfNotExists(type) {
@@ -91,12 +107,13 @@ export default class MMIController extends EventEmitter {
       log,
       getState: () => this.getState(),
       getPendingNonce: (address) => this.getPendingNonce(address),
-      setTxHash: (txId, txHash) => this.txController.setTxHash(txId, txHash),
+      setTxHash: (txId, txHash) => this.updateTransactionHash(txId, txHash),
       signatureController: this.signatureController,
-      txStateManager: this.txController.txStateManager,
+      txStateManager: this.txStateManager,
       custodyController: this.custodyController,
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
+      captureException,
     });
   }
 
@@ -154,11 +171,7 @@ export default class MMIController extends EventEmitter {
           }
         }
 
-        const txList = this.txController.txStateManager.getTransactions(
-          {},
-          [],
-          false,
-        ); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
@@ -167,8 +180,8 @@ export default class MMIController extends EventEmitter {
             txList,
             getPendingNonce: (address) => this.getPendingNonce(address),
             setTxHash: (txId, txHash) =>
-              this.txController.setTxHash(txId, txHash),
-            txStateManager: this.txController.txStateManager,
+              this.updateTransactionHash(txId, txHash),
+            txStateManager: this.txStateManager,
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
           });
@@ -189,12 +202,14 @@ export default class MMIController extends EventEmitter {
       await this.mmiConfigurationController.storeConfiguration();
     } catch (error) {
       log.error('Error while unlocking extension.', error);
+      captureException(error);
     }
 
     try {
       await this.transactionUpdateController.subscribeToEvents();
     } catch (error) {
       log.error('Error while unlocking extension.', error);
+      captureException(error);
     }
 
     const mmiConfigData =
@@ -255,7 +270,7 @@ export default class MMIController extends EventEmitter {
         custodianDetails: accounts[item].custodianDetails,
         labels: accounts[item].labels,
         token: accounts[item].token,
-        apiUrl: accounts[item].apiUrl,
+        envName: custodianName,
         custodyType: custodian.keyringClass.type,
         chainId: accounts[item].chainId,
       })),
@@ -266,7 +281,6 @@ export default class MMIController extends EventEmitter {
         name: accounts[item].name,
         custodianDetails: accounts[item].custodianDetails,
         labels: accounts[item].labels,
-        apiUrl: accounts[item].apiUrl,
         custodyType: custodian.keyringClass.type,
         custodianName,
         chainId: accounts[item].chainId,
@@ -310,6 +324,8 @@ export default class MMIController extends EventEmitter {
         if (label) {
           // Set the label for the address
           this.preferencesController.setAccountLabel(address, label);
+          const account = this.accountsController.getAccountByAddress(address);
+          this.accountsController.setAccountName(account.id, label);
         }
       }
     });
@@ -348,7 +364,7 @@ export default class MMIController extends EventEmitter {
 
   async getCustodianAccounts(
     token,
-    apiUrl,
+    envName,
     custodianType,
     getNonImportedAccounts,
   ) {
@@ -377,14 +393,14 @@ export default class MMIController extends EventEmitter {
 
     const accounts = await keyring.getCustodianAccounts(
       token,
-      apiUrl,
+      envName,
       null,
       getNonImportedAccounts,
     );
     return accounts;
   }
 
-  async getCustodianAccountsByAddress(token, apiUrl, address, custodianType) {
+  async getCustodianAccountsByAddress(token, envName, address, custodianType) {
     let keyring;
 
     if (custodianType) {
@@ -398,7 +414,11 @@ export default class MMIController extends EventEmitter {
       throw new Error('No custodian specified');
     }
 
-    const accounts = await keyring.getCustodianAccounts(token, apiUrl, address);
+    const accounts = await keyring.getCustodianAccounts(
+      token,
+      envName,
+      address,
+    );
     return accounts;
   }
 
@@ -411,7 +431,9 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianConfirmDeepLink(txId) {
-    const txMeta = this.txController.txStateManager.getTransaction(txId);
+    const txMeta = this.txStateManager
+      .getTransactions()
+      .find((tx) => tx.id === txId);
 
     const address = txMeta.txParams.from;
     const custodyType = this.custodyController.getCustodyTypeByAddress(
@@ -442,8 +464,8 @@ export default class MMIController extends EventEmitter {
   }
 
   // Based on a custodian name, get all the tokens associated with that custodian
-  async getCustodianJWTList(custodianName) {
-    console.log('getCustodianJWTList', custodianName);
+  async getCustodianJWTList(custodianEnvName) {
+    console.log('getCustodianJWTList', custodianEnvName);
 
     const { identities } = this.preferencesController.store.getState();
 
@@ -455,7 +477,9 @@ export default class MMIController extends EventEmitter {
 
     const { custodians } = mmiConfiguration;
 
-    const custodian = custodians.find((item) => item.name === custodianName);
+    const custodian = custodians.find(
+      (item) => item.envName === custodianEnvName,
+    );
 
     if (!custodian) {
       return [];
@@ -480,9 +504,11 @@ export default class MMIController extends EventEmitter {
 
         if (
           !custodyAccountDetails ||
-          custodyAccountDetails.custodianName !== custodianName
+          custodyAccountDetails.custodianName !== custodianEnvName
         ) {
-          log.debug(`${address} does not belong to ${custodianName} keyring`);
+          log.debug(
+            `${address} does not belong to ${custodianEnvName} keyring`,
+          );
           continue;
         }
 
@@ -510,28 +536,33 @@ export default class MMIController extends EventEmitter {
     return keyring ? keyring.getAllAccountsWithToken(token) : [];
   }
 
-  async setCustodianNewRefreshToken({ address, newAuthDetails }) {
+  async setCustodianNewRefreshToken({ address, refreshToken }) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
 
     const keyring = await this.addKeyringIfNotExists(custodyType);
 
-    await keyring.replaceRefreshTokenAuthDetails(address, newAuthDetails);
+    await keyring.replaceRefreshTokenAuthDetails(address, refreshToken);
   }
 
   async handleMmiCheckIfTokenIsPresent(req) {
-    const { token, apiUrl } = req.params;
-    const custodyType = 'Custody - JSONRPC'; // Only JSONRPC is supported for now
+    const { token, envName, address } = req.params;
+
+    const currentAddress =
+      address || this.preferencesController.getSelectedAddress();
+    const currentCustodyType = this.custodyController.getCustodyTypeByAddress(
+      toChecksumHexAddress(currentAddress),
+    );
 
     // This can only work if the extension is unlocked
     await this.appStateController.getUnlockPromise(true);
 
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(currentCustodyType);
 
     return await this.custodyController.handleMmiCheckIfTokenIsPresent({
       token,
-      apiUrl,
+      envName,
       keyring,
     });
   }
@@ -599,6 +630,11 @@ export default class MMIController extends EventEmitter {
         signOperation,
         true,
       );
+
+      this.appStateController.setCustodianDeepLink({
+        fromAddress: signature.from,
+        custodyId: signature.custodian_transactionId,
+      });
     }
 
     this.signatureController.setMessageMetadata(messageId, signature);

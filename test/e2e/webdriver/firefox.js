@@ -1,9 +1,14 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { Builder, By, until } = require('selenium-webdriver');
+const {
+  Builder,
+  By,
+  until,
+  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+} = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const proxy = require('selenium-webdriver/proxy');
+const { retry } = require('../../../development/lib/retry');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -15,10 +20,10 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 
 /**
  * Proxy host to use for HTTPS requests
- *
- * @type {string}
  */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const HTTPS_PROXY_HOST = new URL(
+  process.env.SELENIUM_HTTPS_PROXY || 'http://127.0.0.1:8000',
+);
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
@@ -35,7 +40,15 @@ class FirefoxDriver {
   static async build({ responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
-    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+
+    // Set proxy in the way that doesn't interfere with Selenium Manager
+    options.setPreference('network.proxy.type', 1);
+    options.setPreference('network.proxy.ssl', HTTPS_PROXY_HOST.hostname);
+    options.setPreference(
+      'network.proxy.ssl_port',
+      parseInt(HTTPS_PROXY_HOST.port, 10),
+    );
+
     options.setAcceptInsecureCerts(true);
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
@@ -44,6 +57,13 @@ class FirefoxDriver {
     );
     if (process.env.CI === 'true') {
       options.setBinary('/opt/firefox/firefox');
+    }
+    if (process.env.SELENIUM_HEADLESS) {
+      // TODO: Remove notice and consider non-experimental when results are consistent
+      console.warn(
+        '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
+      );
+      options.headless();
     }
     const builder = new Builder()
       .forBrowser('firefox')
@@ -87,18 +107,37 @@ class FirefoxDriver {
   }
 
   /**
-   * Returns the Internal UUID for the given extension
+   * Returns the Internal UUID for the given extension, with retries
    *
    * @returns {Promise<string>} the Internal UUID for the given extension
    */
   async getInternalId() {
     await this._driver.get('about:debugging#addons');
-    return await this._driver
-      .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
-        1000,
-      )
-      .getText();
+
+    // This method with 2 retries to find the UUID seems more stable on local e2e tests
+    let uuid;
+    await retry({ retries: 2 }, () => (uuid = this._waitOnceForUUID()));
+
+    return uuid;
+  }
+
+  /**
+   * Waits once to locate the temporary Firefox UUID, can be put in a retry loop
+   *
+   * @returns {Promise<string>} the UUID for the given extension, or null if not found
+   * @private
+   */
+  async _waitOnceForUUID() {
+    const uuidElement = await this._driver.wait(
+      until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+      1000,
+    );
+
+    if (uuidElement.getText) {
+      return uuidElement.getText();
+    }
+
+    return null;
   }
 }
 

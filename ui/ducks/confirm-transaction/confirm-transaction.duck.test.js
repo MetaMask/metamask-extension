@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import sinon from 'sinon';
 import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
@@ -21,6 +21,7 @@ const initialState = {
   hexTransactionFee: '',
   hexTransactionTotal: '',
   nonce: '',
+  maxValueMode: {},
 };
 
 const UPDATE_TX_DATA = 'metamask/confirm-transaction/UPDATE_TX_DATA';
@@ -34,6 +35,7 @@ const UPDATE_TRANSACTION_TOTALS =
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE';
 const CLEAR_CONFIRM_TRANSACTION =
   'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION';
+const SET_MAX_VALUE_MODE = 'metamask/confirm-transaction/SET_MAX_VALUE_MODE';
 
 describe('Confirm Transaction Duck', () => {
   describe('State changes', () => {
@@ -54,6 +56,9 @@ describe('Confirm Transaction Duck', () => {
       hexTransactionFee: '0x1319718a5000',
       hexTransactionTotal: '',
       nonce: '0x0',
+      maxValueMode: {
+        '123abc': true,
+      },
     };
 
     it('should initialize state', () => {
@@ -171,12 +176,39 @@ describe('Confirm Transaction Duck', () => {
       });
     });
 
+    it("shouldn't clear maxValueMode when receiving a CLEAR_CONFIRM_TRANSACTION action", () => {
+      expect(
+        ConfirmTransactionReducer(mockState, {
+          type: CLEAR_CONFIRM_TRANSACTION,
+        }),
+      ).toStrictEqual({
+        ...initialState,
+        maxValueMode: mockState.maxValueMode,
+      });
+    });
+
+    it('should set max value mode', () => {
+      const mockId = '123abc';
+      expect(
+        ConfirmTransactionReducer(mockState, {
+          type: SET_MAX_VALUE_MODE,
+          payload: {
+            transactionId: mockId,
+            enabled: false,
+          },
+        }).maxValueMode[mockId],
+      ).toBe(false);
+    });
+
     it('should clear confirmTransaction when receiving a FETCH_DATA_END action', () => {
       expect(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_CONFIRM_TRANSACTION,
         }),
-      ).toStrictEqual(initialState);
+      ).toStrictEqual({
+        ...initialState,
+        maxValueMode: mockState.maxValueMode,
+      });
     });
   });
 
@@ -276,7 +308,7 @@ describe('Confirm Transaction Duck', () => {
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
-        metamaskNetworkId: '5',
+        chainId: '0x5',
         origin: 'faucet.metamask.io',
         status: TransactionStatus.unapproved,
         time: 1530838113716,
@@ -290,8 +322,12 @@ describe('Confirm Transaction Duck', () => {
       };
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           providerConfig: {
             ticker: 'ETH',
           },
@@ -343,9 +379,12 @@ describe('Confirm Transaction Duck', () => {
     it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
-          networkId: '5',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           selectedNetworkClientId: NetworkType.goerli,
           networksMetadata: {
             [NetworkType.goerli]: {
@@ -355,13 +394,14 @@ describe('Confirm Transaction Duck', () => {
           },
           providerConfig: {
             chainId: '0x5',
+            ticker: 'ETH',
           },
           transactions: [
             {
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
-              metamaskNetworkId: '5',
+              chainId: '0x5',
               origin: 'faucet.metamask.io',
               status: TransactionStatus.unapproved,
               time: 1530838113716,

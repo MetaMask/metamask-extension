@@ -6,10 +6,8 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider } from '../../../../test/jest';
 import CreationSuccessful from './creation-successful';
 
 const mockHistoryPush = jest.fn();

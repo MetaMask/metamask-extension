@@ -1,0 +1,8 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Select Expand view in the wallet menu.,,,A new tab opens. The expanded extension view is shown.,
+4,Proceed to Networks in the Settings menu.,,,The list of main networks and test networks is shown.,
+5,Select the network to delete.,A custom network should be added first.,e.g. Avalanche Mainnet.,"The network name, RPC URL, chain ID, currency symbol and block explorer URL are shown. The Delete button is shown. ",The Delete button is shown IF the network to be deleted is not the currently used network. 
+6,Proceed to delete the network.,,,,
+7,Confirm deleting the network. ,,,The network deleted is not shown in the networks list.,

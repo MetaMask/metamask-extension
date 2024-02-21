@@ -4,7 +4,7 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   ListNames,
@@ -14,19 +14,22 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
+import { EthMethod, EthAccountType } from '@metamask/keyring-api';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
-import createTxMeta from '../../test/lib/createTxMeta';
+import { LoggingController, LogType } from '@metamask/logging-controller';
+import { TransactionController } from '@metamask/transaction-controller';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import { LOG_EVENT } from '../../shared/constants/logs';
+import mockEncryptor from '../../test/lib/mock-encryptor';
+import * as tokenUtils from '../../shared/lib/token-util';
 import { deferredPromise } from './lib/util';
-import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -47,7 +50,7 @@ const browserPolyfillMock = {
     },
   },
   alarms: {
-    getAll: jest.fn(),
+    getAll: jest.fn(() => Promise.resolve([])),
     create: jest.fn(),
     clear: jest.fn(),
     onAlarm: {
@@ -103,7 +106,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
-const currentNetworkId = '5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -113,6 +115,20 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const TEST_INTERNAL_ACCOUNT = {
+  id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  metadata: {
+    name: 'Account 1',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+    lastSelected: 0,
+  },
+  options: {},
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
+};
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -132,6 +148,12 @@ const MAINNET_CHAIN_ID = '0x1';
 
 const firstTimeState = {
   config: {},
+  AccountsController: {
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: '',
+    },
+  },
   NetworkController: {
     providerConfig: {
       type: NETWORK_TYPES.RPC,
@@ -297,15 +319,7 @@ describe('MetaMaskController', () => {
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -318,11 +332,11 @@ describe('MetaMaskController', () => {
       });
 
       jest.spyOn(
-        metamaskController.coreKeyringController,
+        metamaskController.keyringController,
         'createNewVaultAndKeychain',
       );
       jest.spyOn(
-        metamaskController.coreKeyringController,
+        metamaskController.keyringController,
         'createNewVaultAndRestore',
       );
       jest
@@ -334,6 +348,64 @@ describe('MetaMaskController', () => {
       it('in mv2, it should reset state without attempting to call browser storage', () => {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
         expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('on new version install', () => {
+      const mockOnInstalledEventDetails = {
+        reason: 'update',
+        previousVersion: '1.0.0',
+      };
+      browserPolyfillMock.runtime.onInstalled.addListener.mockImplementation(
+        (handler) => {
+          handler(mockOnInstalledEventDetails);
+        },
+      );
+
+      it('should details with LoggingController', async () => {
+        const mockVersion = '1.3.7';
+        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+
+        jest.spyOn(LoggingController.prototype, 'add');
+
+        const localController = new MetaMaskController({
+          initLangCode: 'en_US',
+          platform: {
+            getVersion: mockGetVersionInfo,
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+        });
+
+        expect(localController.loggingController.add).toHaveBeenCalledTimes(1);
+        expect(localController.loggingController.add).toHaveBeenCalledWith({
+          type: LogType.GenericLog,
+          data: {
+            event: LOG_EVENT.VERSION_UPDATE,
+            previousVersion: mockOnInstalledEventDetails.previousVersion,
+            version: mockVersion,
+          },
+        });
+      });
+
+      it('should openExtensionInBrowser if version is 8.1.0', () => {
+        const mockVersion = '8.1.0';
+        const mockGetVersionInfo = jest.fn().mockReturnValue(mockVersion);
+
+        const openExtensionInBrowserMock = jest.fn();
+
+        // eslint-disable-next-line no-new
+        new MetaMaskController({
+          initLangCode: 'en_US',
+          platform: {
+            getVersion: mockGetVersionInfo,
+            openExtensionInBrowser: openExtensionInBrowserMock,
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+        });
+
+        expect(openExtensionInBrowserMock).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -349,9 +421,9 @@ describe('MetaMaskController', () => {
         ]);
       });
 
-      it('adds private key to keyrings in core KeyringController', async () => {
+      it('adds private key to keyrings in KeyringController', async () => {
         const simpleKeyrings =
-          metamaskController.coreKeyringController.getKeyringsByType(
+          metamaskController.keyringController.getKeyringsByType(
             KeyringType.imported,
           );
         const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
@@ -366,7 +438,7 @@ describe('MetaMaskController', () => {
 
       it('adds 1 account', async () => {
         const keyringAccounts =
-          await metamaskController.coreKeyringController.getAccounts();
+          await metamaskController.keyringController.getAccounts();
         expect(keyringAccounts[keyringAccounts.length - 1]).toStrictEqual(
           '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
         );
@@ -375,6 +447,10 @@ describe('MetaMaskController', () => {
 
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
+        const accountsControllerSpy = jest.spyOn(
+          metamaskController.accountsController,
+          'updateAccounts',
+        );
         const password = 'password';
         await metamaskController.createNewVaultAndKeychain(password);
 
@@ -386,7 +462,7 @@ describe('MetaMaskController', () => {
           metamaskController.preferencesController.store.getState().identities,
         );
         const addresses =
-          await metamaskController.coreKeyringController.getAccounts();
+          await metamaskController.keyringController.getAccounts();
 
         identities.forEach((identity) => {
           expect(addresses).toContain(identity);
@@ -395,27 +471,42 @@ describe('MetaMaskController', () => {
         addresses.forEach((address) => {
           expect(identities).toContain(address);
         });
+
+        const internalAccounts =
+          metamaskController.accountsController.listAccounts();
+
+        internalAccounts.forEach((account) => {
+          expect(addresses).toContain(account.address);
+        });
+
+        addresses.forEach((address) => {
+          expect(
+            internalAccounts.find((account) => account.address === address),
+          ).toBeDefined();
+        });
+
+        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
-        jest.spyOn(metamaskController.coreKeyringController, 'setLocked');
+        jest.spyOn(metamaskController.keyringController, 'setLocked');
 
         await metamaskController.setLocked();
 
         expect(
-          metamaskController.coreKeyringController.setLocked,
+          metamaskController.keyringController.setLocked,
         ).toHaveBeenCalled();
         expect(
-          metamaskController.coreKeyringController.state.isUnlocked,
+          metamaskController.keyringController.state.isUnlocked,
         ).toStrictEqual(false);
       });
     });
 
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
-        jest.spyOn(metamaskController, 'selectFirstIdentity').mockReturnValue();
+        jest.spyOn(metamaskController, 'selectFirstAccount').mockReturnValue();
         const password = 'a-fake-password';
 
         const vault1 = await metamaskController.createNewVaultAndKeychain(
@@ -440,7 +531,7 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
         expect(
-          metamaskController.coreKeyringController.createNewVaultAndRestore,
+          metamaskController.keyringController.createNewVaultAndRestore,
         ).toHaveBeenCalledTimes(2);
       });
 
@@ -503,14 +594,15 @@ describe('MetaMaskController', () => {
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
+        // Give account 1 a balance
         jest
           .spyOn(metamaskController, 'getBalance')
           .mockImplementation((address) => {
             switch (address) {
               case TEST_ADDRESS:
-              case TEST_ADDRESS_3:
                 return Promise.resolve('0x14ced5122ce0a000');
               case TEST_ADDRESS_2:
+              case TEST_ADDRESS_3:
                 return Promise.resolve('0x0');
               default:
                 return Promise.reject(
@@ -519,20 +611,33 @@ describe('MetaMaskController', () => {
             }
           });
 
+        // Give account 2 a token
+        jest
+          .spyOn(metamaskController.tokensController, 'state', 'get')
+          .mockReturnValue({
+            allTokens: {},
+            allIgnoredTokens: {},
+            allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
+          });
+
         const startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
 
+        // Expect first account to be selected
         const identities = cloneDeep(metamaskController.getState().identities);
         expect(
           identities[TEST_ADDRESS].lastSelected >= startTime &&
             identities[TEST_ADDRESS].lastSelected <= Date.now(),
         ).toStrictEqual(true);
+
+        // Expect first 2 accounts to be restored
         delete identities[TEST_ADDRESS].lastSelected;
         expect(identities).toStrictEqual({
           [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+          [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: 'Account 2' },
         });
       });
     });
@@ -577,38 +682,44 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#selectFirstIdentity', () => {
-      let identities, address;
+    describe('#selectFirstAccount', () => {
+      let identities;
 
-      beforeEach(() => {
-        address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      beforeEach(async () => {
+        await metamaskController.keyringController.createNewVaultAndRestore(
+          'password',
+          TEST_SEED,
+        );
+        await metamaskController.addNewAccount(1);
+        await metamaskController.addNewAccount(2);
+
         identities = {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address,
+            TEST_ADDRESS,
             name: 'Account 1',
           },
           '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            TEST_ADDRESS_2,
             name: 'Account 2',
           },
         };
         metamaskController.preferencesController.store.updateState({
           identities,
         });
-        metamaskController.selectFirstIdentity();
+        metamaskController.selectFirstAccount();
       });
 
       it('changes preferences controller select address', () => {
         const preferenceControllerState =
           metamaskController.preferencesController.store.getState();
         expect(preferenceControllerState.selectedAddress).toStrictEqual(
-          address,
+          TEST_ADDRESS,
         );
       });
 
       it('changes metamask controller selected address', () => {
         const metamaskState = metamaskController.getState();
-        expect(metamaskState.selectedAddress).toStrictEqual(address);
+        expect(metamaskState.selectedAddress).toStrictEqual(TEST_ADDRESS);
       });
     });
 
@@ -626,31 +737,31 @@ describe('MetaMaskController', () => {
       });
 
       it('should add the Trezor Hardware keyring', async () => {
-        jest.spyOn(metamaskController.coreKeyringController, 'addNewKeyring');
+        jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
         await metamaskController
           .connectHardware(HardwareDeviceNames.trezor, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.coreKeyringController.getKeyringsByType(
+          await metamaskController.keyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         expect(
-          metamaskController.coreKeyringController.addNewKeyring,
+          metamaskController.keyringController.addNewKeyring,
         ).toHaveBeenCalledWith(KeyringType.trezor);
         expect(keyrings).toHaveLength(1);
       });
 
       it('should add the Ledger Hardware keyring', async () => {
-        jest.spyOn(metamaskController.coreKeyringController, 'addNewKeyring');
+        jest.spyOn(metamaskController.keyringController, 'addNewKeyring');
         await metamaskController
           .connectHardware(HardwareDeviceNames.ledger, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.coreKeyringController.getKeyringsByType(
+          await metamaskController.keyringController.getKeyringsByType(
             KeyringType.ledger,
           );
         expect(
-          metamaskController.coreKeyringController.addNewKeyring,
+          metamaskController.keyringController.addNewKeyring,
         ).toHaveBeenCalledWith(KeyringType.ledger);
         expect(keyrings).toHaveLength(1);
       });
@@ -672,7 +783,7 @@ describe('MetaMaskController', () => {
           mnemonic: uint8ArrayMnemonic,
         };
         jest
-          .spyOn(metamaskController.coreKeyringController, 'getKeyringsByType')
+          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
           .mockReturnValue([mockHDKeyring]);
 
         const recoveredMnemonic =
@@ -714,13 +825,59 @@ describe('MetaMaskController', () => {
         );
       });
 
+      it('should remove the identities when the device is forgotten', async () => {
+        jest.spyOn(window, 'open').mockReturnValue();
+
+        const localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            KeyringController: {
+              keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
+              isUnlocked: true,
+            },
+            PreferencesController: {
+              identities: {
+                '0x123': { name: 'Trezor 1', address: '0x123' },
+              },
+              selectedAddress: '0x123',
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        await localMetaMaskController.keyringController.createNewVaultAndKeychain(
+          'password',
+        );
+
+        await localMetaMaskController.keyringController.addNewKeyring(
+          'Trezor Hardware',
+          {
+            accounts: ['0x123'],
+          },
+        );
+
+        await localMetaMaskController.forgetDevice(HardwareDeviceNames.trezor);
+        const { identities: updatedIdentities } =
+          localMetaMaskController.preferencesController.store.getState();
+        expect(updatedIdentities['0x123']).toBeUndefined();
+      });
+
       it('should wipe all the keyring info', async () => {
         await metamaskController
           .connectHardware(HardwareDeviceNames.trezor, 0)
           .catch(() => null);
         await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
         const keyrings =
-          await metamaskController.coreKeyringController.getKeyringsByType(
+          await metamaskController.keyringController.getKeyringsByType(
             KeyringType.trezor,
           );
 
@@ -733,20 +890,20 @@ describe('MetaMaskController', () => {
     describe('unlockHardwareWalletAccount', () => {
       const accountToUnlock = 10;
       beforeEach(async () => {
-        await metamaskController.coreKeyringController.createNewVaultAndRestore(
+        await metamaskController.keyringController.createNewVaultAndRestore(
           'password',
           TEST_SEED,
         );
         jest.spyOn(window, 'open').mockReturnValue();
         jest
           .spyOn(
-            metamaskController.coreKeyringController,
+            metamaskController.keyringController,
             'addNewAccountForKeyring',
           )
           .mockReturnValue('0x123');
 
         jest
-          .spyOn(metamaskController.coreKeyringController, 'getAccounts')
+          .spyOn(metamaskController.keyringController, 'getAccounts')
           .mockResolvedValueOnce(['0x1'])
           .mockResolvedValueOnce(['0x2'])
           .mockResolvedValueOnce(['0x3']);
@@ -760,6 +917,17 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.preferencesController, 'setAccountLabel')
           .mockReturnValue();
 
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockReturnValue({
+            account: {
+              id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+            },
+          });
+        jest
+          .spyOn(metamaskController.accountsController, 'setAccountName')
+          .mockReturnValue();
+
         await metamaskController.unlockHardwareWalletAccount(
           accountToUnlock,
           HardwareDeviceNames.trezor,
@@ -769,7 +937,7 @@ describe('MetaMaskController', () => {
 
       it('should set unlockedAccount in the keyring', async () => {
         const keyrings =
-          await metamaskController.coreKeyringController.getKeyringsByType(
+          await metamaskController.keyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         expect(keyrings[0].unlockedAccount).toStrictEqual(accountToUnlock);
@@ -777,13 +945,13 @@ describe('MetaMaskController', () => {
 
       it('should call keyringController.addNewAccount', async () => {
         expect(
-          metamaskController.coreKeyringController.addNewAccountForKeyring,
+          metamaskController.keyringController.addNewAccountForKeyring,
         ).toHaveBeenCalledTimes(1);
       });
 
       it('should call keyringController.getAccounts', async () => {
         expect(
-          metamaskController.coreKeyringController.getAccounts,
+          metamaskController.keyringController.getAccounts,
         ).toHaveBeenCalledTimes(2);
       });
 
@@ -804,6 +972,18 @@ describe('MetaMaskController', () => {
           metamaskController.preferencesController.setAccountLabel,
         ).toHaveBeenCalledTimes(1);
       });
+
+      it('should call accountsController.getAccountByAddress', async () => {
+        expect(
+          metamaskController.accountsController.getAccountByAddress,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call accountsController.setAccountName', async () => {
+        expect(
+          metamaskController.accountsController.setAccountName,
+        ).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('#addNewAccount', () => {
@@ -814,10 +994,10 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#verifyseedPhrase', () => {
-      it('errors when no keying is provided', async () => {
-        await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
-          'No HD keyring found',
+    describe('#getSeedPhrase', () => {
+      it('errors when no password is provided', async () => {
+        await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
+          'KeyringController - Cannot unlock without a previous vault.',
         );
       });
 
@@ -825,51 +1005,30 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndKeychain('password');
         await metamaskController.addNewAccount(1);
         const getAccounts =
-          await metamaskController.coreKeyringController.getAccounts();
+          await metamaskController.keyringController.getAccounts();
         expect(getAccounts).toHaveLength(2);
       });
     });
 
     describe('#resetAccount', () => {
       it('wipes transactions from only the correct network id and with the selected address', async () => {
-        jest
-          .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
-          .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-        jest
-          .spyOn(metamaskController.txController.txStateManager, 'getNetworkId')
-          .mockReturnValue(42);
+        const selectedAddressMock =
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
-        metamaskController.txController.txStateManager._addTransactionsToState([
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 2,
-            status: TransactionStatus.rejected,
-            metamaskNetworkId: '32',
-          }),
-          createTxMeta({
-            id: 3,
-            status: TransactionStatus.submitted,
-            metamaskNetworkId: currentNetworkId,
-            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
-          }),
-        ]);
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ address: selectedAddressMock });
+
+        jest.spyOn(metamaskController.txController, 'wipeTransactions');
 
         await metamaskController.resetAccount();
 
         expect(
-          metamaskController.txController.txStateManager.getTransaction(1),
-        ).toBeUndefined();
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith(true, selectedAddressMock);
       });
     });
 
@@ -884,17 +1043,14 @@ describe('MetaMaskController', () => {
           destroy: jest.fn(),
         };
         jest
-          .spyOn(metamaskController.coreKeyringController, 'removeAccount')
+          .spyOn(metamaskController.keyringController, 'removeAccount')
           .mockReturnValue();
         jest
           .spyOn(metamaskController, 'removeAllAccountPermissions')
           .mockReturnValue();
 
         jest
-          .spyOn(
-            metamaskController.coreKeyringController,
-            'getKeyringForAccount',
-          )
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
           .mockResolvedValue(mockKeyring);
 
         ret = await metamaskController.removeAccount(addressToRemove);
@@ -902,7 +1058,7 @@ describe('MetaMaskController', () => {
 
       it('should call keyringController.removeAccount', async () => {
         expect(
-          metamaskController.coreKeyringController.removeAccount,
+          metamaskController.keyringController.removeAccount,
         ).toHaveBeenCalledWith(addressToRemove);
       });
       it('should call metamaskController.removeAllAccountPermissions', async () => {
@@ -913,9 +1069,9 @@ describe('MetaMaskController', () => {
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
       });
-      it('should call coreKeyringController.getKeyringForAccount', async () => {
+      it('should call keyringController.getKeyringForAccount', async () => {
         expect(
-          metamaskController.coreKeyringController.getKeyringForAccount,
+          metamaskController.keyringController.getKeyringForAccount,
         ).toHaveBeenCalledWith(addressToRemove);
       });
       it('should call keyring.destroy', async () => {
@@ -928,6 +1084,9 @@ describe('MetaMaskController', () => {
 
       beforeEach(() => {
         initializeMockMiddlewareLog();
+        metamaskController.preferencesController.setSecurityAlertsEnabled(
+          false,
+        );
       });
 
       afterAll(() => {
@@ -1406,7 +1565,7 @@ describe('MetaMaskController', () => {
           standard: 'ERC1155',
           decimals: 18,
           symbol: 'DAI',
-          balance: '333',
+          balance: '1',
         };
 
         metamaskController.tokenListController.update(() => {
@@ -1426,11 +1585,17 @@ describe('MetaMaskController', () => {
           )
           .mockReturnValue(tokenData);
 
+        const spyOnFetchERC1155Balance = jest
+          .spyOn(tokenUtils, 'fetchERC1155Balance')
+          .mockReturnValue({ _hex: '0x1' });
+
         const tokenDetails =
           await metamaskController.getTokenStandardAndDetails(
             '0xAAA75474e89094c44da98b954eedeac495271d0f',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
+
+        expect(spyOnFetchERC1155Balance).toHaveBeenCalled();
         expect(tokenDetails.standard).toStrictEqual(
           tokenData.standard.toUpperCase(),
         );
@@ -1525,6 +1690,89 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('getTokenSymbol', () => {
+      it('should gets token symbol for given address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC20',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(tokenData.symbol);
+      });
+
+      it('should return null for given token address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockImplementation(() => {
+            throw new Error('error');
+          });
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(null);
+      });
+    });
+
     describe('incoming transactions', () => {
       it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
         expect(
@@ -1567,10 +1815,9 @@ describe('MetaMaskController', () => {
           TransactionController.prototype.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
-        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
-          {
-            selectedAddress: 'foo',
-          },
+        metamaskController.controllerMessenger.publish(
+          'AccountsController:selectedAccountChange',
+          TEST_INTERNAL_ACCOUNT,
         );
 
         expect(
@@ -1609,15 +1856,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -1641,15 +1880,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {

@@ -1,7 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { shallowEqual, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
+import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -12,17 +11,18 @@ import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
-  getTokenExchangeRates,
-  getCurrentCurrency,
   getIsBuyableChain,
-  getCurrentChainId,
+  getCurrentNetwork,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
-  getSelectedAddress,
+  ///: END:ONLY_INCLUDE_IF
+  getSelectedAccount,
+  getPreferences,
+  getIsMainnet,
 } from '../../../selectors';
 import {
-  getConversionRate,
   getNativeCurrency,
-  getTokens,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
@@ -36,33 +36,51 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  BalanceOverview,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   AssetListConversionButton,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../multichain';
-
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { getTokenFiatAmount } from '../../../helpers/utils/token-util';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import {
-  getValueFromWeiHex,
-  sumDecimals,
-} from '../../../../shared/modules/conversion.utils';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
+///: END:ONLY_INCLUDE_IF
 import { Display } from '../../../helpers/constants/design-system';
 
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+///: END:ONLY_INCLUDE_IF
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import {
+  showPrimaryCurrency,
+  showSecondaryCurrency,
+} from '../../../../shared/modules/currency-display.utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentLocale = useSelector(getCurrentLocale);
+  const isMainnet = useSelector(getIsMainnet);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { ticker, type } = useSelector(getProviderConfig);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    currentNetwork.chainId,
+    ticker,
+    type,
+  );
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -95,83 +113,62 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
-  );
-  const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
-
-  const nativeFiat = getValueFromWeiHex({
-    value: balance,
-    toCurrency: currentCurrency,
-    conversionRate,
-    numberOfDecimals: 2,
+  const { tokensWithBalances, totalFiatBalance, loading } =
+    useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
+  tokensWithBalances.forEach((token) => {
+    // token.string is the balance displayed in the TokenList UI
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
-
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  // use `isEqual` comparison function because the token array is serialized
-  // from the background so it has a new reference with each background update,
-  // even if the tokens haven't changed
-  const tokens = useSelector(getTokens, isEqual);
-  const { loading, tokensWithBalances } = useTokenTracker(
-    tokens,
-    true,
-    shouldHideZeroBalanceTokens,
-  );
-
-  // An array of string balances (ex: ["1.90", "22290.01", ...])
-  const dollarBalances = tokensWithBalances.map((token) => {
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, token.address),
-    );
-    const tokenExchangeRate =
-      (contractExchangeTokenKey &&
-        contractExchangeRates[contractExchangeTokenKey]) ??
-      0;
-
-    const fiat = getTokenFiatAmount(
-      tokenExchangeRate,
-      conversionRate,
-      currentCurrency,
-      token.string,
-      token.symbol,
-      false,
-      false,
-    );
-
-    return fiat;
-  });
-
-  // Total native and token fiat balance as a string (ex: "8.90")
-  const totalFiatBalance = sumDecimals(nativeFiat, ...dollarBalances).toString(
-    10,
-  );
-
-  // Fiat balance formatted in user's desired currency (ex: "$8.90")
-  const formattedTotalFiatBalance = formatCurrency(
-    totalFiatBalance,
-    currentCurrency,
-  );
-
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const shouldShowReceive = balanceIsZero;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
-  const chainId = useSelector(getCurrentChainId);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IF
+
+  useEffect(() => {
+    if (shouldShowBuy) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
+    }
+    if (shouldShowReceive) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
+    }
+  }, [
+    shouldShowBuy,
+    shouldShowReceive,
+    trackEvent,
+    currentNetwork,
+    currentLocale,
+  ]);
+
+  let isStakeable = isMainnet;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isStakeable = false;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
-      {process.env.MULTICHAIN ? (
-        <BalanceOverview
-          balance={formattedTotalFiatBalance}
-          loading={loading}
-        />
-      ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
@@ -179,37 +176,45 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {process.env.MULTICHAIN && (shouldShowBuy || shouldShowReceive) ? (
+      {shouldShowBuy || shouldShowReceive ? (
         <Box
           paddingInlineStart={4}
           paddingInlineEnd={4}
           display={Display.Flex}
           gap={2}
         >
-          {shouldShowBuy ? (
-            <AssetListConversionButton
-              variant="buy"
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
-              }}
-            />
-          ) : null}
-          {shouldShowReceive ? (
-            <AssetListConversionButton
-              variant="receive"
-              onClick={() => setShowReceiveModal(true)}
-            />
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            shouldShowBuy ? (
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
+                onClick={() => {
+                  openBuyCryptoInPdapp();
+                  trackEvent({
+                    event: MetaMetricsEventName.NavBuyButtonClicked,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                      text: 'Buy',
+                      chain_id: currentNetwork.chainId,
+                      token_symbol: defaultSwapsToken,
+                    },
+                  });
+                }}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            shouldShowReceive ? (
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
+                onClick={() => setShowReceiveModal(true)}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           {showReceiveModal ? (
             <ReceiveModal
               address={selectedAddress}
@@ -217,36 +222,53 @@ const AssetList = ({ onClickAsset }) => {
             />
           ) : null}
         </Box>
-      ) : (
-        <>
-          <TokenListItem
-            onClick={() => onClickAsset(nativeCurrency)}
-            title={nativeCurrency}
-            primary={
-              primaryCurrencyProperties.value ??
+      ) : null}
+      <TokenListItem
+        onClick={() => onClickAsset(nativeCurrency)}
+        title={nativeCurrency}
+        primary={
+          showPrimaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? primaryCurrencyProperties.value ??
               secondaryCurrencyProperties.value
-            }
-            tokenSymbol={primaryCurrencyProperties.suffix}
-            secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-            tokenImage={balanceIsLoading ? null : primaryTokenImage}
-          />
-          <TokenList
-            tokens={tokensWithBalances}
-            loading={loading}
-            onTokenClick={(tokenAddress) => {
-              onClickAsset(tokenAddress);
-              trackEvent({
-                event: MetaMetricsEventName.TokenScreenOpened,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  token_symbol: primaryCurrencyProperties.suffix,
-                  location: 'Home',
-                },
-              });
-            }}
-          />
-        </>
-      )}
+            : null
+        }
+        tokenSymbol={
+          useNativeCurrencyAsPrimaryCurrency
+            ? primaryCurrencyProperties.suffix
+            : secondaryCurrencyProperties.suffix
+        }
+        secondary={
+          showFiat &&
+          showSecondaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? secondaryCurrencyDisplay
+            : undefined
+        }
+        tokenImage={balanceIsLoading ? null : primaryTokenImage}
+        isOriginalTokenSymbol={isOriginalNativeSymbol}
+        isNativeCurrency
+        isStakeable={isStakeable}
+      />
+      <TokenList
+        tokens={tokensWithBalances}
+        loading={loading}
+        onTokenClick={(tokenAddress) => {
+          onClickAsset(tokenAddress);
+          trackEvent({
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
+            },
+          });
+        }}
+      />
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <ImportTokenLink margin={4} marginBottom={2} />
       </Box>

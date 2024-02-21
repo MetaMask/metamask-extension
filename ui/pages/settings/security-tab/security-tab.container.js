@@ -4,6 +4,7 @@ import { compose } from 'redux';
 import {
   setIncomingTransactionsPreferences,
   setIpfsGateway,
+  setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -14,11 +15,20 @@ import {
   setUseNftDetection,
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
   setUseExternalNameSources,
-  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  setSecurityAlertsEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  setTransactionSecurityCheckEnabled,
 } from '../../../store/actions';
-import { getAllNetworks } from '../../../selectors';
+import {
+  getAllNetworks,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  getIsSecurityAlertsEnabled,
+  ///: END:ONLY_INCLUDE_IF
+  getIsTransactionSecurityCheckEnabled,
+  getPetnamesEnabled,
+} from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -26,6 +36,8 @@ const mapStateToProps = (state) => {
     appState: { warning },
     metamask,
   } = state;
+
+  const petnamesEnabled = getPetnamesEnabled(state);
 
   const {
     incomingTransactionsPreferences,
@@ -40,9 +52,7 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
-    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
     useExternalNameSources,
-    ///: END:ONLY_INCLUDE_IN
   } = metamask;
 
   const allNetworks = getAllNetworks(state);
@@ -62,9 +72,13 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
-    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
     useExternalNameSources,
-    ///: END:ONLY_INCLUDE_IN
+    petnamesEnabled,
+    transactionSecurityCheckEnabled:
+      getIsTransactionSecurityCheckEnabled(state),
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -78,6 +92,7 @@ const mapDispatchToProps = (dispatch) => {
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
     setIpfsGateway: (val) => dispatch(setIpfsGateway(val)),
+    setIsIpfsGatewayEnabled: (val) => dispatch(setIsIpfsGatewayEnabled(val)),
     setUseMultiAccountBalanceChecker: (val) =>
       dispatch(setUseMultiAccountBalanceChecker(val)),
     setUseAddressBarEnsResolution: (val) =>
@@ -89,11 +104,14 @@ const mapDispatchToProps = (dispatch) => {
     setUse4ByteResolution: (value) => {
       return dispatch(setUse4ByteResolution(value));
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
-    ///: END:ONLY_INCLUDE_IN
+    setTransactionSecurityCheckEnabled: (value) =>
+      dispatch(setTransactionSecurityCheckEnabled(value)),
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 

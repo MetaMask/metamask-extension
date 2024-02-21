@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+
 import {
   FormTextField,
+  TextFieldSize, 
+  TextFieldType,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
 } from '../../component-library';
@@ -11,6 +14,7 @@ import {
   AlignItems,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
 import ShowHideToggle from '../../ui/show-hide-toggle';
@@ -46,7 +50,7 @@ export default function PrivateKeyImportView({
       >
         <FormTextField
           id="private-key-box"
-          size={TEXT_FIELD_SIZES.LARGE}
+          size={TextFieldSize.Lg}
           autoFocus
           type={
             showPrivateKey ? TEXT_FIELD_TYPES.TEXT : TEXT_FIELD_TYPES.PASSWORD
@@ -72,6 +76,7 @@ export default function PrivateKeyImportView({
           />
         </Box>
       </Box>
+    
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={privateKey === ''}

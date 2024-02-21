@@ -1,24 +1,14 @@
 const assert = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   openDapp,
   regularDelayMs,
+  unlockWallet,
+  generateGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Multiple transactions', function () {
-  const ganacheOptions = {
-    hardfork: 'london',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('creates multiple queued transactions, then confirms', async function () {
     await withFixtures(
       {
@@ -26,13 +16,11 @@ describe('Multiple transactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);
@@ -62,7 +50,13 @@ describe('Multiple transactions', function () {
           tag: 'a',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.switchToWindow(confirmation);
+
+        // wait for the "Reject 2 transactions" to disappear
+        await driver.waitForElementNotPresent(
+          '.page-container__footer-secondary a',
+        );
+
         // confirms first transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -90,13 +84,11 @@ describe('Multiple transactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);

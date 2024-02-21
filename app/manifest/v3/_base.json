@@ -31,7 +31,6 @@
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
         "disable-console.js",
-        "globalthis.js",
         "lockdown-install.js",
         "lockdown-run.js",
         "lockdown-more.js",
@@ -73,7 +72,8 @@
     "scripting",
     "storage",
     "unlimitedStorage",
-    "webRequest"
+    "webRequest",
+    "offscreen"
   ],
   "short_name": "__MSG_appName__"
 }

@@ -1,4 +1,5 @@
 import { warn } from 'loglevel';
+import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -20,7 +21,7 @@ const DEFAULT_INTERVAL = MINUTE * 3;
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-export default class DetectTokensController {
+export default class DetectTokensController extends StaticIntervalPollingControllerOnly {
   /**
    * Creates a DetectTokensController
    *
@@ -33,6 +34,9 @@ export default class DetectTokensController {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
+   * @param config.getCurrentSelectedAccount
+   * @param config.getNetworkClientById
+   * @param config.disableLegacyInterval
    */
   constructor({
     messenger,
@@ -43,44 +47,55 @@ export default class DetectTokensController {
     tokensController,
     assetsContractController = null,
     trackMetaMetricsEvent,
+    getCurrentSelectedAccount,
+    getNetworkClientById,
+    disableLegacyInterval = false,
   } = {}) {
+    super();
+    this.getNetworkClientById = getNetworkClientById;
     this.messenger = messenger;
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
-    this.interval = interval;
+    if (!disableLegacyInterval) {
+      this.interval = interval;
+    }
     this.network = network;
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
-    this.selectedAddress = this.preferences?.store.getState().selectedAddress;
-    this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
-      return token.address;
-    });
-    this.hiddenTokens = this.tokensController?.state.ignoredTokens;
-    this.detectedTokens = this.tokensController?.state.detectedTokens;
+    this.selectedAddress = getCurrentSelectedAccount().address;
+    this.setIntervalLength(interval);
     this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
-    preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
-      if (
-        this.selectedAddress !== selectedAddress ||
-        this.useTokenDetection !== useTokenDetection
-      ) {
-        this.selectedAddress = selectedAddress;
-        this.useTokenDetection = useTokenDetection;
-        this.restartTokenDetection({ selectedAddress });
-      }
-    });
-    tokensController?.subscribe(
-      ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
-        this.tokenAddresses = tokens.map((token) => {
-          return token.address;
-        });
-        this.hiddenTokens = ignoredTokens;
-        this.detectedTokens = detectedTokens;
+    messenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        const useTokenDetection =
+          this.preferences?.store.getState().useTokenDetection;
+        if (
+          this.selectedAddress !== account.address ||
+          this.useTokenDetection !== useTokenDetection
+        ) {
+          this.selectedAddress = account.address;
+          this.useTokenDetection = useTokenDetection;
+          this.restartTokenDetection({
+            selectedAddress: this.selectedAddress,
+          });
+        }
       },
     );
+
+    preferences?.store.subscribe(({ useTokenDetection }) => {
+      if (this.useTokenDetection !== useTokenDetection) {
+        this.useTokenDetection = useTokenDetection;
+        this.restartTokenDetection({
+          selectedAddress: this.selectedAddress,
+        });
+      }
+    });
+
     messenger.subscribe('NetworkController:stateChange', () => {
       if (this.chainId !== this.getChainIdFromNetworkStore()) {
         const chainId = this.getChainIdFromNetworkStore();
@@ -89,7 +104,18 @@ export default class DetectTokensController {
       }
     });
 
+    messenger.subscribe('TokenListController:stateChange', () => {
+      this.restartTokenDetection();
+    });
+
     this.#registerKeyringHandlers();
+  }
+
+  async _executePoll(networkClientId, options) {
+    await this.detectNewTokens({
+      ...options,
+      networkClientId,
+    });
   }
 
   /**
@@ -98,11 +124,24 @@ export default class DetectTokensController {
    * @param options
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
    * @param options.chainId - the chainId against which to detect for token balances
+   * @param options.networkClientId
    */
-  async detectNewTokens({ selectedAddress, chainId } = {}) {
+  async detectNewTokens({ selectedAddress, chainId, networkClientId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect =
-      chainId ?? this.getChainIdFromNetworkStore();
+    let chainIdAgainstWhichToDetect;
+    let networkClientIdAgainstWhichToDetect;
+
+    if (networkClientId) {
+      networkClientIdAgainstWhichToDetect = networkClientId;
+      const networkClient = this.getNetworkClientById(networkClientId);
+      chainIdAgainstWhichToDetect = networkClient.configuration.chainId;
+    } else {
+      chainIdAgainstWhichToDetect =
+        chainId ?? this.getChainIdFromNetworkStore();
+      networkClientIdAgainstWhichToDetect =
+        this.network.findNetworkClientIdByChainId(chainIdAgainstWhichToDetect);
+    }
+
     if (!this.isActive) {
       return;
     }
@@ -128,13 +167,19 @@ export default class DetectTokensController {
     const tokensToDetect = [];
     for (const tokenAddress in tokenListUsed) {
       if (
-        !this.tokenAddresses.find((address) =>
+        !this.tokensController.state.allTokens?.[chainIdAgainstWhichToDetect]?.[
+          addressAgainstWhichToDetect
+        ]?.find(({ address }) =>
           isEqualCaseInsensitive(address, tokenAddress),
         ) &&
-        !this.hiddenTokens.find((address) =>
+        !this.tokensController.state.allIgnoredTokens?.[
+          chainIdAgainstWhichToDetect
+        ]?.[addressAgainstWhichToDetect]?.find((address) =>
           isEqualCaseInsensitive(address, tokenAddress),
         ) &&
-        !this.detectedTokens.find(({ address }) =>
+        !this.tokensController.state.allDetectedTokens?.[
+          chainIdAgainstWhichToDetect
+        ]?.[addressAgainstWhichToDetect]?.find(({ address }) =>
           isEqualCaseInsensitive(address, tokenAddress),
         )
       ) {
@@ -151,6 +196,7 @@ export default class DetectTokensController {
         result = await this.assetsContractController.getBalancesInSingleCall(
           addressAgainstWhichToDetect,
           tokensSlice,
+          networkClientIdAgainstWhichToDetect,
         );
       } catch (error) {
         warn(
@@ -206,7 +252,8 @@ export default class DetectTokensController {
    */
   restartTokenDetection({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect = chainId ?? this.chainId;
+    const chainIdAgainstWhichToDetect =
+      chainId ?? this.getChainIdFromNetworkStore();
     if (!(this.isActive && addressAgainstWhichToDetect)) {
       return;
     }

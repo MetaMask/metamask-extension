@@ -39,6 +39,7 @@ export const Popover: PopoverComponent = React.forwardRef(
       title,
       isPortal = false,
       arrowProps,
+      onClickOutside,
       onPressEscKey,
       ...props
     }: PopoverProps<C>,
@@ -48,6 +49,7 @@ export const Popover: PopoverComponent = React.forwardRef(
       null,
     );
     const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null);
+    const popoverRef = React.useRef<HTMLElement | null>(null);
 
     // Define Popper options
     const { styles, attributes } = usePopper(referenceElement, popperElement, {
@@ -92,13 +94,31 @@ export const Popover: PopoverComponent = React.forwardRef(
       }
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen &&
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target as Node)
+      ) {
+        if (onClickOutside) {
+          onClickOutside();
+        }
+      }
+    };
+
     useEffect(() => {
       document.addEventListener('keydown', handleEscKey);
+      if (isOpen) {
+        document.addEventListener('click', handleClickOutside);
+      } else {
+        document.removeEventListener('click', handleClickOutside);
+      }
 
       return () => {
         document.removeEventListener('keydown', handleEscKey);
+        document.removeEventListener('click', handleClickOutside);
       };
-    }, [onPressEscKey]);
+    }, [onPressEscKey, isOpen, onClickOutside]);
 
     const PopoverContent = (
       <Box
@@ -115,7 +135,17 @@ export const Popover: PopoverComponent = React.forwardRef(
           },
           className,
         )}
-        ref={ref || setPopperElement}
+        ref={(element: PolymorphicRef<C>) => {
+          if (ref) {
+            if (typeof ref === 'function') {
+              ref(element);
+            } else {
+              (ref as React.MutableRefObject<C | null>).current = element;
+            }
+          }
+          setPopperElement(element);
+          popoverRef.current = element;
+        }}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
         style={{ ...styles.popper, ...contentStyle, ...props.style }}

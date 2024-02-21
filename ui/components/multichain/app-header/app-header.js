@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef, useCallback } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, matchPath } from 'react-router-dom';
+import { matchPath, useHistory } from 'react-router-dom';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -22,35 +22,40 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
+  FlexDirection,
+  FontWeight,
+  IconColor,
   JustifyContent,
+  Size,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
+  ButtonBase,
+  ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   PickerNetwork,
-  Box,
-  IconSize,
+  Text,
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import {
   getCurrentChainId,
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
-  getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getTheme,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { GlobalMenu, ProductTour, AccountPicker } from '..';
+import { AccountPicker, GlobalMenu, ProductTour } from '..';
 
 import {
   hideProductTour,
@@ -62,54 +67,58 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { getSendStage, SEND_STAGES } from '../../../ducks/send';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../ducks/metamask/metamask';
+import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
-  const menuRef = useRef(false);
+  const menuRef = useRef(null);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isHomePage = location.pathname === DEFAULT_ROUTE;
-  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+  const isUnlocked = useSelector(getIsUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
-  const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IN
-
   // Used for account picker
-  const identity = useSelector(getSelectedIdentity);
+  const internalAccount = useSelector(getSelectedInternalAccount);
+  const shortenedAddress =
+    internalAccount &&
+    shortenAddress(toChecksumHexAddress(internalAccount.address));
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showProductTourPopup = useSelector(getShowProductTour);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const theme = useSelector((state) => getTheme(state));
+  ///: END:ONLY_INCLUDE_IF
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
-  const currentAddress = useSelector(getSelectedAddress);
+
+  // During onboarding there is no selected internal account
+  const currentAddress = internalAccount?.address;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showConnectedStatus =
-    process.env.MULTICHAIN ||
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      origin &&
-      origin !== browser.runtime.id);
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    origin &&
+    origin !== browser.runtime.id;
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
@@ -182,11 +191,9 @@ export const AppHeader = ({ location }) => {
           <MetafoxLogo
             unsetIconHeight
             onClick={async () => history.push(DEFAULT_ROUTE)}
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            custodyImgSrc={custodianIcon}
-            isUnlocked={isUnlocked}
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             theme={theme}
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           />
         </Box>
       ) : null}
@@ -231,6 +238,9 @@ export const AppHeader = ({ location }) => {
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
                       aria-label={t('networkMenu')}
+                      labelProps={{
+                        display: Display.None,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -281,24 +291,66 @@ export const AppHeader = ({ location }) => {
                 />
               ) : null}
 
-              {identity ? (
-                <AccountPicker
-                  address={identity.address}
-                  name={identity.name}
-                  onClick={() => {
-                    dispatch(toggleAccountMenu());
+              {internalAccount ? (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                >
+                  <AccountPicker
+                    address={internalAccount.address}
+                    name={internalAccount.metadata.name}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
 
-                    trackEvent({
-                      event: MetaMetricsEventName.NavAccountMenuOpened,
-                      category: MetaMetricsEventCategory.Navigation,
-                      properties: {
-                        location: 'Home',
-                      },
-                    });
-                  }}
-                  disabled={disableAccountPicker}
-                  showAddress={Boolean(process.env.MULTICHAIN)}
-                />
+                      trackEvent({
+                        event: MetaMetricsEventName.NavAccountMenuOpened,
+                        category: MetaMetricsEventCategory.Navigation,
+                        properties: {
+                          location: 'Home',
+                        },
+                      });
+                    }}
+                    disabled={disableAccountPicker}
+                    labelProps={{ fontWeight: FontWeight.Bold }}
+                  />
+                  <Tooltip
+                    position="left"
+                    title={copied ? t('addressCopied') : t('copyToClipboard')}
+                  >
+                    <ButtonBase
+                      className="multichain-app-header__address-copy-button"
+                      onClick={() => handleCopy(checksummedCurrentAddress)}
+                      size={ButtonBaseSize.Sm}
+                      backgroundColor={BackgroundColor.transparent}
+                      borderRadius={BorderRadius.LG}
+                      endIconName={
+                        copied ? IconName.CopySuccess : IconName.Copy
+                      }
+                      endIconProps={{
+                        color: IconColor.iconAlternative,
+                        size: Size.SM,
+                      }}
+                      ellipsis
+                      textProps={{
+                        display: Display.Flex,
+                        alignItems: AlignItems.center,
+                        gap: 2,
+                      }}
+                      style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                      data-testid="app-header-copy-button"
+                    >
+                      <Text
+                        color={TextColor.textAlternative}
+                        variant={TextVariant.bodySm}
+                        ellipsis
+                        as="span"
+                      >
+                        {shortenedAddress}
+                      </Text>
+                    </ButtonBase>
+                  </Tooltip>
+                </Box>
               ) : null}
               <Box
                 display={Display.Flex}
@@ -306,53 +358,19 @@ export const AppHeader = ({ location }) => {
                 justifyContent={JustifyContent.flexEnd}
               >
                 <Box display={Display.Flex} gap={4}>
-                  {showConnectedStatus &&
-                    (process.env.MULTICHAIN ? (
-                      <Tooltip
-                        position="left"
-                        title={copied ? t('addressCopied') : null}
-                      >
-                        <ButtonIcon
-                          onClick={() => handleCopy(checksummedCurrentAddress)}
-                          iconName={
-                            copied ? IconName.CopySuccess : IconName.Copy
-                          }
-                          size={IconSize.Sm}
-                          data-testid="app-header-copy-button"
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Box ref={menuRef}>
-                        <ConnectedStatusIndicator
-                          onClick={() => {
-                            history.push(CONNECTED_ACCOUNTS_ROUTE);
-                            trackEvent({
-                              event:
-                                MetaMetricsEventName.NavConnectedSitesOpened,
-                              category: MetaMetricsEventCategory.Navigation,
-                            });
-                          }}
-                        />
-                      </Box>
-                    ))}{' '}
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                    custodianIcon && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        className="custody-logo"
-                        data-testid="custody-logo"
-                      >
-                        <img
-                          src={custodianIcon}
-                          className="custody-logo--icon"
-                          alt=""
-                        />
-                      </Box>
-                    )
-                    ///: END:ONLY_INCLUDE_IN
-                  }
+                  {showConnectedStatus ? (
+                    <Box ref={menuRef}>
+                      <ConnectedStatusIndicator
+                        onClick={() => {
+                          history.push(CONNECTED_ACCOUNTS_ROUTE);
+                          trackEvent({
+                            event: MetaMetricsEventName.NavConnectedSitesOpened,
+                            category: MetaMetricsEventCategory.Navigation,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : null}{' '}
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"
@@ -403,12 +421,11 @@ export const AppHeader = ({ location }) => {
                     />
                   </Box>
                 </Box>
-                {accountOptionsMenuOpen ? (
-                  <GlobalMenu
-                    anchorElement={menuRef.current}
-                    closeMenu={() => setAccountOptionsMenuOpen(false)}
-                  />
-                ) : null}
+                <GlobalMenu
+                  anchorElement={menuRef.current}
+                  isOpen={accountOptionsMenuOpen}
+                  closeMenu={() => setAccountOptionsMenuOpen(false)}
+                />
                 {showProductTour &&
                 popupStatus &&
                 multichainProductTourStep === 3 ? (

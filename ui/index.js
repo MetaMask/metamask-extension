@@ -10,13 +10,14 @@ import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
@@ -26,7 +27,7 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { _setBackgroundConnection } from './store/action-queue';
+import { setBackgroundConnection } from './store/background-connection';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -38,7 +39,7 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  _setBackgroundConnection(backgroundConnection);
+  setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
@@ -54,7 +55,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   let desktopEnabled = false;
 
   backgroundConnection.getDesktopEnabled(function (err, result) {
@@ -64,7 +65,7 @@ export default function launchMetamaskUi(opts, cb) {
 
     desktopEnabled = result;
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -73,9 +74,9 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           desktopEnabled,
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -86,9 +87,9 @@ export default function launchMetamaskUi(opts, cb) {
       cb(
         null,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       );
     });
   });
@@ -105,7 +106,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   );
 
   if (metamaskState.textDirection === 'rtl') {
-    await switchDirection('rtl');
+    switchDirection('rtl');
   }
 
   const draftInitialState = {
@@ -130,7 +131,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress = getSelectedAddress(draftInitialState);
+    const selectedAddress =
+      getSelectedInternalAccount(draftInitialState)?.address ?? '';
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -240,14 +242,27 @@ function setupStateHooks(store) {
     const reduxState = store.getState();
     return maskObject(reduxState, SENTRY_UI_STATE);
   };
+  window.stateHooks.getLogs = function () {
+    // These logs are logged by LoggingController
+    const reduxState = store.getState();
+    const { logs } = reduxState.metamask;
+
+    const logsArray = Object.values(logs).sort((a, b) => {
+      return a.timestamp - b.timestamp;
+    });
+
+    return logsArray;
+  };
 }
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();
+  const logs = window.stateHooks.getLogs();
   browser.runtime
     .getPlatformInfo()
     .then((platform) => {
       state.platform = platform;
+      state.logs = logs;
       const stateString = JSON.stringify(state, null, 2);
       cb(null, stateString);
     })
@@ -261,7 +276,7 @@ window.logState = function (toClipboard) {
     if (err) {
       console.error(err.message);
     } else if (toClipboard) {
-      copyToClipboard(result);
+      copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);

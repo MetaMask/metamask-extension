@@ -2,10 +2,8 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import PrivacySettings from './privacy-settings';
 

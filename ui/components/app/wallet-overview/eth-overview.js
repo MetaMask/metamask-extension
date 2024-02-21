@@ -4,63 +4,71 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
   useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useLocation,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   isBalanceCached,
-  getShouldShowFiat,
   getIsSwapsChain,
-  getSelectedAccountCachedBalance,
   getCurrentChainId,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  getPreferences,
+  getSelectedAddress,
+  getShouldHideZeroBalanceTokens,
+  getCurrentNetwork,
+  getSelectedAccountCachedBalance,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import IconButton from '../../ui/icon-button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -68,7 +76,7 @@ const EthOverview = ({ className, showAddress }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -76,14 +84,36 @@ const EthOverview = ({ className, showAddress }) => {
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   const balanceIsCached = useSelector(isBalanceCached);
-  const showFiat = useSelector(getShouldShowFiat);
-  const balance = useSelector(getSelectedAccountCachedBalance);
-  const isSwapsChain = useSelector(getIsSwapsChain);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
+  const { ticker, type } = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const balance = useSelector(getSelectedAccountCachedBalance);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+    type,
+  );
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  // Total fiat balance
+  const selectedAddress = useSelector(getSelectedAddress);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { totalWeiBalance } = useAccountTotalFiatBalance(
+    selectedAddress,
+    shouldHideZeroBalanceTokens,
+  );
+
+  const balanceToUse = TEST_NETWORKS.includes(currentNetwork?.nickname)
+    ? balance
+    : totalWeiBalance;
+
+  const isSwapsChain = useSelector(getIsSwapsChain);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
 
@@ -133,11 +163,11 @@ const EthOverview = ({ className, showAddress }) => {
       </>
     );
   };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <WalletOverview
@@ -150,15 +180,23 @@ const EthOverview = ({ className, showAddress }) => {
         >
           <div className="eth-overview__balance">
             <div className="eth-overview__primary-container">
-              {balance ? (
+              {balanceToUse ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
                   className={classnames('eth-overview__primary-balance', {
                     'eth-overview__cached-balance': balanceIsCached,
                   })}
                   data-testid="eth-overview__primary-currency"
-                  value={balance}
-                  type={PRIMARY}
+                  value={balanceToUse}
+                  type={
+                    showPrimaryCurrency(
+                      isOriginalNativeSymbol,
+                      useNativeCurrencyAsPrimaryCurrency,
+                    )
+                      ? PRIMARY
+                      : SECONDARY
+                  }
+                  showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
@@ -172,26 +210,13 @@ const EthOverview = ({ className, showAddress }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && balance && (
-              <UserPreferencedCurrencyDisplay
-                className={classnames({
-                  'eth-overview__cached-secondary-balance': balanceIsCached,
-                  'eth-overview__secondary-balance': !balanceIsCached,
-                })}
-                data-testid="eth-overview__secondary-currency"
-                value={balance}
-                type={SECONDARY}
-                ethNumberOfDecimals={4}
-                hideTitle
-              />
-            )}
           </div>
         </Tooltip>
       }
       buttons={
         <>
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               Icon={
@@ -217,13 +242,13 @@ const EthOverview = ({ className, showAddress }) => {
                 });
               }}
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             renderInstitutionalButtons()
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
 
           <IconButton
@@ -264,13 +289,13 @@ const EthOverview = ({ className, showAddress }) => {
               />
             }
             onClick={() => {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               global.platform.openTab({
                 url: `${mmiPortfolioUrl}/swap`,
               });
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
 
-              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
               if (isSwapsChain) {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
@@ -289,7 +314,7 @@ const EthOverview = ({ className, showAddress }) => {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
               }
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }}
             label={t('swap')}
             data-testid="token-overview-button-swap"
@@ -307,7 +332,7 @@ const EthOverview = ({ className, showAddress }) => {
             }
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               disabled={!isBridgeChain}
@@ -353,10 +378,10 @@ const EthOverview = ({ className, showAddress }) => {
                     )
               }
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               data-testid="eth-overview-portfolio"
@@ -386,7 +411,7 @@ const EthOverview = ({ className, showAddress }) => {
                 });
               }}
             />
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </>
       }

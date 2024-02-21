@@ -2,11 +2,12 @@ const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   regularDelayMs,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
@@ -67,15 +68,6 @@ describe('Custom network', function () {
   const networkNAME = 'Arbitrum One';
   const currencySYMBOL = 'ETH';
   const blockExplorerURL = 'https://explorer.arbitrum.io';
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   describe('JSON-RPC API', function () {
     it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
@@ -85,11 +77,10 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -114,7 +105,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -163,11 +154,11 @@ describe('Custom network', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({ useSafeChainsListValidation: true })
             .build(),
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -191,9 +182,30 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
+
+          const warningMsg1 =
+            'According to our record the network name may not correctly match this chain ID.';
+          await driver.findElement({
+            tag: 'span',
+            text: warningMsg1,
+          });
+
+          const errorMsg1 =
+            'The submitted currency symbol does not match what we expect for this chain ID.';
+          await driver.findElement({
+            tag: 'span',
+            text: errorMsg1,
+          });
+
+          const errorMsg2 =
+            'According to our records the submitted RPC URL value does not match a known provider for this chain ID.';
+          await driver.findElement({
+            tag: 'span',
+            text: errorMsg2,
+          });
 
           const errMsg1 = 'verify the network details';
           await driver.findElement({
@@ -227,6 +239,75 @@ describe('Custom network', function () {
       );
     });
 
+    it("don't validate bad rpc custom network when toggle is off", async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://responsive-rpc.url/')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                id: '1694444405781',
+                jsonrpc: '2.0',
+                result: TEST_CHAIN_ID,
+              },
+            })),
+        ];
+      }
+
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({ useSafeChainsListValidation: false })
+            .build(),
+          title: this.test.fullTitle(),
+          testSpecificMock: mockRPCURLAndChainId,
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+
+          await openDapp(driver);
+          await driver.executeScript(`
+          var params = [{
+            chainId: "${TEST_CHAIN_ID}",
+            chainName: "Antani",
+            nativeCurrency: {
+              name: "",
+              symbol: "ANTANI",
+              decimals: 18
+            },
+            rpcUrls: ["https://responsive-rpc.url/"],
+            blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
+          }]
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params
+          })
+        `);
+          const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.Dialog,
+            windowHandles,
+          );
+
+          await driver.clickElement({
+            tag: 'button',
+            text: 'Approve',
+          });
+
+          const switchNetworkBtn = await driver.findElement({
+            tag: 'button',
+            text: 'Switch network',
+          });
+
+          await switchNetworkBtn.click();
+        },
+      );
+    });
+
     it("don't add unreachable custom network", async function () {
       await withFixtures(
         {
@@ -234,11 +315,10 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -262,7 +342,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
           await driver.clickElement({
@@ -295,11 +375,10 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           // Avoid a stale element error
@@ -366,7 +445,7 @@ describe('Custom network', function () {
           });
           // verify network switched
           const networkDisplayed = await driver.findElement({
-            tag: 'p',
+            tag: 'span',
             text: 'Arbitrum One',
           });
           assert.equal(
@@ -382,11 +461,10 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           // Avoid a stale element error
@@ -416,7 +494,7 @@ describe('Custom network', function () {
 
           const arbitrumNetwork = await driver.findElements({
             text: 'Arbitrum One',
-            tag: 'button',
+            tag: 'p',
           });
           assert.ok(arbitrumNetwork.length, 1);
         },
@@ -439,11 +517,10 @@ describe('Custom network', function () {
               },
             })
             .build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await driver.clickElement(
@@ -470,7 +547,7 @@ describe('Custom network', function () {
       );
     });
 
-    it('when the network details validation toggle is turned on, validate user inserted details against data from "chainid.network"', async function () {
+    it("when the network details validation toggle is turned on, validate user inserted details against data from 'chainid.network'", async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
@@ -490,13 +567,11 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           await unlockWallet(driver);
 
           await checkThatSafeChainsListValidationToggleIsOn(driver);
@@ -532,13 +607,11 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
-          title: this.test.title,
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           await unlockWallet(driver);
 
           await toggleOffSafeChainsListValidation(driver);
@@ -564,6 +637,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationToggleSelector =
@@ -605,14 +679,14 @@ async function failCandidateNetworkValidation(driver) {
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
-    currencySymbolInputEl,
+    ,
     blockExplorerURLInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
   await newRPCURLInputEl.fill('https://unresponsive-rpc.url');
   await chainIDInputEl.fill(toHex(777));
-  await currencySymbolInputEl.fill('cTH');
+  await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
   const chainIdValidationMessageRawLocator = {
@@ -620,12 +694,7 @@ async function failCandidateNetworkValidation(driver) {
     tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
-
-  const tickerSymbolValidationMessageRawLocator = {
-    text: 'Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network',
-    tag: 'h6',
-  };
-  await driver.waitForSelector(tickerSymbolValidationMessageRawLocator);
+  await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
 
   const saveButtonRawLocator = {
     text: 'Save',
@@ -649,6 +718,8 @@ async function toggleOffSafeChainsListValidation(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationLabelSelector =
@@ -712,14 +783,14 @@ async function candidateNetworkIsNotValidated(driver) {
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
-    currencySymbolInputEl,
+    ,
     blockExplorerURLInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
   await newRPCURLInputEl.fill('https://responsive-rpc.url/');
   await chainIDInputEl.fill(TEST_CHAIN_ID);
-  await currencySymbolInputEl.fill('cTH');
+  await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
   const saveButtonRawLocator = {

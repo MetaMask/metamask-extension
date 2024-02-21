@@ -1,30 +1,33 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  IconName,
-  TextFieldSearch,
+  BannerBase,
   Box,
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalHeader,
-  Text,
-  ButtonVariant,
   ButtonLink,
   ButtonSecondary,
   ButtonSecondarySize,
+  ButtonVariant,
+  IconName,
+  Modal,
+  ModalOverlay,
+  Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
+  AlignItems,
+  BackgroundColor,
   BlockSize,
-  Size,
-  TextColor,
   Display,
   FlexDirection,
-  AlignItems,
+  JustifyContent,
+  Size,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -33,11 +36,16 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getUpdatedAndSortedAccounts,
+  getHiddenAccountsList,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+  getInternalAccounts,
+  getOnboardedInThisUISession,
+  getShowAccountBanner,
 } from '../../../selectors';
-import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
+import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -45,15 +53,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  ADD_SNAP_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -66,23 +74,63 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
-export const AccountListMenu = ({ onClose }) => {
+/**
+ * Merges ordered accounts with balances with each corresponding account data from internal accounts
+ *
+ * @param accountsWithBalances - ordered accounts with balances
+ * @param internalAccounts - internal accounts
+ * @returns merged accounts list with balances and internal account data
+ */
+export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
+  return accountsWithBalances.map((account) => {
+    const internalAccount = internalAccounts.find(
+      (intAccount) => intAccount.address === account.address,
+    );
+    if (internalAccount) {
+      return {
+        ...account,
+        ...internalAccount,
+        name: internalAccount.metadata.name || account.name,
+        keyring: internalAccount.metadata.keyring,
+        label: getAccountLabel(
+          internalAccount.metadata.keyring.type,
+          internalAccount,
+        ),
+      };
+    }
+    return account;
+  });
+};
+
+export const AccountListMenu = ({
+  onClose,
+  showAccountCreation = true,
+  accountListItemProps = {},
+}) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const internalAccounts = useSelector(getInternalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  const hiddenAddresses = useSelector(getHiddenAccountsList);
+  const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
+  const showAccountBanner = useSelector(getShowAccountBanner);
+  const showBanner =
+    completedOnboarding && !onboardedInThisUISession && showAccountBanner;
 
-  let searchResults = accounts;
+  let searchResults = updatedAccountsList;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {
       threshold: 0.2,
@@ -95,6 +143,7 @@ export const AccountListMenu = ({ onClose }) => {
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
+  searchResults = mergeAccounts(searchResults, internalAccounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
@@ -132,7 +181,7 @@ export const AccountListMenu = ({ onClose }) => {
             <CreateAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
-                  dispatch(toggleAccountMenu());
+                  onClose();
                 } else {
                   setActionMode(ACTION_MODES.LIST);
                 }
@@ -150,7 +199,7 @@ export const AccountListMenu = ({ onClose }) => {
             <ImportAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
-                  dispatch(toggleAccountMenu());
+                  onClose();
                 } else {
                   setActionMode(ACTION_MODES.LIST);
                 }
@@ -205,7 +254,7 @@ export const AccountListMenu = ({ onClose }) => {
                 size={Size.SM}
                 startIconName={IconName.Hardware}
                 onClick={() => {
-                  dispatch(toggleAccountMenu());
+                  onClose();
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -227,37 +276,33 @@ export const AccountListMenu = ({ onClose }) => {
               </ButtonLink>
             </Box>
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+              ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
               addSnapAccountEnabled ? (
                 <Box marginTop={4}>
                   <ButtonLink
                     size={Size.SM}
                     startIconName={IconName.Snaps}
                     onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                        ? global.platform.openExtensionInBrowser(
-                            ADD_SNAP_ACCOUNT_ROUTE,
-                            null,
-                            true,
-                          )
-                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                      onClose();
+                      global.platform.openTab({
+                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
+                      });
                     }}
                   >
                     {t('settingAddSnapAccount')}
                   </ButtonLink>
                 </Box>
               ) : null
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
                   startIconName={IconName.Custody}
                   onClick={() => {
-                    dispatch(toggleAccountMenu());
+                    onClose();
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
                       event:
@@ -275,7 +320,7 @@ export const AccountListMenu = ({ onClose }) => {
                   {t('connectCustodialAccountMenu')}
                 </ButtonLink>
               </Box>
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }
           </Box>
         ) : null}
@@ -303,6 +348,27 @@ export const AccountListMenu = ({ onClose }) => {
                 />
               </Box>
             ) : null}
+            {/* Accounts Pinning Update Banner */}
+            {showBanner ? (
+              <BannerBase
+                className="network-list-menu__banner"
+                marginLeft={4}
+                marginRight={4}
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                startAccessory={
+                  <Box
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.center}
+                  >
+                    <img src="./images/pinning-animation.svg" alt="pinning" />
+                  </Box>
+                }
+                onClose={() => hideAccountBanner()}
+                description={t('accountsPinningBannerDescription')}
+                marginBottom={4}
+              />
+            ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
               {searchResults.length === 0 && searchQuery !== '' ? (
@@ -320,49 +386,74 @@ export const AccountListMenu = ({ onClose }) => {
                   ({ origin }) => origin === currentTabOrigin,
                 );
 
+                const hideAccountListItem =
+                  searchQuery.length === 0 && account.hidden;
+
+                /* NOTE: Hidden account will be displayed only in the search list */
+
                 return (
-                  <AccountListItem
-                    onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
-                    }}
-                    identity={account}
+                  <Box
+                    className={
+                      account.hidden
+                        ? 'multichain-account-menu-popover__list--menu-item-hidden'
+                        : 'multichain-account-menu-popover__list--menu-item'
+                    }
+                    display={hideAccountListItem ? Display.None : Display.Block}
                     key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                  />
+                  >
+                    <AccountListItem
+                      onClick={() => {
+                        onClose();
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.NavAccountSwitched,
+                          properties: {
+                            location: 'Main Menu',
+                          },
+                        });
+                        dispatch(setSelectedAccount(account.address));
+                      }}
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      isPinned={Boolean(account.pinned)}
+                      isHidden={Boolean(account.hidden)}
+                      {...accountListItemProps}
+                    />
+                  </Box>
                 );
               })}
             </Box>
+            {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
+            {hiddenAddresses.length > 0 ? (
+              <HiddenAccountList onClose={onClose} />
+            ) : null}
             {/* Add / Import / Hardware button */}
-            <Box
-              paddingTop={2}
-              paddingBottom={4}
-              paddingLeft={4}
-              paddingRight={4}
-              alignItems={AlignItems.center}
-              display={Display.Flex}
-            >
-              <ButtonSecondary
-                startIconName={IconName.Add}
-                variant={ButtonVariant.Secondary}
-                size={ButtonSecondarySize.Lg}
-                block
-                onClick={() => setActionMode(ACTION_MODES.MENU)}
-                data-testid="multichain-account-menu-popover-action-button"
+            {showAccountCreation ? (
+              <Box
+                paddingTop={2}
+                paddingBottom={4}
+                paddingLeft={4}
+                paddingRight={4}
+                alignItems={AlignItems.center}
+                display={Display.Flex}
               >
-                {t('addImportAccount')}
-              </ButtonSecondary>
-            </Box>
+                <ButtonSecondary
+                  startIconName={IconName.Add}
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSecondarySize.Lg}
+                  block
+                  onClick={() => setActionMode(ACTION_MODES.MENU)}
+                  data-testid="multichain-account-menu-popover-action-button"
+                >
+                  {t('addImportAccount')}
+                </ButtonSecondary>
+              </Box>
+            ) : null}
           </>
         ) : null}
       </ModalContent>
@@ -375,4 +466,12 @@ AccountListMenu.propTypes = {
    * Function that executes when the menu closes
    */
   onClose: PropTypes.func.isRequired,
+  /**
+   * Represents if the button to create new accounts should display
+   */
+  showAccountCreation: PropTypes.bool,
+  /**
+   * Props to pass to the AccountListItem,
+   */
+  accountListItemProps: PropTypes.object,
 };

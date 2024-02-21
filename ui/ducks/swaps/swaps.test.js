@@ -84,7 +84,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(4);
+      expect(mockDispatch).toHaveBeenCalledTimes(5);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -105,7 +105,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(4);
+      expect(mockDispatch).toHaveBeenCalledTimes(5);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -127,7 +127,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(4);
+      expect(mockDispatch).toHaveBeenCalledTimes(5);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -173,7 +173,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(8);
+      expect(mockDispatch).toHaveBeenCalledTimes(10);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -421,7 +421,9 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.keyrings[0].type = 'Trezor Hardware';
+      state.metamask.internalAccounts.accounts[
+        state.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = 'Trezor Hardware';
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
@@ -446,6 +448,13 @@ describe('Ducks - Swaps', () => {
     it('returns false if feature flag is missing', () => {
       const state = createSwapsMockStore();
       state.metamask.swapsState.swapsFeatureFlags = {};
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if a snap account is used', () => {
+      const state = createSwapsMockStore();
+      state.metamask.internalAccounts.selectedAccount =
+        '36eb02e0-7925-47f0-859f-076608f09b69';
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
   });

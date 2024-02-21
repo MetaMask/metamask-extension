@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFTs hinzufügen"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Entdecken Sie Möglichkeiten, um mit MetaMask Snaps die Sicherheit Ihres Kontos zu gewährleisten."
-  },
   "addSuggestedNFTs": {
     "message": "Vorgeschlagene NFTs hinzufügen"
   },
@@ -442,10 +439,6 @@
   "attemptSendingAssets": {
     "message": "Wenn Sie versuchen, Assets direkt von einem Netzwerk in ein anderes zu senden, kann dies zu einem dauerhaften Asset-Verlust führen. Verwenden Sie unbedingt eine Bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Versuchen, Swap für ~$1 zu stornieren.",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Versuch einer Verbindung zur Blockchain."
   },
@@ -563,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, kann jemand Ihre bei Blur aufgelisteten Assets stehlen."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Aufgrund eines Fehlers wurde diese Anfrage vom Sicherheitsanbieter nicht überprüft. Gehen Sie mit Bedacht vor."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -592,12 +585,6 @@
   },
   "bridge": {
     "message": "Bridge"
-  },
-  "bridgeDescription": {
-    "message": "Token von verschiedenen Netzwerken übermitteln"
-  },
-  "bridgeDisabled": {
-    "message": "In diesem Netzwerk ist keine Brücke verfügbar"
   },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
@@ -659,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "Diese Chain-ID wird derzeit vom $1-Netzwerk verwendet."
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "Das Netzwerk mit der Chain-ID $1 verwendet möglicherweise ein anderes Währungssymbol ($2) als das, das Sie eingegeben haben. Bitte überprüfen Sie dies, bevor Sie fortfahren.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
   "chooseYourNetwork": {
     "message": "Wählen Sie Ihr Netzwerk"
@@ -835,9 +818,6 @@
   "connectionRequest": {
     "message": "Verbindungsanfrage"
   },
-  "connections": {
-    "message": "Verbindungen"
-  },
   "contactUs": {
     "message": "Kontaktaufnahme"
   },
@@ -990,9 +970,6 @@
   "custodianReplaceRefreshTokenTitle": {
     "message": "Verwahrungstoken ersetzen"
   },
-  "custodyApiUrl": {
-    "message": "$1 API-URL"
-  },
   "custodyDeeplinkDescription": {
     "message": "Genehmigen Sie die Transaktion in der $1-App. Wenn alle benötigten Verwahrungsgenehmigungen erteilt wurden, wir die Transaktion abgeschlossen. Überprüfen Sie Ihre $1-App für den Status."
   },
@@ -1130,12 +1107,6 @@
   },
   "deposit": {
     "message": "Einzahlung"
-  },
-  "deprecatedTestNetworksLink": {
-    "message": "Mehr erfahren"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Aufgrund der Protokolländerungen von Ethereum: Die Testnetzwerke Rinkeby, Ropsten und Kovan funktionieren möglicherweise nicht mehr so zuverlässig und werden bald veraltet sein."
   },
   "description": {
     "message": "Beschreibung"
@@ -1402,15 +1373,6 @@
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API aktivieren"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
-  },
-  "enableSmartSwaps": {
-    "message": "Smart Swaps aktivieren"
-  },
   "enableSnap": {
     "message": "Aktivieren"
   },
@@ -1440,12 +1402,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Unzulässiges Zeichen für ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-Name wurde im aktuellen Netzwerk nicht gefunden. Versuchen Sie, zum Ethereum Mainnet zu wechseln."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Netzwerk unterstützt kein ENS"
   },
   "ensRegistrationError": {
     "message": "Fehler bei der ENS-Namensregistrierung"
@@ -1680,42 +1636,19 @@
     "message": "$1 Stunde",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 Minuten",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "Min. $1",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Vielleicht in $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Wahrscheinlich in < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 Sekunden",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 Sek.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Sehr wahrscheinlich in < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Verwendetes Gas"
   },
   "general": {
     "message": "Allgemein"
-  },
-  "getStarted": {
-    "message": "Los geht's"
   },
   "globalTitle": {
     "message": "Globales Menü"
@@ -2119,25 +2052,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Aktivieren Sie „Smart Contract Data“ oder „blind signing“ auf Ihrem Ledger-Gerät."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Nutzen Sie Ledger Live unter Einstellungen > Erweitert"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Stellen Sie sicher, dass Ihr Ledger angeschlossen ist und die Ethereum-App ausgewählt ist."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Live App öffnen und entsperren."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Passen Sie an, wie Sie Ihren Ledger mit MetaMask verbinden. $1 wird empfohlen, aber andere Optionen sind verfügbar. Erfahren Sie hier mehr: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Das Ledger-Gerät konnte nicht geöffnet werden. Ihr Ledger könnte mit anderer Software verbunden sein. Bitte schließen Sie Ledger Live oder andere Anwendungen, die mit Ihrem Ledger Gerät verbunden sind, und versuchen Sie es erneut."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -2147,9 +2066,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live braucht zu lange für eine Reaktion oder um eine Verbindung herzustellen. Stellen Sie sicher, dass die Ledger Live-App geöffnet und Ihr Gerät entsperrt ist."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Wenn Ihre Ledger Live App geöffnet ist, trennen Sie bitte eine offene Ledger Live-Verbindung und schließen Sie die Ledger Live App."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Das Gerät wurde nicht verbunden. Wenn Sie Ihren Ledger verbinden möchten, klicken Sie bitte erneut auf „Weiter“ und genehmigen Sie die HID-Verbindung",
@@ -2229,9 +2145,6 @@
   "makeSureNoOneWatching": {
     "message": "Stellen Sie sicher, dass niemand zuschaut.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "Fehlerhafte Daten"
   },
   "max": {
     "message": "Max."
@@ -2387,9 +2300,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2528,9 +2438,6 @@
   "noSnaps": {
     "message": "Keine Snaps installiert"
   },
-  "noThanksVariant2": {
-    "message": "Nein, danke."
-  },
   "noTransactions": {
     "message": "Keine Transaktionen"
   },
@@ -2597,108 +2504,6 @@
   "notifications": {
     "message": "Benachrichtigungen"
   },
-  "notifications10ActionText": {
-    "message": "Einstellungen ansehen",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Die verbesserte Token-Erkennung ist derzeit in den Netzwerken Ethereum Mainnet, Polygon, BSC und Avalanche verfügbar. Es gibt bald mehr!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Die Token-Erkennungsfunktion ist derzeit standardmäßig NICHT eingeschaltet. Sie können sie jedoch in den Einstellungen aktivieren."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Wir beziehen Tokens von Token-Listen Dritter. Tokens, die in mehr als zwei Token-Listen aufgeführt sind, werden automatisch erkannt."
-  },
-  "notifications10Title": {
-    "message": "Die verbesserte Token-Erkennung ist da."
-  },
-  "notifications11Description": {
-    "message": "Tokens können von jedem erstellt werden und können doppelte Namen haben. Wenn Sie ein Token sehen, dem Sie nicht vertrauen oder mit dem Sie noch nie interagiert haben, ist es sicherer, ihm nicht zu vertrauen."
-  },
-  "notifications11Title": {
-    "message": "Betrug und Sicherheitsrisiken"
-  },
-  "notifications12ActionText": {
-    "message": "Dunkelmodus aktivieren"
-  },
-  "notifications12Description": {
-    "message": "Der Dunkelmodus der Erweiterung ist endlich da! Um ihn zu aktivieren, gehen Sie zu Einstellungen > Experimentell und wählen Sie eine der Anzeigeoptionen: Hell, Dunkel, System."
-  },
-  "notifications12Title": {
-    "message": "Wann Dunkelmodus? Jetzt Dunkelmodus! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Benutzerdefinierte Netzwerkliste anzeigen"
-  },
-  "notifications13Description": {
-    "message": "Sie können die folgenden beliebten benutzerdefinierten Netzwerke jetzt einfach hinzufügen: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm und Polygon! Gehen Sie zu „Einstellungen“ -> „Experimentell“ und schalten Sie „Benutzerdefinierte Netzwerkliste anzeigen“ ein, um diese Funktion zu aktivieren.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Beliebte Netzwerke hinzufügen"
-  },
-  "notifications14ActionText": {
-    "message": "Backup-Einstellungen anzeigen"
-  },
-  "notifications14Description": {
-    "message": "Wir markieren unsere 3Box-Datenfunktion Anfang Oktober als veraltet. Um Ihre Wallet manuell zu sichern und wiederherzustellen, verwenden Sie die Schaltfläche „Jetzt Backup erstellen“ in den erweiterten Einstellungen.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Box Abschreibung"
-  },
-  "notifications15Description": {
-    "message": "Sie müssen nichts tun – verwenden Sie Ihre Wallet also wie gewohnt. Achten Sie auf mögliche Betrugsversuche bezüglich des Merge.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Ethereum Merge ist da!"
-  },
-  "notifications18ActionText": {
-    "message": "Sicherheitsbenachrichtigungen aktivieren"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Erhalten Sie Benachrichtigungen von Dritten, falls Sie eine bösartige Anfrage erhalten.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Gehen Sie immer mit Sorgfalt vor, bevor Sie irgendwelche Anfragen genehmigen.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea ist der erste Anbieter für diese Funktion. Mehr Anbieter folgen in Kürze!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Bleiben Sie dank Sicherheitsbenachrichtigungen geschützt."
-  },
-  "notifications19ActionText": {
-    "message": "Automatische NFT-Erkennung"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Zwei Möglichkeiten, wie Sie beginnen können:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Wir unterstützen im Moment ausschließlich ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Fügen Sie Ihre NFTs manuell hinzu oder aktivieren Sie die automatische NFT-Erkennung in Einstellungen > Experimentell.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Sehen Sie Ihre NFTs wie nie zuvor."
-  },
-  "notifications1Description": {
-    "message": "Mobile MetaMask-Anwender können jetzt Tokens in ihren mobilen Wallets swappen. Scannen Sie den QR-Code, um die mobile App zu erhalten und mit dem Swapping zu beginnen.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Swappen auf dem Handy ist da!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Mehr erfahren",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2711,37 +2516,6 @@
     "message": "Nutzer von Ledger und Firefox haben Verbindungsprobleme.",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Probieren Sie es aus."
-  },
-  "notifications21Description": {
-    "message": "Wir haben Swaps in der MetaMask-Erweiterung aktualisiert, um die Nutzung einfacher und schneller zu gestalten.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Neue und aktualisierte Swaps!"
-  },
-  "notifications22ActionText": {
-    "message": "Alles klar"
-  },
-  "notifications22Description": {
-    "message": "💡 Klicken Sie einfach auf das globale Menü oder Kontomenü, um sie zu finden!"
-  },
-  "notifications22Title": {
-    "message": "Suchen Sie Ihre Kontodetails oder die Block-Explorer-URL?"
-  },
-  "notifications23ActionText": {
-    "message": "Sicherheitsbenachrichtigungen aktivieren"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Fallen Sie nicht bekannten Betrügereien zum Opfer und schützen Sie gleichzeitig Ihre Privatsphäre mit Sicherheitsbenachrichtigungen von Blockaid im Ethereum Mainnet."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Vor der Bestätigung von Anfragen lassen Sie stets die nötige Sorgfalt walten."
-  },
-  "notifications23Title": {
-    "message": "Gehen Sie mit Sicherheitsbenachrichtigungen auf Nummer sicher."
-  },
   "notifications24ActionText": {
     "message": "Verstanden"
   },
@@ -2750,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Erweiterte Gas-Gebühr nach Netzwerk"
-  },
-  "notifications3ActionText": {
-    "message": "Mehr erfahren",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen MetaMask-Supports.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Sicher bleiben",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Swapping beginnen",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Erhalten Sie die besten Preise für Token-Swaps direkt in Ihrer Wallet. MetaMask vernetzt Sie jetzt mit mehreren dezentralen Tauschbörsen und professionellen Marktmachern auf Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Bei Binance Smart Chain swappen",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Ihre „Seed-Phrase“ heißt jetzt „Geheime Wiederherstellungsphrase“.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Ab Chrome Version 91 unterstützt die API, die unseren Ledger-Support (U2F) ermöglicht hat, keine Hardware-Wallets mehr. MetaMask hat einen neuen Ledger Live-Support implementiert, mit dem Sie sich weiterhin über die Ledger Live-Desktop-App mit Ihrem Ledger-Gerät verbinden können.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Wenn Sie mit Ihrem Ledger-Konto in MetaMask interagieren, öffnet sich ein neuer Tab und Sie werden aufgefordert, die Ledger Live App zu öffnen. Sobald die App geöffnet ist, werden Sie aufgefordert, eine WebSocket-Verbindung zu Ihrem MetaMask-Konto zuzulassen. Das ist alles!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Sie können den Ledger Live-Support aktivieren, indem Sie auf Einstellungen > Erweitert > Ledger Live verwenden klicken.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Update des Ledger-Supports für Chrome-Anwender",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 enthielt neuen Support für EIP-1559 Transaktionen bei der Verwendung von Ledger-Geräten.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Um Transaktionen auf Ethereum Mainnet abzuschließen, stellen Sie sicher, dass Ihr Ledger-Gerät die neueste Firmware hat.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger-Firmware-Update",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Zu den erweiterten Einstellungen gehen",
@@ -2822,15 +2540,6 @@
   "notifications8Title": {
     "message": "Verbesserung der Ledger-Verbindung",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Bei der Bestätigung von Smart-Contract-Transaktionen erhalten Sie jetzt auf dem Tab „Daten“ mehr Einblicke."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Sie können sich jetzt vor der Bestätigung einen besseren Überblick über die Details Ihrer Transaktion verschaffen und Transaktionsadressen einfacher zu Ihrem Adressbuch hinzufügen, damit Sie sichere und fundierte Entscheidungen treffen können."
-  },
-  "notifications9Title": {
-    "message": "👓 Wir machen Transaktionen leichter lesbar."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox unterstützt U2F nicht mehr, daher wird Ledger nicht mit MetaMask auf Firefox funktionieren. Probieren Sie stattdessen MetaMask auf Google Chrome aus.",
@@ -3022,9 +2731,6 @@
   "openInBlockExplorer": {
     "message": "Im Block-Explorer öffnen"
   },
-  "openSea": {
-    "message": "OpenSea (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3130,10 +2836,6 @@
     "message": "Greifen Sie auf das Internet zu.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Gestatten Sie dem Snap Zugriff auf das Internet. Dies kann zum Senden und Empfangen von Daten mit Servern von Drittanbietern verwendet werden.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Verbinden Sie sich mit dem $1-Snap.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3146,17 +2848,9 @@
     "message": "Regelmäßige Transaktionen planen und ausführen.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Gestatten Sie dem Snap das Ausführen von Aktionen, die regelmäßig zu festgelegten Zeiten, Daten oder Intervallen stattfinden. Dies kann verwendet werden, um zeitkritische Interaktionen oder Benachrichtigungen auszulösen.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Dialogfenster in MetaMask anzeigen.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Gestatten Sie dem Snap das Anzeigen von MetaMask-Popups mit benutzerdefiniertem Text sowie Schaltflächen, um eine Aktion zuzulassen oder abzulehnen.\nDies kann zum Beispiel zur Erstellung von Benachrichtigungen, Bestätigungen und Opt-in-Flows für ein Snap verwendet werden.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Siehe Adresse, Kontostand, Aktivitäten und Vorschläge für zu genehmigende Transaktionen.",
@@ -3166,89 +2860,29 @@
     "message": "Auf den Ethereum-Anbieter zugreifen.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Gestatten Sie dem Snap die direkte Kommunikation mit MetaMask, damit es Daten aus der Blockchain lesen und Nachrichten sowie Transaktionen vorschlagen kann.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Leiten Sie beliebige Schlüssel ab, die für diesen Snap eindeutig sind.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Gestatten Sie dem Snap das Ableiten von beliebigen Schlüssel, die für diese App einzigartig sind, ohne sie offenzulegen. Diese Schlüssel sind von Ihrem/n MetaMask-Konto/en getrennt und stehen nicht in Verbindung mit Ihren privaten Schlüsseln oder Ihrer geheimen Wiederherstellungsphrase. Andere Snaps können nicht auf diese Informationen zugreifen.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Verwenden Sie Lebenszyklus-Hooks.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Erlauben Sie dem Snap Lebenszyklus-Hooks zu verwenden, um den Code während seines Lebenszyklus zu bestimmten Zeiten auszuführen.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum-Konten hinzufügen und kontrollieren",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Verwalten Sie Ihre Konten und Assets unter $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Gestatten Sie dem Snap, BIP-32-Schlüssel basierend auf Ihrer geheimen Wiederherstellungsphrase abzuleiten, ohne diese offenzulegen. Dies gewährt vollständigen Zugriff auf alle Konten und Assets auf $1.\nMit der Berechtigung zur Verwaltung von Schlüsseln kann das Snap eine Vielzahl von Blockchain-Protokollen über Ethereum (EVMs) hinaus unterstützen.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Verwalten Sie Ihre $1-Konten und Assets.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Gestatten Sie dem Snap, BIP-44-Schlüssel basierend auf Ihrer geheimen Wiederherstellungsphrase abzuleiten, ohne diese offenzulegen. Dies gewährt vollständigen Zugriff auf alle Konten und Assets auf $1.\nMit der Berechtigung zur Verwaltung von Schlüsseln kann das Snap eine Vielzahl von Blockchain-Protokollen über Ethereum (EVMs) hinaus unterstützen.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Verwalten Sie Ihre $1-Konten und Assets.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Speichern und verwalten Sie die Daten auf Ihrem Gerät.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Gestatten Sie dem Snap das Speichern, Aktualisieren und sichere Abrufen von Daten mit Verschlüsselung. Andere Snaps können auf diese Informationen nicht zugreifen.",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "Benachrichtigungen anzeigen.",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Gestatten Sie dem Snap, Benachrichtigungen in MetaMask anzuzeigen. Ein kurzer Benachrichtigungstext kann von einem Snap für umsetzbare oder zeitkritische Informationen ausgelöst werden.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1 erlauben, direkt mit diesem Snap zu kommunizieren.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Gestatten Sie $1 das Senden von Nachrichten an das Snap sowie den Empfang von Antworten vom Snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "Transaktions-Einsichten abrufen und anzeigen.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Gestatten Sie dem Snap das Dekodieren von Transaktionen und das Anzeigen von Einblicken innerhalb der MetaMask UI. Dies kann für Anti-Phishing und Sicherheitslösungen verwendet werden.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Ursprung der Webseite anzeigen, die Transaktionen vorschlägt",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Gestattem Sie dem Snap, die Herkunft (URI) von Webseiten anzuzeigen, die Transaktionen vorschlagen. Dies kann für Anti-Phishing und Sicherheitslösungen verwendet werden.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unbekannte Genehmigung: $1",
@@ -3258,10 +2892,6 @@
     "message": "Öffentlichen Schlüssel für $1 ($2) anzeigen.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Erlauben Sie dem Snap, Ihre öffentlichen Schlüssel (und Adressen) für $1 einzusehen. Dies gewährt keine Kontrolle über Konten oder Assets.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Öffentlichen Schlüssel für $1 anzeigen.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3269,10 +2899,6 @@
   "permission_webAssembly": {
     "message": "Support für WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Gestattem Sie dem Snap den Zugriff auf Low-Level-Ausführungsumgebungen via WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Genehmigungen"
@@ -3301,10 +2927,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio-Dashboard"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Bevorzugter Ledger-Verbindungstyp",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Swap wird vorbereitet ..."
@@ -3627,9 +3249,6 @@
   "searchAccounts": {
     "message": "Konten durchsuchen"
   },
-  "searchResults": {
-    "message": "Suchergebnisse"
-  },
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },
@@ -3736,9 +3355,6 @@
   "selectAnAccountHelp": {
     "message": "Wählen Sie die Verwahrungskonten zur Nutzung in MetaMask Institutional aus."
   },
-  "selectAnAction": {
-    "message": "Eine Aktion auswählen"
-  },
   "selectHdPath": {
     "message": "HD-Pfad auswählen"
   },
@@ -3762,9 +3378,6 @@
   },
   "sendBugReport": {
     "message": "Übermitteln Sie uns einen Fehlerbericht."
-  },
-  "sendDescription": {
-    "message": "Krypto an ein beliebiges Konto senden"
   },
   "sendSpecifiedTokens": {
     "message": "$1 senden",
@@ -3885,9 +3498,6 @@
   "smartContracts": {
     "message": "Smart Contracts"
   },
-  "smartSwap": {
-    "message": "Smart Swap"
-  },
   "smartSwapsAreHere": {
     "message": "Die Smart Swaps sind da!"
   },
@@ -3900,12 +3510,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps sind vorrübergehend nicht verfügbar."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swaps versucht mehrmals, Ihre Transaktion privat zu übermitteln. Wenn alle Versuche fehlschlagen, wird die Transaktion öffentlich übertragen, um sicherzustellen, dass Ihr Swap erfolgreich durchgeführt wird."
-  },
-  "snapConfigure": {
-    "message": "Konfigurieren"
-  },
   "snapConnectionWarning": {
     "message": "$1 möchte sich mit $2 verbinden. Fahren Sie nur fort, wenn Sie dieser Webseite vertrauen.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3914,53 +3518,8 @@
     "message": "Diese Inhalte stammen von $1.",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Entscheiden Sie sich, wie sie mit MetaMask Snaps Ihr neues Konto schützen möchten."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Ein $1-Konto erstellen",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Von MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Prüfung"
-  },
-  "snapDetailDeveloper": {
-    "message": "Entwickler"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Aktualisiert"
-  },
-  "snapDetailManageSnap": {
-    "message": "Snap verwalten"
-  },
-  "snapDetailTags": {
-    "message": "Tags"
-  },
-  "snapDetailVersion": {
-    "message": "Version"
-  },
   "snapDetailWebsite": {
     "message": "Webseite"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Ein Snap-Konto erstellen"
-  },
-  "snapDetailsInstalled": {
-    "message": "Installiert"
-  },
-  "snapError": {
-    "message": "Snap-Fehler: '$1'. Fehler-Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
-  "snapInstall": {
-    "message": "Snap installieren"
   },
   "snapInstallRequest": {
     "message": "Durch die Installation von $1 werden folgende Genehmigungen erteilt. Nur fortfahren, wenn Sie $1 vertrauen.",
@@ -3969,24 +3528,8 @@
   "snapInstallSuccess": {
     "message": "Installation ist abgeschlossen"
   },
-  "snapInstallWarningCheck": {
-    "message": "Nehmen Sie sich einen Moment Zeit, um die angeforderte Genehmigung zu prüfen. Fahren Sie nur fort, wenn Sie $1 vertrauen.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Nehmen Sie sich einen Moment Zeit, um die angeforderten Genehmigungen zu prüfen. Fahren Sie nur fort, wenn Sie $1 vertrauen.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Seien Sie vorsichtig"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Geben Sie $2 Kontokontrolle an $1.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Geben Sie dem öffentlichen Schlüssel $2 Zugriff auf $1.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 konnte nicht installiert werden.",
@@ -3996,9 +3539,6 @@
     "message": "Installation fehlgeschlagen",
     "description": "Error title used when snap installation fails."
   },
-  "snapIsAudited": {
-    "message": "Geprüft"
-  },
   "snapResultError": {
     "message": "Fehler"
   },
@@ -4007,9 +3547,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 ist einsatzbereit"
-  },
-  "snapUpdate": {
-    "message": "Snap aktualisieren"
   },
   "snapUpdateAvailable": {
     "message": "Update verfügbar"
@@ -4022,18 +3559,11 @@
     "message": "Update fehlgeschlagen",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 möchte $2 auf $3 aktualisieren, was folgende Genehmigungen erteilen würde. Fahren Sie nur fort, wenn Sie $2 vertrauen.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Update abgeschlossen"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Transaktions-Einsicht wird geladen ..."
   },
   "snapsInvalidUIError": {
     "message": "Die vom Snap spezifizierte UI ist ungültig."
@@ -4044,9 +3574,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Alle Daten, die Sie mit Drittanbieterdiensten teilen, werden direkt von diesen Drittanbieterdiensten im Einklang mit deren Datenschutzerklärung erfasst. Für weitere Informationen lesen Sie bitte die jeweiligen Datenschutzerklärungen.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Verwalten Sie Ihre Snaps."
   },
   "snapsTermsOfUse": {
     "message": "Nutzungsbedingungen"
@@ -4201,9 +3728,6 @@
   "stake": {
     "message": "Anteil"
   },
-  "stakeDescription": {
-    "message": "Halten Sie Ihre Kryptowährung und erzielen Sie potenzielle Gewinne"
-  },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
   },
@@ -4304,9 +3828,6 @@
     "message": "Swap abgeschlossen in <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulieren Sie Transaktionen vor der Übermittlung, um die Transaktionskosten zu senken und Ausfälle zu vermeiden."
-  },
   "stxTryingToCancel": {
     "message": "Es wird versucht, Ihre Transaktion zu stornieren ..."
   },
@@ -4321,9 +3842,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Ihre Transaktion wurde storniert und Sie haben keine unnötigen Gas-Gebühren bezahlt."
-  },
-  "stxYouCanOptOut": {
-    "message": "Sie können sich in den erweiterten Einstellungen jederzeit abmelden."
   },
   "submit": {
     "message": "Absenden"
@@ -4395,14 +3913,8 @@
   "swapDecentralizedExchange": {
     "message": "Dezentralisierter Austausch"
   },
-  "swapDescription": {
-    "message": "Token tauschen und handeln"
-  },
   "swapDirectContract": {
     "message": "Direkter Contract"
-  },
-  "swapDisabled": {
-    "message": "Handeln ist in diesem Netzwerk nicht verfügbar"
   },
   "swapEditLimit": {
     "message": "Limit bearbeiten"
@@ -4642,9 +4154,6 @@
   "swapSource": {
     "message": "Liquiditätsquelle"
   },
-  "swapSourceInfo": {
-    "message": "Wir suchen mehrere Liquiditätsquellen (Börsen, Aggregatoren und professionelle Marktmacher), um die besten Kurse und niedrigsten Netzwerkgebühren zu finden."
-  },
   "swapSuggested": {
     "message": "Swap vorgeschlagen"
   },
@@ -4799,9 +4308,6 @@
   "termsOfService": {
     "message": "Nutzungsbedingungen"
   },
-  "termsOfUse": {
-    "message": "Nutzungsbedingungen"
-  },
   "termsOfUseAgreeText": {
     "message": " Ich akzeptiere die Nutzungsbedingungen, die meine Verwendung von MetaMask, einschließlich aller seiner Funktionen, betreffen"
   },
@@ -4829,10 +4335,6 @@
   },
   "thisCollection": {
     "message": "diese Sammlung"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Dieser Dienst ist experimentell. Durch die Aktivierung dieser Funktion stimmen Sie den $1 von OpenSea zu.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zeit"
@@ -4962,18 +4464,6 @@
   "transactionCreated": {
     "message": "Transaktion mit einem Wert von $1 bei $2 erstellt."
   },
-  "transactionData": {
-    "message": "Transaktionsdaten"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Dekodiert von Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Verifizierter Contract auf $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Transaktionsdekodierung ist nicht verfügbar für Chain-ID $1."
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Seite vorgeschlagen"
   },
@@ -4982,9 +4472,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Voraussichtliche Gas-Gebühr"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "geschätzt"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Erfahren Sie mehr über Gas-Gebühren."
@@ -5049,12 +4536,6 @@
   "transactionResubmitted": {
     "message": "Erneutes Absenden der Transaktion mit Erhöhung der geschätzten Gas-Gebühr auf $1 zu $2."
   },
-  "transactionSecurityCheck": {
-    "message": "Sicherheitsbenachrichtigungen aktivieren"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um Risiken bei nicht unterzeichneten Transaktionen und Signaturanfragen zu erkennen und anzuzeigen, bevor Sie diese signieren. Diese Dienste haben Zugriff auf Ihre unsignierten Transaktions- und Signaturanfragen, Ihre Kontoadresse und Ihre bevorzugte Sprache."
-  },
   "transactionSettings": {
     "message": "Transaktionseinstellungen"
   },
@@ -5111,9 +4592,6 @@
   "twelveHrTitle": {
     "message": "12 Std:"
   },
-  "txInsightsNotSupported": {
-    "message": "Transaktionseinsichten für diesen Contract zu diesem Zeitpunkt nicht unterstützt."
-  },
   "typeYourSRP": {
     "message": "Geben Sie Ihre geheime Wiederherstellungsphrase ein."
   },
@@ -5129,12 +4607,6 @@
   },
   "unknown": {
     "message": "Unbekannt"
-  },
-  "unknownCameraError": {
-    "message": "Beim Versuch, auf Ihre Kamera zuzugreifen, ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut …"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppla! Etwas ist schiefgelaufen ..."
   },
   "unknownCollection": {
     "message": "Unbenannte Sammlung"
@@ -5157,10 +4629,6 @@
   "unrecognizedChain": {
     "message": "Dieses benutzerdefinierte Netzwerk wird nicht erkannt.",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (unbekanntes Protokoll)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Senden von NFT-Tokens (ERC-721) wird derzeit nicht unterstützt.",
@@ -5220,10 +4688,6 @@
   "verifyContractDetails": {
     "message": "Drittanbieter-Details überprüfen"
   },
-  "verifyThisTokenDecimalOn": {
-    "message": "Token-Dezimalzahlen finden Sie auf $1.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "verifyThisTokenOn": {
     "message": "Diesen Token auf $1 verifizieren",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -5272,9 +4736,6 @@
   },
   "viewOnOpensea": {
     "message": "Auf Opensea ansehen"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolio-Dashboard anzeigen"
   },
   "viewinCustodianApp": {
     "message": "In Verwahrungs-App anzeigen"
