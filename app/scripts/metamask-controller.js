@@ -1753,7 +1753,6 @@ export default class MetamaskController extends EventEmitter {
         ),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
-        provider: this.provider,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
