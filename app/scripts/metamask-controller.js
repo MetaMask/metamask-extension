@@ -4215,7 +4215,9 @@ export default class MetamaskController extends EventEmitter {
   }) {
     return {
       dappRequest,
-      networkClientId: this.networkController.state.selectedNetworkClientId,
+      networkClientId:
+        dappRequest?.networkClientId ??
+        this.networkController.state.selectedNetworkClientId,
       selectedAccount: this.accountsController.getSelectedAccount(),
       transactionController: this.txController,
       transactionOptions,
