@@ -3,17 +3,15 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  FormTextField,
-  TextFieldSize, 
-  TextFieldType,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
-} from '../../component-library';
-import {
-  Display,
   AlignItems,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import {
+  FormTextField,
+  TEXT_FIELD_TYPES,
+  TextFieldSize
+} from '../../component-library';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
@@ -76,7 +74,7 @@ export default function PrivateKeyImportView({
           />
         </Box>
       </Box>
-    
+
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={privateKey === ''}
