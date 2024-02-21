@@ -682,6 +682,10 @@ export enum MetaMetricsEventName {
   AddSnapAccountCancelled = 'Add Snap Account Cancelled',
   AddSnapAccountSuccessViewed = 'Add Snap Account Success Viewed',
   AddSnapAccountSuccessClicked = 'Add Snap Account Success Clicked',
+  SnapAccountTransactionFinalizeViewed = 'Snap Account Transaction Finalize Viewed',
+  SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
+  SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
+  SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
   ///: END:ONLY_INCLUDE_IF
 }
 
