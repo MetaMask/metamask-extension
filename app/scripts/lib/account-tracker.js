@@ -158,8 +158,9 @@ export default class AccountTracker {
     };
   }
 
-  delayedInit(passedBlockTracker) {
+  delayedInit(passedBlockTracker, passedProvider) {
     this.#blockTracker = passedBlockTracker;
+    this.#provider = passedProvider;
 
     // blockTracker.currentBlock may be null
     this.#currentBlockNumberByChainId = {

@@ -2305,7 +2305,7 @@ export default class MetamaskController extends EventEmitter {
     // Initialize each of the controllers code that relies on network provider
     // and blockTracker
     this.ensController.delayedInit(this.provider);
-    this.accountTracker.delayedInit(this.blockTracker);
+    this.accountTracker.delayedInit(this.blockTracker, this.provider);
     this.txController.delayedInit(this.provider, this.blockTracker);
     this.swapsController.delayedInit(this.provider);
     this.smartTransactionsController.delayedInit(this.provider);

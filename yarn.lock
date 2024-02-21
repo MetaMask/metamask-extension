@@ -5138,7 +5138,7 @@ __metadata:
 
 "@metamask/smart-transactions-controller@file:../smart-transactions-controller::locator=metamask-crx%40workspace%3A.":
   version: 6.2.2
-  resolution: "@metamask/smart-transactions-controller@file:../smart-transactions-controller#../smart-transactions-controller::hash=88f374&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/smart-transactions-controller@file:../smart-transactions-controller#../smart-transactions-controller::hash=0e86ab&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/bytes": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^4.0.0"
@@ -5150,7 +5150,7 @@ __metadata:
     events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 734d0a1930f22cbf942e70ef2e59f2a8f9cf3e409c6aaa4d11304de3132a7bbc4019af4781679b411be4740b2d27db81dcfd722c88b908ae1543cae2445ad886
+  checksum: e0ea339f1fe7f4d0eb4d51d04ed23b34951811cfc0e240111c321dc08e99558012db83275417895cf1f78447222f9aa2fbe2bfdaa9416606ff1eb0e4cda38546
   languageName: node
   linkType: hard
 
