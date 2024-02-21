@@ -25,10 +25,10 @@ const getStoreWithModalData = () => {
 
 describe('Transaction Already Confirmed modal', () => {
   it('should match snapshot', async () => {
-    const { container } = renderWithProvider(
+    const { baseElement } = renderWithProvider(
       <TransactionAlreadyConfirmed  />,
       getStoreWithModalData(),
     );
-    expect(container).toMatchSnapshot();
+    expect(baseElement).toMatchSnapshot();
   });
 });
