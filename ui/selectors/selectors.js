@@ -953,7 +953,7 @@ export const getInterfaceContent = createSelector(
 );
 
 /**
- * Get a memoized verison of the content from a Snap interface with a given ID.
+ * Get a memoized version of the content from a Snap interface with a given ID.
  */
 export const getMemoizedInterfaceContent = createDeepEqualSelector(
   getInterfaceContent,
