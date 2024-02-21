@@ -31,7 +31,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
-  [BlockaidReason.failed]: 'blockaidDescriptionFailed',
+  [BlockaidReason.errored]: 'blockaidDescriptionErrored', // TODO: change in i8n
 
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
@@ -49,7 +49,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
 /** Reason to title translation key mapping. */
 const REASON_TO_TITLE_TKEY = Object.freeze({
-  [BlockaidReason.failed]: 'blockaidTitleMayNotBeSafe',
+  [BlockaidReason.errored]: 'blockaidTitleMayNotBeSafe',
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
@@ -96,7 +96,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     </Text>
   ) : null;
 
-  const isFailedResultType = resultType === BlockaidResultType.Failed;
+  const isFailedResultType = resultType === BlockaidResultType.Errored;
 
   const severity =
     resultType === BlockaidResultType.Malicious
