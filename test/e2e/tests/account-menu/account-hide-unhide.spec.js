@@ -6,7 +6,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Account list - hide/unhide functionality - ', function () {
+describe('Account list - hide and unhide functionality ', function () {
   it('hide account by clicking hide button', async function () {
     await withFixtures(
       {
