@@ -4731,29 +4731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@file:../core/packages/network-controller::locator=metamask-crx%40workspace%3A.":
-  version: 17.2.0
-  resolution: "@metamask/network-controller@file:../core/packages/network-controller#../core/packages/network-controller::hash=5bd8a0&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.3"
-    "@metamask/eth-json-rpc-infura": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
-    "@metamask/eth-json-rpc-provider": "npm:^2.3.2"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^7.3.2"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    eth-block-tracker: "npm:^8.0.0"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: 4a7a93e2ea910e615b2f562846b7f55fd98e460cfb479c8f40a53d2ce20aa5b7221319d983c10b64c0a68483c8fb266c7b854a63cafa4e2d344aa0b6e2f18a49
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^17.0.0, @metamask/network-controller@npm:^17.1.0":
+"@metamask/network-controller@npm:^17.0.0, @metamask/network-controller@npm:^17.1.0, @metamask/network-controller@npm:^17.2.0":
   version: 17.2.0
   resolution: "@metamask/network-controller@npm:17.2.0"
   dependencies:

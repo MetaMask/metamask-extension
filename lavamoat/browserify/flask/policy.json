@@ -1633,10 +1633,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-query": true,
         "@metamask/eth-token-tracker>eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
@@ -1645,35 +1645,6 @@
         "@metamask/utils": true,
         "browserify>assert": true,
         "uuid": true
-      }
-    },
-    "@metamask/network-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/network-controller>@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true
-      }
-    },
-    "@metamask/network-controller>@metamask/controller-utils>@metamask/ethjs-unit": {
-      "packages": {
-        "@metamask/network-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
-        "bn.js": true
-      }
-    },
-    "@metamask/network-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
-      "packages": {
-        "@metamask/ethjs>number-to-bn>strip-hex-prefix": true,
-        "bn.js": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
@@ -2357,7 +2328,13 @@
     },
     "@metamask/transaction-controller>@metamask/controller-utils>@metamask/ethjs-unit": {
       "packages": {
-        "@metamask/network-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
+        "@metamask/transaction-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
+        "bn.js": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
+      "packages": {
+        "@metamask/ethjs>number-to-bn>strip-hex-prefix": true,
         "bn.js": true
       }
     },
@@ -2404,7 +2381,7 @@
       "packages": {
         "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
         "@metamask/ethjs>number-to-bn>strip-hex-prefix": true,
-        "@metamask/network-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
+        "@metamask/transaction-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
         "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true
       }
     },
