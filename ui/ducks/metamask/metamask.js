@@ -355,15 +355,15 @@ export function getEstimatedGasFeeTimeBounds(state) {
 }
 
 export function getGasEstimateTypeByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId[chainId]?.gasEstimateType;
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
 }
 
 export function getGasFeeEstimatesByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId[chainId]?.gasFeeEstimates;
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
 }
 
 export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId[chainId]
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]
     ?.estimatedGasFeeTimeBounds;
 }
 
