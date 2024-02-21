@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "이 요청을 승인하면, Blur에 있는 자산을 타인이 갈취할 수 있습니다."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "오류로 인해 보안업체에서 이 요청을 확인하지 못했습니다. 주의하여 진행하세요."
   },
   "blockaidDescriptionMaliciousDomain": {

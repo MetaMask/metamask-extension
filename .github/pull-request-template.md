@@ -6,6 +6,8 @@ Write a short description of the changes included in this pull request, also inc
 2. What is the improvement/solution?
 -->
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
+
 ## **Related issues**
 
 Fixes:

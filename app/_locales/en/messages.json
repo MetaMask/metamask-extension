@@ -352,9 +352,6 @@
   "alerts": {
     "message": "Alerts"
   },
-  "allConnections": {
-    "message": "All Connections"
-  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -364,6 +361,9 @@
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
+  "allPermissions": {
+    "message": "All Permissions"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -601,7 +601,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -2265,6 +2265,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "lavaDomeCopyWarning": {
+    "message": "For your safety, selecting this text is not available right now."
+  },
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
@@ -3487,6 +3490,19 @@
   },
   "permissions": {
     "message": "Permissions"
+  },
+  "permissionsPageEmptyContent": {
+    "message": "Nothing to see here"
+  },
+  "permissionsPageEmptySubContent": {
+    "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
+  },
+
+  "permissionsPageTourDescription": {
+    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
+  },
+  "permissionsPageTourTitle": {
+    "message": "Connected sites are now permissions"
   },
   "permissionsTitle": {
     "message": "Permissions"
