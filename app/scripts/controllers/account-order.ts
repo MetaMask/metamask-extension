@@ -1,5 +1,5 @@
 import {
-  BaseControllerV2,
+  BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 
@@ -14,6 +14,7 @@ export type AccountAddress = string;
 // State shape for AccountOrderController
 export type AccountOrderControllerState = {
   pinnedAccountList: AccountAddress[];
+  hiddenAccountList: AccountAddress[];
 };
 
 // Describes the action for updating the accounts list
@@ -22,9 +23,16 @@ export type AccountOrderControllerupdateAccountsListAction = {
   handler: AccountOrderController['updateAccountsList'];
 };
 
+// Describes the action for updating the accounts list
+export type AccountOrderControllerhideAccountsListAction = {
+  type: `${typeof controllerName}:updateHiddenAccountsList`;
+  handler: AccountOrderController['updateHiddenAccountsList'];
+};
+
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
-  AccountOrderControllerupdateAccountsListAction;
+  | AccountOrderControllerupdateAccountsListAction
+  | AccountOrderControllerhideAccountsListAction;
 
 // Type for the messenger of AccountOrderController
 export type AccountOrderControllerMessenger = RestrictedControllerMessenger<
@@ -38,11 +46,16 @@ export type AccountOrderControllerMessenger = RestrictedControllerMessenger<
 // Default state for the controller
 const defaultState = {
   pinnedAccountList: [],
+  hiddenAccountList: [],
 };
 
 // Metadata for the controller state
 const metadata = {
   pinnedAccountList: {
+    persist: true,
+    anonymous: true,
+  },
+  hiddenAccountList: {
     persist: true,
     anonymous: true,
   },
@@ -53,7 +66,7 @@ const metadata = {
  * This controller subscribes to account state changes and ensures
  * that the account list is updated based on the latest account configurations.
  */
-export class AccountOrderController extends BaseControllerV2<
+export class AccountOrderController extends BaseController<
   typeof controllerName,
   AccountOrderControllerState,
   AccountOrderControllerMessenger
@@ -90,6 +103,19 @@ export class AccountOrderController extends BaseControllerV2<
   updateAccountsList(accountList: []) {
     this.update((state) => {
       state.pinnedAccountList = accountList;
+      return state;
+    });
+  }
+
+  /**
+   * Hides the accounts list in the state with the provided list of accounts.
+   *
+   * @param accountList - The list of accounts to hide in the state.
+   */
+
+  updateHiddenAccountsList(accountList: []) {
+    this.update((state) => {
+      state.hiddenAccountList = accountList;
       return state;
     });
   }

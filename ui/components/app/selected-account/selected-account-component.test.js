@@ -12,9 +12,25 @@ import {
 import { getAccountType } from '../../../selectors';
 import SelectedAccount from '.';
 
-const mockSelectedIdentity = {
+const mockSelectedAccount = {
   address: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-  name: 'Test Account',
+  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+  metadata: {
+    name: 'Test Account',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
 };
 
 jest.mock('copy-to-clipboard');
@@ -31,11 +47,11 @@ jest.mock('../../../selectors/institutional/selectors', () => {
 
 jest.mock('../../../selectors', () => {
   const mockGetAccountType = jest.fn(() => undefined);
-  const mockGetSelectedIdentity = jest.fn(() => mockSelectedIdentity);
+  const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
 
   return {
     getAccountType: mockGetAccountType,
-    getSelectedIdentity: mockGetSelectedIdentity,
+    getSelectedInternalAccount: mockGetSelectedAccount,
   };
 });
 
@@ -53,7 +69,7 @@ describe('SelectedAccount Component', () => {
     );
 
     expect(tooltipTitle).toBeInTheDocument();
-    expect(getByText(mockSelectedIdentity.name)).toBeInTheDocument();
+    expect(getByText(mockSelectedAccount.metadata.name)).toBeInTheDocument();
     expect(getByTestId('selected-account-copy')).toBeInTheDocument();
   });
 
@@ -94,7 +110,7 @@ describe('SelectedAccount Component', () => {
 
   it('should display custody labels if they exist', () => {
     const mockAccountDetails = {
-      [mockSelectedIdentity.address]: {
+      [mockSelectedAccount.address]: {
         labels: [
           { key: 'Label 1', value: 'Label 1' },
           { key: 'Label 2', value: 'Label 2' },

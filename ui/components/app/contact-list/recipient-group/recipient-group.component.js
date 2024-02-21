@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
-import { ellipsify } from '../../../../pages/send/send.utils';
+import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import Box from '../../../ui/box';
 import {
   TextColor,

@@ -599,9 +599,6 @@
   "search": {
     "message": "Otsi"
   },
-  "searchResults": {
-    "message": "Otsingutulemused"
-  },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
@@ -769,12 +766,6 @@
   },
   "unknown": {
     "message": "Teadmata"
-  },
-  "unknownCameraError": {
-    "message": "Kaamerale ligipääsemisel ilmnes tõrge. Proovige uuesti..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oih! Midagi läks valesti...."
   },
   "unknownNetwork": {
     "message": "Tundmatu privaatvõrk"

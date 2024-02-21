@@ -1,6 +1,6 @@
-import React, { ReactChild } from 'react';
-
+import React from 'react';
 import { useSelector } from 'react-redux';
+import Confusable from '../../ui/confusable';
 import {
   AvatarAccount,
   Box,
@@ -17,20 +17,21 @@ import {
   BlockSize,
   BackgroundColor,
   TextColor,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 
 interface AddressListItemProps {
-  label: string | ReactChild;
   address: string;
+  label: string;
   onClick: () => void;
 }
 
 export const AddressListItem = ({
-  label,
   address,
+  label,
   onClick,
 }: AddressListItemProps) => {
   const useBlockie = useSelector(getUseBlockie);
@@ -47,6 +48,7 @@ export const AddressListItem = ({
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.transparent}
       className="address-list-item"
+      alignItems={AlignItems.center}
     >
       <AvatarAccount
         borderColor={BorderColor.transparent}
@@ -69,10 +71,9 @@ export const AddressListItem = ({
           padding={0}
           width={BlockSize.Full}
           textAlign={TextAlign.Left}
-          ellipsis
           className="address-list-item__label"
         >
-          {label}
+          {label ? <Confusable input={label} /> : shortenAddress(address)}
         </Text>
         <Text
           variant={TextVariant.bodySm}

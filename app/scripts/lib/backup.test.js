@@ -158,6 +158,7 @@ const jsonData = JSON.stringify({
     forgottenPassword: false,
     preferences: {
       hideZeroBalanceTokens: false,
+      showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
@@ -182,7 +183,14 @@ const jsonData = JSON.stringify({
           lastSelected: 1693289751176,
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: [
+          EthMethod.PersonalSign,
+          EthMethod.Sign,
+          EthMethod.SignTransaction,
+          EthMethod.SignTypedDataV1,
+          EthMethod.SignTypedDataV3,
+          EthMethod.SignTypedDataV4,
+        ],
         type: EthAccountType.Eoa,
       },
     },

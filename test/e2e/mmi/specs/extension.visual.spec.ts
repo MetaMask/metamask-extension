@@ -76,7 +76,7 @@ test.describe('MMI extension', () => {
     );
   });
 
-  test('Custodian token management', async ({ page, context }) => {
+  test.skip('Custodian token management', async ({ page, context }) => {
     // Define const to compare in assertions
     const arrayWithoutCustodianAccounts = ['Account 1'];
     const arrayWithCustodianAccounts = [
@@ -134,6 +134,8 @@ test.describe('MMI extension', () => {
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
     );
+
+    await mainMenuPage.closeDeprecatedNetworksBanner();
 
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
     expect(

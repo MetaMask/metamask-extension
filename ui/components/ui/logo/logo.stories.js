@@ -45,7 +45,7 @@ const LogoItem = ({ Component }) => {
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
-      <Text>{`${Component.type.__docgenInfo.displayName}`}</Text>
+      <Text>{`${Component.type.name}`}</Text>
     </Card>
   );
 };

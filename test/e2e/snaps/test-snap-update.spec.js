@@ -1,4 +1,5 @@
 const {
+  defaultGanacheOptions,
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
@@ -8,20 +9,10 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -29,14 +20,18 @@ describe('Test Snap update', function () {
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
 
-        // find and scroll to the correct card and click first
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 2);
@@ -88,7 +83,6 @@ describe('Test Snap update', function () {
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
-        await driver.delay(1000);
 
         // switch to metamask extension and update
         await switchToNotificationWindow(driver, 2);

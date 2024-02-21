@@ -606,9 +606,6 @@
   "search": {
     "message": "البحث"
   },
-  "searchResults": {
-    "message": "نتائج البحث"
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -776,12 +773,6 @@
   },
   "unknown": {
     "message": "غير معروف"
-  },
-  "unknownCameraError": {
-    "message": "حدث خطأ أثناء محاولة الوصول إلى الكاميرا. يُرجى إعادة المحاولة..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "عذرًا! وقع خطأٌ ما..."
   },
   "unknownNetwork": {
     "message": "شبكة خاصة مجهولة"

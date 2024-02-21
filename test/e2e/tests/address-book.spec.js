@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
@@ -10,16 +10,6 @@ const { shortenAddress } = require('../../../ui/helpers/utils/util');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Address Book', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
@@ -38,7 +28,7 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
@@ -98,7 +88,7 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -109,7 +99,14 @@ describe('Address Book', function () {
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement({
+            text: 'Test Name 1',
+            css: '.address-list-item__label',
+          });
+        } else {
+          await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        }
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         const inputUsername = await driver.findElement('#nickname');
@@ -183,7 +180,7 @@ describe('Address Book', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

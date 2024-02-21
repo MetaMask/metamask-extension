@@ -24,7 +24,6 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import { openWindow } from '../../../helpers/utils/window';
 import {
   AlignItems,
@@ -53,10 +52,6 @@ export default class SelectHardware extends Component {
   state = {
     selectedDevice: null,
   };
-
-  shouldShowConnectButton() {
-    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
-  }
 
   connect = () => {
     if (this.state.selectedDevice) {
@@ -129,15 +124,14 @@ export default class SelectHardware extends Component {
     return (
       <>
         <div className="hw-connect__btn-wrapper">
-          {this.shouldShowConnectButton() && this.renderConnectToLedgerButton()}
+          {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
         </div>
         <div
           className="hw-connect__btn-wrapper"
           style={{ margin: '10px 0 0 0' }}
         >
-          {this.shouldShowConnectButton() &&
-            this.renderConnectToLatticeButton()}
+          {this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
         </div>
       </>
@@ -681,6 +675,41 @@ export default class SelectHardware extends Component {
                   event: 'Clicked DCent Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.dcent);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
+      },
+      {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('imToken')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked imToken Learn More',
+                });
+                openWindow(HardwareAffiliateLinks.imtoken);
+              }}
+            >
+              {this.context.t('downloadNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked imToken Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.imtoken);
               }}
             >
               {this.context.t('tutorial')}

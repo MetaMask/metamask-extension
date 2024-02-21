@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  FormTextField,
-  TextFieldSize,
-  TextFieldType,
-} from '../../component-library';
+import { TextFieldSize, TextFieldType } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
 

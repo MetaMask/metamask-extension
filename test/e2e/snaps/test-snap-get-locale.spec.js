@@ -1,36 +1,36 @@
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Get Locale', function () {
   it('test snap_getLocale functionality', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect to get-locale snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const dialogButton = await driver.findElement('#connectgetlocale');
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
         await driver.clickElement('#connectgetlocale');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -86,25 +86,30 @@ describe('Test Snap Get Locale', function () {
         // switch to the original MM tab
         const extensionPage = windowHandles[0];
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
 
         // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
 
         // try to click on the notification item
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.delay(1000);
 
         // try to click on the snaps item
+        await driver.waitForSelector({
+          text: 'General',
+          tag: 'div',
+        });
         await driver.clickElement({
           text: 'General',
           tag: 'div',
         });
-        await driver.delay(1000);
 
         // try to click on locale-select
+        await driver.waitForSelector('[data-testid="locale-select"]');
         await driver.clickElement('[data-testid="locale-select"]');
 
         // try to select dansk from the list

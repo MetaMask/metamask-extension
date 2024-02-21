@@ -14,6 +14,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
+import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const ConfirmAddCustodianToken = () => {
   const dispatch = useDispatch();
@@ -100,7 +101,7 @@ const ConfirmAddCustodianToken = () => {
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
-      apiUrl: connectRequest.apiUrl,
+      envName: connectRequest.environment,
     },
   });
 

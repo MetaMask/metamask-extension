@@ -8,13 +8,13 @@ exports[`Name renders address with no saved name 1`] = `
     >
       <span
         class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/warning.svg');"
+        style="mask-image: url('./images/icons/question.svg');"
       />
-      <span
-        class="name__value"
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
       >
         0xC0ffe...54977
-      </span>
+      </p>
     </div>
   </div>
 </div>
@@ -26,15 +26,55 @@ exports[`Name renders address with saved name 1`] = `
     <div
       class="name name__saved"
     >
-      <span
-        class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-        style="mask-image: url('./images/icons/save.svg');"
-      />
-      <span
-        class="name__name"
+      <div
+        class=""
+      >
+        <div
+          class="identicon"
+          style="height: 18px; width: 18px; border-radius: 9px;"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(245, 196, 0);"
+          >
+            <svg
+              height="18"
+              width="18"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#C8144D"
+                height="18"
+                transform="translate(-0.9231442102660704 -2.672213349688873) rotate(408.5 9 9)"
+                width="18"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FB1860"
+                height="18"
+                transform="translate(8.699725589158856 -1.5148649719147114) rotate(402.6 9 9)"
+                width="18"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#03505E"
+                height="18"
+                transform="translate(1.2375522258984861 -14.79073284594546) rotate(308.0 9 9)"
+                width="18"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
       >
         TestName
-      </span>
+      </p>
     </div>
   </div>
 </div>

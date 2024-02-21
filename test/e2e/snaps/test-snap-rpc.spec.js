@@ -1,4 +1,5 @@
 const {
+  defaultGanacheOptions,
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
@@ -8,20 +9,10 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap RPC', function () {
   it('can use the cross-snap RPC endowment and produce a public key', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -29,14 +20,18 @@ describe('Test Snap RPC', function () {
 
         // navigate to test snaps page
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the bip32 test and connect
         const snapButton1 = await driver.findElement('#connectbip32');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectbip32');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 2);
@@ -55,7 +50,7 @@ describe('Test Snap RPC', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
+        await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
@@ -76,7 +71,6 @@ describe('Test Snap RPC', function () {
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
         await driver.clickElement('#connectjson-rpc');
-        await driver.delay(1000);
 
         await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
