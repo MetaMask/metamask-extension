@@ -197,6 +197,13 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     console.log('domainNetworks: ', domainNetworks);
     console.log('networkForThisDomain: ', networkForThisDomain);
 
+    //
+    // TODO: Get the current network type
+    //
+
+    //
+    // TODO: ONLY EXECUTE THIS NEXT BLOCK IF WE AREN'T ALREADY ON THIS NETWORK
+    //
     // If we have a match, "silently" switch networks
     if (networkForThisDomain) {
       if (Object.keys(NETWORK_TYPES).includes(networkForThisDomain)) {
@@ -204,7 +211,10 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       } else {
         await store.dispatch(actions.setActiveNetwork(networkForThisDomain));
       }
+
+      //
       // TODO: Show toast notifying user of network change
+      //
       console.log('Switched network to ', networkForThisDomain);
     } else {
       console.log('No domainNetwork, not changing networks');
