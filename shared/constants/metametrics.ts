@@ -678,6 +678,8 @@ export enum MetaMetricsEventName {
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   AddSnapAccountClicked = 'Add Snap Account Clicked',
   AddSnapAccountViewed = 'Add Snap Account Viewed',
+  AddSnapAccountConfirmed = 'Add Snap Account Confirmed',
+  AddSnapAccountCancelled = 'Add Snap Account Cancelled',
   ///: END:ONLY_INCLUDE_IF
 }
 
