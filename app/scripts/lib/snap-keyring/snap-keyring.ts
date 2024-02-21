@@ -34,6 +34,7 @@ export const getAccountsBySnapId = async (
  * @param persistKeyringHelper - A function that persists all keyrings in the vault.
  * @param setSelectedAccountHelper - A function to update current selected account.
  * @param removeAccountHelper - A function to help remove an account based on its address.
+ * @param trackEvent - A function to track MetaMetrics events.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
  * - `addAccount`: Initiates the process of adding an account with user confirmation and handling the user input.
@@ -45,6 +46,10 @@ export const snapKeyringBuilder = (
   persistKeyringHelper: () => Promise<void>,
   setSelectedAccountHelper: (address: string) => void,
   removeAccountHelper: (address: string) => Promise<any>,
+  trackEvent: (
+    payload: Record<string, any>,
+    options?: Record<string, any>,
+  ) => void,
 ) => {
   const builder = (() => {
     return new SnapKeyring(getSnapController() as any, {
