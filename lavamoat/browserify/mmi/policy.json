@@ -1047,7 +1047,6 @@
       "globals": {
         "URL": true,
         "console.error": true,
-        "console.log": true,
         "setTimeout": true
       },
       "packages": {
@@ -1056,7 +1055,6 @@
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "browserify>browserify-zlib": true,
         "pify": true,
         "sass-loader>klona": true
       }
@@ -1931,9 +1929,6 @@
       }
     },
     "@metamask/providers>@metamask/rpc-errors": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "@metamask/utils": true,
         "eth-rpc-errors>fast-safe-stringify": true
