@@ -220,8 +220,7 @@
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@trezor/connect-web": "9.0.11",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
-    "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch",
-    "@metamask/transaction-controller@npm:^20.0.0": "patch:@metamask/transaction-controller@npm%3A23.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-23.0.0-85f77e647b.patch"
+    "tar-stream@npm:^3.1.6": "patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -299,7 +298,7 @@
     "@metamask/snaps-rpc-methods": "^5.0.0",
     "@metamask/snaps-sdk": "^1.4.0",
     "@metamask/snaps-utils": "^5.2.0",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A23.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-23.0.0-85f77e647b.patch",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@23.0.0-preview.c0e7b34",
     "@metamask/user-operation-controller": "^1.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
