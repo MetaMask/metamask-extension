@@ -91,7 +91,7 @@ export const Connections = () => {
       <Footer>
         {/* TODO: When accounts connected - Two Separate Buttons - Separate Ticket */}
 
-        <ButtonPrimary size={ButtonPrimarySize.Lg}>
+        <ButtonPrimary size={ButtonPrimarySize.Lg} block>
           {t('connectAccounts')}
         </ButtonPrimary>
       </Footer>

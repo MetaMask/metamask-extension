@@ -4,6 +4,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -22,11 +23,11 @@ export const NoConnectionContent = () => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Text variant={TextVariant.bodyMdMedium}>
+      <Text variant={TextVariant.bodyMdMedium} textAlign={TextAlign.Center}>
         {t('noConnectedAccountTitle')}
       </Text>
 
-      <Text variant={TextVariant.bodyMd}>
+      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
         {t('noConnectedAccountDescription')}
       </Text>
     </Box>
