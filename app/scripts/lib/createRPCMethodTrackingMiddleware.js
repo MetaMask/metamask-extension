@@ -216,6 +216,15 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+
+        if (
+          req.securityAlertResponse?.result_type ===
+            BlockaidResultType.Errored &&
+          req.securityAlertResponse?.description
+        ) {
+          eventProperties.security_alert_description =
+            req.securityAlertResponse.description;
+        }
         ///: END:ONLY_INCLUDE_IF
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(

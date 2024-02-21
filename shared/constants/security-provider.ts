@@ -47,7 +47,7 @@ export enum BlockaidReason {
   other = 'other',
 
   // MetaMask defined reasons
-  failed = 'Failed',
+  errored = 'Error',
   notApplicable = 'NotApplicable',
   inProgress = 'validation_in_progress',
 }
@@ -59,7 +59,6 @@ export enum BlockaidResultType {
   Errored = 'Error',
 
   // MetaMask defined result types
-  Failed = 'Failed',
   NotApplicable = 'NotApplicable',
   Loading = 'loading',
 }
