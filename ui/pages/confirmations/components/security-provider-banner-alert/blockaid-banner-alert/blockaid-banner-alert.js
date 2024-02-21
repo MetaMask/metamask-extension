@@ -89,7 +89,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     return (
       <Box
         alignItems={AlignItems.center}
-        borderColor={BorderColor.borderDefault}
+        borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.SM}
         className="blockaid_banner__wrapper"
         display={Display.Flex}
@@ -118,7 +118,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
       return (
         <Box
           alignItems={AlignItems.center}
-          borderColor={BorderColor.borderDefault}
+          borderColor={BorderColor.borderMuted}
           borderRadius={BorderRadius.SM}
           className="blockaid_banner__wrapper"
           display={Display.Flex}
