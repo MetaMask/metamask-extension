@@ -21,13 +21,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
 
-export const ConnectedStatus = ({ address='', isActive = false }) => {
+export const ConnectedStatus = ({ address = '', isActive = false }) => {
   const t = useSelector(useI18nContext);
-  const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
-
-  const activeWalletSnap = permissionsForActiveTab
-    .map((permission) => permission.key)
-    .includes(WALLET_SNAP_PERMISSION_KEY);
 
   const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
@@ -37,14 +32,11 @@ export const ConnectedStatus = ({ address='', isActive = false }) => {
     selectedAddressSubjectMap && selectedAddressSubjectMap[originOfCurrentTab],
   );
 
-
   let status;
   if (isActive) {
     status = STATUS_CONNECTED;
   } else if (currentTabIsConnectedToSelectedAddress) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
-  } else if (activeWalletSnap) {
-    status = STATUS_CONNECTED_TO_SNAP;
   } else {
     status = STATUS_NOT_CONNECTED;
   }
