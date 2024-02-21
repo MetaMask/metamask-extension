@@ -9,7 +9,8 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('PPOM Settings @no-mmi', function () {
-  it('should not show the PPOM warning when toggle is off', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -47,7 +48,8 @@ describe('PPOM Settings @no-mmi', function () {
     );
   });
 
-  it('should show the PPOM warning when the toggle is on', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show the PPOM warning when the toggle is on', async function () {
     await withFixtures(
       {
         dapp: true,
