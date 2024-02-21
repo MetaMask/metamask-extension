@@ -51,7 +51,6 @@ import {
   getAddressConnectedSubjectMap,
   getCurrentNetwork,
   getNativeCurrencyImage,
-  getOriginOfCurrentTab,
   getUseBlockie,
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
@@ -70,6 +69,7 @@ export const AccountListItem = ({
   isPinned = false,
   showOptions = false,
   isHidden = false,
+  currentTabOrigin,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -103,13 +103,13 @@ export const AccountListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
   const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
-  const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const selectedAddressSubjectMap =
     addressConnectedSubjectMap[identity.address];
   const currentTabIsConnectedToSelectedAddress = Boolean(
     selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
   );
-  const isConnected = currentTabIsConnectedToSelectedAddress;
+  const isConnected =
+    currentTabOrigin && currentTabIsConnectedToSelectedAddress;
 
   return (
     <Box
@@ -370,6 +370,10 @@ AccountListItem.propTypes = {
    * Represents hidden accounts
    */
   isHidden: PropTypes.bool,
+  /**
+   * Represents current tab origin
+   */
+  currentTabOrigin: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';
