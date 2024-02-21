@@ -179,8 +179,8 @@ describe('PriorityfeeInput', () => {
   });
 
   describe('updatePriorityFee', () => {
-    it('updates base fee correctly', () => {
-      const { getByTestId } = render(<PriorityfeeInput />);
+    it('updates base fee correctly', async () => {
+      const { getByTestId } = await render(<PriorityfeeInput />);
       const input = getByTestId('priority-fee-input');
 
       fireEvent.change(input, { target: { value: '1' } });
@@ -188,8 +188,8 @@ describe('PriorityfeeInput', () => {
       expect(input.value).toBe('1');
     });
 
-    it('handles low numbers', () => {
-      const { getByTestId } = render(<PriorityfeeInput />);
+    it('handles low numbers', async () => {
+      const { getByTestId } = await render(<PriorityfeeInput />);
       const input = getByTestId('priority-fee-input');
 
       fireEvent.change(input, { target: { value: LOW_PRIORITY_FEE } });
