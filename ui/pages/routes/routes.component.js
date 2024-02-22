@@ -40,7 +40,7 @@ import {
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
-import Asset from '../asset/asset';
+import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)

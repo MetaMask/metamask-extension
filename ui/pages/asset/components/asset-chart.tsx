@@ -61,7 +61,6 @@ const crosshairPlugin = {
   afterDraw(chart: Chart) {
     if (chart.crosshairX !== undefined) {
       const { x: xAxis, y: yAxis } = chart.scales;
-
       const { data } = chart.data.datasets[0];
       const index = Math.max(
         0,
@@ -82,7 +81,7 @@ const crosshairPlugin = {
       chart.ctx.stroke();
 
       chart.ctx.beginPath();
-      chart.ctx.arc(x, y, 4, 0, 2 * Math.PI);
+      chart.ctx.arc(x, y, 3, 0, 2 * Math.PI);
       chart.ctx.fillStyle = chart.options.borderColor;
       chart.ctx.fill();
     }
@@ -161,11 +160,9 @@ const AssetChart = ({
   useEffect(() => {
     setLoading(true);
 
-    // TODO: Consider exposing HTTP request through a controller
     fetchWithCache({
       url: `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-      // cacheOptions: { cacheRefreshTime: MINUTE },
-      cacheOptions: { cacheRefreshTime: 0 },
+      cacheOptions: { cacheRefreshTime: MINUTE },
       functionName: 'GetAssetHistoricalPrices',
     })
       .catch(() => ({}))
