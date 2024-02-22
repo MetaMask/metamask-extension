@@ -201,7 +201,7 @@ const AssetChart = ({
             onResize: () => drawTooltips(),
             scales: {
               x: { min: xMin.x, max: xMax.x, display: false, type: 'linear' },
-              y: { min: yMin.y - 2, max: yMax.y + 2, display: false },
+              y: { min: yMin.y, max: yMax.y, display: false },
             },
           }));
           setData({ datasets: [{ data: prices }] });
