@@ -716,7 +716,7 @@ jobs:
                 -u mmig_qa@consensys.net \
                 -p "v##&FgS!4J" \
                 parse_junit \
-                --title "Automated Chrome Tests from CircleCI workflow" \
+                --title "Automated Chrome Tests from CircleCI workflow new" \
                 --run-id "51" \
                 --run-description $CIRCLE_BUILD_URL \
                 --case-fields type_id:3 \
@@ -1082,7 +1082,7 @@ jobs:
                 -u mmig_qa@consensys.net \
                 -p "v##&FgS!4J" \
                 parse_junit \
-                --title "Automated Firefox Tests from CircleCI workflow" \
+                --title "Automated Firefox Tests from CircleCI workflow new" \
                 --run-id "52" \
                 --run-description $CIRCLE_BUILD_URL \
                 --case-fields type_id:3 \
