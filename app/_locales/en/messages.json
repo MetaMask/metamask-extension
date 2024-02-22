@@ -878,7 +878,7 @@
   "connectedWith": {
     "message": "Connected with"
   },
-    "connectedaccountsTabKey": {
+  "connectedaccountsTabKey": {
     "message": "Connected accounts"
   },
   "connecting": {

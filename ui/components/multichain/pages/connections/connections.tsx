@@ -88,8 +88,11 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content>
-
-        {connectedSubjectsMetadata ? <ConnectionContent /> : <NoConnectionContent />}
+        {connectedSubjectsMetadata ? (
+          <ConnectionContent />
+        ) : (
+          <NoConnectionContent />
+        )}
       </Content>
       <Footer>
         {/* TODO: When accounts connected - Two Separate Buttons - Separate Ticket */}

@@ -1,33 +1,35 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { useI18nContext } from '../../../../../hooks/useI18nContext'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getConnectedSubjectsForAllAddresses,
   getOrderedConnectedAccountsForActiveTab,
-} from '../../../../../selectors/permissions'
+} from '../../../../../selectors/permissions';
 import {
   getInternalAccounts,
   getOriginOfCurrentTab,
   getSelectedAccount,
-} from '../../../../../selectors/selectors'
-import { Tab } from '../../../../ui/tabs/index'
-import Tabs from '../../../../ui/tabs/tabs.component'
-import { mergeAccounts } from '../../../account-list-menu/account-list-menu'
-import { AccountListItem } from '../../../index'
-import { AccountType, ConnectedSites } from './connections.types'
+} from '../../../../../selectors/selectors';
+import { Tab } from '../../../../ui/tabs';
+import Tabs from '../../../../ui/tabs/tabs.component';
+import { mergeAccounts } from '../../../account-list-menu/account-list-menu';
+import { AccountListItem } from '../../..';
+import { AccountType, ConnectedSites } from './connections.types';
 
 export const ConnectionContent = () => {
-  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts'
-  const connectedAccounts = useSelector(getOrderedConnectedAccountsForActiveTab)
-  const selectedAccount = useSelector(getSelectedAccount)
+  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
+  const connectedAccounts = useSelector(
+    getOrderedConnectedAccountsForActiveTab,
+  );
+  const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
-    const internalAccounts = useSelector(getInternalAccounts);
-  const currentTabOrigin = useSelector(getOriginOfCurrentTab)
+  const internalAccounts = useSelector(getInternalAccounts);
+  const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const mergedAccount = mergeAccounts(connectedAccounts, internalAccounts);
 
-  const t = useI18nContext()
+  const t = useI18nContext();
   return (
-    <Tabs defaultActiveTabKey='connections'>
+    <Tabs defaultActiveTabKey="connections">
       {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -40,7 +42,7 @@ export const ConnectionContent = () => {
 
             const connectedSite = connectedSites[account.address]?.find(
               ({ origin }) => origin === currentTabOrigin,
-            )
+            );
             return (
               <AccountListItem
                 identity={account}
@@ -52,10 +54,10 @@ export const ConnectionContent = () => {
                 currentTabOrigin={currentTabOrigin}
                 // isActive={index === 0 ? t('active') : null} // BLOCKED: This prop will be added via PR-23006
               />
-            )
+            );
           })}{' '}
         </Tab>
       }
     </Tabs>
-  )
-}
+  );
+};
