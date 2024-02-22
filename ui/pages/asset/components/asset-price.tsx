@@ -64,6 +64,8 @@ const AssetPrice = forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const [{ price, comparePrice, date }, setPrices] = useState({
       price: currentPrice,
+      comparePrice: undefined as number | undefined,
+      date: undefined as number | undefined,
     });
     useImperativeHandle(ref, () => ({ setPrices }));
 

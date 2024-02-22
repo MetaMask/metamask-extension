@@ -16,7 +16,9 @@ import {
   Decimation,
   Point,
   ChartEvent,
+  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { useTheme } from '../../../hooks/useTheme';
@@ -52,16 +54,18 @@ import ChartTooltip from './chart-tooltip';
 type TimeRange = `${number}D` | `${number}M` | `${number}Y`;
 
 /** A Chart.js plugin that draws a vertical crosshair on hover */
+type CrosshairChart = Chart & { crosshairX?: number };
 const crosshairPlugin = {
   id: 'crosshair',
-  afterEvent(chart: Chart, { event }: { event: ChartEvent }) {
-    chart.crosshairX = event.type === 'mouseout' ? undefined : event.x;
+  afterEvent(chart: CrosshairChart, { event }: { event: ChartEvent }) {
+    chart.crosshairX =
+      event.type === 'mouseout' ? undefined : event.x ?? undefined;
     chart.draw();
   },
-  afterDraw(chart: Chart) {
+  afterDraw(chart: CrosshairChart) {
     if (chart.crosshairX !== undefined) {
       const { x: xAxis, y: yAxis } = chart.scales;
-      const { data } = chart.data.datasets[0];
+      const data = chart.data.datasets[0].data as Point[];
       const index = Math.max(
         0,
         Math.min(
@@ -82,7 +86,7 @@ const crosshairPlugin = {
 
       chart.ctx.beginPath();
       chart.ctx.arc(x, y, 3, 0, 2 * Math.PI);
-      chart.ctx.fillStyle = chart.options.borderColor;
+      chart.ctx.fillStyle = chart.options.borderColor as string;
       chart.ctx.fill();
     }
   },
@@ -97,7 +101,7 @@ Chart.register(
   crosshairPlugin,
 );
 
-const initialChartOptions: ChartOptions<'line'> = {
+const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
   aspectRatio: 2.7,
@@ -237,7 +241,7 @@ const AssetChart = ({
               options={chartOptions}
               updateMode="none"
               onMouseMove={({ nativeEvent: e }: ReactMouseEvent) => {
-                if (prices) {
+                if (prices && chartRef.current) {
                   const index = Math.max(
                     0,
                     Math.min(

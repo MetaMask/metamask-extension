@@ -51,7 +51,7 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
     chainId,
-    null,
+    '',
     walletAddress,
     rpcPrefs,
   );

@@ -18,9 +18,9 @@ const ChartTooltip = forwardRef((_, ref) => {
   const currency = useSelector(getCurrentCurrency);
 
   const [{ xAxisPercent, price }, setTooltip] = useState<{
-    xAxisPercent?: number;
+    xAxisPercent: number;
     price?: number;
-  }>({});
+  }>({ xAxisPercent: 0 });
 
   useImperativeHandle(ref, () => ({ setTooltip }));
 

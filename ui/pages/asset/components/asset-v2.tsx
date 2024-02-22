@@ -137,9 +137,7 @@ const AssetV2 = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const [marketData, setMarketData] = useState<any>();
-
-  const headerRef = useRef(null);
-  const balanceRef = useRef(null);
+  const headerRef = useRef<{ setBalanceOpacity: (o: number) => void }>(null);
 
   const { type, symbol, name, image, balance, optionsButton } = asset;
 
@@ -173,10 +171,14 @@ const AssetV2 = ({
         optionsButton={optionsButton}
       />
       <Box
-        // Fade balance in/out of header
-        onScroll={(e) =>
+        // Fade balance in/out of header.
+        // TODO: Consider debouncing this.
+        onScroll={(e: React.UIEvent) =>
           headerRef?.current?.setBalanceOpacity(
-            Math.max(0, Math.min(1, (e.target.scrollTop - 394) / 55)),
+            Math.max(
+              0,
+              Math.min(1, ((e.target as HTMLElement).scrollTop - 394) / 55),
+            ),
           )
         }
         display={Display.Flex}
@@ -206,7 +208,7 @@ const AssetV2 = ({
             >
               {t('yourBalance')}
             </Text>
-            <Box ref={balanceRef}>
+            <Box>
               {type === AssetType.native ? (
                 <TokenListItem
                   title={symbol}
@@ -494,6 +496,7 @@ const AssetV2 = ({
                 );
 
                 if (usingHardwareWallet) {
+                  // @ts-expect-error not sure why this doesn't exist on type 'Platform'
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
                 } else {
                   history.push(BUILD_QUOTE_ROUTE);
