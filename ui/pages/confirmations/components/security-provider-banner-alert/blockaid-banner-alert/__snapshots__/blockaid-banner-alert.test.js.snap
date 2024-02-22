@@ -22,7 +22,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(0 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -43,7 +43,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(30 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -64,7 +64,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(60 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -85,7 +85,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(90 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -106,7 +106,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(120 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -127,7 +127,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(150 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -148,7 +148,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(180 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -169,7 +169,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(210 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -190,7 +190,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(240 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -211,7 +211,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(270 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -232,7 +232,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(300 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
@@ -253,7 +253,7 @@ exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when security
           transform="rotate(330 50 50)"
         >
           <rect
-            fill="border-muted"
+            fill="var(--color-icon-default)"
             height="30"
             rx="0"
             ry="0"
