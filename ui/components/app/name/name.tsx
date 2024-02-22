@@ -47,7 +47,7 @@ export default function Name({
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const name = useDisplayName(value, type);
+  const { name, hasPetname } = useDisplayName(value, type);
 
   useEffect(() => {
     if (internal) {
@@ -73,7 +73,7 @@ export default function Name({
   }, [setModalOpen]);
 
   const formattedValue = formatValue(value, type);
-  const hasName = Boolean(name);
+  const hasDisplayName = Boolean(name);
 
   return (
     <div>
@@ -83,12 +83,13 @@ export default function Name({
       <div
         className={classnames({
           name: true,
-          name__saved: hasName,
-          name__missing: !hasName,
+          name__saved: hasPetname,
+          name__recognized_unsaved: !hasPetname && hasDisplayName,
+          name__missing: !hasDisplayName,
         })}
         onClick={handleClick}
       >
-        {hasName ? (
+        {hasDisplayName ? (
           <Identicon address={value} diameter={18} />
         ) : (
           <Icon
@@ -97,7 +98,7 @@ export default function Name({
             size={IconSize.Lg}
           />
         )}
-        {hasName ? (
+        {hasDisplayName ? (
           <Text className="name__name" variant={TextVariant.bodyMd}>
             {name}
           </Text>

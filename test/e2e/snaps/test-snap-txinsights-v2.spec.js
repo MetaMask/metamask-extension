@@ -13,7 +13,6 @@ describe('Test Snap TxInsights-v2', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -22,7 +21,12 @@ describe('Test Snap TxInsights-v2', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the transaction-insights test and connect
         const snapButton1 = await driver.findElement(
@@ -31,7 +35,6 @@ describe('Test Snap TxInsights-v2', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connecttransaction-insights');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -65,7 +68,6 @@ describe('Test Snap TxInsights-v2', function () {
         // switch to test-snaps page and get accounts
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement('#getAccounts');
-        await driver.delay(1000);
 
         // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -77,7 +79,10 @@ describe('Test Snap TxInsights-v2', function () {
           text: 'Next',
           tag: 'button',
         });
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -87,7 +92,6 @@ describe('Test Snap TxInsights-v2', function () {
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement('#sendInsights');
-        await driver.delay(1000);
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -95,7 +99,10 @@ describe('Test Snap TxInsights-v2', function () {
           WINDOW_TITLES.Dialog,
           windowHandles,
         );
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          text: 'Insights Example Snap',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Insights Example Snap',
           tag: 'button',

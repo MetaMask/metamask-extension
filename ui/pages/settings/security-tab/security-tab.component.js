@@ -17,6 +17,7 @@ import {
   COINGECKO_LINK,
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
+  OPENSEA_TERMS_OF_USE,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
@@ -25,6 +26,7 @@ import {
   BUTTON_SIZES,
   Box,
   Text,
+  Tag,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -37,7 +39,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -68,6 +70,7 @@ export default class SecurityTab extends PureComponent {
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
+    setIsIpfsGatewayEnabled: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
@@ -80,6 +83,12 @@ export default class SecurityTab extends PureComponent {
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
+    transactionSecurityCheckEnabled: PropTypes.bool,
+    setTransactionSecurityCheckEnabled: PropTypes.func,
+    securityAlertsEnabled: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    setSecurityAlertsEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -92,7 +101,7 @@ export default class SecurityTab extends PureComponent {
   settingsRefCounter = 0;
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(
+    getNumberOfSettingRoutesInTab(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),
@@ -171,6 +180,131 @@ export default class SecurityTab extends PureComponent {
               onClose={this.hideSrpQuizModal}
             />
           )}
+        </div>
+      </>
+    );
+  }
+
+  renderSecurityAlertsToggle() {
+    const { t } = this.context;
+
+    const {
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      securityAlertsEnabled,
+      ///: END:ONLY_INCLUDE_IF
+      transactionSecurityCheckEnabled,
+    } = this.props;
+
+    return (
+      <>
+        <div
+          ref={this.settingsRefs[15]}
+          className="settings-page__security-tab-sub-header"
+        >
+          <span ref={this.settingsRefs[16]} />
+          <Text
+            ref={this.settingsRefs[17]}
+            variant={TextVariant.inherit}
+            color={TextColor.textAlternative}
+          >
+            {t('securityAlerts')}
+          </Text>
+          <div className="settings-page__content-padded">
+            <Text variant={TextVariant.bodySm}>
+              {t('securityAlertsDescription')}
+            </Text>
+
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+              <>
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  color={TextColor.textAlternative}
+                  marginTop={4}
+                >
+                  {t('preferredProvider')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  justifyContent={JustifyContent.spaceBetween}
+                  gap={4}
+                  marginTop={3}
+                  marginBottom={3}
+                  data-testid="settings-toggle-security-alert-blockaid"
+                >
+                  <div>
+                    <Box display={Display.Flex}>
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {t('blockaid')}
+                      </Text>
+                      <Tag marginLeft={2} label="Recommended" />
+                    </Box>
+                    <Text
+                      variant={TextVariant.bodySm}
+                      as="h6"
+                      color={TextColor.textAlternative}
+                      marginTop={0}
+                      marginRight={1}
+                    >
+                      {t('blockaidMessage')}
+                    </Text>
+                  </div>
+                  <div data-testid="securityAlert">
+                    <ToggleButton
+                      value={securityAlertsEnabled}
+                      onToggle={this.toggleSecurityAlert.bind(this)}
+                    />
+                  </div>
+                </Box>
+              </>
+              ///: END:ONLY_INCLUDE_IF
+            }
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              gap={4}
+              marginTop={3}
+              marginBottom={3}
+            >
+              <div>
+                <Box display={Display.Flex}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textDefault}
+                  >
+                    {t('openSeaLabel')}
+                  </Text>
+                  <Tag marginLeft={2} label="Beta" />
+                </Box>
+                <div
+                  className="settings-page__content-description"
+                  data-testid="termsOfUse"
+                >
+                  {t('openSeaMessage', [
+                    <a
+                      key="opensea-terms-of-use"
+                      href={OPENSEA_TERMS_OF_USE}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {t('terms')}
+                    </a>,
+                  ])}
+                </div>
+              </div>
+              <div data-testid="transactionSecurityCheck">
+                <ToggleButton
+                  value={transactionSecurityCheckEnabled}
+                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
+                />
+              </div>
+            </Box>
+          </div>
         </div>
       </>
     );
@@ -303,7 +437,6 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
         display={Display.Flex}
@@ -356,7 +489,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[13]}
         className="settings-page__content-row"
         data-testid="setting-safe-chains-validation"
         display={Display.Flex}
@@ -464,9 +597,11 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 if (value) {
                   // turning from true to false
+                  this.props.setIsIpfsGatewayEnabled(false);
                   this.props.setIpfsGateway('');
                 } else {
                   // turning from false to true
+                  this.props.setIsIpfsGatewayEnabled(true);
                   handleIpfsGatewayChange(this.state.ipfsGateway);
                 }
 
@@ -823,7 +958,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[13]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -852,6 +987,53 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        blockaid_alerts_enabled: newValue,
+      },
+    });
+    console.log('Dickie: SSAE: ', { setSecurityAlertsEnabled, newValue });
+    setSecurityAlertsEnabled(newValue);
+    if (newValue && transactionSecurityCheckEnabled) {
+      this.toggleTransactionSecurityCheck(true);
+    }
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * toggleTransactionSecurityCheck
+   *
+   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
+   */
+  toggleTransactionSecurityCheck(oldValue) {
+    const newValue = !oldValue;
+    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        opensea_alerts_enabled: newValue,
+      },
+    });
+    setTransactionSecurityCheckEnabled(newValue);
+    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
+      this.toggleSecurityAlert(true);
+    }
+  }
+
   render() {
     const { warning, petnamesEnabled } = this.props;
 
@@ -862,6 +1044,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
@@ -892,7 +1075,10 @@ export default class SecurityTab extends PureComponent {
           {this.renderIncomingTransactionsOptIn()}
         </div>
 
-        <span className="settings-page__security-tab-sub-header">
+        <span
+          className="settings-page__security-tab-sub-header"
+          ref={this.settingsRefs[5]}
+        >
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">

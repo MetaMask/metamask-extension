@@ -60,6 +60,7 @@ exports[`Add Network Modal should render 1`] = `
           </div>
           <input
             class="form-field__input"
+            data-testid="network-form-network-name"
             type="text"
             value=""
           />
@@ -90,6 +91,7 @@ exports[`Add Network Modal should render 1`] = `
           </div>
           <input
             class="form-field__input"
+            data-testid="network-form-rpc-url"
             type="text"
             value=""
           />
@@ -144,6 +146,7 @@ exports[`Add Network Modal should render 1`] = `
           </div>
           <input
             class="form-field__input"
+            data-testid="network-form-chain-id"
             type="text"
             value=""
           />
@@ -201,6 +204,7 @@ exports[`Add Network Modal should render 1`] = `
           </div>
           <input
             class="form-field__input"
+            data-testid="network-form-block-explorer-url"
             type="text"
             value=""
           />

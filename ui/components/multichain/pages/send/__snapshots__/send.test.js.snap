@@ -68,48 +68,49 @@ exports[`SendPage render and initialization should render correctly even when a 
             From
           </label>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+            addressprops="[object Object]"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
             data-testid="send-page-account-picker"
           >
             <span
-              class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--width-full mm-box--color-text-default"
+              class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--color-text-default"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
               >
                 <div
                   class="mm-avatar-account__jazzicon"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 151, 242);"
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 151, 242);"
                   >
                     <svg
-                      height="24"
-                      width="24"
+                      height="16"
+                      width="16"
                       x="0"
                       y="0"
                     >
                       <rect
                         fill="#2362E1"
-                        height="24"
-                        transform="translate(2.6919976385943882 -4.000732967425142) rotate(458.4 12 12)"
-                        width="24"
+                        height="16"
+                        transform="translate(1.7946650923962586 -2.667155311616761) rotate(458.4 8 8)"
+                        width="16"
                         x="0"
                         y="0"
                       />
                       <rect
                         fill="#F94301"
-                        height="24"
-                        transform="translate(-11.522594467237658 5.994263726614974) rotate(268.8 12 12)"
-                        width="24"
+                        height="16"
+                        transform="translate(-7.681729644825104 3.9961758177433153) rotate(268.8 8 8)"
+                        width="16"
                         x="0"
                         y="0"
                       />
                       <rect
                         fill="#FA7900"
-                        height="24"
-                        transform="translate(-6.8071905594760675 22.110011910512533) rotate(117.3 12 12)"
-                        width="24"
+                        height="16"
+                        transform="translate(-4.538127039650711 14.740007940341687) rotate(117.3 8 8)"
+                        width="16"
                         x="0"
                         y="0"
                       />
@@ -120,13 +121,7 @@ exports[`SendPage render and initialization should render correctly even when a 
               <span
                 class="mm-box mm-text multichain-account-picker__label mm-text--body-md mm-text--ellipsis mm-box--padding-inline-start-2 mm-box--color-text-default"
                 style="flex-grow: 1; text-align: start;"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-text--text-align-start mm-box--display-flex mm-box--color-text-alternative"
-                >
-                  0x0
-                </p>
-              </span>
+              />
             </span>
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-icon-default"
@@ -274,17 +269,15 @@ exports[`SendPage render and initialization should render correctly even when a 
                         >
                           <div
                             class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                            title="0 ETH"
+                            title="null USD"
                           >
                             <span
                               class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-                            >
-                              0
-                            </span>
+                            />
                             <span
                               class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                             >
-                              ETH
+                              USD
                             </span>
                           </div>
                         </div>
@@ -303,7 +296,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                         </p>
                       </div>
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box multichain-account-list-item__avatar-currency mm-box--display-flex mm-box--gap-1 mm-box--justify-content-center mm-box--align-items-center"
                       >
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"

@@ -147,6 +147,7 @@ describe('SendPage', () => {
         currentCurrency: 'USD',
         providerConfig: {
           chainId: CHAIN_IDS.GOERLI,
+          nickname: GOERLI_DISPLAY_NAME,
         },
         nativeCurrency: 'ETH',
         featureFlags: {
@@ -181,6 +182,9 @@ describe('SendPage', () => {
             occurrences: null,
           },
         },
+      },
+      activeTab: {
+        origin: 'https://uniswap.org/',
       },
       appState: {
         sendInputCurrencySwitched: false,

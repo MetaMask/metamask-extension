@@ -27,11 +27,14 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   isBalanceCached,
-  getShouldShowFiat,
   getIsSwapsChain,
-  getSelectedAccountCachedBalance,
   getCurrentChainId,
   getPreferences,
+  getSelectedAddress,
+  getShouldHideZeroBalanceTokens,
+  getCurrentNetwork,
+  getSelectedAccountCachedBalance,
+  getShowFiatInTestnets,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -62,9 +65,11 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IF
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -82,17 +87,36 @@ const EthOverview = ({ className, showAddress }) => {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   ///: END:ONLY_INCLUDE_IF
   const balanceIsCached = useSelector(isBalanceCached);
-  const showFiat = useSelector(getShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
   const { ticker, type } = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const balance = useSelector(getSelectedAccountCachedBalance);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
   );
 
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  // Total fiat balance
+  const selectedAddress = useSelector(getSelectedAddress);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { totalWeiBalance } = useAccountTotalFiatBalance(
+    selectedAddress,
+    shouldHideZeroBalanceTokens,
+  );
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
+
+  let balanceToUse = totalWeiBalance;
+
+  if (showFiat) {
+    balanceToUse = balance;
+  }
+
   const isSwapsChain = useSelector(getIsSwapsChain);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -162,14 +186,14 @@ const EthOverview = ({ className, showAddress }) => {
         >
           <div className="eth-overview__balance">
             <div className="eth-overview__primary-container">
-              {balance ? (
+              {balanceToUse ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
                   className={classnames('eth-overview__primary-balance', {
                     'eth-overview__cached-balance': balanceIsCached,
                   })}
                   data-testid="eth-overview__primary-currency"
-                  value={balance}
+                  value={balanceToUse}
                   type={
                     showPrimaryCurrency(
                       isOriginalNativeSymbol,
@@ -177,6 +201,10 @@ const EthOverview = ({ className, showAddress }) => {
                     )
                       ? PRIMARY
                       : SECONDARY
+                  }
+                  showFiat={
+                    !showFiat ||
+                    !TEST_NETWORKS.includes(currentNetwork?.nickname)
                   }
                   ethNumberOfDecimals={4}
                   hideTitle
@@ -191,19 +219,6 @@ const EthOverview = ({ className, showAddress }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && isOriginalNativeSymbol && balance && (
-              <UserPreferencedCurrencyDisplay
-                className={classnames({
-                  'eth-overview__cached-secondary-balance': balanceIsCached,
-                  'eth-overview__secondary-balance': !balanceIsCached,
-                })}
-                data-testid="eth-overview__secondary-currency"
-                value={balance}
-                type={SECONDARY}
-                ethNumberOfDecimals={4}
-                hideTitle
-              />
-            )}
           </div>
         </Tooltip>
       }

@@ -37,7 +37,7 @@ async function withFixtures(options, testSuite) {
     driverOptions,
     dappOptions,
     title,
-    failOnConsoleError = true,
+    ignoredConsoleErrors = [],
     dappPath = undefined,
     dappPaths,
     testSpecificMock = function () {
@@ -125,8 +125,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(failOnConsoleError);
-      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
 
     let driverProxy;
@@ -160,7 +160,7 @@ async function withFixtures(options, testSuite) {
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
-    if (errorsAndExceptions && failOnConsoleError) {
+    if (errorsAndExceptions) {
       throw new Error(errorsAndExceptions);
     }
 
@@ -710,6 +710,46 @@ const openActionMenuAndStartSendFlow = async (driver) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
+const sendScreenToConfirmScreen = async (
+  driver,
+  recipientAddress,
+  quantity,
+) => {
+  await openActionMenuAndStartSendFlow(driver);
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+  if (process.env.MULTICHAIN) {
+    // check if element exists and click it
+    await driver
+      .findElement({
+        text: 'I understand',
+        tag: 'button',
+      })
+      .then(
+        (_found) => {
+          driver.clickElement({
+            text: 'I understand',
+            tag: 'button',
+          });
+        },
+        (error) => {
+          console.error('Element not found.', error);
+        },
+      );
+
+    await driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+  } else {
+    await driver.clickElement({
+      text: 'Next',
+      tag: 'button',
+      css: '[data-testid="page-container-footer-next"]',
+    });
+  }
+};
+
 const sendTransaction = async (
   driver,
   recipientAddress,
@@ -768,10 +808,16 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
+  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
+    undefined,
+    {
+      minimumFractionDigits: 2,
+    },
+  );
+
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
+    text: `$ ${balance} USD`,
   });
 };
 
@@ -1011,6 +1057,7 @@ module.exports = {
   multipleGanacheOptions,
   defaultGanacheOptions,
   sendTransaction,
+  sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
