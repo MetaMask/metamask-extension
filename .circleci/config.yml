@@ -114,7 +114,7 @@ workflows:
             - prep-build-test
       - testrail-upload-chrome-results:
           requires:
-            - test-e2e-chrome      
+            - test-e2e-chrome
       - all-tests-pass:
           requires:
             - test-lint
@@ -688,6 +688,15 @@ jobs:
           root: .
           paths:
             - test/test-results/e2e/
+      - run:
+          command: apt-get update || : && apt-get install python -y
+      - run:
+          command: apt-get install python3-pip -y
+      - run:
+          command: pip install trcli
+      - run:
+          command: trcli
+
 
 
   testrail-upload-chrome-results:
@@ -697,11 +706,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          when: always
           name: List test result files
           command: ls -la test/test-results/e2e/
       - run:
-          when: always
           name: Install TR CLI and upload the test results to TestRail
           command: |
             pip install trcli
