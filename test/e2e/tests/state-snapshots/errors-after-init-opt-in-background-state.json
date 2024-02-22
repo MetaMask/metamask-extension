@@ -130,7 +130,6 @@
   },
   "PPOMController": {
     "storageMetadata": {},
-    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
