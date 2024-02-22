@@ -38,14 +38,14 @@ const render = async () => {
   await act(
     async () =>
       (result = renderWithProvider(
-    <GasFeeContextProvider>
-      <EditGasFeeIcon />
-    </GasFeeContextProvider>,
+        <GasFeeContextProvider>
+          <EditGasFeeIcon />
+        </GasFeeContextProvider>,
         store,
-        )),
-    );
+      )),
+  );
 
-    return result;
+  return result;
 };
 
 describe('EditGasFeeIcon', () => {
@@ -53,7 +53,9 @@ describe('EditGasFeeIcon', () => {
     await render();
     const iconButton = screen.getByTestId('edit-gas-fee-icon');
     expect(iconButton).toBeInTheDocument();
-    await act(async () => {fireEvent.click(iconButton); })
+    await act(async () => {
+      fireEvent.click(iconButton);
+    });
     expect(mockOpenModalFn).toHaveBeenCalledTimes(1);
   });
 });

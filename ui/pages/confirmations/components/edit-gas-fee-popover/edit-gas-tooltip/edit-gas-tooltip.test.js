@@ -1,9 +1,9 @@
 import React from 'react';
+import { act } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import EditGasToolTip from './edit-gas-tooltip';
-import { act } from '@testing-library/react';
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -65,14 +65,14 @@ const render = async (componentProps) => {
   await act(
     async () =>
       (result = renderWithProvider(
-    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
-      <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />
-    </GasFeeContextProvider>,
+        <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
+          <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />
+        </GasFeeContextProvider>,
         store,
-        )),
-    );
+      )),
+  );
 
-    return result;
+  return result;
 };
 
 describe('EditGasToolTip', () => {
