@@ -72,11 +72,11 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const [isLoadingDisplayed, setIsLoadingDisplayed] = useState(false);
+  const [hasLoadingDisplayed, setHasLoadingDisplayed] = useState(false);
 
   useEffect(() => {
     if (securityAlertResponse?.reason === 'loading') {
-      setIsLoadingDisplayed(true);
+      setHasLoadingDisplayed(true);
     }
   }, [securityAlertResponse]);
 
@@ -117,7 +117,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
   } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
-    if (isLoadingDisplayed) {
+    if (hasLoadingDisplayed) {
       return (
         <Box
           alignItems={AlignItems.center}
