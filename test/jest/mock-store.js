@@ -303,6 +303,23 @@ export const createSwapsMockStore = () => {
             methods: [...Object.values(EthMethod)],
             type: EthAccountType.Eoa,
           },
+          '36eb02e0-7925-47f0-859f-076608f09b69': {
+            address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe6',
+            id: '36eb02e0-7925-47f0-859f-076608f09b69',
+            metadata: {
+              name: 'Snap Account 1',
+              keyring: {
+                type: 'Snap Keyring',
+              },
+              snap: {
+                id: 'snap-id',
+                name: 'snap name',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },

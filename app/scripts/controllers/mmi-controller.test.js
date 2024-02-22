@@ -17,6 +17,7 @@ describe('MMIController', function () {
         catch: jest.fn(),
       })),
       registerActionHandler: jest.fn(),
+      registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
       subscribe: jest.fn(),
     };

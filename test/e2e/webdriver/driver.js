@@ -440,7 +440,7 @@ class Driver {
 
   async navigate(page = PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
-    // Wait for asyncronous JavaScript to load
+    // Wait for asynchronous JavaScript to load
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.metamask-loaded')),
       10 * 1000,
@@ -594,7 +594,7 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    // On occassion there may be a bug in the offscreen document which does
+    // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
@@ -632,25 +632,28 @@ class Driver {
     return browserLogs;
   }
 
-  async checkBrowserForExceptions(failOnConsoleError) {
+  async checkBrowserForExceptions(ignoredConsoleErrors) {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
-      this.exceptions.push(description);
-      logBrowserError(failOnConsoleError, description);
+
+      const ignored = logBrowserError(ignoredConsoleErrors, description);
+      if (!ignored) {
+        this.exceptions.push(description);
+      }
     });
   }
 
-  async checkBrowserForConsoleErrors(failOnConsoleError) {
-    const ignoredErrorMessages = [
+  async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
+    const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
       // Sentry rate limiting
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
-    ];
+    ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');
 
@@ -664,25 +667,20 @@ class Driver {
           // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
           // Update: as of January 2024, this code path may never happen
           const [eventDescription] = eventDescriptions;
-          const ignore = ignoredErrorMessages.some((message) =>
-            eventDescription?.description.includes(message),
+          const ignored = logBrowserError(
+            ignoredConsoleErrors,
+            eventDescription?.description,
           );
-          if (!ignore) {
-            const isWarning = logBrowserError(
-              failOnConsoleError,
-              eventDescription?.description,
-            );
 
-            if (!isWarning) {
-              this.errors.push(eventDescription?.description);
-            }
+          if (!ignored) {
+            this.errors.push(eventDescription?.description);
           }
         } else if (event.args.length !== 0) {
           const newError = this.#getErrorFromEvent(event);
 
-          const isWarning = logBrowserError(failOnConsoleError, newError);
+          const ignored = logBrowserError(ignoredConsoleErrors, newError);
 
-          if (!isWarning) {
+          if (!ignored) {
             this.errors.push(newError);
           }
         }
@@ -708,24 +706,28 @@ class Driver {
   }
 }
 
-function logBrowserError(failOnConsoleError, errorMessage) {
-  let isWarning = false;
+function logBrowserError(ignoredConsoleErrors, errorMessage) {
+  let ignored = false;
 
-  console.error('\n----Received an error from Chrome----');
+  console.error('\n-----Received an error from Chrome-----');
   console.error(errorMessage);
-  console.error('---------End of Chrome error---------');
-  console.error(
-    `-----failOnConsoleError is ${failOnConsoleError ? 'true-' : 'false'}-----`,
-  );
+  console.error('----------End of Chrome error----------');
 
   if (errorMessage.startsWith('Warning:')) {
-    console.error("----We will ignore this 'Warning'----");
-    isWarning = true;
+    console.error("-----We will ignore this 'Warning'-----");
+    ignored = true;
+  } else if (isInIgnoreList(errorMessage, ignoredConsoleErrors)) {
+    console.error('---This error is on the ignore list----');
+    ignored = true;
   }
 
   console.error('\n');
 
-  return isWarning;
+  return ignored;
+}
+
+function isInIgnoreList(errorMessage, ignoreList) {
+  return ignoreList.some((ignore) => errorMessage.includes(ignore));
 }
 
 function collectMetrics() {

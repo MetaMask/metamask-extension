@@ -32,7 +32,7 @@ export class Ganache {
     });
   }
 
-  async getBalance() {
+  async getBalance(): Promise<number> {
     const accounts = await this.getAccounts();
     const provider = await this.getProvider();
 
@@ -50,7 +50,15 @@ export class Ganache {
     const balanceFormatted =
       balanceInt % 1 === 0 ? balanceInt : balanceInt.toFixed(4);
 
-    return balanceFormatted;
+    return Number(balanceFormatted);
+  }
+
+  async getFiatBalance(): Promise<number> {
+    const balance = await this.getBalance();
+    const currencyConversionRate = 1700.0;
+    const fiatBalance = (balance * currencyConversionRate).toFixed(2);
+
+    return Number(fiatBalance);
   }
 
   async quit() {

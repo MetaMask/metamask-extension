@@ -11,8 +11,7 @@ jest.mock('../../../store/actions.ts', () => {
     disableSnap: jest.fn(),
     enableSnap: jest.fn(),
     removeSnap: jest.fn(),
-    removePermissionsFor: jest.fn(),
-    updateCaveat: jest.fn(),
+    disconnectOriginFromSnap: jest.fn(),
     getPhishingResult: jest.fn().mockImplementation(() => {
       return {
         result: false,

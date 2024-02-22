@@ -22,7 +22,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -149,7 +148,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -244,7 +242,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -254,7 +251,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
-        // Click Transer
+        // Click Transfer
         await driver.fill('#transferTokenInput', '1');
         await driver.clickElement('#transferFromButton');
         await driver.waitUntilXWindowHandles(3);
@@ -294,7 +291,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -364,7 +360,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -433,7 +428,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);

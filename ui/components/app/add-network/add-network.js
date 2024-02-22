@@ -29,7 +29,7 @@ import {
 } from '../../../../shared/constants/app';
 import { requestUserApproval } from '../../../store/actions';
 import Popover from '../../ui/popover';
-import ConfirmationPage from '../../../pages/confirmation/confirmation';
+import ConfirmationPage from '../../../pages/confirmations/confirmation/confirmation';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';

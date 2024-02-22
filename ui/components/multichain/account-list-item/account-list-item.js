@@ -47,8 +47,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
+import {
+  getAddressConnectedSubjectMap,
+  getCurrentNetwork,
+  getNativeCurrencyImage,
+  getShowFiatInTestnets,
+  getUseBlockie,
+} from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -63,23 +70,29 @@ export const AccountListItem = ({
   isPinned = false,
   showOptions = false,
   isHidden = false,
+  currentTabOrigin,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
   const useBlockie = useSelector(getUseBlockie);
+  const currentNetwork = useSelector(getCurrentNetwork);
 
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
-
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-  const balanceToTranslate = process.env.MULTICHAIN
-    ? totalWeiBalance
-    : identity.balance;
+
+  let balanceToTranslate = totalWeiBalance;
+  if (showFiat) {
+    balanceToTranslate = identity.balance;
+  }
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -93,6 +106,14 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const selectedAddressSubjectMap =
+    addressConnectedSubjectMap[identity.address];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  );
+  const isConnected =
+    currentTabOrigin && currentTabIsConnectedToSelectedAddress;
 
   return (
     <Box
@@ -202,6 +223,9 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
+                showFiat={
+                  !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
+                }
               />
             </Text>
           </Box>
@@ -231,6 +255,7 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               gap={1}
+              className="multichain-account-list-item__avatar-currency"
             >
               <AvatarToken
                 src={primaryTokenImage}
@@ -246,8 +271,9 @@ export const AccountListItem = ({
               >
                 <UserPreferencedCurrencyDisplay
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={balanceToTranslate}
+                  value={identity.balance}
                   type={SECONDARY}
+                  showNative
                 />
               </Text>
             </Box>
@@ -298,6 +324,7 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
+          isConnected={isConnected}
         />
       ) : null}
     </Box>
@@ -349,6 +376,10 @@ AccountListItem.propTypes = {
    * Represents hidden accounts
    */
   isHidden: PropTypes.bool,
+  /**
+   * Represents current tab origin
+   */
+  currentTabOrigin: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';

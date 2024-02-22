@@ -90,6 +90,7 @@ const prefixChainId = (chainId) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  setActiveOnSubmit = false,
   restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
@@ -453,9 +454,7 @@ const NetworksForm = ({
             formTickerSymbol.toLowerCase()
           ) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
-            warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              returnedTickerSymbol,
-            ]);
+            warningMessage = t('chainListReturnedDifferentTickerSymbol');
             setSuggestedTicker(returnedTickerSymbol);
           }
         }
@@ -607,20 +606,11 @@ const NetworksForm = ({
               },
             },
             {
-              setActive: true,
+              setActive: setActiveOnSubmit,
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
-      }
-      if (addNewNetwork) {
-        dispatch(
-          setNewNetworkAdded({
-            nickname: networkName,
-            networkConfigurationId,
-          }),
-        );
-
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -633,9 +623,17 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
-
-        submitCallback?.();
       }
+
+      if (addNewNetwork && !setActiveOnSubmit) {
+        dispatch(
+          setNewNetworkAdded({
+            nickname: networkName,
+            networkConfigurationId,
+          }),
+        );
+      }
+      submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
       throw error;
@@ -711,6 +709,7 @@ const NetworksForm = ({
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
+          dataTestId="network-form-network-name"
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
@@ -725,6 +724,7 @@ const NetworksForm = ({
               : rpcUrl
           }
           disabled={viewOnly}
+          dataTestId="network-form-rpc-url"
         />
         <FormField
           warning={warnings.chainId?.msg || ''}
@@ -738,6 +738,7 @@ const NetworksForm = ({
           value={chainId}
           disabled={viewOnly}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
+          dataTestId="network-form-chain-id"
         />
         <FormTextField
           data-testid="network-form-ticker"
@@ -804,6 +805,7 @@ const NetworksForm = ({
           value={blockExplorerUrl}
           disabled={viewOnly}
           autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
+          dataTestId="network-form-block-explorer-url"
         />
       </div>
       <div
@@ -848,6 +850,7 @@ NetworksForm.propTypes = {
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
+  setActiveOnSubmit: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {

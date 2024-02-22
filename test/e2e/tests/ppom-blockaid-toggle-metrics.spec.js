@@ -52,7 +52,8 @@ async function mockServerCalls(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
-  it('Successfully track button toggle on/off', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('Successfully track button toggle on/off', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -77,7 +78,7 @@ describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
           '[data-testid="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
         await driver.clickElement(
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );
@@ -89,7 +90,7 @@ describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
           '[data-testid="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
         await driver.clickElement(
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );

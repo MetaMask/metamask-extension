@@ -247,6 +247,7 @@ export const TokenListItem = ({
                 </Text>
               )}
             </Box>
+
             {showScamWarning ? (
               <ButtonIcon
                 iconName={IconName.Danger}
