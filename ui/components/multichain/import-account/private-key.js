@@ -2,22 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import {
-  FormTextField,
-  TextFieldType,
-  TextFieldSize,
-} from '../../component-library';
-
-import Box from '../../ui/box';
+import { FormPasswordField, TextFieldSize } from '../../component-library';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import ShowHideToggle from '../../ui/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
 export default function PrivateKeyImportView({
@@ -26,7 +14,6 @@ export default function PrivateKeyImportView({
 }) {
   const t = useI18nContext();
   const [privateKey, setPrivateKey] = useState('');
-  const [showPrivateKey, setShowPrivateKey] = useState(false);
 
   const warning = useSelector((state) => state.appState.warning);
 
@@ -43,38 +30,20 @@ export default function PrivateKeyImportView({
 
   return (
     <>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        padding={0}
-      >
-        <FormTextField
-          id="private-key-box"
-          size={TextFieldSize.Lg}
-          autoFocus
-          type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
-          helpText={warning}
-          error
-          label={t('pastePrivateKey')}
-          value={privateKey}
-          onChange={(event) => setPrivateKey(event.target.value)}
-          inputProps={{
-            onKeyPress: handleKeyPress,
-          }}
-          marginBottom={4}
-        />
-        <Box marginTop={4}>
-          <ShowHideToggle
-            shown={showPrivateKey}
-            id="show-hide-private-key"
-            title={t('privateKeyShow')}
-            ariaLabelShown={t('privateKeyShown')}
-            ariaLabelHidden={t('privateKeyHidden')}
-            onChange={() => setShowPrivateKey(!showPrivateKey)}
-          />
-        </Box>
-      </Box>
+      <FormPasswordField
+        id="private-key-box"
+        size={TextFieldSize.Lg}
+        autoFocus
+        helpText={warning}
+        error
+        label={t('pastePrivateKey')}
+        value={privateKey}
+        onChange={(event) => setPrivateKey(event.target.value)}
+        inputProps={{
+          onKeyPress: handleKeyPress,
+        }}
+        marginBottom={4}
+      />
 
       <BottomButtons
         importAccountFunc={_importAccountFunc}
