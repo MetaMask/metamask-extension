@@ -64,13 +64,13 @@ function documentElementCheck() {
  * @returns {boolean} {@code true} if the current domain is blocked
  */
 function blockedDomainCheck() {
+  // If making any changes, please also update the same list found in the MetaMask-Mobile & SDK repositories
   const blockedDomains = [
     'execution.consensys.io',
     'execution.metamask.io',
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
     'harbourair.com',
@@ -79,17 +79,21 @@ function blockedDomainCheck() {
     'sharefile.com',
     'battle.net',
   ];
-  const currentUrl = window.location.href;
-  let currentRegex;
-  for (let i = 0; i < blockedDomains.length; i++) {
-    const blockedDomain = blockedDomains[i].replaceAll('.', '\\.');
-    currentRegex = new RegExp(
-      `(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`,
-      'u',
-    );
-    if (!currentRegex.test(currentUrl)) {
-      return true;
-    }
-  }
-  return false;
+
+  const blockedHrefs = [
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+  ];
+
+  const { hostname } = window.location;
+  const path = window.location.pathname;
+
+  const blockedDomainFound = blockedDomains.some(
+    (blockedDomain) =>
+      blockedDomain === hostname || hostname.endsWith(`.${blockedDomain}`),
+  );
+  const blockedHrefFound = blockedHrefs.some((blockedHref) =>
+    (hostname + path).includes(blockedHref),
+  );
+
+  return blockedDomainFound || blockedHrefFound;
 }
