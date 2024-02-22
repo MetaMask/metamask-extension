@@ -2024,6 +2024,11 @@ export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
 
+export function getShowFiatInTestnets(state) {
+  const { showFiatInTestnets } = getPreferences(state);
+  return showFiatInTestnets;
+}
+
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
  *
