@@ -365,14 +365,14 @@
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
+  "allPermissions": {
+    "message": "All Permissions"
+  },
   "allTimeHigh": {
     "message": "All time high"
   },
   "allTimeLow": {
     "message": "All time low"
-  },
-  "allPermissions": {
-    "message": "All Permissions"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
