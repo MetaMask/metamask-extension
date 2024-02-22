@@ -1,3 +1,7 @@
+/*
+Disabling Stylelint's hex color rule here because the TypeScript migration dashboard, being external to the main app, doesn't use design tokens.
+*/
+/* stylelint-disable color-no-hex */
 :root {
   --blue-gray-350: hsl(209deg 13.7% 62.4%);
   --blue-gray-100: hsl(209.8deg 16.5% 89%);
