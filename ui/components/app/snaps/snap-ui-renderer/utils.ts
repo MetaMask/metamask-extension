@@ -3,7 +3,7 @@ import { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
   element: Component;
-  elementKeyIndex: { value: number; };
+  elementKeyIndex: { value: number };
   rootKey: string;
   form?: string;
 };
