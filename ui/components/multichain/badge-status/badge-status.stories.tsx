@@ -10,6 +10,12 @@ export default {
   title: 'Components/Multichain/BadgeStatus',
   component: BadgeStatus,
   argTypes: {
+    badgeBackgroundColor: {
+      control: 'text',
+    },
+    badgeBorderColor: {
+      control: 'text',
+    },
     text: {
       control: 'text',
     },
