@@ -104,6 +104,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import state from '../../.storybook/test-data';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -614,6 +615,10 @@ export function getCurrentEthBalance(state) {
 
 export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
+}
+
+export function getNeverShowSwitchedNetworkMessage(state) {
+  return state.appState.switchedNetworkNeverShowMessage;
 }
 
 export function getAppIsLoading(state) {

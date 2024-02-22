@@ -4665,6 +4665,33 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
+export function setSwitchedNetworkDetails(switchedNetworkDetails) {
+  return submitRequestToBackground('setSwitchedNetworkDetails', [
+    switchedNetworkDetails,
+  ]);
+}
+
+export function neverShowSwitchedNetworkMessage() {
+  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
+    true,
+  ]);
+}
+
+// TODO: codeword NOT_A_THUNK @brad-decker
+export function setTransactionSecurityCheckEnabled(
+  transactionSecurityCheckEnabled: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
+        transactionSecurityCheckEnabled,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
