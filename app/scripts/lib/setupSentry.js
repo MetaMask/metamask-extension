@@ -171,7 +171,6 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PPOMController: {
-    chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
     versionFileETag: false,
@@ -251,6 +250,9 @@ export const SENTRY_BACKGROUND_STATE = {
     unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
+  },
+  SnapInterface: {
+    interfaces: false,
   },
   SnapsRegistry: {
     database: false,
