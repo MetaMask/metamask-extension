@@ -46,10 +46,8 @@ export const ConnectedSiteMenu = ({
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
   const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
   const isConnectedtoOtherAccountOrSnap =
-    Boolean(connectedSubjectsMetadata?.iconUrl) ||
     status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
     status === STATUS_CONNECTED_TO_SNAP;
-
   return (
     <Box
       className={classNames('multichain-connected-site-menu', className)}
@@ -74,7 +72,7 @@ export const ConnectedSiteMenu = ({
           positionObj={
             isConnectedtoOtherAccountOrSnap
               ? { bottom: -1, right: -2, zIndex: 1 }
-              : { bottom: 2, right: -4, zIndex: 1 }
+              : { bottom: -1, right: -4, zIndex: 1 }
           }
           badge={
             <Box
