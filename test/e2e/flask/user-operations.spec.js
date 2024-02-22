@@ -64,6 +64,7 @@ async function createSnapAccount(driver, privateKey, salt) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
+  await driver.switchToWindowWithTitle('Account Abstraction Snap');
 }
 
 async function setSnapConfig(
