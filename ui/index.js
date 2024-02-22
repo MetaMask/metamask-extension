@@ -23,6 +23,8 @@ import {
   getOriginOfCurrentTab,
   getAllDomains,
   getUseRequestQueue,
+  getCurrentNetwork,
+  getNeverShowSwitchedNetworkMessage,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -181,10 +183,15 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp.  This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
   const state = store.getState();
   const selectedTabOrigin = getOriginOfCurrentTab(state);
   const useRequestQueue = getUseRequestQueue(state);
+
   // selectedTabOrigin won't be populated if in fullscreen mode
+  // so we ensure that the user is in the popup
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     useRequestQueue &&
@@ -197,25 +204,35 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     console.log('domainNetworks: ', domainNetworks);
     console.log('networkForThisDomain: ', networkForThisDomain);
 
-    //
-    // TODO: Get the current network type
-    //
+    const currentNetwork = getCurrentNetwork(state);
+    console.log('currentNetwork: ', currentNetwork);
 
-    //
-    // TODO: ONLY EXECUTE THIS NEXT BLOCK IF WE AREN'T ALREADY ON THIS NETWORK
-    //
-    // If we have a match, "silently" switch networks
-    if (networkForThisDomain) {
+    // If we have a match, "silently" switch networks if the network differs
+    // from the current network
+    if (networkForThisDomain && currentNetwork.id !== networkForThisDomain) {
       if (Object.keys(NETWORK_TYPES).includes(networkForThisDomain)) {
         await store.dispatch(actions.setProviderType(networkForThisDomain));
       } else {
         await store.dispatch(actions.setActiveNetwork(networkForThisDomain));
       }
-
-      //
-      // TODO: Show toast notifying user of network change
-      //
       console.log('Switched network to ', networkForThisDomain);
+
+      // Show toast notifying user of network change
+      const neverShowSwitchedNetworkMessage =
+        getNeverShowSwitchedNetworkMessage(state);
+      if (!neverShowSwitchedNetworkMessage) {
+        console.log(
+          'Directing to show toast with: ',
+          currentNetwork.nickname,
+          selectedTabOrigin,
+        );
+        await store.dispatch(
+          actions.setSwitchedNetworkDetails({
+            networkName: currentNetwork.nickname,
+            siteName: selectedTabOrigin,
+          }),
+        );
+      }
     } else {
       console.log('No domainNetwork, not changing networks');
     }

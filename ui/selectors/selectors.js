@@ -619,6 +619,10 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
+export function getNeverShowSwitchedNetworkMessage(state) {
+  return state.appState.switchedNetworkNeverShowMessage;
+}
+
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
