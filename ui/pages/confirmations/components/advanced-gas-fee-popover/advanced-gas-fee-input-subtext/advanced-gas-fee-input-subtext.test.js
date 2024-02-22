@@ -4,6 +4,15 @@ import configureStore from '../../../../../store/store';
 import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';
 
 jest.mock('../../../../../store/actions', () => ({
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      chainId: '0x5',
+    }),
+  ),
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(null),
   addPollingTokenToAppState: jest.fn(),
