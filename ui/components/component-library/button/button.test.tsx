@@ -138,7 +138,7 @@ describe('Button', () => {
       <Button
         data-testid="icon"
         startIconName={IconName.AddSquare}
-        startIconProps={{ 'data-testid': 'start-button-icon' }}
+        startIconProps={{ 'data-testid': 'start-button-icon', name: IconName.AddSquare }}
       >
         Button
       </Button>,

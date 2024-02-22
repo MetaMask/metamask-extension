@@ -14,7 +14,7 @@ import {
 } from '..';
 import { PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
-import type { TextFieldProps } from '../text-field/text-field.types';
+import { TextFieldProps } from '../text-field/text-field.types';
 import {
   FormTextFieldSize,
   FormTextFieldProps,
@@ -51,7 +51,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       size = FormTextFieldSize.Md,
       textFieldProps,
       truncate,
-      type = 'text',
+      type = "text",
       value,
       ...props
     }: FormTextFieldProps<C>,

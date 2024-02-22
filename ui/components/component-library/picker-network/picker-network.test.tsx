@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { PickerNetwork } from './picker-network';
+import { IconName } from '..';
 
 describe('PickerNetwork', () => {
   it('should render the label inside the PickerNetwork', () => {
@@ -45,13 +46,13 @@ describe('PickerNetwork', () => {
         data-testid="picker-network"
         label="Imported"
         iconProps={{
-          name: 'down-arrow-picker-icon',
+          name: IconName.ArrowDown,
         }}
       />
     );
 
     expect(container.props.iconProps.name).toStrictEqual(
-      'down-arrow-picker-icon',
+      IconName.ArrowDown,
     );
   });
   // className

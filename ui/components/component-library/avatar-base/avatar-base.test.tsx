@@ -128,9 +128,9 @@ describe('AvatarBase', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLSpanElement>();
     render(<AvatarBase ref={ref}>A</AvatarBase>);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    expect(ref.current!.nodeName).toBe('DIV');
   });
 });

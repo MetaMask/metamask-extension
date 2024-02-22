@@ -220,7 +220,7 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(false);
 
-        resultResolve(TRANSACTION_META_MOCK.hash);
+        resultResolve!(TRANSACTION_META_MOCK.hash);
 
         await flushPromises();
 
@@ -307,7 +307,7 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(false);
 
-        transactionHashResolve(TRANSACTION_META_MOCK.hash);
+        transactionHashResolve!(TRANSACTION_META_MOCK.hash);
 
         await flushPromises();
 

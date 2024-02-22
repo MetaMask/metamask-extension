@@ -1,9 +1,9 @@
-import { getSnapAndHardwareInfoForMetrics } from './metrics';
+import { SnapAndHardwareMessenger, getSnapAndHardwareInfoForMetrics } from './metrics';
 
 describe('getSnapAndHardwareInfoForMetrics', () => {
   let getAccountType: jest.Mock;
   let getDeviceModel: jest.Mock;
-  let messenger;
+  let messenger: any;
 
   beforeEach(() => {
     getAccountType = jest.fn();

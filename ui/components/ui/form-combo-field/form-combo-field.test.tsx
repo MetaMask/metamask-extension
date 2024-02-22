@@ -102,7 +102,7 @@ describe('FormComboField', () => {
       fireEvent.click(input);
     });
 
-    const option = getByText(OPTIONS_MOCK[0].primaryLabel);
+    const option = getByText(OPTIONS_MOCK[0].primaryLabel!);
 
     await act(async () => {
       fireEvent.click(option);

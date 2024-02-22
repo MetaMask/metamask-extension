@@ -1,12 +1,13 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { Validator } from 'prop-types';
 import { fireEvent, render } from '@testing-library/react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { Box } from '../box';
 import { TextField } from './text-field';
 import { TextFieldSize, TextFieldType } from './text-field.types';
+import { InputComponent } from '../input';
 
 describe('TextField', () => {
   it('should render correctly', () => {
@@ -18,7 +19,7 @@ describe('TextField', () => {
     const { getByTestId } = render(
       <TextField inputProps={{ 'data-testid': 'text-field' }} />,
     );
-    const textField = getByTestId('text-field');
+    const textField = getByTestId('text-field') as HTMLInputElement;
 
     expect(textField.value).toBe(''); // initial value is empty string
     fireEvent.change(textField, { target: { value: 'text value' } });
@@ -169,7 +170,7 @@ describe('TextField', () => {
         inputProps={{ 'data-testid': 'text-field-default-value' }}
       />,
     );
-    expect(getByRole('textbox').value).toBe('default value');
+    expect((getByRole('textbox') as HTMLInputElement).value).toBe('default value');
   });
   it('should render in disabled state and not focus or be clickable', async () => {
     const mockOnClick = jest.fn();
@@ -200,7 +201,7 @@ describe('TextField', () => {
     const { getByRole, user } = renderWithUserEvent(
       <TextField maxLength={5} />,
     );
-    const textField = getByRole('textbox');
+    const textField = getByRole('textbox') as HTMLInputElement;
     await user.type(textField, '1234567890');
     expect(getByRole('textbox')).toBeDefined();
     expect(textField.maxLength).toBe(5);
@@ -211,9 +212,9 @@ describe('TextField', () => {
     const { getByTestId, getByRole, user } = renderWithUserEvent(
       <TextField readOnly data-testid="read-only" />,
     );
-    const textField = getByTestId('read-only');
+    const textField = getByTestId('read-only') as HTMLInputElement;
     await user.type(textField, '1234567890');
-    expect(getByRole('textbox').value).toBe('');
+    expect((getByRole('textbox') as HTMLInputElement).value).toBe('');
     expect(getByRole('textbox')).toHaveAttribute('readonly', '');
   });
   it('should render with required attr when required is true', () => {
@@ -226,7 +227,7 @@ describe('TextField', () => {
     expect(getByTestId('text-field-required')).toHaveAttribute('required', '');
   });
   it('should render with a custom input and still work', async () => {
-    const CustomInputComponent = React.forwardRef(
+    const CustomInputComponent = React.forwardRef<InputComponent & HTMLInputElement, { disableStateStyles: boolean }>(
       ({ disableStateStyles, ...props }, ref) => (
         <Box
           ref={ref}
@@ -237,16 +238,16 @@ describe('TextField', () => {
       ),
     );
     CustomInputComponent.propTypes = {
-      disableStateStyles: PropTypes.bool,
+      disableStateStyles: PropTypes.bool as Validator<boolean>,
     };
     CustomInputComponent.displayName = 'CustomInputComponent'; // fixes eslint error
     const { getByTestId, user } = renderWithUserEvent(
       <TextField
-        InputComponent={CustomInputComponent}
+        InputComponent={CustomInputComponent as InputComponent}
         inputProps={{ 'data-testid': 'text-field', className: 'test' }}
       />,
     );
-    const textField = getByTestId('text-field');
+    const textField = getByTestId('text-field') as HTMLInputElement;
 
     expect(textField.value).toBe(''); // initial value is empty string
     await user.type(textField, 'text value');

@@ -32,7 +32,7 @@ describe('AddressListItem', () => {
 
   it('fires onClick when the item is clicked', () => {
     render();
-    fireEvent.click(document.querySelector('button'));
+    fireEvent.click(document.querySelector('button')!);
 
     expect(mockOnClick).toHaveBeenCalled();
   });

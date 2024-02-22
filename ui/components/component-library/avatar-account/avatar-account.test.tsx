@@ -113,7 +113,7 @@ describe('AvatarAccount', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLDivElement>();
     render(
       <AvatarAccount
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
@@ -121,6 +121,6 @@ describe('AvatarAccount', () => {
       />,
     );
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    expect(ref.current!.nodeName).toBe('DIV');
   });
 });

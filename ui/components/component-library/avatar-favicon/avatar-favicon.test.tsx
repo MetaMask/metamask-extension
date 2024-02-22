@@ -4,6 +4,7 @@ import React from 'react';
 
 import { AvatarFaviconSize } from './avatar-favicon.types';
 import { AvatarFavicon } from '.';
+import { IconName } from '..';
 
 describe('AvatarFavicon', () => {
   const args = {
@@ -39,7 +40,7 @@ describe('AvatarFavicon', () => {
         name="test"
         data-testid="avatar-favicon"
         fallbackIconProps={{
-          'data-testid': 'fallback-icon',
+          'data-testid': 'fallback-icon', name: IconName.Global
         }}
       />
     );
@@ -106,9 +107,9 @@ describe('AvatarFavicon', () => {
     expect(getByTestId('classname')).toHaveClass('mm-avatar-favicon--test');
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
-    render(<AvatarFavicon ref={ref} />);
+    const ref = React.createRef<HTMLSpanElement>();
+    render(<AvatarFavicon {...args} ref={ref} />);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    expect(ref.current!.nodeName).toBe('DIV');
   });
 });
