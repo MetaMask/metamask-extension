@@ -688,17 +688,6 @@ jobs:
           root: .
           paths:
             - test/test-results/e2e/
-      - run:
-          command: apt-get update
-      - run:
-          command: apt-get install python -y
-      - run:
-          command: apt-get install python3-pip -y
-      - run:
-          command: pip install trcli
-      - run:
-          command: trcli
-
 
 
   testrail-upload-chrome-results:
