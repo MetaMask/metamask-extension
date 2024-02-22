@@ -5,9 +5,9 @@ import { fireEvent, render } from '@testing-library/react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { Box } from '../box';
+import { InputComponent } from '../input';
 import { TextField } from './text-field';
 import { TextFieldSize, TextFieldType } from './text-field.types';
-import { InputComponent } from '../input';
 
 describe('TextField', () => {
   it('should render correctly', () => {
@@ -170,7 +170,9 @@ describe('TextField', () => {
         inputProps={{ 'data-testid': 'text-field-default-value' }}
       />,
     );
-    expect((getByRole('textbox') as HTMLInputElement).value).toBe('default value');
+    expect((getByRole('textbox') as HTMLInputElement).value).toBe(
+      'default value',
+    );
   });
   it('should render in disabled state and not focus or be clickable', async () => {
     const mockOnClick = jest.fn();
@@ -227,16 +229,17 @@ describe('TextField', () => {
     expect(getByTestId('text-field-required')).toHaveAttribute('required', '');
   });
   it('should render with a custom input and still work', async () => {
-    const CustomInputComponent = React.forwardRef<InputComponent & HTMLInputElement, { disableStateStyles: boolean }>(
-      ({ disableStateStyles, ...props }, ref) => (
-        <Box
-          ref={ref}
-          as="input"
-          {...props}
-          placeholder={`Removing ${disableStateStyles} from ...props spread to prevent error in test`}
-        />
-      ),
-    );
+    const CustomInputComponent = React.forwardRef<
+      InputComponent & HTMLInputElement,
+      { disableStateStyles: boolean }
+    >(({ disableStateStyles, ...props }, ref) => (
+      <Box
+        ref={ref}
+        as="input"
+        {...props}
+        placeholder={`Removing ${disableStateStyles} from ...props spread to prevent error in test`}
+      />
+    ));
     CustomInputComponent.propTypes = {
       disableStateStyles: PropTypes.bool as Validator<boolean>,
     };
@@ -259,9 +262,9 @@ describe('TextField', () => {
     const { getByTestId, user } = renderWithUserEvent(
       <TextField inputProps={{ 'data-testid': 'input' }} />,
     );
-    const InputComponent = getByTestId('input');
+    const inputComponent = getByTestId('input');
 
-    await user.click(InputComponent);
+    await user.click(inputComponent);
     expect(getByTestId('input')).toHaveFocus();
     expect(getByTestId('input')).toHaveClass('mm-input--disable-state-styles');
   });

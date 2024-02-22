@@ -1,8 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { ModalHeader } from './modal-header';
 import { IconName } from '..';
+import { ModalHeader } from './modal-header';
 
 describe('ModalHeader', () => {
   it('should render ModalHeader correctly', () => {
@@ -36,7 +36,11 @@ describe('ModalHeader', () => {
       <ModalHeader
         data-testid="modal-header"
         onBack={onBackTest}
-        backButtonProps={{ 'data-testid': 'back', ariaLabel: '', iconName: IconName.ArrowLeft }}
+        backButtonProps={{
+          'data-testid': 'back',
+          ariaLabel: '',
+          iconName: IconName.ArrowLeft,
+        }}
       >
         ModalHeader
       </ModalHeader>,
@@ -54,7 +58,11 @@ describe('ModalHeader', () => {
       <ModalHeader
         data-testid="modal-header"
         onClose={onCloseTest}
-        closeButtonProps={{ 'data-testid': 'close', ariaLabel: '', iconName: IconName.Close }}
+        closeButtonProps={{
+          'data-testid': 'close',
+          ariaLabel: '',
+          iconName: IconName.Close,
+        }}
       >
         Modal header
       </ModalHeader>,

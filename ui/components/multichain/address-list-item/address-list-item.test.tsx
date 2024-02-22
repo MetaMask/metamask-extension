@@ -32,6 +32,7 @@ describe('AddressListItem', () => {
 
   it('fires onClick when the item is clicked', () => {
     render();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     fireEvent.click(document.querySelector('button')!);
 
     expect(mockOnClick).toHaveBeenCalled();

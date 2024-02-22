@@ -1,8 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { PopoverHeader } from './popover-header';
 import { IconName } from '..';
+import { PopoverHeader } from './popover-header';
 
 describe('PopoverHeader', () => {
   it('should render PopoverHeader correctly', () => {
@@ -37,7 +37,11 @@ describe('PopoverHeader', () => {
     const { getByTestId } = render(
       <PopoverHeader
         onBack={onBackTest}
-        backButtonProps={{ 'data-testid': 'back', ariaLabel: '', iconName: IconName.Close }}
+        backButtonProps={{
+          'data-testid': 'back',
+          ariaLabel: '',
+          iconName: IconName.Close,
+        }}
       >
         PopoverHeader
       </PopoverHeader>,
@@ -54,7 +58,11 @@ describe('PopoverHeader', () => {
     const { getByTestId } = render(
       <PopoverHeader
         onClose={onCloseTest}
-        closeButtonProps={{ 'data-testid': 'close', ariaLabel: '', iconName: IconName.Close }}
+        closeButtonProps={{
+          'data-testid': 'close',
+          ariaLabel: '',
+          iconName: IconName.Close,
+        }}
       >
         PopoverHeader
       </PopoverHeader>,

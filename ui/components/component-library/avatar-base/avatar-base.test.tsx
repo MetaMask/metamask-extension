@@ -131,6 +131,7 @@ describe('AvatarBase', () => {
     const ref = React.createRef<HTMLSpanElement>();
     render(<AvatarBase ref={ref}>A</AvatarBase>);
     expect(ref.current).not.toBeNull();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(ref.current!.nodeName).toBe('DIV');
   });
 });

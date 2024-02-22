@@ -102,6 +102,7 @@ describe('FormComboField', () => {
       fireEvent.click(input);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const option = getByText(OPTIONS_MOCK[0].primaryLabel!);
 
     await act(async () => {

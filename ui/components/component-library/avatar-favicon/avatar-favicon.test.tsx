@@ -2,9 +2,9 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+import { IconName } from '..';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 import { AvatarFavicon } from '.';
-import { IconName } from '..';
 
 describe('AvatarFavicon', () => {
   const args = {
@@ -40,7 +40,8 @@ describe('AvatarFavicon', () => {
         name="test"
         data-testid="avatar-favicon"
         fallbackIconProps={{
-          'data-testid': 'fallback-icon', name: IconName.Global
+          'data-testid': 'fallback-icon',
+          name: IconName.Global,
         }}
       />
     );
@@ -110,6 +111,7 @@ describe('AvatarFavicon', () => {
     const ref = React.createRef<HTMLSpanElement>();
     render(<AvatarFavicon {...args} ref={ref} />);
     expect(ref.current).not.toBeNull();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(ref.current!.nodeName).toBe('DIV');
   });
 });

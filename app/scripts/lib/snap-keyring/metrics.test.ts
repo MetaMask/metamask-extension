@@ -1,4 +1,4 @@
-import { SnapAndHardwareMessenger, getSnapAndHardwareInfoForMetrics } from './metrics';
+import { getSnapAndHardwareInfoForMetrics } from './metrics';
 
 describe('getSnapAndHardwareInfoForMetrics', () => {
   let getAccountType: jest.Mock;

@@ -55,6 +55,7 @@ describe('Input', () => {
     const ref = React.createRef<HTMLInputElement>();
     const { getByRole } = renderWithUserEvent(<Input ref={ref} />);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     act(() => ref.current!.focus());
     expect(getByRole('textbox')).toHaveFocus();
   });
@@ -97,7 +98,9 @@ describe('Input', () => {
   });
   it('should render with a defaultValue', () => {
     const { getByRole } = render(<Input defaultValue="default value" />);
-    expect((getByRole('textbox') as HTMLInputElement).value).toBe('default value');
+    expect((getByRole('textbox') as HTMLInputElement).value).toBe(
+      'default value',
+    );
   });
   it('should render in disabled state and not focus or be clickable', async () => {
     const mockOnFocus = jest.fn();

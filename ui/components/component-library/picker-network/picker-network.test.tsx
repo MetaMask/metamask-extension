@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { PickerNetwork } from './picker-network';
 import { IconName } from '..';
+import { PickerNetwork } from './picker-network';
 
 describe('PickerNetwork', () => {
   it('should render the label inside the PickerNetwork', () => {
@@ -51,9 +51,7 @@ describe('PickerNetwork', () => {
       />
     );
 
-    expect(container.props.iconProps.name).toStrictEqual(
-      IconName.ArrowDown,
-    );
+    expect(container.props.iconProps.name).toStrictEqual(IconName.ArrowDown);
   });
   // className
   it('should render with custom className', () => {

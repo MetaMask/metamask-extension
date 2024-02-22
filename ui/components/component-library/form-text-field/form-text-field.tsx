@@ -51,7 +51,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       size = FormTextFieldSize.Md,
       textFieldProps,
       truncate,
-      type = "text",
+      type = 'text',
       value,
       ...props
     }: FormTextFieldProps<C>,

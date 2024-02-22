@@ -67,6 +67,7 @@ describe('Notification Manager', () => {
     browser.windows.getAll.mockReturnValue([]);
     browser.windows.create.mockReturnValue(newPopupWindow);
     currentPopupId = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId!);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledTimes(1);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledWith(newPopupWindow.id);
@@ -84,6 +85,7 @@ describe('Notification Manager', () => {
       width: 120, // make sure this is smalled than NOTIFICATION_WIDTH
     });
     currentPopupId = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId!);
     expect(createSpy).toHaveBeenCalledTimes(1);
     expect(createSpy).toHaveBeenCalledWith({

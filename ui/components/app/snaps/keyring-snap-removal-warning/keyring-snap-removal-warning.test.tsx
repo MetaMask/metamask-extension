@@ -1,6 +1,6 @@
 import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
-import configureMockStore, { MockStoreCreator } from 'redux-mock-store';
+import configureMockStore from 'redux-mock-store';
 // @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
 import mockStore from '../../../../../test/data/mock-state.json';
@@ -103,7 +103,7 @@ describe('Keyring Snap Remove Warning', () => {
   });
 
   it('opens block explorer for account', async () => {
-    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn()};
+    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const { getByText, getAllByTestId } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
       store,

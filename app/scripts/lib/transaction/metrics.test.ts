@@ -190,8 +190,8 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment when simulation failed', async () => {
       mockTransactionMeta.simulationFails = {
-        reason: "test",
-        debug: {}
+        reason: 'test',
+        debug: {},
       };
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {

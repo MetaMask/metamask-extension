@@ -1,16 +1,19 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   ConfirmMetamaskState,
   currentConfirmationSelector,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
 } from './confirm';
-import { TransactionType } from '@metamask/transaction-controller';
 
 describe('confirm selectors', () => {
   const mockedState: ConfirmMetamaskState = {
     confirm: {
-      currentConfirmation: { id: '1', type: TransactionType.contractInteraction },
+      currentConfirmation: {
+        id: '1',
+        type: TransactionType.contractInteraction,
+      },
     },
     metamask: {
       pendingApprovals: {

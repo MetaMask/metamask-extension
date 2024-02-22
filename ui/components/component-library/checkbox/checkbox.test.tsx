@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { BorderColor } from '../../../helpers/constants/design-system';
-import { Checkbox } from '.';
 import { IconName } from '..';
+import { Checkbox } from '.';
 
 describe('Checkbox', () => {
   it('should render the Checkbox without crashing', () => {
@@ -42,7 +42,10 @@ describe('Checkbox', () => {
 
   it('should render isChecked', () => {
     const { getByRole, getByTestId } = render(
-      <Checkbox isChecked={true} iconProps={{ 'data-testid': 'check-bold', name: IconName.CheckBold }} />,
+      <Checkbox
+        isChecked={true}
+        iconProps={{ 'data-testid': 'check-bold', name: IconName.CheckBold }}
+      />,
     );
     expect(getByRole('checkbox')).toBeChecked();
     expect(window.getComputedStyle(getByTestId('check-bold')).maskImage).toBe(

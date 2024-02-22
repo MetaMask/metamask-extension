@@ -121,6 +121,7 @@ describe('AvatarAccount', () => {
       />,
     );
     expect(ref.current).not.toBeNull();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(ref.current!.nodeName).toBe('DIV');
   });
 });
