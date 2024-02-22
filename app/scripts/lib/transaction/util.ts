@@ -238,13 +238,17 @@ async function addTransactionOrUserOperation(
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const { transactionController, transactionOptions, transactionParams } =
-    request;
+  const {
+    transactionController,
+    transactionOptions,
+    transactionParams,
+    networkClientId,
+  } = request;
   const { result, transactionMeta } =
-    await transactionController.addTransaction(
-      transactionParams,
-      transactionOptions,
-    );
+    await transactionController.addTransaction(transactionParams, {
+      ...transactionOptions,
+      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+    });
 
   return {
     transactionMeta,
