@@ -5,14 +5,19 @@ import {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 
-import { initializeApp } from './firebase/firebase-app';
-import { getMessaging, getToken } from './firebase/firebase-messaging';
+import { getApp, initializeApp } from './firebase/firebase-app';
+import {
+  getMessaging,
+  getToken,
+  deleteToken,
+} from './firebase/firebase-messaging';
 import type { Messaging } from './types/types';
 
 const controllerName = 'PushPlatformNotificationsController';
 
 export type PushPlatformNotificationsControllerState = {
   pushPlatformNotifications: string[];
+  fcmToken: string;
 };
 
 export type PushPlatformNotificationsControllerMessengerActions =
@@ -44,6 +49,10 @@ const metadata = {
     persist: true,
     anonymous: true,
   },
+  fcmToken: {
+    persist: true,
+    anonymous: true,
+  },
 };
 
 export class PushPlatformNotificationsController extends BaseController<
@@ -64,22 +73,38 @@ export class PushPlatformNotificationsController extends BaseController<
       name: controllerName,
       state: {
         pushPlatformNotifications: state?.pushPlatformNotifications || [],
+        fcmToken: state?.fcmToken || '',
       },
     });
   }
 
+  /**
+   * Attempts to retrieve an existing Firebase app instance. If no instance exists, it initializes a new app with the provided configuration.
+   *
+   * This method first tries to get an existing Firebase app by calling `getApp()`. If no app is found (an error is thrown), it then initializes a new Firebase app using the configuration specified in environment variables. The configuration includes the API key, auth domain, storage bucket, project ID, messaging sender ID, and app ID.
+   *
+   * @returns The Firebase app instance.
+   */
+  private createFirebaseApp() {
+    try {
+      return getApp();
+    } catch {
+      const firebaseConfig = {
+        apiKey: process.env.FIREBASE_API_KEY,
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.FIREBASE_APP_ID,
+      };
+
+      return initializeApp(firebaseConfig);
+    }
+  }
+
   // This method is used to fetch the FCM token. This token must be sent to the server.
   private fetchToken() {
-    const firebaseConfig = {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.FIREBASE_APP_ID,
-    };
-
-    const app = initializeApp(firebaseConfig);
+    const app = this.createFirebaseApp();
     const messaging = getMessaging(app);
 
     async function fetchToken(messagingInstance: Messaging) {
@@ -93,6 +118,15 @@ export class PushPlatformNotificationsController extends BaseController<
     const fmcToken = fetchToken(messaging);
 
     return fmcToken;
+  }
+
+  private async deleteToken() {
+    const app = this.createFirebaseApp();
+    const messaging = getMessaging(app);
+
+    // Soft delete firebase token.
+    // If fails to delete, we will still delete from IDB so this is fine
+    await deleteToken(messaging);
   }
 
   // Placeholder: Currently logs messages from the service worker.
@@ -112,9 +146,7 @@ export class PushPlatformNotificationsController extends BaseController<
    * Note: Step 3 are planned for future implementation.
    */
   public async enablePushNotifications() {
-    console.log('start enablePushNotifications');
     // 1. Register the service worker and listen for messages
-
     navigator.serviceWorker
       .register('./firebase-messaging-sw.js')
       .then(() => {
@@ -127,9 +159,12 @@ export class PushPlatformNotificationsController extends BaseController<
         console.log('Service Worker registration failed:', error);
       });
 
-    // 2. Fetch the FCM token
+    // 2. Fetch the FCM token and update the state
     const fcmToken = await this.fetchToken();
     console.log('FCM token:', fcmToken);
+    this.update((state) => {
+      state.fcmToken = fcmToken;
+    });
 
     // 3. TODO: Send the FCM token to the server
   }
@@ -145,6 +180,10 @@ export class PushPlatformNotificationsController extends BaseController<
     if ('serviceWorker' in navigator) {
       try {
         const registration = await navigator.serviceWorker.ready;
+
+        // Soft unregister service worker
+        // this is to ensure that when we remove the registration token,
+        // the service worker (that sends push notifications) is also removed
         const unregistrationResult = await registration.unregister();
         if (unregistrationResult) {
           console.log('Service worker unregistered successfully.');
@@ -158,6 +197,17 @@ export class PushPlatformNotificationsController extends BaseController<
       }
     }
 
-    // 3. TODO: Send a request to the server to unregister the device
+    // 3. TODO: Send a request to the server to unregister the token/device
+
+    // 4. Delete the FCM token and clear it from the state
+    await this.deleteToken();
+    this.update((state) => {
+      state.fcmToken = '';
+    });
+  }
+
+  public async updateTriggerPushNotifications() {
+    // TODO: Use thise method to update the push notification service when a user create new triggers
+    // We need to make sure that this can be called if push notifications are enabled.
   }
 }
