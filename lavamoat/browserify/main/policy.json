@@ -1698,10 +1698,8 @@
     "@metamask/ppom-validator": {
       "globals": {
         "URL": true,
-        "clearInterval": true,
         "console.error": true,
-        "crypto": true,
-        "setInterval": true
+        "crypto": true
       },
       "packages": {
         "@metamask/controller-utils": true,
