@@ -1143,6 +1143,10 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+export function getCurrentPopupId(state) {
+  return state.appState.currentPopupId;
+}
+
 /**
  * Returns a memoized version of the MetaMask identities.
  *
