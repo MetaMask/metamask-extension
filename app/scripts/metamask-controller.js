@@ -68,6 +68,7 @@ import {
 } from '@metamask/permission-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
+  METAMASK_DOMAIN,
   SelectedNetworkController,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -493,10 +494,19 @@ export default class MetamaskController extends EventEmitter {
     this.selectedNetworkController = new SelectedNetworkController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SelectedNetworkController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          `PermissionController:hasPermissions`,
+        ],
         allowedEvents: ['NetworkController:stateChange'],
       }),
+      state: initState.SelectedNetworkController,
     });
+
+    const networkClient = this.networkController.getProviderAndBlockTracker();
+    this.provider = networkClient.provider;
+    this.blockTracker = networkClient.blockTracker;
 
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
@@ -518,6 +528,20 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:stateChange',
           listener,
         ),
+    });
+
+    // Couple the useRequestQueue featureflag with the perDomainNetwork feature flag
+    // TODO remove the redundant perDomainNetwork state in the SelectedNetworkController and simply reference the useRequestQueue state
+    this.selectedNetworkController.setPerDomainNetwork(
+      this.preferencesController.store.getState().useRequestQueue,
+    );
+    this.preferencesController.store.subscribe(({ useRequestQueue }) => {
+      if (
+        useRequestQueue !==
+        this.selectedNetworkController.state.perDomainNetwork
+      ) {
+        this.selectedNetworkController.setPerDomainNetwork(useRequestQueue);
+      }
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -2422,6 +2446,17 @@ export default class MetamaskController extends EventEmitter {
 
         for (const [origin, accounts] of changedAccounts.entries()) {
           this._notifyAccountsChange(origin, accounts);
+          // When permissions are added for a given origin we need to
+          // set the network client id for that origin to the current
+          // globally selected network client id.
+          if (accounts.length > 0) {
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              this.networkController.state.selectedNetworkClientId,
+            );
+          } else {
+            // TODO remove domain from selectedNetworkController when permissions are removed?
+          }
         }
       },
       getPermittedAccountsByOrigin,
@@ -2609,7 +2644,7 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
       ...this.getProviderNetworkState(
-        this.preferencesController.getUseRequestQueue() ? origin : undefined,
+        this.preferencesController?.getUseRequestQueue() ? origin : undefined,
       ),
     };
   }
@@ -2620,9 +2655,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
    * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  getProviderNetworkState(origin = 'metamask') {
+  getProviderNetworkState(origin = METAMASK_DOMAIN) {
     let chainId;
-    if (this.preferencesController.getUseRequestQueue()) {
+    if (
+      this.preferencesController?.getUseRequestQueue() &&
+      origin !== METAMASK_DOMAIN
+    ) {
       // It would be nice to have selectedNetworkController always return a value, and have it decide how to default the values (in all cases we want the default to be 'what ever the globally selected network is').
       // I ended up adding this defaulting here because of an issue where the selected network for the origin 'metamask' - it is `undefined` until you unlock the wallet and select a network for the first time.
       const networkClientId =
@@ -2888,14 +2926,9 @@ export default class MetamaskController extends EventEmitter {
 
       // network management
       setProviderType: (type) => {
-        // when using this format, type happens to be the same as the networkClientId...
-        this.selectedNetworkController.setNetworkClientIdForMetamask(type);
         return this.networkController.setProviderType(type);
       },
       setActiveNetwork: (networkConfigurationId) => {
-        this.selectedNetworkController.setNetworkClientIdForMetamask(
-          networkConfigurationId,
-        );
         return this.networkController.setActiveNetwork(networkConfigurationId);
       },
       rollbackToPreviousProvider:
@@ -4423,9 +4456,6 @@ export default class MetamaskController extends EventEmitter {
 
   setUseRequestQueue(value) {
     this.preferencesController.setUseRequestQueue(value);
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = value;
-    });
   }
 
   //=============================================================================
@@ -4728,25 +4758,21 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    const { selectedNetworkClientId } = this.networkController.state;
-
-    const selectedNetworkClientIdForDomain =
-      this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-
-    // Not sure that this will happen anymore
-    if (selectedNetworkClientIdForDomain === undefined) {
-      this.selectedNetworkController.setNetworkClientIdForDomain(
-        origin,
-        selectedNetworkClientId,
-      );
-    }
-
-    let proxyProviderForDomain = provider;
-    if (this.preferencesController.getUseRequestQueue()) {
-      proxyProviderForDomain =
-        this.selectedNetworkController.getProviderAndBlockTracker(
-          origin,
-        ).provider;
+    // Use proxyClient from selectedNetworkController when:
+    // 1. feature flag for perDomainNetwork is on
+    // 2  the origin is in the selectedNetworkController's `domains` state
+    let proxyClient;
+    if (
+      this.selectedNetworkController.state.perDomainNetwork &&
+      this.selectedNetworkController.state.domains[origin]
+    ) {
+      proxyClient =
+        this.selectedNetworkController.getProviderAndBlockTracker(origin);
+    } else {
+      proxyClient = {
+        provider: this.provider,
+        blockTracker: this.blockTracker,
+      };
     }
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
@@ -4759,7 +4785,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(requestQueueMiddleware);
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+    const filterMiddleware = createFilterMiddleware(proxyClient);
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({
@@ -4918,10 +4944,6 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         setActiveNetwork: (networkClientId) => {
-          // setActiveNetwork is used for custom (non-infura) networks, and for these networks networkClientId === networkConfigurationId
-          this.selectedNetworkController.setNetworkClientIdForMetamask(
-            networkClientId,
-          );
           this.networkController.setActiveNetwork(networkClientId);
         },
         findNetworkClientIdByChainId:
@@ -4943,8 +4965,6 @@ export default class MetamaskController extends EventEmitter {
         ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
-          // when using this format, type happens to be the same as the networkClientId...
-          this.selectedNetworkController.setNetworkClientIdForMetamask(type);
           return this.networkController.setProviderType(type);
         },
 
@@ -5068,7 +5088,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    engine.push(providerAsMiddleware(proxyProviderForDomain));
+    engine.push(providerAsMiddleware(proxyClient.provider));
 
     return engine;
   }
@@ -5769,7 +5789,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _notifyChainChange() {
-    if (this.preferencesController.getUseRequestQueue()) {
+    if (this.preferencesController?.getUseRequestQueue()) {
       this.notifyAllConnections((origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,
         params: this.getProviderNetworkState(origin),

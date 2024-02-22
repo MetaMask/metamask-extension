@@ -314,6 +314,10 @@ function onboardingFixture() {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
       },
+      SelectedNetworkController: {
+        domains: {},
+        perDomainNetwork: false,
+      },
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
