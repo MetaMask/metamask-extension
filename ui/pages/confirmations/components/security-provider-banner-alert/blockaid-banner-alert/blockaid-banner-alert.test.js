@@ -54,8 +54,8 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it('should render spinner when securityAlertResponse is loading', () => {
-    const { container } = renderWithProvider(
+  it('renders spinner and "Waiting [...]" when securityAlertResponse is loading', () => {
+    const { container, getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
@@ -66,6 +66,7 @@ describe('Blockaid Banner Alert', () => {
       configureStore(),
     );
 
+    expect(getByText('Waiting for security alerts')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
