@@ -233,6 +233,12 @@ function createScriptTasks({
       createSentryBundle({ buildTarget }),
     );
 
+    // this can run whenever
+    const firebaseMessagingSwSubtask = createTask(
+      `${taskPrefix}:firebase`,
+      createFirebaseMessagingSwBundle({ buildTarget }),
+    );
+
     // task for initiating browser livereload
     const initiateLiveReload = async () => {
       if (isDevBuild(buildTarget)) {
@@ -255,6 +261,7 @@ function createScriptTasks({
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
+      firebaseMessagingSwSubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
         applyLavaMoat,
@@ -306,6 +313,32 @@ function createScriptTasks({
       buildTarget,
       buildType,
       destFilepath: `scripts/${label}.js`,
+      entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Creates a bundle for the Firebase Messaging Service Worker.
+   *
+   * This function configures and returns a task for bundling the Firebase Messaging Service Worker script. It leverages the `createNormalBundle` function to handle the bundling process, passing in the necessary options such as the build target, browser platforms, and other configurations.
+   *
+   * @param {object} options - The options for creating the bundle.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target indicating the environment (e.g., development, production).
+   * @returns {Function} A function that, when called, will create the bundle for the Firebase Messaging Service Worker.
+   */
+  function createFirebaseMessagingSwBundle({ buildTarget }) {
+    const label = 'firebase-messaging-sw';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
