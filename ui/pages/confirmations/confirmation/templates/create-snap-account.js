@@ -1,4 +1,4 @@
-function getValues(pendingApproval, t, actions, _history) {
+function getValues(pendingApproval, t, actions) {
   const { origin: snapId, snapName } = pendingApproval;
 
   return {
