@@ -34,6 +34,7 @@
     "showTestnetMessageInDropdown": true,
     "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
+    "showPermissionsTour": true,
     "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -205,6 +206,7 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
+  "SnapInterfaceController": "object",
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {

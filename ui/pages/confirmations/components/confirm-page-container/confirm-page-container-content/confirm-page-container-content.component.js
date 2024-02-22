@@ -17,6 +17,7 @@ import {
 } from '../../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../../helpers/constants/design-system';
 
+import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -64,6 +65,7 @@ export default class ConfirmPageContainerContent extends Component {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IF
+    txData: PropTypes.object,
   };
 
   renderContent() {
@@ -181,6 +183,7 @@ export default class ConfirmPageContainerContent extends Component {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       openBuyCryptoInPdapp,
       ///: END:ONLY_INCLUDE_IF
+      txData,
     } = this.props;
 
     const { t } = this.context;
@@ -190,6 +193,12 @@ export default class ConfirmPageContainerContent extends Component {
 
     const showIsSigningOrSubmittingError =
       errorKey === IS_SIGNING_OR_SUBMITTING;
+
+    const submitButtonType =
+      txData?.securityAlertResponse?.result_type ===
+      BlockaidResultType.Malicious
+        ? 'danger-primary'
+        : 'primary';
 
     return (
       <div
@@ -272,6 +281,7 @@ export default class ConfirmPageContainerContent extends Component {
           onSubmit={onSubmit}
           submitText={submitText}
           disabled={disabled}
+          submitButtonType={submitButtonType}
         >
           {unapprovedTxCount > 1 ? (
             <a onClick={onCancelAll}>{rejectNText}</a>
