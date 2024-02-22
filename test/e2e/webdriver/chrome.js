@@ -20,6 +20,8 @@ class ChromeDriver {
       `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPredicition,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
+      `--disable-gpu`,
+      `--disable-dev-shm-usage`,
     ];
 
     if (process.env.MULTIPROVIDER) {
@@ -29,6 +31,7 @@ class ChromeDriver {
     } else {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
     }
+
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }
