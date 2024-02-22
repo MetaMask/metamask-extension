@@ -10,10 +10,15 @@ import {
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import NativeAssetV2 from './components/native-asset-v2';
 import TokenAssetV2 from './components/token-asset-v2';
+///: END:ONLY_INCLUDE_IF
 
 const Asset = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
