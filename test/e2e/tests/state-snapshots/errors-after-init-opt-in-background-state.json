@@ -206,6 +206,7 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
+  "SnapInterfaceController": "object",
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {

@@ -1,5 +1,7 @@
-import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
-import { restrictedMethodPermissionBuilders } from '@metamask/snaps-rpc-methods';
+import {
+  restrictedMethodPermissionBuilders,
+  endowmentPermissionBuilders,
+} from '@metamask/snaps-rpc-methods';
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
