@@ -37,7 +37,7 @@ export default class EnsController {
     });
   }
 
-  delayedInit = (passedProvider) => {
+  delayedInit(passedProvider) {
     if (!this._ens) {
       const chainId = this.getCurrentChainId();
       if (Ens.getChainEnsSupport(chainId)) {
