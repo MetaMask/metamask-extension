@@ -26,7 +26,6 @@ const switchEthereumChain = {
     setActiveNetwork: true,
     requestUserApproval: true,
     getNetworkConfigurations: true,
-    getNetworkClientIdForDomain: true,
     getProviderConfig: true,
   },
 };

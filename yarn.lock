@@ -4709,18 +4709,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/selected-network-controller@npm:6.0.0"
+"@metamask/selected-network-controller@file:../core/packages/selected-network-controller::locator=metamask-crx%40workspace%3A.":
+  version: 8.0.0
+  resolution: "@metamask/selected-network-controller@file:../core/packages/selected-network-controller#../core/packages/selected-network-controller::hash=0e02d7&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.3.1"
-    "@metamask/network-controller": "npm:^17.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/network-controller": "npm:^17.2.0"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
-    "@metamask/network-controller": ^17.1.0
-  checksum: 06108b93af648cbb8bed337459e579f1a314cd0d1d8405e4a9501a5933c961664170bdb9022dbbbb08066b577869b07b6f00f84a3076b3ae8fdc2fc8c4ea4c9c
+    "@metamask/network-controller": ^17.2.0
+  checksum: 7675d6c587dd5c967a9857b35d25cf9c2a96889841e7362f599cf2a5c653447eca1a0476e58cde78f5eb2296dc2a46075fe40ca70ec474dc2eaec4c056728d5e
   languageName: node
   linkType: hard
 
@@ -24136,7 +24136,7 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^6.0.0"
+    "@metamask/selected-network-controller": "npm:^8.0.0"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^4.1.0"
@@ -31003,7 +31003,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks@npm:^2.6.1, socks@npm:^2.6.2, socks@npm:^2.7.1":
+"socks@npm:^2.7.3":
   version: 2.8.0
   resolution: "socks@npm:2.8.0"
   dependencies:
