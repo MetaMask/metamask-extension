@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.11.0]
+### Added
+- Added 'What's New' popup for Petnames feature ([#22780](https://github.com/MetaMask/metamask-extension/pull/22780))
+- Added Petnames synchronization control feature ([#22600](https://github.com/MetaMask/metamask-extension/pull/22600))
+- Added default account identities as Petnames enhancement ([#21956](https://github.com/MetaMask/metamask-extension/pull/21956))
+- Introduced toggle for Petnames in experimental settings ([#22456](https://github.com/MetaMask/metamask-extension/pull/22456))
+- Added ModalBody component for improved padding in AccountDetails modal ([#22775](https://github.com/MetaMask/metamask-extension/pull/22775))
+- Added modal overlay to SignatureRequestOriginalWarning for enhanced UI consistency ([#22756](https://github.com/MetaMask/metamask-extension/pull/22756))
+- Introduced ConfirmTitle component for displaying confirmation titles and subtitles ([#22270](https://github.com/MetaMask/metamask-extension/pull/22270))
+- Added title to Personal Sign component in confirmation design ([#22749](https://github.com/MetaMask/metamask-extension/pull/22749))
+
+### Changed
+- UI enhancements for initial petnames release, including new "Recognized" category and visual refinements ([#22772](https://github.com/MetaMask/metamask-extension/pull/22772))
+- Improved Petnames design by moving identicon inside name component ([#22737](https://github.com/MetaMask/metamask-extension/pull/22737))
+- Enhanced token name display with useDisplayName hook integration ([#22734](https://github.com/MetaMask/metamask-extension/pull/22734))
+- Moved security alerts from Experimental to Security & Privacy settings ([#22813](https://github.com/MetaMask/metamask-extension/pull/22813))
+- Updated BlockaidBannerAlert to support false positive reporting for failed types ([#22742](https://github.com/MetaMask/metamask-extension/pull/22742))
+- Enhanced BlockaidBannerAlert functionality and display ([#22625](https://github.com/MetaMask/metamask-extension/pull/22625))
+- Disabled smart swaps for Snap accounts ([#22731](https://github.com/MetaMask/metamask-extension/pull/22731))
+- Upgraded @metamask/transaction-controller to v21.0.1 for improved transaction handling ([#22674](https://github.com/MetaMask/metamask-extension/pull/22674))
+
+### Fixed
+- Fixed cancel transaction signing from activity list ([#22676](https://github.com/MetaMask/metamask-extension/pull/22676))
+- Fixed incorrect account name display in account details and receive list ([#22844](https://github.com/MetaMask/metamask-extension/pull/22844))
+- Fixed IPFS NFTs fetching issue for manually imported NFTs ([#22627](https://github.com/MetaMask/metamask-extension/pull/22627))
+- Fixed "send max" ETH calculation issue to adjust for gas changes ([#22694](https://github.com/MetaMask/metamask-extension/pull/22694))
+- Fixed sign button color and updated deprecated components in SignatureRequestOriginalWarning for visual consistency ([#22741](https://github.com/MetaMask/metamask-extension/pull/22741))
+
 ## [11.10.0]
 ### Added
 - Added preset network image avatars in the 'Select a network' pop-up ([#22643](https://github.com/MetaMask/metamask-extension/pull/22643))
@@ -4391,8 +4418,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.0...HEAD
-[11.11.0]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...v11.11.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...HEAD
+[11.11.0]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...v11.11.0
 [11.10.0]: https://github.com/MetaMask/metamask-extension/compare/v11.9.5...v11.10.0
 [11.9.5]: https://github.com/MetaMask/metamask-extension/compare/v11.9.4...v11.9.5
 [11.9.4]: https://github.com/MetaMask/metamask-extension/compare/v11.9.3...v11.9.4
