@@ -280,7 +280,16 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "webpack>eslint-scope": true
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+      }
+    },
+    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true,
+        "eslint>eslint-scope>esrecurse": true
       }
     },
     "@babel/eslint-parser>semver": {
@@ -2289,8 +2298,8 @@
     },
     "del>p-map>aggregate-error": {
       "packages": {
-        "@testing-library/jest-dom>redent>indent-string": true,
-        "del>p-map>aggregate-error>clean-stack": true
+        "del>p-map>aggregate-error>clean-stack": true,
+        "prettier-eslint>indent-string": true
       }
     },
     "del>p-map>aggregate-error>clean-stack": {
@@ -3075,7 +3084,9 @@
     },
     "eslint>@humanwhocodes/config-array": {
       "builtin": {
-        "path": true
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true
       },
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
@@ -8800,15 +8811,6 @@
         "autoprefixer>caniuse-lite": true,
         "webpack>browserslist>electron-to-chromium": true,
         "webpack>browserslist>node-releases": true
-      }
-    },
-    "webpack>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "webpack>eslint-scope>estraverse": true
       }
     },
     "webpack>json-parse-even-better-errors": {
