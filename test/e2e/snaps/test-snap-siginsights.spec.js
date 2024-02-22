@@ -1,16 +1,18 @@
 const {
   withFixtures,
   defaultGanacheOptions,
+  openDapp,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL, TEST_DAPP_WEBSITE_URL } = require('./enums');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Singature Insights', function () {
   it('tests Signature Insights functionality', async function () {
     await withFixtures(
       {
+        dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
@@ -66,10 +68,11 @@ describe('Test Snap Singature Insights', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // open the test-dapp page
-        await driver.driver.get(TEST_DAPP_WEBSITE_URL);
+        // await driver.driver.get(TEST_DAPP_WEBSITE_URL);
+        await openDapp(driver);
 
         // poll windowHandles and switch to test-dapp
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.TestDApp,
           windowHandles,
@@ -91,7 +94,7 @@ describe('Test Snap Singature Insights', function () {
         await driver.clickElement('#connectButton');
 
         // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -107,7 +110,7 @@ describe('Test Snap Singature Insights', function () {
         });
 
         // switch to test-dapp page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.TestDApp,
           windowHandles,
@@ -120,7 +123,7 @@ describe('Test Snap Singature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -167,7 +170,7 @@ describe('Test Snap Singature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -214,7 +217,7 @@ describe('Test Snap Singature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -265,7 +268,7 @@ describe('Test Snap Singature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -305,7 +308,7 @@ describe('Test Snap Singature Insights', function () {
 
         // check results of test
         await driver.waitForSelector({
-          text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
+          text: '0xa6e5cfe9260f460674383dd0a4ce4ded9651fc04ab82b8f9c72c126760979b5d50442ed75a51b2d0ce4bdbd72a649f7286d4de7014480d4dadd38c0ce93334d41b',
           tag: 'span',
         });
 
@@ -370,7 +373,7 @@ describe('Test Snap Singature Insights', function () {
         await driver.clickElement('#ethSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
