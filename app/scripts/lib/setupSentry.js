@@ -171,7 +171,6 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PPOMController: {
-    chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
     versionFileETag: false,
