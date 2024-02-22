@@ -23,8 +23,8 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
+  CONNECTIONS,
   DEFAULT_ROUTE,
-  PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import {
   getOnboardedInThisUISession,
@@ -68,7 +68,7 @@ export const PermissionsPage = () => {
   const handleConnectionClick = (connection) => {
     const hostName = getURLHost(connection.origin);
     const safeEncodedHost = encodeURIComponent(hostName);
-    history.push(`${PERMISSIONS}/${safeEncodedHost}`);
+    history.push(`${CONNECTIONS}/${safeEncodedHost}`);
   };
 
   const renderConnectionsList = (connectionList) =>
