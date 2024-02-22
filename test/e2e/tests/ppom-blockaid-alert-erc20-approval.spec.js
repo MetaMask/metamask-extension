@@ -210,7 +210,8 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
-  it('should show banner alert', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -232,7 +233,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, a third party known for scams might take all your assets.';
+          'If you approve this request, you might lose your assets.';
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');

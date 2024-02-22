@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Если вы одобрите этот запрос, кто-то может украсть ваши активы, указанные в Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Из-за ошибки этот запрос не был подтвержден поставщиком услуг безопасности. Действуйте осторожно."
   },
   "blockaidDescriptionMaliciousDomain": {

@@ -1933,9 +1933,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/aix-ppc64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/aix-ppc64@npm:0.19.12"
+  conditions: os=aix & cpu=ppc64
+  languageName: node
+  linkType: hard
+
 "@esbuild/android-arm64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/android-arm64@npm:0.18.20"
+  conditions: os=android & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@esbuild/android-arm64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/android-arm64@npm:0.19.12"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
@@ -1947,9 +1961,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/android-arm@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/android-arm@npm:0.19.12"
+  conditions: os=android & cpu=arm
+  languageName: node
+  linkType: hard
+
 "@esbuild/android-x64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/android-x64@npm:0.18.20"
+  conditions: os=android & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/android-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/android-x64@npm:0.19.12"
   conditions: os=android & cpu=x64
   languageName: node
   linkType: hard
@@ -1961,9 +1989,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/darwin-arm64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/darwin-arm64@npm:0.19.12"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@esbuild/darwin-x64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/darwin-x64@npm:0.18.20"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/darwin-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/darwin-x64@npm:0.19.12"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
@@ -1975,9 +2017,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/freebsd-arm64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/freebsd-arm64@npm:0.19.12"
+  conditions: os=freebsd & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@esbuild/freebsd-x64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/freebsd-x64@npm:0.18.20"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/freebsd-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/freebsd-x64@npm:0.19.12"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
@@ -1989,9 +2045,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/linux-arm64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-arm64@npm:0.19.12"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@esbuild/linux-arm@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/linux-arm@npm:0.18.20"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-arm@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-arm@npm:0.19.12"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
@@ -2003,9 +2073,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/linux-ia32@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-ia32@npm:0.19.12"
+  conditions: os=linux & cpu=ia32
+  languageName: node
+  linkType: hard
+
 "@esbuild/linux-loong64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/linux-loong64@npm:0.18.20"
+  conditions: os=linux & cpu=loong64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-loong64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-loong64@npm:0.19.12"
   conditions: os=linux & cpu=loong64
   languageName: node
   linkType: hard
@@ -2017,9 +2101,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/linux-mips64el@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-mips64el@npm:0.19.12"
+  conditions: os=linux & cpu=mips64el
+  languageName: node
+  linkType: hard
+
 "@esbuild/linux-ppc64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/linux-ppc64@npm:0.18.20"
+  conditions: os=linux & cpu=ppc64
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-ppc64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-ppc64@npm:0.19.12"
   conditions: os=linux & cpu=ppc64
   languageName: node
   linkType: hard
@@ -2031,9 +2129,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/linux-riscv64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-riscv64@npm:0.19.12"
+  conditions: os=linux & cpu=riscv64
+  languageName: node
+  linkType: hard
+
 "@esbuild/linux-s390x@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/linux-s390x@npm:0.18.20"
+  conditions: os=linux & cpu=s390x
+  languageName: node
+  linkType: hard
+
+"@esbuild/linux-s390x@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-s390x@npm:0.19.12"
   conditions: os=linux & cpu=s390x
   languageName: node
   linkType: hard
@@ -2045,9 +2157,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/linux-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/linux-x64@npm:0.19.12"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@esbuild/netbsd-x64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/netbsd-x64@npm:0.18.20"
+  conditions: os=netbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/netbsd-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/netbsd-x64@npm:0.19.12"
   conditions: os=netbsd & cpu=x64
   languageName: node
   linkType: hard
@@ -2059,9 +2185,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/openbsd-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/openbsd-x64@npm:0.19.12"
+  conditions: os=openbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@esbuild/sunos-x64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/sunos-x64@npm:0.18.20"
+  conditions: os=sunos & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/sunos-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/sunos-x64@npm:0.19.12"
   conditions: os=sunos & cpu=x64
   languageName: node
   linkType: hard
@@ -2073,6 +2213,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/win32-arm64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/win32-arm64@npm:0.19.12"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@esbuild/win32-ia32@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/win32-ia32@npm:0.18.20"
@@ -2080,9 +2227,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esbuild/win32-ia32@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/win32-ia32@npm:0.19.12"
+  conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
 "@esbuild/win32-x64@npm:0.18.20":
   version: 0.18.20
   resolution: "@esbuild/win32-x64@npm:0.18.20"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@esbuild/win32-x64@npm:0.19.12":
+  version: 0.19.12
+  resolution: "@esbuild/win32-x64@npm:0.19.12"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -3454,20 +3615,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-controller@npm:^0.2.19, @metamask-institutional/custody-controller@npm:^0.2.20":
-  version: 0.2.20
-  resolution: "@metamask-institutional/custody-controller@npm:0.2.20"
+"@metamask-institutional/custody-controller@npm:^0.2.22":
+  version: 0.2.22
+  resolution: "@metamask-institutional/custody-controller@npm:0.2.22"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.9"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.10"
     "@metamask-institutional/sdk": "npm:^0.1.24"
     "@metamask-institutional/types": "npm:^1.0.4"
     "@metamask/obs-store": "npm:^8.0.0"
-  checksum: 8b6a25b4d870ea9bd3f235d45c82226cecbbef3bbbe6b635114e28642c847dbd1258982d0b0501b0e4109de0d16024c4c192dcd7ff018d281f7e075f1de23b1d
+  checksum: e5ee0ce9dfca87ddaff977a48e4914263de9f930797ad9adc0568381ec2a4373f8e307bafc1162c0215eccfa93b8b42ce684bac4b294758c53164958e44a7d69
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-keyring@npm:^1.0.10, @metamask-institutional/custody-keyring@npm:^1.0.8, @metamask-institutional/custody-keyring@npm:^1.0.9":
+"@metamask-institutional/custody-keyring@npm:^1.0.10, @metamask-institutional/custody-keyring@npm:^1.0.8":
   version: 1.0.10
   resolution: "@metamask-institutional/custody-keyring@npm:1.0.10"
   dependencies:
@@ -3483,20 +3644,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.3.13":
-  version: 0.3.13
-  resolution: "@metamask-institutional/extension@npm:0.3.13"
+"@metamask-institutional/extension@npm:^0.3.16":
+  version: 0.3.16
+  resolution: "@metamask-institutional/extension@npm:0.3.16"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/custody-controller": "npm:^0.2.19"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.8"
+    "@metamask-institutional/custody-controller": "npm:^0.2.22"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.10"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/sdk": "npm:^0.1.24"
-    "@metamask-institutional/transaction-update": "npm:^0.1.34"
+    "@metamask-institutional/transaction-update": "npm:^0.1.36"
     "@metamask-institutional/types": "npm:^1.0.4"
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
-  checksum: a32e93bb8e2d31850b900f0077b502e5f6afc786dd9da621f1a8ed040ad800972838167a2db1991510d1e029ea9c9365e5fe3c2a0c421738a3f0a2b698886661
+  checksum: 099b941dba62a503829e8806a6892ff49672492379f3d6230f6c562cf3e70da7ffc077598ff2acf8fe286a6fa8df3d8eaa63e9d40eca943fed3c609150b43af2
   languageName: node
   linkType: hard
 
@@ -3545,17 +3706,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/transaction-update@npm:^0.1.32, @metamask-institutional/transaction-update@npm:^0.1.34":
-  version: 0.1.34
-  resolution: "@metamask-institutional/transaction-update@npm:0.1.34"
+"@metamask-institutional/transaction-update@npm:^0.1.32, @metamask-institutional/transaction-update@npm:^0.1.36":
+  version: 0.1.36
+  resolution: "@metamask-institutional/transaction-update@npm:0.1.36"
   dependencies:
-    "@metamask-institutional/custody-keyring": "npm:^1.0.8"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.10"
     "@metamask-institutional/sdk": "npm:^0.1.24"
     "@metamask-institutional/types": "npm:^1.0.4"
-    "@metamask-institutional/websocket-client": "npm:^0.1.36"
+    "@metamask-institutional/websocket-client": "npm:^0.1.38"
     "@metamask/obs-store": "npm:^8.0.0"
     ethereumjs-util: "npm:^7.1.5"
-  checksum: 9dbf4374d8c7698f85fc6513641f7fc73d802afb0ef1e89e1dc3b3bc74d716705d8370bac7c2f20dfdeefd2a739da22c8903946f1972d5b51e6db0d23211fe04
+  checksum: e35fad2e51a541679a36d3f8db11a16114a2516fed7c740ff77560a35cacf67880c8d90e57ba13fd9f179136a9fbdd108b3b58f0dc38c64a85797e8738749ad4
   languageName: node
   linkType: hard
 
@@ -3566,15 +3727,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/websocket-client@npm:^0.1.36":
-  version: 0.1.36
-  resolution: "@metamask-institutional/websocket-client@npm:0.1.36"
+"@metamask-institutional/websocket-client@npm:^0.1.38":
+  version: 0.1.38
+  resolution: "@metamask-institutional/websocket-client@npm:0.1.38"
   dependencies:
-    "@metamask-institutional/custody-keyring": "npm:^1.0.8"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.10"
     "@metamask-institutional/sdk": "npm:^0.1.24"
     "@metamask-institutional/types": "npm:^1.0.4"
     mock-socket: "npm:^9.2.1"
-  checksum: a8b56e681a2bcc858067a8b5fd7c4e586459f3cee9e4165f2cf1e08c278139b015fc9195b961ddb0bf8fc5169afa362c596624f7caaea1a8d59c491ac3973c28
+  checksum: 6b1cb6798f58f83b128e55348fbb738d3cfb54c76d557731a8fd1bd3c1dde5604d958699d8c030ede225017fdc8977112d2397d161a5f9da6d9fced8452494e8
   languageName: node
   linkType: hard
 
@@ -3662,7 +3823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^24.0.0":
+"@metamask/assets-controllers@npm:24.0.0":
   version: 24.0.0
   resolution: "@metamask/assets-controllers@npm:24.0.0"
   dependencies:
@@ -3695,6 +3856,42 @@ __metadata:
     "@metamask/network-controller": ^17.1.0
     "@metamask/preferences-controller": ^6.0.0
   checksum: f9c857e26e04ca8463421434fad3096161d24e776da85c136689ac93a402f9cdafc175c8bd11b64a93d0d38d54109a541fedfee0d93b9e7eb1e1372904b68694
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A24.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-24.0.0-dfef136464.patch":
+  version: 24.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A24.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-24.0.0-dfef136464.patch::version=24.0.0&hash=f321cb"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/abi-utils": "npm:^2.0.2"
+    "@metamask/approval-controller": "npm:^5.1.1"
+    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^8.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/metamask-eth-abis": "npm:3.0.0"
+    "@metamask/network-controller": "npm:^17.1.0"
+    "@metamask/polling-controller": "npm:^4.0.0"
+    "@metamask/preferences-controller": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    "@types/uuid": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    cockatiel: "npm:^3.1.2"
+    ethereumjs-util: "npm:^7.0.10"
+    lodash: "npm:^4.17.21"
+    multiformats: "npm:^9.5.2"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^5.1.1
+    "@metamask/network-controller": ^17.1.0
+    "@metamask/preferences-controller": ^6.0.0
+  checksum: fd23afac75f432daf108b3ae8aed915466bd1d91d3c306580b262cb2886ac0e3874bc367a24f21a3179d720610ce6b2e8ff9d1b34ddcdd9179d65679c1ced6fd
   languageName: node
   linkType: hard
 
@@ -3811,10 +4008,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@metamask/design-tokens@npm:2.0.3"
-  checksum: 83dc20a911981050719861319837c5945d48668d21efe0e6b508f485f914fb2793415df8b32ec8e4ebde29f73cb4d489460b4b477e0fd4eed679abc5095bed04
+"@metamask/design-tokens@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@metamask/design-tokens@npm:2.1.1"
+  checksum: 0f219d7568fbdab4278994dc1e10a77aaab8f6edabbecf0e9cfa3e3593d457aea7c65d5b9ec9973d123246f335d96f4145b5109d7760148052269e2e4c7568a0
   languageName: node
   linkType: hard
 
@@ -4059,18 +4256,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-token-tracker@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@metamask/eth-token-tracker@npm:7.0.1"
+"@metamask/eth-token-tracker@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "@metamask/eth-token-tracker@npm:7.0.2"
   dependencies:
-    "@metamask/ethjs-contract": "npm:^0.3.4"
-    "@metamask/ethjs-query": "npm:^0.5.2"
+    "@metamask/ethjs-contract": "npm:^0.4.1"
+    "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
-    bn.js: "npm:^4.12.0"
+    bn.js: "npm:^5.2.1"
     deep-equal: "npm:^2.2.0"
     eth-block-tracker: "npm:^8.0.0"
     human-standard-token-abi: "npm:^2.0.0"
-  checksum: 5ce697ba2eae9dc8df942b5cee477cce4e4a1d5dbbe5f7e2268c8880135b45dc7cd86d888595a692c35d257586b950b9474caa62db49357452b22f3744d83b9e
+  peerDependencies:
+    "@babel/runtime": ^7.21.0
+  checksum: eec5b953de3449344107408ea820f95e95a1921da34259a80a6b6ae201fe0d7a4e87abf028b91aa865e904c88c96e7a39407386d89904076e7f1fd632960a86f
   languageName: node
   linkType: hard
 
@@ -4095,7 +4294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-contract@npm:^0.3.3, @metamask/ethjs-contract@npm:^0.3.4":
+"@metamask/ethjs-contract@npm:^0.3.3":
   version: 0.3.4
   resolution: "@metamask/ethjs-contract@npm:0.3.4"
   dependencies:
@@ -4179,7 +4378,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-query@npm:^0.5.2, @metamask/ethjs-query@npm:^0.5.3":
+"@metamask/ethjs-provider-http@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/ethjs-provider-http@npm:0.3.0"
+  dependencies:
+    xhr2: "npm:0.2.1"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: cece5d20836dadbe31f0c7118f26bd5330465c28f9a39ab8ac4a3fbce25094ae53fe8b737e3d95ae0cf4c7e075c9349127cf8bd066f138278ffc9fd7f9a8a101
+  languageName: node
+  linkType: hard
+
+"@metamask/ethjs-query@npm:^0.5.2":
   version: 0.5.3
   resolution: "@metamask/ethjs-query@npm:0.5.3"
   dependencies:
@@ -4268,7 +4478,8 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs@npm:^0.5.0, @metamask/ethjs@npm:^0.5.1":
+
+"@metamask/ethjs@npm:^0.5.0":
   version: 0.5.1
   resolution: "@metamask/ethjs@npm:0.5.1"
   dependencies:
@@ -4283,6 +4494,26 @@ __metadata:
     js-sha3: "npm:^0.9.2"
     number-to-bn: "npm:1.7.0"
   checksum: c1fa7be68623b937dc309465b8e8c89b1fed11c4d3a12a3984641e1a4e1dd26fdf3727f48e16a1adc4cdc3204ee04c6461107dca23875763a72e7d86f9fa6083
+  languageName: node
+  linkType: hard
+
+"@metamask/ethjs@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/ethjs@npm:0.6.0"
+  dependencies:
+    "@metamask/ethjs-contract": "npm:^0.4.1"
+    "@metamask/ethjs-filter": "npm:^0.3.0"
+    "@metamask/ethjs-provider-http": "npm:^0.3.0"
+    "@metamask/ethjs-query": "npm:^0.7.1"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/ethjs-util": "npm:^0.3.0"
+    "@metamask/number-to-bn": "npm:1.7.1"
+    bn.js: "npm:5.2.1"
+    ethjs-abi: "npm:0.2.1"
+    js-sha3: "npm:^0.9.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 11379cb4a1151fc8f8e939eb38c15ea6cfce042bc10a580a3fbe87b7e0234fb5cdf5b2458a7bbc8db3502032ac42054bf393154cfe967352b129fe8115719a91
   languageName: node
   linkType: hard
 
@@ -4545,7 +4776,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/number-to-bn@npm:^1.7.1":
+"@metamask/number-to-bn@npm:1.7.1, @metamask/number-to-bn@npm:^1.7.1":
   version: 1.7.1
   resolution: "@metamask/number-to-bn@npm:1.7.1"
   dependencies:
@@ -16142,6 +16373,86 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esbuild@npm:~0.19.10":
+  version: 0.19.12
+  resolution: "esbuild@npm:0.19.12"
+  dependencies:
+    "@esbuild/aix-ppc64": "npm:0.19.12"
+    "@esbuild/android-arm": "npm:0.19.12"
+    "@esbuild/android-arm64": "npm:0.19.12"
+    "@esbuild/android-x64": "npm:0.19.12"
+    "@esbuild/darwin-arm64": "npm:0.19.12"
+    "@esbuild/darwin-x64": "npm:0.19.12"
+    "@esbuild/freebsd-arm64": "npm:0.19.12"
+    "@esbuild/freebsd-x64": "npm:0.19.12"
+    "@esbuild/linux-arm": "npm:0.19.12"
+    "@esbuild/linux-arm64": "npm:0.19.12"
+    "@esbuild/linux-ia32": "npm:0.19.12"
+    "@esbuild/linux-loong64": "npm:0.19.12"
+    "@esbuild/linux-mips64el": "npm:0.19.12"
+    "@esbuild/linux-ppc64": "npm:0.19.12"
+    "@esbuild/linux-riscv64": "npm:0.19.12"
+    "@esbuild/linux-s390x": "npm:0.19.12"
+    "@esbuild/linux-x64": "npm:0.19.12"
+    "@esbuild/netbsd-x64": "npm:0.19.12"
+    "@esbuild/openbsd-x64": "npm:0.19.12"
+    "@esbuild/sunos-x64": "npm:0.19.12"
+    "@esbuild/win32-arm64": "npm:0.19.12"
+    "@esbuild/win32-ia32": "npm:0.19.12"
+    "@esbuild/win32-x64": "npm:0.19.12"
+  dependenciesMeta:
+    "@esbuild/aix-ppc64":
+      optional: true
+    "@esbuild/android-arm":
+      optional: true
+    "@esbuild/android-arm64":
+      optional: true
+    "@esbuild/android-x64":
+      optional: true
+    "@esbuild/darwin-arm64":
+      optional: true
+    "@esbuild/darwin-x64":
+      optional: true
+    "@esbuild/freebsd-arm64":
+      optional: true
+    "@esbuild/freebsd-x64":
+      optional: true
+    "@esbuild/linux-arm":
+      optional: true
+    "@esbuild/linux-arm64":
+      optional: true
+    "@esbuild/linux-ia32":
+      optional: true
+    "@esbuild/linux-loong64":
+      optional: true
+    "@esbuild/linux-mips64el":
+      optional: true
+    "@esbuild/linux-ppc64":
+      optional: true
+    "@esbuild/linux-riscv64":
+      optional: true
+    "@esbuild/linux-s390x":
+      optional: true
+    "@esbuild/linux-x64":
+      optional: true
+    "@esbuild/netbsd-x64":
+      optional: true
+    "@esbuild/openbsd-x64":
+      optional: true
+    "@esbuild/sunos-x64":
+      optional: true
+    "@esbuild/win32-arm64":
+      optional: true
+    "@esbuild/win32-ia32":
+      optional: true
+    "@esbuild/win32-x64":
+      optional: true
+  bin:
+    esbuild: bin/esbuild
+  checksum: 861fa8eb2428e8d6521a4b7c7930139e3f45e8d51a86985cc29408172a41f6b18df7b3401e7e5e2d528cdf83742da601ddfdc77043ddc4f1c715a8ddb2d8a255
+  languageName: node
+  linkType: hard
+
 "escalade@npm:^3.1.1":
   version: 3.1.1
   resolution: "escalade@npm:3.1.1"
@@ -18328,7 +18639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@npm:2.3.2, fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
+"fsevents@npm:2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -18349,7 +18660,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A^2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.2#optional!builtin<compat/fsevents>":
+"fsevents@npm:^2.3.2, fsevents@npm:~2.3.2, fsevents@npm:~2.3.3":
+  version: 2.3.3
+  resolution: "fsevents@npm:2.3.3"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 4c1ade961ded57cdbfbb5cac5106ec17bc8bccd62e16343c569a0ceeca83b9dfef87550b4dc5cbb89642da412b20c5071f304c8c464b80415446e8e155a038c0
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
@@ -18364,6 +18685,15 @@ __metadata:
   dependencies:
     nan: "npm:^2.12.1"
     node-pre-gyp: "npm:^0.12.0"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"fsevents@patch:fsevents@npm%3A^2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.2#optional!builtin<compat/fsevents>, fsevents@patch:fsevents@npm%3A~2.3.3#optional!builtin<compat/fsevents>":
+  version: 2.3.3
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.3#optional!builtin<compat/fsevents>::version=2.3.3&hash=df0bf1"
+  dependencies:
+    node-gyp: "npm:latest"
   conditions: os=darwin
   languageName: node
   linkType: hard
@@ -18632,7 +18962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-tsconfig@npm:^4.7.0":
+"get-tsconfig@npm:^4.7.0, get-tsconfig@npm:^4.7.2":
   version: 4.7.2
   resolution: "get-tsconfig@npm:4.7.2"
   dependencies:
@@ -24185,9 +24515,9 @@ __metadata:
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
-    "@metamask-institutional/custody-controller": "npm:^0.2.20"
+    "@metamask-institutional/custody-controller": "npm:^0.2.22"
     "@metamask-institutional/custody-keyring": "npm:^1.0.10"
-    "@metamask-institutional/extension": "npm:^0.3.13"
+    "@metamask-institutional/extension": "npm:^0.3.16"
     "@metamask-institutional/institutional-features": "npm:^1.2.11"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
@@ -24197,14 +24527,14 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^5.1.2"
-    "@metamask/assets-controllers": "npm:^24.0.0"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A24.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-24.0.0-dfef136464.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
     "@metamask/controller-utils": "npm:^8.0.1"
-    "@metamask/design-tokens": "npm:^2.0.3"
+    "@metamask/design-tokens": "npm:^2.1.1"
     "@metamask/desktop": "npm:^0.3.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
@@ -24216,12 +24546,12 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-snap-keyring": "npm:^2.1.2"
-    "@metamask/eth-token-tracker": "npm:^7.0.1"
+    "@metamask/eth-token-tracker": "npm:^7.0.2"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
-    "@metamask/ethjs": "npm:^0.5.1"
-    "@metamask/ethjs-contract": "npm:^0.3.4"
-    "@metamask/ethjs-query": "npm:^0.5.3"
+    "@metamask/ethjs": "npm:^0.6.0"
+    "@metamask/ethjs-contract": "npm:^0.4.1"
+    "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^13.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -24375,7 +24705,7 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-json-rpc-filters: "npm:^6.0.0"
     eth-lattice-keyring: "npm:^0.12.4"
-    eth-method-registry: "npm:^3.0.0"
+    eth-method-registry: "npm:^4.0.0"
     eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
     ethereum-ens-network-map: "npm:^1.0.2"
@@ -24502,6 +24832,7 @@ __metadata:
     terser: "npm:^5.7.0"
     through2: "npm:^4.0.2"
     ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.7.1"
     ttest: "npm:^2.1.1"
     typescript: "npm:~5.3.3"
     unicode-confusables: "npm:^0.1.1"
@@ -32988,6 +33319,22 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: ea036bec1dd024e309939ffd49fda7a351c0e87a1b8eb049570dd119d447250e2c56e0e6c00554e8205760e7417793fdebff752a46e573fbe07d4f375502a5b2
+  languageName: node
+  linkType: hard
+
+"tsx@npm:^4.7.1":
+  version: 4.7.1
+  resolution: "tsx@npm:4.7.1"
+  dependencies:
+    esbuild: "npm:~0.19.10"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.2"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: 3a462b595f31ae58b31f9c6e8c450577dc87660b1225012bd972b6b58d7d2f6c4034728763ebc53bb731acff68de8b0fa50586e4c1ec4c086226f1788ccf9b7d
   languageName: node
   linkType: hard
 
