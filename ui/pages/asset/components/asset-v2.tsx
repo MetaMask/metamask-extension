@@ -151,11 +151,9 @@ const AssetV2 = ({
   useEffect(() => {
     setMarketData(undefined);
 
-    // TODO: Consider exposing HTTP request through a controller
     fetchWithCache({
       url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
-      // cacheOptions: { cacheRefreshTime: MINUTE },
-      cacheOptions: { cacheRefreshTime: 0 },
+      cacheOptions: { cacheRefreshTime: MINUTE },
       functionName: 'GetAssetMarketData',
     })
       .catch(() => null)
