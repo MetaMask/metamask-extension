@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Bu talebi onaylarsanız birisi Blur üzerinde yer alan varlıklarınızı çalabilir."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Bu talep bir hatadan dolayı güvenlik sağlayıcısı tarafından doğrulanmadı. Dikkatli bir şekilde ilerleyin."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Saklayıcı kurum tokenini değiştir"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL adresi"
   },
   "custodyDeeplinkDescription": {
     "message": "İşlemi $1 uygulamasında onaylayın. Gerekli tüm saklayıcı kurum onayları gerçekleştikten sonra işlem tamamlanacaktır. Durum için $1 kontrolünüzü yapın."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "Bildirimler"
   },
-  "notifications10ActionText": {
-    "message": "Ayarlarda ziyaret et",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Geliştirilmiş token algılama şu anda Ethereum Ana Ağı, Polygon, BSC ve Avalanche ağlarında mevcut. Daha fazlası gelecek!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Token algılama özelliği varsayılan olarak AÇIK konumdadır. Ancak bunu Ayarlar bölümünden devre dışı bırakabilirsin."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Tokenleri üçüncü taraf belirteç listelerinden alırız. İkiden fazla token listesinde listelenen tokenler otomatik olarak algılanır."
-  },
-  "notifications10Title": {
-    "message": "Geliştirilmiş token algılama burada"
-  },
-  "notifications11Description": {
-    "message": "Tokenler herkes tarafından oluşturulabilir ve yinelenen adlara sahip olabilir. Güvenmediğiniz veya etkileşimde bulunmadığınız bir token görürseniz ona güvenmemek daha güvenlidir."
-  },
-  "notifications11Title": {
-    "message": "Dolandırıcılıklar ve güvenlik riskleri"
-  },
-  "notifications12ActionText": {
-    "message": "Karanlık modu etkinleştir"
-  },
-  "notifications12Description": {
-    "message": "Uzantıda karanlık mod sonunda burada! Bunu açmak için Ayarlar -> Deneysel kısmına git ve ekran seçeneklerinden birini seç: Aydınlık, Karanlık, Sistem."
-  },
-  "notifications12Title": {
-    "message": "Karanlık mod mu? Şimdi karanlık mod! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Özel ağ listesini göster"
-  },
-  "notifications13Description": {
-    "message": "Artık şu popüler özel ağları kolayca ekleyebilirsin: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm ve Polygon! Bu özelliği etkinleştirmek için Ayarlar -> Deneysel kısmına gidip \"Özel ağ listesini göster\" seçeneğini aç!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Popüler Ağları Ekle"
-  },
-  "notifications14ActionText": {
-    "message": "Yedekleme ayarlarını göster"
-  },
-  "notifications14Description": {
-    "message": "Ekim aynın başlarında 3Box veri özelliğini devre dışı bırakıyoruz. Cüzdanınızı manuel olarak yedeklemek ve geri yüklemek için Gelişmiş Ayarlar bölümünde \"Şimdi yedekle\" düğmesini kullanın.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Box Sonlanımı"
-  },
-  "notifications15Description": {
-    "message": "Sizin tarafınızdan yapılması gereken herhangi bir işlem yoktur, yani cüzdanınızı her zaman olduğu gibi kullanmaya devam edin. Birleştirme döneminde olası dolandırıcılıklara karşı dikkatli olun.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Ethereum Birleştirmesi başladı!"
-  },
-  "notifications18ActionText": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Kötü amaçlı bir talep almış olabileceğinizde üçüncü taraflardan uyarı alın.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Talepleri onaylamadan önce her zaman kendiniz gerekli özeni gösterdiğinizden emin olun.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea bu özelliğin ilk sağlayıcısıdır. Daha fazla sağlayıcı çok yakında!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Güvenlik uyarıları ile güvende kalın"
-  },
-  "notifications19ActionText": {
-    "message": "NFT otomatik algılamayı etkinleştir"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Başlayabilmenizin iki yolu:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Şu anda sadece ERC-721'i destekliyoruz.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "NFT'lerinizi manuel olarak ekleyin veya Ayarlar > Deneysel alanından otomatik NFT algılama özelliğini açın.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "NFT'lerinizi eskiden hiç olmadığı gibi görün"
-  },
-  "notifications1Description": {
-    "message": "MetaMask Mobil kullanıcıları artık mobil cüzdanları içinde tokenler ile swap gerçekleştirebilir. Mobil uygulamayı alıp swap işlemi yapmaya başlamak için QR kodunu tarayın.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Mobilde swap burada!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Daha fazla bilgi",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Bağlantı Sorunları Yaşayan Ledger ve Firefox Kullanıcıları",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Deneyin"
-  },
-  "notifications21Description": {
-    "message": "Kullanımı daha kolay ve daha hızlı olması için MetaMask uzantısındaki Swap'ları güncelledik.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "İşte karşınızda yeni ve yenilenmiş Swap'lar!"
-  },
-  "notifications22ActionText": {
-    "message": "Anladım"
-  },
-  "notifications22Description": {
-    "message": "💡 Bulmak için genel menüye veya hesap menüsüne tıklayın!"
-  },
-  "notifications22Title": {
-    "message": "Hesap bilgilerinizi veya blok gezgini URL adresini mi arıyorsunuz?"
-  },
-  "notifications23ActionText": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Ethereum Ana Ağında Blockaid tarafından desteklenen güvenlik uyarıları ile gizliliğinizi korumaya devam ederken bilinen dolandırıcılıklardan uzak durun."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Talepleri onaylamadan önce her zaman kendiniz gerekli özeni gösterin."
-  },
-  "notifications23Title": {
-    "message": "Güvenlik uyarıları ile güvende kalın"
-  },
   "notifications24ActionText": {
     "message": "Anladım"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Ağa göre gelişmiş gaz ücretleri"
-  },
-  "notifications3ActionText": {
-    "message": "Daha fazla bilgi",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "MetaMask en iyi güvenlik uygulamalarında güncel kalın ve resmi MetaMask desteğinden en son güvenlik ipuçlarını alın.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Güvende kalın",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Swap işlemlerine başlayın",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Doğrudan cüzdanınızdan token swap'larında en iyi fiyatları alın. MetaMask artık Binance Smart Chain'deki birden fazla merkeziyetsiz borsa toplayıcısı ve profesyonel piyasa oluşturucuyu birbirine bağlıyor.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Binance Smart Chain'de Swap İşlemi Yapın",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "\"Anahtar Cümleniz\" artık \"Gizli Kurtarma İfadeniz\" oldu",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Chrome 91 sürümünden itibaren Ledger desteğimize olanak tanıyan API (U2F) artık donanım cüzdanları desteklememektedir. MetaMask, Ledger cihazınızı Ledger Live masaüstü uygulaması üzerinden bağlamanıza olanak tanıyan yeni bir Ledger Live desteğini hayata geçirmiştir.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "MetaMask'te Ledger hesabınız ile etkileşim kurarken yeni bir sekme açılacak ve sizden Ledger Live uygulamasını açmanız istenecektir. Uygulama açıldıktan sonra sizden MetaMask hesabınızla bir WebSocket bağlantısı kurulmasına izin vermeniz istenecektir. Hepsi bu!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Ayarlar > Gelişmiş > Ledger Live Kullan seçeneğine tıklayarak Ledger Live desteğini etkinleştirebilirsiniz.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Chrome kullanıcıları için Ledger desteği",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask 10.1.0 sürümü, Ledger cihazları kullanıldığında EIP-1559 işlemleri için yeni destek içerir.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "İşlemleri Ethereum Ana Ağında tamamlamak için Ledger cihazınızın son donanım yazılımına sahip olduğundan emin olun.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger donanım yazılımı güncellemesi",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Ayarlar / Gelişmiş kısmına git",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Ledger bağlantı iyileştirmesi",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Akıllı sözleşme işlemlerini onaylarken \"Veri\" sekmesinde size artık daha fazla bilgi sunuyoruz."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Daha güvenli ve bilgiye dayalı kararlar vermenize yardımcı olmak için artık onaylamadan önce işleminizin ayrıntılarını daha iyi anlayabilir ve işlem adresini adres defterinize çok daha kolay ekleyebilirsiniz."
-  },
-  "notifications9Title": {
-    "message": "👓 İşlemlerin okunmasını daha kolay hale getiriyoruz."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox artık U2F'yi desteklemiyor, bu yüzden Ledger Firefox'ta Metamask ile çalışmayacaktır. Onun yerine MetaMask'i Google Chrome'da deneyin.",

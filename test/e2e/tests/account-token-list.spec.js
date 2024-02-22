@@ -2,27 +2,24 @@ const { strict: assert } = require('assert');
 const {
   withFixtures,
   defaultGanacheOptions,
-  unlockWallet,
+  logInWithBalanceValidation,
 } = require('../helpers');
+
 const FixtureBuilder = require('../fixture-builder');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Settings', function () {
-  const smartContract = SMART_CONTRACTS.ERC1155;
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder().build(),
-        defaultGanacheOptions,
-        smartContract,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="home__asset-tab"]');
-        const tokenValue = '0 ETH';
+        const tokenValue = '25 ETH';
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
         );
@@ -30,10 +27,10 @@ describe('Settings', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.multichain-account-list-item .currency-display-component__text',
+          '.multichain-account-list-item .multichain-account-list-item__avatar-currency .currency-display-component__text',
         );
 
-        assert.equal(await accountTokenValue.getText(), '0', 'ETH');
+        assert.equal(await accountTokenValue.getText(), '25', 'ETH');
       },
     );
   });
@@ -41,14 +38,12 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder().build(),
-        defaultGanacheOptions,
-        smartContract,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -65,18 +60,16 @@ describe('Settings', function () {
         );
         await driver.clickElement('[data-testid="home__asset-tab"]');
 
-        const tokenValue = '0 ETH';
         const tokenListAmount = await driver.findElement(
-          '[data-testid="multichain-token-list-item-value"]',
+          '.eth-overview__primary-container',
         );
-        assert.equal(await tokenListAmount.getText(), tokenValue);
-
+        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.multichain-account-list-item .currency-display-component__text',
+          '.multichain-account-list-item .multichain-account-list-item__asset',
         );
 
-        assert.equal(await accountTokenValue.getText(), '0', 'ETH');
+        assert.equal(await accountTokenValue.getText(), '$42,500.00USD');
       },
     );
   });

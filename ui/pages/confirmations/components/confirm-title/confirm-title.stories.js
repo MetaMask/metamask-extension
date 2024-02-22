@@ -3,7 +3,7 @@ import README from './README.mdx';
 import ConfirmTitle from './confirm-title';
 
 export default {
-  title: 'Components/App/ConfirmTitle',
+  title: 'Confirmations/Components/ConfirmTitle',
 
   component: ConfirmTitle,
   parameters: {

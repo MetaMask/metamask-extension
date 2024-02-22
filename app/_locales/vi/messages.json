@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên Blur của bạn."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Do có lỗi, yêu cầu này đã không được nhà cung cấp dịch vụ bảo mật xác minh. Hãy thực hiện cẩn thận."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Thay thế token lưu ký"
-  },
-  "custodyApiUrl": {
-    "message": "URL API $1"
   },
   "custodyDeeplinkDescription": {
     "message": "Chấp thuận giao dịch trong ứng dụng $1. Sau khi đã chấp thuận tất cả hình thức lưu ký bắt buộc, giao dịch sẽ hoàn tất. Kiểm tra ứng dụng $1 của bạn để biết trạng thái."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "Thông báo"
   },
-  "notifications10ActionText": {
-    "message": "Xem trong phần Cài đặt",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Tính năng phát hiện token cải tiến hiện đã có sẵn trên mạng Ethereum Mainnet, Polygon, BSC và Avalanche. Sẽ sớm có thêm nhiều mạng khác!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Theo mặc định, tính năng phát hiện token hiện đang TẮT. Bạn có thể bật tính năng này trong phần Cài đặt."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Chúng tôi lấy token từ các danh sách token của bên thứ ba. Những token được liệt kê trong 2 danh sách token trở lên sẽ tự động được phát hiện."
-  },
-  "notifications10Title": {
-    "message": "Tính năng phát hiện token cải tiến đã ra mắt"
-  },
-  "notifications11Description": {
-    "message": "Token có thể được tạo bởi bất kỳ ai và có thể có tên trùng lặp. Nếu bạn thấy một token mà bạn không tin tưởng hoặc chưa từng tương tác - để đảm bảo an toàn, đừng tin tưởng token đó."
-  },
-  "notifications11Title": {
-    "message": "Rủi ro về bảo mật và lừa đảo"
-  },
-  "notifications12ActionText": {
-    "message": "Bật chế độ tối"
-  },
-  "notifications12Description": {
-    "message": "Tiện ích mở rộng Chế độ tối hiện đã ra mắt! Để bật, hãy vào Cài đặt > Thử nghiệm và chọn một trong các tùy chọn hiển thị: Sáng, Tối, Hệ thống."
-  },
-  "notifications12Title": {
-    "message": "Dùng chế độ tối khi nào? Ngay bây giờ! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Hiển thị danh sách mạng tùy chỉnh"
-  },
-  "notifications13Description": {
-    "message": "Giờ đây, bạn có thể dễ dàng thêm các mạng tùy chỉnh phổ biến sau: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm và Polygon! Để bật tính năng này, hãy chuyển đến Cài đặt > Thử nghiệm và bật \"Hiển thị danh sách mạng tùy chỉnh\"!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Thêm các mạng phổ biến"
-  },
-  "notifications14ActionText": {
-    "message": "Hiển thị chế độ cài đặt sao lưu"
-  },
-  "notifications14Description": {
-    "message": "Chúng tôi sẽ ngừng sử dụng tính năng dữ liệu 3Box vào đầu tháng 10. Để sao lưu và khôi phục ví của bạn theo cách thủ công, hãy sử dụng nút \"Sao lưu ngay\" trong phần Cài đặt nâng cao.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Ngừng sử dụng 3Box"
-  },
-  "notifications15Description": {
-    "message": "Bạn không cần thực hiện bất kỳ hành động nào, vì vậy hãy tiếp tục sử dụng ví của bạn như bình thường. Hãy đề phòng những trò gian lận có thể xảy ra xung quanh quá trình Hợp nhất.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Sự kiện hợp nhất Ethereum Merge đã được triển khai!"
-  },
-  "notifications18ActionText": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Nhận cảnh báo từ bên thứ ba khi bạn có thể đã nhận được một yêu cầu độc hại.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Nhớ luôn tự thẩm định trước khi chấp thuận bất kỳ yêu cầu nào.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea là nhà cung cấp đầu tiên cho tính năng này. Sắp có thêm nhiều nhà cung cấp khác!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Đảm bảo an toàn với cảnh báo bảo mật"
-  },
-  "notifications19ActionText": {
-    "message": "Bật tự động phát hiện NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Hai cách để bạn có thể bắt đầu:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Hiện chúng tôi chỉ hỗ trợ ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Thêm NFT của bạn theo cách thủ công hoặc bật tính năng tự động phát hiện NFT trong phần Cài đặt > Thử nghiệm.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Xem NFT của bạn theo cách mới mẻ nhất"
-  },
-  "notifications1Description": {
-    "message": "Giờ đây, người dùng MetaMask trên điện thoại di động có thể hoán đổi token trong ví di động của họ. Quét mã QR để tải ứng dụng di động và bắt đầu hoán đổi.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Tính năng hoán đổi trên điện thoại di động đã sẵn sàng!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Tìm hiểu thêm",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Người dùng Ledger và Firefox gặp sự cố kết nối",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Thử ngay"
-  },
-  "notifications21Description": {
-    "message": "Chúng tôi đã cập nhật Hoán đổi trong tiện ích mở rộng MetaMask để sử dụng dễ dàng và nhanh hơn.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Giới thiệu chức năng Hoán đổi mới cải tiến!"
-  },
-  "notifications22ActionText": {
-    "message": "Đã hiểu"
-  },
-  "notifications22Description": {
-    "message": "💡 Chỉ cần nhấp vào trình đơn chung hoặc trình đơn tài khoản để tìm chúng!"
-  },
-  "notifications22Title": {
-    "message": "Muốn tìm thông tin tài khoản của bạn hoặc URL của trình khám phá khối?"
-  },
-  "notifications23ActionText": {
-    "message": "Bật cảnh báo bảo mật"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Tránh xa các hành vi gian lận đã biết trong khi vẫn bảo vệ quyền riêng tư của bạn với các cảnh báo bảo mật do Blockaid cung cấp trên Ethereum Mainnet."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Luôn tự thẩm định trước khi chấp thuận các yêu cầu."
-  },
-  "notifications23Title": {
-    "message": "Đảm bảo an toàn với cảnh báo bảo mật"
-  },
   "notifications24ActionText": {
     "message": "Đã hiểu"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Phí gas nâng cao theo mạng"
-  },
-  "notifications3ActionText": {
-    "message": "Đọc thêm",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Luôn cập nhật các phương pháp bảo mật tốt nhất của MetaMask và nhận các mẹo mới nhất về bảo mật từ nhóm hỗ trợ chính thức của MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Luôn bảo mật",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Bắt đầu hoán đổi",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Nhận giá hoán đổi token tốt nhất ngay trong ví của bạn. Giờ đây, MetaMask sẽ kết nối bạn với nhiều nền tảng tổng hợp thanh khoản của sàn giao dịch phi tập trung và nhà tạo lập thị trường chuyên nghiệp trên Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Hoán đổi trên Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Từ giờ, \"Cụm từ khôi phục\" sẽ được gọi là \"Cụm từ khôi phục bí mật.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Kể từ phiên bản Chrome 91, API từng cho phép hỗ trợ Ledger (U2F) của chúng tôi không còn hỗ trợ ví cứng nữa. MetaMask đã triển khai một tính năng hỗ trợ Ledger Live mới cho phép bạn tiếp tục kết nối với thiết bị Ledger của mình thông qua ứng dụng Ledger Live trên máy tính.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Khi tương tác với tài khoản Ledger của bạn trong MetaMask, một tab mới sẽ mở ra và bạn sẽ được yêu cầu mở ứng dụng Ledger Live.  Khi ứng dụng này mở ra, bạn sẽ được yêu cầu cho phép kết nối WebSocket với tài khoản MetaMask của mình.  Đơn giản vậy thôi!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Bạn có thể kích hoạt tính năng hỗ trợ Ledger Live bằng cách nhấp vào phần Cài đặt > Nâng cao > Sử dụng Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Thông tin cập nhật về việc hỗ trợ Ledger cho người dùng Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 bao gồm chức năng hỗ trợ mới cho các giao dịch EIP-1559 khi sử dụng thiết bị Ledger.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Để hoàn thành các giao dịch trên Ethereum Mainnet, hãy chắc chắn thiết bị Ledger của bạn đã được cập nhật lên phiên bản phần mềm mới nhất.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Cập nhật phiên bản phần mềm Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Đến Cài đặt > Nâng cao",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Cải thiện kết nối Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Giờ đây chúng tôi sẽ cung cấp cho bạn thêm nhiều thông tin chi tiết hơn trong thẻ \"Dữ liệu\" khi xác nhận các giao dịch hợp đồng thông minh."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Giờ đây bạn có thể hiểu rõ hơn về các chi tiết trong giao dịch của mình và dễ dàng thêm địa chỉ giao dịch vào sổ địa chỉ, giúp bạn đưa ra những quyết định an toàn và sáng suốt."
-  },
-  "notifications9Title": {
-    "message": "👓 Chúng tôi đang làm cho các giao dịch dễ đọc hơn."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox không còn hỗ trợ U2F nên Ledger sẽ không hoạt động với MetaMask trên Firefox. Thay vào đó hãy dùng thử MetaMask trên Google Chrome.",

@@ -73,6 +73,7 @@ describe('Signature Approved Event @no-mmi', function () {
         await validateContractDetails(driver);
         await clickSignOnSignatureConfirmation(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'MetaMask',
           signature_type: 'eth_signTypedData_v4',
@@ -83,6 +84,7 @@ describe('Signature Approved Event @no-mmi', function () {
           security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
+
         assert.deepStrictEqual(events[1].properties, {
           account_type: 'MetaMask',
           signature_type: 'eth_signTypedData_v4',
@@ -90,7 +92,6 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -138,7 +139,6 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -185,7 +185,6 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -232,7 +231,6 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
@@ -288,7 +286,6 @@ describe('Signature Approved Event @no-mmi', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          security_alert_reason: 'NotApplicable',
           security_alert_response: 'NotApplicable',
         });
       },
