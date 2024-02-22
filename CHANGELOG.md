@@ -39,7 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed "send max" ETH calculation issue to adjust for gas changes ([#22694](https://github.com/MetaMask/metamask-extension/pull/22694))
 - Fixed sign button color and updated deprecated components in SignatureRequestOriginalWarning for visual consistency ([#22741](https://github.com/MetaMask/metamask-extension/pull/22741))
 
-
 ## [11.10.0]
 ### Added
 - Added preset network image avatars in the 'Select a network' pop-up ([#22643](https://github.com/MetaMask/metamask-extension/pull/22643))
