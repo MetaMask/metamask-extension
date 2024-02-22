@@ -130,8 +130,8 @@ describe('Multiple transactions', function () {
         );
         assert.equal(isTransactionListEmpty, true);
 
-        // should not be present
-        await driver.assertElementNotPresent(
+        // The previous isTransactionListEmpty wait already serves as the guard here for the notPresent
+        await driver.waitForElementNotPresent(
           '.transaction-list__completed-transactions .activity-list-item',
         );
       },

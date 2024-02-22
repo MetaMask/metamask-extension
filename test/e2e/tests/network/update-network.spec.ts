@@ -24,6 +24,10 @@ const selectors = {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   networkNameInputField: '[data-testid="network-form-network-name"]',
+  networkNameInputFieldSetToEthereumMainnet: {
+    xpath:
+      "//input[@data-testid = 'network-form-network-name'][@value = 'Ethereum Mainnet']",
+  },
   rpcUrlInputField: '[data-testid="network-form-rpc-url"]',
   chainIdInputField: '[data-testid="network-form-chain-id"]',
   errorContainer: '.settings-tab__error',
@@ -99,14 +103,19 @@ describe('Update Network:', function (this: Suite) {
 
         await driver.clickElement(selectors.ethereumNetwork);
 
+        // Guard before waitForElementNotPresent -- wait for the network selection to complete
+        await driver.findElement(
+          selectors.networkNameInputFieldSetToEthereumMainnet,
+        );
+
         // Validate the Save,Cancel Delete button is not present for the default network
-        await driver.assertElementNotPresent(selectors.deleteButton);
-        await driver.assertElementNotPresent(selectors.cancelButton);
-        await driver.assertElementNotPresent(selectors.saveButton);
+        await driver.waitForElementNotPresent(selectors.deleteButton);
+        await driver.waitForElementNotPresent(selectors.cancelButton);
+        await driver.waitForElementNotPresent(selectors.saveButton);
 
         // Validate the error does not appear for updating the network name and chain id
         await driver.clickElement(selectors.generalOption);
-        await driver.assertElementNotPresent(selectors.errorContainer);
+        await driver.waitForElementNotPresent(selectors.errorContainer);
       },
     );
   });

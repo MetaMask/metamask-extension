@@ -62,9 +62,10 @@ describe('eth_subscribe', function () {
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
 
-        // Verify that the new block is not seen on the second dapp
-        await driver.assertElementNotPresent(
+        // A waitAtLeast guard of 1000ms is the best choice here
+        await driver.waitForElementNotPresent(
           '[data-testid="eth-subscribe-response"]',
+          1000,
         );
       },
     );

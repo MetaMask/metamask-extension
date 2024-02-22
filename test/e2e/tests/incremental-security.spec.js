@@ -169,8 +169,8 @@ describe('Incremental Security', function () {
 
         assert.strictEqual(balance, '$1,700.00');
 
-        // should not show a backup reminder
-        await driver.assertElementNotPresent('.backup-notification');
+        // The previous currencyDisplay wait already serves as the guard here for the notPresent
+        await driver.waitForElementNotPresent('.backup-notification');
       },
     );
   });

@@ -20,7 +20,11 @@ describe('Add snap account experimental settings', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        await driver.assertElementNotPresent({
+
+        // Guard before waitForElementNotPresent -- wait for the modal to appear
+        await driver.findElement({ text: 'Add a new account', tag: 'button' });
+
+        await driver.waitForElementNotPresent({
           text: 'Add account Snap',
           tag: 'button',
         });

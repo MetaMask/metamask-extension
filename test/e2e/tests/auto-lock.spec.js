@@ -33,7 +33,11 @@ describe('Auto-Lock Timer', function () {
           text: 'Lock time must be a number between 0 and 10080',
         });
         await autoLockTimerInput.fill(sixSecsInMins);
-        await driver.assertElementNotPresent('#autoTimeout-helper-text');
+
+        // A findElement guard is not possible here, because only this element changes,
+        // but a waitAtLeast of 100ms should be sufficient
+        await driver.waitForElementNotPresent('#autoTimeout-helper-text', 100);
+
         await driver.clickElement(
           '[data-testid="advanced-setting-auto-lock"] button',
         );

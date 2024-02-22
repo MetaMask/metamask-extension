@@ -47,7 +47,8 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
 
-          await driver.assertElementNotPresent('.send-v2__error-amount');
+          // A waitAtLeast guard of 100ms is the best choice here
+          await driver.waitForElementNotPresent('.send-v2__error-amount', 100);
 
           const amountMax = await driver.findClickableElement(
             '.send-v2__amount-max',
@@ -201,7 +202,9 @@ describe('Send ETH', function () {
           await driver.findElement(
             '.transaction-list__completed-transactions .activity-list-item',
           );
-          await driver.assertElementNotPresent(
+
+          // The previous findElement already serves as the guard here for the notPresent
+          await driver.waitForElementNotPresent(
             '.transaction-status-label--failed',
           );
         },
@@ -261,14 +264,18 @@ describe('Send ETH', function () {
             // initiates a send from the dapp
             await openDapp(driver);
             await driver.clickElement({ text: 'Send', tag: 'button' });
-            await driver.waitUntilXWindowHandles(3);
-            const windowHandles = await driver.getAllWindowHandles();
+            const windowHandles = await driver.waitUntilXWindowHandles(3);
             const extension = windowHandles[0];
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.Dialog,
               windowHandles,
             );
-            await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
+
+            // Guard before waitForElementNotPresent -- make sure the Dialog has loaded
+            await driver.findElement({ text: 'Estimated gas fee', tag: 'h6' });
+
+            await driver.waitForElementNotPresent({ text: 'Data', tag: 'li' });
+
             await driver.clickElement({ text: 'Edit', tag: 'button' });
             await driver.waitForSelector({
               text: '0.00021 ETH',
@@ -338,7 +345,11 @@ describe('Send ETH', function () {
               WINDOW_TITLES.Dialog,
               windowHandles,
             );
-            await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
+
+            // Guard before waitForElementNotPresent -- make sure the Dialog has loaded
+            await driver.findElement({ text: 'Estimated fee', tag: 'p' });
+
+            await driver.waitForElementNotPresent({ text: 'Data', tag: 'li' });
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.clickElement(

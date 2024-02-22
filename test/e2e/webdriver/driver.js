@@ -3,7 +3,6 @@ const { strict: assert } = require('assert');
 const {
   By,
   Condition,
-  error: webdriverError,
   Key,
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -259,9 +258,47 @@ class Driver {
     }, this.timeout);
   }
 
-  async waitForElementNotPresent(rawLocator) {
+  /**
+   * Wait until an element is absent.
+   *
+   * This function MUST have a guard to prevent a race condition. For example,
+   * when the previous step is to click a button that loads a new page, then of course
+   * during page load, the rawLocator element will be absent, even though it will appear
+   * a half-second later.
+   *
+   * The first choice for the guard is to use findElement before this statement on an element
+   * that will appear at the same time as the rawLocator element.
+   *
+   * The second choice for the guard is to use the waitAtLeast parameter.
+   *
+   * @param {*} rawLocator
+   * @param {number} waitAtLeast - The minimum milliseconds to wait before passing
+   * @param {number} timeout - The maximum milliseconds to wait before failing
+   */
+  async waitForElementNotPresent(
+    rawLocator,
+    waitAtLeast = 0,
+    timeout = this.timeout,
+  ) {
+    assert(timeout > waitAtLeast);
+    if (waitAtLeast > 0) {
+      await this.delay(waitAtLeast);
+    }
+
     const locator = this.buildLocator(rawLocator);
-    return await this.driver.wait(until.elementIsNotPresent(locator));
+
+    try {
+      await this.driver.wait(
+        until.elementIsNotPresent(locator),
+        timeout - waitAtLeast,
+      );
+    } catch (err) {
+      throw new Error(
+        `Found element ${JSON.stringify(
+          rawLocator,
+        )} that should not be present`,
+      );
+    }
   }
 
   async quit() {
@@ -383,19 +420,6 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
-  }
-
-  async assertElementNotPresent(rawLocator) {
-    let dataTab;
-    try {
-      dataTab = await this.findElement(rawLocator);
-    } catch (err) {
-      assert(
-        err instanceof webdriverError.NoSuchElementError ||
-          err instanceof webdriverError.TimeoutError,
-      );
-    }
-    assert.ok(!dataTab, 'Found element that should not be present');
   }
 
   async isElementPresent(rawLocator) {
