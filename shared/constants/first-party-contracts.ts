@@ -1,5 +1,5 @@
 import { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from './network';
 
 /**
  * A map of first-party contract names to their addresses on various chains.
