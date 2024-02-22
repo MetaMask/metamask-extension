@@ -91,11 +91,9 @@ function generateERC20TransferData({
     TOKEN_TRANSFER_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
-        Buffer.from(
-          encode(
-            ['address', 'uint256'],
-            [addHexPrefix(toAddress), addHexPrefix(amount)],
-          ),
+        encode(
+          ['address', 'uint256'],
+          [addHexPrefix(toAddress), addHexPrefix(amount)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
@@ -115,15 +113,9 @@ function generateERC721TransferData({
     NFT_TRANSFER_FROM_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
-        Buffer.from(
-          encode(
-            ['address', 'address', 'uint256'],
-            [
-              addHexPrefix(fromAddress),
-              addHexPrefix(toAddress),
-              BigInt(tokenId),
-            ],
-          ),
+        encode(
+          ['address', 'address', 'uint256'],
+          [addHexPrefix(fromAddress), addHexPrefix(toAddress), BigInt(tokenId)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
@@ -145,17 +137,15 @@ function generateERC1155TransferData({
     NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
-        Buffer.from(
-          encode(
-            ['address', 'address', 'uint256', 'uint256', 'bytes'],
-            [
-              addHexPrefix(fromAddress),
-              addHexPrefix(toAddress),
-              BigInt(tokenId),
-              BigInt(amount),
-              addHexPrefix(data),
-            ],
-          ),
+        encode(
+          ['address', 'address', 'uint256', 'uint256', 'bytes'],
+          [
+            addHexPrefix(fromAddress),
+            addHexPrefix(toAddress),
+            BigInt(tokenId),
+            BigInt(amount),
+            addHexPrefix(data),
+          ],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
