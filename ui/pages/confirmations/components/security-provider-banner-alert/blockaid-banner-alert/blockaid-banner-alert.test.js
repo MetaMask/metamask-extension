@@ -70,13 +70,13 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Errored}`, () => {
     const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
-            result_type: BlockaidResultType.Failed,
+            result_type: BlockaidResultType.Errored,
           },
         }}
       />,
@@ -140,13 +140,13 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
-  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.failed}"`, () => {
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.errored}"`, () => {
     const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
-            reason: BlockaidReason.failed,
+            reason: BlockaidReason.errored,
           },
         }}
       />,
@@ -248,14 +248,14 @@ describe('Blockaid Banner Alert', () => {
   });
 
   describe('when constructing the Blockaid Report URL', () => {
-    describe(`when result_type='${BlockaidResultType.Failed}'`, () => {
+    describe(`when result_type='${BlockaidResultType.Errored}'`, () => {
       it('should pass the classification as "error" and the resultType as "Error"', () => {
         const { getByRole } = renderWithProvider(
           <BlockaidBannerAlert
             txData={{
               securityAlertResponse: {
                 ...mockSecurityAlertResponse,
-                result_type: BlockaidResultType.Failed,
+                result_type: BlockaidResultType.Errored,
               },
             }}
           />,
@@ -276,7 +276,7 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams might take all your assets.',
       [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
-      [BlockaidReason.failed]:
+      [BlockaidReason.errored]:
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",

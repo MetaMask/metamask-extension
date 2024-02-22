@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IF
+  useSelector,
+} from 'react-redux';
 
 import { SeverityLevel } from '@metamask/snaps-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -13,6 +18,10 @@ import {
   getSubjectMetadataDeepEqual,
 } from '../selectors';
 import { getSnapName } from '../helpers/utils/util';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { deleteInterface } from '../store/actions';
+///: END:ONLY_INCLUDE_IF
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -26,6 +35,9 @@ const isAllowedTransactionTypes = (transactionType) =>
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const dispatch = useDispatch();
+  ///: END:ONLY_INCLUDE_IF
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
@@ -58,6 +70,17 @@ const useTransactionInsights = ({ txData }) => {
       setSelectedInsightSnapId(insightSnapIds[0]);
     }
   }, [insightSnapIds, selectedInsightSnapId, setSelectedInsightSnapId]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useEffect(() => {
+    return () => {
+      data?.map(
+        ({ response }) =>
+          response?.id && dispatch(deleteInterface(response.id)),
+      );
+    };
+  }, [data]);
+  ///: END:ONLY_INCLUDE_IF
 
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;
@@ -129,9 +152,9 @@ const useTransactionInsights = ({ txData }) => {
     if (promise.response?.severity === SeverityLevel.Critical) {
       const {
         snapId,
-        response: { content },
+        response: { id },
       } = promise;
-      warningsArr.push({ snapId, content });
+      warningsArr.push({ snapId, id });
     }
     return warningsArr;
   }, []);
