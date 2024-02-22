@@ -234,6 +234,7 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
+        const snapName = getSnapName(controllerMessenger, snapId);
         const { id: removeAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
         );
@@ -241,8 +242,22 @@ export const snapKeyringBuilder = (
         const learnMoreLink =
           'https://support.metamask.io/hc/en-us/articles/360057435092-How-to-remove-an-account-from-your-MetaMask-wallet';
 
+        const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
+          trackEvent({
+            event,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Snap,
+              snap_id: snapId,
+              snap_name: snapName,
+            },
+          });
+        };
+
+        // Since we use this in the finally, better to give it a default value if the controller call fails
+        let confirmationResult = false;
         try {
-          const confirmationResult = Boolean(
+          confirmationResult = Boolean(
             await controllerMessenger.call(
               'ApprovalController:addRequest',
               {
@@ -260,6 +275,10 @@ export const snapKeyringBuilder = (
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
 
+              // User should now see the "Successfuly removed account" page
+              trackSnapAccountEvent(
+                MetaMetricsEventName.RemoveSnapAccountSuccessViewed,
+              );
               // This isn't actually an error, but we show it as one for styling reasons
               await showError(
                 controllerMessenger,
@@ -273,10 +292,14 @@ export const snapKeyringBuilder = (
                   learnMoreLink,
                 },
               );
+
+              // User has clicked on "OK"
+              trackSnapAccountEvent(
+                MetaMetricsEventName.RemoveSnapAccountSuccessClicked,
+              );
             } catch (e) {
               const error = (e as Error).message;
 
-              const snapName = getSnapName(controllerMessenger, snapId);
               await showError(
                 controllerMessenger,
                 snapId,
@@ -300,9 +323,19 @@ export const snapKeyringBuilder = (
             }
           } else {
             await handleUserInput(confirmationResult);
+            trackSnapAccountEvent(
+              MetaMetricsEventName.RemoveSnapAccountCancelled,
+            );
+
             throw new Error('User denied account removal');
           }
         } finally {
+          trackSnapAccountEvent(
+            confirmationResult
+              ? MetaMetricsEventName.AccountRemoved
+              : MetaMetricsEventName.AccountRemoveFailed,
+          );
+
           controllerMessenger.call('ApprovalController:endFlow', {
             id: removeAccountApprovalId,
           });
