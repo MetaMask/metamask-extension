@@ -13,24 +13,20 @@ type Custodian = {
   version: number;
 };
 
-// TODO (Bernardo) - There can be multiple custodian with the same name, envName should be used instead
-export function findCustodianByDisplayName(
-  displayName: string,
+export function findCustodianByEnvName(
+  envName: string,
   custodians: Custodian[],
 ): Custodian | null {
-  const formatedDisplayName = displayName.toLowerCase();
+  const formatedEnvName = envName.toLowerCase();
 
   if (!custodians) {
     return null;
   }
 
   for (const custodian of custodians) {
-    const custodianName = custodian.name.toLowerCase();
+    const custodianName = custodian.envName.toLowerCase();
 
-    if (
-      custodianName.length !== 0 &&
-      formatedDisplayName.includes(custodianName)
-    ) {
+    if (custodianName.length !== 0 && formatedEnvName.includes(custodianName)) {
       return custodian;
     }
   }
