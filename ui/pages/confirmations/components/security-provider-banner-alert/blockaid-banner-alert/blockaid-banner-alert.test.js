@@ -81,7 +81,7 @@ describe('Blockaid Banner Alert', () => {
           securityAlertResponse: mockResponse,
         }}
       />,
-      configureStore({}),
+      configureStore(),
     );
 
     mockResponse.reason = BlockaidReason.notApplicable;
