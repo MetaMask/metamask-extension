@@ -4,16 +4,27 @@ const { parsePort } = require('./lib/parse-port');
 
 const DEFAULT_PORT = 9090;
 const prefix = '[mock-segment]';
+const options = {
+  verbose: false,
+};
+
+function asJson(o) {
+  return JSON.stringify(o, null, 2);
+}
 
 function onRequest(request, response, events) {
   console.log(`${prefix}: ${request.method} ${request.url}`);
   const eventDescriptions = events.map((event) => {
     if (event.type === 'track') {
-      return event.event;
+      return `${event.event}${
+        options.verbose ? ` ${asJson(event.properties)}` : ''
+      }`;
     } else if (event.type === 'page') {
       return event.name;
     }
-    return `[Unrecognized event type: ${event.type}]`;
+    return `[Unrecognized event type: ${event.type}]${
+      options.verbose ? ` ${asJson(event)}` : ''
+    }`;
   });
   console.log(`${prefix}: Events received: ${eventDescriptions.join(', ')}`);
 
@@ -56,6 +67,11 @@ const main = async () => {
       }
       port = parsePort(args[1]);
       args.splice(0, 2);
+    }
+
+    if (/^(--verbose|-v)$/u.test(args[0])) {
+      options.verbose = true;
+      args.splice(0, 1);
     }
   }
 
