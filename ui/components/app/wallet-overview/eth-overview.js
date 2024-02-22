@@ -34,6 +34,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
+  getShowFiatInTestnets,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -106,10 +107,15 @@ const EthOverview = ({ className, showAddress }) => {
     selectedAddress,
     shouldHideZeroBalanceTokens,
   );
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
 
-  const balanceToUse = TEST_NETWORKS.includes(currentNetwork?.nickname)
-    ? balance
-    : totalWeiBalance;
+  let balanceToUse = totalWeiBalance;
+
+  if (showFiat) {
+    balanceToUse = balance;
+  }
 
   const isSwapsChain = useSelector(getIsSwapsChain);
 
@@ -196,7 +202,10 @@ const EthOverview = ({ className, showAddress }) => {
                       ? PRIMARY
                       : SECONDARY
                   }
-                  showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
+                  showFiat={
+                    !showFiat ||
+                    !TEST_NETWORKS.includes(currentNetwork?.nickname)
+                  }
                   ethNumberOfDecimals={4}
                   hideTitle
                 />

@@ -25,7 +25,7 @@ import {
   exportAsFile,
 } from '../../../helpers/utils/export-utils';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -74,7 +74,7 @@ export default class AdvancedTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('advanced')),
+    getNumberOfSettingRoutesInTab(this.context.t, this.context.t('advanced')),
   )
     .fill(undefined)
     .map(() => {
