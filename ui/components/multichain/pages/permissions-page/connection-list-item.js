@@ -48,32 +48,38 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       padding={4}
       gap={4}
     >
-      {isSnap ? (
-        <SnapAvatar
-          snapId={connection.id}
-          badgeSize={IconSize.Xs}
-          avatarSize={IconSize.Md}
-          borderWidth={0}
-        />
-      ) : (
-        <BadgeWrapper
-          badge={
-            <Icon
-              name={IconName.Global}
-              color={IconColor.iconDefault}
-              size={IconSize.Xs}
-              borderColor={BackgroundColor.backgroundDefault}
-            />
-          }
-        >
-          <AvatarFavicon src={connection.iconUrl} />
-        </BadgeWrapper>
-      )}
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        style={{ alignSelf: 'center' }}
+      >
+        {isSnap ? (
+          <SnapAvatar
+            snapId={connection.id}
+            badgeSize={IconSize.Xs}
+            avatarSize={IconSize.Md}
+            borderWidth={0}
+          />
+        ) : (
+          <BadgeWrapper
+            badge={
+              <Icon
+                name={IconName.Global}
+                color={IconColor.iconDefault}
+                size={IconSize.Xs}
+                borderColor={BackgroundColor.backgroundDefault}
+              />
+            }
+          >
+            <AvatarFavicon src={connection.iconUrl} />
+          </BadgeWrapper>
+        )}
+      </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         width={BlockSize.FiveTwelfths}
-        style={{ flexGrow: '1' }}
+        style={{ alignSelf: 'center', flexGrow: '1' }}
       >
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
           {isSnap ? connection.packageName : getURLHost(connection.origin)}
