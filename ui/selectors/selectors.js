@@ -95,6 +95,7 @@ import {
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -893,6 +894,72 @@ export const getAnySnapUpdateAvailable = createSelector(
     return [...snapMap.values()].some((value) => value === true);
   },
 );
+
+/**
+ * Get a memoized version of the target subject metadata.
+ */
+export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
+  getTargetSubjectMetadata,
+  (interfaces) => interfaces,
+);
+
+/**
+ * Get the Snap interfaces from the redux state.
+ *
+ * @param state - Redux state object.
+ * @returns the Snap interfaces.
+ */
+const getInterfaces = (state) => state.metamask.interfaces;
+
+/**
+ * Input selector providing a way to pass a Snap interface ID as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param interfaceId - ID of a Snap interface.
+ * @returns ID of a Snap Interface that can be used as input selector.
+ */
+const selectInterfaceId = (_state, interfaceId) => interfaceId;
+
+/**
+ * Get a memoized version of the Snap interfaces.
+ */
+export const getMemoizedInterfaces = createDeepEqualSelector(
+  getInterfaces,
+  (interfaces) => interfaces,
+);
+
+/**
+ * Get a Snap Interface with a given ID.
+ */
+export const getInterface = createSelector(
+  [getMemoizedInterfaces, selectInterfaceId],
+  (interfaces, id) => interfaces[id],
+);
+
+/**
+ * Get a memoized version of a Snap interface with a given ID
+ */
+export const getMemoizedInterface = createDeepEqualSelector(
+  getInterface,
+  (snapInterface) => snapInterface,
+);
+
+/**
+ * Get the content from a Snap interface with a given ID.
+ */
+export const getInterfaceContent = createSelector(
+  [getMemoizedInterfaces, selectInterfaceId],
+  (interfaces, id) => interfaces[id]?.content,
+);
+
+/**
+ * Get a memoized version of the content from a Snap interface with a given ID.
+ */
+export const getMemoizedInterfaceContent = createDeepEqualSelector(
+  getInterfaceContent,
+  (content) => content,
+);
+
 ///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -1078,8 +1145,17 @@ export const getFullTxData = createDeepEqualSelector(
     }
     return getTransaction(state, transactionId);
   },
-  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
-  (txData, transaction, customTxParamsData) => {
+  (
+    _state,
+    _transactionId,
+    _status,
+    customTxParamsData,
+    hexTransactionAmount,
+  ) => ({
+    customTxParamsData,
+    hexTransactionAmount,
+  }),
+  (txData, transaction, { customTxParamsData, hexTransactionAmount }) => {
     let fullTxData = { ...txData, ...transaction };
     if (transaction && transaction.simulationFails) {
       fullTxData.simulationFails = { ...transaction.simulationFails };
@@ -1093,6 +1169,15 @@ export const getFullTxData = createDeepEqualSelector(
         },
       };
     }
+    if (hexTransactionAmount) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          value: hexTransactionAmount,
+        },
+      };
+    }
     return fullTxData;
   },
 );
@@ -1101,6 +1186,41 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
   (connectedSubjects) => {
     return Object.keys(connectedSubjects);
+  },
+);
+export const getConnectedSitesList = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  getAllConnectedAccounts,
+  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+    const sitesList = {};
+    connectedAddresses.forEach((connectedAddress) => {
+      connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
+        const siteKey = app.origin;
+
+        if (sitesList[siteKey]) {
+          sitesList[siteKey].addresses.push(connectedAddress);
+        } else {
+          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+        }
+      });
+    });
+
+    return sitesList;
+  },
+);
+
+export const getConnectedSnapsList = createDeepEqualSelector(
+  getSnapsList,
+  (snapsData) => {
+    const snapsList = {};
+
+    Object.values(snapsData).forEach((snap) => {
+      if (!snapsList[snap.name]) {
+        snapsList[snap.name] = snap;
+      }
+    });
+
+    return snapsList;
   },
 );
 
@@ -1269,6 +1389,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
@@ -1362,6 +1483,10 @@ export function getShowOutdatedBrowserWarning(state) {
 
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
+}
+
+export function getShowPermissionsTour(state) {
+  return state.metamask.showPermissionsTour;
 }
 
 export function getShowProductTour(state) {
@@ -1951,6 +2076,11 @@ export function getOnboardedInThisUISession(state) {
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
+
+export function getShowFiatInTestnets(state) {
+  const { showFiatInTestnets } = getPreferences(state);
+  return showFiatInTestnets;
+}
 
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion

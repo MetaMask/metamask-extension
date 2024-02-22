@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "如果您批准此请求，则有人可以窃取您列于Blur上的资产。"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "由于出现错误，安全提供程序无法验证此请求。请谨慎操作。"
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "替换托管代币"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "在 $1 应用程序中批准交易。一旦执行了所有所需的托管批准，交易即完成。在您的 $1 应用程序中查看状态。"

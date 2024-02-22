@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Bu talebi onaylarsanız birisi Blur üzerinde yer alan varlıklarınızı çalabilir."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Bu talep bir hatadan dolayı güvenlik sağlayıcısı tarafından doğrulanmadı. Dikkatli bir şekilde ilerleyin."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Saklayıcı kurum tokenini değiştir"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL adresi"
   },
   "custodyDeeplinkDescription": {
     "message": "İşlemi $1 uygulamasında onaylayın. Gerekli tüm saklayıcı kurum onayları gerçekleştikten sonra işlem tamamlanacaktır. Durum için $1 kontrolünüzü yapın."

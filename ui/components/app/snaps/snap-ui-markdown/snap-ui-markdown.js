@@ -29,8 +29,6 @@ const Paragraph = (props) => (
 const Link = ({ onClick, children, ...rest }) => (
   <ButtonLink
     {...rest}
-    marginTop={1}
-    marginBottom={1}
     onClick={onClick}
     externalLink
     size={ButtonLinkSize.Inherit}

@@ -719,6 +719,24 @@ const sendScreenToConfirmScreen = async (
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   if (process.env.MULTICHAIN) {
+    // check if element exists and click it
+    await driver
+      .findElement({
+        text: 'I understand',
+        tag: 'button',
+      })
+      .then(
+        (_found) => {
+          driver.clickElement({
+            text: 'I understand',
+            tag: 'button',
+          });
+        },
+        (error) => {
+          console.error('Element not found.', error);
+        },
+      );
+
     await driver.clickElement({
       text: 'Continue',
       tag: 'button',
@@ -790,10 +808,16 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
+  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
+    undefined,
+    {
+      minimumFractionDigits: 2,
+    },
+  );
+
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
+    text: `$ ${balance} USD`,
   });
 };
 

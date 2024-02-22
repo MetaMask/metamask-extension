@@ -14,7 +14,7 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Components/App/SignatureRequest',
+  title: 'Confirmations/Components/SignatureRequest',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 
   component: SignatureRequest,

@@ -352,9 +352,6 @@
   "alerts": {
     "message": "Alerts"
   },
-  "allConnections": {
-    "message": "All Connections"
-  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -364,6 +361,9 @@
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
+  "allPermissions": {
+    "message": "All Permissions"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -601,7 +601,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -799,6 +799,9 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connectAccount": {
+    "message": "Connect account"
   },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
@@ -1075,9 +1078,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Replace custodian token"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
@@ -2268,6 +2268,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "lavaDomeCopyWarning": {
+    "message": "For your safety, selecting this text is not available right now."
+  },
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
@@ -2994,6 +2997,18 @@
   "notificationsPetnamesTitle": {
     "message": "Suggested nicknames are here!"
   },
+  "notificationsStakingPortfolioActionText": {
+    "message": "Got it",
+    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioDescription": {
+    "message": "Now you can stake ETH and manage your rewards all in one place.",
+    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioTitle": {
+    "message": "Stake smarter in Portfolio",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
@@ -3478,6 +3493,19 @@
   },
   "permissions": {
     "message": "Permissions"
+  },
+  "permissionsPageEmptyContent": {
+    "message": "Nothing to see here"
+  },
+  "permissionsPageEmptySubContent": {
+    "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
+  },
+
+  "permissionsPageTourDescription": {
+    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
+  },
+  "permissionsPageTourTitle": {
+    "message": "Connected sites are now permissions"
   },
   "permissionsTitle": {
     "message": "Permissions"

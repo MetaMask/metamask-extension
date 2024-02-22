@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Karena terjadi kesalahan, permintaan ini tidak diverifikasi oleh penyedia keamanan. Lanjutkan dengan hati-hati."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Ganti token kustodian"
-  },
-  "custodyApiUrl": {
-    "message": "URL API $1"
   },
   "custodyDeeplinkDescription": {
     "message": "Setujui transaksi di aplikasi $1. Setelah semua persetujuan kustodian yang diperlukan telah dilakukan, transaksi akan selesai. Periksa status aplikasi $1 Anda."

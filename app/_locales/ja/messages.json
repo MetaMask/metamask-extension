@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "このリクエストを承認すると、Blurに登録されている資産を誰かに盗まれる可能性があります。"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "エラーが発生したため、このリクエストはセキュリティプロバイダーにより確認されませんでした。慎重に進めてください。"
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "カストディアントークンを置き換える"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "$1アプリでトランザクションを承認してください。必要なカストディ承認がすべて行われると、トランザクションが完了します。ステータスは$1アプリで確認できます。"

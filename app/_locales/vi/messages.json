@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, người khác có thể đánh cắp tài sản được niêm yết trên Blur của bạn."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Do có lỗi, yêu cầu này đã không được nhà cung cấp dịch vụ bảo mật xác minh. Hãy thực hiện cẩn thận."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Thay thế token lưu ký"
-  },
-  "custodyApiUrl": {
-    "message": "URL API $1"
   },
   "custodyDeeplinkDescription": {
     "message": "Chấp thuận giao dịch trong ứng dụng $1. Sau khi đã chấp thuận tất cả hình thức lưu ký bắt buộc, giao dịch sẽ hoàn tất. Kiểm tra ứng dụng $1 của bạn để biết trạng thái."

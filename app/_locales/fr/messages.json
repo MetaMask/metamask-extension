@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Si vous approuvez cette demande, quelqu’un pourrait s'emparer de vos actifs répertoriés sur Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "À la suite d’une erreur, cette demande n’a pas été vérifiée par le fournisseur de services de sécurité. Veuillez agir avec prudence."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Remplacer le jeton de dépôt"
-  },
-  "custodyApiUrl": {
-    "message": "URL DE L’API $1"
   },
   "custodyDeeplinkDescription": {
     "message": "Approuvez la transaction dans l’application $1. La transaction sera effectuée une fois que toutes les approbations de dépôt auront été obtenues. Vérifiez l’état de votre application $1."
