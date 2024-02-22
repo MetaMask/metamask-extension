@@ -4478,7 +4478,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-
 "@metamask/ethjs@npm:^0.5.0":
   version: 0.5.1
   resolution: "@metamask/ethjs@npm:0.5.1"
