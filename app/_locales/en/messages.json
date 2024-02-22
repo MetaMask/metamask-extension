@@ -806,6 +806,9 @@
   "connect": {
     "message": "Connect"
   },
+  "connectAccount": {
+    "message": "Connect account"
+  },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },

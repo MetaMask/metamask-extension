@@ -28,6 +28,9 @@ const render = (props = {}) => {
     metamask: {
       ...mockState.metamask,
     },
+    activeTab: {
+      origin: 'https://uniswap.org/',
+    },
   });
   const allProps = { ...DEFAULT_PROPS, ...props };
   return renderWithProvider(<AccountListItem {...allProps} />, store);
