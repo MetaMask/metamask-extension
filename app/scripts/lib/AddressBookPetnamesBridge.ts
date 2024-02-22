@@ -11,7 +11,10 @@ import {
   PetnameEntry,
 } from './AbstractPetnamesBridge';
 
-export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
+export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
+  never,
+  never
+> {
   #addressBookController: AddressBookController;
 
   constructor({
@@ -21,7 +24,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
   }: {
     addressBookController: AddressBookController;
     nameController: NameController;
-    messenger: PetnamesBridgeMessenger;
+    messenger: PetnamesBridgeMessenger<never, never>;
   }) {
     super({ isTwoWay: true, nameController, messenger });
 

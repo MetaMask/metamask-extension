@@ -3,7 +3,6 @@ import {
   NameController,
   NameType,
   NameOrigin,
-  NameStateChange,
 } from '@metamask/name-controller';
 import { InternalAccount } from '@metamask/keyring-api';
 import {
@@ -16,17 +15,16 @@ import {
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
 
-export type AccountIdentitiesPetNamesBridgeAllowedEvents =
-  | NameStateChange
-  | AccountsControllerChangeEvent;
-export type AccountIdentitiesPetNamesBridgeAllowedActions =
+export type AccountIdentitiesPetnamesBridgeEvents =
+  AccountsControllerChangeEvent;
+export type AccountIdentitiesPetnamesBridgeActions =
   AccountsControllerListAccountsAction;
 /**
  * A petnames bridge that uses the account identities from the preferences controller as the source.
  */
 export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge<
-  AccountIdentitiesPetNamesBridgeAllowedEvents,
-  AccountIdentitiesPetNamesBridgeAllowedActions
+  AccountIdentitiesPetnamesBridgeEvents,
+  AccountIdentitiesPetnamesBridgeActions
 > {
   constructor({
     nameController,
@@ -34,8 +32,8 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge<
   }: {
     nameController: NameController;
     messenger: PetnamesBridgeMessenger<
-      AccountIdentitiesPetNamesBridgeAllowedEvents,
-      AccountIdentitiesPetNamesBridgeAllowedActions
+      AccountIdentitiesPetnamesBridgeEvents,
+      AccountIdentitiesPetnamesBridgeActions
     >;
   }) {
     super({ isTwoWay: false, nameController, messenger });
