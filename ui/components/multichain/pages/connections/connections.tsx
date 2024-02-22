@@ -31,6 +31,7 @@ import {
   Text,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
+import { ConnectionContent } from './components/connection';
 import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
@@ -87,9 +88,8 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content>
-        {/* TODO: Replace null When accounts connected - create a separate component - Separate Ticket */}
 
-        {connectedSubjectsMetadata ? null : <NoConnectionContent />}
+        {connectedSubjectsMetadata ? <ConnectionContent /> : <NoConnectionContent />}
       </Content>
       <Footer>
         {/* TODO: When accounts connected - Two Separate Buttons - Separate Ticket */}
