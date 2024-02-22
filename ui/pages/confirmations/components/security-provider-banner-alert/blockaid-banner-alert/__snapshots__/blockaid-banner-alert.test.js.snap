@@ -1,5 +1,286 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Blockaid Banner Alert renders spinner and "Waiting [...]" when securityAlertResponse is loading 1`] = `
+<div>
+  <div
+    class="mm-box blockaid_banner__wrapper mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+  >
+    <div
+      class="spinner blockaid_banner__spinner"
+    >
+      <svg
+        class="lds-spinner"
+        height="100%"
+        preserveAspectRatio="xMidYMid"
+        style="background: none;"
+        viewBox="0 0 100 100"
+        width="100%"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <g
+          transform="rotate(0 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.9166666666666666s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(30 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.8333333333333334s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(60 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.75s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(90 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.6666666666666666s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(120 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.5833333333333334s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(150 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.5s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(180 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.4166666666666667s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(210 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.3333333333333333s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(240 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.25s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(270 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.16666666666666666s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(300 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="-0.08333333333333333s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+        <g
+          transform="rotate(330 50 50)"
+        >
+          <rect
+            fill="border-muted"
+            height="30"
+            rx="0"
+            ry="0"
+            width="10"
+            x="45"
+            y="0"
+          >
+            <animate
+              attributeName="opacity"
+              begin="0s"
+              dur="1s"
+              repeatCount="indefinite"
+              values="1;0"
+            />
+          </rect>
+        </g>
+      </svg>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-text-default"
+    >
+      Waiting for security alerts
+    </p>
+  </div>
+</div>
+`;
+
 exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertResponse.result_type is 'Malicious 1`] = `
 <div
   class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
@@ -572,287 +853,6 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
         </span>
       </p>
     </div>
-  </div>
-</div>
-`;
-
-exports[`Blockaid Banner Alert should render spinner when securityAlertResponse is loading 1`] = `
-<div>
-  <div
-    class="mm-box blockaid_banner__wrapper mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--rounded-sm mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-  >
-    <div
-      class="spinner blockaid_banner__spinner"
-    >
-      <svg
-        class="lds-spinner"
-        height="100%"
-        preserveAspectRatio="xMidYMid"
-        style="background: none;"
-        viewBox="0 0 100 100"
-        width="100%"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-      >
-        <g
-          transform="rotate(0 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.9166666666666666s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(30 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.8333333333333334s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(60 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.75s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(90 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.6666666666666666s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(120 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.5833333333333334s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(150 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.5s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(180 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.4166666666666667s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(210 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.3333333333333333s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(240 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.25s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(270 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.16666666666666666s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(300 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="-0.08333333333333333s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-        <g
-          transform="rotate(330 50 50)"
-        >
-          <rect
-            fill="border-muted"
-            height="30"
-            rx="0"
-            ry="0"
-            width="10"
-            x="45"
-            y="0"
-          >
-            <animate
-              attributeName="opacity"
-              begin="0s"
-              dur="1s"
-              repeatCount="indefinite"
-              values="1;0"
-            />
-          </rect>
-        </g>
-      </svg>
-    </div>
-    <p
-      class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-text-default"
-    >
-      Waiting for security alerts
-    </p>
   </div>
 </div>
 `;

@@ -100,7 +100,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
       >
         <Spinner
           className="blockaid_banner__spinner"
-          color={BorderColor.borderMuted}
+          color="var(--color-icon-default)"
         />
         <Text color={TextColor.textDefault} marginLeft={2}>
           {t('blockaidAlertLoading')}
