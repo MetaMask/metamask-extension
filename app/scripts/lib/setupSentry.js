@@ -85,6 +85,7 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    showPermissionsTour: true,
     showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
