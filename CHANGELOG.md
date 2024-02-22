@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.11.0]
+### Added
+- Added a 'What's New' popup for Petnames feature ([#22780](https://github.com/MetaMask/metamask-extension/pull/22780))
+- Added a method to control synchronization of Petname entries ([#22600](https://github.com/MetaMask/metamask-extension/pull/22600))
+- Implemented automatic setting of account identities as default petnames ([#21956](https://github.com/MetaMask/metamask-extension/pull/21956))
+- Enhanced the personal sign page with the addition of titles and descriptions ([#22749](https://github.com/MetaMask/metamask-extension/pull/22749))
+- Updated the Account Details view with better spacing for a cleaner look ([#22775](https://github.com/MetaMask/metamask-extension/pull/22775))
+- Added a new hook for improved token name display ([#22734](https://github.com/MetaMask/metamask-extension/pull/22734))
+- Added option to cancel signing transactions from the activity list ([#22676](https://github.com/MetaMask/metamask-extension/pull/22676))
+
+### Changed
+- Enhanced Petnames UI with new categories, updated descriptions, and visual improvements ([#22772](https://github.com/MetaMask/metamask-extension/pull/22772))
+- Integrated the Identicon directly within the Name component ([#22737](https://github.com/MetaMask/metamask-extension/pull/22737))
+- Improved security alerts to better handle incorrect warnings ([#22742](https://github.com/MetaMask/metamask-extension/pull/22742))
+- Security alerts now in Security & Privacy settings for improved accessibility ([#22813](https://github.com/MetaMask/metamask-extension/pull/22813))
+- Improved warning for mismatched currency symbols on custom networks ([#22648](https://github.com/MetaMask/metamask-extension/pull/22648))
+- Improved network selection to show all custom networks, even with the same ID but different URLs ([#22693](https://github.com/MetaMask/metamask-extension/pull/22693))
+- Updated the connections icon to display the connected dapp's icon ([#22634](https://github.com/MetaMask/metamask-extension/pull/22634))
+- Updated transaction management ([#22674](https://github.com/MetaMask/metamask-extension/pull/22674))
+
+### Fixed
+- Fixed a 2FA login issue on Battle.net by disabling MetaMask for the site ([#20396](https://github.com/MetaMask/metamask-extension/pull/20396))
+- Fixed account name display in Account Details and Receive List ([#22844](https://github.com/MetaMask/metamask-extension/pull/22844))
+- Disabled swaps for Snap accounts ([#22731](https://github.com/MetaMask/metamask-extension/pull/22731))
+- Fixed display issue for manually imported IPFS NFTs with IPFS gateway enabled ([#22627](https://github.com/MetaMask/metamask-extension/pull/22627))
+- Fixed 'Send Max' ETH transactions not adjusting for gas changes ([#22694](https://github.com/MetaMask/metamask-extension/pull/22694))
+- Updated the look of the signature request warning ([#22741](https://github.com/MetaMask/metamask-extension/pull/22741))
+
 ## [11.10.0]
 ### Added
 - Added preset network image avatars in the 'Select a network' pop-up ([#22643](https://github.com/MetaMask/metamask-extension/pull/22643))
