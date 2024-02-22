@@ -1,0 +1,10 @@
+,"Validate Copy address in the account header and account details dialog",,,
+Step,"Test Steps",Test Data,Expected Result,Notes
+1,"Open the extension.",,The Welcome Back screen is shown,
+2,"Proceed to Unlock the wallet.",password (8 characters min),The Ether balance is shown on the overview,
+3,"Under the MetaMask logo, where the account is displayed. ",,Account header appears,
+4,"There should be an icon for copy. ",,Copy icon appears,
+5,"Hover on the icon and the text should be 'copy to clipboard'",,'copy to clipboard' text appears,
+6,"Click on the icon and validate the copied address by pasting it into a text editor to ensure it matches the expected address. ",,Pasted copied address matches with the address on MetaMask,
+7,"Click the three vertical dots in the top-right of MetaMask and select Account details options",,Account component appears,
+8,"Step 4 to 6 should be same",,Step 4 to 6 should be same,
