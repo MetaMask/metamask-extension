@@ -114,6 +114,7 @@ export function RecipientWithAddress({
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
   const petnamesEnabled = usePetnamesEnabled();
+  const hasRecipientEns = Boolean(recipientEns);
 
   let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
@@ -152,20 +153,20 @@ export function RecipientWithAddress({
           }
         }}
       >
-        {!petnamesEnabled && (
+        {(!petnamesEnabled || hasRecipientEns) && (
           <div className="sender-to-recipient__sender-icon">
             <Identicon address={checksummedRecipientAddress} diameter={24} />
           </div>
         )}
         <Tooltip
           position="bottom"
-          disabled={!recipientName}
+          disabled={!recipientName || hasRecipientEns}
           html={tooltipHtml}
           wrapperClassName="sender-to-recipient__tooltip-wrapper"
           containerClassName="sender-to-recipient__tooltip-container"
           onHidden={() => setAddressCopied(false)}
         >
-          {petnamesEnabled ? (
+          {petnamesEnabled && !hasRecipientEns ? (
             <Name
               value={checksummedRecipientAddress}
               type={NameType.ETHEREUM_ADDRESS}
@@ -180,7 +181,8 @@ export function RecipientWithAddress({
           )}
         </Tooltip>
       </div>
-      {showNicknamePopovers && !petnamesEnabled ? (
+      {(showNicknamePopovers && !petnamesEnabled) ||
+      (showNicknamePopovers && hasRecipientEns) ? (
         <NicknamePopovers
           onClose={() => setShowNicknamePopovers(false)}
           address={checksummedRecipientAddress}
