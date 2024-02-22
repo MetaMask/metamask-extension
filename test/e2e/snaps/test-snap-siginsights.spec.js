@@ -68,7 +68,6 @@ describe('Test Snap Singature Insights', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // open the test-dapp page
-        // await driver.driver.get(TEST_DAPP_WEBSITE_URL);
         await openDapp(driver);
 
         // poll windowHandles and switch to test-dapp
