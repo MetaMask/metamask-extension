@@ -115,6 +115,9 @@ workflows:
       - testrail-upload-chrome-results:
           requires:
             - test-e2e-chrome
+      - testrail-upload-firefox-results:
+          requires:
+            - test-e2e-firefox
       - all-tests-pass:
           requires:
             - test-lint
@@ -1048,6 +1051,36 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  testrail-upload-firefox-results:
+    docker:
+      - image: cimg/python:3.10.4
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: List test result files
+          command: ls -la test/test-results/e2e/
+      - run:
+          name: Install TR CLI and upload the test results to TestRail
+          command: |
+            pip install trcli
+            FILES=$(ls test/test-results/e2e/*.xml)
+            for result_file in $FILES
+            do
+              echo "Uploading $result_file"
+              trcli -y \
+                -h https://mmig.testrail.io/ \
+                --project "MetaMask Extension" \
+                -u mmig_qa@consensys.net \
+                -p "v##&FgS!4J" \
+                parse_junit \
+                --title "Automated Firefox Tests from CircleCI workflow" \
+                --run-id "50" \
+                --run-description $CIRCLE_BUILD_URL \
+                --case-fields type_id:3 \
+                -f "$result_file"
+            done
 
   benchmark:
     executor: node-browsers-small
