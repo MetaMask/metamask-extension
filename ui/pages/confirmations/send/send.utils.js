@@ -1,4 +1,4 @@
-import abi from 'ethereumjs-abi';
+import { encode } from '@metamask/abi-utils';
 
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -91,9 +91,11 @@ function generateERC20TransferData({
     TOKEN_TRANSFER_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
-        abi.rawEncode(
-          ['address', 'uint256'],
-          [addHexPrefix(toAddress), addHexPrefix(amount)],
+        Buffer.from(
+          encode(
+            ['address', 'uint256'],
+            [addHexPrefix(toAddress), addHexPrefix(amount)],
+          ),
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
@@ -113,9 +115,15 @@ function generateERC721TransferData({
     NFT_TRANSFER_FROM_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
-        abi.rawEncode(
-          ['address', 'address', 'uint256'],
-          [addHexPrefix(fromAddress), addHexPrefix(toAddress), tokenId],
+        Buffer.from(
+          encode(
+            ['address', 'address', 'uint256'],
+            [
+              addHexPrefix(fromAddress),
+              addHexPrefix(toAddress),
+              BigInt(tokenId),
+            ],
+          ),
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
@@ -137,15 +145,17 @@ function generateERC1155TransferData({
     NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE +
     Array.prototype.map
       .call(
-        abi.rawEncode(
-          ['address', 'address', 'uint256', 'uint256', 'bytes'],
-          [
-            addHexPrefix(fromAddress),
-            addHexPrefix(toAddress),
-            tokenId,
-            amount,
-            data,
-          ],
+        Buffer.from(
+          encode(
+            ['address', 'address', 'uint256', 'uint256', 'bytes'],
+            [
+              addHexPrefix(fromAddress),
+              addHexPrefix(toAddress),
+              BigInt(tokenId),
+              BigInt(amount),
+              addHexPrefix(data),
+            ],
+          ),
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
