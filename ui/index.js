@@ -25,6 +25,8 @@ import {
   getUseRequestQueue,
   getCurrentNetwork,
   getNeverShowSwitchedNetworkMessage,
+  getCurrentPopupId,
+  getAllNetworks,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -226,13 +228,25 @@ async function startApp(metamaskState, backgroundConnection, opts) {
           currentNetwork.nickname,
           selectedTabOrigin,
         );
-        await store.dispatch(
-          actions.setSwitchedNetworkDetails({
-            networkName: currentNetwork.nickname,
-            siteName: selectedTabOrigin,
-          }),
+
+        // Get network name for this id and update toast properties
+        const { nickname } = getAllNetworks(state).find(
+          ({ id }) => id === networkForThisDomain,
         );
+        await actions.setSwitchedNetworkDetails({
+          networkName: nickname,
+          siteName: selectedTabOrigin,
+        });
       }
+
+      // EXPERIMENTAL: Close other MetaMask Popups
+      const windows = await browser.windows.getAll();
+      const currentPopupId = getCurrentPopupId(state);
+      const otherPopupWindows = windows.filter(
+        (win) =>
+          win?.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId,
+      );
+      otherPopupWindows.forEach((popupWindow) => popupWindow.close());
     } else {
       console.log('No domainNetwork, not changing networks');
     }
