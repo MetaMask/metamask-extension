@@ -3,7 +3,6 @@
   "Cache-Control": "public, max-age=2592000",
   "Cf-Cache-Status": "HIT",
   "Cf-Ray": "858522051bfe11bb-BCN",
-  "Content-Encoding": "br",
   "Content-Type": "text/plain",
   "Date": "Tue, 20 Feb 2024 07:45:56 GMT",
   "Etag": "W/'ef1b8ac4e9c58e5ec689d3a6184920fb'",

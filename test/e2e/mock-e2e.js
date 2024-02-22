@@ -5,6 +5,8 @@ const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
 const CDN_CONFIG_PATH = 'test/e2e/tests/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/tests/mock-cdn/cdn-stale-diff.txt';
 const CDN_STALE_PATH = 'test/e2e/tests/mock-cdn/cdn-stale.txt';
+const PPOM_VERSION_PATH = 'test/e2e/tests/mock-cdn/ppom-version.json';
+const PPOM_VERSION_HEADERS_PATH = 'test/e2e/tests/mock-cdn/ppom-version-headers.json';
 
 const CDN_CONFIG_RES_HEADERS_PATH =
   'test/e2e/tests/mock-cdn/cdn-config-res-headers.json';
@@ -449,6 +451,8 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
+  const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
+  const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
   const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
   const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
   const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
@@ -457,6 +461,24 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   const CDN_STALE_DIFF_RES_HEADERS = fs.readFileSync(
     CDN_STALE_DIFF_RES_HEADERS_PATH,
   );
+
+  await server
+    .forHead('https://static.metafi.codefi.network/api/v1/confirmations/ppom/ppom_version.json')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+
+  await server
+    .forGet('https://static.metafi.codefi.network/api/v1/confirmations/ppom/ppom_version.json')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(PPOM_VERSION),
+        headers: JSON.parse(PPOM_VERSION_HEADERS),
+      };
+    });
 
   await server
     .forGet(
