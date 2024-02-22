@@ -23,7 +23,7 @@
     "useUnknownInCatchVariables": true
   },
   "exclude": [
-     // don't typecheck stories, as they don't yet pass the type checker.
+    // don't typecheck stories, as they don't yet pass the type checker.
     "**/*.stories.tsx",
     "**/*.stories.ts"
   ],
