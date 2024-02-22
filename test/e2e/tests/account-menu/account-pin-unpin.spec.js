@@ -6,7 +6,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Account list - pin/unpin functionality - ', function () {
+describe('Account list - pin/unpin functionality -', function () {
   it('pin account by clicking the pin button', async function () {
     await withFixtures(
       {

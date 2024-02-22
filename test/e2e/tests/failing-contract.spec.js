@@ -9,7 +9,7 @@ const {
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Failing contract interaction ', function () {
+describe('Failing contract interaction', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
   it('should display a warning when the contract interaction is expected to fail', async function () {
     await withFixtures(

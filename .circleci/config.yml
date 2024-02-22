@@ -1051,6 +1051,13 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+      - run:
+          name: List generated test result files
+          command: ls -la test/test-results/e2e/
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test/test-results/e2e/
 
   testrail-upload-firefox-results:
     docker:
