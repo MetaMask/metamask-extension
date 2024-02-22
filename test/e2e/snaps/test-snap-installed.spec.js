@@ -109,7 +109,7 @@ describe('Test Snap Installed', function () {
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/dialog-example-snap',
           origin: 'https://metamask.github.io',
-          version: '2.1.0',
+          version: '2.2.0',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',

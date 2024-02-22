@@ -4,6 +4,7 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
+import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 
 const state = {
   invalidCustomNetwork: {
@@ -275,6 +276,24 @@ const state = {
             version: '5.1.2',
           },
         ],
+      },
+    },
+    interfaces: {
+      'test-interface': {
+        content: panel([
+          heading('Foo bar'),
+          text('Description'),
+          divider(),
+          text('More text'),
+          copyable('Text you can copy'),
+        ]),
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+      'error-interface': {
+        content: 'foo',
+        state: {},
+        snapId: 'local:http://localhost:8080/',
       },
     },
     accountArray: [
