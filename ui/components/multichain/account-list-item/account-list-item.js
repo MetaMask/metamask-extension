@@ -56,8 +56,6 @@ import {
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { ConnectedStatus } from '../connected-status/connected-status';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -83,7 +81,6 @@ export const AccountListItem = ({
 
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
-  const showBadge = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -145,9 +142,12 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      {showBadge ? (
-        <ConnectedStatus address={identity.address} isActive={isActive} />
-      ) : (
+      {process.env.MULTICHAIN && (
+        <Box display={[Display.Flex, Display.None]} data-testid="account-list-item-badge">
+          <ConnectedStatus address={identity.address} isActive={isActive} />
+        </Box>
+      )}
+      <Box display={[Display.None, Display.Flex]}>
         <AvatarAccount
           borderColor={BorderColor.transparent}
           size={Size.MD}
@@ -159,7 +159,7 @@ export const AccountListItem = ({
           }
           marginInlineEnd={2}
         />
-      )}
+      </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
