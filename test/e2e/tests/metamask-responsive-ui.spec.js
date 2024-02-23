@@ -71,7 +71,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.isElementPresent('.loading-overlay__spinner');
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
         const balance = await driver.findElement(
           '.eth-overview__primary-container',

@@ -73,7 +73,7 @@ describe('Import flow @no-mmi', function () {
         await driver.findElement('[data-testid="app-header-copy-button"]');
 
         await driver.clickElement('button[aria-label="Close"]');
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="account-details-modal"]',
         );
         // logs out of the account

@@ -53,7 +53,7 @@ describe('Multiple transactions', function () {
         await driver.switchToWindow(confirmation);
 
         // wait for the "Reject 2 transactions" to disappear
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '.page-container__footer-secondary a',
         );
 
@@ -116,7 +116,7 @@ describe('Multiple transactions', function () {
           tag: 'a',
         });
         await driver.clickElement({ text: 'Reject', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
         // rejects first transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
 

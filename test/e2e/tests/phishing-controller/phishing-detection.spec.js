@@ -137,7 +137,7 @@ describe('Phishing Detection', function () {
         });
 
         // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="wallet-balance"]',
           1000,
         );

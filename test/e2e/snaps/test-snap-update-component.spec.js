@@ -163,7 +163,7 @@ describe('Test Snap update via snaps component', function () {
           tag: 'p',
         });
 
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           {
             css: '.mm-button-link',
             text: 'Update',

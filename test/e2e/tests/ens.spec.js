@@ -81,7 +81,7 @@ describe('ENS', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
 
         await openActionMenuAndStartSendFlow(driver);
         // TODO: Update Test when Multichain Send Flow is added
