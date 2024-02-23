@@ -183,6 +183,9 @@ export const useTransactionFunctions = ({
           ? CUSTOM_GAS_ESTIMATE
           : PriorityLevels.tenPercentIncreased;
 
+      if (!gasFeeEstimates?.[estimateUsed]) {
+        return;
+      }
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
