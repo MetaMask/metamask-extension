@@ -4315,7 +4315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^2.1.1, @metamask/eth-snap-keyring@npm:^2.1.2":
+"@metamask/eth-snap-keyring@npm:^2.1.1":
   version: 2.1.2
   resolution: "@metamask/eth-snap-keyring@npm:2.1.2"
   dependencies:
@@ -4333,20 +4333,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-token-tracker@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@metamask/eth-token-tracker@npm:7.0.2"
+"@metamask/eth-snap-keyring@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/eth-snap-keyring@npm:2.2.0"
   dependencies:
-    "@metamask/ethjs-contract": "npm:^0.4.1"
-    "@metamask/ethjs-query": "npm:^0.7.1"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/eth-sig-util": "npm:^7.0.1"
+    "@metamask/keyring-api": "npm:^4.0.0"
+    "@metamask/snaps-controllers": "npm:^5.0.1"
+    "@metamask/snaps-sdk": "npm:^2.1.0"
+    "@metamask/snaps-utils": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/uuid": "npm:^9.0.1"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^9.0.0"
+  checksum: 901b3aa3435be71172ef4ce197fd372588f73914da48ac783d678855fcefc04d1a2750b3268f213d0a82b7983589ce6fd1b389e67a017b3a71d7e4fdd1563080
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-token-tracker@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/eth-token-tracker@npm:7.0.1"
+  dependencies:
+    "@metamask/ethjs-contract": "npm:^0.3.4"
+    "@metamask/ethjs-query": "npm:^0.5.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
-    bn.js: "npm:^5.2.1"
+    bn.js: "npm:^4.12.0"
     deep-equal: "npm:^2.2.0"
     eth-block-tracker: "npm:^8.0.0"
     human-standard-token-abi: "npm:^2.0.0"
-  peerDependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: eec5b953de3449344107408ea820f95e95a1921da34259a80a6b6ae201fe0d7a4e87abf028b91aa865e904c88c96e7a39407386d89904076e7f1fd632960a86f
+  checksum: 5ce697ba2eae9dc8df942b5cee477cce4e4a1d5dbbe5f7e2268c8880135b45dc7cd86d888595a692c35d257586b950b9474caa62db49357452b22f3744d83b9e
   languageName: node
   linkType: hard
 
@@ -4371,7 +4387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-contract@npm:^0.3.3":
+"@metamask/ethjs-contract@npm:^0.3.3, @metamask/ethjs-contract@npm:^0.3.4":
   version: 0.3.4
   resolution: "@metamask/ethjs-contract@npm:0.3.4"
   dependencies:
@@ -4682,6 +4698,20 @@ __metadata:
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.0"
   checksum: ca07392e2cef1f5f7056e73c7a5d0a4092234b3d794aa3bca1ce3a1df0dc40832ec3fc0026965b54c07aec0ee175267de365033b028909484bc6d9fe4fb4c329
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-api@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/keyring-api@npm:4.0.0"
+  dependencies:
+    "@metamask/providers": "npm:^14.0.1"
+    "@metamask/snaps-sdk": "npm:^1.3.2"
+    "@metamask/utils": "npm:^8.1.0"
+    "@types/uuid": "npm:^9.0.1"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^9.0.0"
+  checksum: 222c4f000ce57b3bc2de9f6a3b0fb2ec733f0f1d727c81463de15f39d26b1172aca946e1d7c4b89af4ebc5f7d861b9314070c94bdfde0c5638597b14ebd5e234
   languageName: node
   linkType: hard
 
@@ -25022,8 +25052,8 @@ __metadata:
     "@metamask/eth-keyring-controller": "npm:^16.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/eth-snap-keyring": "npm:^2.1.2"
-    "@metamask/eth-token-tracker": "npm:^7.0.2"
+    "@metamask/eth-snap-keyring": "npm:^2.2.0"
+    "@metamask/eth-token-tracker": "npm:^7.0.1"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/ethjs": "npm:^0.6.0"
@@ -25032,7 +25062,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^13.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
-    "@metamask/keyring-api": "npm:^3.0.0"
+    "@metamask/keyring-api": "npm:^4.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch"
     "@metamask/logging-controller": "npm:^2.0.2"
     "@metamask/logo": "npm:^3.1.2"
