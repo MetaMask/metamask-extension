@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// TODO: make this component state agnostic
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,

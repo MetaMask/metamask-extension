@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// TODO: make this component state agnostic
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';

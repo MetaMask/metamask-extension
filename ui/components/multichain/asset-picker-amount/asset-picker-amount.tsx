@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+// TODO: make this component state agnostic
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
