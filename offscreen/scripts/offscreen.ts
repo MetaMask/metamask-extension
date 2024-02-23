@@ -1,4 +1,11 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
+import initLedger from './ledger';
+import initTrezor from './trezor';
+import initLattice from './lattice';
+
+initLedger();
+initTrezor();
+initLattice();
 
 /**
  * Initialize a post message stream with the parent window that is initialized
