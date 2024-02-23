@@ -8,7 +8,9 @@ import {
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import {
   acknowledgeRecipientWarning,
+  getCurrentDraftTransaction,
   getSendAsset,
+  updateSendAmount,
 } from '../../../../../ducks/send';
 import { ConfirmGasDisplay } from '../../../../../pages/confirmations/components/confirm-gas-display';
 import { AssetType } from '../../../../../../shared/constants/transaction';
@@ -16,6 +18,7 @@ import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
+import { getSelectedIdentity } from '../../../../../selectors';
 import { SendHexData, SendPageRow } from '.';
 
 export const SendPageContent = ({
@@ -33,6 +36,11 @@ export const SendPageContent = ({
     asset &&
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
+
+  const { asset: transactionAsset, amount } = useSelector(
+    getCurrentDraftTransaction,
+  );
+  const selectedAccount = useSelector(getSelectedIdentity);
 
   // Gas data
   const dispatch = useDispatch();
@@ -65,7 +73,14 @@ export const SendPageContent = ({
         </SendPageRow>
       ) : null}
       <SendPageRow>
-        <AssetPickerAmount />
+        <AssetPickerAmount
+          asset={transactionAsset}
+          amount={amount}
+          selectedAccount={selectedAccount}
+          onAmountChange={(newAmount: string) =>
+            dispatch(updateSendAmount(newAmount))
+          }
+        />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
       <SendPageRow>

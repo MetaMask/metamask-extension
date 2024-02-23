@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-// TODO: make this component state agnostic
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -25,31 +23,26 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import UserPreferencedCurrencyInput from '../../app/user-preferenced-currency-input/user-preferenced-currency-input.container';
 import UserPreferencedTokenInput from '../../app/user-preferenced-token-input/user-preferenced-token-input.component';
-import {
-  Amount,
-  Asset,
-  getCurrentDraftTransaction,
-  updateSendAmount,
-} from '../../../ducks/send';
+import type { Amount, Asset } from '../../../ducks/send';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import TokenBalance from '../../ui/token-balance';
-import { getSelectedIdentity } from '../../../selectors';
 import MaxClearButton from './max-clear-button';
 import AssetPicker from './asset-picker/asset-picker';
 
-const renderCurrencyInput = (asset: Asset, amount: Amount) => {
-  const dispatch = useDispatch();
+const renderCurrencyInput = (
+  asset: Asset,
+  amount: Amount,
+  onAmountChange: (newAmount: string) => void,
+) => {
   const t = useI18nContext();
 
   if (asset.type === AssetType.native) {
     return (
       <>
         <UserPreferencedCurrencyInput
-          onChange={(newAmount: string) =>
-            dispatch(updateSendAmount(newAmount))
-          }
+          onChange={onAmountChange}
           hexValue={amount.value}
           className="asset-picker-amount__input"
           swapIcon={(onClick: React.MouseEventHandler) => (
@@ -85,7 +78,7 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
 
   return (
     <UserPreferencedTokenInput
-      onChange={(newAmount: string) => dispatch(updateSendAmount(newAmount))}
+      onChange={onAmountChange}
       token={asset.details}
       value={amount.value}
       className="asset-picker-amount__input"
@@ -93,11 +86,21 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
   );
 };
 
+interface AssetPickerAmountProps {
+  asset: Asset;
+  amount: Amount;
+  selectedAccount: string;
+  onAmountChange: (newAmount: string) => void;
+}
+
 // A component that combines an asset picker with an input for the amount to send.
-export const AssetPickerAmount = () => {
+export const AssetPickerAmount = ({
+  asset,
+  amount,
+  selectedAccount,
+  onAmountChange,
+}: AssetPickerAmountProps) => {
   const t = useI18nContext();
-  const { asset, amount } = useSelector(getCurrentDraftTransaction);
-  const selectedAccount = useSelector(getSelectedIdentity);
 
   const { error } = amount;
 
@@ -136,7 +139,7 @@ export const AssetPickerAmount = () => {
         paddingBottom={3}
       >
         <AssetPicker asset={asset} />
-        {renderCurrencyInput(asset, amount)}
+        {renderCurrencyInput(asset, amount, onAmountChange)}
       </Box>
       <Box display={Display.Flex}>
         <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>
