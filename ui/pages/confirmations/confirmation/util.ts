@@ -46,7 +46,7 @@ export function processError(
 export function processString(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
-): string | TemplateRendererComponent | (string | TemplateRendererComponent)[] {
+): TemplateRendererComponent | (string | TemplateRendererComponent)[] {
   const currentInput = convertResultComponents(input) || fallback;
 
   if (typeof currentInput !== 'string') {

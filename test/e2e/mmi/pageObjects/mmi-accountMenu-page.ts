@@ -118,7 +118,7 @@ export class MMIAccountMenuPage {
     //   .filter({ hasText: 'Remove custodian token' });
     // FIX: This check fails in the pipeline. I think it is related with the image used to run the test
     // await test.expect.soft(dialog).toHaveScreenshot(screenshotName);
-    await this.page.getByRole('button', { name: /close/iu }).click();
+    await this.page.getByRole('button', { name: /close/iu }).first().click();
   }
 
   async removeCustodianToken(accountToRemoveName: string) {

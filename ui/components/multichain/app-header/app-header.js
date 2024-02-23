@@ -292,10 +292,12 @@ export const AppHeader = ({ location }) => {
               ) : null}
 
               {internalAccount ? (
-                <Box
+                <Text
+                  as="div"
                   display={Display.Flex}
                   flexDirection={FlexDirection.Column}
                   alignItems={AlignItems.center}
+                  ellipsis
                 >
                   <AccountPicker
                     address={internalAccount.address}
@@ -350,7 +352,7 @@ export const AppHeader = ({ location }) => {
                       </Text>
                     </ButtonBase>
                   </Tooltip>
-                </Box>
+                </Text>
               ) : null}
               <Box
                 display={Display.Flex}

@@ -68,7 +68,14 @@ const render = async ({ transactionProp = {}, contextProps = {} } = {}) => {
 
 describe('ConfirmGasDisplay', () => {
   it('should match snapshot', async () => {
-    const { container } = await render();
+    const { container } = await render({
+      transactionProp: {
+        txParams: {
+          gas: '0x5208',
+        },
+        userFeeLevel: 'medium',
+      },
+    });
     expect(container).toMatchSnapshot();
   });
   it('should render gas display labels for EIP1559 transcations', async () => {

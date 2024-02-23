@@ -422,6 +422,7 @@ export const AccountListMenu = ({
                       showOptions
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}
+                      currentTabOrigin={currentTabOrigin}
                       {...accountListItemProps}
                     />
                   </Box>

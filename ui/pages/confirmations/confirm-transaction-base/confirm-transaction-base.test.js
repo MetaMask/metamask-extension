@@ -755,4 +755,49 @@ describe('Confirm Transaction Base', () => {
       });
     });
   });
+  describe('user op contract deploy attempt', () => {
+    it('should show error and disable Confirm button', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            type: TransactionType.deployContract,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+          },
+        },
+      };
+
+      const { getByTestId } = await render({ state });
+
+      const banner = getByTestId(
+        'confirm-page-container-content-error-banner-2',
+      );
+      expect(banner).toHaveTextContent(
+        /Contract deployment from a smart contract account is not supported/u,
+      );
+
+      const confirmButton = getByTestId('page-container-footer-next');
+      expect(confirmButton).toBeDisabled();
+    });
+  });
 });

@@ -13,7 +13,6 @@ import {
 import { domainInitialState } from '../../../../ducks/domains';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { KeyringType } from '../../../../../shared/constants/keyring';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -24,6 +23,7 @@ import {
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { SendPage } from '.';
+import { KeyringType } from '../../../../../shared/constants/keyring';
 
 jest.mock('@ethersproject/providers', () => {
   const originalModule = jest.requireActual('@ethersproject/providers');
@@ -141,6 +141,12 @@ const baseStore = {
           methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
+      },
+      activeTab: {
+        origin: 'https://uniswap.org/',
+      },
+      appState: {
+        sendInputCurrencySwitched: false,
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
