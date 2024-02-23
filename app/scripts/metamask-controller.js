@@ -458,9 +458,9 @@ export default class MetamaskController extends EventEmitter {
     ) {
       initialNetworkControllerState = {
         providerConfig: {
-          type: NETWORK_TYPES.GOERLI,
-          chainId: CHAIN_IDS.GOERLI,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+          type: NETWORK_TYPES.SEPOLIA,
+          chainId: CHAIN_IDS.SEPOLIA,
+          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
         },
       };
     }
@@ -513,6 +513,11 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+      onKeyringStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          'KeyringController:stateChange',
+          listener,
+        ),
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -1470,6 +1475,10 @@ export default class MetamaskController extends EventEmitter {
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
         getNetworkState: () => this.networkController.state,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSavedGasFees: () =>
@@ -1478,6 +1487,7 @@ export default class MetamaskController extends EventEmitter {
           ],
         getSelectedAddress: () =>
           this.accountsController.getSelectedAccount().address,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
         incomingTransactions: {
           includeTokenTransfers: false,
           isEnabled: () =>
@@ -1493,7 +1503,12 @@ export default class MetamaskController extends EventEmitter {
         },
         messenger: this.controllerMessenger.getRestricted({
           name: 'TransactionController',
-          allowedActions: [`${this.approvalController.name}:addRequest`],
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            'NetworkController:findNetworkClientIdByChainId',
+            'NetworkController:getNetworkClientById',
+          ],
+          allowedEvents: [`NetworkController:stateChange`],
         }),
         onNetworkStateChange: (listener) => {
           networkControllerMessenger.subscribe(
@@ -4241,7 +4256,9 @@ export default class MetamaskController extends EventEmitter {
   }) {
     return {
       dappRequest,
-      networkClientId: this.networkController.state.selectedNetworkClientId,
+      networkClientId:
+        dappRequest?.networkClientId ??
+        this.networkController.state.selectedNetworkClientId,
       selectedAccount: this.accountsController.getSelectedAccount(),
       transactionController: this.txController,
       transactionOptions,
@@ -5308,11 +5325,13 @@ export default class MetamaskController extends EventEmitter {
    * Returns the nonce that will be associated with a transaction once approved
    *
    * @param {string} address - The hex string address for the transaction
+   * @param networkClientId - The optional networkClientId to get the nonce lock with
    * @returns {Promise<number>}
    */
-  async getPendingNonce(address) {
+  async getPendingNonce(address, networkClientId) {
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
     );
 
     const pendingNonce = nonceDetails.params.highestSuggested;
@@ -5325,10 +5344,14 @@ export default class MetamaskController extends EventEmitter {
    * Returns the next nonce according to the nonce-tracker
    *
    * @param {string} address - The hex string address for the transaction
+   * @param networkClientId - The optional networkClientId to get the nonce lock with
    * @returns {Promise<number>}
    */
-  async getNextNonce(address) {
-    const nonceLock = await this.txController.getNonceLock(address);
+  async getNextNonce(address, networkClientId) {
+    const nonceLock = await this.txController.getNonceLock(
+      address,
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
+    );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
   }

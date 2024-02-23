@@ -261,6 +261,9 @@ const mapStateToProps = (state, ownProps) => {
     getApprovedAndSignedTransactions(state).length,
   );
 
+  const isUserOpContractDeployError =
+    fullTxData.isUserOperation && type === TransactionType.deployContract;
+
   return {
     balance,
     fromAddress,
@@ -314,6 +317,7 @@ const mapStateToProps = (state, ownProps) => {
     keyringForAccount: keyring,
     isUsingPaymaster,
     isSigningOrSubmitting,
+    isUserOpContractDeployError,
     useMaxValue,
     maxValue,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

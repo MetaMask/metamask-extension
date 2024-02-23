@@ -47,6 +47,7 @@ describe('MMIController', function () {
         onAccountRemoved: jest.fn(),
         provider: {},
         networkConfigurations: {},
+        onKeyringStateChange: jest.fn(),
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
