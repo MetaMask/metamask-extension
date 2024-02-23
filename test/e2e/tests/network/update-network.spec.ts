@@ -14,7 +14,9 @@ const selectors = {
   settingsOption: { text: 'Settings', tag: 'div' },
   networkOption: { text: 'Networks', tag: 'div' },
   generalOption: { text: 'General', tag: 'div' },
+  generalTabHeader: { text: 'General', tag: 'h4' },
   ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
+  newUpdateNetwork: { text: 'Update Network', tag: 'div' },
   deleteButton: { text: 'Delete', tag: 'button' },
   cancelButton: { text: 'Cancel', tag: 'button' },
   saveButton: { text: 'Save', tag: 'button' },
@@ -112,9 +114,14 @@ describe('Update Network:', function (this: Suite) {
         await driver.assertElementNotPresent(selectors.cancelButton);
         await driver.assertElementNotPresent(selectors.saveButton);
 
-        // Validate the error does not appear for updating the network name and chain id
+        // Put in a bad chainId again, then switch to the General tab, and assert that no error is present on the General tab
+        await driver.clickElement(selectors.newUpdateNetwork);
+        await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+        await driver.isElementPresent(selectors.errorMessageInvalidUrl);
         await driver.clickElement(selectors.generalOption);
-        await driver.assertElementNotPresent(selectors.errorContainer);
+        await driver.assertElementNotPresent(selectors.errorContainer, {
+          findElementGuard: selectors.generalTabHeader, // Wait for the General tab to load
+        });
       },
     );
   });
