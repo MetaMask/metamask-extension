@@ -300,6 +300,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+import { blockRequestsBeforeOnboardingMiddleware } from './lib/middleware/onboarding-complete';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -425,6 +426,10 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IF
 
+    this.onboardingController = new OnboardingController({
+      initState: initState.OnboardingController,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
     });
@@ -470,6 +475,11 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: opts.infuraProjectId,
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
+      customFeatureRpcApiMiddlewares: [
+        blockRequestsBeforeOnboardingMiddleware({
+          onboardingControllerStore: this.onboardingController.store
+        })
+      ],
     });
     this.networkController.initializeProvider();
     this.provider =
@@ -909,10 +919,6 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:networkDidChange',
       ),
-    });
-
-    this.onboardingController = new OnboardingController({
-      initState: initState.OnboardingController,
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -1399,7 +1405,6 @@ export default class MetamaskController extends EventEmitter {
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
       ),
-      isOnboardingComplete: this.onboardingController.store.getState().completedOnboarding
     });
 
     this.addressBookController = new AddressBookController(

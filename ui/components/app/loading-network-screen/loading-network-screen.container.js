@@ -13,6 +13,7 @@ const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
 
 const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
+  const { completedOnboarding } = state.metamask;
   const providerConfig = getProviderConfig(state);
   const { rpcUrl, chainId, ticker, nickname, type } = providerConfig;
 
@@ -48,6 +49,7 @@ const mapStateToProps = (state) => {
     },
     providerId: getNetworkIdentifier(state),
     showDeprecatedRpcUrlWarning,
+    completedOnboarding
   };
 };
 

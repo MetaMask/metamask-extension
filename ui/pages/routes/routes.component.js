@@ -662,7 +662,7 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
+          {!isLoading && isNetworkLoading && completedOnboarding ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}

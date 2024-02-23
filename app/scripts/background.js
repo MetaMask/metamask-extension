@@ -274,6 +274,8 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    // 5 second delay
+    await (new Promise((resolve) => setTimeout(resolve, 5000)));
     const initData = await loadStateFromPersistence();
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
