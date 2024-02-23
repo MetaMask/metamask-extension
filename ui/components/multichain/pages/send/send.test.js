@@ -22,8 +22,8 @@ import {
 } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { SendPage } from '.';
 import { KeyringType } from '../../../../../shared/constants/keyring';
+import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
   const originalModule = jest.requireActual('@ethersproject/providers');
