@@ -172,7 +172,6 @@ const AssetV2 = ({
       />
       <Box
         // Fade balance in/out of header.
-        // TODO: Consider debouncing this.
         onScroll={(e: React.UIEvent) =>
           headerRef?.current?.setBalanceOpacity(
             Math.max(
