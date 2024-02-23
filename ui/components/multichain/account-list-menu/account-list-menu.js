@@ -41,7 +41,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getInternalAccounts,
+  // getInternalAccounts,
   getOnboardedInThisUISession,
   getShowAccountBanner,
 } from '../../../selectors';
@@ -110,7 +110,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
+  // const internalAccounts = useSelector(getInternalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -143,7 +143,8 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, internalAccounts);
+
+  // searchResults = mergeAccounts(searchResults, internalAccounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
