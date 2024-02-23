@@ -20,7 +20,7 @@ const SnapAccountSuccessMessage = ({
       <SnapAccountCard address={address} />
       <Text>
         {message}
-        {learnMoreLink && (
+        {Boolean(learnMoreLink) && (
           <>
             {' '}
             <a href={learnMoreLink} rel="noopener noreferrer" target="_blank">

@@ -19,7 +19,7 @@ const SnapAccountErrorMessage = ({
     <>
       <Text style={error ? { marginBottom: 2 } : {}}>
         {message}
-        {learnMoreLink && (
+        {Boolean(learnMoreLink) && (
           <>
             {' '}
             <a href={learnMoreLink} rel="noopener noreferrer" target="_blank">
@@ -28,7 +28,7 @@ const SnapAccountErrorMessage = ({
           </>
         )}
       </Text>
-      {error && (
+      {Boolean(error) && (
         <ActionableMessage type={'danger'} message={error}></ActionableMessage>
       )}
     </>
