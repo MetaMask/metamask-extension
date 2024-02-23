@@ -5593,6 +5593,9 @@
   "userName": {
     "message": "Username"
   },
+  "userOpContractDeployError": {
+    "message": "Contract deployment from a smart contract account is not supported"
+  },
   "verifyContractDetails": {
     "message": "Verify third-party details"
   },
