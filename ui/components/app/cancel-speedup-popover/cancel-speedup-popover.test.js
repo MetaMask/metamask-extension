@@ -94,6 +94,14 @@ const render = (
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 
