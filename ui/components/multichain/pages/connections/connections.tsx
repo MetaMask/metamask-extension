@@ -14,8 +14,8 @@ import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  getConnectedSitesList,
   getOriginOfCurrentTab,
-  getSubjectMetadata,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -37,7 +37,7 @@ export const Connections = () => {
   const t = useI18nContext();
   const history = useHistory();
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const subjectMetadata = useSelector(getSubjectMetadata);
+  const subjectMetadata: { [key: string]: any } = useSelector(getConnectedSitesList);
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   return (
     <Page data-testid="connections-page" className="connections-page">

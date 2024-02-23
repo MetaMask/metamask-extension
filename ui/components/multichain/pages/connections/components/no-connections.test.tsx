@@ -3,14 +3,14 @@ import { renderWithProvider } from '../../../../../../test/jest';
 import {NoConnectionContent} from './no-connection';
 
 describe('No Connections Content', () => {
-  const render = (props = {}, state = {}) => {
+  const render = () => {
 
     return renderWithProvider(
       <NoConnectionContent />
     );
   };
   it('should render correctly', () => {
-    const { container } = render({});
+    const { container } = render();
     expect(container).toMatchSnapshot();
   });
 });
