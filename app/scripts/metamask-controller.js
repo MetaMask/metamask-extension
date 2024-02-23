@@ -1399,6 +1399,7 @@ export default class MetamaskController extends EventEmitter {
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
       ),
+      isOnboardingComplete: this.onboardingController.store.getState().completedOnboarding
     });
 
     this.addressBookController = new AddressBookController(

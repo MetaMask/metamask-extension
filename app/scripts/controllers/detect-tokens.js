@@ -50,6 +50,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     getCurrentSelectedAccount,
     getNetworkClientById,
     disableLegacyInterval = false,
+    isOnboardingComplete
   } = {}) {
     super();
     this.getNetworkClientById = getNetworkClientById;
@@ -68,6 +69,7 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     this.setIntervalLength(interval);
     this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
+    this.isOnboardingComplete = isOnboardingComplete
 
     messenger.subscribe(
       'AccountsController:selectedAccountChange',
@@ -143,6 +145,9 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     }
 
     if (!this.isActive) {
+      return;
+    }
+    if (!this.isOnboardingComplete) {
       return;
     }
     if (!isTokenDetectionEnabledForNetwork(chainIdAgainstWhichToDetect)) {
