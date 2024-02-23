@@ -373,7 +373,7 @@ export const DEXALOT_SUBNET_IMAGE_URL = './images/dexalut-subnet.svg';
 export const DFK_CHAIN_IMAGE_URL = './images/dfk.png';
 export const DOGECHAIN_IMAGE_URL = './images/dogechain.jpeg';
 export const ENDURANCE_SMART_CHAIN_MAINNET_IMAGE_URL =
-  './images/endurance-smart-chain.png';
+  './images/endurance-smart-chain-mainnet.png';
 export const ETHEREUM_CLASSIC_MAINNET_IMAGE_URL = './images/eth_classic.svg';
 export const EVMOS_IMAGE_URL = './images/evmos.svg';
 export const FLARE_MAINNET_IMAGE_URL = './images/flare-mainnet.svg';
@@ -398,11 +398,11 @@ export const SHARDEUM_LIBERTY_2X_IMAGE_URL = './images/shardeum-2.svg';
 export const SHARDEUM_SPHINX_1X_IMAGE_URL = './images/shardeum-1.svg';
 export const SHIB_MAINNET_IMAGE_URL = './images/shiba.svg';
 export const SONGBIRD_MAINNET_IMAGE_URL = './images/songbird.svg';
-export const STEP_NETWORK_IMAGE_URL = './images/setp.svg';
+export const STEP_NETWORK_IMAGE_URL = './images/step.svg';
 export const TELOS_EVM_MAINNET_IMAGE_URL = './images/telos.svg';
 export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
-export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.svg';
+export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
 
 export const INFURA_PROVIDER_TYPES = [
