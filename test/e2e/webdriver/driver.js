@@ -440,7 +440,7 @@ class Driver {
 
   async navigate(page = PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
-    // Wait for asyncronous JavaScript to load
+    // Wait for asynchronous JavaScript to load
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.metamask-loaded')),
       10 * 1000,
@@ -594,7 +594,7 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    // On occassion there may be a bug in the offscreen document which does
+    // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {

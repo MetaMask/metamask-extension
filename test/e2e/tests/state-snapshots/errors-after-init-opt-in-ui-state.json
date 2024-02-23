@@ -222,7 +222,6 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
     "storageMetadata": {},
-    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "send": "object",

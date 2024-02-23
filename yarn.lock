@@ -1910,7 +1910,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/content-hash@npm:^2.5.6":
+"@ensdomains/content-hash@npm:^2.5.7":
   version: 2.5.7
   resolution: "@ensdomains/content-hash@npm:2.5.7"
   dependencies:
@@ -4957,19 +4957,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@npm:^0.24.0":
-  version: 0.24.0
-  resolution: "@metamask/ppom-validator@npm:0.24.0"
+"@metamask/ppom-validator@npm:^0.26.0":
+  version: 0.26.0
+  resolution: "@metamask/ppom-validator@npm:0.26.0"
   dependencies:
     "@metamask/base-controller": "npm:^3.0.0"
     "@metamask/controller-utils": "npm:^8.0.1"
     "@metamask/network-controller": "npm:^17.0.0"
+    "@metamask/utils": "npm:^8.3.0"
     await-semaphore: "npm:^0.1.3"
     crypto-js: "npm:^4.2.0"
     elliptic: "npm:^6.5.4"
     eslint-plugin-n: "npm:^16.6.2"
     json-rpc-random-id: "npm:^1.0.1"
-  checksum: cb488ccaffd119820536450519a0fffbdcb710a082de05a26d7e8a0f782b3024a747c36c5f16b9ca84343a0b234d3d0ebfd3e493bcb858e966129a3f40d218a0
+  checksum: 9857444051a62aa3e6424102d9b8b808cb708c98f499c1e6628eba1635d15fba6c38c22d25954ec734979a5fef267c4aedd8cd290b39eece5c4f5f46fda644be
   languageName: node
   linkType: hard
 
@@ -5414,9 +5415,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/transaction-controller@npm:22.0.0"
+"@metamask/transaction-controller@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "@metamask/transaction-controller@npm:23.0.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5442,7 +5443,7 @@ __metadata:
     "@metamask/approval-controller": ^5.1.2
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
-  checksum: 58c212278bcb0abcfb9114f56f5d5167bd1b1a6873811583e327aa89008ff67a9362d1cd0a4481d503b1f81a25495c3c05cbd666502e35e48a45b54d82b740c9
+  checksum: a81e9253cfe44f7150550cdb9e67b5d5b51dd383f6d7c026891219cd556b98713ccf4e94ba0b91b8f1fd09ba07efd124e226c8ede21e52cf6e21e76c7c5e37af
   languageName: node
   linkType: hard
 
@@ -19594,8 +19595,8 @@ __metadata:
   linkType: hard
 
 "gridplus-sdk@npm:^2.5.1":
-  version: 2.5.2
-  resolution: "gridplus-sdk@npm:2.5.2"
+  version: 2.5.1
+  resolution: "gridplus-sdk@npm:2.5.1"
   dependencies:
     "@ethereumjs/common": "npm:3.1.1"
     "@ethereumjs/tx": "npm:4.1.1"
@@ -19616,7 +19617,7 @@ __metadata:
     rlp: "npm:^3.0.0"
     secp256k1: "npm:4.0.2"
     uuid: "npm:^9.0.0"
-  checksum: 566a9cb7a028cd9f9b650aab3d93c32b88eb4fa7bdf44b506b4cdc85e27dc91dbd3f3297aeed0e8abe8135dc7fbfce6c7d0381d26ab88a51acf4d90195140369
+  checksum: 57deeae78fc5f904309e689054baabaed8b078b896ecfd5d724889c6ea424a113db64c3fd79d4dca7cc5f558167d7af754506df5c0692ee76087822ae60c3873
   languageName: node
   linkType: hard
 
@@ -24607,7 +24608,7 @@ __metadata:
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
     "@blockaid/ppom_release": "npm:^1.4.1"
-    "@ensdomains/content-hash": "npm:^2.5.6"
+    "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"
@@ -24679,7 +24680,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/polling-controller": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
-    "@metamask/ppom-validator": "npm:^0.24.0"
+    "@metamask/ppom-validator": "npm:^0.26.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^0.3.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
@@ -24693,7 +24694,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^2.1.0"
     "@metamask/snaps-utils": "npm:^6.1.0"
     "@metamask/test-dapp": "npm:^7.3.1"
-    "@metamask/transaction-controller": "npm:^22.0.0"
+    "@metamask/transaction-controller": "npm:^23.0.0"
     "@metamask/user-operation-controller": "npm:^1.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
@@ -33708,11 +33709,11 @@ __metadata:
   linkType: hard
 
 "uint8arrays@npm:^2.1.3":
-  version: 2.1.10
-  resolution: "uint8arrays@npm:2.1.10"
+  version: 2.1.5
+  resolution: "uint8arrays@npm:2.1.5"
   dependencies:
-    multiformats: "npm:^9.4.2"
-  checksum: 63ceb5fecc09de69641531c847e0b435d15a73587e40d4db23ed9b8a1ebbe839ae39fe81a15ea6079cdf642fcf2583983f9a5d32726edc4bc5e87634f34e3bd5
+    multibase: "npm:^4.0.1"
+  checksum: 521a120ad21250004a95330d0501c87344c5072376b5d5d9ef642721f7913cc1880b823715e5d8829307a9dda73c3064283cb3a7442f0e85fef781cfca4f0334
   languageName: node
   linkType: hard
 
