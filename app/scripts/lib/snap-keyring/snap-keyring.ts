@@ -1,32 +1,15 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
-import type {
-  AcceptRequest,
-  AddApprovalRequest,
-  EndFlow,
-  RejectRequest,
-  ResultComponent,
-  ShowError,
-  ShowSuccess,
-  StartFlow,
-  ErrorResult,
-} from '@metamask/approval-controller';
-import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
 import browser from 'webextension-polyfill';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { SnapId } from '@metamask/snaps-sdk';
-import { GetSubjectMetadata } from '@metamask/permission-controller';
-import {
-  AccountsControllerGetAccountByAddressAction,
-  AccountsControllerSetSelectedAccountAction,
-} from '@metamask/accounts-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
-import { getSnapName as getSnapNameFromSubjectMetadata } from '../../../../ui/helpers/utils/util';
+import { getSnapName } from './utils/getSnapName';
 import { isBlockedUrl } from './utils/isBlockedUrl';
+import { showSuccess, showError } from './utils/showResult';
+import { SnapKeyringBuilderMessenger } from './types';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.
@@ -43,29 +26,6 @@ export const getAccountsBySnapId = async (
   return await snapKeyring.getAccountsBySnapId(snapId);
 };
 
-type SnapKeyringBuilderAllowActions =
-  | StartFlow
-  | EndFlow
-  | ShowSuccess
-  | ShowError
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
-  | MaybeUpdateState
-  | TestOrigin
-  | KeyringControllerGetAccountsAction
-  | GetSubjectMetadata
-  | AccountsControllerSetSelectedAccountAction
-  | AccountsControllerGetAccountByAddressAction;
-
-type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
-  'SnapKeyringBuilder',
-  SnapKeyringBuilderAllowActions,
-  never,
-  SnapKeyringBuilderAllowActions['type'],
-  never
->;
-
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing snap accounts.
  *
@@ -80,66 +40,13 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
  * - `removeAccount`: Initiates the process of removing an account with user confirmation and handling the user input.
  */
 export const snapKeyringBuilder = (
-  controllerMessenger: snapKeyringBuilderMessenger,
+  controllerMessenger: SnapKeyringBuilderMessenger,
   getSnapController: () => SnapController,
   persistKeyringHelper: () => Promise<void>,
   setSelectedAccountHelper: (address: string) => void,
   removeAccountHelper: (address: string) => Promise<any>,
 ) => {
   const builder = (() => {
-    const snapAuthorshipHeader = (snapId: string): ResultComponent => {
-      return {
-        name: 'SnapAuthorshipHeader',
-        key: 'snapHeader',
-        properties: { snapId },
-      } as ResultComponent;
-    };
-
-    const getSnapName = (snapId: string): string => {
-      const subjectMetadata = controllerMessenger.call(
-        'SubjectMetadataController:getSubjectMetadata',
-        snapId,
-      );
-
-      return getSnapNameFromSubjectMetadata(snapId, subjectMetadata);
-    };
-
-    const showError = (
-      snapId: string,
-      title: string,
-      icon: IconName,
-      properties: Record<string, any>,
-    ): Promise<ErrorResult> => {
-      return controllerMessenger.call('ApprovalController:showError', {
-        header: [snapAuthorshipHeader(snapId)],
-        title,
-        icon,
-        error: {
-          key: 'snapAccountErrorMessage',
-          name: 'SnapAccountErrorMessage',
-          properties,
-        },
-      });
-    };
-
-    const showSuccess = (
-      snapId: string,
-      title: string,
-      icon: IconName,
-      properties: Record<string, any>,
-    ): Promise<ErrorResult> => {
-      return controllerMessenger.call('ApprovalController:showSuccess', {
-        header: [snapAuthorshipHeader(snapId)],
-        title,
-        icon,
-        message: {
-          key: 'snapAccountSuccessMessage',
-          name: 'SnapAccountSuccessMessage',
-          properties,
-        },
-      });
-    };
-
     return new SnapKeyring(getSnapController() as any, {
       addressExists: async (address) => {
         const addresses = await controllerMessenger.call(
@@ -233,9 +140,12 @@ export const snapKeyringBuilder = (
               );
 
               await showSuccess(
+                controllerMessenger,
                 snapId,
-                t('snapAccountCreated') as string,
-                IconName.UserCircleAdd,
+                {
+                  icon: IconName.UserCircleAdd,
+                  title: t('snapAccountCreated'),
+                },
                 {
                   message: t('snapAccountCreatedDescription') as string,
                   address,
@@ -245,11 +155,14 @@ export const snapKeyringBuilder = (
             } catch (e) {
               const error = (e as Error).message;
 
-              const snapName = getSnapName(snapId);
+              const snapName = getSnapName(controllerMessenger, snapId);
               await showError(
+                controllerMessenger,
                 snapId,
-                t('snapAccountCreationFailed') as string,
-                IconName.UserCircleAdd,
+                {
+                  icon: IconName.UserCircleAdd,
+                  title: t('snapAccountCreationFailed'),
+                },
                 {
                   message: t(
                     'snapAccountCreationFailedDescription',
@@ -307,9 +220,12 @@ export const snapKeyringBuilder = (
 
               // This isn't actually an error, but we show it as one for styling reasons
               await showError(
+                controllerMessenger,
                 snapId,
-                t('snapAccountRemoved') as string,
-                IconName.UserCircleRemove,
+                {
+                  icon: IconName.UserCircleRemove,
+                  title: t('snapAccountRemoved'),
+                },
                 {
                   message: t('snapAccountRemovedDescription') as string,
                   learnMoreLink,
@@ -318,11 +234,14 @@ export const snapKeyringBuilder = (
             } catch (e) {
               const error = (e as Error).message;
 
-              const snapName = getSnapName(snapId);
+              const snapName = getSnapName(controllerMessenger, snapId);
               await showError(
+                controllerMessenger,
                 snapId,
-                t('snapAccountRemovalFailed') as string,
-                IconName.UserCircleRemove,
+                {
+                  icon: IconName.UserCircleRemove,
+                  title: t('snapAccountRemovalFailed'),
+                },
                 {
                   message: t(
                     'snapAccountRemovalFailedDescription',
