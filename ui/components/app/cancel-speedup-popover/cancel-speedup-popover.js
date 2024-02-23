@@ -47,6 +47,7 @@ const CancelSpeedupPopover = () => {
       appIsLoading ||
       currentModal !== 'cancelSpeedUpTransaction'
     ) {
+      console.log('exit early')
       return;
     }
     // If gas used previously + 10% is less than medium estimated gas
@@ -58,6 +59,7 @@ const CancelSpeedupPopover = () => {
         gasFeeEstimates,
         PriorityLevels.medium,
       );
+    console.log({gasUsedLessThanMedium})
     if (gasUsedLessThanMedium) {
       updateTransactionUsingEstimate(PriorityLevels.medium);
       return;

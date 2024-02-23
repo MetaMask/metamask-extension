@@ -171,7 +171,7 @@ describe('CancelSpeedupPopover', () => {
     ).toBeGreaterThan(0);
   });
 
-  it('should show correct gas values, set to the estimated medium, when initial initial gas value is below estimated medium', async () => {
+  it.only('should show correct gas values, set to the estimated medium, when initial initial gas value is below estimated medium', async () => {
     await act(async () =>
       render(
         {

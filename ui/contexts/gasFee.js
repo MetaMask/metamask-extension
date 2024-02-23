@@ -17,6 +17,7 @@ export const GasFeeContextProvider = ({
     minimumGasLimit,
     editGasMode,
   );
+  console.log('gasFee context', gasFeeDetails.gasFeeEstimates)
   return (
     <GasFeeContext.Provider value={gasFeeDetails}>
       {children}
