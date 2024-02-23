@@ -37,7 +37,9 @@ export const Connections = () => {
   const t = useI18nContext();
   const history = useHistory();
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const subjectMetadata: { [key: string]: any } = useSelector(getConnectedSitesList);
+  const subjectMetadata: { [key: string]: any } = useSelector(
+    getConnectedSitesList,
+  );
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   return (
     <Page data-testid="connections-page" className="connections-page">
