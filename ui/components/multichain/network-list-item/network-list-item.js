@@ -83,6 +83,7 @@ export const NetworkListItem = ({
         className="multichain-network-list-item__network-name"
         display={Display.Flex}
         alignItems={AlignItems.center}
+        data-testid={name}
       >
         <Text
           ref={networkRef}
