@@ -148,8 +148,6 @@ function getAttenuatedDispatch(dispatch) {
  * @param {Function} t - Translation function.
  * @param {Function} dispatch - Redux dispatch function.
  * @param {object} history - The application's history object.
- * @param {Function} setInputState - A function that can be used to record the
- * state of input fields in the templated component.
  * @param {object} data - The data object passed into the template from the confimation page.
  */
 export function getTemplateValues(
@@ -157,7 +155,6 @@ export function getTemplateValues(
   t,
   dispatch,
   history,
-  setInputState,
   data,
 ) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
@@ -173,7 +170,6 @@ export function getTemplateValues(
     t,
     safeActions,
     history,
-    setInputState,
     data,
   );
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
