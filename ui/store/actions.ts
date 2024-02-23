@@ -2166,7 +2166,7 @@ export function createCancelTransaction(
   customGasSettings: CustomGasSettings,
   options: { estimatedBaseFee?: string } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug('background.cancelTransaction');
+  log.debug('background.createCancelTransaction');
   let newTxId: string;
 
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2177,6 +2177,18 @@ export function createCancelTransaction(
         [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
+            if (
+              err?.message?.includes(
+                'Previous transaction is already confirmed',
+              )
+            ) {
+              dispatch(
+                showModal({
+                  name: 'TRANSACTION_ALREADY_CONFIRMED',
+                  originalTransactionId: txId,
+                }),
+              );
+            }
             dispatch(displayWarning(err));
             reject(err);
             return;
