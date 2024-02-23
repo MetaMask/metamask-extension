@@ -1223,6 +1223,15 @@
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
+  "deprecatedNetwork": {
+    "message": "This network is deprecated"
+  },
+  "deprecatedNetworkButtonMsg": {
+    "message": "Got it"
+  },
+  "deprecatedNetworkDescription": {
+    "message": "The network you're trying to connect to is no longer supported by Metamask. $1"
+  },
   "description": {
     "message": "Description"
   },

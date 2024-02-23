@@ -18,6 +18,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   BUILT_IN_NETWORKS,
+  CHAIN_IDS,
   FEATURED_RPCS,
   infuraProjectId,
 } from '../../../../../shared/constants/network';
@@ -40,6 +41,7 @@ import {
   editAndSetNetworkConfiguration,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
+  showDeprecatedNetworkModal,
   showModal,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
@@ -571,7 +573,9 @@ const NetworksForm = ({
       const prefixedChainId = prefixChainId(formChainId);
       let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
-      if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
+      if (prefixedChainId === CHAIN_IDS.GOERLI) {
+        dispatch(showDeprecatedNetworkModal());
+      } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
           editAndSetNetworkConfiguration(
             {
@@ -625,7 +629,11 @@ const NetworksForm = ({
         });
       }
 
-      if (addNewNetwork && !setActiveOnSubmit) {
+      if (
+        addNewNetwork &&
+        !setActiveOnSubmit &&
+        prefixedChainId !== CHAIN_IDS.GOERLI
+      ) {
         dispatch(
           setNewNetworkAdded({
             nickname: networkName,
