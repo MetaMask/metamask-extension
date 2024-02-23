@@ -21,6 +21,7 @@ import {
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
+import { brandColor } from '@metamask/design-tokens';
 import { useTheme } from '../../../hooks/useTheme';
 import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
@@ -200,7 +201,8 @@ const AssetChart = ({
 
           setChartOptions((options) => ({
             ...options,
-            borderColor: theme === 'dark' ? '#1098fc' : '#0376c9',
+            borderColor:
+              theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
             onResize: () => drawTooltips(),
             scales: {
               x: { min: xMin.x, max: xMax.x, display: false, type: 'linear' },
