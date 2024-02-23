@@ -36,22 +36,13 @@
   height: 24px;
 
   &:hover {
-    background-color: var(--color-background-default-hover) !important;
-    color: var(--color-text-alternative) !important;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default) !important;
-  }
-
-  &:active {
-    border-color: transparent;
-  }
-
-  &:focus {
-    background-color: var(--color-background-default);
-    color: var(--color-text-alternative) !important;
+    background-color: var(--color-background-default-hover);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 
   &__selected {
-    background-color: var(--color-background-default-pressed) !important;;
+    color: var(--color-text-default);
+    background-color: var(--color-background-default-pressed);
   }
 }
 

@@ -26,7 +26,6 @@ import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
-  BorderColor,
   Display,
   JustifyContent,
   TextColor,
@@ -36,8 +35,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  ButtonSecondary,
-  ButtonSecondarySize,
+  ButtonBase,
+  ButtonBaseSize,
   Icon,
   IconName,
   IconSize,
@@ -297,23 +296,19 @@ const AssetChart = ({
         >
           {((buttons: [string, TimeRange][]) =>
             buttons.map(([label, range]) => (
-              <ButtonSecondary
+              <ButtonBase
                 key={range}
                 className={classnames('time-range-button', {
                   'time-range-button__selected': range === timeRange,
                 })}
                 onClick={() => setTimeRange(range)}
                 variant={TextVariant.bodySmMedium}
-                size={ButtonSecondarySize.Sm}
-                borderColor={BorderColor.transparent}
-                color={
-                  range === timeRange
-                    ? TextColor.textDefault
-                    : TextColor.textAlternative
-                }
+                size={ButtonBaseSize.Sm}
+                backgroundColor={BackgroundColor.transparent}
+                color={TextColor.textAlternative}
               >
                 {label}
-              </ButtonSecondary>
+              </ButtonBase>
             )))([
             [t('oneDayAbbreviation'), '1D'],
             [t('oneWeekAbbreviation'), '7D'],
