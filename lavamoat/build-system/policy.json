@@ -2289,8 +2289,8 @@
     },
     "del>p-map>aggregate-error": {
       "packages": {
-        "@testing-library/jest-dom>redent>indent-string": true,
-        "del>p-map>aggregate-error>clean-stack": true
+        "del>p-map>aggregate-error>clean-stack": true,
+        "prettier-eslint>indent-string": true
       }
     },
     "del>p-map>aggregate-error>clean-stack": {
