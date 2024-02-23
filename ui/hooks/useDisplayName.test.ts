@@ -30,7 +30,7 @@ const FIRST_PARTY_CONTRACT_NAME_MOCK = 'MetaMask Bridge';
 const NO_PETNAME_FOUND_RETURN_VALUE = {
   name: null,
 } as NameEntry;
-const NO_CONTRACT_NAME_FOUND_RETURN_VALUE = "";
+const NO_CONTRACT_NAME_FOUND_RETURN_VALUE = '';
 const NO_FIRST_PARTY_CONTRACT_NAME_FOUND_RETURN_VALUE = null;
 
 const PETNAME_FOUND_RETURN_VALUE = {
@@ -63,7 +63,9 @@ describe('useDisplayName', () => {
 
   it('prioritizes a petname over all else', () => {
     useNameMock.mockReturnValue(PETNAME_FOUND_RETURN_VALUE);
-    useFirstPartyContractNameMock.mockReturnValue(FIRST_PARTY_CONTRACT_NAME_MOCK);
+    useFirstPartyContractNameMock.mockReturnValue(
+      FIRST_PARTY_CONTRACT_NAME_MOCK,
+    );
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
 
     expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
@@ -74,7 +76,9 @@ describe('useDisplayName', () => {
 
   it('prioritizes a first-party contract name over a contract name', () => {
     useNameMock.mockReturnValue(NO_PETNAME_FOUND_RETURN_VALUE);
-    useFirstPartyContractNameMock.mockReturnValue(FIRST_PARTY_CONTRACT_NAME_MOCK);
+    useFirstPartyContractNameMock.mockReturnValue(
+      FIRST_PARTY_CONTRACT_NAME_MOCK,
+    );
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
 
     expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
@@ -85,7 +89,9 @@ describe('useDisplayName', () => {
 
   it('returns a contract name if no other name is found', () => {
     useNameMock.mockReturnValue(NO_PETNAME_FOUND_RETURN_VALUE);
-    useFirstPartyContractNameMock.mockReturnValue(NO_FIRST_PARTY_CONTRACT_NAME_FOUND_RETURN_VALUE);
+    useFirstPartyContractNameMock.mockReturnValue(
+      NO_FIRST_PARTY_CONTRACT_NAME_FOUND_RETURN_VALUE,
+    );
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
 
     expect(useDisplayName(VALUE_MOCK, TYPE_MOCK)).toEqual({
