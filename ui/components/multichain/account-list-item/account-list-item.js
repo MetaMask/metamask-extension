@@ -143,7 +143,10 @@ export const AccountListItem = ({
         />
       )}
       {process.env.MULTICHAIN && (
-        <Box display={[Display.Flex, Display.None]} data-testid="account-list-item-badge">
+        <Box
+          display={[Display.Flex, Display.None]}
+          data-testid="account-list-item-badge"
+        >
           <ConnectedStatus address={identity.address} isActive={isActive} />
         </Box>
       )}
