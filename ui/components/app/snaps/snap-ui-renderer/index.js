@@ -1,1 +1,1 @@
-export { SnapUIRenderer, mapToTemplate } from './snap-ui-renderer';
+export { SnapUIRenderer } from './snap-ui-renderer';

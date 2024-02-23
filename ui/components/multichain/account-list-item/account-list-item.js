@@ -48,6 +48,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  getAddressConnectedSubjectMap,
   getCurrentNetwork,
   getNativeCurrencyImage,
   getShowFiatInTestnets,
@@ -69,6 +70,7 @@ export const AccountListItem = ({
   isPinned = false,
   showOptions = false,
   isHidden = false,
+  currentTabOrigin,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -104,6 +106,14 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const selectedAddressSubjectMap =
+    addressConnectedSubjectMap[identity.address];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  );
+  const isConnected =
+    currentTabOrigin && currentTabIsConnectedToSelectedAddress;
 
   return (
     <Box
@@ -314,6 +324,7 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
+          isConnected={isConnected}
         />
       ) : null}
     </Box>
@@ -365,6 +376,10 @@ AccountListItem.propTypes = {
    * Represents hidden accounts
    */
   isHidden: PropTypes.bool,
+  /**
+   * Represents current tab origin
+   */
+  currentTabOrigin: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';
