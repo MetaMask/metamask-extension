@@ -84,16 +84,13 @@ function blockedDomainCheck() {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
-  const { hostname } = window.location;
-  const path = window.location.pathname;
+  const { hostname, pathname } = window.location;
 
-  const blockedDomainFound = blockedDomains.some(
-    (blockedDomain) =>
-      blockedDomain === hostname || hostname.endsWith(`.${blockedDomain}`),
+  return (
+      blockedDomains.some((blockedDomain) =>
+        blockedDomain === hostname || hostname.endsWith(`.${blockedDomain}`)
+    ) || blockedHrefs.some((blockedHref) =>
+      (hostname + pathname).includes(blockedHref)
+    )
   );
-  const blockedHrefFound = blockedHrefs.some((blockedHref) =>
-    (hostname + path).includes(blockedHref),
-  );
-
-  return blockedDomainFound || blockedHrefFound;
 }
