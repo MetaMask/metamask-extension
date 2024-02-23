@@ -272,17 +272,25 @@ class Driver {
    * The second choice for the guard is to use the waitAtLeast parameter.
    *
    * @param {*} rawLocator
-   * @param {number} waitAtLeast - The minimum milliseconds to wait before passing
+   * @param {string | object} findElementGuard - A rawLocator to perform a findElement and act as a guard
+   * @param {number} waitAtLeastGuard - The minimum milliseconds to wait before passing
    * @param {number} timeout - The maximum milliseconds to wait before failing
    */
-  async waitForElementNotPresent(
+  async assertElementNotPresent(
     rawLocator,
-    waitAtLeast = 0,
-    timeout = this.timeout,
+    {
+      findElementGuard = '',
+      waitAtLeastGuard = 0,
+      timeout = this.timeout,
+    } = {},
   ) {
-    assert(timeout > waitAtLeast);
-    if (waitAtLeast > 0) {
-      await this.delay(waitAtLeast);
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+
+    if (findElementGuard) {
+      await this.findElement(findElementGuard);
     }
 
     const locator = this.buildLocator(rawLocator);
@@ -290,7 +298,7 @@ class Driver {
     try {
       await this.driver.wait(
         until.elementIsNotPresent(locator),
-        timeout - waitAtLeast,
+        timeout - waitAtLeastGuard,
       );
     } catch (err) {
       throw new Error(

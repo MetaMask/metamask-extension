@@ -33,8 +33,9 @@ describe('Account list - pin/unpin functionality - ', function () {
         );
         await driver.clickElement('[data-testid="account-list-menu-pin"]');
 
-        // A waitAtLeast guard of 1000ms is the best choice here
-        await driver.waitForElementNotPresent(pinnedIconSelector, 1000);
+        await driver.assertElementNotPresent(pinnedIconSelector, {
+          waitAtLeastGuard: 200, // A waitAtLeastGuard of 200ms is the best choice here
+        });
       },
     );
   });

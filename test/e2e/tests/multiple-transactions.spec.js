@@ -130,8 +130,8 @@ describe('Multiple transactions', function () {
         );
         assert.equal(isTransactionListEmpty, true);
 
-        // The previous isTransactionListEmpty wait already serves as the guard here for the notPresent
-        await driver.waitForElementNotPresent(
+        // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
+        await driver.assertElementNotPresent(
           '.transaction-list__completed-transactions .activity-list-item',
         );
       },

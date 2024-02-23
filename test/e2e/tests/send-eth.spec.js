@@ -15,6 +15,9 @@ const FixtureBuilder = require('../fixture-builder');
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -22,10 +25,6 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
-          if (process.env.MULTICHAIN) {
-            return;
-          }
-
           await logInWithBalanceValidation(driver, ganacheServer);
 
           await openActionMenuAndStartSendFlow(driver);
@@ -47,8 +46,9 @@ describe('Send ETH', function () {
           await inputAmount.press(driver.Key.BACK_SPACE);
           await inputAmount.press(driver.Key.BACK_SPACE);
 
-          // A waitAtLeast guard of 100ms is the best choice here
-          await driver.waitForElementNotPresent('.send-v2__error-amount', 100);
+          await driver.assertElementNotPresent('.send-v2__error-amount', {
+            waitAtLeastGuard: 100, // A waitAtLeastGuard of 100ms is the best choice here
+          });
 
           const amountMax = await driver.findClickableElement(
             '.send-v2__amount-max',
@@ -91,6 +91,9 @@ describe('Send ETH', function () {
 
     /* eslint-disable-next-line mocha/max-top-level-suites */
     it('finds the transaction in the transactions list using advanced gas modal', async function () {
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -104,9 +107,6 @@ describe('Send ETH', function () {
           await driver.delay(1000);
 
           await openActionMenuAndStartSendFlow(driver);
-          if (process.env.MULTICHAIN) {
-            return;
-          }
           await driver.fill(
             'input[placeholder="Enter public address (0x) or ENS name"]',
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -193,18 +193,18 @@ describe('Send ETH', function () {
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-          assert.equal(await balance.getText(), '$42,496.38\nUSD');
+          const balance = await driver.findElement({
+            css: '[data-testid="eth-overview__primary-currency"]',
+            text: '$42,496.38\nUSD',
+          });
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
             '.transaction-list__completed-transactions .activity-list-item',
           );
 
-          // The previous findElement already serves as the guard here for the notPresent
-          await driver.waitForElementNotPresent(
+          // The previous findElement already serves as the guard here for the assertElementNotPresent
+          await driver.assertElementNotPresent(
             '.transaction-status-label--failed',
           );
         },
@@ -212,6 +212,9 @@ describe('Send ETH', function () {
     });
 
     it('shows no error when cancel transaction when sending via QR code', async function () {
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -219,16 +222,14 @@ describe('Send ETH', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          if (process.env.MULTICHAIN) {
-            return;
-          }
           await unlockWallet(driver);
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-          await driver.isElementPresent('.loading-overlay__spinner');
-          await driver.waitForElementNotPresent('.loading-overlay__spinner');
-          assert.equal(await balance.getText(), '$42,500.00\nUSD');
+
+          await driver.assertElementNotPresent('.loading-overlay__spinner');
+          await driver.findElement({
+            css: '[data-testid="eth-overview__primary-currency"]',
+            text: '$42,500.00\nUSD',
+          });
+
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
@@ -239,7 +240,7 @@ describe('Send ETH', function () {
             text: "We couldn't access your camera. Please give it another try.",
           });
           await driver.clickElement({ text: 'Cancel', tag: 'button' });
-          await driver.waitForElementNotPresent(
+          await driver.assertElementNotPresent(
             '[data-testid="qr-scanner-modal"]',
           );
         },
@@ -271,10 +272,10 @@ describe('Send ETH', function () {
               windowHandles,
             );
 
-            // Guard before waitForElementNotPresent -- make sure the Dialog has loaded
-            await driver.findElement({ text: 'Estimated gas fee', tag: 'h6' });
-
-            await driver.waitForElementNotPresent({ text: 'Data', tag: 'li' });
+            await driver.assertElementNotPresent(
+              { text: 'Data', tag: 'li' },
+              { findElementGuard: { text: 'Estimated gas fee', tag: 'h6' } }, // make sure the Dialog has loaded
+            );
 
             await driver.clickElement({ text: 'Edit', tag: 'button' });
             await driver.waitForSelector({
@@ -346,10 +347,10 @@ describe('Send ETH', function () {
               windowHandles,
             );
 
-            // Guard before waitForElementNotPresent -- make sure the Dialog has loaded
-            await driver.findElement({ text: 'Estimated fee', tag: 'p' });
-
-            await driver.waitForElementNotPresent({ text: 'Data', tag: 'li' });
+            await driver.assertElementNotPresent(
+              { text: 'Data', tag: 'li' },
+              { findElementGuard: { text: 'Estimated fee', tag: 'p' } }, // make sure the Dialog has loaded
+            );
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.clickElement(
@@ -420,6 +421,9 @@ describe('Send ETH', function () {
 
     describe('to non-contract address with data that matches ERC20 transfer data signature', function () {
       it('renders the correct recipient on the confirmation screen', async function () {
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder()
@@ -435,18 +439,14 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
-            const balance = await driver.findElement(
-              '[data-testid="eth-overview__primary-currency"]',
-            );
 
-            await driver.isElementPresent('.loading-overlay__spinner');
-            await driver.waitForElementNotPresent('.loading-overlay__spinner');
-            assert.equal(await balance.getText(), '$42,500.00\nUSD');
+            await driver.assertElementNotPresent('.loading-overlay__spinner');
+            await driver.findElement({
+              css: '[data-testid="eth-overview__primary-currency"]',
+              text: '$42,500.00\nUSD',
+            });
 
             await openActionMenuAndStartSendFlow(driver);
-            if (process.env.MULTICHAIN) {
-              return;
-            }
             await driver.fill(
               'input[placeholder="Enter public address (0x) or ENS name"]',
               '0xc427D562164062a23a5cFf596A4a3208e72Acd28',

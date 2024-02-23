@@ -169,8 +169,8 @@ describe('Incremental Security', function () {
 
         assert.strictEqual(balance, '$1,700.00');
 
-        // The previous currencyDisplay wait already serves as the guard here for the notPresent
-        await driver.waitForElementNotPresent('.backup-notification');
+        // The previous currencyDisplay wait already serves as the guard here for the assertElementNotPresent
+        await driver.assertElementNotPresent('.backup-notification');
       },
     );
   });

@@ -62,10 +62,9 @@ describe('eth_subscribe', function () {
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
 
-        // A waitAtLeast guard of 1000ms is the best choice here
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="eth-subscribe-response"]',
-          1000,
+          { waitAtLeastGuard: 1000 }, // A waitAtLeastGuard of 1000ms is the best choice here
         );
       },
     );

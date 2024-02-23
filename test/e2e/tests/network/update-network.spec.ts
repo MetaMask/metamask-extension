@@ -44,6 +44,7 @@ async function navigateToEditNetwork(driver: Driver) {
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
 }
+
 describe('Update Network:', function (this: Suite) {
   it('update network details and validate the ui elements', async function () {
     await withFixtures(
@@ -103,19 +104,17 @@ describe('Update Network:', function (this: Suite) {
 
         await driver.clickElement(selectors.ethereumNetwork);
 
-        // Guard before waitForElementNotPresent -- wait for the network selection to complete
-        await driver.findElement(
-          selectors.networkNameInputFieldSetToEthereumMainnet,
-        );
-
-        // Validate the Save,Cancel Delete button is not present for the default network
-        await driver.waitForElementNotPresent(selectors.deleteButton);
-        await driver.waitForElementNotPresent(selectors.cancelButton);
-        await driver.waitForElementNotPresent(selectors.saveButton);
+        // Validate the Save, Cancel, and Delete buttons are not present for the default network
+        await driver.assertElementNotPresent(selectors.deleteButton, {
+          findElementGuard: selectors.networkNameInputFieldSetToEthereumMainnet, // Wait for the network selection to complete
+        });
+        // The findElementGuard above is sufficient for the next two assertions
+        await driver.assertElementNotPresent(selectors.cancelButton);
+        await driver.assertElementNotPresent(selectors.saveButton);
 
         // Validate the error does not appear for updating the network name and chain id
         await driver.clickElement(selectors.generalOption);
-        await driver.waitForElementNotPresent(selectors.errorContainer);
+        await driver.assertElementNotPresent(selectors.errorContainer);
       },
     );
   });

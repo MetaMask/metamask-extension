@@ -163,17 +163,20 @@ describe('Test Snap update via snaps component', function () {
           tag: 'p',
         });
 
-        // Guard before waitForElementNotPresent -- make sure the Snap page has loaded
-        await driver.findElement({
-          text: 'Description from BIP-32 Example Snap',
-          tag: 'p',
-        });
-
-        await driver.waitForElementNotPresent({
-          css: '.mm-button-link',
-          text: 'Update',
-          tag: 'button',
-        });
+        await driver.waitForElementNotPresent(
+          {
+            css: '.mm-button-link',
+            text: 'Update',
+            tag: 'button',
+          },
+          {
+            // make sure the Snap page has loaded
+            findElementGuard: {
+              text: 'Description from BIP-32 Example Snap',
+              tag: 'p',
+            },
+          },
+        );
       },
     );
   });
