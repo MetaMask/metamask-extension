@@ -16,22 +16,22 @@ const SnapAccountErrorMessage = ({
   const t = useI18nContext();
 
   return (
-    <React.Fragment>
+    <>
       <Text style={error ? { marginBottom: 2 } : {}}>
         {message}
         {learnMoreLink && (
-          <React.Fragment>
+          <>
             {' '}
             <a href={learnMoreLink} rel="noopener noreferrer" target="_blank">
               {t('learnMoreUpperCase') as string}
             </a>
-          </React.Fragment>
+          </>
         )}
       </Text>
       {error && (
         <ActionableMessage type={'danger'} message={error}></ActionableMessage>
       )}
-    </React.Fragment>
+    </>
   );
 };
 
