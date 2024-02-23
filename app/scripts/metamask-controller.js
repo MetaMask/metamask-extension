@@ -1506,8 +1506,6 @@ export default class MetamaskController extends EventEmitter {
       initState.TransactionController,
     );
 
-    this.txController.wipeTransactions();
-
     this._addTransactionControllerListeners();
 
     networkControllerMessenger.subscribe(
