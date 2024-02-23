@@ -43,7 +43,6 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  clearSmartTransactionFees,
 } from '../../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -1047,13 +1046,11 @@ export default class ConfirmTransactionBase extends Component {
     });
 
     if (smartTransactionsOptInStatus && isAllowedStxChainId) {
+      // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
+      // Long-term, we want to have a new proxy service specifically for feature flags.
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await setSwapsFeatureFlags(swapsFeatureFlags);
       await fetchSmartTransactionsLiveness();
-    }
-
-    if (isSmartTransaction) {
-      clearSmartTransactionFees();
     }
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
