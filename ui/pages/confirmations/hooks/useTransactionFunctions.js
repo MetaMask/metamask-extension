@@ -183,7 +183,7 @@ export const useTransactionFunctions = ({
           ? CUSTOM_GAS_ESTIMATE
           : PriorityLevels.tenPercentIncreased;
 
-      if (!gasFeeEstimates?.[estimateUsed]) {
+      if (!gasFeeEstimates) {
         return;
       }
       updateTransaction({
