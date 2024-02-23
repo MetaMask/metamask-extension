@@ -46,8 +46,6 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
     return (
       <>
         <UserPreferencedCurrencyInput
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore: I'm not sure why the types don't find `onChange`
           onChange={(newAmount: string) =>
             dispatch(updateSendAmount(newAmount))
           }
