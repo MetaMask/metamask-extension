@@ -150,13 +150,7 @@ function getAttenuatedDispatch(dispatch) {
  * @param {object} history - The application's history object.
  * @param {object} data - The data object passed into the template from the confimation page.
  */
-export function getTemplateValues(
-  pendingApproval,
-  t,
-  dispatch,
-  history,
-  data,
-) {
+export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -165,13 +159,7 @@ export function getTemplateValues(
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(
-    pendingApproval,
-    t,
-    safeActions,
-    history,
-    data,
-  );
+  const values = fn(pendingApproval, t, safeActions, history, data);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {
