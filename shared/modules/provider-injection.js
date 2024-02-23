@@ -87,10 +87,12 @@ function blockedDomainCheck() {
   const { hostname, pathname } = window.location;
 
   return (
-      blockedDomains.some((blockedDomain) =>
-        blockedDomain === hostname || hostname.endsWith(`.${blockedDomain}`)
-    ) || blockedHrefs.some((blockedHref) =>
-      (hostname + pathname).includes(blockedHref)
+    blockedDomains.some(
+      (blockedDomain) =>
+        blockedDomain === hostname || hostname.endsWith(`.${blockedDomain}`),
+    ) ||
+    blockedHrefs.some((blockedHref) =>
+      (hostname + pathname).includes(blockedHref),
     )
   );
 }
