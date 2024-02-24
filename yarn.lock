@@ -5383,9 +5383,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@23.0.0-preview.c0e7b34":
-  version: 23.0.0-preview.c0e7b34
-  resolution: "@metamask-previews/transaction-controller@npm:23.0.0-preview.c0e7b34"
+"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@23.0.0-preview.0dea691a":
+  version: 23.0.0-preview.0dea691a
+  resolution: "@metamask-previews/transaction-controller@npm:23.0.0-preview.0dea691a"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5411,7 +5411,7 @@ __metadata:
     "@metamask/approval-controller": ^5.1.2
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
-  checksum: 0476e7f01e18bf0067432fbc052adf76e409890a7e3132d921cbbc792660bb3414ab0e1f2c9b3e590eeef04a4af2f61532f0a44964e340b4fd9788bc25aa9f68
+  checksum: 8add3a8e01e7b891969d4570df3f1dc4d8db1198df433ae577e2aa610ecee9661adc6b5e9a258d4f5d25a242a4238d449996517b645dc729724e5a4c92666a2b
   languageName: node
   linkType: hard
 
@@ -24694,7 +24694,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^2.1.0"
     "@metamask/snaps-utils": "npm:^6.1.0"
     "@metamask/test-dapp": "npm:^7.3.1"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@23.0.0-preview.c0e7b34"
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@23.0.0-preview.0dea691a"
     "@metamask/user-operation-controller": "npm:^1.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
