@@ -119,6 +119,18 @@ export default class PreferencesController {
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
 
+    opts.onKeyringStateChange((state) => {
+      const accounts = new Set();
+      for (const keyring of state.keyrings) {
+        for (const address of keyring.accounts) {
+          accounts.add(address);
+        }
+      }
+      if (accounts.size > 0) {
+        this.syncAddresses(Array.from(accounts));
+      }
+    });
+
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };

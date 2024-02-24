@@ -4,6 +4,7 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
+import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
 
 const state = {
   invalidCustomNetwork: {
@@ -277,6 +278,24 @@ const state = {
         ],
       },
     },
+    interfaces: {
+      'test-interface': {
+        content: panel([
+          heading('Foo bar'),
+          text('Description'),
+          divider(),
+          text('More text'),
+          copyable('Text you can copy'),
+        ]),
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+      'error-interface': {
+        content: 'foo',
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+    },
     accountArray: [
       {
         name: 'This is a Really Long Account Name',
@@ -454,7 +473,7 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5': {
+      '0xaa36a7': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -654,11 +673,11 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     providerConfig: {
-      type: 'goerli',
+      type: 'sepolia',
       ticker: 'ETH',
-      nickname: 'Goerli',
+      nickname: 'Sepolia',
       rpcUrl: '',
-      chainId: '0x5',
+      chainId: '0xaa36a7',
     },
     network: '5',
     accounts: {

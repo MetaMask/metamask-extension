@@ -188,6 +188,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
       },
+      SelectedNetworkController: {
+        domains: {},
+        perDomainNetwork: false,
+      },
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
@@ -445,6 +449,7 @@ class FixtureBuilder {
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
         },
         '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
           id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
@@ -843,6 +848,21 @@ class FixtureBuilder {
     return this.withPreferencesController({
       openSeaEnabled: true,
       useNftDetection: true,
+    });
+  }
+
+  withSelectedNetworkController(data) {
+    merge(this.fixture.data.SelectedNetworkController, data);
+    return this;
+  }
+
+  withSelectedNetworkControllerPerDomain() {
+    return this.withSelectedNetworkController({
+      domains: {
+        [DAPP_URL]: 'networkConfigurationId',
+        [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+      },
+      perDomainNetwork: true,
     });
   }
 
