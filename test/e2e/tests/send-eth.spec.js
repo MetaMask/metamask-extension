@@ -195,7 +195,7 @@ describe('Send ETH', function () {
           // Go back to home screen to check txn
           const balance = await driver.findElement({
             css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,496.38\nUSD',
+            text: '$42,496.38',
           });
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
@@ -227,7 +227,7 @@ describe('Send ETH', function () {
           await driver.assertElementNotPresent('.loading-overlay__spinner');
           await driver.findElement({
             css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,500.00\nUSD',
+            text: '$42,500.00',
           });
 
           await openActionMenuAndStartSendFlow(driver);
@@ -443,7 +443,7 @@ describe('Send ETH', function () {
             await driver.assertElementNotPresent('.loading-overlay__spinner');
             await driver.findElement({
               css: '[data-testid="eth-overview__primary-currency"]',
-              text: '$42,500.00\nUSD',
+              text: '$42,500.00',
             });
 
             await openActionMenuAndStartSendFlow(driver);
