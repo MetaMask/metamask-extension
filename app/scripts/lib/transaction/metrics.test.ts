@@ -1,5 +1,6 @@
 import { Provider } from '@metamask/network-controller';
 import {
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -75,15 +76,15 @@ describe('Transaction metrics', () => {
   let fromAccount,
     mockChainId,
     mockNetworkId,
-    mockTransactionMeta,
-    mockTransactionMetaWithBlockaid,
-    expectedProperties,
-    expectedSensitiveProperties,
-    mockActionId;
+    mockTransactionMeta: TransactionMeta,
+    mockTransactionMetaWithBlockaid: any,
+    expectedProperties: any,
+    expectedSensitiveProperties: any,
+    mockActionId: any;
 
   beforeEach(() => {
     fromAccount = getTestAccounts()[0];
-    mockChainId = '0x5';
+    mockChainId = '0x5' as const;
     mockNetworkId = '5';
     mockActionId = '2';
     mockTransactionMeta = {
@@ -188,7 +189,10 @@ describe('Transaction metrics', () => {
     });
 
     it('should create event fragment when simulation failed', async () => {
-      mockTransactionMeta.simulationFails = true;
+      mockTransactionMeta.simulationFails = {
+        reason: 'test',
+        debug: {},
+      };
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,

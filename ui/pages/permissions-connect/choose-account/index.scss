@@ -1,6 +1,8 @@
+@use "design-system";
+
 .permissions-connect-choose-account {
   &__title {
-    @include H4;
+    @include design-system.H4;
   }
 
   &__cancel {
@@ -24,7 +26,7 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       flex-direction: column-reverse;
       justify-content: space-between;
       padding-bottom: 20px;
