@@ -1463,7 +1463,6 @@ export default class MetamaskController extends EventEmitter {
     this.txController = new TransactionController(
       {
         blockTracker: this.blockTracker,
-        provider: this.provider,
         cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
@@ -1517,11 +1516,7 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-        getNetworkClientRegistry:
-          this.networkController.getNetworkClientRegistry.bind(
-            this.networkController,
-          ),
+        provider: this.provider,
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
