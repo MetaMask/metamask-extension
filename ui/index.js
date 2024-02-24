@@ -229,12 +229,12 @@ async function startApp(metamaskState, backgroundConnection, opts) {
           selectedTabOrigin,
         );
 
-        // Get network name for this id and update toast properties
-        const { nickname } = getAllNetworks(state).find(
+        // Get network for this id and update toast properties
+        const network = getAllNetworks(state).find(
           ({ id }) => id === networkForThisDomain,
         );
         await actions.setSwitchedNetworkDetails({
-          networkName: nickname,
+          network,
           siteName: selectedTabOrigin,
         });
       }
