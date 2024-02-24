@@ -271,10 +271,11 @@ class Driver {
    *
    * The second choice for the guard is to use the waitAtLeast parameter.
    *
-   * @param {*} rawLocator
-   * @param {string | object} findElementGuard - A rawLocator to perform a findElement and act as a guard
-   * @param {number} waitAtLeastGuard - The minimum milliseconds to wait before passing
-   * @param {number} timeout - The maximum milliseconds to wait before failing
+   * @param {string | object} rawLocator
+   * @param {object} guards
+   * @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
+   * @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout] - The maximum milliseconds to wait before failing
    */
   async assertElementNotPresent(
     rawLocator,
