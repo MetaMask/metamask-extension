@@ -1,3 +1,5 @@
+@use "design-system";
+
 .awaiting-swap {
   display: flex;
   flex-flow: column;
@@ -26,13 +28,13 @@
   }
 
   &__header {
-    @include H3;
+    @include design-system.H3;
 
     color: var(--color-text-default);
   }
 
   &__main-description {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-alternative);
     margin-top: 16px;
@@ -40,7 +42,7 @@
   }
 
   &__time-estimate {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-default);
     margin-top: 20px;
@@ -67,7 +69,7 @@
   }
 
   &__support-link {
-    @include H6;
+    @include design-system.H6;
   }
 
   &__amount-and-symbol {

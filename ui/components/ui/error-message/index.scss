@@ -1,5 +1,7 @@
+@use "design-system";
+
 .error-message {
-  @include H7;
+  @include design-system.H7;
 
   min-height: 32px;
   border: 1px solid var(--color-error-default);

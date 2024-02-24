@@ -1,3 +1,5 @@
+@use "design-system";
+
 .home-notification {
   display: flex;
   flex-flow: column;
@@ -9,7 +11,7 @@
   min-height: 116px;
   padding: 16px;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     min-width: 472px;
   }
 
@@ -24,13 +26,13 @@
   }
 
   &__text {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-default);
   }
 
   &__text-link {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -41,7 +43,7 @@
     flex-direction: row;
     align-items: center;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       width: 160px;
     }
   }
@@ -54,7 +56,7 @@
   }
 
   &__checkbox-label {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-default);
     margin-left: 8px;
