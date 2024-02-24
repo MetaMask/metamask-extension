@@ -530,11 +530,11 @@ describe('MetaMask Reducers', () => {
       );
 
       expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
-      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith(
-        GAS_ESTIMATE_TYPES.FEE_MARKET,
-        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-        TRANSACTION_ESTIMATES_MOCK,
-      );
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
+        gasFeeControllerEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+      });
     });
   });
 });
