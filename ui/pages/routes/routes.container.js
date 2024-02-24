@@ -18,6 +18,7 @@ import {
   getShowExtensionInFullSizeView,
   getSelectedAccount,
   getPermittedAccountsForCurrentTab,
+  getSwitchedNetworkDetails,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -99,6 +100,7 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
+    switchedNetworkDetails: getSwitchedNetworkDetails(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

@@ -1,3 +1,4 @@
+import { Console } from 'console';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -606,6 +607,7 @@ export default class Routes extends Component {
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
       addPermittedAccount,
+      switchedNetworkDetails,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -748,6 +750,8 @@ export default class Routes extends Component {
             />
           ) : null}
         </ToastContainer>
+        {switchedNetworkDetails &&
+          console.log('switchedNetworkDetails: ', switchedNetworkDetails)}
       </div>
     );
   }
