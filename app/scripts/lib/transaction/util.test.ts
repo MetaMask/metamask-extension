@@ -220,7 +220,8 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(false);
 
-        resultResolve(TRANSACTION_META_MOCK.hash);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        resultResolve!(TRANSACTION_META_MOCK.hash);
 
         await flushPromises();
 
@@ -307,7 +308,8 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(false);
 
-        transactionHashResolve(TRANSACTION_META_MOCK.hash);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        transactionHashResolve!(TRANSACTION_META_MOCK.hash);
 
         await flushPromises();
 
