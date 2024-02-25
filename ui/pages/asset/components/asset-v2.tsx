@@ -269,6 +269,7 @@ const AssetV2 = ({
 
               <Box width={BlockSize.Full}>
                 <ButtonSecondary
+                  data-testid="asset-send-button"
                   padding={5}
                   width={BlockSize.Full}
                   onClick={async () => {

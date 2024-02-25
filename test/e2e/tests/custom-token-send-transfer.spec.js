@@ -35,7 +35,13 @@ describe('Transfer custom tokens @no-mmi', function () {
           css: '[data-testid="multichain-token-list-item-value"]',
           text: '10 TST',
         });
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+
+        const sendButton = await driver.findElement(
+          '[data-testid="asset-send-button"]',
+        );
+        await driver.scrollToElement(sendButton);
+        sendButton.click();
+
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           recipientAddress,

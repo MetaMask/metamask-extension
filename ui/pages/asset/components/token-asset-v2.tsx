@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Token } from '@metamask/assets-controllers';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { useHistory } from 'react-router-dom';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
@@ -30,6 +31,7 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 

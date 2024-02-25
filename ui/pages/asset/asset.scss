@@ -10,7 +10,7 @@
   }
 
   &__wrapper {
-    @media screen and (max-width: $screen-sm-max) {
+    @media screen and (max-width: design-system.$screen-sm-max) {
       width: 100%;
     }
   }
