@@ -2658,11 +2658,6 @@
         "browserify>process": true
       }
     },
-    "browserify>browser-resolve": {
-      "packages": {
-        "ethjs-query>babel-runtime>core-js": true
-      }
-    },
     "browserify>browserify-zlib": {
       "packages": {
         "browserify>assert": true,
@@ -3576,11 +3571,6 @@
     "ethereumjs-wallet>randombytes": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "ethjs-query>babel-runtime": {
-      "packages": {
-        "@babel/runtime": true
       }
     },
     "extension-port-stream": {
