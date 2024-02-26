@@ -483,7 +483,7 @@ describe('EthOverview', () => {
 
     it.each(buttonTestCases)(
       'should have the $buttonText button disabled when an account cannot sign transactions',
-      async ({ testId, buttonText }) => {
+      ({ testId, buttonText }) => {
         mockStore.metamask.internalAccounts.accounts[
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ].methods = Object.values(EthMethod).filter(
