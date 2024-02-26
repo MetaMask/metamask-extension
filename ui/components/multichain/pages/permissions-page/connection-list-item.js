@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
+import { Tooltip } from 'react-tippy';
 import {
   AlignItems,
   BackgroundColor,
@@ -94,12 +95,47 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             >
               {t('connectedWith')}
             </Text>
-            <AvatarGroup
-              members={addressIconList}
-              limit={AVATAR_GROUP_LIMIT}
-              avatarType={AvatarType.ACCOUNT}
-              borderColor={BackgroundColor.backgroundDefault}
-            />
+            <Tooltip
+              interactive
+              position="bottom"
+              html={
+                <>
+                  <Text
+                    as="span"
+                    color={TextColor.textDefault}
+                    variant={TextVariant.headingSm}
+                  >
+                    Connected accounts
+                  </Text>
+                  {connection.addresses.map((address) => {
+                    debugger;
+                    return (
+                      <Text
+                        color={TextColor.textDefault}
+                        variant={TextVariant.bodyMd}
+                        key={address}
+                      >
+                        {connection.addressToNameMap[address]}
+                      </Text>
+                    );
+                  })}
+                </>
+              }
+              arrow
+              offset={0}
+              size="small"
+              title={t('alertDisableTooltip')}
+              trigger="mouseenter focus"
+              theme="dark"
+              tag="div"
+            >
+              <AvatarGroup
+                members={addressIconList}
+                limit={AVATAR_GROUP_LIMIT}
+                avatarType={AvatarType.ACCOUNT}
+                borderColor={BackgroundColor.backgroundDefault}
+              />
+            </Tooltip>
           </Box>
         )}
       </Box>
