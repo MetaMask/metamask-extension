@@ -392,7 +392,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    * Use TextColor enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  color?: TextColor | IconColor | string; // TODO: remove string when someone smarter figures out the issue with the color prop
+  color?: TextColor | IconColor | string | (TextColor | IconColor | string)[]; // TODO: remove string when someone smarter figures out the issue with the color prop
   /**
    * The ref of the Box component.
    */

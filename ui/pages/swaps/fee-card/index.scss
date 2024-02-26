@@ -1,7 +1,9 @@
+@use "design-system";
+
 .fee-card {
   width: 100%;
 
-  @include H7;
+  @include design-system.H7;
 
   .transaction-detail-rows {
     margin-top: 8px;
@@ -20,7 +22,7 @@
   }
 
   &__savings-text {
-    @include H6;
+    @include design-system.H6;
 
     font-weight: bold;
     color: var(--color-primary-default);
@@ -33,7 +35,7 @@
   }
 
   &__quote-link-text {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     cursor: pointer;

@@ -458,9 +458,9 @@ export default class MetamaskController extends EventEmitter {
     ) {
       initialNetworkControllerState = {
         providerConfig: {
-          type: NETWORK_TYPES.GOERLI,
-          chainId: CHAIN_IDS.GOERLI,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+          type: NETWORK_TYPES.SEPOLIA,
+          chainId: CHAIN_IDS.SEPOLIA,
+          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
         },
       };
     }
@@ -513,6 +513,11 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+      onKeyringStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          'KeyringController:stateChange',
+          listener,
+        ),
     });
 
     this.assetsContractController = new AssetsContractController(

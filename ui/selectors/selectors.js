@@ -1633,15 +1633,6 @@ export function getTestNetworks(state) {
 
   return [
     {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-      providerType: NETWORK_TYPES.GOERLI,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
-      id: NETWORK_TYPES.GOERLI,
-      removable: false,
-    },
-    {
       chainId: CHAIN_IDS.SEPOLIA,
       nickname: SEPOLIA_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],

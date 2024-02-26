@@ -1,3 +1,5 @@
+@use "design-system";
+
 .permission-approval-container {
   &.page-container {
     display: flex;
@@ -21,7 +23,7 @@
       align-items: center;
       margin-top: 12px;
 
-      @include screen-sm-min {
+      @include design-system.screen-sm-min {
         border-top: none;
       }
 
@@ -32,7 +34,7 @@
   }
 
   &__title {
-    @include H4;
+    @include design-system.H4;
 
     text-align: center;
     margin-top: 32px;
@@ -67,7 +69,7 @@
       align-items: center;
 
       label {
-        @include H6;
+        @include design-system.H6;
 
         margin-left: 16px;
         color: var(--color-text-default);
@@ -87,7 +89,7 @@
   }
 
   &__permissions-header {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-default);
   }
@@ -99,7 +101,7 @@
     margin-top: 38px;
   }
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     &__title {
       position: initial;
     }

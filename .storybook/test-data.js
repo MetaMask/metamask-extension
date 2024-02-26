@@ -473,7 +473,7 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5': {
+      '0xaa36a7': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -673,11 +673,11 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     providerConfig: {
-      type: 'goerli',
+      type: 'sepolia',
       ticker: 'ETH',
-      nickname: 'Goerli',
+      nickname: 'Sepolia',
       rpcUrl: '',
-      chainId: '0x5',
+      chainId: '0xaa36a7',
     },
     network: '5',
     accounts: {
