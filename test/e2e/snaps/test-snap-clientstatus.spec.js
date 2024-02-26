@@ -38,7 +38,6 @@ describe('Test Snap Client Status', function () {
           1000,
           10000,
         );
-        // const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
