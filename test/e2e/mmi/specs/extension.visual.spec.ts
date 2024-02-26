@@ -40,7 +40,7 @@ test.describe('MMI extension', () => {
     // Check network
     const networkPage = new MMINetworkPage(page);
     await networkPage.open();
-    await networkPage.selectNetwork('Goerli');
+    await networkPage.selectNetwork('Sepolia');
 
     // get token to access saturn
     const client = new CustodianTestClient();
@@ -122,7 +122,7 @@ test.describe('MMI extension', () => {
     // Check network
     const networkPage = new MMINetworkPage(page);
     await networkPage.open();
-    await networkPage.selectNetwork('Goerli');
+    await networkPage.selectNetwork('Sepolia');
 
     // get token to access saturn
     const client = new CustodianTestClient();
@@ -134,8 +134,6 @@ test.describe('MMI extension', () => {
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
     );
-
-    await mainMenuPage.closeDeprecatedNetworksBanner();
 
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
     expect(

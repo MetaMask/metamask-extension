@@ -1633,15 +1633,6 @@ export function getTestNetworks(state) {
 
   return [
     {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-      providerType: NETWORK_TYPES.GOERLI,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
-      id: NETWORK_TYPES.GOERLI,
-      removable: false,
-    },
-    {
       chainId: CHAIN_IDS.SEPOLIA,
       nickname: SEPOLIA_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
@@ -2125,17 +2116,19 @@ export function getIsDesktopEnabled(state) {
  */
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
-  return Object.entries(snaps).map(([key, snap]) => {
-    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-    return {
-      key,
-      id: snap.id,
-      iconUrl: targetSubjectMetadata?.iconUrl,
-      subjectType: targetSubjectMetadata?.subjectType,
-      packageName: stripSnapPrefix(snap.id),
-      name: getSnapName(snap.id, targetSubjectMetadata),
-    };
-  });
+  return Object.entries(snaps)
+    .filter(([_key, snap]) => !snap.preinstalled)
+    .map(([key, snap]) => {
+      const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+      return {
+        key,
+        id: snap.id,
+        iconUrl: targetSubjectMetadata?.iconUrl,
+        subjectType: targetSubjectMetadata?.subjectType,
+        packageName: stripSnapPrefix(snap.id),
+        name: getSnapName(snap.id, targetSubjectMetadata),
+      };
+    });
 }
 
 /**
