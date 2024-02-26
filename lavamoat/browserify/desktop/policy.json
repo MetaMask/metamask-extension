@@ -20,9 +20,9 @@
     "@ensdomains/content-hash>cids": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>multicodec": true,
         "@ensdomains/content-hash>cids>multihashes": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec": true
       }
     },
     "@ensdomains/content-hash>cids>multibase": {
@@ -32,22 +32,6 @@
       },
       "packages": {
         "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true
-      }
-    },
-    "@ensdomains/content-hash>cids>multicodec": {
-      "packages": {
-        "@ensdomains/content-hash>cids>multicodec>uint8arrays": true,
-        "@ensdomains/content-hash>multicodec>varint": true
-      }
-    },
-    "@ensdomains/content-hash>cids>multicodec>uint8arrays": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes": {
@@ -86,15 +70,13 @@
       }
     },
     "@ensdomains/content-hash>multicodec>uint8arrays": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multibase": true,
-        "@ensdomains/content-hash>multihashes>web-encoding": true
-      }
-    },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multibase": {
-      "packages": {
-        "@ensdomains/content-hash>cids>multibase>@multiformats/base-x": true,
-        "@ensdomains/content-hash>multihashes>web-encoding": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>multihashes": {
@@ -2247,6 +2229,7 @@
       "packages": {
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
@@ -2254,16 +2237,22 @@
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/transaction-controller>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
+        "bn.js": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-method-registry": true,
-        "ethereumjs-util": true,
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "@metamask/transaction-controller>nonce-tracker": {
