@@ -2,7 +2,12 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { useHistory, useLocation } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react-router-dom';
 
 import { EthMethod } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -13,27 +18,31 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  BUILD_QUOTE_ROUTE,
   SEND_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  BUILD_QUOTE_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  getCurrentChainId,
-  getCurrentKeyring,
-  getCurrentNetwork,
-  getIsBridgeChain,
-  getIsBuyableChain,
+  isBalanceCached,
   getIsSwapsChain,
-  getMetaMetricsId,
+  getCurrentChainId,
   getPreferences,
-  getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
+  getCurrentNetwork,
+  getSelectedAccountCachedBalance,
   getShowFiatInTestnets,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
-  isBalanceCached,
+  getCurrentKeyring,
+  getIsBridgeChain,
+  getIsBuyableChain,
+  getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -44,7 +53,9 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
