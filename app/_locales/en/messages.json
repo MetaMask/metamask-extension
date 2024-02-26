@@ -1223,6 +1223,15 @@
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
+  "deprecatedNetwork": {
+    "message": "This network is deprecated"
+  },
+  "deprecatedNetworkButtonMsg": {
+    "message": "Got it"
+  },
+  "deprecatedNetworkDescription": {
+    "message": "The network you're trying to connect to is no longer supported by Metamask. $1"
+  },
   "description": {
     "message": "Description"
   },
@@ -1854,7 +1863,7 @@
     "message": "Goerli test network"
   },
   "gotIt": {
-    "message": "Got it!"
+    "message": "Got it"
   },
   "grantedToWithColon": {
     "message": "Granted to:"
@@ -5729,6 +5738,12 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"
+  },
+  "yourTransactionConfirmed": {
+    "message": "Transaction already confirmed"
+  },
+  "yourTransactionJustConfirmed": {
+    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
