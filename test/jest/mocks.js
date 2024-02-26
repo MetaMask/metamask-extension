@@ -7,6 +7,9 @@ import {
   initialState,
 } from '../../ui/ducks/send';
 
+export const MOCK_DEFAULT_ADDRESS =
+  '0xd5e099c71b797516c10ed0f0d895f429c2781111';
+
 export const TOP_ASSETS_GET_RESPONSE = [
   {
     symbol: 'LINK',
@@ -154,7 +157,7 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
 });
 
 export function createMockInternalAccount({
-  address = '0xd5e099c71b797516c10ed0f0d895f429c2781111',
+  address = MOCK_DEFAULT_ADDRESS,
   name,
   is4337 = false,
   keyringType = KeyringTypes.hd,

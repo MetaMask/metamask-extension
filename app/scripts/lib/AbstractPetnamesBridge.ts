@@ -35,8 +35,8 @@ type ChangeList = Record<ChangeType, PetnameEntry[]>;
 type PetnamesBridgeAllowedEvents = NameStateChange;
 
 export type PetnamesBridgeMessenger<
-  Event extends EventConstraint,
-  Action extends ActionConstraint,
+  Event extends EventConstraint = PetnamesBridgeAllowedEvents,
+  Action extends ActionConstraint = never,
 > = RestrictedControllerMessenger<
   'PetnamesBridge',
   Action,
