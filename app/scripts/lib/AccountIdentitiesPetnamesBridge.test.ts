@@ -183,8 +183,8 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     messenger.call.mockReturnValue([updatedMock]);
 
     const listener = messenger.subscribe.mock.calls[0][1] as (
-      stateChange,
-      patch,
+      stateChange: AccountsControllerState,
+      patch: any[],
     ) => void;
     listener(
       {

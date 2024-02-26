@@ -64,8 +64,8 @@ function getKey({ type, variation, value }: PetnameEntry): string {
  * Provides methods for synchronizing petnames with the data source and handling changes.
  */
 export abstract class AbstractPetnamesBridge<
-  Event extends EventConstraint,
-  Action extends ActionConstraint,
+  Event extends EventConstraint = PetnamesBridgeAllowedEvents,
+  Action extends ActionConstraint = never,
 > {
   #isTwoWay: boolean;
 
