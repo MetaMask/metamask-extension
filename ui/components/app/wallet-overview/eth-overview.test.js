@@ -473,91 +473,37 @@ describe('EthOverview', () => {
     });
   });
 
-  it('should have the Buy button disabled when an account cannot sign transactions', () => {
-    mockStore.metamask.internalAccounts.accounts[
-      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-    ].methods = [
-      ...Object.values(EthMethod).filter(
-        (method) => method !== EthMethod.SignTransaction,
-      ),
+  describe('Disabled buttons when an account cannot sign transactions', () => {
+    const buttonTestCases = [
+      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy & Sell' },
+      { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
+      { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
+      { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
     ];
-    const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
-    const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
-    expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
-    expect(queryByText('Swap').parentElement).toHaveAttribute(
-      'data-original-title',
-      'This account cannot sign transactions.',
-    );
-  });
 
-  it('should have the Send button disabled when an account cannot sign transactions', () => {
-    mockStore.metamask.internalAccounts.accounts[
-      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-    ].methods = [
-      ...Object.values(EthMethod).filter(
-        (method) => method !== EthMethod.SignTransaction,
-      ),
-    ];
-    const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
-    const sendButton = queryByTestId(ETH_OVERVIEW_SEND);
-    expect(sendButton).toBeInTheDocument();
-    expect(sendButton).toBeDisabled();
-    expect(queryByText('Swap').parentElement).toHaveAttribute(
-      'data-original-title',
-      'This account cannot sign transactions.',
-    );
-  });
+    it.each(buttonTestCases)(
+      'should have the $buttonText button disabled when an account cannot sign transactions',
+      async ({ testId, buttonText }) => {
+        mockStore.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ].methods = Object.values(EthMethod).filter(
+          (method) => method !== EthMethod.SignTransaction,
+        );
 
-  it('should have the Swap button disabled when an account cannot sign transactions', () => {
-    mockStore.metamask.internalAccounts.accounts[
-      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-    ].methods = [
-      ...Object.values(EthMethod).filter(
-        (method) => method !== EthMethod.SignTransaction,
-      ),
-    ];
-    const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
-    const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
-    expect(swapButton).toBeInTheDocument();
-    expect(swapButton).toBeDisabled();
-    expect(queryByText('Swap').parentElement).toHaveAttribute(
-      'data-original-title',
-      'This account cannot sign transactions.',
-    );
-  });
+        const mockedStore = configureMockStore([thunk])(mockStore);
+        const { queryByTestId, queryByText } = renderWithProvider(
+          <EthOverview />,
+          mockedStore,
+        );
 
-  it('should have the Bridge button disabled when an account cannot sign transactions', () => {
-    mockStore.metamask.internalAccounts.accounts[
-      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-    ].methods = [
-      ...Object.values(EthMethod).filter(
-        (method) => method !== EthMethod.SignTransaction,
-      ),
-    ];
-    const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId, queryByText } = renderWithProvider(
-      <EthOverview />,
-      mockedStore,
-    );
-    const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
-    expect(bridgeButton).toBeInTheDocument();
-    expect(bridgeButton).toBeDisabled();
-    expect(queryByText('Swap').parentElement).toHaveAttribute(
-      'data-original-title',
-      'This account cannot sign transactions.',
+        const button = queryByTestId(testId);
+        expect(button).toBeInTheDocument();
+        expect(button).toBeDisabled();
+        expect(queryByText(buttonText).parentElement).toHaveAttribute(
+          'data-original-title',
+          'This account cannot sign transactions.',
+        );
+      },
     );
   });
 });
