@@ -8,6 +8,8 @@ const {
   regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  largeDelayMs,
+  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
@@ -23,8 +25,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPermissionControllerConnectedToTwoTestDapps()
-          .withSelectedNetworkControllerPerDomain()
+          // .withPermissionControllerConnectedToTwoTestDapps()
+          // .withSelectedNetworkControllerPerDomain() // TODO: Add back when refreshing state doesn't revert per dapp selected network. Remove having to connect to dapp
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
@@ -68,6 +70,26 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
 
+        // Connect to dapp
+        await driver.clickElement('#connectButton');
+
+        await driver.delay(regularDelayMs);
+
+        // Connect to Dapp
+        await switchToNotificationWindow(driver);
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -85,25 +107,48 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
-        const dappTwo = windowHandles[2];
+        // Connect to dapp
+        await driver.clickElement('#connectButton');
+
+        await driver.delay(regularDelayMs);
+
+        // Connect to Dapp
+        await switchToNotificationWindow(driver, 4);
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
 
         // Dapp one send tx
-        await driver.switchToWindow(dappOne);
+        await driver.switchToWindowWithUrl(DAPP_URL);
         await driver.clickElement('#sendButton');
 
+        await driver.delay(largeDelayMs);
+
         // Dapp two send tx
-        await driver.switchToWindow(dappTwo);
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         await driver.clickElement('#sendButton');
+
+        await driver.delay(largeDelayMs);
 
         // First switch network confirmation
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.findClickableElement({
+          text: 'Switch network',
+          tag: 'button',
+        });
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for confirm tx after switch network confirmation.
-        await driver.delay(regularDelayMs);
+        await driver.delay(largeDelayMs);
 
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -115,7 +160,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         // Reject Transaction
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
+        await driver.findClickableElement({ text: 'Reject', tag: 'button' });
         await driver.clickElement(
           '[data-testid="page-container-footer-cancel"]',
         );
@@ -132,6 +177,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
         await driver.findElement({
           css: '[data-testid="network-switch-from-network"]',
           text: 'Localhost 8545',
