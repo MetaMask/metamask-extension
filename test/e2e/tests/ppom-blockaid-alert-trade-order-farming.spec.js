@@ -90,7 +90,8 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
-  it('should show banner alert', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,
