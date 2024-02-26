@@ -7,8 +7,8 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap Dialog', function () {
-  it('test all three snap_dialog types', async function () {
+describe('Test Snap UI Links', function () {
+  it('test link in confirmation snap_dialog type', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
