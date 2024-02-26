@@ -47,49 +47,48 @@ exports[`SendPage render and initialization should render correctly even when a 
             From
           </label>
           <button
-            addressprops="[object Object]"
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-base--ellipsis multichain-account-picker multichain-send-page__account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-flex-start mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
             data-testid="send-page-account-picker"
           >
             <span
               class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-full mm-box--color-text-default"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
               >
                 <div
                   class="mm-avatar-account__jazzicon"
                 >
                   <div
-                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 151, 242);"
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
                   >
                     <svg
-                      height="16"
-                      width="16"
+                      height="32"
+                      width="32"
                       x="0"
                       y="0"
                     >
                       <rect
                         fill="#2362E1"
-                        height="16"
-                        transform="translate(1.7946650923962586 -2.667155311616761) rotate(458.4 8 8)"
-                        width="16"
+                        height="32"
+                        transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                        width="32"
                         x="0"
                         y="0"
                       />
                       <rect
                         fill="#F94301"
-                        height="16"
-                        transform="translate(-7.681729644825104 3.9961758177433153) rotate(268.8 8 8)"
-                        width="16"
+                        height="32"
+                        transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                        width="32"
                         x="0"
                         y="0"
                       />
                       <rect
                         fill="#FA7900"
-                        height="16"
-                        transform="translate(-4.538127039650711 14.740007940341687) rotate(117.3 8 8)"
-                        width="16"
+                        height="32"
+                        transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                        width="32"
                         x="0"
                         y="0"
                       />
@@ -102,6 +101,11 @@ exports[`SendPage render and initialization should render correctly even when a 
                 style="flex-grow: 1; text-align: start;"
               >
                 Test Account
+                <p
+                  class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-text--text-align-start mm-box--display-flex mm-box--color-text-alternative"
+                >
+                  0x0
+                </p>
               </span>
             </span>
             <span
