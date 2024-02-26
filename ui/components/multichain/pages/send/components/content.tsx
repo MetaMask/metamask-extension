@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -11,10 +12,15 @@ import {
   getCurrentDraftTransaction,
   getSendAsset,
   updateSendAmount,
+  updateSendAsset,
 } from '../../../../../ducks/send';
 import { ConfirmGasDisplay } from '../../../../../pages/confirmations/components/confirm-gas-display';
-import { AssetType } from '../../../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
+import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
@@ -27,6 +33,8 @@ export const SendPageContent = ({
   requireContractAddressAcknowledgement: boolean;
 }) => {
   const t = useI18nContext();
+
+  const history = useHistory();
 
   // Hex data
   const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
@@ -45,6 +53,27 @@ export const SendPageContent = ({
 
   // Gas data
   const dispatch = useDispatch();
+
+  const handleSelectToken = async (token: any) => {
+    if (token.type === AssetType.native) {
+      dispatch(
+        updateSendAsset({
+          type: token.type ?? AssetType.native,
+          details: token,
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    } else {
+      dispatch(
+        updateSendAsset({
+          type: token.type ?? AssetType.token,
+          details: { ...token, standard: TokenStandard.ERC20 },
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    }
+    history.push(SEND_ROUTE);
+  };
 
   return (
     <Box>
@@ -76,6 +105,7 @@ export const SendPageContent = ({
       <SendPageRow>
         <AssetPickerAmount
           asset={transactionAsset}
+          onAssetChange={handleSelectToken}
           amount={amount}
           selectedAccount={selectedAccount}
           onAmountChange={(newAmount: string) =>

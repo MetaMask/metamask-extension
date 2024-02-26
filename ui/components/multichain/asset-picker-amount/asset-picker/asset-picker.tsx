@@ -25,10 +25,15 @@ import { getNativeCurrencyImage } from '../../../../selectors';
 export interface AssetPickerProps {
   asset: Asset;
   tokenList: Record<string, any>;
+  onAssetChange: (newAsset: Asset) => void;
 }
 
 // A component that lets the user pick from a list of assets.
-export default function AssetPicker({ asset, tokenList }: AssetPickerProps) {
+export default function AssetPicker({
+  asset,
+  onAssetChange,
+  tokenList,
+}: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
@@ -54,6 +59,7 @@ export default function AssetPicker({ asset, tokenList }: AssetPickerProps) {
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
+        onAssetChange={onAssetChange}
       />
 
       <Box

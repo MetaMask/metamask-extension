@@ -19,6 +19,7 @@ export const DefaultStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={noop}
+      onAssetChange={noop}
       amount={{ value: '100' }}
       asset={{ type: AssetType.native, balance: '100' }}
       selectedAccount=""
@@ -32,6 +33,7 @@ export const TokenStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={noop}
+      onAssetChange={noop}
       amount={{ value: '0xff' }}
       asset={{
         type: AssetType.token,
@@ -55,6 +57,7 @@ export const NFTStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={noop}
+      onAssetChange={noop}
       amount={{ value: '0xff' }}
       asset={{
         type: AssetType.NFT,
@@ -77,6 +80,7 @@ export const TokenStoryWithLargeNameAndValue = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={noop}
+      onAssetChange={noop}
       amount={{ value: '0x1ED09BEAD87C0378D8E6400000000' }}
       asset={{
         type: AssetType.native,
@@ -102,6 +106,7 @@ export const ErrorStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={noop}
+      onAssetChange={noop}
       amount={{ error: INSUFFICIENT_FUNDS_ERROR_KEY, value: '100' }}
       asset={{ type: AssetType.native, balance: '0' }}
       selectedAccount="0x"
