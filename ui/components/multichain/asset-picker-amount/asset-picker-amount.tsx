@@ -44,23 +44,21 @@ const renderCurrencyInput = (
 
   if (asset.type === AssetType.native) {
     return (
-      <>
-        <UserPreferencedCurrencyInput
-          onChange={onAmountChange}
-          hexValue={amount.value}
-          className="asset-picker-amount__input"
-          swapIcon={(onClick: React.MouseEventHandler) => (
-            <ButtonIcon
-              backgroundColor={BackgroundColor.transparent}
-              iconName={IconName.SwapVertical}
-              ariaLabel={t('switchInputCurrency')}
-              size={ButtonIconSize.Sm}
-              color={IconColor.primaryDefault}
-              onClick={onClick}
-            />
-          )}
-        />
-      </>
+      <UserPreferencedCurrencyInput
+        onChange={onAmountChange}
+        hexValue={amount.value}
+        className="asset-picker-amount__input"
+        swapIcon={(onClick: React.MouseEventHandler) => (
+          <ButtonIcon
+            backgroundColor={BackgroundColor.transparent}
+            iconName={IconName.SwapVertical}
+            ariaLabel={t('switchInputCurrency')}
+            size={ButtonIconSize.Sm}
+            color={IconColor.primaryDefault}
+            onClick={onClick}
+          />
+        )}
+      />
     );
   }
   if (asset.type === AssetType.NFT) {
