@@ -1,3 +1,5 @@
+@use "design-system";
+
 .confirm-approve-content {
   display: flex;
   flex-flow: column;
@@ -88,7 +90,7 @@
   }
 
   &__title {
-    @include H3;
+    @include design-system.H3;
 
     width: 100%;
     display: flex;
@@ -100,7 +102,7 @@
   }
 
   &__description {
-    @include H6;
+    @include design-system.H6;
 
     margin-top: 16px;
     color: var(--color-text-alternative);
@@ -119,13 +121,13 @@
     padding-right: 24px;
 
     &__bold-text {
-      @include H6;
+      @include design-system.H6;
 
       font-weight: bold;
     }
 
     &__thin-text {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-text-alternative);
     }
@@ -153,7 +155,7 @@
 
     &__title,
     &__title-value {
-      @include H6;
+      @include design-system.H6;
 
       font-weight: bold;
     }
@@ -239,7 +241,7 @@
     }
 
     &__primary-fee {
-      @include H4;
+      @include design-system.H4;
 
       font-weight: bold;
       color: var(--color-text-default);
@@ -247,7 +249,7 @@
 
     &__secondary-fee,
     &__labelled-fee {
-      @include H6;
+      @include design-system.H6;
 
       font-weight: normal;
       color: var(--color-text-muted);
@@ -301,13 +303,13 @@
   }
 
   &__large-text {
-    @include H4;
+    @include design-system.H4;
 
     color: var(--color-text-default);
   }
 
   &__medium-link-text {
-    @include H6;
+    @include design-system.H6;
 
     font-weight: 500;
     color: var(--color-primary-default);
@@ -315,7 +317,7 @@
 
   &__medium-text,
   &__label {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-default);
   }
@@ -328,7 +330,7 @@
   &__small-text,
   &__small-blue-text,
   &__info-row {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-alternative);
   }
@@ -338,7 +340,7 @@
   }
 
   &__verify-contract-details {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-primary-default);
     padding: 0;

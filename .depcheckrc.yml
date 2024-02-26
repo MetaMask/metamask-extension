@@ -37,7 +37,8 @@ ignores:
   - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
-  - 'tsx' #used in .devcontainer
+  - 'tsx' # used in .devcontainer
+  - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   # development tool
   - 'nyc'
   # storybook
