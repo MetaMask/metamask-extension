@@ -8833,6 +8833,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@trezor/schema-utils@patch:@trezor/schema-utils@npm%3A1.0.1#~/.yarn/patches/@trezor-schema-utils-npm-1.0.1-70c2a68232.patch":
+  version: 1.0.1
+  resolution: "@trezor/schema-utils@patch:@trezor/schema-utils@npm%3A1.0.1#~/.yarn/patches/@trezor-schema-utils-npm-1.0.1-70c2a68232.patch::version=1.0.1&hash=c5d2c3"
+  dependencies:
+    "@sinclair/typebox": "npm:^0.31.28"
+    ts-mixer: "npm:^6.0.3"
+  checksum: 35f216b9760030ad5245be47ed18a3851b184ceba88ffbcf7fb57ab62bd0db839081a68006a6d527a573a4b38a674e3b41a8d32b8b64758741054f2c4c78b561
+  languageName: node
+  linkType: hard
+
 "@trezor/transport@npm:1.1.24":
   version: 1.1.24
   resolution: "@trezor/transport@npm:1.1.24"
