@@ -24,7 +24,6 @@ import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
-import { getSelectedIdentity, getTokenList } from '../../../../../selectors';
 import { SendHexData, SendPageRow } from '.';
 
 export const SendPageContent = ({
@@ -48,8 +47,6 @@ export const SendPageContent = ({
   const { asset: transactionAsset, amount } = useSelector(
     getCurrentDraftTransaction,
   );
-  const selectedAccount = useSelector(getSelectedIdentity);
-  const tokenList = useSelector(getTokenList);
 
   // Gas data
   const dispatch = useDispatch();
@@ -107,11 +104,9 @@ export const SendPageContent = ({
           asset={transactionAsset}
           onAssetChange={handleSelectToken}
           amount={amount}
-          selectedAccount={selectedAccount}
           onAmountChange={(newAmount: string) =>
             dispatch(updateSendAmount(newAmount))
           }
-          tokenList={tokenList}
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}

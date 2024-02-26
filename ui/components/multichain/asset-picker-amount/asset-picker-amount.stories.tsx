@@ -22,8 +22,6 @@ export const DefaultStory = () => (
       onAssetChange={noop}
       amount={{ value: '100' }}
       asset={{ type: AssetType.native, balance: '100' }}
-      selectedAccount=""
-      tokenList={[]}
     />
   </div>
 );
@@ -43,8 +41,6 @@ export const TokenStory = () => (
           symbol: 'YFI',
         },
       }}
-      selectedAccount=""
-      tokenList={[]}
     />{' '}
   </div>
 );
@@ -69,8 +65,6 @@ export const NFTStory = () => (
           tokenId: 1,
         },
       }}
-      selectedAccount="0x"
-      tokenList={[]}
     />{' '}
   </div>
 );
@@ -91,8 +85,6 @@ export const TokenStoryWithLargeNameAndValue = () => (
           isERC721: false,
         },
       }}
-      selectedAccount="0x"
-      tokenList={[]}
     />
   </div>
 );
@@ -109,8 +101,6 @@ export const ErrorStory = () => (
       onAssetChange={noop}
       amount={{ error: INSUFFICIENT_FUNDS_ERROR_KEY, value: '100' }}
       asset={{ type: AssetType.native, balance: '0' }}
-      selectedAccount="0x"
-      tokenList={[]}
     />{' '}
   </div>
 );

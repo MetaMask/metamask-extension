@@ -20,11 +20,10 @@ import {
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { getNativeCurrencyImage } from '../../../../selectors';
+import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
 
 export interface AssetPickerProps {
   asset: Asset;
-  tokenList: Record<string, any>;
   onAssetChange: (newAsset: Asset) => void;
 }
 
@@ -32,10 +31,11 @@ export interface AssetPickerProps {
 export default function AssetPicker({
   asset,
   onAssetChange,
-  tokenList,
 }: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
+  const tokenList: Record<string, any> = useSelector(getTokenList);
+
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
   let image: string | undefined;

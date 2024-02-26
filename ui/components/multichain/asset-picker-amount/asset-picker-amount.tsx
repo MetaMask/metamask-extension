@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   ButtonIcon,
@@ -19,6 +20,7 @@ import {
   TextVariant,
   FontWeight,
 } from '../../../helpers/constants/design-system';
+import { getSelectedIdentity } from '../../../selectors';
 
 import { AssetType } from '../../../../shared/constants/transaction';
 import UserPreferencedCurrencyInput from '../../app/user-preferenced-currency-input/user-preferenced-currency-input.container';
@@ -92,7 +94,6 @@ interface AssetPickerAmountProps extends AssetPickerProps {
   // all of these props should be explicitly received
   asset: Asset;
   amount: Amount;
-  selectedAccount: string;
   onAmountChange: (newAmount: string) => void;
 }
 
@@ -100,11 +101,12 @@ interface AssetPickerAmountProps extends AssetPickerProps {
 export const AssetPickerAmount = ({
   asset,
   amount,
-  selectedAccount,
   onAmountChange,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const t = useI18nContext();
+
+  const selectedAccount = useSelector(getSelectedIdentity);
 
   const { error } = amount;
 
