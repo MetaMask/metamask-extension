@@ -1,3 +1,5 @@
+@use "design-system";
+
 .quote-details {
   display: flex;
   flex-flow: column;
@@ -5,7 +7,7 @@
   padding-right: 16px;
 
   &__detail-header {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-alternative);
     margin-bottom: 2px;
@@ -13,7 +15,7 @@
   }
 
   &__detail-content {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-default);
 
@@ -67,7 +69,7 @@
   }
 
   .view-quote__conversion-rate-token-label {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-default);
     font-weight: bold;
@@ -89,7 +91,7 @@
   }
 
   &__font-small {
-    @include H7;
+    @include design-system.H7;
   }
 
   &__bold {
