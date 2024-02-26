@@ -8,7 +8,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap Singature Insights', function () {
+describe('Test Snap Signature Insights', function () {
   it('tests Signature Insights functionality', async function () {
     await withFixtures(
       {
