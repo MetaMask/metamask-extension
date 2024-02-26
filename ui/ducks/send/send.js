@@ -91,7 +91,7 @@ import {
   getTokens,
 } from '../metamask/metamask';
 
-import { resetDomainResolution } from '../domains';
+import { lookupDomainName, resetDomainResolution } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -619,6 +619,16 @@ export const initializeSendState = createAsyncThunk(
       );
     }
 
+    // If the user selects an ENS recipient and then changes the chain,
+    // the ENS address for the new chain may differ from the previous chain
+    // In this case, we should immediately trigger another lookup for the
+    // correct address on the new chain
+    const ens = draftTransaction.recipient.nickname;
+    let newEnsAddress = null;
+    if (chainHasChanged && isValidDomainName(ens)) {
+      newEnsAddress = await thunkApi.dispatch(lookupDomainName(ens, true));
+    }
+
     // Default gasPrice to 1 gwei if all estimation fails, this is only used
     // for gasLimit estimation and won't be set directly in state. Instead, we
     // will return the gasFeeEstimates and gasEstimateType so that the reducer
@@ -707,6 +717,8 @@ export const initializeSendState = createAsyncThunk(
 
     return {
       account,
+      newEnsAddress,
+      ens,
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
@@ -1623,6 +1635,12 @@ const slice = createSlice({
               draftTransaction.fromAccount?.balance ??
               state.selectedAccount.balance;
             draftTransaction.asset.details = null;
+          }
+          if (action.payload.newEnsAddress) {
+            draftTransaction.recipient.address = action.payload.newEnsAddress;
+          }
+          if (action.payload.ens) {
+            draftTransaction.recipient.nickname = action.payload.ens;
           }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
