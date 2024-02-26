@@ -49,7 +49,7 @@ const mapStateToProps = (state) => {
     },
     providerId: getNetworkIdentifier(state),
     showDeprecatedRpcUrlWarning,
-    completedOnboarding
+    completedOnboarding,
   };
 };
 

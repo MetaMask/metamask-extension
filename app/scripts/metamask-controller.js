@@ -477,8 +477,8 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController.trackEvent(...args),
       customFeatureRpcApiMiddlewares: [
         blockRequestsBeforeOnboardingMiddleware({
-          onboardingControllerStore: this.onboardingController.store
-        })
+          onboardingControllerStore: this.onboardingController.store,
+        }),
       ],
     });
     this.networkController.initializeProvider();
