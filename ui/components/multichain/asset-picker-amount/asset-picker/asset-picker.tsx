@@ -19,27 +19,34 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
+
+export interface AssetPickerProps {
+  asset: Asset;
+  tokenList: Record<any, any>;
+}
 
 // A component that lets the user pick from a list of assets.
 export default function AssetPicker({ asset }: { asset: Asset }) {
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList);
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
   const image =
     asset.type === AssetType.native
-      ? nativeCurrencyImage
+      ? nativeCurrencyImageUrl
       : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: type 'string' can't be used to index type '{}'
         tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
 
   // TODO: Handle long symbols in the UI
   const symbol =
-    asset.type === AssetType.native ? nativeCurrency : asset.details?.symbol;
+    asset.type === AssetType.native
+      ? nativeCurrencySymbol
+      : asset.details?.symbol;
 
   return (
     <>
