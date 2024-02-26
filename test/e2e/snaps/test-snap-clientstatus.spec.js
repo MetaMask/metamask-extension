@@ -18,7 +18,7 @@ describe('Test Snap Client Status', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to wasm snap
+        // navigate to test snaps page and connect to client status snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // wait for page to load
