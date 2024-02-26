@@ -314,6 +314,38 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
 export default class MetamaskController extends EventEmitter {
   /**
+   * Tracks snaps export usage.
+   * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
+   *
+   * @param {string} snapId - The ID of the snap the handler is being triggered on.
+   * @param {string} handler - The handler to trigger on the snap for the request.
+   * @param {boolean} success - Whether the invocation was successful or not.
+   * @param {string} origin - The origin of the request.
+   */
+  _trackSnapExportUsage = wrap(
+    memoize(
+      () =>
+        throttle(
+          (snapId, handler, success, origin) =>
+            this.metaMetricsController.trackEvent({
+              event: MetaMetricsEventName.SnapExportUsed,
+              category: MetaMetricsEventCategory.Snaps,
+              properties: {
+                snap_id: snapId,
+                export: handler,
+                snap_category: this._getSnapMetadata(snapId)?.category,
+                success,
+                origin,
+              },
+            }),
+          SECOND * 60,
+        ),
+      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
+    ),
+    (getFunc, ...args) => getFunc(...args)(...args),
+  );
+
+  /**
    * @param {object} opts
    */
   constructor(opts) {
@@ -988,11 +1020,16 @@ export default class MetamaskController extends EventEmitter {
 
     const getSnapController = () => this.snapController;
 
+    const persistAndUpdateAccounts = async () => {
+      await this.keyringController.persistAllKeyrings();
+      await this.accountsController.updateAccounts();
+    };
+
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
         getSnapController,
-        async () => await this.keyringController.persistAllKeyrings(),
+        persistAndUpdateAccounts,
         (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
       ),
@@ -2110,6 +2147,17 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
+  /* eslint-disable accessor-pairs */
+  /**
+   * A method for recording whether the MetaMask user interface is open or not.
+   *
+   * @param {boolean} open
+   */
+  set isClientOpen(open) {
+    this._isClientOpen = open;
+    this.detectTokensController.isOpen = open;
+  }
+
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
@@ -2134,6 +2182,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenRatesController.stop();
     }
   }
+  ///: END:ONLY_INCLUDE_IF
 
   resetStates(resetMethods) {
     resetMethods.forEach((resetMethod) => {
@@ -2144,6 +2193,9 @@ export default class MetamaskController extends EventEmitter {
       }
     });
   }
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
@@ -2162,7 +2214,6 @@ export default class MetamaskController extends EventEmitter {
     }
     return snapKeyring;
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   trackInsightSnapView(snapId) {
@@ -2174,9 +2225,6 @@ export default class MetamaskController extends EventEmitter {
       },
     });
   }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
   /**
    * Get snap metadata from the current state without refreshing the registry database.
@@ -2187,38 +2235,6 @@ export default class MetamaskController extends EventEmitter {
   _getSnapMetadata(snapId) {
     return this.snapsRegistry.state.database?.verifiedSnaps?.[snapId]?.metadata;
   }
-
-  /**
-   * Tracks snaps export usage.
-   * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
-   *
-   * @param {string} snapId - The ID of the snap the handler is being triggered on.
-   * @param {string} handler - The handler to trigger on the snap for the request.
-   * @param {boolean} success - Whether the invocation was successful or not.
-   * @param {string} origin - The origin of the request.
-   */
-  _trackSnapExportUsage = wrap(
-    memoize(
-      () =>
-        throttle(
-          (snapId, handler, success, origin) =>
-            this.metaMetricsController.trackEvent({
-              event: MetaMetricsEventName.SnapExportUsed,
-              category: MetaMetricsEventCategory.Snaps,
-              properties: {
-                snap_id: snapId,
-                export: handler,
-                snap_category: this._getSnapMetadata(snapId)?.category,
-                success,
-                origin,
-              },
-            }),
-          SECOND * 60,
-        ),
-      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
-    ),
-    (getFunc, ...args) => getFunc(...args)(...args),
-  );
 
   /**
    * Passes a JSON-RPC request object to the SnapController for execution.
@@ -2364,6 +2380,8 @@ export default class MetamaskController extends EventEmitter {
     this.notificationController.dismiss(ids);
   }
 
+  ///: END:ONLY_INCLUDE_IF
+
   /**
    * Updates the readDate attribute of the specified notifications.
    *
@@ -2372,8 +2390,6 @@ export default class MetamaskController extends EventEmitter {
   markNotificationsAsRead(ids) {
     this.notificationController.markRead(ids);
   }
-
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Sets up BaseController V2 event subscriptions. Currently, this includes
@@ -2660,6 +2676,10 @@ export default class MetamaskController extends EventEmitter {
     this._notifyChainChange();
   }
 
+  //=============================================================================
+  // EXPOSED TO THE UI SUBSYSTEM
+  //=============================================================================
+
   /**
    * TODO: Delete when ready to remove `networkVersion` from provider object
    * Gets current networkId as returned by `net_version`
@@ -2686,10 +2706,6 @@ export default class MetamaskController extends EventEmitter {
       });
     });
   }
-
-  //=============================================================================
-  // EXPOSED TO THE UI SUBSYSTEM
-  //=============================================================================
 
   /**
    * The metamask-state of the various controllers, made available to the UI
@@ -3551,6 +3567,10 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  //=============================================================================
+  // VAULT / KEYRING RELATED METHODS
+  //=============================================================================
+
   async getTokenSymbol(address) {
     try {
       const details =
@@ -3560,10 +3580,6 @@ export default class MetamaskController extends EventEmitter {
       return null;
     }
   }
-
-  //=============================================================================
-  // VAULT / KEYRING RELATED METHODS
-  //=============================================================================
 
   /**
    * Creates a new Vault and create a new keychain.
@@ -3821,6 +3837,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * @type Identity
+   * @property {string} name - The account nickname.
+   * @property {string} address - The account's ethereum address, in lower case.
+   * receiving funds from our automatic Ropsten faucet.
+   */
+
+  /**
    * Submits a user's password to check its validity.
    *
    * @param {string} password - The user's password
@@ -3828,13 +3851,6 @@ export default class MetamaskController extends EventEmitter {
   async verifyPassword(password) {
     await this.keyringController.verifyPassword(password);
   }
-
-  /**
-   * @type Identity
-   * @property {string} name - The account nickname.
-   * @property {string} address - The account's ethereum address, in lower case.
-   * receiving funds from our automatic Ropsten faucet.
-   */
 
   /**
    * Sets the first account in the state to the selected address
@@ -3861,6 +3877,11 @@ export default class MetamaskController extends EventEmitter {
 
     return keyring.mnemonic;
   }
+  ///: END:ONLY_INCLUDE_IF
+
+  //
+  // Hardware
+  //
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   async getCustodyKeyringIfExists(address) {
@@ -3870,11 +3891,6 @@ export default class MetamaskController extends EventEmitter {
     const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
     return keyring?.getAccountDetails(address) ? keyring : undefined;
   }
-  ///: END:ONLY_INCLUDE_IF
-
-  //
-  // Hardware
-  //
 
   async getKeyringForDevice(deviceName, hdPath = null) {
     const keyringOverrides = this.opts.overrides?.keyrings;
@@ -4050,6 +4066,10 @@ export default class MetamaskController extends EventEmitter {
     } ${hdPathDescription || ''}`.trim();
   }
 
+  //
+  // Account Management
+  //
+
   /**
    * Imports an account from a Trezor or Ledger device.
    *
@@ -4100,10 +4120,6 @@ export default class MetamaskController extends EventEmitter {
     const { identities } = this.preferencesController.store.getState();
     return { ...keyState, identities, accounts };
   }
-
-  //
-  // Account Management
-  //
 
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
@@ -4231,6 +4247,9 @@ export default class MetamaskController extends EventEmitter {
     return address;
   }
 
+  // ---------------------------------------------------------------------------
+  // Identity Management (signature operations)
+
   /**
    * Imports an account with the specified import strategy.
    * These are defined in app/scripts/account-import-strategies
@@ -4245,9 +4264,6 @@ export default class MetamaskController extends EventEmitter {
     // set new account as selected
     this.preferencesController.setSelectedAddress(importedAccountAddress);
   }
-
-  // ---------------------------------------------------------------------------
-  // Identity Management (signature operations)
 
   getAddTransactionRequest({
     transactionParams,
@@ -4273,16 +4289,16 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  //=============================================================================
+  // END (VAULT / KEYRING RELATED METHODS)
+  //=============================================================================
+
   /**
    * @returns {boolean} true if the keyring type supports EIP-1559
    */
   async getCurrentAccountEIP1559Compatibility() {
     return true;
   }
-
-  //=============================================================================
-  // END (VAULT / KEYRING RELATED METHODS)
-  //=============================================================================
 
   /**
    * Allows a user to attempt to cancel a previously submitted transaction
@@ -4361,6 +4377,10 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  //=============================================================================
+  // PASSWORD MANAGEMENT
+  //=============================================================================
+
   async updateSecurityAlertResponseByTxId(req, securityAlertResponse) {
     let foundConfirmation = false;
 
@@ -4397,10 +4417,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  //=============================================================================
-  // PASSWORD MANAGEMENT
-  //=============================================================================
-
   /**
    * Allows a user to begin the seed phrase recovery process.
    */
@@ -4409,23 +4425,16 @@ export default class MetamaskController extends EventEmitter {
     this.sendUpdate();
   }
 
+  //=============================================================================
+  // REQUEST QUEUE
+  //=============================================================================
+
   /**
    * Allows a user to end the seed phrase recovery process.
    */
   unMarkPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(false);
     this.sendUpdate();
-  }
-
-  //=============================================================================
-  // REQUEST QUEUE
-  //=============================================================================
-
-  setUseRequestQueue(value) {
-    this.preferencesController.setUseRequestQueue(value);
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = value;
-    });
   }
 
   //=============================================================================
@@ -4446,6 +4455,13 @@ export default class MetamaskController extends EventEmitter {
    * @typedef {object} SnapSender
    * @property {string} snapId - The ID of the snap.
    */
+
+  setUseRequestQueue(value) {
+    this.preferencesController.setUseRequestQueue(value);
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = value;
+    });
+  }
 
   /**
    * Used to create a multiplexed stream for connecting to an untrusted context
@@ -4690,6 +4706,7 @@ export default class MetamaskController extends EventEmitter {
       }
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   /**
@@ -4705,7 +4722,6 @@ export default class MetamaskController extends EventEmitter {
       subjectType: SubjectType.Snap,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * A method for creating a provider that is safely restricted for the requesting subject.
@@ -5184,6 +5200,8 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  // handlers
+
   /**
    * Causes the RPC engines associated with all connections to emit a
    * notification event with the given payload.
@@ -5211,8 +5229,6 @@ export default class MetamaskController extends EventEmitter {
       });
     });
   }
-
-  // handlers
 
   /**
    * Handle a KeyringController update
@@ -5279,6 +5295,8 @@ export default class MetamaskController extends EventEmitter {
     this.emit('lock');
   }
 
+  // misc
+
   /**
    * Handle memory state updates.
    * - Ensure isClientOpenAndUnlocked is updated
@@ -5292,8 +5310,6 @@ export default class MetamaskController extends EventEmitter {
     this._notifyChainChange();
   }
 
-  // misc
-
   /**
    * A method for emitting the full MetaMask state to all registered listeners.
    *
@@ -5303,16 +5319,16 @@ export default class MetamaskController extends EventEmitter {
     this.emit('update', this.getState());
   }
 
+  //=============================================================================
+  // MISCELLANEOUS
+  //=============================================================================
+
   /**
    * @returns {boolean} Whether the extension is unlocked.
    */
   isUnlocked() {
     return this.keyringController.state.isUnlocked;
   }
-
-  //=============================================================================
-  // MISCELLANEOUS
-  //=============================================================================
 
   getExternalPendingTransactions(address) {
     return this.smartTransactionsController.getTransactions({
@@ -5435,6 +5451,10 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  //=============================================================================
+  // CONFIG
+  //=============================================================================
+
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Metametrics Actions
@@ -5482,10 +5502,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  //=============================================================================
-  // CONFIG
-  //=============================================================================
-
   /**
    * Returns the first network configuration object that matches at least one field of the
    * provided search criteria. Returns null if no match is found
@@ -5526,6 +5542,8 @@ export default class MetamaskController extends EventEmitter {
     return undefined;
   }
 
+  // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
+
   /**
    * A method for initializing storage the first time.
    *
@@ -5540,18 +5558,6 @@ export default class MetamaskController extends EventEmitter {
         date: Date.now(),
       };
     }
-  }
-
-  // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
-  /* eslint-disable accessor-pairs */
-  /**
-   * A method for recording whether the MetaMask user interface is open or not.
-   *
-   * @param {boolean} open
-   */
-  set isClientOpen(open) {
-    this._isClientOpen = open;
-    this.detectTokensController.isOpen = open;
   }
   /* eslint-enable accessor-pairs */
 
