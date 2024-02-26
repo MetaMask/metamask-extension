@@ -6,11 +6,9 @@ import {
   NameOrigin,
 } from '@metamask/name-controller';
 import { cloneDeep } from 'lodash';
-import {
-  AccountsController,
-  AccountsControllerMessenger,
-  AccountsControllerState,
-} from '@metamask/accounts-controller';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   AccountIdentitiesPetnamesBridgeActions,
   AccountIdentitiesPetnamesBridgeEvents,
@@ -20,8 +18,6 @@ import {
   PetnameEntry,
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'Account 1';
@@ -94,17 +90,6 @@ function createNameStateWithPetname(
   };
 }
 
-const EMPTY_ACCOUNTS_CONTROLLER_STATE: AccountsControllerState = {
-  internalAccounts: { accounts: {}, selectedAccount: '' },
-};
-
-function setupAccountsController(
-  messenger: AccountsControllerMessenger,
-  state = EMPTY_ACCOUNTS_CONTROLLER_STATE,
-) {
-  return new AccountsController({ state, messenger });
-}
-
 function createMessengerMock(): jest.Mocked<
   PetnamesBridgeMessenger<
     AccountIdentitiesPetnamesBridgeEvents,
@@ -160,8 +145,8 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     messenger.call.mockReturnValue([MOCK_INTERNAL_ACCOUNT]);
 
     const listener = messenger.subscribe.mock.calls[0][1] as (
-      stateChange,
-      patch,
+      stateChange: AccountsControllerState,
+      patch: any[],
     ) => void;
 
     listener(
@@ -170,7 +155,7 @@ describe('AccountIdentitiesPetnamesBridge', () => {
           accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
           selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
         },
-      },
+      } as AccountsControllerState,
       [],
     );
 
