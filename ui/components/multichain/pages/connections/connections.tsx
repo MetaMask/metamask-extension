@@ -80,6 +80,7 @@ export const Connections = () => {
             as="span"
             variant={TextVariant.headingMd}
             textAlign={TextAlign.Center}
+            ellipsis
           >
             {getURLHost(activeTabOrigin)}
           </Text>
