@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'cancel-transaction-gas-fee/index';
 
 .cancel-transaction {
@@ -8,7 +10,7 @@
   }
 
   &__description {
-    @include H6;
+    @include design-system.H6;
 
     text-align: center;
   }

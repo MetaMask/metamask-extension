@@ -1,3 +1,5 @@
+@use "design-system";
+
 .hide-token-confirmation {
   min-height: 250.72px;
   border-radius: 4px;
@@ -16,7 +18,7 @@
   }
 
   &__symbol {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-alternative);
     text-align: center;
@@ -24,7 +26,7 @@
   }
 
   &__title {
-    @include H3;
+    @include design-system.H3;
 
     height: 30px;
     width: 271.28px;
@@ -34,7 +36,7 @@
   }
 
   &__copy {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     min-height: 41px;
     width: 318px;

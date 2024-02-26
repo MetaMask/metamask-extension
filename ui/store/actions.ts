@@ -2166,7 +2166,7 @@ export function createCancelTransaction(
   customGasSettings: CustomGasSettings,
   options: { estimatedBaseFee?: string } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug('background.cancelTransaction');
+  log.debug('background.createCancelTransaction');
   let newTxId: string;
 
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2177,6 +2177,18 @@ export function createCancelTransaction(
         [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
+            if (
+              err?.message?.includes(
+                'Previous transaction is already confirmed',
+              )
+            ) {
+              dispatch(
+                showModal({
+                  name: 'TRANSACTION_ALREADY_CONFIRMED',
+                  originalTransactionId: txId,
+                }),
+              );
+            }
             dispatch(displayWarning(err));
             reject(err);
             return;
@@ -2587,6 +2599,18 @@ export function showAlert(msg: string): PayloadAction<string> {
 export function hideAlert(): Action {
   return {
     type: actionConstants.ALERT_CLOSE,
+  };
+}
+
+export function showDeprecatedNetworkModal(): Action {
+  return {
+    type: actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN,
+  };
+}
+
+export function hideDeprecatedNetworkModal(): Action {
+  return {
+    type: actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE,
   };
 }
 
