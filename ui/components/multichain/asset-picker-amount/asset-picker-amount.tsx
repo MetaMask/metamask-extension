@@ -35,6 +35,25 @@ import AssetPicker, {
   type AssetPickerProps,
 } from './asset-picker/asset-picker';
 
+function SwapIcon({
+  onClick,
+  ariaLabel,
+}: {
+  ariaLabel: string;
+  onClick?: React.MouseEventHandler;
+}) {
+  return (
+    <ButtonIcon
+      backgroundColor={BackgroundColor.transparent}
+      iconName={IconName.Refresh}
+      size={ButtonIconSize.Sm}
+      color={IconColor.primaryDefault}
+      onClick={onClick}
+      ariaLabel={ariaLabel}
+    />
+  );
+}
+
 const renderCurrencyInput = (
   asset: Asset,
   amount: Amount,
@@ -49,14 +68,7 @@ const renderCurrencyInput = (
         hexValue={amount.value}
         className="asset-picker-amount__input"
         swapIcon={(onClick: React.MouseEventHandler) => (
-          <ButtonIcon
-            backgroundColor={BackgroundColor.transparent}
-            iconName={IconName.SwapVertical}
-            ariaLabel={t('switchInputCurrency')}
-            size={ButtonIconSize.Sm}
-            color={IconColor.primaryDefault}
-            onClick={onClick}
-          />
+          <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
         )}
       />
     );
@@ -84,6 +96,7 @@ const renderCurrencyInput = (
       token={asset.details}
       value={amount.value}
       className="asset-picker-amount__input"
+      actionComponent={<SwapIcon ariaLabel={t('switchInputCurrency')} />}
     />
   );
 };
