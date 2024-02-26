@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
@@ -18,7 +17,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
 
-export const ConnectedStatus = ({ address = '', isActive = false }) => {
+export type ConnectedStatusProps = {
+  address: string;
+  isActive?: boolean;
+};
+
+export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
+  address = '',
+  isActive,
+}): JSX.Element => {
   const t = useSelector(useI18nContext);
 
   const addressConnectedSubjectMap: any = useSelector(
@@ -31,13 +38,11 @@ export const ConnectedStatus = ({ address = '', isActive = false }) => {
     selectedAddressSubjectMap?.[originOfCurrentTab],
   );
 
-  let status;
+  let status = STATUS_NOT_CONNECTED;
   if (isActive) {
     status = STATUS_CONNECTED;
   } else if (currentTabIsConnectedToSelectedAddress) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
-  } else {
-    status = STATUS_NOT_CONNECTED;
   }
 
   let badgeBorderColor = BackgroundColor.backgroundDefault; // TODO: Replace it once border-color has this value.
@@ -75,15 +80,4 @@ export const ConnectedStatus = ({ address = '', isActive = false }) => {
       isConnectedAndNotActive={connectedAndNotActive}
     />
   );
-};
-
-ConnectedStatus.propTypes = {
-  /**
-   * Address for AvatarAccount
-   */
-  address: PropTypes.string.isRequired,
-  /**
-   * Boolean to determine active status
-   */
-  isActive: PropTypes.bool,
 };
