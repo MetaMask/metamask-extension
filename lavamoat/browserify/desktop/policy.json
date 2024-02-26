@@ -1984,7 +1984,7 @@
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
-        "document.getElementById": true,
+        "document": true,
         "fetch.bind": true,
         "setTimeout": true
       },
@@ -2097,6 +2097,7 @@
     },
     "@metamask/snaps-sdk": {
       "globals": {
+        "assert": true,
         "fetch": true
       },
       "packages": {
@@ -2173,10 +2174,7 @@
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
-        "browserify": true,
         "browserify>buffer": true,
-        "browserify>path-browserify": true,
-        "browserify>process": true,
         "chalk": true,
         "semver": true,
         "superstruct": true
