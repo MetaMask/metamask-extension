@@ -142,6 +142,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
 
   afterEach(() => {
@@ -470,5 +471,93 @@ describe('EthOverview', () => {
         }),
       );
     });
+  });
+
+  it('should have the Buy button disabled when an account cannot sign transactions', () => {
+    mockStore.metamask.internalAccounts.accounts[
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+    ].methods = [
+      ...Object.values(EthMethod).filter(
+        (method) => method !== EthMethod.SignTransaction,
+      ),
+    ];
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <EthOverview />,
+      mockedStore,
+    );
+    const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
+    expect(buyButton).toBeInTheDocument();
+    expect(buyButton).toBeDisabled();
+    expect(queryByText('Swap').parentElement).toHaveAttribute(
+      'data-original-title',
+      'This account cannot sign transactions.',
+    );
+  });
+
+  it('should have the Send button disabled when an account cannot sign transactions', () => {
+    mockStore.metamask.internalAccounts.accounts[
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+    ].methods = [
+      ...Object.values(EthMethod).filter(
+        (method) => method !== EthMethod.SignTransaction,
+      ),
+    ];
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <EthOverview />,
+      mockedStore,
+    );
+    const sendButton = queryByTestId(ETH_OVERVIEW_SEND);
+    expect(sendButton).toBeInTheDocument();
+    expect(sendButton).toBeDisabled();
+    expect(queryByText('Swap').parentElement).toHaveAttribute(
+      'data-original-title',
+      'This account cannot sign transactions.',
+    );
+  });
+
+  it('should have the Swap button disabled when an account cannot sign transactions', () => {
+    mockStore.metamask.internalAccounts.accounts[
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+    ].methods = [
+      ...Object.values(EthMethod).filter(
+        (method) => method !== EthMethod.SignTransaction,
+      ),
+    ];
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <EthOverview />,
+      mockedStore,
+    );
+    const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).toBeDisabled();
+    expect(queryByText('Swap').parentElement).toHaveAttribute(
+      'data-original-title',
+      'This account cannot sign transactions.',
+    );
+  });
+
+  it('should have the Bridge button disabled when an account cannot sign transactions', () => {
+    mockStore.metamask.internalAccounts.accounts[
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+    ].methods = [
+      ...Object.values(EthMethod).filter(
+        (method) => method !== EthMethod.SignTransaction,
+      ),
+    ];
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <EthOverview />,
+      mockedStore,
+    );
+    const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+    expect(bridgeButton).toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
+    expect(queryByText('Swap').parentElement).toHaveAttribute(
+      'data-original-title',
+      'This account cannot sign transactions.',
+    );
   });
 });
