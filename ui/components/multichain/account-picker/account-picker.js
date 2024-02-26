@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -17,20 +18,26 @@ import {
   Display,
   IconColor,
   Size,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountPicker = ({
   address,
   name,
   onClick,
   disabled = false,
+  showAddress = false,
+  addressProps = {},
   labelProps = {},
   textProps = {},
   className = '',
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
+  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
     <ButtonBase
@@ -46,7 +53,7 @@ export const AccountPicker = ({
         gap: 2,
         ...textProps,
       }}
-      size={ButtonBaseSize.Sm}
+      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
       disabled={disabled}
       endIconName={IconName.ArrowDown}
       endIconProps={{
@@ -63,7 +70,7 @@ export const AccountPicker = ({
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={Size.XS}
+        size={showAddress ? Size.MD : Size.XS}
         borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
       <Text
@@ -76,6 +83,16 @@ export const AccountPicker = ({
         )}
       >
         {name}
+        {showAddress ? (
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            ellipsis
+            {...addressProps}
+          >
+            {shortenedAddress}
+          </Text>
+        ) : null}
       </Text>
     </ButtonBase>
   );
@@ -90,6 +107,14 @@ AccountPicker.propTypes = {
    * Account address, used for blockie or jazzicon
    */
   address: PropTypes.string.isRequired,
+  /**
+   * Represents if the account address should display
+   */
+  showAddress: PropTypes.bool,
+  /**
+   * Props to be added to the address element
+   */
+  addressProps: PropTypes.object,
   /**
    * Action to perform when the account picker is clicked
    */
