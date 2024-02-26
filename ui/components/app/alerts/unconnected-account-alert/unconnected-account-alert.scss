@@ -1,3 +1,5 @@
+@use "design-system";
+
 .unconnected-account-alert {
   &__content {
     border-radius: 0 !important; // To override the box border radius because of popover
@@ -25,7 +27,7 @@
   }
 
   &__error {
-    @include H6;
+    @include design-system.H6;
 
     margin-bottom: 16px;
     padding: 16px;
@@ -47,7 +49,7 @@
   }
 
   &__checkbox-label {
-    @include H7;
+    @include design-system.H7;
 
     display: flex;
     margin-top: auto;
