@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// TODO: make this component state agnostic
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -21,18 +20,17 @@ import {
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
+import { getNativeCurrencyImage } from '../../../../selectors';
 
 export interface AssetPickerProps {
   asset: Asset;
-  tokenList: Record<any, any>;
+  tokenList: Record<string, any>;
 }
 
 // A component that lets the user pick from a list of assets.
-export default function AssetPicker({ asset }: { asset: Asset }) {
+export default function AssetPicker({ asset, tokenList }: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
-  const tokenList = useSelector(getTokenList);
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
   let image: string | undefined;

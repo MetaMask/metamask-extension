@@ -29,7 +29,9 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { PRIMARY } from '../../../helpers/constants/common';
 import TokenBalance from '../../ui/token-balance';
 import MaxClearButton from './max-clear-button';
-import AssetPicker from './asset-picker/asset-picker';
+import AssetPicker, {
+  type AssetPickerProps,
+} from './asset-picker/asset-picker';
 
 const renderCurrencyInput = (
   asset: Asset,
@@ -86,7 +88,8 @@ const renderCurrencyInput = (
   );
 };
 
-interface AssetPickerAmountProps {
+interface AssetPickerAmountProps extends AssetPickerProps {
+  // all of these props should be explicitly received
   asset: Asset;
   amount: Amount;
   selectedAccount: string;
@@ -99,6 +102,7 @@ export const AssetPickerAmount = ({
   amount,
   selectedAccount,
   onAmountChange,
+  ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const t = useI18nContext();
 
@@ -138,7 +142,7 @@ export const AssetPickerAmount = ({
         paddingTop={3}
         paddingBottom={3}
       >
-        <AssetPicker asset={asset} />
+        <AssetPicker asset={asset} {...assetPickerProps} />
         {renderCurrencyInput(asset, amount, onAmountChange)}
       </Box>
       <Box display={Display.Flex}>

@@ -22,6 +22,7 @@ export const DefaultStory = () => (
       amount={{ value: '100' }}
       asset={{ type: AssetType.native, balance: '100' }}
       selectedAccount=""
+      tokenList={[]}
     />
   </div>
 );
@@ -41,6 +42,7 @@ export const TokenStory = () => (
         },
       }}
       selectedAccount=""
+      tokenList={[]}
     />{' '}
   </div>
 );
@@ -65,6 +67,7 @@ export const NFTStory = () => (
         },
       }}
       selectedAccount="0x"
+      tokenList={[]}
     />{' '}
   </div>
 );
@@ -85,6 +88,7 @@ export const TokenStoryWithLargeNameAndValue = () => (
         },
       }}
       selectedAccount="0x"
+      tokenList={[]}
     />
   </div>
 );
@@ -101,6 +105,7 @@ export const ErrorStory = () => (
       amount={{ error: INSUFFICIENT_FUNDS_ERROR_KEY, value: '100' }}
       asset={{ type: AssetType.native, balance: '0' }}
       selectedAccount="0x"
+      tokenList={[]}
     />{' '}
   </div>
 );

@@ -18,7 +18,7 @@ import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
-import { getSelectedIdentity } from '../../../../../selectors';
+import { getSelectedIdentity, getTokenList } from '../../../../../selectors';
 import { SendHexData, SendPageRow } from '.';
 
 export const SendPageContent = ({
@@ -41,6 +41,7 @@ export const SendPageContent = ({
     getCurrentDraftTransaction,
   );
   const selectedAccount = useSelector(getSelectedIdentity);
+  const tokenList = useSelector(getTokenList);
 
   // Gas data
   const dispatch = useDispatch();
@@ -80,6 +81,7 @@ export const SendPageContent = ({
           onAmountChange={(newAmount: string) =>
             dispatch(updateSendAmount(newAmount))
           }
+          tokenList={tokenList}
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
