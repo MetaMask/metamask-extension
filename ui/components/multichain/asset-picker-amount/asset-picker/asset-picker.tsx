@@ -73,7 +73,7 @@ export default function AssetPicker({
         borderRadius={BorderRadius.pill}
         onClick={() => setShowAssetPickerModal(true)}
       >
-        <AvatarToken src={image} size={AvatarTokenSize.Sm} showHalo />
+        <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
         <Text variant={TextVariant.bodyMd} marginLeft="auto" marginRight="auto">
           {symbol}
         </Text>
