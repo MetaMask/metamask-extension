@@ -1,5 +1,18 @@
+diff --git a/package.json b/package.json
+index d15c4dc1e60d4703486bbf2d89501d0d5b25f999..e84a44161be36d18d7044d762ae34ae0786d6937 100644
+--- a/package.json
++++ b/package.json
+@@ -18,7 +18,7 @@
+   "sideEffects": false,
+   "exports": {
+     ".": {
+-      "import": "./dist/index.mjs",
++      "import": "./dist/index.js",
+       "require": "./dist/index.js",
+       "types": "./dist/types/index.d.ts"
+     },
 diff --git a/dist/chunk-52QZQQKP.mjs b/dist/chunk-52QZQQKP.mjs
-index 934f432c8013a6af5303726e1495bed2335fa078..8de2560fe81dfc3dbfef83dd0079482306c425d9 100644
+index 934f432c8013a6af5303726e1495bed2335fa078..4570ab87b587920d2b2c8ae01095fab2c37b14c6 100644
 --- a/dist/chunk-52QZQQKP.mjs
 +++ b/dist/chunk-52QZQQKP.mjs
 @@ -2,7 +2,8 @@ import {
@@ -10,8 +23,17 @@ index 934f432c8013a6af5303726e1495bed2335fa078..8de2560fe81dfc3dbfef83dd00794823
 +  __privateSet,
 +  KeyringControllerError
  } from "./chunk-NAAWD7HX.mjs";
- 
+
  // src/KeyringController.ts
+@@ -55,7 +56,7 @@ function keyringBuilderFactory(KeyringConstructor) {
+   return builder;
+ }
+ var defaultKeyringBuilders = [
+-  keyringBuilderFactory(SimpleKeyring),
++  keyringBuilderFactory(SimpleKeyring.default),
+   keyringBuilderFactory(HDKeyring)
+ ];
+ var getDefaultKeyringState = () => {
 @@ -582,6 +583,18 @@ var KeyringController = class extends BaseController {
        })
      );
@@ -62,7 +84,7 @@ index bef1a8e9dd5efe426f8aaaba1fe4501b124f7e87..7b48c000e54708da2a689e2d6cb1b61a
 +  KeyringControllerError2["NoHdKeyring"] = "KeyringController - No HD Keyring found";
    return KeyringControllerError2;
  })(KeyringControllerError || {});
- 
+
 diff --git a/dist/chunk-GXM4O6HW.js b/dist/chunk-GXM4O6HW.js
 index f7539e2e6354f418cbb095cc1a2cda01a5bdeae6..978f4426536c594568ecc56f1c27881db4bfa861 100644
 --- a/dist/chunk-GXM4O6HW.js
@@ -117,4 +139,4 @@ index b5de23aabec9d502e8e6423480ffaaff26257bfc..a0c027a7c13828883ec5c05cbb7eab92
 +  KeyringControllerError2["NoHdKeyring"] = "KeyringController - No HD Keyring found";
    return KeyringControllerError2;
  })(KeyringControllerError || {});
- 
+

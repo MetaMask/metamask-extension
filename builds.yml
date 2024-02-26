@@ -143,6 +143,7 @@ features:
       - WEB_SOCKET_PORT: null
   blockaid:
     env:
+      - PPOM_URI: ./ppom_bg.wasm
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
       - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
   ###

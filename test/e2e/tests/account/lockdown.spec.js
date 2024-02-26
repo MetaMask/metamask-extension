@@ -62,7 +62,7 @@ describe('lockdown', function () {
     ],
   };
 
-  it('the UI and background environments are locked down', async function () {
+  it.only('the UI and background environments are locked down', async function () {
     await withFixtures(
       {
         // The fixtures used here is arbitrary. Any fixture would do.
@@ -72,8 +72,10 @@ describe('lockdown', function () {
       },
       async ({ driver }) => {
         await driver.navigate(PAGES.HOME);
+        const r = await driver.executeScript(lockdownTestScript);
+        console.log("result", r);
         assert.equal(
-          await driver.executeScript(lockdownTestScript),
+          r,
           true,
           'The UI environment should be locked down.',
         );
