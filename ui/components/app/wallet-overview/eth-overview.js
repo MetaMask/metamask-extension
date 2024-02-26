@@ -121,7 +121,6 @@ const EthOverview = ({ className, showAddress }) => {
 
   const isSwapsChain = useSelector(getIsSwapsChain);
   const signingDisabled = !account.methods.includes(EthMethod.SignTransaction);
-  console.log('account methods', account.methods);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
