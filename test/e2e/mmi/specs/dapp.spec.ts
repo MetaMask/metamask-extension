@@ -22,7 +22,7 @@ const dappsTest = async (
 
   // Sign and submit
   const statusName = await client.submitTransactionById(custodianTxId);
-  if (buttonId === 'useSuperPowers_goerli') {
+  if (buttonId === 'useSuperPowers_sepolia') {
     await mainPage.checkLastTransactionStatus(/Failed/iu);
   } else {
     await mainPage.checkLastTransactionStatus(statusName);
@@ -40,7 +40,7 @@ test.describe('MMI dapps', () => {
     page,
     context,
   }) => {
-    await dappsTest(page, context, 'showMeTheMoneyButton_goerli');
+    await dappsTest(page, context, 'showMeTheMoneyButton_sepolia');
   });
 
   // unskip after we move our testdapp to use Sepolia
@@ -55,6 +55,6 @@ test.describe('MMI dapps', () => {
     page,
     context,
   }) => {
-    await dappsTest(page, context, 'useSuperPowers_goerli');
+    await dappsTest(page, context, 'useSuperPowers_sepolia');
   });
 });
