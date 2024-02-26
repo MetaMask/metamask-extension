@@ -64,12 +64,12 @@ function colorText(menuElement, regex) {
     let elemText = menuElement.innerHTML;
     elemText = elemText.replace('&amp;', '&');
     elemText = elemText.replace(
-      /(<span style="background:var(--brand-colors-yellow-yellow500)">|<\/span>)/gim,
+      /(<span style="background:#ffd33d">|<\/span>)/gim,
       '',
     );
     menuElement.innerHTML = elemText.replace(
       regex,
-      '<span style="background:var(--brand-colors-yellow-yellow500)">$&</span>',
+      '<span style="background:#ffd33d">$&</span>',
     );
   }
 }
