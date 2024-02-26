@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -108,6 +108,8 @@ export const AssetPickerAmount = ({
 
   const selectedAccount = useSelector(getSelectedIdentity);
 
+  const [isFocused, setIsFocused] = useState(false);
+
   const { error } = amount;
 
   useEffect(() => {
@@ -120,6 +122,13 @@ export const AssetPickerAmount = ({
     ? TextColor.errorDefault
     : TextColor.textAlternative;
 
+  let borderColor;
+
+  if (amount.error) {
+    borderColor = BorderColor.errorDefault;
+  } else if (isFocused) {
+    borderColor = BorderColor.primaryDefault;
+  }
   return (
     <Box className="asset-picker-amount">
       <Box display={Display.Flex}>
@@ -129,17 +138,18 @@ export const AssetPickerAmount = ({
         <MaxClearButton asset={asset} />
       </Box>
       <Box
+        id="asset-picker-amount__input"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         display={Display.Flex}
         alignItems={AlignItems.center}
         backgroundColor={BackgroundColor.backgroundDefault}
         paddingLeft={4}
         paddingRight={4}
         borderRadius={BorderRadius.LG}
-        borderColor={
-          amount.error ? BorderColor.errorDefault : BorderColor.primaryDefault
-        }
+        borderColor={borderColor}
         borderStyle={BorderStyle.solid}
-        borderWidth={2}
+        borderWidth={1}
         marginTop={2}
         paddingTop={3}
         paddingBottom={3}
