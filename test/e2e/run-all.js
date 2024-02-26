@@ -12,7 +12,6 @@ const FLASK_ONLY_TESTS = [
   'test-snap-txinsights-v2.spec.js',
   'test-snap-namelookup.spec.js',
   'test-snap-homepage.spec.js',
-  'test-snap-clientstatus.spec.js',
 ];
 
 const getTestPathsForTestDir = async (testDir) => {
