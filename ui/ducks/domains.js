@@ -243,14 +243,15 @@ export async function fetchResolutions({ domain, chainId, state }) {
   return filteredResults;
 }
 
-export function lookupDomainName(domainName) {
+export function lookupDomainName(domainName, forceInitialize = false) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
-    if (state[name].stage === 'UNINITIALIZED') {
+    if (state[name].stage === 'UNINITIALIZED' || forceInitialize) {
       await dispatch(initializeDomainSlice());
     }
     state = getState();
+    let address;
     if (
       state[name].stage === 'NO_NETWORK_SUPPORT' &&
       !(
@@ -263,7 +264,6 @@ export function lookupDomainName(domainName) {
     } else {
       await dispatch(lookupStart(trimmedDomainName));
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
-      let address;
       let fetchedResolutions;
       let hasSnapResolution = false;
       let error;
@@ -314,6 +314,7 @@ export function lookupDomainName(domainName) {
         }),
       );
     }
+    return address;
   };
 }
 
