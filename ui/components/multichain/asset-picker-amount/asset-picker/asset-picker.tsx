@@ -62,20 +62,22 @@ export default function AssetPicker({
         onAssetChange={onAssetChange}
       />
 
+      {/* TOKEN PICKER */}
       <Box
         className="asset-picker"
         display={Display.Flex}
         alignItems={AlignItems.center}
+        gap={3}
         padding={2}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.pill}
         onClick={() => setShowAssetPickerModal(true)}
       >
-        <AvatarToken src={image} size={AvatarTokenSize.Xs} />
-        <Text variant={TextVariant.bodyXs} marginLeft="auto" marginRight="auto">
+        <AvatarToken src={image} size={AvatarTokenSize.Sm} showHalo />
+        <Text variant={TextVariant.bodyMd} marginLeft="auto" marginRight="auto">
           {symbol}
         </Text>
-        <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
+        <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
       </Box>
     </>
   );
