@@ -2,13 +2,9 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import {
-  useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  useLocation,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
+import { EthMethod } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -17,31 +13,27 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  SEND_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
+  SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  isBalanceCached,
-  getIsSwapsChain,
   getCurrentChainId,
-  getPreferences,
-  getSelectedAddress,
-  getShouldHideZeroBalanceTokens,
-  getCurrentNetwork,
-  getSelectedAccountCachedBalance,
-  getShowFiatInTestnets,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getSwapsDefaultToken,
   getCurrentKeyring,
+  getCurrentNetwork,
   getIsBridgeChain,
   getIsBuyableChain,
+  getIsSwapsChain,
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IF
+  getPreferences,
+  getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
+  getShouldHideZeroBalanceTokens,
+  getShowFiatInTestnets,
+  getSwapsDefaultToken,
+  isBalanceCached,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -52,9 +44,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -99,7 +89,8 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   // Total fiat balance
-  const selectedAddress = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
+  const selectedAddress = account.address;
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -118,6 +109,7 @@ const EthOverview = ({ className, showAddress }) => {
   }
 
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const signingDisabled = !account.methods.includes(EthMethod.SignTransaction);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -234,7 +226,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain}
+              disabled={!isBuyableChain || signingDisabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={() => {
@@ -250,6 +242,15 @@ const EthOverview = ({ className, showAddress }) => {
                   },
                 });
               }}
+              tooltipRender={
+                signingDisabled
+                  ? (contents) => (
+                      <Tooltip title={t('accountCannotSign')} position="bottom">
+                        {contents}
+                      </Tooltip>
+                    )
+                  : null
+              }
             />
             ///: END:ONLY_INCLUDE_IF
           }
@@ -269,6 +270,7 @@ const EthOverview = ({ className, showAddress }) => {
                 color={IconColor.primaryInverse}
               />
             }
+            disabled={signingDisabled}
             label={t('send')}
             onClick={() => {
               trackEvent({
@@ -287,10 +289,19 @@ const EthOverview = ({ className, showAddress }) => {
                 history.push(SEND_ROUTE);
               });
             }}
+            tooltipRender={
+              signingDisabled
+                ? (contents) => (
+                    <Tooltip title={t('accountCannotSign')} position="bottom">
+                      {contents}
+                    </Tooltip>
+                  )
+                : null
+            }
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain}
+            disabled={!isSwapsChain || signingDisabled}
             Icon={
               <Icon
                 name={IconName.SwapHorizontal}
@@ -328,11 +339,15 @@ const EthOverview = ({ className, showAddress }) => {
             label={t('swap')}
             data-testid="token-overview-button-swap"
             tooltipRender={
-              isSwapsChain
+              isSwapsChain && !signingDisabled
                 ? null
                 : (contents) => (
                     <Tooltip
-                      title={t('currentlyUnavailable')}
+                      title={
+                        signingDisabled
+                          ? t('accountCannotSign')
+                          : t('currentlyUnavailable')
+                      }
                       position="bottom"
                     >
                       {contents}
@@ -344,7 +359,7 @@ const EthOverview = ({ className, showAddress }) => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
-              disabled={!isBridgeChain}
+              disabled={!isBridgeChain || signingDisabled}
               data-testid="eth-overview-bridge"
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
@@ -375,11 +390,15 @@ const EthOverview = ({ className, showAddress }) => {
                 }
               }}
               tooltipRender={
-                isBridgeChain
+                isBridgeChain && !signingDisabled
                   ? null
                   : (contents) => (
                       <Tooltip
-                        title={t('currentlyUnavailable')}
+                        title={
+                          signingDisabled
+                            ? t('accountCannotSign')
+                            : t('currentlyUnavailable')
+                        }
                         position="bottom"
                       >
                         {contents}

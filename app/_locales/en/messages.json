@@ -130,6 +130,9 @@
   "account": {
     "message": "Account"
   },
+  "accountCannotSign": {
+    "message": "This account cannot sign transactions."
+  },
   "accountDetails": {
     "message": "Account details"
   },
