@@ -5050,6 +5050,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/rpc-errors@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "@metamask/rpc-errors@npm:6.2.1"
+  dependencies:
+    "@metamask/utils": "npm:^8.3.0"
+    fast-safe-stringify: "npm:^2.0.6"
+  checksum: 789f0a2090339c1aa43d45ee496f4f115e141bc55b98e4ce27498497568f9e85fb5527ecf1f113b156d88fc4f1e63a572ced74bdc1ba16826bf648391b223f7b
+  languageName: node
+  linkType: hard
+
 "@metamask/safe-event-emitter@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
@@ -5390,38 +5400,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@23.0.0-preview.0dea691a":
-  version: 23.0.0-preview.0dea691a
-  resolution: "@metamask-previews/transaction-controller@npm:23.0.0-preview.0dea691a"
-  dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@metamask/approval-controller": "npm:^5.1.2"
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.3"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^13.0.1"
-    "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^17.2.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    eth-method-registry: "npm:^4.0.0"
-    ethereumjs-util: "npm:^7.0.10"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    nonce-tracker: "npm:^3.0.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.23.9
-    "@metamask/approval-controller": ^5.1.2
-    "@metamask/gas-fee-controller": ^13.0.0
-    "@metamask/network-controller": ^17.2.0
-  checksum: 8add3a8e01e7b891969d4570df3f1dc4d8db1198df433ae577e2aa610ecee9661adc6b5e9a258d4f5d25a242a4238d449996517b645dc729724e5a4c92666a2b
-  languageName: node
-  linkType: hard
-
 "@metamask/transaction-controller@npm:^20.0.0":
   version: 20.0.0
   resolution: "@metamask/transaction-controller@npm:20.0.0"
@@ -5451,6 +5429,39 @@ __metadata:
     "@metamask/network-controller": ^17.1.0
     babel-runtime: ^6.26.0
   checksum: 3ccdbb1f0afa5b680f9c0c6b79f645a28fbba163a61da027465f845952027bf1a7f0b8a9a96ae2d44aaaa6ef01e901e3cc4fa8762e25910c6be327cc0ff6ec5a
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@npm:^23.1.0":
+  version: 23.1.0
+  resolution: "@metamask/transaction-controller@npm:23.1.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@metamask/approval-controller": "npm:^5.1.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.3"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/gas-fee-controller": "npm:^13.0.1"
+    "@metamask/metamask-eth-abis": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^17.2.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    nonce-tracker: "npm:^3.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.23.9
+    "@metamask/approval-controller": ^5.1.2
+    "@metamask/gas-fee-controller": ^13.0.0
+    "@metamask/network-controller": ^17.2.0
+  checksum: 5e6d38be2430d1e98ad1aded3171535168dff5b54d96084a6cf7b91f08b311347727280110987c89df7e153b99eac914501da45d14e6bd87390f3d5157634c9f
   languageName: node
   linkType: hard
 
@@ -24761,7 +24772,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^2.1.0"
     "@metamask/snaps-utils": "npm:^6.1.0"
     "@metamask/test-dapp": "npm:^7.3.1"
-    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@23.0.0-preview.0dea691a"
+    "@metamask/transaction-controller": "npm:^23.1.0"
     "@metamask/user-operation-controller": "npm:^1.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
