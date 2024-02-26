@@ -154,15 +154,13 @@ export const AssetPickerAmount = ({
         display={Display.Flex}
         alignItems={AlignItems.center}
         backgroundColor={BackgroundColor.backgroundDefault}
-        paddingLeft={4}
-        paddingRight={4}
         borderRadius={BorderRadius.LG}
         borderColor={borderColor}
         borderStyle={BorderStyle.solid}
         borderWidth={1}
-        marginTop={2}
-        paddingTop={3}
-        paddingBottom={3}
+        marginTop={1}
+        marginBottom={1}
+        padding={1}
       >
         <AssetPicker asset={asset} {...assetPickerProps} />
         {renderCurrencyInput(asset, amount, onAmountChange)}

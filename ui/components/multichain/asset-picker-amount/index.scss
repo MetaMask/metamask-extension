@@ -5,6 +5,9 @@
 
   &__input {
     & > .unit-input__inputs > div{
+      & > input{
+        text-align: right;
+      }
       margin-left: auto;
     }
     & > button {
