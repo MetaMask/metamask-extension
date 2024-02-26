@@ -1,1 +1,3 @@
-{}
+{
+  "content_security_policy": "frame-ancestors 'none'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'"
+}

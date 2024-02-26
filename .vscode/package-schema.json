@@ -2,13 +2,11 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "allOf": [
     {
-      "required": ["lavamoat"],
       "properties": {
         "scripts": {
+          "additionalItems": true,
+          "required": ["webpack", "webpack:clearcache", "postinstall"],
           "properties": {
-            "start:dev": {
-              "description": "Runs `yarn start` with the addition of react/redux backend devtool servers enabled."
-            },
             "webpack": {
               "type": "string",
               "description": "Builds the extension in \"dev\" mode. Run `yarn webpack --help` for usage information."
@@ -24,11 +22,8 @@
           }
         },
         "devDependencies": {
-          "required": ["lavamoat"],
+          "additionalItems": true,
           "properties": {
-            "autoprefixer": {
-              "description": "Used by our build systems to automatically add prefixes to CSS rules based on our browserslist."
-            },
             "@types/chrome": {
               "type": "string",
               "description": "Provides type definitions for the Chrome extension manifest.json files."
@@ -86,24 +81,10 @@
               "description": "Provides hot reloading for react components (webpack)"
             }
           }
-        },
-        "lavamoat": {
-          "type": "object",
-          "required": ["allowScripts"],
-          "additionalProperties": false,
-          "properties": {
-            "allowScripts": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "boolean"
-              },
-              "description": "Defines which dependencies' scripts are allowed to run upon install. If this setting is true, the scripts are allowed. If false, the scripts are not allowed. Run `yarn allow-scripts auto` to add a dependency to this list (defaults to false)."
-            }
-          }
         }
       }
     }
   ],
-  "description": "An extension of the standard package.json schema used to document our package.json scripts, dependencies, and miscellaneous fields.",
+  "description": "An extension of the standard package.json schema with custom descriptions for scripts.",
   "title": "Extended package.json Schema"
 }

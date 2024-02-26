@@ -147,20 +147,18 @@ function getCopyTargets(
       pattern: `*.css`,
       dest: ``,
     },
-    {
-      src: `./app/loading.html`,
-      dest: `loading.html`,
-    },
-    {
-      src: shouldIncludeSnow
-        ? `./node_modules/@lavamoat/snow/snow.prod.js`
-        : EMPTY_JS_FILE,
-      dest: `scripts/snow.js`,
-    },
-    {
-      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
-      dest: `scripts/use-snow.js`,
-    },
+    ...(shouldIncludeSnow
+      ? [
+          {
+            src: `./node_modules/@lavamoat/snow/snow.prod.js`,
+            dest: `scripts/snow.js`,
+          },
+          {
+            src: `./app/scripts/use-snow.js`,
+            dest: `scripts/use-snow.js`,
+          },
+        ]
+      : []),
     {
       src: shouldIncludeLockdown
         ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
@@ -217,7 +215,7 @@ function getCopyTargets(
     {
       src: './development',
       pattern: '/chromereload.js',
-      dest: ``,
+      dest: `scripts/`,
     },
     // empty files to suppress missing file errors
     {
@@ -235,7 +233,7 @@ function getCopyTargets(
     // empty files to suppress missing file errors
     {
       src: EMPTY_JS_FILE,
-      dest: `chromereload.js`,
+      dest: `scripts/chromereload.js`,
     },
   ];
 
