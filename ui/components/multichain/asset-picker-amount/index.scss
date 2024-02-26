@@ -4,7 +4,10 @@
   }
 
   &__input {
-    padding: 0 0 0 8px;
+    & > .unit-input__inputs > div{
+      margin-left: auto;
+    }
+    float: right;
     flex-grow: 1;
     border: none;
   }

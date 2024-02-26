@@ -136,7 +136,6 @@ export const AssetPickerAmount = ({
         <MaxClearButton asset={asset} />
       </Box>
       <Box
-        id="asset-picker-amount__input"
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         display={Display.Flex}
