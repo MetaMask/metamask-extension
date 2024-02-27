@@ -3185,7 +3185,6 @@ describe('Send Slice', () => {
 
         cancelExistingTxAndCreateNewTxWithSameParamsStub.mockImplementation(
           () => ({
-            type: 'EXPECTED_ADD_TX_ACTION',
             id: mockNewTransactionId,
           }),
         );
