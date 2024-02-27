@@ -99,13 +99,17 @@ export class MMIAccountMenuPage {
       .getByRole('dialog')
       .filter({ hasText: 'Select an account' });
 
+    const networkBanner = this.page.locator('.network-list-menu__banner');
+
     const accountsFunds = dialog.locator(
       '.multichain-account-list-item__content',
     );
 
     await test.expect
       .soft(dialog)
-      .toHaveScreenshot(screenshotName, { mask: [accountsFunds] });
+      .toHaveScreenshot(screenshotName, {
+        mask: [accountsFunds, networkBanner],
+      });
   }
 
   async removeTokenScreenshot(accountToRemoveName: string) {
