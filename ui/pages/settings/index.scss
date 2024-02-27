@@ -111,6 +111,10 @@
             color: var(--color-icon-default);
           }
 
+          &__highlight {
+            background-color: var(--brand-colors-yellow-yellow500);
+          }
+
           &__section-multiple-lines {
             @include design-system.screen-sm-max {
               margin-left: 10px;
