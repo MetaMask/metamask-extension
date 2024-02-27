@@ -26,6 +26,9 @@ export const DefaultStory = () => (
   </div>
 );
 DefaultStory.storyName = 'Default';
+DefaultStory.decorators = [
+  (story) => <Provider store={store()}>{story()}</Provider>,
+];
 
 export const TokenStory = () => (
   <div style={{ width: '400px' }}>
@@ -69,6 +72,9 @@ export const NFTStory = () => (
   </div>
 );
 NFTStory.storyName = 'ERC721 Token';
+NFTStory.decorators = [
+  (story) => <Provider store={store()}>{story()}</Provider>,
+];
 
 export const TokenStoryWithLargeNameAndValue = () => (
   <div style={{ width: '400px' }}>
@@ -112,7 +118,52 @@ ErrorStory.decorators = [
 function store() {
   return configureStore({
     ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 231.06,
+        },
+      },
+      contractExchangeRates: {
+        ...mockState.metamask.contractExchangeRates,
+        '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': 0.01,
+      },
+      tokens: [
+        {
+          address: '0x0000000000000000000000000000000000000000',
+          symbol: 'TEST',
+          decimals: '6',
+        },
+        {
+          address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+          symbol: 'TEST',
+          decimals: '6',
+        },
+        {
+          address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+          decimals: '8',
+          symbol: 'TEST2',
+        },
+        {
+          address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+          symbol: 'META',
+          decimals: '18',
+        },
+      ],
+      providerConfig: {
+        chainId: '0x5',
+        ticker: 'ETH',
+      },
+      preferences: {
+        showFiatInTestnets: true,
+      },
+      useCurrencyRateCheck: true,
+    },
     send: {
+      ...mockState.send,
+      selectedAccount: { address: '0x0', balance: '0x1' },
       currentTransactionUUID: 'uuid',
     },
   });
