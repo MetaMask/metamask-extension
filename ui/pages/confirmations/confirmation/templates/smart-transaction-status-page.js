@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 function getValues(pendingApproval, t, actions, _history) {
   const { id, requestState } = pendingApproval;
   return {
@@ -7,19 +8,12 @@ function getValues(pendingApproval, t, actions, _history) {
         key: 'smart-transaction-status-page',
         props: {
           requestState,
+          onCloseExtension: () => {
+            actions.resolvePendingApproval(id, true);
+          },
         },
       },
     ],
-    submitText: t('ok'),
-    // TODO: Once "onSubmit" is trully optional and we don't render the default confirmation footer section,
-    // then we will implement our own custom buttons for the STX status page. Code below is only temporary.
-    onSubmit: () => {
-      const isSmartTransactionPending =
-        requestState?.smartTransaction?.status === 'pending';
-      if (!isSmartTransactionPending) {
-        actions.resolvePendingApproval(id, true);
-      }
-    },
   };
 }
 

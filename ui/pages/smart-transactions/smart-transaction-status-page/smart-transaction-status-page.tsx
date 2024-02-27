@@ -10,6 +10,7 @@ import {
   IconSize,
   Button,
   ButtonVariant,
+  ButtonSecondary,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -32,6 +33,7 @@ import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared
 
 export interface SmartTransactionStatusPageProps {
   requestState: any;
+  onCloseExtension: () => void;
 }
 
 export const showRemainingTimeInMinAndSec = (
@@ -45,10 +47,12 @@ export const showRemainingTimeInMinAndSec = (
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const stxStatusDeadline = 160; // TODO: Use a value from backend instead.
+const stxEstimatedDeadline = 45; // TODO: Use a value from backend instead.
+const stxMaxDeadline = 160; // TODO: Use a value from backend instead.
 
 export const SmartTransactionStatusPage = ({
   requestState,
+  onCloseExtension,
 }: SmartTransactionStatusPageProps) => {
   const t = useI18nContext();
   const { smartTransaction } = requestState;
@@ -58,9 +62,10 @@ export const SmartTransactionStatusPage = ({
   const isSmartTransactionCancelled =
     smartTransaction?.status.startsWith('cancelled');
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
-    useState(stxStatusDeadline);
+    useState(stxEstimatedDeadline);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const chainId: string = useSelector(getCurrentChainId);
+  const isSmartTransactionTakingTooLong = timeLeftForPendingStxInSec === 0;
 
   const txHash = smartTransaction?.statusMetadata?.minedHash;
 
@@ -77,10 +82,18 @@ export const SmartTransactionStatusPage = ({
     );
   }
   let title;
+  let description;
   let iconName;
   let iconColor;
 
-  if (isSmartTransactionPending) {
+  if (isSmartTransactionPending && isSmartTransactionTakingTooLong) {
+    title = t('smartTransactionTakingTooLong');
+    description = t('smartTransactionTakingTooLongDescription', [
+      (stxMaxDeadline - stxEstimatedDeadline).toString(),
+    ]);
+    iconName = IconName.Clock;
+    iconColor = IconColor.primaryDefault;
+  } else if (isSmartTransactionPending) {
     title = t('smartTransactionPending');
     iconName = IconName.Clock;
     iconColor = IconColor.primaryDefault;
@@ -90,11 +103,13 @@ export const SmartTransactionStatusPage = ({
     iconColor = IconColor.successDefault;
   } else if (isSmartTransactionCancelled) {
     title = t('smartTransactionCancelled');
+    description = t('smartTransactionCancelledDescription');
     iconName = IconName.Warning;
     iconColor = IconColor.primaryDefault;
   } else {
     // E.g. reverted or unknown statuses.
     title = t('smartTransactionError');
+    description = t('smartTransactionErrorDescription');
     iconName = IconName.Danger;
     iconColor = IconColor.errorDefault;
   }
@@ -106,13 +121,13 @@ export const SmartTransactionStatusPage = ({
         const secondsAfterStxSubmission = Math.round(
           (Date.now() - smartTransaction?.creationTime) / 1000,
         );
-        if (secondsAfterStxSubmission > stxStatusDeadline) {
+        if (secondsAfterStxSubmission > stxEstimatedDeadline) {
           setTimeLeftForPendingStxInSec(0);
           clearInterval(intervalId);
           return;
         }
         setTimeLeftForPendingStxInSec(
-          stxStatusDeadline - secondsAfterStxSubmission,
+          stxEstimatedDeadline - secondsAfterStxSubmission,
         );
       };
       intervalId = setInterval(calculateRemainingTime, 1000);
@@ -120,7 +135,7 @@ export const SmartTransactionStatusPage = ({
     }
 
     return () => clearInterval(intervalId);
-  }, [isSmartTransactionPending, stxStatusDeadline]);
+  }, [isSmartTransactionPending, stxEstimatedDeadline]);
 
   return (
     <Box
@@ -163,8 +178,17 @@ export const SmartTransactionStatusPage = ({
           >
             {title}
           </Text>
+          {description && (
+            <Text
+              marginTop={2}
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySm}
+            >
+              {description}
+            </Text>
+          )}
         </Box>
-        {isSmartTransactionPending && (
+        {isSmartTransactionPending && !isSmartTransactionTakingTooLong && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -175,8 +199,8 @@ export const SmartTransactionStatusPage = ({
                 className="smart-transaction-status-page__loading-bar"
                 style={{
                   width: `${
-                    (100 / stxStatusDeadline) *
-                    (stxStatusDeadline - timeLeftForPendingStxInSec)
+                    (100 / stxEstimatedDeadline) *
+                    (stxEstimatedDeadline - timeLeftForPendingStxInSec)
                   }%`,
                 }}
               />
@@ -209,6 +233,25 @@ export const SmartTransactionStatusPage = ({
               {t('viewTransaction')}
             </Button>
           </Box>
+        )}
+      </Box>
+      <Box
+        className="smart-transaction-status-page__footer"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        width={BlockSize.Full}
+        padding={4}
+        paddingBottom={0}
+      >
+        {!isSmartTransactionPending && (
+          <ButtonSecondary
+            data-testid="smart-transaction-status-page-footer-close-button"
+            onClick={onCloseExtension}
+            width={BlockSize.Full}
+            marginTop={3}
+          >
+            {t('closeExtension')}
+          </ButtonSecondary>
         )}
       </Box>
     </Box>
