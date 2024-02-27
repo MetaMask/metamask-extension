@@ -1141,6 +1141,22 @@ export default class MetamaskController extends EventEmitter {
       unrestrictedMethods,
     });
 
+    // Add any existing permissioned domains to the selected network controller domains if missing from that state.
+    // TODO remove this once this logic is pulled into the constructor of the SelectedNetworkController here: https://github.com/MetaMask/core/pull/3969
+    this.controllerMessenger
+      .call('PermissionController:getSubjectNames')
+      .filter(
+        (domain) =>
+          this.selectedNetworkController.state.domains[domain] === undefined,
+      )
+      .forEach((domain) =>
+        this.selectedNetworkController.setNetworkClientIdForDomain(
+          domain,
+          this.controllerMessenger.call('NetworkController:getState')
+            .selectedNetworkClientId,
+        ),
+      );
+
     this.permissionLogController = new PermissionLogController({
       restrictedMethods: new Set(Object.keys(RestrictedMethods)),
       initState: initState.PermissionLogController,
