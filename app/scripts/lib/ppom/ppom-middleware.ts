@@ -3,6 +3,7 @@ import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
 import { v4 as uuid } from 'uuid';
 
+import { normalizeTxParams } from '@metamask/transaction-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -14,9 +15,11 @@ import { SecurityAlertResponse } from '../transaction/util';
 
 const { sentry } = global as any;
 
+const TRANSACTION_METHOD = 'eth_sendTransaction';
+
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
-  'eth_sendTransaction',
+  TRANSACTION_METHOD,
   ...SIGNING_METHODS,
 ]);
 
@@ -72,7 +75,12 @@ export function createPPOMMiddleware(
         ppomController
           .usePPOM(async (ppom: PPOM) => {
             try {
-              const securityAlertResponse = await ppom.validateJsonRpc(req);
+              const normalizedRequest = normalizeRequest(req);
+
+              const securityAlertResponse = await ppom.validateJsonRpc(
+                normalizedRequest,
+              );
+
               securityAlertResponse.securityAlertId = securityAlertId;
               return securityAlertResponse;
             } catch (error: any) {
@@ -126,5 +134,19 @@ export function createPPOMMiddleware(
     } finally {
       next();
     }
+  };
+}
+
+function normalizeRequest(request: any) {
+  if (request.method !== TRANSACTION_METHOD) {
+    return request;
+  }
+
+  const transactionParams = request.params?.[0] || {};
+  const normalizedParams = normalizeTxParams(transactionParams);
+
+  return {
+    ...request,
+    params: [normalizedParams],
   };
 }
