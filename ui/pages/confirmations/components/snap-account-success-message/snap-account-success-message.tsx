@@ -18,12 +18,17 @@ const SnapAccountSuccessMessage = ({
   return (
     <>
       <SnapAccountCard address={address} />
-      <Text>
+      <Text data-testid="snap-account-success-message-text">
         {message}
         {Boolean(learnMoreLink) && (
           <>
             {' '}
-            <a href={learnMoreLink} rel="noopener noreferrer" target="_blank">
+            <a
+              data-testid="snap-account-success-message-learn-more-link"
+              href={learnMoreLink}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               {t('learnMoreUpperCase') as string}
             </a>
           </>
