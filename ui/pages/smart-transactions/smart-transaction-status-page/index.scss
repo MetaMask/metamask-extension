@@ -1,5 +1,7 @@
 
 .smart-transaction-status-page {
+  text-align: center;
+
   &__loading-bar-container {
     width: 100%;
     height: 3px;
@@ -13,5 +15,8 @@
     background: var(--color-primary-default);
     transition: width 0.5s linear;
   }
-}
 
+  &__footer {
+    grid-area: footer;
+  }
+}
