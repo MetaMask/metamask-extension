@@ -32,6 +32,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
  * @param options0.onChange
  * @param options0.onPreferenceToggle
  * @param options0.swapIcon
+ * @param options0.hideSuffix
  * @param options0.className
  */
 export default function CurrencyInput({
@@ -40,6 +41,7 @@ export default function CurrencyInput({
   onChange,
   onPreferenceToggle,
   swapIcon,
+  hideSuffix = false,
   className = '',
 }) {
   const t = useContext(I18nContext);
@@ -160,6 +162,7 @@ export default function CurrencyInput({
 
     return (
       <CurrencyDisplay
+        hideLabel={hideSuffix}
         className="currency-input__conversion-component"
         currency={currency}
         value={newHexValue}
@@ -202,5 +205,6 @@ CurrencyInput.propTypes = {
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
   swapIcon: PropTypes.func,
+  hideSuffix: PropTypes.bool,
   className: PropTypes.string,
 };

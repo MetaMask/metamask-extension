@@ -67,6 +67,10 @@ export default function SwappableCurrencyInput({
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const sendInputCurrencySwitched = useSelector(getSendInputCurrencySwitched);
 
+  const isFiatPrimary = Boolean(
+    (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
+      (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
+  );
   // FIXME: update swapping logic
   // TODO: add NFTs
   switch (assetType) {
@@ -75,12 +79,17 @@ export default function SwappableCurrencyInput({
       return (
         <CurrencyInput
           className="asset-picker-amount__input"
+          featureSecondary={isFiatPrimary}
           onChange={onAmountChange}
           hexValue={toHex(value)}
           swapIcon={(onClick: React.MouseEventHandler) => (
             <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
           )}
           onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
+          hideSuffix={
+            !isFiatPrimary ||
+            (asset?.details?.symbol?.length || 0) > LARGE_SYMBOL_LENGTH
+          }
         />
       );
 
