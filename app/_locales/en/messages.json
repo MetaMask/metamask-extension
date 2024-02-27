@@ -822,6 +822,9 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
+  "connectAccounts": {
+    "message": "Connect accounts"
+  },
   "connectCustodialAccountMenu": {
     "message": "Connect Custodial Account"
   },
@@ -2847,6 +2850,12 @@
   },
   "noChartData": {
     "message": "No chart data"
+  },
+  "noConnectedAccountDescription": {
+    "message": "Select an account you want to use on this site to continue."
+  },
+  "noConnectedAccountTitle": {
+    "message": "MetaMask isn’t connected to this site"
   },
   "noConversionDateAvailable": {
     "message": "No currency conversion date available"
@@ -5325,6 +5334,9 @@
   },
   "tooltipSatusConnected": {
     "message": "connected"
+  },
+  "tooltipSatusConnectedUpperCase": {
+    "message": "Connected"
   },
   "tooltipSatusNotConnected": {
     "message": "not connected"
