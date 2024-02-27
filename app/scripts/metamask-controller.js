@@ -1748,9 +1748,6 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-          this.txController.nonceTracker,
-        ),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -2311,7 +2308,10 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.delayedInit(this.blockTracker, this.provider);
     this.txController.delayedInit(this.provider, this.blockTracker);
     this.swapsController.delayedInit(this.provider);
-    this.smartTransactionsController.delayedInit(this.provider);
+    this.smartTransactionsController.delayedInit(
+      this.provider,
+      this.txController.nonceTracker.getNonceLock,
+    );
     this.detectTokensController.restartTokenDetection();
   }
 
