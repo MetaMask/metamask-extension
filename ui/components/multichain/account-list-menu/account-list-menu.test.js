@@ -23,12 +23,43 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
     ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      permissionHistory: {
+        'https://test.dapp': {
+          eth_accounts: {
+            accounts: {
+              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+            },
+          },
+        },
+      },
+      subjects: {
+        'https://test.dapp': {
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                },
+              ],
+              invoker: 'https://test.dapp',
+              parentCapability: 'eth_accounts',
+            },
+          },
+        },
+      },
+    },
     activeTab: {
       id: 113,
       title: 'E2E Test Dapp',
       origin: 'https://metamask.github.io',
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
+    },
+    unconnectedAccount: {
+      state: 'OPEN',
     },
   });
   return renderWithProvider(<AccountListMenu {...props} />, store);
@@ -96,8 +127,36 @@ describe('AccountListMenu', () => {
         protocol: 'https:',
         url: 'https://remix.ethereum.org/',
       },
+      unconnectedAccount: {
+        state: 'OPEN',
+      },
       metamask: {
         ...mockState.metamask,
+        permissionHistory: {
+          'https://test.dapp': {
+            eth_accounts: {
+              accounts: {
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+              },
+            },
+          },
+        },
+        subjects: {
+          'https://test.dapp': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  },
+                ],
+                invoker: 'https://test.dapp',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+        },
         accounts: {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
             balance: '0x346ba7725f412cbfdb',
@@ -200,6 +259,31 @@ describe('AccountListMenu', () => {
           metamask: {
             ...mockState.metamask,
             ...state,
+            permissionHistory: {
+              'https://test.dapp': {
+                eth_accounts: {
+                  accounts: {
+                    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+                  },
+                },
+              },
+            },
+            subjects: {
+              'https://test.dapp': {
+                permissions: {
+                  eth_accounts: {
+                    caveats: [
+                      {
+                        type: 'restrictReturnedAccounts',
+                        value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                      },
+                    ],
+                    invoker: 'https://test.dapp',
+                    parentCapability: 'eth_accounts',
+                  },
+                },
+              },
+            },
           },
         },
         activeTab: {
@@ -273,8 +357,36 @@ describe('AccountListMenu', () => {
         protocol: 'https:',
         url: 'https://remix.ethereum.org/',
       },
+      unconnectedAccount: {
+        state: 'OPEN',
+      },
       metamask: {
         ...mockState.metamask,
+        permissionHistory: {
+          'https://test.dapp': {
+            eth_accounts: {
+              accounts: {
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+              },
+            },
+          },
+        },
+        subjects: {
+          'https://test.dapp': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  },
+                ],
+                invoker: 'https://test.dapp',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
           accounts: {
@@ -312,6 +424,31 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
+        permissionHistory: {
+          'https://test.dapp': {
+            eth_accounts: {
+              accounts: {
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+              },
+            },
+          },
+        },
+        subjects: {
+          'https://test.dapp': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  },
+                ],
+                invoker: 'https://test.dapp',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
           accounts: {

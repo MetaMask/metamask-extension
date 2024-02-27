@@ -1969,12 +1969,14 @@
     },
     "@metamask/transaction-controller": {
       "globals": {
+        "clearTimeout": true,
         "console.error": true,
         "setTimeout": true
       },
       "packages": {
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
@@ -1985,9 +1987,9 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
+        "bn.js": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-method-registry": true,
-        "ethereumjs-util": true,
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
