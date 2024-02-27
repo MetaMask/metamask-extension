@@ -13,6 +13,7 @@ import {
   AccountIdentitiesPetnamesBridgeActions,
   AccountIdentitiesPetnamesBridgeEvents,
   AccountIdentitiesPetnamesBridge,
+  AccountIdentitiesPetnamesBridgeMessenger,
 } from './AccountIdentitiesPetnamesBridge';
 import {
   PetnameEntry,
@@ -90,22 +91,12 @@ function createNameStateWithPetname(
   };
 }
 
-function createMessengerMock(): jest.Mocked<
-  PetnamesBridgeMessenger<
-    AccountIdentitiesPetnamesBridgeEvents,
-    AccountIdentitiesPetnamesBridgeActions
-  >
-> {
+function createMessengerMock(): jest.Mocked<AccountIdentitiesPetnamesBridgeMessenger> {
   return {
     publish: jest.fn(),
     subscribe: jest.fn(),
     call: jest.fn(),
-  } as unknown as jest.Mocked<
-    PetnamesBridgeMessenger<
-      AccountIdentitiesPetnamesBridgeEvents,
-      AccountIdentitiesPetnamesBridgeActions
-    >
-  >;
+  } as unknown as jest.Mocked<AccountIdentitiesPetnamesBridgeMessenger>;
 }
 
 function createNameControllerMock(

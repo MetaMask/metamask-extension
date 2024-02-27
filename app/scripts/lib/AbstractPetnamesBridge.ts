@@ -35,7 +35,7 @@ type ChangeList = Record<ChangeType, PetnameEntry[]>;
 type PetnamesBridgeAllowedEvents = NameStateChange;
 
 export type PetnamesBridgeMessenger<
-  Event extends EventConstraint = PetnamesBridgeAllowedEvents,
+  Event extends EventConstraint = never,
   Action extends ActionConstraint = never,
 > = RestrictedControllerMessenger<
   'PetnamesBridge',
@@ -64,7 +64,7 @@ function getKey({ type, variation, value }: PetnameEntry): string {
  * Provides methods for synchronizing petnames with the data source and handling changes.
  */
 export abstract class AbstractPetnamesBridge<
-  Event extends EventConstraint = PetnamesBridgeAllowedEvents,
+  Event extends EventConstraint = never,
   Action extends ActionConstraint = never,
 > {
   #isTwoWay: boolean;

@@ -19,6 +19,12 @@ export type AccountIdentitiesPetnamesBridgeEvents =
   AccountsControllerChangeEvent;
 export type AccountIdentitiesPetnamesBridgeActions =
   AccountsControllerListAccountsAction;
+
+export type AccountIdentitiesPetnamesBridgeMessenger = PetnamesBridgeMessenger<
+  AccountIdentitiesPetnamesBridgeEvents,
+  AccountIdentitiesPetnamesBridgeActions
+>;
+
 /**
  * A petnames bridge that uses the account identities from the preferences controller as the source.
  */
@@ -31,10 +37,7 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge<
     messenger,
   }: {
     nameController: NameController;
-    messenger: PetnamesBridgeMessenger<
-      AccountIdentitiesPetnamesBridgeEvents,
-      AccountIdentitiesPetnamesBridgeActions
-    >;
+    messenger: AccountIdentitiesPetnamesBridgeMessenger;
   }) {
     super({ isTwoWay: false, nameController, messenger });
   }
