@@ -9,8 +9,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-import NftsTab from '../../components/app/nfts-tab';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import NftsTab from '../../components/app/nfts-tab';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
