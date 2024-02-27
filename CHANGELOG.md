@@ -8,27 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.11.0]
 ### Added
-- Added 'What's New' popup for Petnames feature ([#22780](https://github.com/MetaMask/metamask-extension/pull/22780))
-- Added Petnames synchronization control feature ([#22600](https://github.com/MetaMask/metamask-extension/pull/22600))
-- Added default account identities as Petnames enhancement ([#21956](https://github.com/MetaMask/metamask-extension/pull/21956))
-- Introduced toggle for Petnames in experimental settings ([#22456](https://github.com/MetaMask/metamask-extension/pull/22456))
-- Added ModalBody component for improved padding in AccountDetails modal ([#22775](https://github.com/MetaMask/metamask-extension/pull/22775))
+- Added 'Pet Names' feature, allowing users to see preferred or suggested nicknames in the places of addesses
+    - Added 'What's New' popup for Petnames feature ([#22780](https://github.com/MetaMask/metamask-extension/pull/22780))
+    - Introduced toggle for Petnames in experimental settings ([#22456](https://github.com/MetaMask/metamask-extension/pull/22456))
+    - UI enhancements for initial petnames release, including new "Recognized" category and visual refinements ([#22772](https://github.com/MetaMask/metamask-extension/pull/22772))
+    - Enhanced token name display with pet names ([#22734](https://github.com/MetaMask/metamask-extension/pull/22734))
 - Added title to Personal Sign component in confirmation design ([#22749](https://github.com/MetaMask/metamask-extension/pull/22749))
 - Added progress indicator for scanning QR codes with hardware wallets ([#20947](https://github.com/MetaMask/metamask-extension/pull/20947))
 
 ### Changed
-- UI enhancements for initial petnames release, including new "Recognized" category and visual refinements ([#22772](https://github.com/MetaMask/metamask-extension/pull/22772))
-- Improved Petnames design by moving identicon inside name component ([#22737](https://github.com/MetaMask/metamask-extension/pull/22737))
-- Enhanced token name display with useDisplayName hook integration ([#22734](https://github.com/MetaMask/metamask-extension/pull/22734))
 - Moved security alerts from Experimental to Security & Privacy settings ([#22813](https://github.com/MetaMask/metamask-extension/pull/22813))
 - Updated BlockaidBannerAlert to support false positive reporting for failed types ([#22742](https://github.com/MetaMask/metamask-extension/pull/22742))
 - Enhanced BlockaidBannerAlert functionality and display ([#22625](https://github.com/MetaMask/metamask-extension/pull/22625))
 - Disabled smart swaps for Snap accounts ([#22731](https://github.com/MetaMask/metamask-extension/pull/22731))
-- Upgraded @metamask/transaction-controller to v21.0.1 for improved transaction handling ([#22674](https://github.com/MetaMask/metamask-extension/pull/22674))
 - Disabled MetaMask on Battle.net to fix a 2FA login issue ([#20396](https://github.com/MetaMask/metamask-extension/pull/20396))
 - Revised warning copy for mismatched chainID and currency symbol when adding custom networks ([#22648](https://github.com/MetaMask/metamask-extension/pull/22648))
 - Improved UX to display multiple custom networks with the same ID but different RPC URLs in network selection ([#22693](https://github.com/MetaMask/metamask-extension/pull/22693))
 - Updated the connections icon to display the connected dapp icon ([#22634](https://github.com/MetaMask/metamask-extension/pull/22634))
+- Added title to Personal Sign page ([#22749](https://github.com/MetaMask/metamask-extension/pull/22749))
+- Update padding in accounts details modal ([#22775](https://github.com/MetaMask/metamask-extension/pull/22775))
 - [MMI] Refactored display of custodian deep link to improve efficiency and fix potential race conditions ([#22825](https://github.com/MetaMask/metamask-extension/pull/22825))
 - [MMI] Hid the new buy & receive button under MMI build for a cleaner interface ([#22384](https://github.com/MetaMask/metamask-extension/pull/22384))
 
