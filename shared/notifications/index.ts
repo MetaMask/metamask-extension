@@ -12,7 +12,23 @@ export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
 export const NOTIFICATION_STAKING_PORTFOLIO = 30;
 export const NOTIFICATION_PETNAMES = 31;
 
-export const UI_NOTIFICATIONS = {
+interface NotificationImage {
+  src: string;
+  width: string;
+}
+
+interface UINotification {
+  id: number;
+  date: string | null;
+  image?: NotificationImage;
+}
+
+// Assuming all keys in UI_NOTIFICATIONS are of the same structure
+interface UINotifications {
+  [key: number]: UINotification;
+}
+
+export const UI_NOTIFICATIONS: UINotifications = {
   8: {
     id: 8,
     date: '2021-11-01',
@@ -74,13 +90,53 @@ export const UI_NOTIFICATIONS = {
   },
 };
 
+type TranslationFunction = (key: string) => string;
+
+interface NotificationImage {
+  src: string;
+  width: string;
+}
+
+interface TranslatedUINotification {
+  id: number;
+  date: string | null;
+  image?: NotificationImage;
+  title: string;
+  description: string[] | string;
+  actionText?: string;
+}
+
+interface TranslatedUINotifications {
+  [key: number | string]: TranslatedUINotification;
+}
+
+const formatDate = (
+  date: string | null,
+  formattedLocale: string | undefined,
+): string => {
+  let parsedDate: Date;
+  if (date) {
+    const dateParts = date.split('-');
+    parsedDate = new Date(
+      Number(dateParts[0]),
+      Number(dateParts[1]) - 1,
+      Number(dateParts[2]),
+    );
+  } else {
+    parsedDate = new Date();
+  }
+
+  return new Intl.DateTimeFormat(formattedLocale).format(parsedDate);
+};
+
 export const getTranslatedUINotifications = (
-  t,
-  locale,
+  t: TranslationFunction,
+  locale: string,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  theme,
+  theme: string,
   ///: END:ONLY_INCLUDE_IF
-) => {
+): TranslatedUINotifications => {
+  // Added return type here
   const formattedLocale = locale?.replace('_', '-');
 
   return {
@@ -91,9 +147,7 @@ export const getTranslatedUINotifications = (
         t('notifications8DescriptionOne'),
         t('notifications8DescriptionTwo'),
       ],
-      date: new Intl.DateTimeFormat(formattedLocale).format(
-        new Date(UI_NOTIFICATIONS[8].date),
-      ),
+      date: formatDate(UI_NOTIFICATIONS[8].date, formattedLocale),
       actionText: t('notifications8ActionText'),
     },
     20: {
@@ -102,9 +156,7 @@ export const getTranslatedUINotifications = (
       description: [t('notifications20Description')],
       actionText: t('notifications20ActionText'),
       date: UI_NOTIFICATIONS[20].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[20].date),
-          )
+        ? formatDate(UI_NOTIFICATIONS[20].date, formattedLocale)
         : '',
     },
     24: {
@@ -113,9 +165,7 @@ export const getTranslatedUINotifications = (
       description: t('notifications24Description'),
       actionText: t('notifications24ActionText'),
       date: UI_NOTIFICATIONS[24].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[24].date),
-          )
+        ? formatDate(UI_NOTIFICATIONS[24].date, formattedLocale)
         : '',
     },
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
@@ -124,8 +174,9 @@ export const getTranslatedUINotifications = (
       title: t('notificationsDropLedgerFirefoxTitle'),
       description: [t('notificationsDropLedgerFirefoxDescription')],
       date: UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date),
+        ? formatDate(
+            UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date,
+            formattedLocale,
           )
         : '',
     },
@@ -139,8 +190,9 @@ export const getTranslatedUINotifications = (
       ],
       actionText: t('notificationsOpenBetaSnapsActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
+        ? formatDate(
+            UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date,
+            formattedLocale,
           )
         : '',
     },
@@ -150,8 +202,9 @@ export const getTranslatedUINotifications = (
       description: t('notificationsBuySellDescription'),
       actionText: t('notificationsBuySellActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date),
+        ? formatDate(
+            UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date,
+            formattedLocale,
           )
         : '',
     },
@@ -160,8 +213,9 @@ export const getTranslatedUINotifications = (
       title: t('notificationsU2FLedgerLiveTitle'),
       description: [t('notificationsU2FLedgerLiveDescription')],
       date: UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date),
+        ? formatDate(
+            UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date,
+            formattedLocale,
           )
         : '',
     },
@@ -171,8 +225,9 @@ export const getTranslatedUINotifications = (
       description: [t('notificationsStakingPortfolioDescription')],
       actionText: t('notificationsStakingPortfolioActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date),
+        ? formatDate(
+            UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date,
+            formattedLocale,
           )
         : '',
     },
@@ -186,8 +241,9 @@ export const getTranslatedUINotifications = (
       ],
       actionText: t('notificationsBlockaidDefaultDescriptionActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
+        ? formatDate(
+            UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date,
+            formattedLocale,
           )
         : '',
       image:
