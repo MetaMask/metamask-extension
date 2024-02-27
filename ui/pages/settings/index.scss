@@ -112,7 +112,8 @@
           }
 
           &__highlight {
-            background-color: var(--brand-colors-yellow-yellow500);
+            color: var(--color-warning-inverse);
+            background-color: var(--color-warning-default);
           }
 
           &__section-multiple-lines {
