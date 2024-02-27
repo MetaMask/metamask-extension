@@ -86,6 +86,41 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#checkIfMethodIsEnabled', () => {
+    it('returns true if the method is enabled', () => {
+      expect(
+        selectors.checkIfMethodIsEnabled(mockState, EthMethod.SignTransaction),
+      ).toBe(true);
+    });
+
+    it('returns false if the method is not enabled', () => {
+      expect(
+        selectors.checkIfMethodIsEnabled(
+          {
+            metamask: {
+              internalAccounts: {
+                accounts: {
+                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                    ...mockState.metamask.internalAccounts.accounts[
+                      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+                    ],
+                    methods: [
+                      ...Object.values(EthMethod).filter(
+                        (method) => method !== EthMethod.SignTransaction,
+                      ),
+                    ],
+                  },
+                },
+                selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              },
+            },
+          },
+          EthMethod.SignTransaction,
+        ),
+      ).toBe(false);
+    });
+  });
+
   describe('#getInternalAccounts', () => {
     it('returns a list of internal accounts', () => {
       expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
