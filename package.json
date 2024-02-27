@@ -297,7 +297,7 @@
     "@metamask/snaps-sdk": "^2.1.0",
     "@metamask/snaps-utils": "^6.1.0",
     "@metamask/transaction-controller": "^23.0.0",
-    "@metamask/user-operation-controller": "^1.0.0",
+    "@metamask/user-operation-controller": "^4.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
@@ -660,7 +660,6 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
-      "@metamask/transaction-controller>babel-runtime>core-js": false,
       "@storybook/test-runner>@swc/core": false,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
       "tsx>esbuild": false

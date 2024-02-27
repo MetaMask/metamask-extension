@@ -2116,17 +2116,19 @@ export function getIsDesktopEnabled(state) {
  */
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
-  return Object.entries(snaps).map(([key, snap]) => {
-    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-    return {
-      key,
-      id: snap.id,
-      iconUrl: targetSubjectMetadata?.iconUrl,
-      subjectType: targetSubjectMetadata?.subjectType,
-      packageName: stripSnapPrefix(snap.id),
-      name: getSnapName(snap.id, targetSubjectMetadata),
-    };
-  });
+  return Object.entries(snaps)
+    .filter(([_key, snap]) => !snap.preinstalled)
+    .map(([key, snap]) => {
+      const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+      return {
+        key,
+        id: snap.id,
+        iconUrl: targetSubjectMetadata?.iconUrl,
+        subjectType: targetSubjectMetadata?.subjectType,
+        packageName: stripSnapPrefix(snap.id),
+        name: getSnapName(snap.id, targetSubjectMetadata),
+      };
+    });
 }
 
 /**
