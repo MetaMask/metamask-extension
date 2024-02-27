@@ -6,6 +6,15 @@ import { migrate } from './105';
 const MOCK_ADDRESS = '0x0';
 const MOCK_ADDRESS_2 = '0x1';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  startSession: jest.fn(),
+  endSession: jest.fn(),
+  toggleSession: jest.fn(),
+  captureException: sentryCaptureExceptionMock,
+};
+
 function addressToUUID(address: string): string {
   return uuid({
     random: sha256FromString(address).slice(0, 16),
