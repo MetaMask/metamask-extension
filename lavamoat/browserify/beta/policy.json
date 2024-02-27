@@ -1833,7 +1833,6 @@
     },
     "@metamask/snaps-sdk": {
       "globals": {
-        "assert": true,
         "fetch": true
       },
       "packages": {

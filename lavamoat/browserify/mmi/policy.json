@@ -2039,7 +2039,7 @@
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
-        "document": true,
+        "document.getElementById": true,
         "fetch.bind": true,
         "setTimeout": true
       },
@@ -2152,7 +2152,6 @@
     },
     "@metamask/snaps-sdk": {
       "globals": {
-        "assert": true,
         "fetch": true
       },
       "packages": {
