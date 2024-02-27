@@ -21,6 +21,7 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
+import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 
 export interface AssetPickerProps {
@@ -52,10 +53,11 @@ export default function AssetPicker({
       ? nativeCurrencySymbol
       : asset.details?.symbol;
 
-  const shortFormSymbol =
-    symbol?.length > LARGE_SYMBOL_LENGTH
-      ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
-      : symbol;
+  const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
+
+  const shortFormSymbol = isSymbolLong
+    ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
+    : symbol;
 
   return (
     <>
@@ -79,9 +81,9 @@ export default function AssetPicker({
         onClick={() => setShowAssetPickerModal(true)}
       >
         <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
-        <Text variant={TextVariant.bodyMd} marginLeft="auto" marginRight="auto">
-          {symbol}
-        </Text>
+        <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
+          <Text variant={TextVariant.bodyMd}>{shortFormSymbol}</Text>
+        </Tooltip>
         <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
       </Box>
     </>
