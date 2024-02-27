@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
-import SnapAccountErrorMessage from './snap-account-error-message';
+import SnapAccountErrorMessage from './SnapAccountErrorMessage';
 
 const store = configureStore({
   metamask: {

@@ -1,1 +1,1 @@
-export { default as SnapAccountErrorMessage } from './snap-account-error-message';
+export { default as SnapAccountErrorMessage } from './SnapAccountErrorMessage';

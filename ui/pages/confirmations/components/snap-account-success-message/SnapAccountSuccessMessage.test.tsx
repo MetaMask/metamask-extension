@@ -3,7 +3,7 @@ import configureStore from '../../../../store/store';
 // Use mock-send-state to have some identites being populated
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
-import SnapAccountSuccessMessage from './snap-account-success-message';
+import SnapAccountSuccessMessage from './SnapAccountSuccessMessage';
 
 const store = configureStore({
   metamask: {
