@@ -17,19 +17,31 @@ const SnapAccountErrorMessage = ({
 
   return (
     <>
-      <Text style={error ? { marginBottom: 2 } : {}}>
+      <Text
+        data-testid="snap-account-error-message-text"
+        style={error ? { marginBottom: 2 } : {}}
+      >
         {message}
         {Boolean(learnMoreLink) && (
           <>
             {' '}
-            <a href={learnMoreLink} rel="noopener noreferrer" target="_blank">
+            <a
+              data-testid="snap-account-error-message-learn-more-link"
+              href={learnMoreLink}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               {t('learnMoreUpperCase') as string}
             </a>
           </>
         )}
       </Text>
       {Boolean(error) && (
-        <ActionableMessage type={'danger'} message={error}></ActionableMessage>
+        <ActionableMessage
+          type={'danger'}
+          message={error}
+          dataTestId={'snap-account-error-message-error'}
+        ></ActionableMessage>
       )}
     </>
   );
