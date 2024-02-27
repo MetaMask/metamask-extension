@@ -24,7 +24,7 @@ describe('SmartTransactionStatusPage', () => {
       <SmartTransactionStatusPage requestState={requestState} />,
       store,
     );
-    expect(getByText('Submitting Smart Transaction')).toBeInTheDocument();
+    expect(getByText('Submitting your transaction')).toBeInTheDocument();
   });
 
   it('renders the "success" STX status', () => {
