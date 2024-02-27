@@ -201,8 +201,6 @@ const AssetChart = ({
 
           setChartOptions((options) => ({
             ...options,
-            borderColor:
-              theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
             onResize: () => drawTooltips(),
             scales: {
               x: { min: xMin.x, max: xMax.x, display: false, type: 'linear' },
@@ -216,6 +214,15 @@ const AssetChart = ({
         setLoading(false);
       });
   }, [chainId, address, currency, timeRange]);
+
+  useEffect(
+    () =>
+      setChartOptions((options) => ({
+        ...options,
+        borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+      })),
+    [theme],
+  );
 
   const prices = chartRef?.current?.data?.datasets?.[0]?.data;
 
