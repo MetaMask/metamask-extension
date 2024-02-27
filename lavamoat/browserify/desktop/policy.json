@@ -703,6 +703,12 @@
         "@babel/runtime": true
       }
     },
+    "@metamask-previews/permission-log-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/accounts-controller": {
       "packages": {
         "@metamask/base-controller": true,
