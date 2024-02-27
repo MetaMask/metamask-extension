@@ -45,8 +45,6 @@ export const ConnectedAccountsMenu = ({
     [onClose],
   );
 
-  if (!anchorElement) return null;
-
   return (
     <Popover
       className="multichain-connected-accounts-menu__popover"
@@ -60,7 +58,10 @@ export const ConnectedAccountsMenu = ({
       preventOverflow
       isPortal
     >
-      <ModalFocus restoreFocus initialFocusRef={{ current: anchorElement }}>
+      <ModalFocus
+        restoreFocus
+        initialFocusRef={{ current: anchorElement || null }}
+      >
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           <TsMenuItem onClick={() => {}} iconName={IconName.SecurityTick}>
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
