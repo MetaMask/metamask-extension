@@ -2662,7 +2662,7 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
       ...this.getProviderNetworkState(
-        this.preferencesController?.getUseRequestQueue() ? origin : undefined,
+        this.preferencesController.getUseRequestQueue() ? origin : undefined,
       ),
     };
   }
@@ -2676,7 +2676,7 @@ export default class MetamaskController extends EventEmitter {
   getProviderNetworkState(origin = METAMASK_DOMAIN) {
     let chainId;
     if (
-      this.preferencesController?.getUseRequestQueue() &&
+      this.preferencesController.getUseRequestQueue() &&
       origin !== METAMASK_DOMAIN
     ) {
       // It would be nice to have selectedNetworkController always return a value, and have it decide how to default the values (in all cases we want the default to be 'what ever the globally selected network is').
@@ -4776,9 +4776,6 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    // Use proxyClient from selectedNetworkController when:
-    // 1. feature flag for perDomainNetwork is on
-    // 2  the origin is in the selectedNetworkController's `domains` state
     let proxyClient;
     if (
       this.selectedNetworkController.state.perDomainNetwork &&
@@ -4787,6 +4784,13 @@ export default class MetamaskController extends EventEmitter {
       proxyClient =
         this.selectedNetworkController.getProviderAndBlockTracker(origin);
     } else {
+      // if perDomainNetwork is false we want to use the globally selected network provider/blockTracker
+      // since this means the per domain network feature is disabled
+
+      // if the origin is not in the selectedNetworkController's `domains` state,
+      // this means that origin does not have permissions (is not connected to the wallet)
+      // and will therefore not have its own selected network even if perDomainNetwork is true
+      // and so in this case too we want to use the globally selected network provider/blockTracker
       proxyClient = {
         provider: this.provider,
         blockTracker: this.blockTracker,
