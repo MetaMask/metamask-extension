@@ -247,7 +247,7 @@ export const AppHeader = ({ location }) => {
                         networkOpenCallback();
                       }}
                       display={[Display.Flex, Display.None]} // show on popover hide on desktop
-                      disabled={disableNetworkPicker}
+                      disabled={false}
                     />
                   </Tooltip>
                 </Box>
@@ -267,7 +267,7 @@ export const AppHeader = ({ location }) => {
                     }}
                     display={[Display.None, Display.Flex]} // show on desktop hide on popover
                     className="multichain-app-header__contents__network-picker"
-                    disabled={disableNetworkPicker}
+                    disabled={false}
                     data-testid="network-display"
                   />
                 </div>
