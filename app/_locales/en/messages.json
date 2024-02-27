@@ -2096,11 +2096,11 @@
     "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
   },
   "insightWarningContentPlural": {
-    "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
+    "message": "Review $1 warnings before $2. Once made, the $3 is irreversible.",
     "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
   },
   "insightWarningContentSingular": {
-    "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
+    "message": "Review 1 warning before $1. Once made, the $2 is irreversible.",
     "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
   },
   "insightWarningHeader": {
