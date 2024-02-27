@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
-import { Checkbox } from '../../component-library/index';
+import { Checkbox } from '../../component-library';
+import { AccountListItem } from '.';
 
 const store = configureStore(testData);
 
