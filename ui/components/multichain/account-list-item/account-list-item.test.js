@@ -29,7 +29,11 @@ const render = (props = {}) => {
       ...mockState.metamask,
     },
     activeTab: {
-      origin: 'https://uniswap.org/',
+      id: 113,
+      title: 'E2E Test Dapp',
+      origin: 'https://metamask.github.io',
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
     },
   });
   const allProps = { ...DEFAULT_PROPS, ...props };
