@@ -8,7 +8,7 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: jest.fn().mockReturnValue((key) => key),
+  useI18nContext: jest.fn().mockReturnValue((key: string) => key),
 }));
 
 describe('NotificationDetailCopyButton', () => {

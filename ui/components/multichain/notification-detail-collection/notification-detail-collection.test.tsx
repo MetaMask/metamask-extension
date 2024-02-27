@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { IconName } from '../../component-library';
 import {
   NotificationDetailCollection,
   NotificationDetailCollectionProps,
@@ -10,9 +9,7 @@ describe('NotificationDetailCollection', () => {
   const defaultProps: NotificationDetailCollectionProps = {
     icon: {
       src: 'https://example.com/image.jpg',
-      badge: {
-        iconName: IconName.Ethereum,
-      },
+      badgeSrc: 'https://example.com/badge.jpg',
     },
     label: 'Test Label',
     collection: 'Test Collection',
@@ -24,11 +21,11 @@ describe('NotificationDetailCollection', () => {
     expect(screen.getByText(defaultProps.collection)).toBeInTheDocument();
   });
 
-  it('renders the image', () => {
+  it('renders the main image and the badge image', () => {
     render(<NotificationDetailCollection {...defaultProps} />);
-    expect(screen.getByRole('img')).toHaveAttribute(
-      'src',
-      defaultProps.icon.src,
-    );
+    const images = screen.getAllByRole('img');
+    expect(images.length).toBe(2);
+    expect(images[0]).toHaveAttribute('src', defaultProps.icon.src);
+    expect(images[1]).toHaveAttribute('src', defaultProps.icon.badgeSrc);
   });
 });

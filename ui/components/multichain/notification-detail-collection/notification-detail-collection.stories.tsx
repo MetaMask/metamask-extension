@@ -19,7 +19,7 @@ export const DefaultStory = Template.bind({});
 DefaultStory.args = {
   icon: {
     src: 'https://i.seadn.io/gcs/files/0d5f1b200a067938f507cbe12bbbabc2.jpg?w=500&auto=format',
-    badge:
+    badgeSrc:
       'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
   },
   label: 'Collection',

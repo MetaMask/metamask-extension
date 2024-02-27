@@ -6,11 +6,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   NotificationListItemText,
-  NotificationListItemTextArrayProps,
+  type NotificationListItemTextProps,
 } from './notification-list-item-text';
 
 describe('NotificationListItemText', () => {
-  const defaultProps: NotificationListItemTextArrayProps = {
+  const defaultProps: NotificationListItemTextProps = {
     items: [
       { text: 'Test text 1', highlighted: true },
       { text: 'Test text 2' },
