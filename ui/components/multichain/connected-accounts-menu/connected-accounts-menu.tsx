@@ -17,6 +17,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  showDappPermissionModal,
   removePermittedAccount,
   setSelectedAccount,
 } from '../../../store/actions';
@@ -78,6 +79,15 @@ export const ConnectedAccountsMenu = ({
     [onClose],
   );
 
+  function openDappPermissionModal() {
+    onClose();
+    dispatch(
+      showDappPermissionModal({
+        account: { label: identity?.metadata?.name, address: identity.address },
+      }),
+    );
+  }
+
   return (
     <Popover
       className="multichain-connected-accounts-menu__popover"
@@ -96,6 +106,7 @@ export const ConnectedAccountsMenu = ({
           <TsMenuItem
             iconName={IconName.SecurityTick}
             data-testid="permission-details-menu-item"
+            onClick={openDappPermissionModal}
           >
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
           </TsMenuItem>
@@ -122,6 +133,8 @@ export const ConnectedAccountsMenu = ({
               dispatch(
                 removePermittedAccount(activeTabOrigin, identity.address),
               );
+              onClose();
+              closeMenu();
             }}
           >
             <Text color={TextColor.errorDefault} variant={TextVariant.bodyMd}>

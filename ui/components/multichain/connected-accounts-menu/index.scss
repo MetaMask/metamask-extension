@@ -1,8 +1,17 @@
 @use "design-system";
 
+<<<<<<< HEAD
+=======
+// probably not necessary given that the popover
+// wont be rendered inside of a modal
+>>>>>>> 3103bf89fc (Add connected-accounts-menu component)
 .multichain-connected-accounts-menu__popover {
   z-index: design-system.$popover-in-modal-z-index;
   overflow: hidden;
   min-width: 225px;
   max-width: 225px;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3103bf89fc (Add connected-accounts-menu component)

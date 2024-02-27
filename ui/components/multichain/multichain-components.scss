@@ -10,6 +10,7 @@
 @import 'import-nfts-modal';
 @import 'account-list-item';
 @import 'account-list-item-menu';
+@import 'connected-accounts-menu';
 @import 'account-list-menu';
 @import 'account-picker';
 @import 'activity-list-item';
@@ -26,6 +27,7 @@
 @import 'asset-list-conversion-button';
 @import 'asset-picker-amount';
 @import 'asset-picker-amount/asset-picker';
+<<<<<<< HEAD
 @import 'asset-picker-amount/asset-picker-modal';
 @import 'notification-detail';
 @import 'notification-detail-collection';
@@ -33,3 +35,6 @@
 @import 'notification-list-item-icon';
 @import 'notification-list-item';
 @import 'toast';
+=======
+@import 'asset-picker-amount/asset-picker-modal';
+>>>>>>> 3103bf89fc (Add connected-accounts-menu component)
