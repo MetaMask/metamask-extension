@@ -4,12 +4,18 @@
   }
 
   &__input {
-    & > div > div {
+    & > div  {
+      & > .currency-input__conversion-component > span{
+        color: var(--color-text-alternative);
+      }
+      & > div{
       max-width: 150px;
       white-space: nowrap;
       overflow: scroll;
       text-overflow: ellipsis;
+      }
     }
+
 
     & > .unit-input__inputs > div {
       & > input {
