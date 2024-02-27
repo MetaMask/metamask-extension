@@ -1,15 +1,12 @@
-import { normalizeTxParams } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { createPPOMMiddleware } from './ppom-middleware';
+import { normalizePPOMRequest } from './ppom-util';
 
-jest.mock('@metamask/transaction-controller', () => ({
-  ...jest.requireActual('@metamask/transaction-controller'),
-  normalizeTxParams: jest.fn(),
-}));
+jest.mock('./ppom-util');
 
 Object.defineProperty(globalThis, 'fetch', {
   writable: true,
@@ -55,12 +52,12 @@ const createMiddleWare = (
 };
 
 describe('PPOMMiddleware', () => {
-  const normalizeTxParamsMock = jest.mocked(normalizeTxParams);
+  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    normalizeTxParamsMock.mockImplementation((txParams) => txParams);
+    normalizePPOMRequestMock.mockImplementation((txParams) => txParams);
   });
 
   it('should call ppomController.usePPOM for requests of type confirmation', async () => {
@@ -191,12 +188,19 @@ describe('PPOMMiddleware', () => {
   });
 
   it('normalizes transaction requests before validation', async () => {
-    const transactionParamsMock1 = { from: '0x1', to: '0x2', value: '0x3' };
-    const transactionParamsMock2 = { from: '0x2', to: '0x3', value: '0x4' };
+    const requestMock1 = {
+      method: 'eth_sendTransaction',
+      params: [{ data: '0x1' }],
+    };
+
+    const requestMock2 = {
+      ...requestMock1,
+      params: [{ data: '0x2' }],
+    };
 
     const validateMock = jest.fn();
 
-    normalizeTxParamsMock.mockReturnValue(transactionParamsMock2);
+    normalizePPOMRequestMock.mockReturnValue(requestMock2);
 
     const ppom = {
       validateJsonRpc: validateMock,
@@ -208,18 +212,12 @@ describe('PPOMMiddleware', () => {
 
     const middlewareFunction = createMiddleWare(usePPOM);
 
-    await middlewareFunction(
-      { method: 'eth_sendTransaction', params: [transactionParamsMock1] },
-      undefined,
-      () => undefined,
-    );
+    await middlewareFunction(requestMock1, undefined, () => undefined);
 
-    expect(normalizeTxParamsMock).toHaveBeenCalledTimes(1);
-    expect(normalizeTxParamsMock).toHaveBeenCalledWith(transactionParamsMock1);
+    expect(normalizePPOMRequestMock).toHaveBeenCalledTimes(1);
+    expect(normalizePPOMRequestMock).toHaveBeenCalledWith(requestMock1);
 
     expect(validateMock).toHaveBeenCalledTimes(1);
-    expect(validateMock).toHaveBeenCalledWith(
-      expect.objectContaining({ params: [transactionParamsMock2] }),
-    );
+    expect(validateMock).toHaveBeenCalledWith(requestMock2);
   });
 });

@@ -8,6 +8,7 @@ import {
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import { PPOMController } from '@metamask/ppom-validator';
+import { normalizePPOMRequest } from '../ppom/ppom-util';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -15,6 +16,8 @@ import {
   addDappTransaction,
   addTransaction,
 } from './util';
+
+jest.mock('../ppom/ppom-util');
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
@@ -88,6 +91,7 @@ async function flushPromises() {
 }
 
 describe('Transaction Utils', () => {
+  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
@@ -485,6 +489,41 @@ describe('Transaction Utils', () => {
         });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('normalizes transaction requests before validation', async () => {
+        const ppomRequestMock = {
+          method: 'eth_sendTransaction',
+          id: 'mockActionId',
+          origin: 'mockOrigin',
+          params: [TRANSACTION_PARAMS_MOCK],
+        };
+
+        const ppomRequestNormalizedMock = {
+          ...ppomRequestMock,
+          id: 'mockActionId2',
+          origin: 'mockOrigin2',
+        };
+
+        const validateMock = jest.fn();
+
+        const ppomMock = {
+          validateJsonRpc: validateMock,
+        };
+
+        normalizePPOMRequestMock.mockReturnValue(ppomRequestNormalizedMock);
+
+        request.securityAlertsEnabled = true;
+        request.chainId = '0x1';
+        request.ppomController.usePPOM = (callback: any) => callback(ppomMock);
+
+        await addTransaction(request);
+
+        expect(validateMock).toHaveBeenCalledTimes(1);
+        expect(validateMock).toHaveBeenCalledWith(ppomRequestNormalizedMock);
+
+        expect(normalizePPOMRequest).toHaveBeenCalledTimes(1);
+        expect(normalizePPOMRequest).toHaveBeenCalledWith(ppomRequestMock);
       });
     });
 
