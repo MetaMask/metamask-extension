@@ -77,11 +77,11 @@ export const TokenStoryWithLargeNameAndValue = () => (
       onAssetChange={noop}
       amount={{ value: '0x1ED09BEAD87C0378D8E6400000000' }}
       asset={{
-        type: AssetType.native,
+        type: AssetType.token,
         balance: '0x1ED0',
         details: {
           address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
-          symbol: 'BAYC',
+          symbol: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
           isERC721: false,
         },
       }}
