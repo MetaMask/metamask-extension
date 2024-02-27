@@ -1,18 +1,53 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  mergeGasFeeEstimates,
+} from '@metamask/transaction-controller';
+import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
+  getGasFeeControllerEstimates,
+  getGasFeeEstimates,
   getIsNetworkBusy,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
+  getTransactionGasFeeEstimates,
   isNotEIP1559Network,
 } from './metamask';
 
+jest.mock('@metamask/transaction-controller', () => ({
+  ...jest.requireActual('@metamask/transaction-controller'),
+  mergeGasFeeEstimates: jest.fn(),
+}));
+
+const GAS_FEE_CONTROLLER_ESTIMATES_MOCK = {
+  low: '0x1',
+  medium: '0x2',
+  high: '0x3',
+};
+
+const TRANSACTION_ESTIMATES_MOCK = {
+  low: {
+    maxFeePerGas: '0x1',
+    maxPriorityFeePerGas: '0x2',
+  },
+  medium: {
+    maxFeePerGas: '0x1',
+    maxPriorityFeePerGas: '0x2',
+  },
+  high: {
+    maxFeePerGas: '0x1',
+    maxPriorityFeePerGas: '0x2',
+  },
+};
+
 describe('MetaMask Reducers', () => {
+  const mergeGasFeeEstimatesMock = jest.mocked(mergeGasFeeEstimates);
+
   const mockState = {
     metamask: reduceMetamask(
       {
@@ -147,6 +182,7 @@ describe('MetaMask Reducers', () => {
       {},
     ),
   };
+
   it('init state', () => {
     const initState = reduceMetamask(undefined, {});
 
@@ -424,6 +460,81 @@ describe('MetaMask Reducers', () => {
           metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
         }),
       ).toBe(false);
+    });
+  });
+
+  describe('getGasFeeControllerEstimates', () => {
+    it('returns estimates from GasFeeController state', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      expect(getGasFeeControllerEstimates(state)).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+  });
+
+  describe('getTransactionGasFeeEstimates', () => {
+    it('returns estimates from transaction', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+      };
+
+      expect(getTransactionGasFeeEstimates(state)).toStrictEqual(
+        TRANSACTION_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns undefined if no confirm transaction', () => {
+      expect(getTransactionGasFeeEstimates({})).toBeUndefined();
+    });
+  });
+
+  describe('getGasFeeEstimates', () => {
+    it('returns GasFeeController estimates if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      expect(getGasFeeEstimates(state)).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns merged transaction estimates if transaction estimates and GasFeeController estimates', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      mergeGasFeeEstimatesMock.mockReturnValue(TRANSACTION_ESTIMATES_MOCK);
+
+      expect(getGasFeeEstimates(state)).toStrictEqual(
+        TRANSACTION_ESTIMATES_MOCK,
+      );
+
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
+        gasFeeControllerEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+      });
     });
   });
 });

@@ -23,3 +23,4 @@ export { AssetListConversionButton } from './asset-list-conversion-button';
 export { AvatarGroup } from './avatar-group';
 export { AssetPickerAmount } from './asset-picker-amount';
 export { AddressListItem } from './address-list-item';
+export { ConnectedStatus } from './connected-status';
