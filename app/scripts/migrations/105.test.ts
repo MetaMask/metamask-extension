@@ -257,5 +257,24 @@ describe('migration #105', () => {
         },
       });
     });
+
+    it('captures an exception if the selectedAddress state is invalid', async () => {
+      const oldData = {
+        PreferencesController: {
+          identities: {},
+          selectedAddress: undefined,
+        },
+      };
+      const oldStorage = {
+        meta: { version: 103 },
+        data: oldData,
+      };
+      await migrate(oldStorage);
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(`state.PreferencesController?.selectedAddress is undefined`),
+      );
+    });
   });
 });
