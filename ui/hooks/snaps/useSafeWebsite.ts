@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { getPhishingResult } from "../../store/actions";
-import { EthPhishingDetectResult } from "@metamask/phishing-controller";
-
+import { useEffect, useState } from 'react';
+import { EthPhishingDetectResult } from '@metamask/phishing-controller';
+import { getPhishingResult } from '../../store/actions';
 
 /**
  * Perform a phishing check on the provided link.
+ *
  * @param website - The website to check.
  * @returns The safe website URL or nothing if it's a phishing website.
  */
@@ -13,7 +13,9 @@ export const useSafeWebsite = (website: string) => {
 
   useEffect(() => {
     const performPhishingCheck = async () => {
-      const phishingResult = await getPhishingResult(website) as EthPhishingDetectResult;
+      const phishingResult = (await getPhishingResult(
+        website,
+      )) as EthPhishingDetectResult;
 
       if (!phishingResult.result) {
         setSafeWebsite(new URL(website));
@@ -24,5 +26,5 @@ export const useSafeWebsite = (website: string) => {
     }
   }, [website]);
 
-  return safeWebsite
-}
+  return safeWebsite;
+};
