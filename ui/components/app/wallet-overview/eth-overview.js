@@ -31,11 +31,12 @@ import {
   getIsSwapsChain,
   getCurrentChainId,
   getPreferences,
-  getSelectedInternalAccount,
+  getSelectedAddress,
   getShouldHideZeroBalanceTokens,
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
   getShowFiatInTestnets,
+  checkIfMethodIsEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -100,8 +101,7 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   // Total fiat balance
-  const account = useSelector(getSelectedInternalAccount);
-  const selectedAddress = account.address;
+  const selectedAddress = useSelector(getSelectedAddress);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -120,7 +120,9 @@ const EthOverview = ({ className, showAddress }) => {
   }
 
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const signingDisabled = !account.methods.includes(EthMethod.SignTransaction);
+  const signingEnabled = useSelector((state) =>
+    checkIfMethodIsEnabled(state, EthMethod.SignTransaction),
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -237,7 +239,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain || signingDisabled}
+              disabled={!isBuyableChain || !signingEnabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={() => {
@@ -254,13 +256,13 @@ const EthOverview = ({ className, showAddress }) => {
                 });
               }}
               tooltipRender={
-                signingDisabled
-                  ? (contents) => (
+                signingEnabled
+                  ? null
+                  : (contents) => (
                       <Tooltip title={t('accountCannotSign')} position="bottom">
                         {contents}
                       </Tooltip>
                     )
-                  : null
               }
             />
             ///: END:ONLY_INCLUDE_IF
@@ -281,7 +283,7 @@ const EthOverview = ({ className, showAddress }) => {
                 color={IconColor.primaryInverse}
               />
             }
-            disabled={signingDisabled}
+            disabled={!signingEnabled}
             label={t('send')}
             onClick={() => {
               trackEvent({
@@ -301,18 +303,18 @@ const EthOverview = ({ className, showAddress }) => {
               });
             }}
             tooltipRender={
-              signingDisabled
-                ? (contents) => (
+              signingEnabled
+                ? null
+                : (contents) => (
                     <Tooltip title={t('accountCannotSign')} position="bottom">
                       {contents}
                     </Tooltip>
                   )
-                : null
             }
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain || signingDisabled}
+            disabled={!isSwapsChain || !signingEnabled}
             Icon={
               <Icon
                 name={IconName.SwapHorizontal}
@@ -350,12 +352,13 @@ const EthOverview = ({ className, showAddress }) => {
             label={t('swap')}
             data-testid="token-overview-button-swap"
             tooltipRender={
-              isSwapsChain && !signingDisabled
+              isSwapsChain && signingEnabled
                 ? null
                 : (contents) => (
                     <Tooltip
                       title={
-                        signingDisabled
+                        // eslint-disable-next-line no-negated-condition
+                        !signingEnabled
                           ? t('accountCannotSign')
                           : t('currentlyUnavailable')
                       }
@@ -370,7 +373,7 @@ const EthOverview = ({ className, showAddress }) => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
-              disabled={!isBridgeChain || signingDisabled}
+              disabled={!isBridgeChain || !signingEnabled}
               data-testid="eth-overview-bridge"
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
@@ -401,12 +404,13 @@ const EthOverview = ({ className, showAddress }) => {
                 }
               }}
               tooltipRender={
-                isBridgeChain && !signingDisabled
+                isBridgeChain && signingEnabled
                   ? null
                   : (contents) => (
                       <Tooltip
                         title={
-                          signingDisabled
+                          // eslint-disable-next-line no-negated-condition
+                          !signingEnabled
                             ? t('accountCannotSign')
                             : t('currentlyUnavailable')
                         }
