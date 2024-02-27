@@ -35,6 +35,8 @@ export const ValidColors = [
   Color.sepoliaInverse,
   Color.lineaGoerli,
   Color.lineaGoerliInverse,
+  Color.lineaSepolia,
+  Color.lineaSepoliaInverse,
   Color.lineaMainnet,
   Color.lineaMainnetInverse,
 ];

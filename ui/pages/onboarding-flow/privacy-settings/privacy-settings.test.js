@@ -19,6 +19,7 @@ describe('Privacy Settings Onboarding View', () => {
         [CHAIN_IDS.LINEA_MAINNET]: false,
         [CHAIN_IDS.SEPOLIA]: false,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       },
       usePhishDetect: true,
       use4ByteResolution: true,

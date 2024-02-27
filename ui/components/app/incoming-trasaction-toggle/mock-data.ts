@@ -61,6 +61,19 @@ export const ALL_NETWORKS_DATA = [
     id: 'linea-goerli',
     removable: false,
   },
+  {
+    chainId: '0xe705', // TODO: change this when linea sepolia network is ready
+    nickname: 'Linea Sepolia',
+    rpcUrl:
+      'https://linea-sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+    rpcPrefs: {
+      imageUrl: './images/linea-logo-testnet.png',
+    },
+    providerType: 'linea-sepolia',
+    ticker: 'LineaETH',
+    id: 'linea-sepolia',
+    removable: false,
+  },
 ];
 
 export const INCOMING_DATA = {

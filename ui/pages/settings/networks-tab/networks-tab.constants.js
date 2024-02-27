@@ -44,6 +44,18 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   {
+    labelKey: NETWORK_TYPES.LINEA_SEPOLIA,
+    iconColor: '#61dfff',
+    providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+    rpcUrl: getRpcUrl({
+      network: NETWORK_TYPES.LINEA_SEPOLIA,
+      excludeProjectId: true,
+    }),
+    chainId: CHAIN_IDS.LINEA_SEPOLIA,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+    blockExplorerUrl: 'https://sepolia.lineascan.build',
+  },
+  {
     labelKey: NETWORK_TYPES.LINEA_MAINNET,
     iconColor: '#121212',
     providerType: NETWORK_TYPES.LINEA_MAINNET,
