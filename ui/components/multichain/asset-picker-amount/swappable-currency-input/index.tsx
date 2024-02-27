@@ -1,0 +1,111 @@
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import CurrencyInput from '../../../app/currency-input';
+import SwapIcon from './swap-icon';
+import {
+  getPreferences,
+  getSendInputCurrencySwitched,
+} from '../../../../selectors';
+import type { Asset, Amount } from '../../../../ducks/send';
+import { toggleCurrencySwitch } from '../../../../ducks/app/app';
+import { LARGE_SYMBOL_LENGTH } from '../constants';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import UserPreferencedCurrencyInput from '../../../app/user-preferenced-currency-input';
+import { Box, Text } from '../../../component-library';
+import {
+  FontWeight,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+
+interface BaseProps {
+  assetType: AssetType;
+  onAmountChange: (newAmount: string) => void;
+  asset?: Asset;
+  amount: Amount;
+}
+
+interface ERC20Props extends BaseProps {
+  assetType: AssetType.token;
+  asset: Asset;
+}
+
+// TODO: build out NFT logic
+interface NFTProps extends BaseProps {
+  assetType: AssetType.NFT;
+  asset: Asset;
+}
+
+interface NativeTokenProps extends BaseProps {
+  assetType: AssetType.native;
+}
+
+interface UnsupportedTokenProps extends Omit<BaseProps, 'assetType'> {
+  assetType: Exclude<
+    AssetType,
+    AssetType.NFT | AssetType.native | AssetType.token
+  >;
+  asset?: Asset;
+}
+
+type SwappableCurrencyInputProps =
+  | ERC20Props
+  | NFTProps
+  | NativeTokenProps
+  | UnsupportedTokenProps;
+
+export default function SwappableCurrencyInput({
+  assetType,
+  asset,
+  amount: { value },
+  onAmountChange,
+}: SwappableCurrencyInputProps) {
+  const dispatch = useDispatch();
+
+  const t = useI18nContext();
+
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const sendInputCurrencySwitched = useSelector(getSendInputCurrencySwitched);
+
+  if (assetType === AssetType.token) {
+    return (
+      <CurrencyInput
+        className="asset-picker-amount__input"
+        featureSecondary={Boolean(
+          (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
+            (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
+        )}
+        onChange={onAmountChange}
+        hexValue={value}
+        swapIcon={(onClick: React.MouseEventHandler) => (
+          <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
+        )}
+        onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
+      />
+    );
+  } else if (assetType === AssetType.native) {
+    return (
+      <UserPreferencedCurrencyInput
+        className="asset-picker-amount__input"
+        onChange={onAmountChange}
+        hexValue={value}
+        swapIcon={(onClick: React.MouseEventHandler) => (
+          <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
+        )}
+      />
+    );
+  }
+
+  return (
+    <Box marginLeft={'auto'}>
+      <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
+      <Text
+        variant={TextVariant.bodySm}
+        fontWeight={FontWeight.Bold}
+        marginLeft={10}
+      >
+        {asset?.details?.tokenId}
+      </Text>
+    </Box>
+  );
+}
