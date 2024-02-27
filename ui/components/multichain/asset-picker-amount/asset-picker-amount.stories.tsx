@@ -111,9 +111,6 @@ export const ErrorStory = () => (
   </div>
 );
 ErrorStory.storyName = 'Error';
-ErrorStory.decorators = [
-  (story) => <Provider store={store()}>{story()}</Provider>,
-];
 
 function store() {
   return configureStore({
