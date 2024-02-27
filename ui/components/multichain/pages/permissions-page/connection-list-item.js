@@ -121,7 +121,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                   flexDirection={FlexDirection.Column}
                 >
                   <Text
-                    color={TextColor.textDefault}
+                    color={TextColor.overlayInverse}
                     variant={TextVariant.headingSm}
                     paddingInline={10}
                   >
@@ -152,7 +152,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                               borderStyle={BorderStyle.none}
                             />
                             <Text
-                              color={TextColor.textDefault}
+                              color={TextColor.overlayInverse}
                               variant={TextVariant.bodyMdMedium}
                               data-testid="connection-list-item-connected-account-name"
                               ellipsis
@@ -170,7 +170,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                         paddingInline={2}
                       >
                         <Text
-                          color={TextColor.textAlternative}
+                          color={TextColor.textMuted}
                           variant={TextVariant.bodyMdMedium}
                           data-testid="connection-list-item-plus-more-tooltip"
                         >
