@@ -20,6 +20,7 @@ const addEthereumChain = {
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
     findNetworkConfigurationBy: true,
+    setNetworkClientIdForDomain: true,
     setActiveNetwork: true,
     requestUserApproval: true,
     startApprovalFlow: true,
@@ -39,6 +40,7 @@ async function addEthereumChainHandler(
     getCurrentChainId,
     getCurrentRpcUrl,
     findNetworkConfigurationBy,
+    setNetworkClientIdForDomain,
     setActiveNetwork,
     requestUserApproval,
     startApprovalFlow,
@@ -294,6 +296,7 @@ async function addEthereumChainHandler(
         fromNetworkConfiguration: getProviderConfig(),
       },
     });
+    setNetworkClientIdForDomain(req.origin, networkConfigurationId);
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
