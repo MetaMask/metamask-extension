@@ -132,15 +132,15 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                     flexDirection={FlexDirection.Column}
                   >
                     {connection.addresses
-                      .slice(0, TOOLTIP_LIMIT)
-                      .map((address) => {
+                      ?.slice(0, TOOLTIP_LIMIT)
+                      .map((address, i) => {
                         return (
                           <Box
                             display={Display.Flex}
                             flexDirection={FlexDirection.Row}
                             alignItems={AlignItems.center}
                             textAlign={TextAlign.Left}
-                            key={address}
+                            key={i}
                             padding={1}
                             paddingInline={2}
                             gap={2}
@@ -154,7 +154,6 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                             <Text
                               color={TextColor.textDefault}
                               variant={TextVariant.bodyMdMedium}
-                              key={address}
                               data-testid="connection-list-item-connected-account-name"
                               ellipsis
                             >
@@ -163,7 +162,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                           </Box>
                         );
                       })}
-                    {connection.addresses.length > TOOLTIP_LIMIT && (
+                    {connection.addresses?.length > TOOLTIP_LIMIT && (
                       <Box
                         display={Display.Flex}
                         alignItems={AlignItems.center}
@@ -176,7 +175,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                           data-testid="connection-list-item-plus-more-tooltip"
                         >
                           {t('plusMore', [
-                            connection.addresses.length - TOOLTIP_LIMIT,
+                            connection.addresses?.length - TOOLTIP_LIMIT,
                           ])}
                         </Text>
                       </Box>
