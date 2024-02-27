@@ -173,6 +173,11 @@ describe('Send ETH', function () {
 
           // Continue to next screen
           if (process.env.MULTICHAIN) {
+            // We need to wait for the text "Max Fee" to be calculated before clicking Continue
+            await driver.waitForElementNotPresent({
+              text: '0.000',
+              tag: 'span',
+            });
             await driver.clickElement({ text: 'Continue', tag: 'button' });
           } else {
             // We need to wait for the text "Max Fee: 0.000xxxx ETH" before clicking Next
