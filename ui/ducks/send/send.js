@@ -7,7 +7,6 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
   decimalToHex,
   getValueFromWeiHex,
@@ -2048,14 +2047,7 @@ export function updateSendAmount(amount) {
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
     );
-    if (
-      draftTransaction.asset.type === AssetType.NFT &&
-      draftTransaction.asset.details.standard === TokenStandard.ERC1155
-    ) {
-      await dispatch(actions.updateSendAmount(toHex(amount)));
-    } else {
-      await dispatch(actions.updateSendAmount(amount));
-    }
+    await dispatch(actions.updateSendAmount(amount));
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }

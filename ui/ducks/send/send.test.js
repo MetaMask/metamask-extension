@@ -1743,7 +1743,7 @@ describe('Send Slice', () => {
         };
         const store = mockStore(sendState);
 
-        const newSendAmount = '18';
+        const newSendAmount = '0x12';
 
         await store.dispatch(updateSendAmount(newSendAmount));
 
