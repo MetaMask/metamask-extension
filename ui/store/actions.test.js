@@ -807,8 +807,6 @@ describe('Actions', () => {
 
       expect(rejectPendingApprovalStub.callCount).toStrictEqual(1);
 
-      console.log({ rejectPendingApprovalStub });
-
       expect(rejectPendingApprovalStub.calledOnceWith(mockTxId)).toBe(true);
       expect(addTransactionStub.calledOnceWith(mockTxMeta.txParams)).toBe(true);
     });
