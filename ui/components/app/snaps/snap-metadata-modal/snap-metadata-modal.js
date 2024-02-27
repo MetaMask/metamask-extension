@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
@@ -30,13 +30,13 @@ import {
 import SnapAvatar from '../snap-avatar';
 import { formatDate, getSnapName } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getPhishingResult } from '../../../../store/actions';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import InfoTooltip from '../../../ui/info-tooltip';
+import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -70,20 +70,8 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   );
 
   const { website = undefined } = snapRegistryData?.metadata ?? {};
-  const [safeWebsite, setSafeWebsite] = useState(null);
 
-  useEffect(() => {
-    const performPhishingCheck = async () => {
-      const phishingResult = await getPhishingResult(website);
-
-      if (!phishingResult.result) {
-        setSafeWebsite(new URL(website));
-      }
-    };
-    if (website) {
-      performPhishingCheck();
-    }
-  }, [website]);
+  const safeWebsite = useSafeWebsite(website);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="snap-metadata-modal">
