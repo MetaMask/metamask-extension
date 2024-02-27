@@ -150,7 +150,7 @@ function store() {
         },
       ],
       providerConfig: {
-        chainId: '0x5',
+        chainId: '0x1',
         ticker: 'ETH',
       },
       preferences: {
