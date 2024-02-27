@@ -4,6 +4,7 @@ import { UIComponentFactory } from './types';
 
 export const form: UIComponentFactory<Form> = ({ element, ...params }) => ({
   element: 'SnapUIForm',
+  // @ts-expect-error This seems to be compatibility issue between superstruct and this repo.
   children: element.children.map((children) =>
     mapToTemplate({
       element: children,
