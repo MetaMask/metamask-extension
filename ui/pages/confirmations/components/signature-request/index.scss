@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'signature-request-header/index';
 @import 'signature-request-message/index';
 @import 'signature-request-data/index';
@@ -14,7 +16,7 @@
   box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   border-radius: 8px;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     max-height: max-content;
     min-height: 570px;
     flex: 0 0 auto;
@@ -49,13 +51,13 @@
   min-height: min-content;
 
   &__info {
-    @include H7;
+    @include design-system.H7;
 
     padding: 0 12px 4px;
   }
 
   &__info--bolded {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     font-weight: 500;
   }

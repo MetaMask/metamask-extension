@@ -1,4 +1,5 @@
 import { NameType } from '@metamask/name-controller';
+// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAllSnaps,
@@ -16,6 +17,7 @@ const CHAIN_ID_MOCK = '0x1';
 const NAME_MOCK = 'TestName';
 const NAME_MOCK_2 = 'TestName2';
 const ERROR_MOCK = 'TestError';
+const MOCK_PROTOCOL = 'TestProtocol';
 
 const SNAP_MOCK = {
   id: 'testSnap1',
@@ -126,10 +128,14 @@ describe('SnapsNameProvider', () => {
       const handleSnapRequest = jest
         .fn()
         .mockResolvedValueOnce({
-          resolvedDomain: NAME_MOCK,
+          resolvedDomains: [
+            { protocol: MOCK_PROTOCOL, resolvedDomain: NAME_MOCK },
+          ],
         })
         .mockResolvedValueOnce({
-          resolvedDomain: NAME_MOCK_2,
+          resolvedDomains: [
+            { protocol: MOCK_PROTOCOL, resolvedDomain: NAME_MOCK_2 },
+          ],
         });
 
       const provider = new SnapsNameProvider({
@@ -181,7 +187,9 @@ describe('SnapsNameProvider', () => {
           throw new Error(ERROR_MOCK);
         })
         .mockResolvedValueOnce({
-          resolvedDomain: NAME_MOCK_2,
+          resolvedDomains: [
+            { protocol: MOCK_PROTOCOL, resolvedDomain: NAME_MOCK_2 },
+          ],
         });
 
       const errorMock = new Error('TestError');

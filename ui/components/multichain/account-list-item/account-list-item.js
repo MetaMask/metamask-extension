@@ -48,6 +48,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  getAddressConnectedSubjectMap,
   getCurrentNetwork,
   getNativeCurrencyImage,
   getShowFiatInTestnets,
@@ -55,6 +56,7 @@ import {
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
+import { ConnectedStatus } from '../connected-status/connected-status';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -69,14 +71,16 @@ export const AccountListItem = ({
   isPinned = false,
   showOptions = false,
   isHidden = false,
+  currentTabOrigin,
+  isActive = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
-
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -104,6 +108,14 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const selectedAddressSubjectMap =
+    addressConnectedSubjectMap[identity.address];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  );
+  const isConnected =
+    currentTabOrigin && currentTabIsConnectedToSelectedAddress;
 
   return (
     <Box
@@ -130,17 +142,27 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={Size.SM}
-        address={identity.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
+      {process.env.MULTICHAIN && (
+        <Box
+          display={[Display.Flex, Display.None]}
+          data-testid="account-list-item-badge"
+        >
+          <ConnectedStatus address={identity.address} isActive={isActive} />
+        </Box>
+      )}
+      <Box display={[Display.None, Display.Flex]}>
+        <AvatarAccount
+          borderColor={BorderColor.transparent}
+          size={Size.MD}
+          address={identity.address}
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          marginInlineEnd={2}
+        />
+      </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -314,6 +336,7 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
+          isConnected={isConnected}
         />
       ) : null}
     </Box>
@@ -365,6 +388,14 @@ AccountListItem.propTypes = {
    * Represents hidden accounts
    */
   isHidden: PropTypes.bool,
+  /**
+   * Represents current tab origin
+   */
+  currentTabOrigin: PropTypes.string,
+  /**
+   * Represents active accounts
+   */
+  isActive: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';
