@@ -530,7 +530,7 @@ export default class MetamaskController extends EventEmitter {
         ),
     });
 
-    // Couple the useRequestQueue featureflag with the perDomainNetwork feature flag
+    // Couple the useRequestQueue feature flag with the perDomainNetwork feature flag
     // TODO remove the redundant perDomainNetwork state in the SelectedNetworkController and simply reference the useRequestQueue state
     this.selectedNetworkController.setPerDomainNetwork(
       this.preferencesController.store.getState().useRequestQueue,
