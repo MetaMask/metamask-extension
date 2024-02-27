@@ -45,11 +45,7 @@ export const ConnectedAccountsMenu = ({
     [onClose],
   );
 
-  // fix for type checking, as Popover is expecting a ref
-  // but ModalFocus is expecting an HTMLElement
-  const initialFocusRef = anchorElement
-    ? { current: anchorElement }
-    : undefined;
+  if (!anchorElement) return null;
 
   return (
     <Popover
@@ -64,7 +60,7 @@ export const ConnectedAccountsMenu = ({
       preventOverflow
       isPortal
     >
-      <ModalFocus restoreFocus initialFocusRef={initialFocusRef}>
+      <ModalFocus restoreFocus initialFocusRef={{ current: anchorElement }}>
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           <TsMenuItem onClick={() => {}} iconName={IconName.SecurityTick}>
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
