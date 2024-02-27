@@ -65,6 +65,7 @@ import {
   addTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
+  cancelExistingTxAndCreateNewTxWithSameParams,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -1227,6 +1228,19 @@ const slice = createSlice({
       slice.caseReducers.validateSendState(state);
     },
     /**
+     * Update the current transaction id in state without changing any other draft transaction properties.
+     *
+     * @param {SendStateDraft} state - A writable draft of the send state to be
+     *  updated.
+     * @param {SimpleStringPayload} action - The string to be set as the new transaction id
+     * @returns {void}
+     */
+    updateExistingTransactionId: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.id = action.payload;
+    },
+    /**
      * updates the userInputHexData state key
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
@@ -1934,6 +1948,38 @@ export function updateRecipient({ address, nickname }) {
       }),
     );
     await dispatch(computeEstimatedGasLimit());
+  };
+}
+
+/**
+ * This method is called when user changes the network in the send page.
+ * It doesn't update the chain id for transaction, rather it reject the existing and create new transaction instead
+ * then it assigns the new transaction id to the draft transaction id.
+ */
+export function onNetworkChange() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const draftTxId = state[name].currentTransactionUUID;
+    const existingTransactionId = state[name].draftTransactions[draftTxId]?.id;
+
+    if (!existingTransactionId) {
+      // This means there is no transaction to reject.
+      return;
+    }
+
+    const existingTransaction = state.metamask.transactions.find(
+      (tx) => tx.id === existingTransactionId,
+    );
+
+    if (!existingTransaction) {
+      // If the transaction is not found, send flow should act as if there is existing transaction to reject on network change.
+      return;
+    }
+
+    const { id } = await dispatch(
+      cancelExistingTxAndCreateNewTxWithSameParams(existingTransaction),
+    );
+    await dispatch(actions.updateExistingTransactionId(id));
   };
 }
 

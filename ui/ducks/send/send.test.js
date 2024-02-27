@@ -5,7 +5,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import {
+  TransactionEnvelopeType,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
@@ -77,6 +80,7 @@ import sendReducer, {
   isSendFormInvalid,
   getSendStage,
   updateGasPrice,
+  onNetworkChange,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
 
@@ -112,6 +116,7 @@ const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];
 describe('Send Slice', () => {
   let getTokenStandardAndDetailsStub;
   let addTransactionAndRouteToConfirmationPageStub;
+  let cancelExistingTxAndCreateNewTxWithSameParamsStub;
   beforeEach(() => {
     jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
@@ -128,6 +133,10 @@ describe('Send Slice', () => {
       Actions,
       'addTransactionAndRouteToConfirmationPage',
     );
+    cancelExistingTxAndCreateNewTxWithSameParamsStub = jest
+      .spyOn(Actions, 'cancelExistingTxAndCreateNewTxWithSameParams')
+      .mockImplementation(() => Promise.resolve());
+
     jest
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
@@ -3074,6 +3083,124 @@ describe('Send Slice', () => {
         expect(draftTransaction.amount.value).toStrictEqual(
           action.payload.amount.value,
         );
+      });
+    });
+
+    describe('onNetworkChange', () => {
+      const onNetworkChangeState = {
+        metamask: {
+          transactions: [],
+        },
+        send: {
+          currentTransactionUUID: '',
+          draftTransactions: {
+            id: '',
+          },
+        },
+      };
+
+      describe('should not update the draft transaction id', () => {
+        it('if draftTransaction.id not yet assigned', async () => {
+          const mockDraftTransactionId = 'test-uuid';
+          const store = mockStore({
+            ...onNetworkChangeState,
+            send: {
+              ...onNetworkChangeState.send,
+              currentTransactionUUID: mockDraftTransactionId,
+              draftTransactions: {
+                [mockDraftTransactionId]: {
+                  id: null,
+                },
+              },
+            },
+          });
+
+          await store.dispatch(onNetworkChange());
+
+          const actionResult = store.getActions();
+          expect(actionResult).toHaveLength(0);
+        });
+
+        it('if draft transaction is not yet created', async () => {
+          const mockDraftTransactionId = 'test-uuid';
+          const mockTransactionId = 'test-uuid-2';
+          const store = mockStore({
+            ...onNetworkChangeState,
+            metamask: {
+              transactions: [],
+            },
+            send: {
+              ...onNetworkChangeState.send,
+              currentTransactionUUID: mockDraftTransactionId,
+              draftTransactions: {
+                [mockDraftTransactionId]: {
+                  id: mockTransactionId,
+                },
+              },
+            },
+          });
+
+          await store.dispatch(onNetworkChange());
+
+          const actionResult = store.getActions();
+          expect(actionResult).toHaveLength(0);
+        });
+      });
+
+      it('should cancel the existing transaction and create a new draft transaction', async () => {
+        const mockDraftTransactionId = 'test-uuid';
+        const mockTransactionId = 'test-uuid-2';
+        const mockNewTransactionId = 'test-uuid-3';
+        const mockTransaction = {
+          id: mockTransactionId,
+          chainId: CHAIN_IDS.GOERLI,
+          status: 'unapproved',
+          type: TransactionType.simpleSend,
+          txParams: {
+            data: '',
+            from: mockAddress1,
+            to: '0xRecipientAddress',
+            gas: GAS_LIMITS.SIMPLE,
+            gasPrice: '0x3b9aca00',
+            value: '0xde0b6b3a7640000',
+          },
+        };
+
+        const store = mockStore({
+          ...onNetworkChangeState,
+          metamask: {
+            ...onNetworkChangeState.metamask,
+            transactions: [mockTransaction],
+          },
+          send: {
+            ...onNetworkChangeState.send,
+            currentTransactionUUID: mockDraftTransactionId,
+            draftTransactions: {
+              [mockDraftTransactionId]: {
+                id: mockTransactionId,
+              },
+            },
+          },
+        });
+
+        cancelExistingTxAndCreateNewTxWithSameParamsStub.mockImplementation(
+          () => ({
+            type: 'EXPECTED_ADD_TX_ACTION',
+            id: mockNewTransactionId,
+          }),
+        );
+
+        await store.dispatch(onNetworkChange());
+
+        expect(
+          cancelExistingTxAndCreateNewTxWithSameParamsStub,
+        ).toHaveBeenCalledWith(mockTransaction);
+
+        const actionResult = store.getActions();
+        expect(actionResult[1].type).toStrictEqual(
+          'send/updateExistingTransactionId',
+        );
+        expect(actionResult[1].payload).toStrictEqual(mockNewTransactionId);
       });
     });
 

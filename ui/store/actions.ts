@@ -1449,6 +1449,46 @@ export function cancelTx(
 }
 
 /**
+ * This action specifically need in the send page in order to recreate the same transactions with different chainId
+ *
+ * @param txMeta - The transaction to cancel and recreated with the same txParams
+ * @param options - Additional options for the new transaction
+ * @returns The new transaction meta
+ */
+
+export function cancelExistingTxAndCreateNewTxWithSameParams(
+  txMeta: TransactionMeta,
+  options?: {
+    type?: TransactionType;
+  },
+): ThunkAction<
+  Promise<TransactionMeta>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const actionId = generateActionId();
+
+    dispatch(showLoadingIndication());
+
+    await submitRequestToBackground<TransactionMeta>('rejectPendingApproval', [
+      String(txMeta.id),
+      ethErrors.provider.userRejectedRequest().serialize(),
+    ]);
+
+    const newTransactionMeta = await submitRequestToBackground<TransactionMeta>(
+      'addTransaction',
+      [txMeta.txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
+    );
+
+    dispatch(hideLoadingIndication());
+
+    return newTransactionMeta;
+  };
+}
+
+/**
  * Cancels all of the given transactions
  *
  * @param txMetaList

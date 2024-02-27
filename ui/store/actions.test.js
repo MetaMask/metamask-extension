@@ -2,7 +2,10 @@ import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
@@ -760,6 +763,54 @@ describe('Actions', () => {
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#cancelExistingTxAndCreateNewTxWithSameParams', () => {
+    const mockTxId = 'mockTxId';
+    const mockTxMeta = {
+      id: mockTxId,
+      txParams: {
+        from: '0x1',
+        gas: GAS_LIMITS.SIMPLE,
+        gasPrice: '0x3b9aca00',
+        to: '0x2',
+        value: '0x0',
+      },
+    };
+    const mockType = TransactionType.simpleSend;
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('cancels transaction and add transaction with same params', async () => {
+      const store = mockStore();
+
+      const rejectPendingApprovalStub = sinon
+        .stub()
+        .callsFake((_1, _2, cb) => cb());
+      const addTransactionStub = sinon.stub().callsFake((_, _2, cb) => cb());
+
+      background.getApi.returns({
+        rejectPendingApproval: rejectPendingApprovalStub,
+        addTransaction: addTransactionStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.cancelExistingTxAndCreateNewTxWithSameParams(mockTxMeta, {
+          type: mockType,
+        }),
+      );
+
+      expect(rejectPendingApprovalStub.callCount).toStrictEqual(1);
+
+      console.log({ rejectPendingApprovalStub });
+
+      expect(rejectPendingApprovalStub.calledOnceWith(mockTxId)).toBe(true);
+      expect(addTransactionStub.calledOnceWith(mockTxMeta.txParams)).toBe(true);
     });
   });
 
