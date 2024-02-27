@@ -11,12 +11,12 @@ import type { Asset, Amount } from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import UserPreferencedCurrencyInput from '../../../app/user-preferenced-currency-input';
 import { Box, Text } from '../../../component-library';
 import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { toHex } from '@metamask/controller-utils';
 
 interface BaseProps {
   assetType: AssetType;
@@ -67,45 +67,35 @@ export default function SwappableCurrencyInput({
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const sendInputCurrencySwitched = useSelector(getSendInputCurrencySwitched);
 
-  if (assetType === AssetType.token) {
-    return (
-      <CurrencyInput
-        className="asset-picker-amount__input"
-        featureSecondary={Boolean(
-          (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
-            (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
-        )}
-        onChange={onAmountChange}
-        hexValue={value}
-        swapIcon={(onClick: React.MouseEventHandler) => (
-          <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
-        )}
-        onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
-      />
-    );
-  } else if (assetType === AssetType.native) {
-    return (
-      <UserPreferencedCurrencyInput
-        className="asset-picker-amount__input"
-        onChange={onAmountChange}
-        hexValue={value}
-        swapIcon={(onClick: React.MouseEventHandler) => (
-          <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
-        )}
-      />
-    );
-  }
+  // FIXME: update swapping logic
+  // TODO: add NFTs
+  switch (assetType) {
+    case AssetType.token:
+    case AssetType.native:
+      return (
+        <CurrencyInput
+          className="asset-picker-amount__input"
+          onChange={onAmountChange}
+          hexValue={toHex(value)}
+          swapIcon={(onClick: React.MouseEventHandler) => (
+            <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
+          )}
+          onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
+        />
+      );
 
-  return (
-    <Box marginLeft={'auto'}>
-      <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
-      <Text
-        variant={TextVariant.bodySm}
-        fontWeight={FontWeight.Bold}
-        marginLeft={10}
-      >
-        {asset?.details?.tokenId}
-      </Text>
-    </Box>
-  );
+    default:
+      return (
+        <Box marginLeft={'auto'}>
+          <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
+          <Text
+            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Bold}
+            marginLeft={10}
+          >
+            {asset?.details?.tokenId}
+          </Text>
+        </Box>
+      );
+  }
 }
