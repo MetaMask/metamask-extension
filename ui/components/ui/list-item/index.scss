@@ -1,3 +1,5 @@
+@use "design-system";
+
 .list-item {
   width: 100%;
   min-height: 86px;
@@ -5,7 +7,7 @@
   background: var(--color-background-default);
   padding: 24px 16px;
 
-  @include Paragraph;
+  @include design-system.Paragraph;
 
   border-bottom: 1px solid var(--color-border-muted);
   color: var(--color-text-default);
@@ -37,7 +39,7 @@
   }
 
   &__heading {
-    @include H5;
+    @include design-system.H5;
 
     grid-area: head;
     position: relative;
@@ -63,7 +65,7 @@
   }
 
   &__subheading {
-    @include H7;
+    @include design-system.H7;
 
     grid-area: sub;
     color: var(--color-text-alternative);
@@ -82,7 +84,7 @@
   }
 
   &__mid-content {
-    @include H7;
+    @include design-system.H7;
 
     grid-area: mid;
     color: var(--color-text-muted);
@@ -96,13 +98,13 @@
     white-space: nowrap;
   }
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     &__mid-content {
       display: none;
     }
   }
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     grid-template-areas:
       'icon head     head     head     head     mid mid mid mid right right right'
       'icon sub      sub      sub      sub      mid mid mid mid right right right'
@@ -114,7 +116,7 @@
   grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
   align-items: center;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
 }

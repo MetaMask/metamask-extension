@@ -1,3 +1,5 @@
+@use "design-system";
+
 .request-encryption-public-key {
   &__container {
     width: 380px;
@@ -11,13 +13,13 @@
     position: relative;
     height: 100%;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       width: 100%;
       top: 0;
       box-shadow: none;
     }
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       height: 620px;
     }
   }
@@ -61,7 +63,7 @@
   }
 
   &__header__text {
-    @include H3;
+    @include design-system.H3;
 
     color: var(--color-text-alternative);
     z-index: 3;
@@ -97,11 +99,11 @@
   }
 
   &__account-text {
-    @include H6;
+    @include design-system.H6;
   }
 
   &__account-item {
-    @include H7;
+    @include design-system.H7;
 
     height: 22px;
     background-color: var(--color-background-default);
@@ -130,7 +132,7 @@
   }
 
   &__balance-text {
-    @include H6;
+    @include design-system.H6;
 
     text-align: right;
   }
@@ -154,7 +156,7 @@
   }
 
   &__notice {
-    @include H6;
+    @include design-system.H6;
 
     text-align: center;
     margin-top: 41px;

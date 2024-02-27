@@ -1,6 +1,8 @@
+@use "design-system";
+
 .reject-transactions {
   &__description {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     text-align: center;
   }

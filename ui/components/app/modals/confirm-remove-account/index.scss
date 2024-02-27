@@ -1,6 +1,8 @@
+@use "design-system";
+
 .confirm-remove-account {
   &__description {
-    @include H6;
+    @include design-system.H6;
 
     text-align: center;
   }
@@ -20,7 +22,7 @@
 
     &__name,
     &__address {
-      @include H6;
+      @include design-system.H6;
 
       margin-right: 10px;
     }
@@ -33,7 +35,7 @@
     }
 
     &__label {
-      @include H8;
+      @include design-system.H8;
 
       display: block;
       color: var(--color-text-muted);
@@ -43,7 +45,7 @@
       margin-top: 14px;
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       &__name {
         width: 90px;
       }

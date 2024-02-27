@@ -102,6 +102,14 @@ function createSelectedAccountForAccountsController(
 ) {
   const selectedAddress = state.PreferencesController?.selectedAddress;
 
+  if (typeof selectedAddress !== 'string') {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
+      ),
+    );
+  }
+
   const selectedAccount = Object.values<InternalAccount>(
     state.AccountsController.internalAccounts.accounts,
   ).find((account: InternalAccount) => {

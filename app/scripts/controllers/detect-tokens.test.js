@@ -259,6 +259,7 @@ describe('DetectTokensController', function () {
       networkConfigurations: {},
       onAccountRemoved: sinon.stub(),
       controllerMessenger: preferencesControllerMessenger,
+      onKeyringStateChange: sinon.stub(),
     });
     preferences.setUseTokenDetection(true);
 

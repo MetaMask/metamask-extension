@@ -9,7 +9,7 @@ const {
 const { CHAIN_IDS } = require('../../../shared/constants/network');
 
 describe('Deprecated networks', function () {
-  it('When selecting the Goerli test network, the users should see a warning message', async function () {
+  it('User should not find goerli network when clicking on the network selector', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -21,19 +21,11 @@ describe('Deprecated networks', function () {
 
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Goerli' });
-
-        const deprecationWarningText =
-          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.';
-        const isDeprecationWarningDisplayed = await driver.isElementPresent({
-          text: deprecationWarningText,
-        });
-
-        assert.equal(
-          isDeprecationWarningDisplayed,
-          true,
-          'Goerli deprecation warning is not displayed',
+        const isGoerliNetworkPresent = await driver.isElementPresent(
+          '[data-testid="Goerli"]',
         );
+
+        assert.equal(isGoerliNetworkPresent, false);
       },
     );
   });

@@ -80,7 +80,7 @@ async function downloadBuilds(builds: any[]) {
     console.log(
       'No builds found on CircleCI for the current branch, you will have to build the Extension yourself',
     );
-    return;
+    return false;
   }
 
   const buildPromises = [] as Promise<any>[];
@@ -101,6 +101,8 @@ async function downloadBuilds(builds: any[]) {
   await Promise.all(buildPromises);
 
   console.log('downloads complete');
+
+  return true;
 }
 
 function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
@@ -111,7 +113,7 @@ function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
   if (process.platform === 'win32') {
     execSync(`rmdir /s /q dist & mkdir dist\\chrome & mkdir dist\\firefox`);
   } else {
-    execSync('sudo rm -rf dist && mkdir -p dist');
+    execSync('rm -rf dist && mkdir -p dist');
   }
 
   for (const browser of ['chrome', 'firefox']) {
@@ -136,12 +138,14 @@ async function main(jobNames: string[]) {
 
   console.log('builds', builds);
 
-  await downloadBuilds(builds);
+  const downloadWorked = await downloadBuilds(builds);
 
-  const versionNumber = getVersionNumber(builds);
-  const folder = builds[0].path.split('/')[0];
+  if (downloadWorked) {
+    const versionNumber = getVersionNumber(builds);
+    const folder = builds[0].path.split('/')[0];
 
-  unzipBuilds(folder, versionNumber);
+    unzipBuilds(folder, versionNumber);
+  }
 }
 
 let args = process.argv.slice(2);

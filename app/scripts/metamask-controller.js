@@ -82,6 +82,7 @@ import {
   SnapController,
   IframeExecutionService,
   SnapInterfaceController,
+  OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
@@ -139,8 +140,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -458,9 +457,9 @@ export default class MetamaskController extends EventEmitter {
     ) {
       initialNetworkControllerState = {
         providerConfig: {
-          type: NETWORK_TYPES.GOERLI,
-          chainId: CHAIN_IDS.GOERLI,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+          type: NETWORK_TYPES.SEPOLIA,
+          chainId: CHAIN_IDS.SEPOLIA,
+          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
         },
       };
     }
@@ -513,6 +512,11 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+      onKeyringStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          'KeyringController:stateChange',
+          listener,
+        ),
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -1126,32 +1130,31 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
-    // This runtime stream will be used by snaps in MV3 for communication
-    // between the snaps running in the offscreen document and the metamask
-    // controller running in the mv3 service worker.
-    this.runtimeStream = new BrowserRuntimePostMessageStream({
-      name: 'parent',
-      target: 'child',
-    });
-
-    // This listener is a placeholder and should be removed once snaps is added
-    // to the MV3 offscreen document solution.
-    this.runtimeStream.on('data', (data) => {
-      console.log('Service worker received data from offscreen document', data);
-    });
-
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+    const shouldUseOffscreenExecutionService =
+      isManifestV3 &&
+      typeof chrome !== 'undefined' &&
+      // eslint-disable-next-line no-undef
+      typeof chrome.offscreen !== 'undefined';
+
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
 
-    this.snapExecutionService = new IframeExecutionService(
-      snapExecutionServiceArgs,
-    );
+    this.snapExecutionService =
+      shouldUseOffscreenExecutionService === false
+        ? new IframeExecutionService({
+            ...snapExecutionServiceArgs,
+            iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
+          })
+        : new OffscreenExecutionService({
+            // eslint-disable-next-line no-undef
+            documentUrl: chrome.runtime.getURL('./offscreen.html'),
+            ...snapExecutionServiceArgs,
+          });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
