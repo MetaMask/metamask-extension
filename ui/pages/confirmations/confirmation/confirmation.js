@@ -530,7 +530,7 @@ export default function ConfirmationPage({
             : {}
         }
         ///: END:ONLY_INCLUDE_IF
-        onSubmit={templatedValues.hideSubmitButton && handleSubmit}
+        onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}
