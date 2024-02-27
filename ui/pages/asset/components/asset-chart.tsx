@@ -234,7 +234,14 @@ const AssetChart = ({
         ref={priceRef}
       />
       <Box style={{ opacity: prices && loading ? 0.2 : 1 }}>
-        <ChartTooltip ref={maxPriceTooltip} loading={loading} />
+        <ChartTooltip
+          ref={maxPriceTooltip}
+          backgroundColor={
+            loading && !prices
+              ? BackgroundColor.backgroundAlternative
+              : BackgroundColor.backgroundDefault
+          }
+        />
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -299,7 +306,14 @@ const AssetChart = ({
             </Box>
           )}
         </Box>
-        <ChartTooltip ref={minPriceTooltip} loading={loading} />
+        <ChartTooltip
+          ref={minPriceTooltip}
+          backgroundColor={
+            loading && !prices
+              ? BackgroundColor.backgroundAlternative
+              : BackgroundColor.backgroundDefault
+          }
+        />
       </Box>
 
       {data ? (
