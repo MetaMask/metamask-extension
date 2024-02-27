@@ -124,10 +124,16 @@ export default function InsightWarnings({
         <Text variant={TextVariant.bodyMd} paddingBottom={4}>
           {warnings.length === 1
             ? t('insightWarningContentSingular', [
+                <span key={warnings.id}>
+                  <b>{`${warnings.length} ${t('insightWarning')}`}</b>
+                </span>,
                 action,
                 InsightWarningLanguage[action].noun,
               ])
             : t('insightWarningContentPlural', [
+                <span key={warnings.id}>
+                  <b>{`${warnings.length} ${t('insightWarnings')}`}</b>
+                </span>,
                 warnings.length,
                 action,
                 InsightWarningLanguage[action].noun,
