@@ -21,6 +21,7 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
+import { LARGE_SYMBOL_LENGTH } from '../constants';
 
 export interface AssetPickerProps {
   asset: Asset;
@@ -46,11 +47,15 @@ export default function AssetPicker({
     image = tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
   }
 
-  // TODO: Handle long symbols in the UI
   const symbol =
     asset.type === AssetType.native
       ? nativeCurrencySymbol
       : asset.details?.symbol;
+
+  const shortFormSymbol =
+    symbol?.length > LARGE_SYMBOL_LENGTH
+      ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
+      : symbol;
 
   return (
     <>

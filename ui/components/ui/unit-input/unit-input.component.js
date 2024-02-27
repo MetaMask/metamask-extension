@@ -22,6 +22,7 @@ export default class UnitInput extends PureComponent {
     onBlur: PropTypes.func,
     placeholder: PropTypes.string,
     suffix: PropTypes.string,
+    hideSuffix: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
@@ -89,6 +90,7 @@ export default class UnitInput extends PureComponent {
       className,
       error,
       placeholder,
+      hideSuffix,
       suffix,
       actionComponent,
       children,
@@ -123,7 +125,9 @@ export default class UnitInput extends PureComponent {
               }}
               autoFocus
             />
-            {suffix ? <div className="unit-input__suffix">{suffix}</div> : null}
+            {suffix && !hideSuffix ? (
+              <div className="unit-input__suffix">{suffix}</div>
+            ) : null}
           </div>
           {children}
         </div>

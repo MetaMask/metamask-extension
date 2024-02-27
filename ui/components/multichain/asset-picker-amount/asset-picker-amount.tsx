@@ -34,6 +34,7 @@ import MaxClearButton from './max-clear-button';
 import AssetPicker, {
   type AssetPickerProps,
 } from './asset-picker/asset-picker';
+import { LARGE_SYMBOL_LENGTH } from './constants';
 
 function SwapIcon({
   onClick,
@@ -73,6 +74,7 @@ const renderCurrencyInput = (
       />
     );
   }
+  // TODO: build out large symbol logic
   if (asset.type === AssetType.NFT) {
     return (
       <>
@@ -92,6 +94,7 @@ const renderCurrencyInput = (
 
   return (
     <UserPreferencedTokenInput
+      hideSuffix={(asset.details?.symbol?.length || 0) > LARGE_SYMBOL_LENGTH}
       onChange={onAmountChange}
       token={asset.details}
       value={amount.value}
