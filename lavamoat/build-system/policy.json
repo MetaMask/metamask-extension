@@ -3283,6 +3283,15 @@
         "eslint>strip-ansi>ansi-regex": true
       }
     },
+    "eta": {
+      "builtin": {
+        "node:fs": true,
+        "node:path": true
+      },
+      "globals": {
+        "define": true
+      }
+    },
     "fancy-log": {
       "builtin": {
         "console.Console": true
@@ -7531,15 +7540,6 @@
         "console.time": true,
         "console.timeEnd": true,
         "fetch": true
-      }
-    },
-    "squirrelly": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.resolve": true
       }
     },
     "string.prototype.matchall": {
