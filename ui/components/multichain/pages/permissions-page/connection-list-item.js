@@ -186,6 +186,8 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               }
               arrow
               offset={0}
+              delay={50}
+              duration={0}
               size="small"
               title={t('alertDisableTooltip')}
               trigger="mouseenter focus"
