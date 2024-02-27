@@ -266,10 +266,10 @@ class Driver {
    * during page load, the rawLocator element will be absent, even though it will appear
    * a half-second later.
    *
-   * The first choice for the guard is to use findElement before this statement on an element
-   * that will appear at the same time as the rawLocator element.
+   * The first choice for the guard is to use the findElementGuard, which executes before
+   * the search for the rawLocator element.
    *
-   * The second choice for the guard is to use the waitAtLeast parameter.
+   * The second choice for the guard is to use the waitAtLeastGuard parameter.
    *
    * @param {string | object} rawLocator
    * @param {object} guards

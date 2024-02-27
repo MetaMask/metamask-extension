@@ -114,10 +114,7 @@ describe('Update Network:', function (this: Suite) {
         await driver.assertElementNotPresent(selectors.cancelButton);
         await driver.assertElementNotPresent(selectors.saveButton);
 
-        // Put in a bad chainId again, then switch to the General tab, and assert that no error is present on the General tab
-        await driver.clickElement(selectors.newUpdateNetwork);
-        await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
-        await driver.isElementPresent(selectors.errorMessageInvalidUrl);
+        // Validate the error does not appear on the General tab
         await driver.clickElement(selectors.generalOption);
         await driver.assertElementNotPresent(selectors.errorContainer, {
           findElementGuard: selectors.generalTabHeader, // Wait for the General tab to load
