@@ -8,13 +8,14 @@ import {
 import { getCurrentCurrency } from '../../../selectors';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import {
+  BackgroundColor,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getPricePrecision } from './util';
 
-const ChartTooltip = forwardRef((_, ref) => {
+const ChartTooltip = forwardRef(({ loading }: { loading: boolean }, ref) => {
   const currency = useSelector(getCurrentCurrency);
 
   const [{ xAxisPercent, price }, setTooltip] = useState<{
@@ -26,10 +27,15 @@ const ChartTooltip = forwardRef((_, ref) => {
 
   return (
     <Box
+      backgroundColor={
+        loading
+          ? BackgroundColor.backgroundAlternative
+          : BackgroundColor.backgroundDefault
+      }
       style={{
         ...(xAxisPercent < 0.5
-          ? { marginRight: `${100 - 2 * 100 * xAxisPercent}%` }
-          : { marginLeft: `${100 - 2 * (100 - 100 * xAxisPercent)}%` }),
+          ? { paddingRight: `${100 - 2 * 100 * xAxisPercent}%` }
+          : { paddingLeft: `${100 - 2 * (100 - 100 * xAxisPercent)}%` }),
       }}
     >
       <Text

@@ -101,6 +101,8 @@ const AssetV2 = ({
     symbol: string;
     name?: string;
     image: string;
+    /** The current price of 1 unit of the token, in the user's fiat currency */
+    currentPrice?: number;
     balance: {
       /**
        * A decimal representation of the balance before applying
@@ -139,7 +141,8 @@ const AssetV2 = ({
   const [marketData, setMarketData] = useState<any>();
   const headerRef = useRef<{ setBalanceOpacity: (o: number) => void }>(null);
 
-  const { type, symbol, name, image, balance, optionsButton } = asset;
+  const { type, symbol, name, image, balance, optionsButton, currentPrice } =
+    asset;
 
   const address =
     type === AssetType.token
@@ -192,7 +195,7 @@ const AssetV2 = ({
               : name ?? symbol}
           </Text>
         </Box>
-        <AssetChart address={address} currentPrice={marketData?.price} />
+        <AssetChart address={address} currentPrice={currentPrice} />
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -370,16 +373,6 @@ const AssetV2 = ({
                     t('totalVolume'),
                     <Text>
                       {localizeLargeNumber(t, marketData.totalVolume)}
-                    </Text>,
-                  )}
-                {marketData?.totalVolume > 0 &&
-                  marketData?.marketCap > 0 &&
-                  renderRow(
-                    `${t('volume')} / ${t('marketCap')}`,
-                    <Text>
-                      {(
-                        marketData.totalVolume / marketData.marketCap
-                      ).toPrecision(4)}
                     </Text>,
                   )}
                 {marketData?.circulatingSupply > 0 &&

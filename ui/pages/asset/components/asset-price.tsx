@@ -85,18 +85,18 @@ const AssetPrice = forwardRef(
           borderRadius={BorderRadius.LG}
           marginBottom={1}
           backgroundColor={
-            displayPrice === undefined
+            loading && !displayPrice
               ? BackgroundColor.backgroundAlternative
               : BackgroundColor.backgroundDefault
           }
         >
-          {displayPrice === undefined
-            ? '\u00A0'
-            : formatCurrency(
+          {displayPrice
+            ? formatCurrency(
                 `${displayPrice}`,
                 currency,
                 getPricePrecision(displayPrice),
-              )}
+              )
+            : '\u00A0'}
         </Text>
         <Box paddingLeft={4} paddingBottom={3}>
           {priceDelta !== undefined && comparePrice !== undefined ? (
@@ -132,7 +132,11 @@ const AssetPrice = forwardRef(
           ) : (
             <Text
               style={{ width: '200px' }}
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={
+                loading
+                  ? BackgroundColor.backgroundAlternative
+                  : BackgroundColor.backgroundDefault
+              }
               borderRadius={BorderRadius.LG}
               variant={TextVariant.bodyMdMedium}
             >

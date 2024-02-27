@@ -11,6 +11,7 @@ import {
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import {
+  getConversionRate,
   getNativeCurrency,
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
@@ -32,6 +33,7 @@ const NativeAssetV2 = () => {
   const { chainId, ticker, type } = useSelector(getProviderConfig);
   const { address } = useSelector(getSelectedInternalAccount);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const conversionRate = useSelector(getConversionRate);
 
   const accountLink = getAccountLink(address, chainId, rpcPrefs);
   const trackEvent = useContext(MetaMetricsContext);
@@ -60,6 +62,7 @@ const NativeAssetV2 = () => {
           fiat: showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
         },
         isOriginalNativeSymbol: isOriginalNativeSymbol === true,
+        currentPrice: conversionRate,
         optionsButton: (
           <AssetOptions
             isNativeAsset={true}

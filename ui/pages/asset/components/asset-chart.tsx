@@ -134,7 +134,7 @@ const AssetChart = ({
   currentPrice,
 }: {
   address: string;
-  currentPrice: number;
+  currentPrice?: number;
 }) => {
   const t = useI18nContext();
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
@@ -234,7 +234,7 @@ const AssetChart = ({
         ref={priceRef}
       />
       <Box style={{ opacity: prices && loading ? 0.2 : 1 }}>
-        <ChartTooltip ref={maxPriceTooltip} />
+        <ChartTooltip ref={maxPriceTooltip} loading={loading} />
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -277,11 +277,16 @@ const AssetChart = ({
           ) : (
             <Box
               width={BlockSize.Full}
-              backgroundColor={BackgroundColor.backgroundAlternative}
+              backgroundColor={
+                loading
+                  ? BackgroundColor.backgroundAlternative
+                  : BackgroundColor.backgroundDefault
+              }
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
+              paddingBottom={4}
               gap={1}
             >
               {!loading && (
@@ -294,7 +299,7 @@ const AssetChart = ({
             </Box>
           )}
         </Box>
-        <ChartTooltip ref={minPriceTooltip} />
+        <ChartTooltip ref={minPriceTooltip} loading={loading} />
       </Box>
 
       {data ? (
@@ -328,7 +333,14 @@ const AssetChart = ({
           ])}
         </Box>
       ) : (
-        <Box padding={5}></Box>
+        <Box
+          backgroundColor={
+            loading
+              ? BackgroundColor.backgroundAlternative
+              : BackgroundColor.backgroundDefault
+          }
+          padding={5}
+        ></Box>
       )}
     </Box>
   );

@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { Token } from '@metamask/assets-controllers';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { useHistory } from 'react-router-dom';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
+  getTokenExchangeRates,
   getTokenList,
 } from '../../../selectors';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
@@ -20,6 +21,8 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
 import AssetOptions from './asset-options';
 import AssetV2 from './asset-v2';
 
@@ -30,6 +33,8 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
+  const exchangeRates = useSelector(getTokenExchangeRates, shallowEqual);
+  const conversionRate = useSelector(getConversionRate);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -49,6 +54,7 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
 
   const balance = tokensWithBalances?.[0];
   const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
+  const exchangeRate = exchangeRates?.[toChecksumHexAddress(address)];
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
@@ -68,6 +74,10 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
         decimals: token.decimals,
         image: iconUrl,
         aggregators,
+        currentPrice:
+          exchangeRate === undefined
+            ? undefined
+            : exchangeRate * conversionRate,
         balance: {
           value: balance?.balance,
           display: `${roundToDecimalPlacesRemovingExtraZeroes(
