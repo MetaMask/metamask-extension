@@ -240,7 +240,6 @@ export function AssetPickerModal({
                 name={t('tokens')}
                 tabKey="tokens"
               >
-                {/* FIXME: I don't think these are rendering */}
                 <Box paddingBottom={4} paddingTop={4} padding={4}>
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
@@ -337,7 +336,6 @@ export function AssetPickerModal({
                 name={t('nfts')}
                 tabKey="nfts"
               >
-                {/* FIXME: I don't think these are rendering */}
                 <Box paddingBottom={4} paddingTop={4} padding={4}>
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
