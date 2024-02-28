@@ -182,8 +182,8 @@
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean"
+    "domains": "object",
+    "perDomainNetwork": false
   },
   "SignatureController": {
     "unapprovedMsgs": "object",
