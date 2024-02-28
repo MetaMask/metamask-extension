@@ -82,8 +82,9 @@ describe('Settings - general tab, validate the change language functionality:', 
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
-        await driver.isElementPresent('.loading-overlay__spinner');
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.assertElementNotPresent('.loading-overlay__spinner', {
+          waitAtLeastGuard: 100,
+        });
 
         languageIndex = 9;
         const dropdownElement = await driver.findElement(
@@ -93,8 +94,9 @@ describe('Settings - general tab, validate the change language functionality:', 
         const options = await dropdownElement.findElements(By.css('option'));
         await options[languageIndex].click();
 
-        await driver.isElementPresent('.loading-overlay__spinner');
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.assertElementNotPresent('.loading-overlay__spinner', {
+          waitAtLeastGuard: 100,
+        });
 
         const islabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageLabel,
@@ -157,8 +159,7 @@ describe('Settings - general tab, validate the change language functionality:', 
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
 
-        await driver.isElementPresent('.loading-overlay__spinner');
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
 
         await driver.clickElement(selectors.advanceText);
 

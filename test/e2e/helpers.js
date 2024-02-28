@@ -326,7 +326,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
-  await driver.waitForElementNotPresent('.loading-overlay');
+  await driver.assertElementNotPresent('.loading-overlay');
 };
 
 const completeImportSRPOnboardingFlow = async (
@@ -375,7 +375,7 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="create-password-import"]');
 
   // wait for loading to complete
-  await driver.waitForElementNotPresent('.loading-overlay');
+  await driver.assertElementNotPresent('.loading-overlay');
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
@@ -777,9 +777,7 @@ const sendTransaction = async (
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
     await driver.clickElement('[data-testid="home__activity-tab"]');
-    await driver.waitForElementNotPresent(
-      '.transaction-list-item--unconfirmed',
-    );
+    await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
 };
@@ -850,7 +848,8 @@ async function unlockWallet(
   await driver.press('#password', driver.Key.ENTER);
 
   if (options.waitLoginSuccess !== false) {
-    await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+    // No guard is neccessary here, because it goes from present to absent
+    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
 
