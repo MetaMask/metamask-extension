@@ -75,8 +75,7 @@ export function SwappableCurrencyInput({
             <SwapIcon onClick={onClick} />
           )}
           onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
-          hideSuffix={
-            !isFiatPrimary ||
+          isLongSymbol={
             (asset?.details?.symbol?.length || 0) > LARGE_SYMBOL_LENGTH
           }
           tokenSymbol={asset?.details?.symbol}

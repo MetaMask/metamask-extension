@@ -32,7 +32,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
  * @param options0.onChange
  * @param options0.onPreferenceToggle
  * @param options0.swapIcon
- * @param options0.hideSuffix
+ * @param options0.isLongSymbol
  * @param options0.className
  * @param options0.tokenSymbol
  */
@@ -42,7 +42,7 @@ export default function CurrencyInput({
   onChange,
   onPreferenceToggle,
   swapIcon,
-  hideSuffix = false,
+  isLongSymbol = false,
   className = '',
   tokenSymbol,
 }) {
@@ -67,6 +67,8 @@ export default function CurrencyInput({
   const [newHexValue, setNewHexValue] = useState(hexValue);
   const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
   const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
+
+  const isPrimary = !shouldUseFiat;
 
   const getDecimalValue = () => {
     const decimalValueString = shouldUseFiat
@@ -164,7 +166,7 @@ export default function CurrencyInput({
     return (
       <CurrencyDisplay
         // hides the fiat suffix
-        hideLabel={hideSuffix}
+        hideLabel={isLongSymbol}
         suffix={suffix}
         className="currency-input__conversion-component"
         currency={currency}
@@ -186,12 +188,9 @@ export default function CurrencyInput({
         onChange,
         onPreferenceToggle,
       }}
+      hideSuffix={isPrimary && isLongSymbol}
       dataTestId="currency-input"
-      suffix={
-        shouldUseFiat && isOriginalNativeSymbol
-          ? secondarySuffix
-          : primarySuffix
-      }
+      suffix={isPrimary ? primarySuffix : secondarySuffix}
       onChange={handleChange}
       value={initialDecimalValue}
       className={className}
@@ -208,7 +207,7 @@ CurrencyInput.propTypes = {
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
   swapIcon: PropTypes.func,
-  hideSuffix: PropTypes.bool,
+  isLongSymbol: PropTypes.bool,
   className: PropTypes.string,
   tokenSymbol: PropTypes.string,
 };
