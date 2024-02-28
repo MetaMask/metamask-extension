@@ -58,68 +58,53 @@ export function AssetBalanceText({
       ? nativeTokenFiatBalance
       : erc20TokenFiatBalance;
 
+  const commonProps = {
+    hideLabel: true,
+    textProps: {
+      color: balanceColor,
+      variant: TextVariant.bodySm,
+    },
+    suffixProps: {
+      color: balanceColor,
+      variant: TextVariant.bodySm,
+    },
+  };
+
   if (isFiatPrimary) {
     return (
       <CurrencyDisplay
-        hideLabel
-        className="currency-input__conversion-component"
+        {...commonProps}
         currency={secondaryCurrency}
-        value={undefined}
         numberOfDecimals={2}
         displayValue={formattedFiat}
-        data-testid={undefined}
-        style={undefined}
-        prefix={undefined}
-        prefixComponent={undefined}
-        hideTitle={undefined}
-        denomination={undefined}
-        suffix={undefined}
-      />
-    );
-  } else if (asset.type === AssetType.native) {
-    return (
-      <UserPreferencedCurrencyDisplay
-        hideLabel
-        value={asset.balance}
-        type={PRIMARY}
-        textProps={{
-          color: balanceColor,
-          variant: TextVariant.bodySm,
-        }}
-        suffixProps={{
-          color: balanceColor,
-          variant: TextVariant.bodySm,
-        }}
-        data-testid={undefined}
-        ethNumberOfDecimals={undefined}
-        fiatNumberOfDecimals={undefined}
-        numberOfDecimals={undefined}
-        showEthLogo={undefined}
-        showFiat={undefined}
-        showNative={undefined}
-        showCurrencySuffix={undefined}
       />
     );
   }
-  return (
-    <TokenBalance
-      hideLabel
-      token={{
-        ...asset.details,
-        decimals: asset.details?.decimals
-          ? Number(asset.details.decimals)
-          : undefined,
-      }}
-      textProps={{
-        color: balanceColor,
-        variant: TextVariant.bodySm,
-      }}
-      suffixProps={{
-        color: balanceColor,
-        variant: TextVariant.bodySm,
-      }}
-      className={undefined}
-      showFiat={undefined}
-    />
-  );
+
+  if (asset.type === AssetType.native) {
+    return (
+      <UserPreferencedCurrencyDisplay
+        {...commonProps}
+        value={asset.balance}
+        type={PRIMARY}
+      />
+    );
+  }
+
+  // catch-all for non-natives; they should all have addresses
+  if (asset.details?.address)
+    return (
+      <TokenBalance
+        {...commonProps}
+        token={{
+          ...asset.details,
+          decimals: asset.details.decimals
+            ? Number(asset.details.decimals)
+            : undefined,
+        }}
+      />
+    );
+
+  // this should never happen
+  return null;
 }
