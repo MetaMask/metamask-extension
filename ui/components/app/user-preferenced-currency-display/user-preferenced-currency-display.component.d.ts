@@ -1,5 +1,3 @@
-import type { ReactElement } from 'react';
-import type { EtherDenomination } from '../../../../shared/constants/common';
 import type { CurrencyDisplayProps } from '../../ui/currency-display/currency-display.component';
 import type { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 

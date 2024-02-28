@@ -92,7 +92,7 @@ export function AssetBalanceText({
   }
 
   // catch-all for non-natives; they should all have addresses
-  if (asset.details?.address)
+  if (asset.details?.address) {
     return (
       <TokenBalance
         {...commonProps}
@@ -104,6 +104,7 @@ export function AssetBalanceText({
         }}
       />
     );
+  }
 
   // this should never happen
   return null;
