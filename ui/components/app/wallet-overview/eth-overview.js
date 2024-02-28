@@ -124,6 +124,31 @@ const EthOverview = ({ className, showAddress }) => {
     checkIfMethodIsEnabled(state, EthMethod.SignTransaction),
   );
 
+  const buttonTooltips = {
+    sendButton: [{ condition: !signingEnabled, message: 'accountCannotSign' }],
+    swapButton: [
+      { condition: !isSwapsChain, message: 'currentlyUnavailable' },
+      { condition: !signingEnabled, message: 'accountCannotSign' },
+    ],
+    bridgeButton: [
+      { condition: !isBridgeChain, message: 'currentlyUnavailable' },
+      { condition: !signingEnabled, message: 'accountCannotSign' },
+    ],
+  };
+
+  const generateTooltip = (buttonKey, contents) => {
+    const conditions = buttonTooltips[buttonKey];
+    const tooltipInfo = conditions.find(({ condition }) => condition);
+    if (tooltipInfo) {
+      return (
+        <Tooltip title={t(tooltipInfo.message)} position="bottom">
+          {contents}
+        </Tooltip>
+      );
+    }
+    return contents;
+  };
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
@@ -293,14 +318,8 @@ const EthOverview = ({ className, showAddress }) => {
                 history.push(SEND_ROUTE);
               });
             }}
-            tooltipRender={
-              signingEnabled
-                ? null
-                : (contents) => (
-                    <Tooltip title={t('accountCannotSign')} position="bottom">
-                      {contents}
-                    </Tooltip>
-                  )
+            tooltipRender={(contents) =>
+              generateTooltip('sendButton', contents)
             }
           />
           <IconButton
@@ -342,22 +361,8 @@ const EthOverview = ({ className, showAddress }) => {
             }}
             label={t('swap')}
             data-testid="token-overview-button-swap"
-            tooltipRender={
-              isSwapsChain && signingEnabled
-                ? null
-                : (contents) => (
-                    <Tooltip
-                      title={
-                        // eslint-disable-next-line no-negated-condition
-                        !signingEnabled
-                          ? t('accountCannotSign')
-                          : t('currentlyUnavailable')
-                      }
-                      position="bottom"
-                    >
-                      {contents}
-                    </Tooltip>
-                  )
+            tooltipRender={(contents) =>
+              generateTooltip('swapButton', contents)
             }
           />
           {
@@ -394,22 +399,8 @@ const EthOverview = ({ className, showAddress }) => {
                   });
                 }
               }}
-              tooltipRender={
-                isBridgeChain && signingEnabled
-                  ? null
-                  : (contents) => (
-                      <Tooltip
-                        title={
-                          // eslint-disable-next-line no-negated-condition
-                          !signingEnabled
-                            ? t('accountCannotSign')
-                            : t('currentlyUnavailable')
-                        }
-                        position="bottom"
-                      >
-                        {contents}
-                      </Tooltip>
-                    )
+              tooltipRender={(contents) =>
+                generateTooltip('bridgeButton', contents)
               }
             />
             ///: END:ONLY_INCLUDE_IF
