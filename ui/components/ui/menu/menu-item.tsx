@@ -16,7 +16,19 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-const MenuItem = forwardRef<HTMLButtonElement, any>(
+interface MenuItemProps {
+  children: React.ReactNode;
+  className?: string;
+  'data-testid'?: string;
+  iconName?: IconName;
+  iconColor?: IconColor;
+  onClick?: () => void;
+  subtitle?: React.ReactNode;
+  disabled?: boolean;
+  showInfoDot?: boolean;
+}
+
+const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
   (
     {
       children,
