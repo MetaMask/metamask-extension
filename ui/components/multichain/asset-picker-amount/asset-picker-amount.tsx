@@ -21,6 +21,7 @@ import AssetPicker, {
 } from './asset-picker/asset-picker';
 import SwappableCurrencyInput from './swappable-currency-input';
 import AssetBalance from './asset-balance';
+import useIsFiatPrimary from './hooks/useIsFiatPrimary';
 
 interface AssetPickerAmountProps extends AssetPickerProps {
   // all of these props should be explicitly received
@@ -39,6 +40,8 @@ export const AssetPickerAmount = ({
   const t = useI18nContext();
 
   const selectedAccount = useSelector(getSelectedIdentity);
+
+  const isFiatPrimary = useIsFiatPrimary();
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -63,7 +66,8 @@ export const AssetPickerAmount = ({
         <Label variant={TextVariant.bodyMdMedium}>
           {asset.type === AssetType.NFT ? t('asset') : t('amount')}
         </Label>
-        <MaxClearButton asset={asset} />
+        {/* The fiat value will always leave dust and is often inaccurate anyways */}
+        {!isFiatPrimary && <MaxClearButton asset={asset} />}
       </Box>
       <Box
         onFocus={() => setIsFocused(true)}
