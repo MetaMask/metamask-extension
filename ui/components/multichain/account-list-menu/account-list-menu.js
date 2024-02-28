@@ -59,6 +59,8 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { MenuOptionTypes } from '../account-list-item/account-list-item';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {

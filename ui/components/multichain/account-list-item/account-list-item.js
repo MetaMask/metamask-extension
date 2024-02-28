@@ -63,6 +63,10 @@ import { AccountListItemMenuTypes } from './account-list-item.types';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
+export const MenuOptionTypes = {
+  ConnectionMenu: 'connectionMenu',
+  AccountMenu: 'accountMenu',
+};
 export const AccountListItem = ({
   identity,
   selected = false,
@@ -435,6 +439,10 @@ AccountListItem.propTypes = {
    * Represents the type of menu to be rendered
    */
   menuType: PropTypes.string,
+  /**
+   * Represents the type of menu to be rendered
+   */
+  showOptionTypes: PropTypes.string,
   /**
    * Represents pinned accounts
    */
