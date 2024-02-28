@@ -42,11 +42,8 @@ export async function submitSmartTransactionHook(
     );
     return useRegularTransactionSubmit;
   }
-  let smartTransactionStatusApprovalId: string | undefined;
-  if (isDapp) {
-    const { id } = controllerMessenger.call('ApprovalController:startFlow');
-    smartTransactionStatusApprovalId = id;
-  }
+  const { id } = controllerMessenger.call('ApprovalController:startFlow');
+  const smartTransactionStatusApprovalId: string = id;
   try {
     const feesResponse = await smartTransactionsController.getFees(
       { ...txParams, chainId },
@@ -84,23 +81,22 @@ export async function submitSmartTransactionHook(
       throw new Error('No smart transaction UUID');
     }
     log.info('Smart Transaction - Received UUID', uuid);
-    if (isDapp) {
-      controllerMessenger.call(
-        'ApprovalController:addRequest',
-        {
-          id: smartTransactionStatusApprovalId,
-          origin,
-          type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-          requestState: {
-            smartTransaction: {
-              status: 'pending',
-              creationTime: Date.now(),
-            },
+    controllerMessenger.call(
+      'ApprovalController:addRequest',
+      {
+        id: smartTransactionStatusApprovalId,
+        origin,
+        type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+        requestState: {
+          smartTransaction: {
+            status: 'pending',
+            creationTime: Date.now(),
           },
+          isDapp,
         },
-        true,
-      );
-    }
+      },
+      true,
+    );
     let transactionHash: string | undefined | null;
     (smartTransactionsController as any).eventEmitter.on(
       `${uuid}:smartTransaction`,
@@ -110,17 +106,15 @@ export async function submitSmartTransactionHook(
         if (!status || status === 'pending') {
           return;
         }
-        if (isDapp) {
-          await controllerMessenger.call(
-            'ApprovalController:updateRequestState',
-            {
-              id: smartTransactionStatusApprovalId,
-              requestState: {
-                smartTransaction,
-              },
+        await controllerMessenger.call(
+          'ApprovalController:updateRequestState',
+          {
+            id: smartTransactionStatusApprovalId,
+            requestState: {
+              smartTransaction,
             },
-          );
-        }
+          },
+        );
         if (statusMetadata?.minedHash) {
           log.info(
             'Smart Transaction - Received tx hash: ',
@@ -156,11 +150,9 @@ export async function submitSmartTransactionHook(
     log.error(error);
     throw error;
   } finally {
-    if (isDapp) {
-      controllerMessenger.call('ApprovalController:endFlow', {
-        id: smartTransactionStatusApprovalId,
-      });
-    }
+    controllerMessenger.call('ApprovalController:endFlow', {
+      id: smartTransactionStatusApprovalId,
+    });
   }
 }
 
