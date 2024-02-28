@@ -24,7 +24,7 @@ export interface AssetBalanceTextProps {
   balanceColor: TextColor;
 }
 
-export default function AssetBalanceText({
+export function AssetBalanceText({
   asset,
   balanceColor,
 }: AssetBalanceTextProps) {

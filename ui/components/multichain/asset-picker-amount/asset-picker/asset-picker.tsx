@@ -30,10 +30,7 @@ export interface AssetPickerProps {
 }
 
 // A component that lets the user pick from a list of assets.
-export default function AssetPicker({
-  asset,
-  onAssetChange,
-}: AssetPickerProps) {
+export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList: Record<string, any> = useSelector(getTokenList);

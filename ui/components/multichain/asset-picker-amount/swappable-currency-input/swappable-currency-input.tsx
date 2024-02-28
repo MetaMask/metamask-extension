@@ -50,7 +50,7 @@ type SwappableCurrencyInputProps =
   | NativeTokenProps
   | UnsupportedTokenProps;
 
-export default function SwappableCurrencyInput({
+export function SwappableCurrencyInput({
   assetType,
   asset,
   amount: { value },

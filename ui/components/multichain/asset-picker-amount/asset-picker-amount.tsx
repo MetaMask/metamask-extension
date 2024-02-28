@@ -16,11 +16,12 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import type { Amount, Asset } from '../../../ducks/send';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MaxClearButton from './max-clear-button';
-import AssetPicker, {
+import {
+  AssetPicker,
   type AssetPickerProps,
 } from './asset-picker/asset-picker';
-import SwappableCurrencyInput from './swappable-currency-input';
-import AssetBalance from './asset-balance';
+import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
+import { AssetBalance } from './asset-balance/asset-balance';
 import useIsFiatPrimary from './hooks/useIsFiatPrimary';
 
 interface AssetPickerAmountProps extends AssetPickerProps {

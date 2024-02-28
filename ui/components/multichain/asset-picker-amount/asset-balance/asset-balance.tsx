@@ -7,14 +7,14 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Asset } from '../../../../ducks/send';
-import AssetBalanceText from './AssetBalanceText';
+import { AssetBalanceText } from './asset-balance-text';
 
 interface AssetBalanceProps {
   error?: string;
   asset: Asset;
 }
 
-export default function AssetBalance({ asset, error }: AssetBalanceProps) {
+export function AssetBalance({ asset, error }: AssetBalanceProps) {
   const t = useI18nContext();
 
   const balanceColor = error
