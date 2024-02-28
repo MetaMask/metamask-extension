@@ -16,7 +16,6 @@
       }
 
       // secondary field elements (e.g., value, symbols)
-
       & > div.unit-input__input-container > * {
         color: var(--color-text-default);
         font-size: small;
@@ -47,3 +46,10 @@
 div > div > div > div:nth-child(1) > button:hover:not(.--disabled) {
   text-decoration: none;
 }
+
+// balance text elements
+ div > div > div:nth-child(3) > *,  div > div > div:nth-child(3) > div > * {
+  color: var(--color-text-alternative);
+  font-size: small;
+  padding: 0
+ }

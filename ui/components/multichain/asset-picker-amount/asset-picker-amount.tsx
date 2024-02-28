@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Label, Text } from '../../component-library';
+import { Box, Label } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -8,7 +8,6 @@ import {
   BorderRadius,
   BorderStyle,
   Display,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSelectedIdentity } from '../../../selectors';
@@ -16,14 +15,12 @@ import { getSelectedIdentity } from '../../../selectors';
 import { AssetType } from '../../../../shared/constants/transaction';
 import type { Amount, Asset } from '../../../ducks/send';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
-import TokenBalance from '../../ui/token-balance';
 import MaxClearButton from './max-clear-button';
 import AssetPicker, {
   type AssetPickerProps,
 } from './asset-picker/asset-picker';
 import SwappableCurrencyInput from './swappable-currency-input';
+import AssetBalance from './asset-balance';
 
 interface AssetPickerAmountProps extends AssetPickerProps {
   // all of these props should be explicitly received
@@ -52,10 +49,6 @@ export const AssetPickerAmount = ({
       throw new Error('No asset is drafted for sending');
     }
   }, [selectedAccount]);
-
-  const balanceColor = error
-    ? TextColor.errorDefault
-    : TextColor.textAlternative;
 
   let borderColor = BorderColor.borderDefault;
 
@@ -94,46 +87,7 @@ export const AssetPickerAmount = ({
           amount={amount}
         />
       </Box>
-      <Box display={Display.Flex}>
-        <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>
-          {t('balance')}:
-        </Text>
-        {asset.type === AssetType.native ? (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore: Other props are optional but the compiler expects them
-          <UserPreferencedCurrencyDisplay
-            value={asset.balance}
-            type={PRIMARY}
-            textProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-            suffixProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-          />
-        ) : (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore: Details should be defined for token assets
-          <TokenBalance
-            token={asset.details}
-            textProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-            suffixProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-          />
-        )}
-        {error ? (
-          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
-            . {t(error)}
-          </Text>
-        ) : null}
-      </Box>
+      <AssetBalance asset={asset} error={error} />
     </Box>
   );
 };
