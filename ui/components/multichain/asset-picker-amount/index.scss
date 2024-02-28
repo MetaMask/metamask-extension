@@ -28,6 +28,7 @@
       & > input {
         text-align: right;
       }
+
       margin-left: auto;
     }
 
@@ -48,8 +49,9 @@ div > div > div > div:nth-child(1) > button:hover:not(.--disabled) {
 }
 
 // balance text elements
- div > div > div:nth-child(3) > *,  div > div > div:nth-child(3) > div > * {
+div > div > div:nth-child(3) > *,
+div > div > div:nth-child(3) > div > * {
   color: var(--color-text-alternative);
   font-size: small;
-  padding: 0
- }
+  padding: 0;
+}

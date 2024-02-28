@@ -1,5 +1,4 @@
 import React from 'react';
-import AssetBalanceText from './AssetBalanceText';
 import { Box, Text } from '../../../component-library';
 import {
   Display,
@@ -8,6 +7,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Asset } from '../../../../ducks/send';
+import AssetBalanceText from './AssetBalanceText';
 
 interface AssetBalanceProps {
   error?: string;

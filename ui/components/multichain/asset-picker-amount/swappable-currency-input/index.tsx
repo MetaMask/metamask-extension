@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 import type { Asset, Amount } from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
@@ -13,7 +14,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import CurrencyInput from '../../../app/currency-input';
 import SwapIcon from './swap-icon';
-import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 
 interface BaseProps {
   assetType: AssetType;
