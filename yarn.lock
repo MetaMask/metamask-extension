@@ -5120,6 +5120,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/snaps-execution-environments@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/snaps-execution-environments@npm:4.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/post-message-stream": "npm:^8.0.0"
+    "@metamask/providers": "npm:^14.0.2"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/snaps-sdk": "npm:^2.0.0"
+    "@metamask/snaps-utils": "npm:^6.0.0"
+    "@metamask/utils": "npm:^8.3.0"
+    nanoid: "npm:^3.1.31"
+    readable-stream: "npm:^3.6.2"
+    superstruct: "npm:^1.0.3"
+  checksum: ac5fa23b3b315fae833141e859441a3911786a44f0760e940dac4ce8ebc640d96919013362e4850f7fa484276fe1d123516efafa10c732c90da1d2538f62e9a7
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-registry@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/snaps-registry@npm:3.0.0"
@@ -5260,10 +5279,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^7.3.1":
-  version: 7.3.1
-  resolution: "@metamask/test-dapp@npm:7.3.1"
-  checksum: b45790b1c58bfae861f50da56df1bfee34965c86292a7b899f0f7010a3fae8fab570a3a3d9b393f50cef89ed25e73f0dcdd9699870cc95647d9399e6a336d427
+"@metamask/test-dapp@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@metamask/test-dapp@npm:8.2.0"
+  checksum: e2359cac8379682542ec53792037438eede1f30711915bb918d655a2e9d51afcaeabe01665a9bf31b41bfc1a7d05ec86e82dcf4e5a09a2df9b3d7156778f2f98
   languageName: node
   linkType: hard
 
@@ -24579,10 +24598,11 @@ __metadata:
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^5.0.1"
+    "@metamask/snaps-execution-environments": "npm:^4.0.0"
     "@metamask/snaps-rpc-methods": "npm:^6.0.0"
     "@metamask/snaps-sdk": "npm:^2.1.0"
     "@metamask/snaps-utils": "npm:^6.1.0"
-    "@metamask/test-dapp": "npm:^7.3.1"
+    "@metamask/test-dapp": "npm:^8.2.0"
     "@metamask/transaction-controller": "npm:^23.1.0"
     "@metamask/user-operation-controller": "npm:^4.0.0"
     "@metamask/utils": "npm:^8.2.1"

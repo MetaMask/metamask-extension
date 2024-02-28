@@ -111,6 +111,11 @@
             color: var(--color-icon-default);
           }
 
+          &__highlight {
+            color: var(--color-warning-inverse);
+            background-color: var(--color-warning-default);
+          }
+
           &__section-multiple-lines {
             @include design-system.screen-sm-max {
               margin-left: 10px;
