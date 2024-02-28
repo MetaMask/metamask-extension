@@ -307,7 +307,7 @@ describe('Test Snap Signature Insights', function () {
 
         // check results of test
         await driver.waitForSelector({
-          text: '0xa6e5cfe9260f460674383dd0a4ce4ded9651fc04ab82b8f9c72c126760979b5d50442ed75a51b2d0ce4bdbd72a649f7286d4de7014480d4dadd38c0ce93334d41b',
+          text: '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
           tag: 'span',
         });
 
