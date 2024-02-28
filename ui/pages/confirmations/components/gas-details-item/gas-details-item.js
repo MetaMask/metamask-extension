@@ -74,7 +74,6 @@ const GasDetailsItem = ({
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const getTransactionFeeTotal = useMemo(() => {
-    console.log('getTransactionFeeTotal: ', { hexMinimumTransactionFee });
     if (isMultiLayerFeeNetwork) {
       return sumHexes(hexMinimumTransactionFee, estimatedL1Fees || 0);
     }
