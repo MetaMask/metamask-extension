@@ -1,31 +1,42 @@
 .asset-picker-amount {
-  &__swap-button {
-    background: none;
-  }
-
   &__input {
-    & > div  {
-      & > .currency-input__conversion-component > span{
-        color: var(--color-text-alternative);
+    & > div {
+      // primary (i.e., input) and secondary (i.e., subtext) input sections
+      & > div {
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: scroll;
+        text-overflow: ellipsis;
       }
-      & > div{
-      max-width: 150px;
-      white-space: nowrap;
-      overflow: scroll;
-      text-overflow: ellipsis;
+
+      // primary field elements (e.g., input field, symbols)
+      & > .currency-input__conversion-component > span {
+        color: var(--color-text-alternative);
+        font-size: small;
+      }
+
+      // secondary field elements (e.g., value, symbols)
+
+      & > div.unit-input__input-container > * {
+        color: var(--color-text-default);
+        font-size: small;
       }
     }
 
-
+    // input section (e.g., primary input field, secondary field, symbols)
     & > .unit-input__inputs > div {
+      // input field
       & > input {
         text-align: right;
       }
       margin-left: auto;
     }
+
+    // refresh button
     & > button {
       margin-left: 4px;
     }
+
     float: right;
     flex-grow: 1;
     border: none;
