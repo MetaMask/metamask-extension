@@ -348,7 +348,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ACALA_NETWORK: 'ACA',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
 export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
 export const LINEA_MAINNET_TOKEN_IMAGE_URL = './images/linea-logo-mainnet.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
