@@ -55,6 +55,7 @@ const ALLOWED_TEMPLATE_KEYS = [
   'networkDisplay',
   'submitText',
   'loadingText',
+  'hideSubmitButton',
 ];
 
 /**
@@ -148,7 +149,7 @@ function getAttenuatedDispatch(dispatch) {
  * @param {Function} t - Translation function.
  * @param {Function} dispatch - Redux dispatch function.
  * @param {object} history - The application's history object.
- * @param {object} data - The data object passed into the template from the confimation page.
+ * @param {object} data - The data object passed into the template from the confirmation page.
  */
 export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
