@@ -16,8 +16,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-// note: this is not meant to be merged
-// we should convert MenuItem to TS instead of casting as any
 const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({
@@ -63,15 +61,22 @@ export const ConnectedAccountsMenu = ({
         initialFocusRef={{ current: anchorElement || null }}
       >
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          <TsMenuItem iconName={IconName.SecurityTick}>
+          <TsMenuItem
+            iconName={IconName.SecurityTick}
+            data-testid="permission-details-menu-item"
+          >
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
           </TsMenuItem>
-          <TsMenuItem iconName={IconName.SwapHorizontal}>
+          <TsMenuItem
+            iconName={IconName.SwapHorizontal}
+            data-testid="switch-account-menu-item"
+          >
             <Text variant={TextVariant.bodyMd}>{t('switchToThisAccount')}</Text>
           </TsMenuItem>
           <TsMenuItem
             iconName={IconName.Logout}
             iconColor={IconColor.errorDefault}
+            data-testid="disconnect-menu-item"
           >
             <Text color={TextColor.errorDefault} variant={TextVariant.bodyMd}>
               {t('disconnect')}
