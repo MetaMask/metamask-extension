@@ -79,7 +79,6 @@ export const ConnectedAccountsMenu = ({
     [onClose],
   );
 
-<<<<<<< HEAD
   function openDappPermissionModal() {
     onClose();
     dispatch(
@@ -89,8 +88,6 @@ export const ConnectedAccountsMenu = ({
     );
   }
 
-=======
->>>>>>> fa2a7261e1 (Add story, allow rendering when anchorElement is null)
   return (
     <Popover
       className="multichain-connected-accounts-menu__popover"
@@ -104,10 +101,7 @@ export const ConnectedAccountsMenu = ({
       preventOverflow
       isPortal
     >
-      <ModalFocus
-        restoreFocus
-        initialFocusRef={{ current: anchorElement || null }}
-      >
+      <ModalFocus restoreFocus initialFocusRef={{ current: anchorElement }}>
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           <TsMenuItem
             iconName={IconName.SecurityTick}
