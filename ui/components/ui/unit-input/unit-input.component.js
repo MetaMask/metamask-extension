@@ -142,6 +142,7 @@ export default class UnitInput extends PureComponent {
             title={value}
             disabled={!isOverflowing}
             arrow
+            hideOnClick={false}
             className="unit-input__input-container"
             // explicitly inherit display since Tooltip will default to block
             style={{ display: 'inherit' }}
