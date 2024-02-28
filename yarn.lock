@@ -4040,6 +4040,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/ens-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/ens-controller@npm:9.0.0"
+  dependencies:
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/utils": "npm:^8.3.0"
+    ethereum-ens-network-map: "npm:^1.0.2"
+    punycode: "npm:^2.1.1"
+  peerDependencies:
+    "@metamask/network-controller": ^17.2.0
+  checksum: d1f14db169614b3c403660eae3b1e7b74fd8347a5df6e94b67cd1f47f0bb43513dd109683568c284b6edfe1bf68088777fba55f59c1c2adad152f86932982623
+  languageName: node
+  linkType: hard
+
 "@metamask/eslint-config-jest@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/eslint-config-jest@npm:9.0.0"
@@ -24554,6 +24570,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^8.0.1"
     "@metamask/design-tokens": "npm:^2.1.1"
     "@metamask/desktop": "npm:^0.3.0"
+    "@metamask/ens-controller": "npm:^9.0.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
