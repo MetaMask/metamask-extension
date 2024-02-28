@@ -1740,8 +1740,14 @@ export function getIsOpbnb(state) {
   );
 }
 
+export function getIsSuperLumio(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.SUPER_LUMIO
+  );
+}
+
 export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
+  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state) || getIsSuperLumio(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
