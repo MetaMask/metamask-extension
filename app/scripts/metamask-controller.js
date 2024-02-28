@@ -5265,6 +5265,14 @@ export default class MetamaskController extends EventEmitter {
 
     this.unMarkPasswordForgotten();
 
+    // If the wallet is locked when the `controllerConnectionChanged` event is
+    // emitted, we need to start polling for balances as soon as it is unlocked.
+    // The `KeyringController` state in the `defaultFixture` means that many e2e
+    // tests start with a wallet in a locked state.
+    if (process.env.IN_TEST) {
+      this.triggerNetworkrequests();
+    }
+
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
     // event of the MetaMaskController itself.
