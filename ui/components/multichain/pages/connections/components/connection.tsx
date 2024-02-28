@@ -15,6 +15,7 @@ import Tabs from '../../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../../account-list-menu/account-list-menu';
 import { AccountListItem } from '../../..';
 import { AccountType, ConnectedSites } from './connections.types';
+import { ButtonPrimary, ButtonPrimarySize } from '../../../../component-library/index';
 
 export const ConnectionContent = () => {
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
@@ -36,6 +37,7 @@ export const ConnectionContent = () => {
         <Tab
           tabKey={CONNECTED_ACCOUNTS_TAB_KEY}
           name={t('connectedaccountsTabKey')}
+          padding={4}
         >
           {mergedAccount.map((account: AccountType, index: number) => {
             const connectedSites: ConnectedSites = {};
@@ -52,10 +54,13 @@ export const ConnectionContent = () => {
                 connectedAvatarName={connectedSite?.name}
                 showOptions
                 currentTabOrigin={currentTabOrigin}
-                // isActive={index === 0 ? t('active') : null} // BLOCKED: This prop will be added via PR-23006
+                isActive={index === 0 ? t('active') : null}
               />
             );
-          })}{' '}
+          })}
+          <ButtonPrimary size={ButtonPrimarySize.Lg} block>
+            dhini
+          </ButtonPrimary>
         </Tab>
       }
     </Tabs>
