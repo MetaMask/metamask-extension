@@ -15,34 +15,37 @@ export default function ConfirmationFooter({
   actionsStyle,
   style,
 }) {
+  const showActions = Boolean(onCancel || onSubmit);
   return (
     <div className="confirmation-footer" style={style}>
       {alerts}
       {submitAlerts}
-      <div className="confirmation-footer__actions" style={actionsStyle}>
-        {onCancel ? (
-          <Button
-            data-testid="confirmation-cancel-button"
-            type="secondary"
-            onClick={onCancel}
-          >
-            {cancelText}
-          </Button>
-        ) : null}
-        {onSubmit && submitText ? (
-          <Button
-            data-testid="confirmation-submit-button"
-            disabled={Boolean(loading)}
-            type="primary"
-            onClick={onSubmit}
-            className={classnames({
-              centered: !onCancel,
-            })}
-          >
-            {loading ? loadingText : submitText}
-          </Button>
-        ) : null}
-      </div>
+      {showActions && (
+        <div className="confirmation-footer__actions" style={actionsStyle}>
+          {onCancel ? (
+            <Button
+              data-testid="confirmation-cancel-button"
+              type="secondary"
+              onClick={onCancel}
+            >
+              {cancelText}
+            </Button>
+          ) : null}
+          {onSubmit && submitText ? (
+            <Button
+              data-testid="confirmation-submit-button"
+              disabled={Boolean(loading)}
+              type="primary"
+              onClick={onSubmit}
+              className={classnames({
+                centered: !onCancel,
+              })}
+            >
+              {loading ? loadingText : submitText}
+            </Button>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 }
