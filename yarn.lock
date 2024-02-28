@@ -25072,7 +25072,7 @@ __metadata:
     vinyl-sourcemaps-apply: "npm:^0.2.1"
     wait-on: "npm:^7.0.1"
     watchify: "npm:^4.0.0"
-    web3-stream-provider: "npm:^4.0.0"
+    web3-stream-provider: "npm:^5.0.0"
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:^5.91.0"
     yaml: "npm:^2.4.1"
@@ -34973,13 +34973,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-stream-provider@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "web3-stream-provider@npm:4.0.0"
+"web3-stream-provider@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "web3-stream-provider@npm:5.0.0"
   dependencies:
-    readable-stream: "npm:^2.0.5"
-    uuid: "npm:^3.3.3"
-  checksum: 89e00b55d9253dfe2f18185ede9af5af170d49ff50638750c2bacd9ebc14b94d62c9a601271cb790034139ff7393e72d08229340f31495c018594913d074e21a
+    readable-stream: "npm:^3.6.2"
+    uuid: "npm:^9.0.0"
+  checksum: 33f9fc359b381dbe20818027018de281cc0be452cb86ebf09eae80c0bfac18e4149498033f44ee7bfaf8d9017335621d9c9db42186c0f60872a0f76df9f50657
   languageName: node
   linkType: hard
 

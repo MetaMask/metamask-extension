@@ -5166,14 +5166,24 @@
       },
       "packages": {
         "browserify>util": true,
-        "readable-stream": true,
+        "web3-stream-provider>readable-stream": true,
         "web3-stream-provider>uuid": true
+      }
+    },
+    "web3-stream-provider>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "web3-stream-provider>uuid": {
       "globals": {
-        "crypto": true,
-        "msCrypto": true
+        "crypto": true
       }
     },
     "webextension-polyfill": {
