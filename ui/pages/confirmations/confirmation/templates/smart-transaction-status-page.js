@@ -11,6 +11,9 @@ function getValues(pendingApproval, t, actions, _history) {
           onCloseExtension: () => {
             actions.resolvePendingApproval(id, true);
           },
+          onViewActivity: () => {
+            actions.resolvePendingApproval(id, false);
+          },
         },
       },
     ],

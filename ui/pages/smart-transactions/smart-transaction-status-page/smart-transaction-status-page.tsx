@@ -34,6 +34,7 @@ import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared
 export interface SmartTransactionStatusPageProps {
   requestState: any;
   onCloseExtension: () => void;
+  onViewActivity: () => void;
 }
 
 export const showRemainingTimeInMinAndSec = (
@@ -53,9 +54,10 @@ const stxMaxDeadline = 150; // TODO: Use a value from backend instead.
 export const SmartTransactionStatusPage = ({
   requestState,
   onCloseExtension,
+  onViewActivity,
 }: SmartTransactionStatusPageProps) => {
   const t = useI18nContext();
-  const { smartTransaction } = requestState;
+  const { smartTransaction, isDapp } = requestState;
   const isSmartTransactionPending =
     !smartTransaction || smartTransaction.status === 'pending';
   const isSmartTransactionSuccess = smartTransaction?.status === 'success';
@@ -253,7 +255,7 @@ export const SmartTransactionStatusPage = ({
         padding={4}
         paddingBottom={0}
       >
-        {!isSmartTransactionPending && (
+        {isDapp && !isSmartTransactionPending && (
           <ButtonSecondary
             data-testid="smart-transaction-status-page-footer-close-button"
             onClick={onCloseExtension}
@@ -261,6 +263,16 @@ export const SmartTransactionStatusPage = ({
             marginTop={3}
           >
             {t('closeExtension')}
+          </ButtonSecondary>
+        )}
+        {!isDapp && !isSmartTransactionPending && (
+          <ButtonSecondary
+            data-testid="smart-transaction-status-page-footer-close-button"
+            onClick={onViewActivity}
+            width={BlockSize.Full}
+            marginTop={3}
+          >
+            {t('viewActivity')}
           </ButtonSecondary>
         )}
       </Box>
