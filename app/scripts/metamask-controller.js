@@ -81,10 +81,14 @@ import {
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
+  SnapInterfaceController,
+  OffscreenExecutionService,
+} from '@metamask/snaps-controllers';
+import {
+  createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-} from '@metamask/snaps-controllers';
-import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -136,8 +140,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -455,9 +457,9 @@ export default class MetamaskController extends EventEmitter {
     ) {
       initialNetworkControllerState = {
         providerConfig: {
-          type: NETWORK_TYPES.GOERLI,
-          chainId: CHAIN_IDS.GOERLI,
-          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+          type: NETWORK_TYPES.SEPOLIA,
+          chainId: CHAIN_IDS.SEPOLIA,
+          ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
         },
       };
     }
@@ -510,6 +512,11 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
+      onKeyringStateChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          'KeyringController:stateChange',
+          listener,
+        ),
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -1123,32 +1130,31 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
-    // This runtime stream will be used by snaps in MV3 for communication
-    // between the snaps running in the offscreen document and the metamask
-    // controller running in the mv3 service worker.
-    this.runtimeStream = new BrowserRuntimePostMessageStream({
-      name: 'parent',
-      target: 'child',
-    });
-
-    // This listener is a placeholder and should be removed once snaps is added
-    // to the MV3 offscreen document solution.
-    this.runtimeStream.on('data', (data) => {
-      console.log('Service worker received data from offscreen document', data);
-    });
-
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+    const shouldUseOffscreenExecutionService =
+      isManifestV3 &&
+      typeof chrome !== 'undefined' &&
+      // eslint-disable-next-line no-undef
+      typeof chrome.offscreen !== 'undefined';
+
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
 
-    this.snapExecutionService = new IframeExecutionService(
-      snapExecutionServiceArgs,
-    );
+    this.snapExecutionService =
+      shouldUseOffscreenExecutionService === false
+        ? new IframeExecutionService({
+            ...snapExecutionServiceArgs,
+            iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
+          })
+        : new OffscreenExecutionService({
+            // eslint-disable-next-line no-undef
+            documentUrl: chrome.runtime.getURL('./offscreen.html'),
+            ...snapExecutionServiceArgs,
+          });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
@@ -1173,8 +1179,6 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
         `${this.subjectMetadataController.name}:addSubjectMetadata`,
-        `${this.phishingController.name}:maybeUpdateState`,
-        `${this.phishingController.name}:testOrigin`,
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
@@ -1184,6 +1188,8 @@ export default class MetamaskController extends EventEmitter {
         'SnapsRegistry:getMetadata',
         'SnapsRegistry:update',
         'SnapsRegistry:resolveVersion',
+        `SnapInterfaceController:createInterface`,
+        `SnapInterfaceController:getInterface`,
       ],
     });
 
@@ -1280,6 +1286,7 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [],
       allowedActions: [],
     });
+
     this.snapsRegistry = new JsonSnapsRegistry({
       state: initState.SnapsRegistry,
       messenger: snapsRegistryMessenger,
@@ -1291,6 +1298,20 @@ export default class MetamaskController extends EventEmitter {
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
+    });
+
+    const snapInterfaceControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'SnapInterfaceController',
+        allowedActions: [
+          `${this.phishingController.name}:maybeUpdateState`,
+          `${this.phishingController.name}:testOrigin`,
+        ],
+      });
+
+    this.snapInterfaceController = new SnapInterfaceController({
+      state: initState.SnapInterfaceController,
+      messenger: snapInterfaceControllerMessenger,
     });
 
     ///: END:ONLY_INCLUDE_IF
@@ -1396,6 +1417,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.custodyController = new CustodyController({
       initState: initState.CustodyController,
+      captureException,
     });
     this.institutionalFeaturesController = new InstitutionalFeaturesController({
       initState: initState.InstitutionalFeaturesController,
@@ -1451,6 +1473,10 @@ export default class MetamaskController extends EventEmitter {
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
         getNetworkState: () => this.networkController.state,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSavedGasFees: () =>
@@ -1459,6 +1485,7 @@ export default class MetamaskController extends EventEmitter {
           ],
         getSelectedAddress: () =>
           this.accountsController.getSelectedAccount().address,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
         incomingTransactions: {
           includeTokenTransfers: false,
           isEnabled: () =>
@@ -1474,7 +1501,12 @@ export default class MetamaskController extends EventEmitter {
         },
         messenger: this.controllerMessenger.getRestricted({
           name: 'TransactionController',
-          allowedActions: [`${this.approvalController.name}:addRequest`],
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            'NetworkController:findNetworkClientIdByChainId',
+            'NetworkController:getNetworkClientById',
+          ],
+          allowedEvents: [`NetworkController:stateChange`],
         }),
         onNetworkStateChange: (listener) => {
           networkControllerMessenger.subscribe(
@@ -1941,6 +1973,7 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: this.cronjobController,
       SnapsRegistry: this.snapsRegistry,
       NotificationController: this.notificationController,
+      SnapInterfaceController: this.snapInterfaceController,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       DesktopController: this.desktopController.store,
@@ -1992,6 +2025,7 @@ export default class MetamaskController extends EventEmitter {
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,
+        SnapInterfaceController: this.snapInterfaceController,
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         DesktopController: this.desktopController.store,
@@ -2250,11 +2284,11 @@ export default class MetamaskController extends EventEmitter {
             this.controllerMessenger,
             'SnapController:getSnapState',
           ),
-          showDialog: (origin, type, content, placeholder) =>
+          showDialog: (origin, type, id, placeholder) =>
             this.approvalController.addAndShowApprovalRequest({
               origin,
               type: SNAP_DIALOG_TYPES[type],
-              requestData: { content, placeholder },
+              requestData: { id, placeholder },
             }),
           showNativeNotification: (origin, args) =>
             this.controllerMessenger.call(
@@ -2301,6 +2335,14 @@ export default class MetamaskController extends EventEmitter {
               origin,
             ).result;
           },
+          createInterface: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapInterfaceController:createInterface',
+          ),
+          getInterface: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapInterfaceController:getInterface',
+          ),
           ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
@@ -2391,6 +2433,49 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapInstallStarted`,
+      (snapId, origin, isUpdate) => {
+        const snapCategory = this._getSnapMetadata(snapId)?.category;
+        this.metaMetricsController.trackEvent({
+          event: isUpdate
+            ? MetaMetricsEventName.SnapUpdateStarted
+            : MetaMetricsEventName.SnapInstallStarted,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: snapId,
+            origin,
+            snap_category: snapCategory,
+          },
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapInstallFailed`,
+      (snapId, origin, isUpdate, error) => {
+        const isRejected = error.includes('User rejected the request.');
+        const failedEvent = isUpdate
+          ? MetaMetricsEventName.SnapUpdateFailed
+          : MetaMetricsEventName.SnapInstallFailed;
+        const rejectedEvent = isUpdate
+          ? MetaMetricsEventName.SnapUpdateRejected
+          : MetaMetricsEventName.SnapInstallRejected;
+
+        const snapCategory = this._getSnapMetadata(snapId)?.category;
+        this.metaMetricsController.trackEvent({
+          event: isRejected ? rejectedEvent : failedEvent,
+          category: MetaMetricsEventCategory.Snaps,
+          properties: {
+            snap_id: snapId,
+            origin,
+            snap_category: snapCategory,
+          },
+        });
+      },
+    );
+
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap, origin) => {
@@ -2962,6 +3047,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
+      setShowPermissionsTour:
+        appStateController.setShowPermissionsTour.bind(appStateController),
       setShowProductTour:
         appStateController.setShowProductTour.bind(appStateController),
       setShowAccountBanner:
@@ -3114,14 +3201,6 @@ export default class MetamaskController extends EventEmitter {
         this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
           this.custodyController,
         ),
-      setCustodianConnectRequest:
-        this.custodyController.setCustodianConnectRequest.bind(
-          this.custodyController,
-        ),
-      getCustodianConnectRequest:
-        this.custodyController.getCustodianConnectRequest.bind(
-          this.custodyController,
-        ),
       getMmiConfiguration:
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
@@ -3181,6 +3260,14 @@ export default class MetamaskController extends EventEmitter {
 
         return phishingController.test(website);
       },
+      deleteInterface: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapInterfaceController:deleteInterface',
+      ),
+      updateInterfaceState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapInterfaceController:updateInterfaceState',
+      ),
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       // Desktop
@@ -4167,7 +4254,9 @@ export default class MetamaskController extends EventEmitter {
   }) {
     return {
       dappRequest,
-      networkClientId: this.networkController.state.selectedNetworkClientId,
+      networkClientId:
+        dappRequest?.networkClientId ??
+        this.networkController.state.selectedNetworkClientId,
       selectedAccount: this.accountsController.getSelectedAccount(),
       transactionController: this.txController,
       transactionOptions,
@@ -4941,6 +5030,22 @@ export default class MetamaskController extends EventEmitter {
           this.subjectMetadataController,
           origin,
         ),
+        createInterface: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapInterfaceController:createInterface',
+          origin,
+        ),
+        getInterfaceState: (...args) =>
+          this.controllerMessenger.call(
+            'SnapInterfaceController:getInterface',
+            origin,
+            ...args,
+          ).state,
+        updateInterface: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapInterfaceController:updateInterface',
+          origin,
+        ),
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }),
@@ -5218,11 +5323,13 @@ export default class MetamaskController extends EventEmitter {
    * Returns the nonce that will be associated with a transaction once approved
    *
    * @param {string} address - The hex string address for the transaction
+   * @param networkClientId - The optional networkClientId to get the nonce lock with
    * @returns {Promise<number>}
    */
-  async getPendingNonce(address) {
+  async getPendingNonce(address, networkClientId) {
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
     );
 
     const pendingNonce = nonceDetails.params.highestSuggested;
@@ -5235,10 +5342,14 @@ export default class MetamaskController extends EventEmitter {
    * Returns the next nonce according to the nonce-tracker
    *
    * @param {string} address - The hex string address for the transaction
+   * @param networkClientId - The optional networkClientId to get the nonce lock with
    * @returns {Promise<number>}
    */
-  async getNextNonce(address) {
-    const nonceLock = await this.txController.getNonceLock(address);
+  async getNextNonce(address, networkClientId) {
+    const nonceLock = await this.txController.getNonceLock(
+      address,
+      process.env.TRANSACTION_MULTICHAIN ? networkClientId : undefined,
+    );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
   }

@@ -145,6 +145,7 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
+  ARBITRUM_GOERLI: '0x66eed',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -203,7 +204,12 @@ const CHAINLIST_CHAIN_IDS_MAP = {
 // To add a deprecation warning to a network, add it to the array
 // `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy() in
 // `ui/components/ui/deprecated-networks/deprecated-networks.js`.
-export const DEPRECATED_NETWORKS = [CHAIN_IDS.AURORA, CHAIN_IDS.GOERLI];
+export const DEPRECATED_NETWORKS = [
+  CHAIN_IDS.AURORA,
+  CHAIN_IDS.GOERLI,
+  CHAIN_IDS.ARBITRUM_GOERLI,
+  CHAIN_IDS.OPTIMISM_TESTNET,
+];
 
 /**
  * The largest possible chain ID we can handle.
@@ -371,7 +377,7 @@ export const DEXALOT_SUBNET_IMAGE_URL = './images/dexalut-subnet.svg';
 export const DFK_CHAIN_IMAGE_URL = './images/dfk.png';
 export const DOGECHAIN_IMAGE_URL = './images/dogechain.jpeg';
 export const ENDURANCE_SMART_CHAIN_MAINNET_IMAGE_URL =
-  './images/endurance-smart-chain.png';
+  './images/endurance-smart-chain-mainnet.png';
 export const ETHEREUM_CLASSIC_MAINNET_IMAGE_URL = './images/eth_classic.svg';
 export const EVMOS_IMAGE_URL = './images/evmos.svg';
 export const FLARE_MAINNET_IMAGE_URL = './images/flare-mainnet.svg';
@@ -396,23 +402,21 @@ export const SHARDEUM_LIBERTY_2X_IMAGE_URL = './images/shardeum-2.svg';
 export const SHARDEUM_SPHINX_1X_IMAGE_URL = './images/shardeum-1.svg';
 export const SHIB_MAINNET_IMAGE_URL = './images/shiba.svg';
 export const SONGBIRD_MAINNET_IMAGE_URL = './images/songbird.svg';
-export const STEP_NETWORK_IMAGE_URL = './images/setp.svg';
+export const STEP_NETWORK_IMAGE_URL = './images/step.svg';
 export const TELOS_EVM_MAINNET_IMAGE_URL = './images/telos.svg';
 export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
-export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.svg';
+export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
-  NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
   NETWORK_TYPES.LINEA_GOERLI,
   NETWORK_TYPES.LINEA_MAINNET,
 ] as const;
 
 export const TEST_CHAINS = [
-  CHAIN_IDS.GOERLI,
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LOCALHOST,
@@ -445,11 +449,6 @@ export const TEST_NETWORK_TICKER_MAP: {
  * Map of all build-in Infura networks to their network, ticker and chain IDs.
  */
 export const BUILT_IN_NETWORKS = {
-  [NETWORK_TYPES.GOERLI]: {
-    chainId: CHAIN_IDS.GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
-    blockExplorerUrl: `https://${NETWORK_TYPES.GOERLI}.etherscan.io`,
-  },
   [NETWORK_TYPES.SEPOLIA]: {
     chainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
@@ -489,19 +488,24 @@ export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 // };
 
 export const NETWORK_TO_NAME_MAP = {
-  [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
-  [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
+  [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
 
+  [CHAIN_IDS.ARBITRUM]: ARBITRUM_DISPLAY_NAME,
+  [CHAIN_IDS.AVALANCHE]: AVALANCHE_DISPLAY_NAME,
+  [CHAIN_IDS.BSC]: BSC_DISPLAY_NAME,
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
-  [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
+  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
+  [CHAIN_IDS.OPTIMISM]: OPTIMISM_DISPLAY_NAME,
+  [CHAIN_IDS.POLYGON]: POLYGON_DISPLAY_NAME,
+  [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -848,6 +852,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.ARBITRUM_GOERLI
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

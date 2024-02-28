@@ -12,7 +12,10 @@ import SendTransactionScreen from '../confirmations/send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
-import { AllConnections, Connections } from '../../components/multichain/pages';
+import {
+  PermissionsPage,
+  Connections,
+} from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
@@ -79,7 +82,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   CONNECTIONS,
-  ALL_CONNECTIONS,
+  PERMISSIONS,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -125,6 +128,7 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 ///: END:ONLY_INCLUDE_IF
 
 import { SendPage } from '../../components/multichain/pages/send';
+import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -170,6 +174,8 @@ export default class Routes extends Component {
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
+    isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
+    hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -375,14 +381,13 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {process.env.MULTICHAIN && (
-          <Authenticated path={CONNECTIONS} component={Connections} />
+          <Authenticated
+            path={`${CONNECTIONS}/:origin`}
+            component={Connections}
+          />
         )}
         {process.env.MULTICHAIN && (
-          <Authenticated
-            path={ALL_CONNECTIONS}
-            component={AllConnections}
-            exact
-          />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
         )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
@@ -474,14 +479,25 @@ export default class Routes extends Component {
       return true;
     }
 
-    const isAllConnectionsPage = Boolean(
+    const isPermissionsPage = Boolean(
       matchPath(location.pathname, {
-        path: ALL_CONNECTIONS,
+        path: PERMISSIONS,
         exact: false,
       }),
     );
 
-    if (isAllConnectionsPage) {
+    if (isPermissionsPage) {
+      return true;
+    }
+
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECTIONS,
+        exact: false,
+      }),
+    );
+
+    if (isConnectionsPage) {
       return true;
     }
 
@@ -557,12 +573,14 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
+      isDeprecatedNetworkModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
+      hideDeprecatedNetworkModal,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -640,6 +658,11 @@ export default class Routes extends Component {
         ) : null}
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
+        ) : null}
+        {isDeprecatedNetworkModalOpen ? (
+          <DeprecatedNetworkModal
+            onClose={() => hideDeprecatedNetworkModal()}
+          />
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

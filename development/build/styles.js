@@ -7,10 +7,10 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
 const postcss = require('gulp-postcss');
 const pump = pify(require('pump'));
+const sass = require('sass-embedded');
+const gulpSass = require('gulp-sass')(sass);
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
-
-let sass;
 
 // scss compilation and autoprefixing tasks
 module.exports = createStyleTasks;
@@ -64,18 +64,25 @@ function createStyleTasks({ livereload }) {
 }
 
 async function buildScssPipeline(src, dest, devMode) {
-  if (!sass) {
-    // use our own compiler which runs sass in its own process
-    // in order to not pollute the intrinsics
-    // eslint-disable-next-line node/global-require
-    sass = require('gulp-sass')(require('./sass-compiler'));
-  }
   await pump(
     ...[
       // pre-process
       gulp.src(src),
       devMode && sourcemaps.init(),
-      sass().on('error', sass.logError),
+      gulpSass({
+        // The order of includePaths is important; prefer our own
+        // folders over `node_modules`
+        includePaths: [
+          // enables shortcuts to `@use design-system`, `@use utilities`, etc.
+          'ui/css/',
+          'node_modules/',
+        ],
+        functions: {
+          // Tell sass where to find the font-awesome font files
+          // update this location in static.js if it changes
+          '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
+        },
+      }).on('error', gulpSass.logError),
       postcss([autoprefixer(), rtlcss()]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),

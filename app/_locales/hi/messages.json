@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो कोई Blur पर लिस्टेड आपके सारे एसेट चुरा सकता है।"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "कोई समस्या होने के कारण, इस रिक्वेस्ट को सिक्यूरिटी प्रोवाइडर द्वारा वेरीफ़ाई नहीं किया गया। सावधानी से आगे बढ़ें।"
   },
   "blockaidDescriptionMaliciousDomain": {
