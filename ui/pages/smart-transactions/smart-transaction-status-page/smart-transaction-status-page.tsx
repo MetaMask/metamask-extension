@@ -47,8 +47,8 @@ export const showRemainingTimeInMinAndSec = (
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const stxEstimatedDeadline = 45; // TODO: Use a value from backend instead.
-const stxMaxDeadline = 160; // TODO: Use a value from backend instead.
+const stxEstimatedDeadline = 5; // TODO: Use a value from backend instead.
+const stxMaxDeadline = 150; // TODO: Use a value from backend instead.
 
 export const SmartTransactionStatusPage = ({
   requestState,
@@ -63,9 +63,13 @@ export const SmartTransactionStatusPage = ({
     smartTransaction?.status.startsWith('cancelled');
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
     useState(stxEstimatedDeadline);
+  const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =
+    useState(false);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const chainId: string = useSelector(getCurrentChainId);
-  const isSmartTransactionTakingTooLong = timeLeftForPendingStxInSec === 0;
+  const stxDeadline = isSmartTransactionTakingTooLong
+    ? stxMaxDeadline
+    : stxEstimatedDeadline;
 
   const txHash = smartTransaction?.statusMetadata?.minedHash;
 
@@ -89,12 +93,15 @@ export const SmartTransactionStatusPage = ({
   if (isSmartTransactionPending && isSmartTransactionTakingTooLong) {
     title = t('smartTransactionTakingTooLong');
     description = t('smartTransactionTakingTooLongDescription', [
-      (stxMaxDeadline - stxEstimatedDeadline).toString(),
+      showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec),
     ]);
     iconName = IconName.Clock;
     iconColor = IconColor.primaryDefault;
   } else if (isSmartTransactionPending) {
     title = t('smartTransactionPending');
+    description = t('stxEstimatedCompletition', [
+      showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec),
+    ]);
     iconName = IconName.Clock;
     iconColor = IconColor.primaryDefault;
   } else if (isSmartTransactionSuccess) {
@@ -121,21 +128,27 @@ export const SmartTransactionStatusPage = ({
         const secondsAfterStxSubmission = Math.round(
           (Date.now() - smartTransaction?.creationTime) / 1000,
         );
-        if (secondsAfterStxSubmission > stxEstimatedDeadline) {
-          setTimeLeftForPendingStxInSec(0);
-          clearInterval(intervalId);
-          return;
+        if (secondsAfterStxSubmission > stxDeadline) {
+          if (isSmartTransactionTakingTooLong) {
+            setTimeLeftForPendingStxInSec(0);
+            clearInterval(intervalId);
+            return;
+          }
+          setIsSmartTransactionTakingTooLong(true);
         }
-        setTimeLeftForPendingStxInSec(
-          stxEstimatedDeadline - secondsAfterStxSubmission,
-        );
+        setTimeLeftForPendingStxInSec(stxDeadline - secondsAfterStxSubmission);
       };
       intervalId = setInterval(calculateRemainingTime, 1000);
       calculateRemainingTime();
     }
 
     return () => clearInterval(intervalId);
-  }, [isSmartTransactionPending, stxEstimatedDeadline]);
+  }, [
+    isSmartTransactionPending,
+    stxEstimatedDeadline,
+    stxMaxDeadline,
+    isSmartTransactionTakingTooLong,
+  ]);
 
   return (
     <Box
@@ -153,8 +166,8 @@ export const SmartTransactionStatusPage = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={4}
-        paddingRight={4}
+        paddingLeft={8}
+        paddingRight={8}
         style={{ flexGrow: 1 }}
       >
         <Box
@@ -178,42 +191,39 @@ export const SmartTransactionStatusPage = ({
           >
             {title}
           </Text>
-          {description && (
-            <Text
-              marginTop={2}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodySm}
-            >
-              {description}
-            </Text>
-          )}
         </Box>
-        {isSmartTransactionPending && !isSmartTransactionTakingTooLong && (
+        {isSmartTransactionPending && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
+            width={BlockSize.Full}
           >
             <div className="smart-transaction-status-page__loading-bar-container">
               <div
                 className="smart-transaction-status-page__loading-bar"
                 style={{
                   width: `${
-                    (100 / stxEstimatedDeadline) *
-                    (stxEstimatedDeadline - timeLeftForPendingStxInSec)
+                    (100 / stxDeadline) *
+                    (stxDeadline - timeLeftForPendingStxInSec)
                   }%`,
                 }}
               />
             </div>
+          </Box>
+        )}
+        {description && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+          >
             <Text
-              paddingTop={2}
-              variant={TextVariant.bodySm}
+              marginTop={2}
               color={TextColor.textAlternative}
-              data-testid="smart-transaction-status-page-content-description"
+              variant={TextVariant.bodySm}
             >
-              {t('stxEstimatedCompletition', [
-                showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec),
-              ])}
+              {description}
             </Text>
           </Box>
         )}
