@@ -233,15 +233,15 @@ const AssetChart = ({
         loading={loading}
         ref={priceRef}
       />
-      <Box style={{ opacity: prices && loading ? 0.2 : 1 }}>
-        <ChartTooltip
-          ref={maxPriceTooltip}
-          backgroundColor={
-            loading && !prices
-              ? BackgroundColor.backgroundAlternative
-              : BackgroundColor.backgroundDefault
-          }
-        />
+      <Box
+        style={{ opacity: prices && loading ? 0.2 : 1 }}
+        backgroundColor={
+          loading && !prices
+            ? BackgroundColor.backgroundAlternative
+            : BackgroundColor.backgroundDefault
+        }
+      >
+        <ChartTooltip ref={maxPriceTooltip} />
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -282,38 +282,24 @@ const AssetChart = ({
               }}
             />
           ) : (
-            <Box
-              width={BlockSize.Full}
-              backgroundColor={
-                loading
-                  ? BackgroundColor.backgroundAlternative
-                  : BackgroundColor.backgroundDefault
-              }
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              paddingBottom={4}
-              gap={1}
-            >
-              {!loading && (
-                <>
-                  <Icon name={IconName.Info} size={IconSize.Xl} />
-                  <Text>{t('noChartData')}</Text>
-                  <Text>{t('couldNotFetchDataForToken')}</Text>
-                </>
-              )}
-            </Box>
+            !loading && (
+              <Box
+                width={BlockSize.Full}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                paddingBottom={4}
+                gap={1}
+              >
+                <Icon name={IconName.Info} size={IconSize.Xl} />
+                <Text>{t('noChartData')}</Text>
+                <Text>{t('couldNotFetchDataForToken')}</Text>
+              </Box>
+            )
           )}
         </Box>
-        <ChartTooltip
-          ref={minPriceTooltip}
-          backgroundColor={
-            loading && !prices
-              ? BackgroundColor.backgroundAlternative
-              : BackgroundColor.backgroundDefault
-          }
-        />
+        <ChartTooltip ref={minPriceTooltip} />
       </Box>
 
       {data ? (
