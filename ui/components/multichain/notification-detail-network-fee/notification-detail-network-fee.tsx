@@ -39,15 +39,15 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
     padding={4}
   >
     <Text
-      color={TextColor.textAlternative}
+      color={TextColor.textDefault}
       variant={TextVariant.bodyMd}
       fontWeight={FontWeight.Normal}
     >
       {label}
     </Text>
     <Text
-      color={TextColor.textDefault}
-      variant={TextVariant.bodyLgMedium}
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodyMd}
       fontWeight={FontWeight.Normal}
     >
       {value}
