@@ -12,7 +12,7 @@ export const mapToTemplate = (params: MapToTemplateParams) => {
   const { type } = params.element;
   params.elementKeyIndex.value += 1;
   const indexKey = `${params.rootKey}_snap_ui_element_${type}__${params.elementKeyIndex.value}`;
-  // @ts-expect-error This is a problem with the types generated in the snaps repo.
+  // @ts-expect-error This seems to be compatibility issue between superstruct and this repo.
   const mapped = COMPONENT_MAPPING[type](params as any);
   return { ...mapped, key: indexKey };
 };
