@@ -5279,17 +5279,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@metamask/test-dapp@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/test-dapp@npm:8.1.0"
-  checksum: 65c2dc2de222f6fd2df1a57167cb05706003716127390313e0bd3a4b506ef3bd6903ca4f72efae2480a059055394a43f431b67c04cb4ed829250464cc33a91d3
-=======
 "@metamask/test-dapp@npm:^8.2.0":
   version: 8.2.0
   resolution: "@metamask/test-dapp@npm:8.2.0"
   checksum: e2359cac8379682542ec53792037438eede1f30711915bb918d655a2e9d51afcaeabe01665a9bf31b41bfc1a7d05ec86e82dcf4e5a09a2df9b3d7156778f2f98
->>>>>>> develop
   languageName: node
   linkType: hard
 
