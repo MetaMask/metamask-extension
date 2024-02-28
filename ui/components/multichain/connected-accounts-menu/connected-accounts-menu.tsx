@@ -16,8 +16,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const TsMenuItem = MenuItem as any;
-
 export const ConnectedAccountsMenu = ({
   isOpen,
   anchorElement,
@@ -61,19 +59,19 @@ export const ConnectedAccountsMenu = ({
         initialFocusRef={{ current: anchorElement || null }}
       >
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          <TsMenuItem
+          <MenuItem
             iconName={IconName.SecurityTick}
             data-testid="permission-details-menu-item"
           >
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
-          </TsMenuItem>
-          <TsMenuItem
+          </MenuItem>
+          <MenuItem
             iconName={IconName.SwapHorizontal}
             data-testid="switch-account-menu-item"
           >
             <Text variant={TextVariant.bodyMd}>{t('switchToThisAccount')}</Text>
-          </TsMenuItem>
-          <TsMenuItem
+          </MenuItem>
+          <MenuItem
             iconName={IconName.Logout}
             iconColor={IconColor.errorDefault}
             data-testid="disconnect-menu-item"
@@ -81,7 +79,7 @@ export const ConnectedAccountsMenu = ({
             <Text color={TextColor.errorDefault} variant={TextVariant.bodyMd}>
               {t('disconnect')}
             </Text>
-          </TsMenuItem>
+          </MenuItem>
         </Box>
       </ModalFocus>
     </Popover>
