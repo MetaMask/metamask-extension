@@ -12,7 +12,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import {
@@ -28,8 +27,11 @@ import {
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { AssetListConversionButton } from '../../multichain';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
