@@ -27,6 +27,7 @@ export { ConnectedStatus } from './connected-status';
 export { NotificationListItem } from './notification-list-item';
 export { NotificationListItemIcon } from './notification-list-item-icon';
 export { NotificationListItemText } from './notification-list-item-text';
+export { NotificationListSnapButton } from './notification-list-snap-button';
 export { NotificationDetail } from './notification-detail';
 export { NotificationDetailAddress } from './notification-detail-address';
 export { NotificationDetailAsset } from './notification-detail-asset';
