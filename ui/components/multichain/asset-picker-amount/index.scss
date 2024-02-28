@@ -31,3 +31,8 @@
     border: none;
   }
 }
+
+// max button
+div > div > div > div:nth-child(1) > button:hover:not(.--disabled) {
+  text-decoration: none;
+}
