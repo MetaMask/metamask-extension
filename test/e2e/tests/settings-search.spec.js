@@ -18,7 +18,7 @@ describe('Settings Search', function () {
     about: 'Terms of Use',
   };
 
-  it('should find element inside the General tab', async function () {
+  it('should find element inside the General tab @no-mmi', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

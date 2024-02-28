@@ -117,7 +117,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should enable approval for a third party address to manage all ERC1155 token', async function () {
+  it('should enable approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
     // ERC1155 is the name of the test-dapp ERC1155 contract
     const expectedMessageTitle =
       'Allow access to and transfer all of your NFTs from ERC1155?';
@@ -204,7 +204,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
+  it('should revoke approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
     // ERC1155 is the name of the test-dapp ERC1155 contract
     const expectedMessageTitle =
       'Revoke permission to access and transfer all of your NFTs from ERC1155?';

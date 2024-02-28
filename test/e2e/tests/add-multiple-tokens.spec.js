@@ -12,7 +12,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('Multiple ERC20 Watch Asset', function () {
   // TODO: This assertion will change once the method is fixed.
-  it('should show multiple erc20 watchAsset token list, only confirms one bug', async function () {
+  it('should show multiple erc20 watchAsset token list, only confirms one bug @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

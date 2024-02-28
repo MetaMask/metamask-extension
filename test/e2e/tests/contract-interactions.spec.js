@@ -14,7 +14,7 @@ const FixtureBuilder = require('../fixture-builder');
 describe('Deploy contract and call contract methods', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
 
-  it('should display the correct account balance after contract interactions', async function () {
+  it('should display the correct account balance after contract interactions @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

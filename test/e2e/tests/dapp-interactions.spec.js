@@ -41,7 +41,7 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('should connect a second Dapp despite MetaMask being locked', async function () {
+  it('should connect a second Dapp despite MetaMask being locked @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

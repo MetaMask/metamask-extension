@@ -145,7 +145,7 @@ describe('Add existing token using search', function () {
   });
 });
 
-describe('Add token using wallet_watchAsset', function () {
+describe('Add token using wallet_watchAsset @no-mmi', function () {
   it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
     await withFixtures(
       {
