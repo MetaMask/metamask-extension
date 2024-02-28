@@ -10,6 +10,9 @@ import {
 import {
   Box,
   ButtonLink,
+  Icon,
+  IconName,
+  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -22,6 +25,7 @@ import {
   FlexDirection,
   FlexWrap,
   FontWeight,
+  IconColor,
   JustifyContent,
   OverflowWrap,
   TextAlign,
@@ -37,6 +41,7 @@ import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import InfoTooltip from '../../../ui/info-tooltip';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
+import Tooltip from '../../../ui/tooltip';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -141,12 +146,18 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
                   {t('installOrigin')}
                 </Text>
                 {installInfo && (
-                  <InfoTooltip
-                    contentText={t('installedOn', [
+                  <Tooltip
+                    html={t('installedOn', [
                       formatDate(installInfo.date, 'dd MMM yyyy'),
                     ])}
-                    iconFillColor="var(--color-icon-muted)"
-                  />
+                    position="bottom"
+                  >
+                    <Icon
+                      color={IconColor.iconMuted}
+                      name={IconName.Info}
+                      size={IconSize.Sm}
+                    />
+                  </Tooltip>
                 )}
               </Box>
               <Text ellipsis>{installOrigin.host}</Text>
@@ -168,8 +179,8 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
               <Text variant={TextVariant.bodyMdMedium} marginRight={1}>
                 {t('source')}
               </Text>
-              <InfoTooltip
-                contentText={t('metadataModalSourceTooltip', [
+              <Tooltip
+                html={t('metadataModalSourceTooltip', [
                   <Text
                     key="snap-name"
                     fontWeight={FontWeight.Medium}
@@ -185,8 +196,14 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
                     {packageName}
                   </Text>,
                 ])}
-                iconFillColor="var(--color-icon-muted)"
-              />
+                position="bottom"
+              >
+                <Icon
+                  color={IconColor.iconMuted}
+                  name={IconName.Info}
+                  size={IconSize.Sm}
+                />
+              </Tooltip>
             </Box>
             <SnapExternalPill value={packageName} url={url} />
           </Box>
