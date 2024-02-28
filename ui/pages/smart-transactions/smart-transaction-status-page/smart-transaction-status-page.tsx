@@ -48,7 +48,7 @@ export const showRemainingTimeInMinAndSec = (
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const stxEstimatedDeadline = 5; // TODO: Use a value from backend instead.
+const stxEstimatedDeadline = 45; // TODO: Use a value from backend instead.
 const stxMaxDeadline = 150; // TODO: Use a value from backend instead.
 
 export const SmartTransactionStatusPage = ({
@@ -113,8 +113,8 @@ export const SmartTransactionStatusPage = ({
   } else if (isSmartTransactionCancelled) {
     title = t('smartTransactionCancelled');
     description = t('smartTransactionCancelledDescription');
-    iconName = IconName.Warning;
-    iconColor = IconColor.primaryDefault;
+    iconName = IconName.Danger;
+    iconColor = IconColor.errorDefault;
   } else {
     // E.g. reverted or unknown statuses.
     title = t('smartTransactionError');
@@ -168,8 +168,8 @@ export const SmartTransactionStatusPage = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={8}
-        paddingRight={8}
+        paddingLeft={10}
+        paddingRight={10}
         style={{ flexGrow: 1 }}
       >
         <Box
