@@ -166,7 +166,7 @@ export default function CurrencyInput({
     return (
       <CurrencyDisplay
         // hides the fiat suffix
-        hideLabel={isLongSymbol}
+        hideLabel={isPrimary || isLongSymbol}
         suffix={suffix}
         className="currency-input__conversion-component"
         currency={currency}
