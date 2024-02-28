@@ -9,12 +9,12 @@ Confirmations can be triggered by dApps and the UI itself, and are used to appro
 - Connecting to dApps
 - Giving permissions to dApps
 - Sending Eth
-- Transfering tokens
+- Transferring tokens
 - Signing data
 - Interacting with Snaps
 - Adding Ethereum networks
 
-It is vital any new confirmations are implemented using best practices and consistent patterns, to avoid adding complexity to the code, and to minimise the maintenance cost of many alternate confirmations.
+It is vital any new confirmations are implemented using best practices and consistent patterns, to avoid adding complexity to the code, and to minimize the maintenance cost of many alternate confirmations.
 
 As we try to maintain a clean boundary between the UI and background page, the effort to implement a new confirmation can also be split accordingly.
 
@@ -258,7 +258,7 @@ export default example;
 
 When an approval request is created, the extension popup is shown and a suitable approval is displayed.
 
-When this approval request is approved or rejected, the standard behaviour is for the extension popup to be automatically closed.
+When this approval request is approved or rejected, the standard behavior is for the extension popup to be automatically closed.
 
 In some scenarios, multiple sequential approvals are needed such as when adding a new network, and then being prompted to switch to the new network.
 
@@ -281,7 +281,7 @@ This supports the following parameters:
 
 #### 2. Create Approval Requests
 
-Create sequentil approval requests as normal using the above instructions.
+Create sequential approval requests as normal using the above instructions.
 
 While the an approval request has been approved or rejected but no subsequent approval request has been created, a loading page is automatically displayed containing a spinner.
 
@@ -295,7 +295,7 @@ This will close the popup as normal.
 
 We recommend the use of a `try finally` block to ensure the flow is ended even if an error is thrown.
 
-In rare scenarios where an approval flow is initialised within another approval flow, the popup will remain open until the parent approval flow has been ended.
+In rare scenarios where an approval flow is initialized within another approval flow, the popup will remain open until the parent approval flow has been ended.
 
 #### Example
 
@@ -307,7 +307,7 @@ For an example usage, see the [add network middleware](../app/scripts/lib/rpc-me
 
 Many types of approvals are not needed before a process is executed, but instead aim to provide a simple status page to display a success or error message after a process has completed.
 
-The standardised result pages exist to simplify the creation of these types of approvals, and to avoid many very similar approval templates with the same intent.
+The standardized result pages exist to simplify the creation of these types of approvals, and to avoid many very similar approval templates with the same intent.
 
 ### Usage
 
@@ -361,13 +361,13 @@ The `pendingApprovals` state used by the `ApprovalController` is not currently p
 
 ### Approval Request
 
-A standardised object added to the state by the `ApprovalController` that contains details about an instance of approval such as the `type` and any associated `requestData`.
+A standardized object added to the state by the `ApprovalController` that contains details about an instance of approval such as the `type` and any associated `requestData`.
 
 The UI will automatically display a suitable approval when an approval request is detected in the state.
 
 ### Approval Template
 
-A standardised JavaScript object specifying the content and details of a type of approval.
+A standardized JavaScript object specifying the content and details of a type of approval.
 
 Used by the `ConfirmationPage` React component to automatically show the approval if an `ApprovalRequest` is detected in the state with a matching type
 
