@@ -36,7 +36,7 @@ export const ConnectedAccountsMenu = ({
     (event) => {
       if (
         event.key === 'Tab' &&
-        event.target === popoverDialogRef.current &&
+        popoverDialogRef?.current?.contains(event.target) &&
         onClose
       ) {
         onClose();
