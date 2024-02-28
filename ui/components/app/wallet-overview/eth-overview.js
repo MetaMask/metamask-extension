@@ -239,7 +239,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain || !signingEnabled}
+              disabled={!isBuyableChain}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={() => {
