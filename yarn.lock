@@ -1690,10 +1690,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@blockaid/ppom_release@npm:1.4.1"
-  checksum: 6fff1d24cdfe5a1457b7f64b169f225e67ccbed48c3f5d61b4d24514b7b60cf67bbf130808d7b9cd88d490a86d689afd4b90820929d140526fcd8759b3a4bc6b
+"@blockaid/ppom_release@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "@blockaid/ppom_release@npm:1.4.2"
+  checksum: 5cf85e2f1a731036db02e337b9048a05ccf759890acc5b717b7fdce68a85da7a4b36675ab5478f4f29a586ef74af83d0efccba228972c2a806893bb82c8fad54
   languageName: node
   linkType: hard
 
@@ -4378,20 +4378,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-contract@npm:^0.3.3":
-  version: 0.3.4
-  resolution: "@metamask/ethjs-contract@npm:0.3.4"
-  dependencies:
-    "@metamask/ethjs-filter": "npm:^0.2.0"
-    "@metamask/ethjs-util": "npm:^0.2.0"
-    babel-runtime: "npm:^6.26.0"
-    ethjs-abi: "npm:^0.2.0"
-    js-sha3: "npm:^0.9.2"
-    promise-to-callback: "npm:^1.0.0"
-  checksum: 3b55b263241c33571b9bf66ca5f95dd45de734bfac758d52474165fb77441c29083fe92fe67fddae2a9b75f732eecbae5d26075bc515c6f9c887ee833d8db9f1
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-contract@npm:^0.4.1":
   version: 0.4.1
   resolution: "@metamask/ethjs-contract@npm:0.4.1"
@@ -4407,33 +4393,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-filter@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/ethjs-filter@npm:0.2.0"
-  checksum: cfe6b0ac542c261f487cec6165e83a46106d9a4901815cebe45c84a321c127bd351ad8cb375616f37da19aeb1b4ea69e6f9799d8067313d8fa751908c3bb9e40
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-filter@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/ethjs-filter@npm:0.3.0"
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 1b7565045e638f60d39ae8d8ca020b6e3ac2e4e91f220f343e499b09a7adeb9e4273249e3c3f7366acc2e44bc0b7fe3dd3ac84c66e9a0853352bfb0e116c1d87
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-format@npm:^0.2.9":
-  version: 0.2.9
-  resolution: "@metamask/ethjs-format@npm:0.2.9"
-  dependencies:
-    "@metamask/ethjs-util": "npm:^0.2.0"
-    bn.js: "npm:4.11.6"
-    ethjs-schema: "npm:0.2.1"
-    is-hex-prefixed: "npm:1.0.0"
-    number-to-bn: "npm:1.7.0"
-    strip-hex-prefix: "npm:1.0.0"
-  checksum: 704c2d1079c3bf03701d5cf94d04db85e05db21552a80136474efc88cc55718bef6b546f74e0949808459f52b3fb8ee891fc2329e5812e50e89581440972b3b7
   languageName: node
   linkType: hard
 
@@ -4453,15 +4418,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-provider-http@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/ethjs-provider-http@npm:0.2.0"
-  dependencies:
-    xhr2: "npm:0.2.1"
-  checksum: 1d7ba9d53f56e6f4e05caea0d3a87a058ddd0d25a058081c34ad2d0e6b07c812593f943ed727d8d58ce8abe21a3291d5f62ceae0bd3be6725e8c77f6770ced8e
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-provider-http@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/ethjs-provider-http@npm:0.3.0"
@@ -4470,18 +4426,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: cece5d20836dadbe31f0c7118f26bd5330465c28f9a39ab8ac4a3fbce25094ae53fe8b737e3d95ae0cf4c7e075c9349127cf8bd066f138278ffc9fd7f9a8a101
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-query@npm:^0.5.2":
-  version: 0.5.3
-  resolution: "@metamask/ethjs-query@npm:0.5.3"
-  dependencies:
-    "@metamask/ethjs-format": "npm:^0.2.9"
-    "@metamask/ethjs-rpc": "npm:0.3.0 || ^0.3.2"
-    babel-runtime: "npm:^6.26.0"
-    promise-to-callback: "npm:^1.0.0"
-  checksum: a82eb2503bee0e513ecc4cb07a89c921f23b922ce788f13ad6c9307b41a88fded76e5f7bdb8f42e6620300a4af6cf502a242e4a2d1c445f970946e581c285617
   languageName: node
   linkType: hard
 
@@ -4498,15 +4442,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-rpc@npm:0.3.0 || ^0.3.2":
-  version: 0.3.2
-  resolution: "@metamask/ethjs-rpc@npm:0.3.2"
-  dependencies:
-    promise-to-callback: "npm:^1.0.0"
-  checksum: adee368325f43693379e30f3ab73f46eacdf96587f48428b723e64cd19aa22dca7d307f793f0760019911f4123b7bb5f3a3fcc031ec490da23a4b98335487c8f
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-rpc@npm:^0.4.0":
   version: 0.4.0
   resolution: "@metamask/ethjs-rpc@npm:0.4.0"
@@ -4515,16 +4450,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: e126535ff7599ef584b0084dae846294d505b69141a143543d7580cdce4b297646e796fbd0cecc5a824dce8b5e3b179bb177ceff06fd50ad584e7fce00ab081f
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-unit@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@metamask/ethjs-unit@npm:0.2.1"
-  dependencies:
-    bn.js: "npm:4.11.6"
-    number-to-bn: "npm:1.7.0"
-  checksum: a67792099e316c102d640782a538359b30937db5d9f3b796e3dc1a03415063632765828cfe1f6b0c37ed8584a3a92f3f1522a2ced40ba0a96766114036db21f3
   languageName: node
   linkType: hard
 
@@ -4540,16 +4465,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-util@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/ethjs-util@npm:0.2.0"
-  dependencies:
-    is-hex-prefixed: "npm:1.0.0"
-    strip-hex-prefix: "npm:1.0.0"
-  checksum: 63d091e2853afca937fba68fbecd5f5bc0baa5214c162becf9d5266e4049c216848d09d0140ac22d0d0d8c9166236c9795ca73eef6f675210ae5d582d9807c53
-  languageName: node
-  linkType: hard
-
 "@metamask/ethjs-util@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/ethjs-util@npm:0.3.0"
@@ -4559,24 +4474,6 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: aaecae091dd16362f048cbba27629d67d10530c704facf80f430db546c8ea32fa627cd9560bd3eca1e6ce651d2b7a7df9fdc3677e0ae2814954e3c950cee70da
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs@npm:^0.5.0":
-  version: 0.5.1
-  resolution: "@metamask/ethjs@npm:0.5.1"
-  dependencies:
-    "@metamask/ethjs-contract": "npm:^0.3.3"
-    "@metamask/ethjs-filter": "npm:^0.2.0"
-    "@metamask/ethjs-provider-http": "npm:^0.2.0"
-    "@metamask/ethjs-query": "npm:^0.5.2"
-    "@metamask/ethjs-unit": "npm:^0.2.1"
-    "@metamask/ethjs-util": "npm:^0.2.0"
-    bn.js: "npm:4.11.6"
-    ethjs-abi: "npm:0.2.1"
-    js-sha3: "npm:^0.9.2"
-    number-to-bn: "npm:1.7.0"
-  checksum: c1fa7be68623b937dc309465b8e8c89b1fed11c4d3a12a3984641e1a4e1dd26fdf3727f48e16a1adc4cdc3204ee04c6461107dca23875763a72e7d86f9fa6083
   languageName: node
   linkType: hard
 
@@ -4919,14 +4816,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/permission-controller@npm:8.0.0"
+"@metamask/permission-controller@npm:^8.0.0, @metamask/permission-controller@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@metamask/permission-controller@npm:8.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/controller-utils": "npm:^8.0.3"
     "@metamask/json-rpc-engine": "npm:^7.3.2"
-    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
@@ -4934,7 +4831,7 @@ __metadata:
     nanoid: "npm:^3.1.31"
   peerDependencies:
     "@metamask/approval-controller": ^5.1.2
-  checksum: cbd418473fc90c210c5d1a50278be2adb62737ad027bd68433651e4de290d178f53e7018c60ac749227f6951c6cab8fef54073b375a5391461a4ae63a9b67706
+  checksum: ab10e4e1f9b3424ed4453289f772c5a7c62178b0459ffbea23282b2cd6d1e75c2deab01e647e6558369fa45cba3b6555c1b72f2354d57389e9480979182f769d
   languageName: node
   linkType: hard
 
@@ -5097,13 +4994,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@metamask/rpc-errors@npm:6.1.0"
+"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0, @metamask/rpc-errors@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "@metamask/rpc-errors@npm:6.2.1"
   dependencies:
-    "@metamask/utils": "npm:^8.1.0"
+    "@metamask/utils": "npm:^8.3.0"
     fast-safe-stringify: "npm:^2.0.6"
-  checksum: 04054aed47fede31c755cf4504fdd0b7d226adeeeb221affc8801236a726d29bfe400a4fd7487ca65bd790653cf9dba1a4f7b6c5932fd2c65f8e8fc56e399bf7
+  checksum: 789f0a2090339c1aa43d45ee496f4f115e141bc55b98e4ce27498497568f9e85fb5527ecf1f113b156d88fc4f1e63a572ced74bdc1ba16826bf648391b223f7b
   languageName: node
   linkType: hard
 
@@ -5264,22 +5161,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/snaps-controllers@npm:5.0.1"
+"@metamask/snaps-controllers@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/snaps-controllers@npm:6.0.1"
   dependencies:
     "@metamask/approval-controller": "npm:^5.1.2"
     "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/json-rpc-engine": "npm:^7.3.2"
     "@metamask/object-multiplex": "npm:^2.0.0"
-    "@metamask/permission-controller": "npm:^8.0.0"
+    "@metamask/permission-controller": "npm:^8.0.1"
     "@metamask/phishing-controller": "npm:^8.0.2"
     "@metamask/post-message-stream": "npm:^8.0.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/snaps-registry": "npm:^3.0.0"
-    "@metamask/snaps-rpc-methods": "npm:^6.0.0"
-    "@metamask/snaps-sdk": "npm:^2.1.0"
-    "@metamask/snaps-utils": "npm:^6.1.0"
+    "@metamask/snaps-rpc-methods": "npm:^7.0.1"
+    "@metamask/snaps-sdk": "npm:^3.0.1"
+    "@metamask/snaps-utils": "npm:^7.0.1"
     "@metamask/utils": "npm:^8.3.0"
     "@xstate/fsm": "npm:^2.0.0"
     browserify-zlib: "npm:^0.2.0"
@@ -5292,11 +5189,30 @@ __metadata:
     readable-web-to-node-stream: "npm:^3.0.2"
     tar-stream: "npm:^3.1.7"
   peerDependencies:
-    "@metamask/snaps-execution-environments": ^4.0.1
+    "@metamask/snaps-execution-environments": ^5.0.1
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: b6607a5f15081b62273282d9b462be945277db54b1e772f75df4d68d01a7a3b1d5214d9b4bb619759ac2159121bbe59bfbbeab0513f27e663984afee26060187
+  checksum: c9ef312edb7af3d062afe57a3db1593f3001caf3a30d219d3a1cedee9c2a652d64e5cb6bf02b5f89fb648a0385c44025d16b3d7b420e4209be947f7b99edea06
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-execution-environments@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/snaps-execution-environments@npm:5.0.1"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/post-message-stream": "npm:^8.0.0"
+    "@metamask/providers": "npm:^14.0.2"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/snaps-sdk": "npm:^3.0.1"
+    "@metamask/snaps-utils": "npm:^7.0.1"
+    "@metamask/utils": "npm:^8.3.0"
+    nanoid: "npm:^3.1.31"
+    readable-stream: "npm:^3.6.2"
+    superstruct: "npm:^1.0.3"
+  checksum: 3f26984fc62d0f510368e36ec0c81513641edcd0fbb434ba1ba8602c9969b60de4318e65cad99b75780aca11d80226cf50a039a9a881d0af211bde40ac5f0bd3
   languageName: node
   linkType: hard
 
@@ -5344,33 +5260,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/snaps-rpc-methods@npm:6.0.0"
+"@metamask/snaps-rpc-methods@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/snaps-rpc-methods@npm:7.0.1"
   dependencies:
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/permission-controller": "npm:^8.0.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/snaps-sdk": "npm:^2.0.0"
-    "@metamask/snaps-utils": "npm:^6.0.0"
+    "@metamask/permission-controller": "npm:^8.0.1"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/snaps-sdk": "npm:^3.0.1"
+    "@metamask/snaps-utils": "npm:^7.0.1"
     "@metamask/utils": "npm:^8.3.0"
     "@noble/hashes": "npm:^1.3.1"
     superstruct: "npm:^1.0.3"
-  checksum: 4eaf8f8170d986331a45f158a5dea1051ab602d82057afe9d6464fc43f66015442ab29ecc72e1a9914af87c5627c9d215294f269c46951ecc803f295f2647d0d
+  checksum: c85359e96fd8fc69bb05d538e19434c23be2ec90ea8080ade5eac173e11997e7c78b44e0c1231eb8bb15fbbc75c55763471c139b99ba5ae999b6daf7113e8250
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/snaps-sdk@npm:2.1.0"
+"@metamask/snaps-sdk@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/snaps-sdk@npm:3.0.1"
   dependencies:
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     fast-xml-parser: "npm:^4.3.4"
     superstruct: "npm:^1.0.3"
-  checksum: 539e1a478c89a249c0ed56d705fd4c3614c4d45d0fd8fa9a2c0d781b18d171d60944d3106e65afc68a9f52997d5ff1a4728be697e2405e56bcf2df8bf9af0bea
+  checksum: 3317d04549d359b9b2ba775f3b347b8071a6c2268917303673739e8425d007814ef8e08faba98fa58ca44bbdd6ba4293093de6ec5815998acc629cfd0bcb31ba
   languageName: node
   linkType: hard
 
@@ -5404,19 +5320,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^6.0.0, @metamask/snaps-utils@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@metamask/snaps-utils@npm:6.1.0"
+"@metamask/snaps-utils@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/snaps-utils@npm:7.0.1"
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
     "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/key-tree": "npm:^9.0.0"
-    "@metamask/permission-controller": "npm:^8.0.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/permission-controller": "npm:^8.0.1"
+    "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/slip44": "npm:^3.1.0"
     "@metamask/snaps-registry": "npm:^3.0.0"
-    "@metamask/snaps-sdk": "npm:^2.1.0"
+    "@metamask/snaps-sdk": "npm:^3.0.1"
     "@metamask/utils": "npm:^8.3.0"
     "@noble/hashes": "npm:^1.3.1"
     "@scure/base": "npm:^1.1.1"
@@ -5429,7 +5345,7 @@ __metadata:
     ses: "npm:^1.1.0"
     superstruct: "npm:^1.0.3"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 8e2b25abbca14571de58eb5c4aa8d1289ed7f2406bb1961214e1a04bbb29bba99c49c59f43fec227c07cca4c6506a1446c4163e4cd8f1ddf3d25b6fd4ff1b697
+  checksum: 84d1897a032b321f326ccacd16376e39433d5d44b07ccd6f5b525833984ef82c7ea55ce6bc8239639b6eeb55c4c5470c22a06fd2d2e7ce05fb98cc1bd617b856
   languageName: node
   linkType: hard
 
@@ -5463,51 +5379,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^7.3.1":
-  version: 7.3.1
-  resolution: "@metamask/test-dapp@npm:7.3.1"
-  checksum: b45790b1c58bfae861f50da56df1bfee34965c86292a7b899f0f7010a3fae8fab570a3a3d9b393f50cef89ed25e73f0dcdd9699870cc95647d9399e6a336d427
+"@metamask/test-dapp@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@metamask/test-dapp@npm:8.2.0"
+  checksum: e2359cac8379682542ec53792037438eede1f30711915bb918d655a2e9d51afcaeabe01665a9bf31b41bfc1a7d05ec86e82dcf4e5a09a2df9b3d7156778f2f98
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^21.0.1":
-  version: 21.2.0
-  resolution: "@metamask/transaction-controller@npm:21.2.0"
+"@metamask/transaction-controller@npm:^23.0.0, @metamask/transaction-controller@npm:^23.1.0":
+  version: 23.1.0
+  resolution: "@metamask/transaction-controller@npm:23.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@metamask/approval-controller": "npm:^5.1.2"
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.2"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^13.0.0"
-    "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^17.2.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    eth-method-registry: "npm:^3.0.0"
-    ethereumjs-util: "npm:^7.0.10"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    nonce-tracker: "npm:^3.0.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/approval-controller": ^5.1.2
-    "@metamask/gas-fee-controller": ^13.0.0
-    "@metamask/network-controller": ^17.2.0
-    babel-runtime: ^6.26.0
-  checksum: e5a3114f1a5bb0646ccc72afb1384498f0aa5a4e66f7a881c5ebe460118450f9a3ce2e753b2015388d1bf371c3376dd21c9e5d4c9923e98f68b7dfb5441ece47
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "@metamask/transaction-controller@npm:23.0.0"
-  dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
     "@metamask/approval-controller": "npm:^5.1.2"
     "@metamask/base-controller": "npm:^4.1.1"
@@ -5516,11 +5401,11 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^13.0.1"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^17.2.0"
-    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
+    bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
-    ethereumjs-util: "npm:^7.0.10"
     fast-json-patch: "npm:^3.1.1"
     lodash: "npm:^4.17.21"
     nonce-tracker: "npm:^3.0.0"
@@ -5530,24 +5415,24 @@ __metadata:
     "@metamask/approval-controller": ^5.1.2
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
-  checksum: a81e9253cfe44f7150550cdb9e67b5d5b51dd383f6d7c026891219cd556b98713ccf4e94ba0b91b8f1fd09ba07efd124e226c8ede21e52cf6e21e76c7c5e37af
+  checksum: 5e6d38be2430d1e98ad1aded3171535168dff5b54d96084a6cf7b91f08b311347727280110987c89df7e153b99eac914501da45d14e6bd87390f3d5157634c9f
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/user-operation-controller@npm:3.0.0"
+"@metamask/user-operation-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/user-operation-controller@npm:4.0.0"
   dependencies:
     "@metamask/approval-controller": "npm:^5.1.2"
     "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/controller-utils": "npm:^8.0.3"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^13.0.0"
+    "@metamask/gas-fee-controller": "npm:^13.0.1"
     "@metamask/keyring-controller": "npm:^12.2.0"
     "@metamask/network-controller": "npm:^17.2.0"
     "@metamask/polling-controller": "npm:^5.0.0"
     "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/transaction-controller": "npm:^21.0.1"
+    "@metamask/transaction-controller": "npm:^23.0.0"
     "@metamask/utils": "npm:^8.3.0"
     ethereumjs-util: "npm:^7.0.10"
     immer: "npm:^9.0.6"
@@ -5559,8 +5444,8 @@ __metadata:
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/keyring-controller": ^12.2.0
     "@metamask/network-controller": ^17.2.0
-    "@metamask/transaction-controller": ^21.0.1
-  checksum: f1da1f16c542d966931a434dd5fc9b32774073f979161e3958110896439931d0dacaa537d3a1572db0f63980a4a1e0539859eb33957c4fa3e3ed0b680053fbb7
+    "@metamask/transaction-controller": ^23.0.0
+  checksum: e8525aaafdf9fcd336a943c5cdcfe71d1ed97b929482032755fc75e2b4ee781dd56ef8d125bb0c6a0d31a7e06f6baeba1aacb91386dacbe8014bf42e01adf58b
   languageName: node
   linkType: hard
 
@@ -12030,16 +11915,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-runtime@npm:^6.26.0":
-  version: 6.26.0
-  resolution: "babel-runtime@npm:6.26.0"
-  dependencies:
-    core-js: "npm:^2.4.0"
-    regenerator-runtime: "npm:^0.11.0"
-  checksum: 2cdf0f083b9598a43cdb11cbf1e7060584079a9a2230f06aec997ba81e887ef17fdcb5ad813a484ee099e06d2de0cea832bdd3011c06325acb284284c754ee8f
-  languageName: node
-  linkType: hard
-
 "babelify@npm:^10.0.0":
   version: 10.0.0
   resolution: "babelify@npm:10.0.0"
@@ -14333,13 +14208,6 @@ __metadata:
   version: 3.30.2
   resolution: "core-js-pure@npm:3.30.2"
   checksum: 52bba8bf4bfdec61c3459244a4f349393dd9890307df698993f0c575abc891c5dda9ff8d2af7fc8d4abdef06e6babe48483ddc44749760557b3015406b8d2acc
-  languageName: node
-  linkType: hard
-
-"core-js@npm:^2.4.0":
-  version: 2.6.11
-  resolution: "core-js@npm:2.6.11"
-  checksum: 4aee521824bde0d3e25c56de810c1ae1ceaa66516433bd700208ab04af09c54bbf4a8929e1002887e0826e98e89f3c37f0b409e2f5e4d5c70814af206ef91da8
   languageName: node
   linkType: hard
 
@@ -17421,15 +17289,6 @@ __metadata:
     gridplus-sdk: "npm:^2.5.1"
     rlp: "npm:^3.0.0"
   checksum: 258adbdd9c0ca3a39956d32b38e69b70784a1e29a115a7c569019c2ce0d9443de07d2601404d5b17d9aeec3d7015931346ca0f8398cc71e05e8eefda0ba734d4
-  languageName: node
-  linkType: hard
-
-"eth-method-registry@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "eth-method-registry@npm:3.0.0"
-  dependencies:
-    "@metamask/ethjs": "npm:^0.5.0"
-  checksum: 3511f923f269c0e6027b08e282dede7794239ed771b0265f2b857d1147869709e2985911b8edcf938441f6190befd191f47d346b2b2eee7ff0667fecbef7e014
   languageName: node
   linkType: hard
 
@@ -24883,7 +24742,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
-    "@blockaid/ppom_release": "npm:^1.4.1"
+    "@blockaid/ppom_release": "npm:^1.4.2"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24965,14 +24824,15 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^6.0.0"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
-    "@metamask/snaps-controllers": "npm:^5.0.1"
-    "@metamask/snaps-rpc-methods": "npm:^6.0.0"
-    "@metamask/snaps-sdk": "npm:^2.1.0"
-    "@metamask/snaps-utils": "npm:^6.1.0"
+    "@metamask/snaps-controllers": "npm:^6.0.1"
+    "@metamask/snaps-execution-environments": "npm:^5.0.1"
+    "@metamask/snaps-rpc-methods": "npm:^7.0.1"
+    "@metamask/snaps-sdk": "npm:^3.0.1"
+    "@metamask/snaps-utils": "npm:^7.0.1"
     "@metamask/test-bundler": "npm:^1.0.0"
-    "@metamask/test-dapp": "npm:^7.3.1"
-    "@metamask/transaction-controller": "npm:^23.0.0"
-    "@metamask/user-operation-controller": "npm:^3.0.0"
+    "@metamask/test-dapp": "npm:^8.2.0"
+    "@metamask/transaction-controller": "npm:^23.1.0"
+    "@metamask/user-operation-controller": "npm:^4.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
     "@playwright/test": "npm:^1.39.0"
