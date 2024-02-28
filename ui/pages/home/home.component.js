@@ -9,8 +9,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import NftsTab from '../../components/app/nfts-tab';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
@@ -943,16 +943,16 @@ export default class Home extends PureComponent {
                     }
                   </Box>
                 </Tab>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  <Tab
-                    activeClassName="home__tab--active"
-                    className="home__tab"
-                    data-testid="home__nfts-tab"
-                    name={this.context.t('nfts')}
-                    tabKey="nfts"
-                  >
-                    <NftsTab />
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
+                >
+                  <NftsTab />
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
                     <ButtonLink
                       size={Size.MD}
                       startIconName={IconName.MessageQuestion}
@@ -967,9 +967,9 @@ export default class Home extends PureComponent {
                     >
                       {t('needHelpLinkText')}
                     </ButtonLink>
-                  </Tab>
-                  ///: END:ONLY_INCLUDE_IF
-                }
+                    ///: END:ONLY_INCLUDE_IF
+                  }
+                </Tab>
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"

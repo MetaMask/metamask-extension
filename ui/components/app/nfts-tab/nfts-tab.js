@@ -149,13 +149,17 @@ export default function NftsTab() {
               >
                 {t('noNFTs')}
               </Text>
-              <ButtonLink
-                size={Size.MD}
-                href={ZENDESK_URLS.NFT_TOKENS}
-                externalLink
-              >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                <ButtonLink
+                  size={Size.MD}
+                  href={ZENDESK_URLS.NFT_TOKENS}
+                  externalLink
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+                ///: END:ONLY_INCLUDE_IF
+              }
             </Box>
           </Box>
         </>
