@@ -15,7 +15,7 @@ describe('useConfirmationNetworkInfo', () => {
     );
 
     expect(result.current.networkDisplayName).toBe('Ethereum Mainnet');
-    expect(result.current.networkImageUrl).toBe('./images/eth_logo.svg');
+    expect(result.current.networkImageUrl).toBe('./images/eth_logo.png');
   });
 
   it('returns display name and image of provider chainId when confirmation chainId is not present', () => {
