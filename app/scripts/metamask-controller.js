@@ -171,6 +171,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
 } from '../../shared/constants/network';
+import { ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS } from '../../shared/constants/smartTransactions';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -1838,7 +1839,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       },
       {
-        supportedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+        supportedChainIds: ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
       },
       initState.SmartTransactionsController,
     );
