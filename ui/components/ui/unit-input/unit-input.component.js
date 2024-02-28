@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Tooltip } from 'react-tippy';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -138,7 +139,7 @@ export default class UnitInput extends PureComponent {
       children,
       dataTestId,
     } = this.props;
-    const { value } = this.state;
+    const { value, isOverflowing, isFocused } = this.state;
 
     return (
       <div
@@ -150,7 +151,14 @@ export default class UnitInput extends PureComponent {
         onClick={this.handleFocus}
       >
         <div className="unit-input__inputs">
-          <div className="unit-input__input-container">
+          <Tooltip
+            title={value}
+            disabled={isFocused || !isOverflowing}
+            arrow
+            className="unit-input__input-container"
+            // explicitly inherit display since Tooltip will default to block
+            style={{ display: 'inherit' }}
+          >
             <input
               data-testid={dataTestId}
               type="number"
@@ -170,7 +178,7 @@ export default class UnitInput extends PureComponent {
             {suffix && !hideSuffix ? (
               <div className="unit-input__suffix">{suffix}</div>
             ) : null}
-          </div>
+          </Tooltip>
           {children}
         </div>
         {actionComponent}
