@@ -67,8 +67,8 @@ export const AssetPickerAmount = ({
   return (
     <Box className="asset-picker-amount">
       <Box display={Display.Flex}>
-        <Label>
-          {asset.type === AssetType.NFT ? t('asset') : t('amount')}:
+        <Label variant={TextVariant.bodyMdMedium}>
+          {asset.type === AssetType.NFT ? t('asset') : t('amount')}
         </Label>
         <MaxClearButton asset={asset} />
       </Box>
