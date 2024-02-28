@@ -108,7 +108,6 @@ export const DefaultStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={(newAmount: string) => {
-        console.log(newAmount);
         store.dispatch(updateSendAmount(newAmount));
       }}
       onAssetChange={noop}
