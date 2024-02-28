@@ -381,7 +381,10 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {process.env.MULTICHAIN && (
-          <Authenticated path={CONNECTIONS} component={Connections} />
+          <Authenticated
+            path={`${CONNECTIONS}/:origin`}
+            component={Connections}
+          />
         )}
         {process.env.MULTICHAIN && (
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
@@ -484,6 +487,17 @@ export default class Routes extends Component {
     );
 
     if (isPermissionsPage) {
+      return true;
+    }
+
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECTIONS,
+        exact: false,
+      }),
+    );
+
+    if (isConnectionsPage) {
       return true;
     }
 
