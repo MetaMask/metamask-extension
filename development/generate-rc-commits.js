@@ -22,7 +22,7 @@ const authorTeams = {
   'Extension UX': ['David Walsh', 'vthomas13', 'Nidhi Kumari', 'Victor Thomas'],
   'Extension Platform': [
     'chloeYue',
-    'Chloe Gao'
+    'Chloe Gao',
     'Pedro Figueiredo',
     'danjm',
     'Danica Shen',
