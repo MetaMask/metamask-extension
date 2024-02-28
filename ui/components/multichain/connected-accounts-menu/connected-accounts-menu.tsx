@@ -63,14 +63,13 @@ export const ConnectedAccountsMenu = ({
         initialFocusRef={{ current: anchorElement || null }}
       >
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          <TsMenuItem onClick={() => {}} iconName={IconName.SecurityTick}>
+          <TsMenuItem iconName={IconName.SecurityTick}>
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
           </TsMenuItem>
-          <TsMenuItem onClick={() => {}} iconName={IconName.SwapHorizontal}>
+          <TsMenuItem iconName={IconName.SwapHorizontal}>
             <Text variant={TextVariant.bodyMd}>{t('switchToThisAccount')}</Text>
           </TsMenuItem>
           <TsMenuItem
-            onClick={() => {}}
             iconName={IconName.Logout}
             iconColor={IconColor.errorDefault}
           >
