@@ -6,9 +6,7 @@ import TokenBalance from '../../../ui/token-balance';
 import { Asset } from '../../../../ducks/send';
 import {
   getCurrentCurrency,
-  getPreferences,
   getSelectedAccountCachedBalance,
-  getSendInputCurrencySwitched,
 } from '../../../../selectors';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -19,6 +17,7 @@ import CurrencyDisplay from '../../../ui/currency-display';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
+import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 
 export interface AssetBalanceTextProps {
   asset: Asset;
@@ -31,13 +30,7 @@ export default function AssetBalanceText({
 }: AssetBalanceTextProps) {
   const secondaryCurrency = useSelector(getCurrentCurrency);
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const sendInputCurrencySwitched = useSelector(getSendInputCurrencySwitched);
-
-  const isFiatPrimary = Boolean(
-    (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
-      (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
-  );
+  const isFiatPrimary = useIsFiatPrimary();
 
   const { tokensWithBalances } = useTokenTracker({
     tokens: [{ address: asset.details?.address }],

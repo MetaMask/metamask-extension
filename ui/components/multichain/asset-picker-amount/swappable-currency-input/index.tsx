@@ -1,11 +1,7 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getPreferences,
-  getSendInputCurrencySwitched,
-} from '../../../../selectors';
 import type { Asset, Amount } from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
@@ -17,6 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import CurrencyInput from '../../../app/currency-input';
 import SwapIcon from './swap-icon';
+import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 
 interface BaseProps {
   assetType: AssetType;
@@ -64,13 +61,8 @@ export default function SwappableCurrencyInput({
 
   const t = useI18nContext();
 
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const sendInputCurrencySwitched = useSelector(getSendInputCurrencySwitched);
+  const isFiatPrimary = useIsFiatPrimary();
 
-  const isFiatPrimary = Boolean(
-    (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
-      (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
-  );
   // FIXME: update swapping logic
   // TODO: add NFTs
   switch (assetType) {
