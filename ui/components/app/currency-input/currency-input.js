@@ -61,7 +61,6 @@ export default function CurrencyInput({
   const primarySuffix = preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
 
-  const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
   const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
   const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
@@ -87,7 +86,6 @@ export default function CurrencyInput({
 
   const swap = async () => {
     await onPreferenceToggle();
-    setSwapped(!isSwapped);
     setShouldDisplayFiat(!shouldDisplayFiat);
   };
 
@@ -108,7 +106,6 @@ export default function CurrencyInput({
 
     setNewHexValue(hexValueNew);
     onChange(hexValueNew);
-    setSwapped(!isSwapped);
   };
 
   useEffect(() => {
