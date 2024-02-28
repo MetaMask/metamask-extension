@@ -131,7 +131,9 @@ const EthOverview = ({ className, showAddress }) => {
       { condition: !signingEnabled, message: 'accountCannotSign' },
     ],
     bridgeButton: [
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBridgeChain, message: 'currentlyUnavailable' },
+      ///: END:ONLY_INCLUDE_IF
       { condition: !signingEnabled, message: 'accountCannotSign' },
     ],
   };
