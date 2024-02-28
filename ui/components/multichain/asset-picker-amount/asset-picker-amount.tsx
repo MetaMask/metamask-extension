@@ -57,7 +57,7 @@ export const AssetPickerAmount = ({
     ? TextColor.errorDefault
     : TextColor.textAlternative;
 
-  let borderColor;
+  let borderColor = BorderColor.borderDefault;
 
   if (amount.error) {
     borderColor = BorderColor.errorDefault;
