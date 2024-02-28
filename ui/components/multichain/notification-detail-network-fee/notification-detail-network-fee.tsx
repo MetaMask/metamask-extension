@@ -99,7 +99,7 @@ export const NotificationDetailNetworkFee: FC<
         }
         primaryTextLeft={
           <Text
-            variant={TextVariant.bodyMd}
+            variant={TextVariant.bodyLgMedium}
             fontWeight={FontWeight.Medium}
             color={TextColor.textDefault}
           >

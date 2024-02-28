@@ -44,7 +44,7 @@ export const NotificationDetailInfo: FC<NotificationDetailInfoProps> = ({
       icon={<AvatarIcon {...icon} />}
       primaryTextLeft={
         <Text
-          variant={TextVariant.bodyMd}
+          variant={TextVariant.bodyLgMedium}
           fontWeight={FontWeight.Medium}
           color={TextColor.textDefault}
         >

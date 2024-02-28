@@ -16,7 +16,7 @@ export interface NotificationDetailAddressProps {
 }
 
 const SideText: FC<{ side: string }> = ({ side }) => (
-  <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+  <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>
     {side}
   </Text>
 );

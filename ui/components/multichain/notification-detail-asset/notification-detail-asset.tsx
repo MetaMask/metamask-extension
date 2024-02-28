@@ -87,7 +87,7 @@ export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
   );
 
   const primaryTextLeft = createTextComponent(
-    TextVariant.bodyMd,
+    TextVariant.bodyLgMedium,
     FontWeight.Medium,
     TextColor.textDefault,
     label,

@@ -33,7 +33,7 @@ DefaultStory.args = {
   icon: <AvatarAccount address="0x7830c87C02e56AFf27FA8Ab1241711331FA86F43" />,
   primaryTextLeft: (
     <Text
-      variant={TextVariant.bodyMd}
+      variant={TextVariant.bodyLgMedium}
       fontWeight={FontWeight.Medium}
       color={TextColor.textDefault}
     >

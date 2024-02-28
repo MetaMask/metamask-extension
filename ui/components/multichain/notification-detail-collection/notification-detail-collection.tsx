@@ -60,21 +60,24 @@ export const NotificationDetailCollection: FC<
   );
 
   const createTextComponent = (
+    textVariant: TextVariant,
     fontWeight: FontWeight,
     color: TextColor,
     children: string,
   ) => (
-    <Text variant={TextVariant.bodyMd} fontWeight={fontWeight} color={color}>
+    <Text variant={textVariant} fontWeight={fontWeight} color={color}>
       {children}
     </Text>
   );
 
   const primaryTextLeft = createTextComponent(
+    TextVariant.bodyLgMedium,
     FontWeight.Medium,
     TextColor.textDefault,
     label,
   );
   const secondaryTextLeft = createTextComponent(
+    TextVariant.bodyMd,
     FontWeight.Normal,
     TextColor.textAlternative,
     collection,
