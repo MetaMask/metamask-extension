@@ -3746,17 +3746,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/permission-log-controller@npm:1.0.0-preview.6772b11":
-  version: 1.0.0-preview.6772b11
-  resolution: "@metamask-previews/permission-log-controller@npm:1.0.0-preview.6772b11"
-  dependencies:
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/json-rpc-engine": "npm:^7.3.2"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: 30b5f04f5fba412010a81089a24c705e21fa1adefb0f58d2f84633bc6ef8655d0a99fe8de895ff43d6d9ad65e881f034ff867ef928def5cf41cb9befcf4d535c
-  languageName: node
-  linkType: hard
-
 "@metamask/abi-utils@npm:^2.0.2":
   version: 2.0.2
   resolution: "@metamask/abi-utils@npm:2.0.2"
@@ -4766,6 +4755,17 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^5.1.2
   checksum: ab10e4e1f9b3424ed4453289f772c5a7c62178b0459ffbea23282b2cd6d1e75c2deab01e647e6558369fa45cba3b6555c1b72f2354d57389e9480979182f769d
+  languageName: node
+  linkType: hard
+
+"@metamask/permission-log-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/permission-log-controller@npm:1.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: c9a53516aabe9af206e97222a169d440a2287075046fadc03b27d72e6db0063fe116a4368c0d785ad0157d8ee5c0f9337c4f2772e10418e39c59091b704d69aa
   languageName: node
   linkType: hard
 
@@ -24552,7 +24552,6 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.23"
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
-    "@metamask-previews/permission-log-controller": "npm:1.0.0-preview.6772b11"
     "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A10.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-10.0.0-247993ca9a.patch"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
@@ -24596,6 +24595,7 @@ __metadata:
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^8.0.0"
+    "@metamask/permission-log-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^8.0.0"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/polling-controller": "npm:^4.0.0"
