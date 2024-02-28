@@ -1,7 +1,6 @@
 import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
