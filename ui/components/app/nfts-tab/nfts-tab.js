@@ -98,30 +98,34 @@ export default function NftsTab() {
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-          {showNftBanner ? (
-            <Box
-              paddingInlineStart={4}
-              paddingInlineEnd={4}
-              display={Display.Flex}
-              paddingTop={4}
-            >
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
-                onClick={() => {
-                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
-                  trackEvent({
-                    event: MetaMetricsEventName.EmptyNftsBannerClicked,
-                    properties: {
-                      chain_id: currentNetwork.chainId,
-                      locale: currentLocale,
-                      network: currentNetwork.nickname,
-                      referrer: ORIGIN_METAMASK,
-                    },
-                  });
-                }}
-              />
-            </Box>
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            showNftBanner ? (
+              <Box
+                paddingInlineStart={4}
+                paddingInlineEnd={4}
+                display={Display.Flex}
+                paddingTop={4}
+              >
+                <AssetListConversionButton
+                  variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
+                  onClick={() => {
+                    global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
+                    trackEvent({
+                      event: MetaMetricsEventName.EmptyNftsBannerClicked,
+                      properties: {
+                        chain_id: currentNetwork.chainId,
+                        locale: currentLocale,
+                        network: currentNetwork.nickname,
+                        referrer: ORIGIN_METAMASK,
+                      },
+                    });
+                  }}
+                />
+              </Box>
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Box
             padding={12}
             display={Display.Flex}
