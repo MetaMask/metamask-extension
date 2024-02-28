@@ -39,7 +39,6 @@ import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
-import InfoTooltip from '../../../ui/info-tooltip';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
 
