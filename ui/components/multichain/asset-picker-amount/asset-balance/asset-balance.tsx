@@ -22,7 +22,7 @@ export function AssetBalance({ asset, error }: AssetBalanceProps) {
     : TextColor.textAlternative;
 
   return (
-    <Box display={Display.Flex}>
+    <Box className="asset-picker-amount__balance" display={Display.Flex}>
       <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>
         {t('balance')}:
       </Text>

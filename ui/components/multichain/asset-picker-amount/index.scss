@@ -1,4 +1,12 @@
 .asset-picker-amount {
+  // balance text elements
+  &__balance > *,
+  &__balance > div > * {
+    color: var(--color-text-alternative);
+    font-size: small;
+    padding: 0;
+  }
+
   &__input {
     & > div {
       // primary (i.e., input) and secondary (i.e., subtext) input sections
@@ -44,14 +52,6 @@
 }
 
 // max button
-div > div > div > div:nth-child(1) > button:hover:not(.--disabled) {
+button.asset-picker-amount__max-clear:hover:not(.--disabled) {
   text-decoration: none;
-}
-
-// balance text elements
-div > div > div:nth-child(3) > *,
-div > div > div:nth-child(3) > div > * {
-  color: var(--color-text-alternative);
-  font-size: small;
-  padding: 0;
 }
