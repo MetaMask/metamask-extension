@@ -37,7 +37,6 @@ export default class UnitInput extends PureComponent {
   state = {
     value: this.props.value,
     isOverflowing: false,
-    isFocused: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -58,35 +57,23 @@ export default class UnitInput extends PureComponent {
   };
 
   handleInputFocus = ({ target: { value } }) => {
-    this.setState(
-      value === '0'
-        ? {
-            ...this.state,
-            isFocused: true,
-            isOverflowing: false,
-            value: '',
-          }
-        : {
-            ...this.state,
-            isFocused: true,
-          },
-    );
+    if (value === '0') {
+      this.setState({
+        ...this.state,
+        isOverflowing: false,
+        value: '',
+      });
+    }
   };
 
   handleInputBlur = ({ target: { value } }) => {
-    this.setState(
-      value === ''
-        ? {
-            ...this.state,
-            isFocused: false,
-            isOverflowing: false,
-            value: '0',
-          }
-        : {
-            ...this.state,
-            isFocused: false,
-          },
-    );
+    if (value === '') {
+      this.setState({
+        ...this.state,
+        isOverflowing: false,
+        value: '0',
+      });
+    }
 
     this.props.onBlur && this.props.onBlur(value);
   };
@@ -139,7 +126,7 @@ export default class UnitInput extends PureComponent {
       children,
       dataTestId,
     } = this.props;
-    const { value, isOverflowing, isFocused } = this.state;
+    const { value, isOverflowing } = this.state;
 
     return (
       <div
@@ -153,7 +140,7 @@ export default class UnitInput extends PureComponent {
         <div className="unit-input__inputs">
           <Tooltip
             title={value}
-            disabled={isFocused || !isOverflowing}
+            disabled={!isOverflowing}
             arrow
             className="unit-input__input-container"
             // explicitly inherit display since Tooltip will default to block
