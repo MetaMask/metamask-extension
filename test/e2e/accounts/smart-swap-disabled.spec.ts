@@ -17,8 +17,10 @@ describe('Smart Swaps', function (this: Suite) {
         await makeNewAccountAndSwitch(driver);
         await driver.clickElement('[data-testid="token-overview-button-swap"]');
         await driver.clickElement('[title="Transaction settings"]');
+
         await driver.assertElementNotPresent(
           '[data-testid="transaction-settings-smart-swaps-toggle"]',
+          { findElementGuard: { tag: 'h6', text: 'Slippage tolerance' } }, // wait for the modal to appear
         );
       },
     );
