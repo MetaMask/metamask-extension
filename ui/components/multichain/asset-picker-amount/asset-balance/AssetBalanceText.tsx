@@ -77,8 +77,6 @@ export default function AssetBalanceText({
       />
     );
   } else if (asset.type === AssetType.native) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore: Other props are optional but the compiler expects them
     return (
       <UserPreferencedCurrencyDisplay
         hideLabel
