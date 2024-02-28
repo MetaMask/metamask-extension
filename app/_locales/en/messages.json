@@ -759,6 +759,9 @@
   "close": {
     "message": "Close"
   },
+  "closeExtension": {
+    "message": "Close extension"
+  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -4426,16 +4429,29 @@
     "message": "Smart Swaps are temporarily unavailable."
   },
   "smartTransactionCancelled": {
-    "message": "Smart Transaction was cancelled"
+    "message": "Your transaction was canceled"
+  },
+  "smartTransactionCancelledDescription": {
+    "message": "Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees."
   },
   "smartTransactionError": {
-    "message": "Smart Transaction had an error"
+    "message": "Your transaction failed"
+  },
+  "smartTransactionErrorDescription": {
+    "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
   },
   "smartTransactionPending": {
-    "message": "Submitting Smart Transaction"
+    "message": "Submitting your transaction"
   },
   "smartTransactionSuccess": {
-    "message": "Transaction successful"
+    "message": "Your transaction is complete"
+  },
+  "smartTransactionTakingTooLong": {
+    "message": "Sorry for the wait"
+  },
+  "smartTransactionTakingTooLongDescription": {
+    "message": "If your transaction is not finalized within $1, it will be canceled and you will not be charged for gas.",
+    "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
     "message": "Smart transactions"
@@ -5785,6 +5801,9 @@
   },
   "view": {
     "message": "View"
+  },
+  "viewActivity": {
+    "message": "View activity"
   },
   "viewAllDetails": {
     "message": "View all details"
