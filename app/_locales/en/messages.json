@@ -2473,6 +2473,10 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metadataModalSourceTooltip": {
+    "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
+    "description": "$1 is the snap name and $2 is the snap NPM id."
+  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
@@ -4403,6 +4407,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed up"
