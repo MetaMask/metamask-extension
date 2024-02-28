@@ -79,6 +79,7 @@ export default function SwappableCurrencyInput({
             !isFiatPrimary ||
             (asset?.details?.symbol?.length || 0) > LARGE_SYMBOL_LENGTH
           }
+          tokenSymbol={asset?.details?.symbol}
         />
       );
 

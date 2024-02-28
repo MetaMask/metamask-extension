@@ -34,6 +34,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
  * @param options0.swapIcon
  * @param options0.hideSuffix
  * @param options0.className
+ * @param options0.tokenSymbol
  */
 export default function CurrencyInput({
   hexValue,
@@ -43,6 +44,7 @@ export default function CurrencyInput({
   swapIcon,
   hideSuffix = false,
   className = '',
+  tokenSymbol,
 }) {
   const t = useContext(I18nContext);
 
@@ -58,7 +60,8 @@ export default function CurrencyInput({
     type,
   );
   const hideSecondary = !showFiat;
-  const primarySuffix = preferredCurrency || EtherDenomination.ETH;
+  const primarySuffix =
+    tokenSymbol || preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
 
   const [newHexValue, setNewHexValue] = useState(hexValue);
@@ -134,7 +137,7 @@ export default function CurrencyInput({
     );
   };
   const renderConversionComponent = () => {
-    let currency, numberOfDecimals;
+    let currency, numberOfDecimals, suffix;
 
     if (hideSecondary) {
       return (
@@ -150,6 +153,7 @@ export default function CurrencyInput({
     if (shouldUseFiat) {
       // Display ETH
       currency = preferredCurrency || EtherDenomination.ETH;
+      suffix = primarySuffix;
       numberOfDecimals = 8;
     } else {
       // Display Fiat
@@ -159,7 +163,9 @@ export default function CurrencyInput({
 
     return (
       <CurrencyDisplay
+        // hides the fiat suffix
         hideLabel={hideSuffix}
+        suffix={suffix}
         className="currency-input__conversion-component"
         currency={currency}
         value={newHexValue}
@@ -204,4 +210,5 @@ CurrencyInput.propTypes = {
   swapIcon: PropTypes.func,
   hideSuffix: PropTypes.bool,
   className: PropTypes.string,
+  tokenSymbol: PropTypes.string,
 };
