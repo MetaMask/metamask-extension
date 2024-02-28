@@ -22,7 +22,7 @@ export const ConnectedAccountsMenu = ({
   onClose,
 }: {
   isOpen: boolean;
-  anchorElement?: HTMLElement;
+  anchorElement: HTMLElement | null;
   onClose?: () => void;
 }) => {
   const t = useI18nContext();
@@ -54,10 +54,7 @@ export const ConnectedAccountsMenu = ({
       preventOverflow
       isPortal
     >
-      <ModalFocus
-        restoreFocus
-        initialFocusRef={{ current: anchorElement || null }}
-      >
+      <ModalFocus restoreFocus initialFocusRef={{ current: anchorElement }}>
         <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           <MenuItem
             iconName={IconName.SecurityTick}
