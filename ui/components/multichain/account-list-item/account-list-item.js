@@ -61,6 +61,10 @@ import { ConnectedStatus } from '../connected-status/connected-status';
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
+export const MenuOptionTypes = {
+  ConnectionMenu: 'connectionMenu',
+  AccountMenu: 'accountMenu',
+};
 export const AccountListItem = ({
   identity,
   selected = false,
@@ -70,6 +74,7 @@ export const AccountListItem = ({
   connectedAvatarName,
   isPinned = false,
   showOptions = false,
+  showOptionTypes = MenuOptionTypes.AccountMenu,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -327,17 +332,21 @@ export const AccountListItem = ({
         />
       ) : null}
       {showOptions ? (
-        <AccountListItemMenu
-          anchorElement={accountListItemMenuElement}
-          identity={identity}
-          onClose={() => setAccountOptionsMenuOpen(false)}
-          isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
-          closeMenu={closeMenu}
-          isPinned={isPinned}
-          isHidden={isHidden}
-          isConnected={isConnected}
-        />
+        <>
+          {showOptionTypes === MenuOptionTypes.AccountMenu && (
+            <AccountListItemMenu
+              anchorElement={accountListItemMenuElement}
+              identity={identity}
+              onClose={() => setAccountOptionsMenuOpen(false)}
+              isOpen={accountOptionsMenuOpen}
+              isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
+              closeMenu={closeMenu}
+              isPinned={isPinned}
+              isHidden={isHidden}
+              isConnected={isConnected}
+            />
+          )}
+        </>
       ) : null}
     </Box>
   );
@@ -380,6 +389,10 @@ AccountListItem.propTypes = {
    * Represents if the "Options" 3-dot menu should display
    */
   showOptions: PropTypes.bool,
+  /**
+   * Represents the type of menu to be rendered
+   */
+  showOptionTypes: PropTypes.string,
   /**
    * Represents pinned accounts
    */

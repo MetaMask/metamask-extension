@@ -21,16 +21,18 @@ export type ConnectedStatusProps = {
   address: string;
   isActive?: boolean;
 };
+export type AddressConnectedSubjectMap = {
+  [address: string]: any;
+};
 
 export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   address = '',
   isActive,
 }): JSX.Element => {
-  const t = useSelector(useI18nContext);
-
-  const addressConnectedSubjectMap: any = useSelector(
+  const t = useI18nContext();
+  const addressConnectedSubjectMap = useSelector(
     getAddressConnectedSubjectMap,
-  );
+  ) as AddressConnectedSubjectMap;
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
   const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
