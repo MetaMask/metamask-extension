@@ -1,12 +1,12 @@
 import {
   TransactionParams,
-  normalizeTxParams,
+  normalizeTransactionParams,
 } from '@metamask/transaction-controller';
 import { normalizePPOMRequest } from './ppom-util';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
-  normalizeTxParams: jest.fn(),
+  normalizeTransactionParams: jest.fn(),
 }));
 
 const TRANSACTION_PARAMS_MOCK_1: TransactionParams = {
@@ -30,7 +30,9 @@ const REQUEST_TRANSACTION_MOCK = {
 };
 
 describe('PPOM Utils', () => {
-  const normalizeTxParamsMock = jest.mocked(normalizeTxParams);
+  const normalizeTransactionParamsMock = jest.mocked(
+    normalizeTransactionParams,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -44,14 +46,14 @@ describe('PPOM Utils', () => {
     });
 
     it('returns normalized request if method is eth_sendTransaction', () => {
-      normalizeTxParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_2);
+      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_2);
 
       expect(normalizePPOMRequest(REQUEST_TRANSACTION_MOCK)).toStrictEqual(
         expect.objectContaining({ params: [TRANSACTION_PARAMS_MOCK_2] }),
       );
 
-      expect(normalizeTxParamsMock).toHaveBeenCalledTimes(1);
-      expect(normalizeTxParamsMock).toHaveBeenCalledWith(
+      expect(normalizeTransactionParamsMock).toHaveBeenCalledTimes(1);
+      expect(normalizeTransactionParamsMock).toHaveBeenCalledWith(
         TRANSACTION_PARAMS_MOCK_1,
       );
     });

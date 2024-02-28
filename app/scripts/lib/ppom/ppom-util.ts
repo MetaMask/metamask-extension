@@ -1,4 +1,4 @@
-import { normalizeTxParams } from '@metamask/transaction-controller';
+import { normalizeTransactionParams } from '@metamask/transaction-controller';
 
 const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
 
@@ -8,7 +8,7 @@ export function normalizePPOMRequest(request: any) {
   }
 
   const transactionParams = request.params?.[0] || {};
-  const normalizedParams = normalizeTxParams(transactionParams);
+  const normalizedParams = normalizeTransactionParams(transactionParams);
 
   return {
     ...request,
