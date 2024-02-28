@@ -255,15 +255,6 @@ const EthOverview = ({ className, showAddress }) => {
                   },
                 });
               }}
-              tooltipRender={
-                signingEnabled
-                  ? null
-                  : (contents) => (
-                      <Tooltip title={t('accountCannotSign')} position="bottom">
-                        {contents}
-                      </Tooltip>
-                    )
-              }
             />
             ///: END:ONLY_INCLUDE_IF
           }
