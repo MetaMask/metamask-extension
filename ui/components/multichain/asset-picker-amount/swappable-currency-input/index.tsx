@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CurrencyInput from '../../../app/currency-input';
-import SwapIcon from './swap-icon';
 import {
   getPreferences,
   getSendInputCurrencySwitched,
@@ -16,7 +15,8 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { toHex } from '@metamask/controller-utils';
+import CurrencyInput from '../../../app/currency-input';
+import SwapIcon from './swap-icon';
 
 interface BaseProps {
   assetType: AssetType;
