@@ -11,7 +11,7 @@ const otherAccount = Object.values(accounts)[1];
 const { address: selectedAddress } = accounts[selectedAccount];
 
 export default {
-  title: 'Components/App/SignatureRequestSIWE',
+  title: 'Confirmations/Components/SignatureRequestSIWE',
 
   component: SignatureRequestSIWE,
   parameters: {

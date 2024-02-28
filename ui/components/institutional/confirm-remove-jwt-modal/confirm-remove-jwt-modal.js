@@ -107,7 +107,7 @@ const ConfirmRemoveJWT = ({
           </Box>
           {!showMore && (
             <Text
-              color={TextColor.goerli}
+              color={TextColor.sepolia}
               marginLeft={2}
               className="confirm-action-jwt__show-more"
             >

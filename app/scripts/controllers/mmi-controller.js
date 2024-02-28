@@ -112,6 +112,7 @@ export default class MMIController extends EventEmitter {
       custodyController: this.custodyController,
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
+      captureException,
     });
   }
 
@@ -200,12 +201,14 @@ export default class MMIController extends EventEmitter {
       await this.mmiConfigurationController.storeConfiguration();
     } catch (error) {
       log.error('Error while unlocking extension.', error);
+      captureException(error);
     }
 
     try {
       await this.transactionUpdateController.subscribeToEvents();
     } catch (error) {
       log.error('Error while unlocking extension.', error);
+      captureException(error);
     }
 
     const mmiConfigData =
@@ -554,14 +557,19 @@ export default class MMIController extends EventEmitter {
   }
 
   async handleMmiCheckIfTokenIsPresent(req) {
-    const { token, envName } = req.params;
-    // TODO (Bernardo) - Check if this is the case
-    const custodyType = 'Custody - JSONRPC'; // Only JSONRPC is supported for now
+    const { token, envName, address } = req.params;
+
+    const currentAddress =
+      address ||
+      this.messenger.call('AccountsController:getSelectedAccount').address;
+    const currentCustodyType = this.custodyController.getCustodyTypeByAddress(
+      toChecksumHexAddress(currentAddress),
+    );
 
     // This can only work if the extension is unlocked
     await this.appStateController.getUnlockPromise(true);
 
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(currentCustodyType);
 
     return await this.custodyController.handleMmiCheckIfTokenIsPresent({
       token,
@@ -596,7 +604,7 @@ export default class MMIController extends EventEmitter {
     const networks = [
       ...networkConfigurations,
       { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
+      { chainId: CHAIN_IDS.SEPOLIA },
     ];
 
     return handleMmiPortfolio({

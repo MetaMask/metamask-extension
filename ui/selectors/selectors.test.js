@@ -1016,6 +1016,37 @@ describe('Selectors', () => {
             balance: '0x0',
           },
         },
+        permissionHistory: {
+          'https://test.dapp': {
+            eth_accounts: {
+              accounts: {
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+              },
+            },
+          },
+        },
+        subjects: {
+          'https://test.dapp': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  },
+                ],
+                invoker: 'https://test.dapp',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+        },
+      },
+      activeTab: {
+        origin: 'https://test.dapp',
+      },
+      unconnectedAccount: {
+        state: 'OPEN',
       },
     };
     const expectedResult = [
@@ -1041,6 +1072,7 @@ describe('Selectors', () => {
         type: 'eip155:eoa',
         pinned: true,
         hidden: false,
+        active: false,
       },
 
       {
@@ -1065,6 +1097,7 @@ describe('Selectors', () => {
         type: 'eip155:eoa',
         pinned: true,
         hidden: false,
+        active: false,
       },
 
       {
@@ -1089,6 +1122,7 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
+        active: true,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
@@ -1112,11 +1146,11 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
+        active: false,
       },
       {
         address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
         balance: '0x0',
-        hidden: false,
         id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
         metadata: {
           keyring: {
@@ -1137,7 +1171,9 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         options: {},
+        hidden: false,
         pinned: false,
+        active: false,
         type: 'eip155:eoa',
       },
       {
@@ -1162,6 +1198,7 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
+        active: false,
       },
     ];
     expect(

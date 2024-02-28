@@ -12,7 +12,38 @@ To learn how to develop MetaMask-compatible applications, visit our [Developer D
 
 To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
 
-## Building locally
+## GitHub Codespaces quickstart
+
+As an alternative to building on your local machine, there is a new option to get a development environment up and running in less than 5 minutes by using GitHub Codespaces. Please note that there is a [Limited Free Monthly Quota](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces), and after that GitHub will start charging you.
+
+_Note: You are billed for both time spent running, and for storage used_
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension?quickstart=1)
+
+1. Start by clicking the button above
+2. A new browser tab will open with a remote version of Visual Studio Code (this will take a few minutes to load)
+3. A "Simple Browser" will open inside the browser with noVNC -- click Connect
+   - Optional steps:
+     - Click the button at the upper-right of the Simple Browser tab to open the noVNC window in its own tab
+     - Open the noVNC sidebar on the left, click the gear icon, change the Scaling Mode to Remote Resizing
+4. Wait about 20 extra seconds on the first launch, for the scripts to finish
+5. Right-click on the noVNC desktop to launch Chrome or Firefox with MetaMask pre-installed
+6. Change some code, then run `yarn start` to build in dev mode
+7. After a minute or two, it will finish building, and you can see your changes in the noVNC desktop
+
+### Tips to keep your Codespaces usage lower
+
+- You are billed for both time spent running, and for storage used
+- Codespaces pause after 30 minutes of inactivity, and auto-delete after 30 days of inactivity
+- You can manage your Codespaces here: https://github.com/codespaces
+  - You may want to manually pause them before the 30 minute timeout
+  - If you have several idle Codespaces hanging around for several days, you can quickly run out of storage quota. You should delete the ones you do not plan to use anymore, and probably keep only 1 or 2 in the long-term. It's also possible to re-use old Codespaces and switch the branch, instead of creating new ones and deleting the old ones.
+
+### Codespaces on a fork
+
+If you are not a MetaMask Internal Developer, or are otherwise developing on a fork, the default Infura key will be on the Free Plan and have very limited requests per second. If you want to use your own Infura key, follow the `.metamaskrc` and `INFURA_PROJECT_ID` instructions in the section [Building on your local machine](#building-on-your-local-machine).
+
+## Building on your local machine
 
 - Install [Node.js](https://nodejs.org) version 20
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
@@ -25,6 +56,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
   - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist`.
+
   - Optionally, you may run `yarn start` to run dev mode.
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
@@ -32,7 +64,6 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Follow these instructions to verify that your local build runs correctly:
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
   - [How to add custom build to Firefox](./docs/add-to-firefox.md)
-
 
 ## Git Hooks
 
@@ -111,16 +142,18 @@ For example, to run the `account-details` tests using Chrome, with debug logging
 
 #### Running specific builds types e2e test
 
-Different build types have different e2e tests sets. In order to run them look in the `packaje.json` file. You will find:
+Different build types have different e2e tests sets. In order to run them look in the `package.json` file. You will find:
+
 ```console
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
 ```
 
-
 #### Note: Running MMI e2e tests
+
 When running e2e on an MMI build you need to know that there are 2 separated set of tests:
+
 - MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
 - MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/mmi/README.md)
 

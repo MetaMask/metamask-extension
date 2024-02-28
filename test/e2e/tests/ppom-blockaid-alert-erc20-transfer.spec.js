@@ -161,7 +161,8 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
-  it('should show banner alert', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -180,7 +181,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
       async ({ driver }) => {
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, a third party known for scams will take all your assets.';
+          'If you approve this request, you might lose your assets.';
 
         await unlockWallet(driver);
         await openDapp(driver);

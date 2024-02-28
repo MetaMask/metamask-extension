@@ -42,7 +42,7 @@ const MOCK_SIGN_DATA = JSON.stringify({
 });
 
 export default {
-  title: 'Components/App/SignatureRequestOriginal',
+  title: 'Confirmations/Components/SignatureRequestOriginal',
 
   component: SignatureRequestOriginal,
   parameters: {

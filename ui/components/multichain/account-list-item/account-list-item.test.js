@@ -28,6 +28,13 @@ const render = (props = {}) => {
     metamask: {
       ...mockState.metamask,
     },
+    activeTab: {
+      id: 113,
+      title: 'E2E Test Dapp',
+      origin: 'https://metamask.github.io',
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
+    },
   });
   const allProps = { ...DEFAULT_PROPS, ...props };
   return renderWithProvider(<AccountListItem {...allProps} />, store);
