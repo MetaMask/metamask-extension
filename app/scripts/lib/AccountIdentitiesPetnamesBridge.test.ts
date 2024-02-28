@@ -108,6 +108,18 @@ function createNameControllerMock(
   } as any;
 }
 
+function simulateSubscribe(
+  messenger: jest.Mocked<AccountIdentitiesPetnamesBridgeMessenger>,
+  stateChange: AccountsControllerState,
+  patch: any[],
+) {
+  const listener = messenger.subscribe.mock.calls[0][1] as (
+    stateChange: AccountsControllerState,
+    patch: any[],
+  ) => void;
+  listener(stateChange, patch);
+}
+
 describe('AccountIdentitiesPetnamesBridge', () => {
   let messenger: jest.Mocked<
     PetnamesBridgeMessenger<
@@ -135,18 +147,14 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     // mock listAccounts call
     messenger.call.mockReturnValue([MOCK_INTERNAL_ACCOUNT]);
 
-    const listener = messenger.subscribe.mock.calls[0][1] as (
-      stateChange: AccountsControllerState,
-      patch: any[],
-    ) => void;
-
-    listener(
+    simulateSubscribe(
+      messenger,
       {
         internalAccounts: {
           accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
           selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
         },
-      } as AccountsControllerState,
+      },
       [],
     );
 
@@ -173,11 +181,8 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     // mock listAccounts call
     messenger.call.mockReturnValue([updatedMock]);
 
-    const listener = messenger.subscribe.mock.calls[0][1] as (
-      stateChange: AccountsControllerState,
-      patch: any[],
-    ) => void;
-    listener(
+    simulateSubscribe(
+      messenger,
       {
         internalAccounts: {
           accounts: { [updatedMock.id]: updatedMock },

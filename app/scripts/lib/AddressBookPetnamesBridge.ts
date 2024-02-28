@@ -11,10 +11,7 @@ import {
   PetnameEntry,
 } from './AbstractPetnamesBridge';
 
-export class AddressBookPetnamesBridge extends AbstractPetnamesBridge<
-  never,
-  never
-> {
+export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
   #addressBookController: AddressBookController;
 
   constructor({
