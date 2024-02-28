@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+const INPUT_HORIZONTAL_PADDING = 4;
+
 function removeLeadingZeroes(str) {
   return str.replace(/^0*(?=\d)/u, '');
 }
@@ -33,6 +35,8 @@ export default class UnitInput extends PureComponent {
 
   state = {
     value: this.props.value,
+    isOverflowing: false,
+    isFocused: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -44,7 +48,7 @@ export default class UnitInput extends PureComponent {
       prevPropsValue !== propsValue &&
       Number(propsValue) !== Number(stateValue)
     ) {
-      this.setState({ value: propsValue });
+      this.setState({ ...this.state, value: propsValue });
     }
   }
 
@@ -53,15 +57,35 @@ export default class UnitInput extends PureComponent {
   };
 
   handleInputFocus = ({ target: { value } }) => {
-    if (value === '0') {
-      this.setState({ value: '' });
-    }
+    this.setState(
+      value === '0'
+        ? {
+            ...this.state,
+            isFocused: true,
+            isOverflowing: false,
+            value: '',
+          }
+        : {
+            ...this.state,
+            isFocused: true,
+          },
+    );
   };
 
   handleInputBlur = ({ target: { value } }) => {
-    if (value === '') {
-      this.setState({ value: '0' });
-    }
+    this.setState(
+      value === ''
+        ? {
+            ...this.state,
+            isFocused: false,
+            isOverflowing: false,
+            value: '0',
+          }
+        : {
+            ...this.state,
+            isFocused: false,
+          },
+    );
 
     this.props.onBlur && this.props.onBlur(value);
   };
@@ -74,7 +98,12 @@ export default class UnitInput extends PureComponent {
       value = removeLeadingZeroes(userInput);
     }
 
-    this.setState({ value });
+    this.setState({
+      ...this.state,
+      isOverflowing: this.getIsOverflowing(),
+      value,
+    });
+
     this.props.onChange(value);
   };
 
@@ -83,6 +112,19 @@ export default class UnitInput extends PureComponent {
     const valueLength = valueString.length || 1;
     const decimalPointDeficit = valueString.match(/\./u) ? -0.5 : 0;
     return `${valueLength + decimalPointDeficit + 0.5}ch`;
+  }
+
+  getIsOverflowing() {
+    let isOverflowing = false;
+
+    if (this.unitInput) {
+      const { offsetWidth, scrollWidth } = this.unitInput;
+
+      // overflowing when scrollable width exceeds padding
+      isOverflowing = scrollWidth - offsetWidth > INPUT_HORIZONTAL_PADDING;
+    }
+
+    return isOverflowing;
   }
 
   render() {
