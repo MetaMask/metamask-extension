@@ -39,7 +39,6 @@ import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem } from '../../index';
 import { Content, Footer, Header, Page } from '../page';
-import { ConnectionContent } from './components/connection';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
