@@ -34,17 +34,18 @@ const ChartTooltip = forwardRef(
           ...(xAxisPercent < 0.5
             ? { paddingRight: `${100 - 2 * 100 * xAxisPercent}%` }
             : { paddingLeft: `${100 - 2 * (100 - 100 * xAxisPercent)}%` }),
+          direction:
+            xAxisPercent < 0.5
+              ? TextDirection.LeftToRight
+              : TextDirection.RightToLeft,
         }}
       >
         <Text
+          marginLeft={4}
+          marginRight={4}
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
-          textDirection={
-            xAxisPercent < 0.5
-              ? TextDirection.LeftToRight
-              : TextDirection.RightToLeft
-          }
         >
           {price === undefined
             ? '\u00A0'
