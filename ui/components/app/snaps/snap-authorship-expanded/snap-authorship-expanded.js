@@ -1,7 +1,7 @@
 import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   AlignItems,
@@ -26,16 +26,13 @@ import {
   getSnapRegistryData,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
-import {
-  disableSnap,
-  enableSnap,
-  getPhishingResult,
-} from '../../../../store/actions';
+import { disableSnap, enableSnap } from '../../../../store/actions';
 import { Box, ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapAvatar from '../snap-avatar';
-import SnapVersion from '../snap-version/snap-version';
+import SnapExternalPill from '../snap-version/snap-external-pill';
+import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 
 const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();
@@ -61,20 +58,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
     getSnapRegistryData(state, snapId),
   );
   const { website = undefined } = snapRegistryData?.metadata ?? {};
-  const [safeWebsite, setSafeWebsite] = useState(null);
-
-  useEffect(() => {
-    const performPhishingCheck = async () => {
-      const phishingResult = await getPhishingResult(website);
-
-      if (!phishingResult.result) {
-        setSafeWebsite(website);
-      }
-    };
-    if (website) {
-      performPhishingCheck();
-    }
-  }, [website]);
+  const safeWebsite = useSafeWebsite(website);
 
   const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
@@ -174,11 +158,11 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               alignItems={AlignItems.flexEnd}
             >
               <ButtonLink
-                href={safeWebsite}
+                href={safeWebsite.toString()}
                 target="_blank"
                 overflowWrap={OverflowWrap.Anywhere}
               >
-                {safeWebsite}
+                {safeWebsite.host}
               </ButtonLink>
             </Box>
           </Box>
@@ -217,7 +201,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
             {t('version')}
           </Text>
-          <SnapVersion version={snap?.version} url={url} />
+          <SnapExternalPill value={snap?.version} url={url} />
         </Box>
       </Box>
     </Box>

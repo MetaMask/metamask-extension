@@ -1641,33 +1641,6 @@
         "uuid": true
       }
     },
-    "@metamask/post-message-stream": {
-      "globals": {
-        "MessageEvent.prototype": true,
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "browser": true,
-        "chrome": true,
-        "location.origin": true,
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/post-message-stream>readable-stream": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
     "@metamask/ppom-validator>elliptic": {
       "packages": {
         "@metamask/ppom-validator>elliptic>brorand": true,
@@ -1936,10 +1909,7 @@
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
-        "browserify": true,
         "browserify>buffer": true,
-        "browserify>path-browserify": true,
-        "browserify>process": true,
         "chalk": true,
         "semver": true,
         "superstruct": true
@@ -2615,11 +2585,6 @@
       "packages": {
         "browserify>stream-http": true,
         "browserify>url": true
-      }
-    },
-    "browserify>path-browserify": {
-      "packages": {
-        "browserify>process": true
       }
     },
     "browserify>process": {

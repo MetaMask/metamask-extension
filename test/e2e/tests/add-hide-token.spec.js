@@ -70,7 +70,7 @@ describe('Add hide token', function () {
         );
 
         // wait for confirm hide modal to be removed from DOM.
-        await driver.waitForElementNotPresent(confirmHideModal);
+        await driver.assertElementNotPresent(confirmHideModal);
 
         assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 1);
