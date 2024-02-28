@@ -8,14 +8,15 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export default function SwapIcon({
   onClick,
-  ariaLabel,
 }: {
-  ariaLabel: string;
-  onClick?: React.MouseEventHandler;
+  onClick: React.MouseEventHandler;
 }) {
+  const t = useI18nContext();
+
   return (
     <ButtonIcon
       backgroundColor={BackgroundColor.transparent}
@@ -23,7 +24,7 @@ export default function SwapIcon({
       size={ButtonIconSize.Sm}
       color={IconColor.primaryDefault}
       onClick={onClick}
-      ariaLabel={ariaLabel}
+      ariaLabel={t('switchInputCurrency')}
     />
   );
 }

@@ -72,7 +72,7 @@ export default function SwappableCurrencyInput({
           onChange={onAmountChange}
           hexValue={toHex(value)}
           swapIcon={(onClick: React.MouseEventHandler) => (
-            <SwapIcon ariaLabel={t('switchInputCurrency')} onClick={onClick} />
+            <SwapIcon onClick={onClick} />
           )}
           onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
           hideSuffix={
