@@ -218,7 +218,9 @@
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@trezor/connect-web": "9.0.11",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
-    "@metamask/snaps-sdk": "^2.1.0"
+    "@metamask/snaps-sdk": "^2.1.0",
+    "@metamask/selected-network-controller": "portal:/home/zb/code/metamask/core/packages/selected-network-controller",
+    "@metamask/queued-request-controller": "npm:@metamask-previews/queued-request-controller@0.5.0-preview.59156403"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",

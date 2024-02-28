@@ -5011,21 +5011,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/queued-request-controller@npm:0.3.0"
+"@metamask/queued-request-controller@npm:@metamask-previews/queued-request-controller@0.5.0-preview.59156403":
+  version: 0.5.0-preview.59156403
+  resolution: "@metamask-previews/queued-request-controller@npm:0.5.0-preview.59156403"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/controller-utils": "npm:^8.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.3.1"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.3"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
-    "@metamask/approval-controller": ^5.1.1
-    "@metamask/network-controller": ^17.1.0
-    "@metamask/selected-network-controller": ^6.0.0
-  checksum: 47988f3999f8ab45dfbbc8fde796ce4c8ebc405abb79bc165dc1faf777db6190942e220df76e0a7d0355d8de5a635cc41089fc75825eb4b6047ebf1c85b44e6a
+    "@metamask/approval-controller": ^5.1.2
+    "@metamask/network-controller": ^17.2.0
+    "@metamask/selected-network-controller": ^8.0.0
+  checksum: e310aada1ae981ee62c85c0fcd2f38dfd115747cb3b298400a7923b0caf75e48a947b7ff3708c9870f1c8a6be9e8faf6c434c49b0e6b09283c8b45f71ba65f01
   languageName: node
   linkType: hard
 
@@ -5047,6 +5047,16 @@ __metadata:
     "@metamask/utils": "npm:^8.1.0"
     fast-safe-stringify: "npm:^2.0.6"
   checksum: 04054aed47fede31c755cf4504fdd0b7d226adeeeb221affc8801236a726d29bfe400a4fd7487ca65bd790653cf9dba1a4f7b6c5932fd2c65f8e8fc56e399bf7
+  languageName: node
+  linkType: hard
+
+"@metamask/rpc-errors@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "@metamask/rpc-errors@npm:6.2.1"
+  dependencies:
+    "@metamask/utils": "npm:^8.3.0"
+    fast-safe-stringify: "npm:^2.0.6"
+  checksum: 789f0a2090339c1aa43d45ee496f4f115e141bc55b98e4ce27498497568f9e85fb5527ecf1f113b156d88fc4f1e63a572ced74bdc1ba16826bf648391b223f7b
   languageName: node
   linkType: hard
 
@@ -5074,20 +5084,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/selected-network-controller@npm:6.0.0"
+"@metamask/selected-network-controller@portal:/home/zb/code/metamask/core/packages/selected-network-controller::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@metamask/selected-network-controller@portal:/home/zb/code/metamask/core/packages/selected-network-controller::locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.3.1"
-    "@metamask/network-controller": "npm:^17.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/network-controller": "npm:^17.2.0"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
-    "@metamask/network-controller": ^17.1.0
-  checksum: 06108b93af648cbb8bed337459e579f1a314cd0d1d8405e4a9501a5933c961664170bdb9022dbbbb08066b577869b07b6f00f84a3076b3ae8fdc2fc8c4ea4c9c
+    "@metamask/network-controller": ^17.2.0
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@metamask/signature-controller@npm:^12.0.0":
   version: 12.0.0

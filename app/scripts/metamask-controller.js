@@ -493,8 +493,8 @@ export default class MetamaskController extends EventEmitter {
     this.selectedNetworkController = new SelectedNetworkController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SelectedNetworkController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedActions: ['NetworkController:getNetworkClientById', 'NetworkController:getState'],
+        allowedEvents: ['NetworkController:stateChange', 'PermissionController:stateChange'],
       }),
     });
 
