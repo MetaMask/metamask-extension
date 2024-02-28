@@ -1,48 +1,37 @@
 import React, { FC } from 'react';
-import {
-  AvatarTokenSize,
-  AvatarToken,
-  BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
-  Box,
-} from '../../component-library';
+import { Box } from '../../component-library';
+import { NftItem } from '../nft-item';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 export interface NotificationDetailNftProps {
-  badgeIcon: string;
-  nftIcon: string;
+  networkName: string;
+  networkSrc: string;
+  tokenName: string;
+  tokenId: string;
+  tokenSrc: string;
 }
-
-const NftImage: FC<{ nftIcon: string }> = ({ nftIcon }) => (
-  <Box
-    as="img"
-    src={nftIcon}
-    display={Display.Block}
-    justifyContent={JustifyContent.center}
-    backgroundColor={BackgroundColor.primaryMuted}
-    borderRadius={BorderRadius.SM}
-    className="notification-detail-nft__image"
-  />
-);
 
 /**
  * A component that renders a notification detail for an NFT.
  *
  * @param props - The component props.
- * @param props.badgeIcon - The URL of the badge icon.
- * @param props.nftIcon - The URL of the NFT icon.
+ * @param props.networkSrc - The URL of the badge icon.
+ * @param props.tokenId - The ID of the NFT.
+ * @param props.tokenName - The name of the NFT.
+ * @param props.tokenSrc - The URL of the NFT icon.
+ * @param props.networkName - The name of the network.
  * @returns The NotificationDetailNft component.
  */
 export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
-  badgeIcon,
-  nftIcon,
+  networkSrc,
+  tokenId,
+  tokenName,
+  tokenSrc,
+  networkName,
 }) => (
   <Box
     paddingBottom={4}
@@ -50,20 +39,15 @@ export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
     alignItems={AlignItems.center}
     justifyContent={JustifyContent.center}
   >
-    <BadgeWrapper
-      anchorElementShape={BadgeWrapperAnchorElementShape.rectangular}
-      positionObj={{ bottom: -4, right: -4 }}
-      badge={
-        <AvatarToken
-          src={badgeIcon}
-          size={AvatarTokenSize.Sm}
-          backgroundColor={BackgroundColor.infoDefault}
-          borderColor={BorderColor.backgroundDefault}
-          borderWidth={2}
-        />
-      }
-    >
-      <NftImage nftIcon={nftIcon} />
-    </BadgeWrapper>
+    <Box className="notification-detail-nft__image">
+      <NftItem
+        networkSrc={networkSrc}
+        src={tokenSrc}
+        name={tokenName}
+        alt={tokenName}
+        networkName={networkName}
+        tokenId={tokenId}
+      />
+    </Box>
   </Box>
 );
