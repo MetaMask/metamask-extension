@@ -55,7 +55,7 @@ export const SendPageContent = ({
     if (token.type === AssetType.native) {
       dispatch(
         updateSendAsset({
-          type: token.type ?? AssetType.native,
+          type: token.type,
           details: token,
           skipComputeEstimatedGasLimit: true,
         }),
