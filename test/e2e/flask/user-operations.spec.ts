@@ -1,4 +1,5 @@
-const {
+import { TransactionParams } from '@metamask/transaction-controller';
+import {
   withFixtures,
   unlockWallet,
   openDapp,
@@ -7,10 +8,9 @@ const {
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
-} = require('../helpers');
-
-const FixtureBuilder = require('../fixture-builder');
-const {
+} from '../helpers';
+import FixtureBuilder from '../fixture-builder';
+import {
   ENTRYPOINT,
   ERC_4337_ACCOUNT_SNAP_URL,
   BUNDLER_URL,
@@ -20,43 +20,41 @@ const {
   ERC_4337_ACCOUNT,
   GANACHE_ACCOUNT,
   VERIFYING_PAYMASTER,
-} = require('../constants');
-const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
+} from '../constants';
+import { buildQuote, reviewQuote } from '../tests/swaps/shared';
+import { Driver } from '../webdriver/driver';
+import { Bundler } from '../bundler';
 
-async function installExampleSnap(driver) {
-  // Navigate to Site
+enum TransactionDetailRowIndex {
+  Nonce = 0,
+  GasUsed = 3,
+}
+
+async function installExampleSnap(driver: Driver) {
   await driver.openNewPage(ERC_4337_ACCOUNT_SNAP_URL);
-  await driver.delay(1000);
-
-  // Click Connect Button
   await driver.clickElement('#connectButton');
-  await driver.delay(1000);
-
-  // Confirm Connect Modal
-  await switchToNotificationWindow(driver, 3);
+  await switchToNotificationWindow(driver);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
-
-  // Scroll Down
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
-
-  // Confirm Install Modal
   await driver.clickElement({
     text: 'Install',
     tag: 'button',
   });
-
-  // Success Modal
   await driver.clickElement({
     text: 'OK',
     tag: 'button',
   });
 }
 
-async function createSnapAccount(driver, privateKey, salt) {
-  await driver.switchToWindowWithTitle('Account Abstraction Snap');
+async function createSnapAccount(
+  driver: Driver,
+  privateKey: string,
+  salt: string,
+) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
   await driver.clickElement({ text: 'Create account' });
   await driver.fill('#create-account-private-key', privateKey);
   await driver.fill('#create-account-salt', salt);
@@ -64,12 +62,22 @@ async function createSnapAccount(driver, privateKey, salt) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
-  await driver.switchToWindowWithTitle('Account Abstraction Snap');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
 }
 
 async function setSnapConfig(
-  driver,
-  { bundlerUrl, entrypoint, simpleAccountFactory, paymaster },
+  driver: Driver,
+  {
+    bundlerUrl,
+    entrypoint,
+    simpleAccountFactory,
+    paymaster,
+  }: {
+    bundlerUrl: string;
+    entrypoint: string;
+    simpleAccountFactory: string;
+    paymaster?: string;
+  },
 ) {
   const data = JSON.stringify({
     bundlerUrl,
@@ -84,7 +92,10 @@ async function setSnapConfig(
   await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
 }
 
-async function createDappTransaction(driver, transaction) {
+async function createDappTransaction(
+  driver: Driver,
+  transaction: TransactionParams,
+) {
   await openDapp(
     driver,
     null,
@@ -92,12 +103,10 @@ async function createDappTransaction(driver, transaction) {
       transaction,
     ])}`,
   );
-
-  await new Promise((resolve) => setTimeout(resolve, 5000));
 }
 
-async function createSwap(driver) {
-  await switchToExtensionWindow(driver);
+async function createSwap(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await buildQuote(driver, {
     amount: 0.001,
     swapTo: 'USDC',
@@ -111,13 +120,13 @@ async function createSwap(driver) {
   await driver.clickElement({ text: 'Close', tag: 'button' });
 }
 
-async function confirmTransaction(driver) {
-  await switchToNotificationWindow(driver, 4);
+async function confirmTransaction(driver: Driver) {
+  await switchToNotificationWindow(driver);
   await driver.clickElement({ text: 'Confirm' });
 }
 
-async function openConfirmedTransaction(driver) {
-  await switchToExtensionWindow(driver);
+async function openConfirmedTransaction(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="home__activity-tab"]');
 
   await driver.clickElement({
@@ -126,11 +135,11 @@ async function openConfirmedTransaction(driver) {
   });
 }
 
-async function switchToExtensionWindow(driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-}
-
-async function expectTransactionDetail(driver, rowIndex, expectedText) {
+async function expectTransactionDetail(
+  driver: Driver,
+  rowIndex: number,
+  expectedText: string,
+) {
   await driver.findElement({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
       2 + rowIndex
@@ -139,8 +148,11 @@ async function expectTransactionDetail(driver, rowIndex, expectedText) {
   });
 }
 
-async function expectTransactionDetails(driver, bundlerServer) {
-  const hexToDecimalString = (hex) => String(parseInt(hex, 16));
+async function expectTransactionDetailsMatchReceipt(
+  driver: Driver,
+  bundlerServer: Bundler,
+) {
+  const hexToDecimalString = (hex: string) => String(parseInt(hex, 16));
 
   const userOperationHash = await bundlerServer.getUserOperationHashes()[0];
 
@@ -156,22 +168,29 @@ async function expectTransactionDetails(driver, bundlerServer) {
     throw new Error('No user operation receipt found');
   }
 
-  await expectTransactionDetail(driver, 0, hexToDecimalString(receipt.nonce));
+  await expectTransactionDetail(
+    driver,
+    TransactionDetailRowIndex.Nonce,
+    hexToDecimalString(receipt.nonce),
+  );
 
   await expectTransactionDetail(
     driver,
-    3,
+    TransactionDetailRowIndex.GasUsed,
     hexToDecimalString(receipt.actualGasUsed),
   );
 }
 
-async function withAccountSnap({ currentTest, paymaster }, createTransaction) {
+async function withAccountSnap(
+  { title, paymaster }: { title?: string; paymaster?: string },
+  test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
+) {
   await withFixtures(
     {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .build(),
-      title: currentTest.fullTitle(),
+      title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
       dapp: true,
@@ -179,7 +198,13 @@ async function withAccountSnap({ currentTest, paymaster }, createTransaction) {
         hardfork: 'london',
       },
     },
-    async ({ driver, bundlerServer }) => {
+    async ({
+      driver,
+      bundlerServer,
+    }: {
+      driver: Driver;
+      bundlerServer: Bundler;
+    }) => {
       await unlockWallet(driver);
       await installExampleSnap(driver);
 
@@ -196,16 +221,19 @@ async function withAccountSnap({ currentTest, paymaster }, createTransaction) {
         ERC_4337_ACCOUNT_SALT,
       );
 
-      await createTransaction(driver);
-      await openConfirmedTransaction(driver);
-      await expectTransactionDetails(driver, bundlerServer);
+      await driver.closeWindow();
+      await driver.switchToWindowWithTitle(
+        WINDOW_TITLES.ExtensionInFullScreenView,
+      );
+
+      await test(driver, bundlerServer);
     },
   );
 }
 
 describe('User Operations', function () {
-  it('from dApp transaction', async function () {
-    await withAccountSnap({ currentTest: this.test }, async (driver) => {
+  it('from dApp transaction', async function (this: Mocha.Context) {
+    await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       await createDappTransaction(driver, {
         from: ERC_4337_ACCOUNT,
         to: GANACHE_ACCOUNT,
@@ -217,32 +245,42 @@ describe('User Operations', function () {
     });
   });
 
-  it('from send transaction', async function () {
+  it('from send transaction', async function (this: Mocha.Context) {
     if (process.env.MULTICHAIN) {
       return;
     }
 
-    await withAccountSnap({ currentTest: this.test }, async (driver) => {
-      await switchToExtensionWindow(driver);
-      await sendTransaction(
-        driver,
-        GANACHE_ACCOUNT,
-        convertETHToHexGwei(1),
-        true,
-      );
-    });
-  });
-
-  it('from swap', async function () {
-    await withAccountSnap({ currentTest: this.test }, async (driver) => {
-      await createSwap(driver);
-    });
-  });
-
-  it('with paymaster', async function () {
     await withAccountSnap(
-      { currentTest: this.test, paymaster: VERIFYING_PAYMASTER },
-      async (driver) => {
+      { title: this.test?.fullTitle() },
+      async (driver, bundlerServer) => {
+        await sendTransaction(
+          driver,
+          GANACHE_ACCOUNT,
+          convertETHToHexGwei(1),
+          true,
+        );
+
+        await openConfirmedTransaction(driver);
+        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
+      },
+    );
+  });
+
+  it('from swap', async function (this: Mocha.Context) {
+    await withAccountSnap(
+      { title: this.test?.fullTitle() },
+      async (driver, bundlerServer) => {
+        await createSwap(driver);
+        await openConfirmedTransaction(driver);
+        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
+      },
+    );
+  });
+
+  it('with paymaster', async function (this: Mocha.Context) {
+    await withAccountSnap(
+      { title: this.test?.fullTitle(), paymaster: VERIFYING_PAYMASTER },
+      async (driver, bundlerServer) => {
         await createDappTransaction(driver, {
           from: ERC_4337_ACCOUNT,
           to: GANACHE_ACCOUNT,
@@ -251,6 +289,8 @@ describe('User Operations', function () {
         });
 
         await confirmTransaction(driver);
+        await openConfirmedTransaction(driver);
+        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
       },
     );
   });

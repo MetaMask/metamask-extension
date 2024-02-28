@@ -77,12 +77,12 @@ class GanacheSeeder {
   async transfer(to, value) {
     const signer = this.#getSigner();
 
-    const sendAccount = await signer.sendTransaction({
+    const transaction = await signer.sendTransaction({
       to,
       value,
     });
 
-    await sendAccount.wait();
+    await transaction.wait();
 
     console.log('Completed transfer', { to, value });
   }
