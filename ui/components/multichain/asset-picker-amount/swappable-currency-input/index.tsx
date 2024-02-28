@@ -27,7 +27,6 @@ interface ERC20Props extends BaseProps {
   asset: Asset;
 }
 
-// TODO: build out NFT logic
 interface NFTProps extends BaseProps {
   assetType: AssetType.NFT;
   asset: Asset;
@@ -63,8 +62,6 @@ export default function SwappableCurrencyInput({
 
   const isFiatPrimary = useIsFiatPrimary();
 
-  // FIXME: update swapping logic
-  // TODO: add NFTs
   switch (assetType) {
     case AssetType.token:
     case AssetType.native:
