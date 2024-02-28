@@ -1,5 +1,7 @@
+@use "design-system";
+
 .transaction-breakdown-row {
-  @include H7;
+  @include design-system.H7;
 
   color: var(--color-text-alternative);
   display: flex;

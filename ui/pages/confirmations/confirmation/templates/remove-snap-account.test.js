@@ -29,6 +29,14 @@ const mockApproval = {
 const mockBaseStore = {
   metamask: {
     ...mockState.metamask,
+    snaps: {
+      [mockSnapOrigin]: {
+        id: mockSnapOrigin,
+        manifest: {
+          description: 'Test Snap',
+        },
+      },
+    },
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
@@ -49,6 +57,9 @@ describe('remove-snap-account confirmation', () => {
             type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
           },
         },
+      },
+      activeTab: {
+        origin: 'https://uniswap.org/',
       },
     };
     const store = configureMockStore(middleware)(testStore);

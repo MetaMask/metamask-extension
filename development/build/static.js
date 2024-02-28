@@ -127,7 +127,7 @@ function getCopyTargets(
       dest: `images/contract`,
     },
     {
-      src: `./app/fonts/`,
+      src: `./ui/css/utilities/fonts/`,
       dest: `fonts`,
     },
     {
@@ -139,6 +139,7 @@ function getCopyTargets(
         '@fortawesome/fontawesome-free',
         'webfonts/',
       ),
+      // update this location in styles.js if it changes
       dest: `fonts/fontawesome`,
     },
     {

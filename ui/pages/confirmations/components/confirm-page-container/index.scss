@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'confirm-page-container-content/index';
 @import 'confirm-page-container-header/index';
 @import 'confirm-detail-row/index';
@@ -19,6 +21,6 @@
     border: 0 transparent;
     display: inline;
     padding: 0;
-    font-size: $font-size-h7;
+    font-size: design-system.$font-size-h7;
   }
 }

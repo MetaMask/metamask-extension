@@ -14,7 +14,7 @@ import {
 } from '..';
 import { PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
-import type { TextFieldProps } from '../text-field/text-field.types';
+import { TextFieldProps } from '../text-field/text-field.types';
 import {
   FormTextFieldSize,
   FormTextFieldProps,
