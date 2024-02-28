@@ -1,9 +1,8 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import { Connections } from './connections';
 import mockState from '../../../../../test/data/mock-state.json';
-import { getByTestId } from '@testing-library/react';
+import { Connections } from './connections';
 
 describe('Connections Content', () => {
   const render = () => {

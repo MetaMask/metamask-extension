@@ -15,7 +15,6 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
-  getConnectedSubjectsForAllAddresses,
   getInternalAccounts,
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
@@ -34,10 +33,10 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { Tab } from '../../../ui/tabs/index';
+import { Tab } from '../../../ui/tabs';
 import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
-import { AccountListItem } from '../../index';
+import { AccountListItem } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
@@ -46,7 +45,6 @@ export const Connections = () => {
   const t = useI18nContext();
   const history = useHistory();
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
-  const [tabKey, setTabKey] = useState(CONNECTED_ACCOUNTS_TAB_KEY);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
@@ -56,7 +54,6 @@ export const Connections = () => {
     getOrderedConnectedAccountsForActiveTab,
   );
   const selectedAccount = useSelector(getSelectedAccount);
-  const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccount = mergeAccounts(connectedAccounts, internalAccounts);
   return (
@@ -144,9 +141,11 @@ export const Connections = () => {
       <Footer>
         {/* TODO: When accounts connected - Two Separate Buttons - Separate Ticket */}
 
-        <ButtonPrimary size={ButtonPrimarySize.Lg} block>
-          {t('connectAccounts')}
-        </ButtonPrimary>
+        {connectedSubjectsMetadata ? null : (
+          <ButtonPrimary size={ButtonPrimarySize.Lg} block>
+            {t('connectAccounts')}
+          </ButtonPrimary>
+        )}
       </Footer>
     </Page>
   );
