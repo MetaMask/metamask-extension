@@ -703,12 +703,6 @@
         "@babel/runtime": true
       }
     },
-    "@metamask-previews/permission-log-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/accounts-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -1617,6 +1611,12 @@
     "@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-log-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/phishing-controller": {
