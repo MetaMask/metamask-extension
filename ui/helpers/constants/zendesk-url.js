@@ -43,6 +43,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas',
   VERIFY_CUSTOM_NETWORK:
     'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+  NETWORK_DEPRECATED:
+    'https://support.metamask.io/hc/en-us/articles/360059213492-ETH-on-Sepolia-and-Goerli-networks-testnets',
 };
 
 export default ZENDESK_URLS;

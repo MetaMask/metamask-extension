@@ -1,8 +1,10 @@
+@use "design-system";
+
 .add-network {
   &__networks-container {
     padding-inline-end: 24px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding: 0;
     }
   }
@@ -10,7 +12,7 @@
   &__header {
     border-bottom: 1px solid var(--color-border-default);
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding-inline-start: 24px;
       padding-inline-end: 24px;
     }
@@ -22,14 +24,14 @@
   }
 
   &__main-container {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding-inline-start: 24px;
       padding-inline-end: 24px;
     }
   }
 
   &__list-of-networks {
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       width: 75%;
     }
   }
@@ -52,7 +54,7 @@
 
   &__add-button.button {
     color: var(--color-primary-default);
-    font-size: $font-size-h7;
+    font-size: design-system.$font-size-h7;
     margin-inline-start: 24px;
   }
 
@@ -61,7 +63,7 @@
     width: 100%;
     padding-bottom: 8px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding-inline-start: 24px !important;
     }
 
