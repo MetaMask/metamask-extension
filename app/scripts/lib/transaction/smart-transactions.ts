@@ -112,6 +112,7 @@ export async function submitSmartTransactionHook(
             id: smartTransactionStatusApprovalId,
             requestState: {
               smartTransaction,
+              isDapp,
             },
           },
         );

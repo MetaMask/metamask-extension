@@ -12,7 +12,7 @@ function getValues(pendingApproval, t, actions, _history) {
             actions.resolvePendingApproval(id, true);
           },
           onViewActivity: () => {
-            actions.resolvePendingApproval(id, false);
+            actions.resolvePendingApproval(id, true);
           },
         },
       },
