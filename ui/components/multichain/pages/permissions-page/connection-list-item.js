@@ -22,6 +22,8 @@ import {
   AvatarAccountSize,
   AvatarAccountVariant,
   AvatarFavicon,
+  AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -77,10 +79,11 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         ) : (
           <BadgeWrapper
             badge={
-              <Icon
-                name={IconName.Global}
-                color={IconColor.iconDefault}
-                size={IconSize.Xs}
+              <AvatarNetwork
+                size={AvatarNetworkSize.Xs}
+                name={connection.networkName}
+                src={connection.networkIconUrl}
+                borderWidth={1}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }
