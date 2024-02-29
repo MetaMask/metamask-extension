@@ -537,7 +537,7 @@ export default class ConfirmTransactionBase extends Component {
               detailText={
                 useCurrencyRateCheck && renderTotalDetailText(getTotalAmount())
               }
-              detailTotal={renderTotalMaxAmount(true)}
+              detailTotal={renderTotalMaxAmount(false)}
               subTitle={t('transactionDetailGasTotalSubtitle')}
               subText={
                 <div className="confirm-page-container-content__total-amount">
