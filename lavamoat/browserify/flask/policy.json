@@ -294,17 +294,9 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/contracts>@ethersproject/abstract-provider": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
-        "@ethersproject/hdnode>@ethersproject/transactions": true
-      }
-    },
-    "@ethersproject/contracts>@ethersproject/abstract-provider": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/bignumber": true
+        "@ethersproject/hdnode>@ethersproject/transactions": true,
+        "@metamask/test-bundler>@ethersproject/abstract-provider": true
       }
     },
     "@ethersproject/hdnode": {
@@ -396,16 +388,16 @@
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/contracts>@ethersproject/abstract-provider": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/basex": true,
         "@ethersproject/hdnode>@ethersproject/sha2": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
         "@ethersproject/providers>@ethersproject/base64": true,
-        "@ethersproject/providers>@ethersproject/networks": true,
         "@ethersproject/providers>@ethersproject/random": true,
         "@ethersproject/providers>@ethersproject/web": true,
-        "@ethersproject/providers>bech32": true
+        "@ethersproject/providers>bech32": true,
+        "@metamask/test-bundler>@ethersproject/abstract-provider": true,
+        "@metamask/test-bundler>@ethersproject/networks": true
       }
     },
     "@ethersproject/providers>@ethersproject/base64": {
@@ -415,11 +407,6 @@
       },
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true
-      }
-    },
-    "@ethersproject/providers>@ethersproject/networks": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@ethersproject/providers>@ethersproject/random": {
@@ -1035,8 +1022,8 @@
         "@metamask/browser-passworder": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/eth-keyring-controller>@metamask/obs-store": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
-        "@metamask/obs-store": true,
         "@metamask/utils": true,
         "webpack>events": true
       }
@@ -1062,6 +1049,31 @@
         "@metamask/utils": true,
         "browserify>buffer": true,
         "mocha>serialize-javascript>randombytes": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/obs-store": {
+      "packages": {
+        "@metamask/eth-keyring-controller>@metamask/obs-store>@metamask/safe-event-emitter": true,
+        "@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -2259,6 +2271,19 @@
       "packages": {
         "browserify>process": true,
         "semver": true
+      }
+    },
+    "@metamask/test-bundler>@ethersproject/abstract-provider": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bignumber": true
+      }
+    },
+    "@metamask/test-bundler>@ethersproject/networks": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/logger": true
       }
     },
     "@metamask/transaction-controller": {

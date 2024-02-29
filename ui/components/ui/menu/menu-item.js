@@ -24,6 +24,7 @@ const MenuItem = React.forwardRef(
       className,
       'data-testid': dataTestId,
       iconName,
+      iconColor,
       onClick,
       subtitle,
       disabled = false,
@@ -57,7 +58,12 @@ const MenuItem = React.forwardRef(
         </BadgeWrapper>
       )}
       {iconName && !showInfoDot && (
-        <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
+        <Icon
+          name={iconName}
+          size={IconSize.Sm}
+          marginRight={2}
+          color={iconColor}
+        />
       )}
       <div>
         <div>{children}</div>
@@ -76,6 +82,7 @@ MenuItem.propTypes = {
   subtitle: PropTypes.node,
   disabled: PropTypes.bool,
   showInfoDot: PropTypes.bool,
+  iconColor: PropTypes.string,
 };
 
 MenuItem.displayName = 'MenuItem';
