@@ -70,13 +70,12 @@ describe('MetaMask Responsive UI', function () {
         // pin extension
         await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
-        await driver.isElementPresent('.loading-overlay__spinner');
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
-        const balance = await driver.findElement(
-          '.eth-overview__primary-container',
-        );
-        assert.equal(await balance.getText(), '$0.00\nUSD');
+        await driver.findElement({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: `$ 0.00 USD`,
+        });
       },
     );
   });
@@ -116,6 +115,10 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
+    // TODO: Update Test when Multichain Send Flow is added
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     const driverOptions = { openDevToolsForTabs: true };
     await withFixtures(
       {
@@ -132,10 +135,6 @@ describe('MetaMask Responsive UI', function () {
         // Send ETH from inside MetaMask
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
-        // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
