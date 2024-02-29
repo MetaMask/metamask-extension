@@ -551,7 +551,7 @@
     "koa": "^2.7.0",
     "lavamoat": "^8.0.2",
     "lavamoat-browserify": "^17.0.4",
-    "lavamoat-viz": "^7.0.2",
+    "lavamoat-viz": "^7.0.5",
     "lockfile-lint": "^4.10.6",
     "loose-envify": "^1.4.0",
     "madge": "^6.1.0",
