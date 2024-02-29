@@ -21,6 +21,7 @@ import {
 } from '../../selectors';
 import {
   lockMetamask,
+  hideDappPermissionModal,
   hideImportNftsModal,
   hideIpfsModal,
   setCurrentCurrency,
@@ -98,6 +99,7 @@ function mapStateToProps(state) {
     isDeprecatedNetworkModalOpen: state.appState.deprecatedNetworkModalOpen,
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
+    isDappPermissionModalOpen: state.appState.dappPermissionModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
@@ -116,6 +118,7 @@ function mapDispatchToProps(dispatch) {
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
+    hideDappPermissionModal: () => dispatch(hideDappPermissionModal()),
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),
     hideIpfsModal: () => dispatch(hideIpfsModal()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),

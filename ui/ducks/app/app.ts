@@ -33,6 +33,14 @@ type AppState = {
     ignoreErc20Token?: boolean;
   };
   showIpfsModalOpen: boolean;
+  dappPermissionModal: {
+    open: boolean;
+    // might be a different way to do this:
+    account?: {
+      label?: string;
+      address?: string;
+    };
+  };
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -110,6 +118,16 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  // dappPermissionModal: {
+  //   open: false,
+  // },
+  dappPermissionModal: {
+    open: true,
+    account: {
+      label: 'NFT account',
+      address: '0x0000000',
+    },
+  },
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -200,6 +218,23 @@ export default function reduceApp(
         ...appState,
         importNftsModal: {
           open: false,
+        },
+      };
+
+    case actionConstants.DAPP_PERMISSION_MODAL_CLOSE:
+      return {
+        ...appState,
+        dappPermissionModal: {
+          open: false,
+        },
+      };
+
+    case actionConstants.DAPP_PERMISSION_MODAL_OPEN:
+      return {
+        ...appState,
+        dappPermissionModal: {
+          open: true,
+          ...action.payload,
         },
       };
 

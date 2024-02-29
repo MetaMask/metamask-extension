@@ -2569,6 +2569,24 @@ export function showImportNftsModal(payload: {
   };
 }
 
+export function showDappPermissionModal(payload: {
+  account: {
+    label?: string;
+    address?: string;
+  };
+}): Action {
+  return {
+    type: actionConstants.DAPP_PERMISSION_MODAL_OPEN,
+    payload,
+  };
+}
+
+export function hideDappPermissionModal(): Action {
+  return {
+    type: actionConstants.DAPP_PERMISSION_MODAL_CLOSE,
+  };
+}
+
 export function hideImportNftsModal(): Action {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
