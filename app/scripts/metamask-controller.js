@@ -987,7 +987,7 @@ export default class MetamaskController extends EventEmitter {
 
     const getSnapController = () => this.snapController;
 
-     // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller.
+    // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller
     const persistAndUpdateAccounts = async () => {
       await this.keyringController.persistAllKeyrings();
       await this.accountsController.updateAccounts();
