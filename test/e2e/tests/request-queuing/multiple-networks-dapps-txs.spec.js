@@ -25,8 +25,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          // .withPermissionControllerConnectedToTwoTestDapps()
-          // .withSelectedNetworkControllerPerDomain() // TODO: Add back when refreshing state doesn't revert per dapp selected network. Remove having to connect to dapp
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
@@ -42,28 +42,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Open account menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
-
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const securityAndPrivacyTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(securityAndPrivacyTabRawLocator);
-
-        // Toggle request queue setting
-        await driver.clickElement('.request-queue-toggle');
-
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
 
@@ -75,7 +53,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         await driver.delay(regularDelayMs);
 
-        // Connect to Dapp
+        // // Connect to Dapp
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
@@ -107,7 +85,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        // Connect to dapp
+        // // Connect to dapp
         await driver.clickElement('#connectButton');
 
         await driver.delay(regularDelayMs);

@@ -872,6 +872,12 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerUseRequestQueueEnabled() {
+    return this.withPreferencesController({
+      useRequestQueue: true,
+    });
+  }
+
   withSmartTransactionsController(data) {
     merge(this.fixture.data.SmartTransactionsController, data);
     return this;
