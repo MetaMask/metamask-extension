@@ -824,6 +824,9 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
+  "connectMoreAccounts": {
+    "message": "Connect more accounts"
+  },
   "connectSnap": {
     "message": "Connect $1",
     "description": "$1 is the snap for which a connection is being requested."
