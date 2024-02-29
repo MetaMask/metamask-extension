@@ -1608,7 +1608,16 @@
           }
         }
       }
-    }
+    },
+    "permissionHistory": {
+        "https://metamask.github.io": {
+          "eth_accounts": {
+            "accounts": {
+              "0dcd5d886577d5081b0c52e242ef29e70be3e7bc": 1709225290848
+            }
+          }
+        }
+      }
   },
   "send": {
     "amountMode": "INPUT",
