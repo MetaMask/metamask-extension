@@ -126,7 +126,9 @@ const EthOverview = ({ className, showAddress }) => {
 
   const buttonTooltips = {
     buyButton: [
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBuyableChain, message: '' },
+      ///: END:ONLY_INCLUDE_IF
       { condition: !signingEnabled, message: 'methodNotSupported' },
     ],
     sendButton: [{ condition: !signingEnabled, message: 'methodNotSupported' }],
