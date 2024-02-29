@@ -283,7 +283,17 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={stxOptIn}
-            onToggle={(value) => setStxOptIn(!value)}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: MetaMetricsEventName.SettingsUpdated,
+                properties: {
+                  stx_opt_in: newValue,
+                },
+              });
+              setStxOptIn(newValue);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
             dataTestId="settings-page-stx-opt-in-toggle"
