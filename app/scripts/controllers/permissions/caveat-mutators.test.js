@@ -26,6 +26,16 @@ describe('caveat mutators', () => {
           operation: CaveatMutatorOperation.revokePermission,
         });
       });
+
+      it('returns the revoke permission operation the target account even if it is a checksummed address', () => {
+        expect(
+          removeAccount('0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAee5', [
+            '0x95222290dd7278aa3ddd389cc1e1d165cc4baee5',
+          ]),
+        ).toStrictEqual({
+          operation: CaveatMutatorOperation.revokePermission,
+        });
+      });
     });
   });
 });

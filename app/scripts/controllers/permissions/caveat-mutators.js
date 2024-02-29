@@ -24,7 +24,7 @@ export const CaveatMutatorFactories = {
  */
 function removeAccount(targetAccount, existingAccounts) {
   const newAccounts = existingAccounts.filter(
-    (address) => address !== targetAccount,
+    (address) => address.toLowerCase() !== targetAccount.toLowerCase(),
   );
 
   if (newAccounts.length === existingAccounts.length) {
