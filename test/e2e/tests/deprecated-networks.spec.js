@@ -117,7 +117,7 @@ describe('Deprecated networks', function () {
   });
 
   it('Should show deprecation warning when switching to Optimism goerli testnet', async function () {
-    const TEST_CHAIN_ID = CHAIN_IDS.OPTIMISM_TESTNET;
+    const TEST_CHAIN_ID = CHAIN_IDS.OPTIMISM_GOERLI;
     async function mockRPCURLAndChainId(mockServer) {
       return [
         await mockServer
