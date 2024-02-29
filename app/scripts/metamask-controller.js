@@ -987,6 +987,7 @@ export default class MetamaskController extends EventEmitter {
 
     const getSnapController = () => this.snapController;
 
+     // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller.
     const persistAndUpdateAccounts = async () => {
       await this.keyringController.persistAllKeyrings();
       await this.accountsController.updateAccounts();
@@ -1797,6 +1798,9 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'ApprovalController:addRequest',
           'NetworkController:getNetworkClientById',
+          'KeyringController:prepareUserOperation',
+          'KeyringController:patchUserOperation',
+          'KeyringController:signUserOperation',
         ],
       }),
       state: initState.UserOperationController,
@@ -2262,7 +2266,7 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
-    const snapEncryptor = encryptorFactory(10_000);
+    const snapEncryptor = encryptorFactory(600_000);
 
     return {
       ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
