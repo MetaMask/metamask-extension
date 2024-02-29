@@ -1,13 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
-import { Tooltip } from 'react-tippy';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderStyle,
   Display,
   FlexDirection,
   IconColor,
@@ -18,9 +15,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   AvatarFavicon,
   BadgeWrapper,
   Box,
@@ -31,27 +25,15 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
-import { AvatarGroup } from '../../avatar-group';
-import { AvatarType } from '../../avatar-group/avatar-group.types';
-import { getUseBlockie } from '../../../../selectors';
+import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const AVATAR_GROUP_LIMIT = 5;
-  const TOOLTIP_LIMIT = 7;
-  const addressIconList = connection.addresses
-    ?.slice(0, TOOLTIP_LIMIT)
-    .map((address) => ({
-      avatarValue: address,
-    }));
-  const useBlockie = useSelector(getUseBlockie);
-  const avatarAccountVariant = useBlockie
-    ? AvatarAccountVariant.Blockies
-    : AvatarAccountVariant.Jazzicon;
 
   return (
     <Box
+      data-testid="connection-list-item"
       as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -69,6 +51,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       >
         {isSnap ? (
           <SnapAvatar
+            className="connection-list-item__snap-avatar"
             snapId={connection.id}
             badgeSize={IconSize.Xs}
             avatarSize={IconSize.Md}
@@ -85,7 +68,10 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               />
             }
           >
-            <AvatarFavicon src={connection.iconUrl} />
+            <AvatarFavicon
+              data-testid="connection-list-item__avatar-favicon"
+              src={connection.iconUrl}
+            />
           </BadgeWrapper>
         )}
       </Box>
@@ -113,93 +99,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             >
               {t('connectedWith')}
             </Text>
-            <Tooltip
-              position="bottom"
-              html={
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                >
-                  <Text
-                    color={TextColor.overlayInverse}
-                    variant={TextVariant.headingSm}
-                    paddingInline={10}
-                  >
-                    {t('connectedAccounts')}
-                  </Text>
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                  >
-                    {connection.addresses
-                      ?.slice(0, TOOLTIP_LIMIT)
-                      .map((address, i) => {
-                        return (
-                          <Box
-                            display={Display.Flex}
-                            flexDirection={FlexDirection.Row}
-                            alignItems={AlignItems.center}
-                            textAlign={TextAlign.Left}
-                            key={i}
-                            padding={1}
-                            paddingInline={2}
-                            gap={2}
-                          >
-                            <AvatarAccount
-                              size={AvatarAccountSize.Xs}
-                              address={address}
-                              variant={avatarAccountVariant}
-                              borderStyle={BorderStyle.none}
-                            />
-                            <Text
-                              color={TextColor.overlayInverse}
-                              variant={TextVariant.bodyMdMedium}
-                              data-testid="connection-list-item-connected-account-name"
-                              ellipsis
-                            >
-                              {connection.addressToNameMap[address]}
-                            </Text>
-                          </Box>
-                        );
-                      })}
-                    {connection.addresses?.length > TOOLTIP_LIMIT && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        textAlign={TextAlign.Left}
-                        paddingInline={2}
-                      >
-                        <Text
-                          color={TextColor.textMuted}
-                          variant={TextVariant.bodyMdMedium}
-                          data-testid="connection-list-item-plus-more-tooltip"
-                        >
-                          {t('plusMore', [
-                            connection.addresses?.length - TOOLTIP_LIMIT,
-                          ])}
-                        </Text>
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
-              }
-              arrow
-              offset={0}
-              delay={50}
-              duration={0}
-              size="small"
-              title={t('alertDisableTooltip')}
-              trigger="mouseenter focus"
-              theme="dark"
-              tag="div"
-            >
-              <AvatarGroup
-                members={addressIconList}
-                limit={AVATAR_GROUP_LIMIT}
-                avatarType={AvatarType.ACCOUNT}
-                borderColor={BackgroundColor.backgroundDefault}
-              />
-            </Tooltip>
+            <ConnectionListTooltip connection={connection} />
           </Box>
         )}
       </Box>
