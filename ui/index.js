@@ -242,11 +242,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       // EXPERIMENTAL: Close other MetaMask Popups
       const windows = await browser.windows.getAll();
       const currentPopupId = getCurrentPopupId(state);
-      const otherPopupWindows = windows.filter(
-        (win) =>
-          win?.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId,
-      );
-      otherPopupWindows.forEach((popupWindow) => popupWindow.close());
+      windows.forEach((win) => {
+        if (win?.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId) {
+          win.close();
+        }
+      });
     } else {
       console.log('No domainNetwork, not changing networks');
     }
