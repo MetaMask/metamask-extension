@@ -9,11 +9,6 @@
 
   &__input {
     & > div {
-      & > div.currency-input__conversion-component  {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        display: inline;
-      }
       // primary (i.e., input) and secondary (i.e., subtext) input sections
       & > div {
         max-width: 150px;
@@ -26,6 +21,13 @@
       & > .currency-input__conversion-component > span {
         color: var(--color-text-alternative);
         font-size: small;
+      }
+
+      // converted (secondary) value
+      & > div.currency-input__conversion-component  {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline;
       }
 
       // secondary field elements (e.g., value, symbols)
