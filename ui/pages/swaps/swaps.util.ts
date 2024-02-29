@@ -216,7 +216,7 @@ export async function fetchTokenPrice(
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
   const prices = await fetchWithCache({
-    url: `https://static.cx.metamask.io/v2/chains/1/${query}`,
+    url: `https://price-api.metafi.codefi.network/v2/chains/1/${query}`,
     fetchOptions: {
       method: 'GET',
     },
