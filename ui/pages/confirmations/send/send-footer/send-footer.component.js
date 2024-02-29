@@ -99,7 +99,7 @@ export default class SendFooter extends Component {
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
         disabled={
-          this.props.disabled && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR
+          this.props.disabled && sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR
         }
         cancelText={sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
       />
