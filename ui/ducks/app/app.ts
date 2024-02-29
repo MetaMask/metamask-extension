@@ -118,15 +118,8 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
-  // dappPermissionModal: {
-  //   open: false,
-  // },
   dappPermissionModal: {
-    open: true,
-    account: {
-      label: 'NFT account',
-      address: '0x0000000',
-    },
+    open: false,
   },
   keyringRemovalSnapModal: {
     snapName: '',
