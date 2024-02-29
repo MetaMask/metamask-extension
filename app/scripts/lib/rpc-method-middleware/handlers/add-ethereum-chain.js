@@ -26,7 +26,7 @@ const addEthereumChain = {
     startApprovalFlow: true,
     endApprovalFlow: true,
     getProviderConfig: true,
-    hasPermission: true,
+    hasPermissions: true,
   },
 };
 export default addEthereumChain;
@@ -47,7 +47,7 @@ async function addEthereumChainHandler(
     startApprovalFlow,
     endApprovalFlow,
     getProviderConfig,
-    hasPermission,
+    hasPermissions,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -298,7 +298,7 @@ async function addEthereumChainHandler(
         fromNetworkConfiguration: getProviderConfig(),
       },
     });
-    if (hasPermission(req.origin)) {
+    if (hasPermissions(req.origin)) {
       setNetworkClientIdForDomain(req.origin, networkConfigurationId);
     }
   } catch (error) {
