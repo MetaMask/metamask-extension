@@ -341,6 +341,8 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
+    this.hasNetworkRequestsBeenTriggered = false;
+
     this.controllerMessenger = new ControllerMessenger();
 
     this.loggingController = new LoggingController({
@@ -2119,15 +2121,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.accountTracker.start();
-    this.txController.startIncomingTransactionPolling();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
-    }
-    if (this.preferencesController.store.getState().useTokenDetection) {
-      this.tokenListController.start();
+    if (!this.hasNetworkRequestsBeenTriggered) {
+      this.accountTracker.start();
+      this.txController.startIncomingTransactionPolling();
+      if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+        this.currencyRateController.startPollingByNetworkClientId(
+          this.networkController.state.selectedNetworkClientId,
+        );
+      }
+      if (this.preferencesController.store.getState().useTokenDetection) {
+        this.tokenListController.start();
+      }
+
+      this.hasNetworkRequestsBeenTriggered = true;
     }
   }
 
@@ -2141,6 +2147,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
+    this.hasNetworkRequestsBeenTriggered = false;
   }
 
   resetStates(resetMethods) {
@@ -5267,11 +5274,7 @@ export default class MetamaskController extends EventEmitter {
 
     // If the wallet is locked when the `controllerConnectionChanged` event is
     // emitted, we need to start polling for balances as soon as it is unlocked.
-    // The `KeyringController` state in the `defaultFixture` means that many e2e
-    // tests start with a wallet in a locked state.
-    if (process.env.IN_TEST) {
-      this.triggerNetworkrequests();
-    }
+    this.triggerNetworkrequests();
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
