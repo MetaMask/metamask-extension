@@ -18,7 +18,12 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import { AccountListItem, CreateAccount, ImportAccount } from '..';
+import {
+  AccountListItem,
+  CreateAccount,
+  ImportAccount,
+  MenuOptionTypes,
+} from '..';
 import {
   AlignItems,
   BackgroundColor,
@@ -61,7 +66,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { MenuOptionTypes } from '../account-list-item/account-list-item';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
