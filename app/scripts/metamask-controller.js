@@ -2257,7 +2257,7 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
-    const snapEncryptor = encryptorFactory(10_000);
+    const snapEncryptor = encryptorFactory(600_000);
 
     return {
       ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
