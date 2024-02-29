@@ -1147,14 +1147,14 @@ export default class MetamaskController extends EventEmitter {
     this.snapExecutionService =
       shouldUseOffscreenExecutionService === false
         ? new IframeExecutionService({
-            ...snapExecutionServiceArgs,
-            iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
-          })
+          ...snapExecutionServiceArgs,
+          iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
+        })
         : new OffscreenExecutionService({
-            // eslint-disable-next-line no-undef
-            documentUrl: chrome.runtime.getURL('./offscreen.html'),
-            ...snapExecutionServiceArgs,
-          });
+          // eslint-disable-next-line no-undef
+          documentUrl: chrome.runtime.getURL('./offscreen.html'),
+          ...snapExecutionServiceArgs,
+        });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
@@ -1458,10 +1458,16 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
+    let delayNetworkClient = true;
+
+    setTimeout(() => {
+      delayNetworkClient = false;
+      this.txController.initApprovals();
+      console.log('Selected network client available');
+    }, 20000);
+
     this.txController = new TransactionController(
       {
-        blockTracker: this.blockTracker,
-        cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
             this.networkController,
@@ -1477,11 +1483,12 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkClientRegistry.bind(
             this.networkController,
           ),
-        getNetworkState: () => this.networkController.state,
+        getNetworkState: () =>
+          delayNetworkClient ? undefined : this.networkController.state,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSavedGasFees: () =>
           this.preferencesController.store.getState().advancedGasFee[
-            this.networkController.state.providerConfig.chainId
+          this.networkController.state.providerConfig.chainId
           ],
         getSelectedAddress: () =>
           this.accountsController.getSelectedAccount().address,
@@ -1492,9 +1499,9 @@ export default class MetamaskController extends EventEmitter {
             Boolean(
               this.preferencesController.store.getState()
                 .incomingTransactionsPreferences?.[
-                this.networkController.state.providerConfig.chainId
+              this.networkController.state.providerConfig.chainId
               ] &&
-                this.onboardingController.store.getState().completedOnboarding,
+              this.onboardingController.store.getState().completedOnboarding,
             ),
           queryEntireHistory: false,
           updateTransactions: false,
@@ -1514,7 +1521,6 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        provider: this.provider,
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
@@ -1717,7 +1723,7 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+        getNonceLock: this.txController.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
         confirmExternalTransaction:
@@ -4043,9 +4049,8 @@ export default class MetamaskController extends EventEmitter {
    */
 
   getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
-      parseInt(index, 10) + 1
-    } ${hdPathDescription || ''}`.trim();
+    return `${name[0].toUpperCase()}${name.slice(1)} ${parseInt(index, 10) + 1
+      } ${hdPathDescription || ''}`.trim();
   }
 
   /**
@@ -5756,10 +5761,10 @@ export default class MetamaskController extends EventEmitter {
         params:
           newAccounts.length < 2
             ? // If the length is 1 or 0, the accounts are sorted by definition.
-              newAccounts
+            newAccounts
             : // If the length is 2 or greater, we have to execute
-              // `eth_accounts` vi this method.
-              await this.getPermittedAccounts(origin),
+            // `eth_accounts` vi this method.
+            await this.getPermittedAccounts(origin),
       });
     }
 

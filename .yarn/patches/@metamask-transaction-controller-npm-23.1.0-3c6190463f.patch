@@ -1,0 +1,1401 @@
+diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
+index 9a10745d7c5adaec8798a00a3f8c9949fb976f20..f2f0da6de8c18355d3a966eff4b5f4f7ac27523e 100644
+--- a/dist/TransactionController.d.ts
++++ b/dist/TransactionController.d.ts
+@@ -171,7 +171,6 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+     private readonly isSwapsDisabled;
+     private readonly isSendFlowHistoryDisabled;
+     private readonly inProcessOfSigning;
+-    private readonly nonceTracker;
+     private readonly registry;
+     private readonly mutex;
+     private readonly gasFeeFlows;
+@@ -208,7 +207,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+      * Method used to sign transactions
+      */
+     sign?: (transaction: TypedTransaction, from: string, transactionMeta?: TransactionMeta) => Promise<TypedTransaction>;
+-    constructor({ blockTracker, disableHistory, disableSendFlowHistory, disableSwaps, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getExternalPendingTransactions, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSavedGasFees, getSelectedAddress, incomingTransactions, messenger, onNetworkStateChange, pendingTransactions, provider, securityProviderRequest, getNetworkClientRegistry, isMultichainEnabled, hooks, }: TransactionControllerOptions, config?: Partial<TransactionConfig>, state?: Partial<TransactionState>);
++    constructor({ disableHistory, disableSendFlowHistory, disableSwaps, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getExternalPendingTransactions, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSavedGasFees, getSelectedAddress, incomingTransactions, messenger, onNetworkStateChange, pendingTransactions, securityProviderRequest, getNetworkClientRegistry, isMultichainEnabled, hooks, }: TransactionControllerOptions, config?: Partial<TransactionConfig>, state?: Partial<TransactionState>);
+     /**
+      * Stops polling and removes listeners to prepare the controller for garbage collection.
+      */
+@@ -462,6 +461,10 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+      * Creates approvals for all unapproved transactions persisted.
+      */
+     initApprovals(): void;
++    /**
++     * Sign and submit any previously approved transactions.
++     */
++    initApprovedTransactions(): void;
+     /**
+      * Search transaction metadata for matching entries.
+      *
+@@ -491,11 +494,6 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+     abortTransactionSigning(transactionId: string): void;
+     private addMetadata;
+     private updateGasProperties;
+-    private onBootCleanup;
+-    /**
+-     * Force submit approved transactions for all chains.
+-     */
+-    private submitApprovedTransactions;
+     private processApproval;
+     /**
+      * Approves a transaction and updates it's status in state. If this is not a
+diff --git a/dist/TransactionController.js b/dist/TransactionController.js
+index 870c8395b36b7baf1cb73def4580aeddb850c039..ae863eec3c28cc34eb4f899bf582f5b4a9cc41f4 100644
+--- a/dist/TransactionController.js
++++ b/dist/TransactionController.js
+@@ -19,10 +19,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
+-var _TransactionController_instances, _TransactionController_incomingTransactionOptions, _TransactionController_pendingTransactionOptions, _TransactionController_multichainTrackingHelper, _TransactionController_createNonceTracker, _TransactionController_createIncomingTransactionHelper, _TransactionController_createPendingTransactionTracker, _TransactionController_checkForPendingTransactionAndStartPolling, _TransactionController_stopAllTracking, _TransactionController_removeIncomingTransactionHelperListeners, _TransactionController_addIncomingTransactionHelperListeners, _TransactionController_removePendingTransactionTrackerListeners, _TransactionController_addPendingTransactionTrackerListeners, _TransactionController_getNonceTrackerPendingTransactions, _TransactionController_getGasFeeFlows, _TransactionController_updateTransactionInternal;
++var _TransactionController_instances, _TransactionController_incomingTransactionOptions, _TransactionController_pendingTransactionOptions, _TransactionController_multichainTrackingHelper, _TransactionController_createNonceTracker, _TransactionController_createIncomingTransactionHelper, _TransactionController_createPendingTransactionTracker, _TransactionController_checkForPendingTransactionAndStartPolling, _TransactionController_stopAllTracking, _TransactionController_removeIncomingTransactionHelperListeners, _TransactionController_addIncomingTransactionHelperListeners, _TransactionController_removePendingTransactionTrackerListeners, _TransactionController_addPendingTransactionTrackerListeners, _TransactionController_getNonceTrackerPendingTransactions, _TransactionController_getGasFeeFlows, _TransactionController_updateTransactionInternal, _TransactionController_getEthQueryOrThrow, _TransactionController_getChainIdOrThrow, _TransactionController_getSelectedNetworkClientConfiguration;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.TransactionController = exports.SPEED_UP_RATE = exports.CANCEL_RATE = exports.HARDFORK = void 0;
+ const common_1 = require("@ethereumjs/common");
+@@ -30,7 +27,6 @@ const tx_1 = require("@ethereumjs/tx");
+ const util_1 = require("@ethereumjs/util");
+ const base_controller_1 = require("@metamask/base-controller");
+ const controller_utils_1 = require("@metamask/controller-utils");
+-const eth_query_1 = __importDefault(require("@metamask/eth-query"));
+ const network_controller_1 = require("@metamask/network-controller");
+ const rpc_errors_1 = require("@metamask/rpc-errors");
+ const utils_1 = require("@metamask/utils");
+@@ -75,7 +71,7 @@ const controllerName = 'TransactionController';
+  * Controller responsible for submitting and managing transactions.
+  */
+ class TransactionController extends base_controller_1.BaseControllerV1 {
+-    constructor({ blockTracker, disableHistory, disableSendFlowHistory, disableSwaps, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getExternalPendingTransactions, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSavedGasFees, getSelectedAddress, incomingTransactions = {}, messenger, onNetworkStateChange, pendingTransactions = {}, provider, securityProviderRequest, getNetworkClientRegistry, isMultichainEnabled = false, hooks, }, config, state) {
++    constructor({ disableHistory, disableSendFlowHistory, disableSwaps, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getExternalPendingTransactions, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSavedGasFees, getSelectedAddress, incomingTransactions = {}, messenger, onNetworkStateChange, pendingTransactions = {}, securityProviderRequest, getNetworkClientRegistry, isMultichainEnabled = false, hooks, }, config, state) {
+         var _a, _b, _c, _d, _e, _f;
+         super(config, state);
+         _TransactionController_instances.add(this);
+@@ -112,8 +108,6 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         this.isSendFlowHistoryDisabled = disableSendFlowHistory !== null && disableSendFlowHistory !== void 0 ? disableSendFlowHistory : false;
+         this.isHistoryDisabled = disableHistory !== null && disableHistory !== void 0 ? disableHistory : false;
+         this.isSwapsDisabled = disableSwaps !== null && disableSwaps !== void 0 ? disableSwaps : false;
+-        // @ts-expect-error the type in eth-method-registry is inappropriate and should be changed
+-        this.registry = new eth_method_registry_1.MethodRegistry({ provider });
+         this.getSavedGasFees = getSavedGasFees !== null && getSavedGasFees !== void 0 ? getSavedGasFees : ((_chainId) => undefined);
+         this.getCurrentAccountEIP1559Compatibility =
+             getCurrentAccountEIP1559Compatibility !== null && getCurrentAccountEIP1559Compatibility !== void 0 ? getCurrentAccountEIP1559Compatibility : (() => Promise.resolve(true));
+@@ -139,14 +133,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             (_e = hooks === null || hooks === void 0 ? void 0 : hooks.getAdditionalSignArguments) !== null && _e !== void 0 ? _e : (() => []);
+         this.publish =
+             (_f = hooks === null || hooks === void 0 ? void 0 : hooks.publish) !== null && _f !== void 0 ? _f : (() => Promise.resolve({ transactionHash: undefined }));
+-        this.nonceTracker = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_createNonceTracker).call(this, {
+-            provider,
+-            blockTracker,
+-        });
+         __classPrivateFieldSet(this, _TransactionController_multichainTrackingHelper, new MultichainTrackingHelper_1.MultichainTrackingHelper({
+             isMultichainEnabled,
+-            provider,
+-            nonceTracker: this.nonceTracker,
+             incomingTransactionOptions: incomingTransactions,
+             findNetworkClientIdByChainId: (chainId) => {
+                 return this.messagingSystem.call(`NetworkController:findNetworkClientIdByChainId`, chainId);
+@@ -155,6 +143,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 return this.messagingSystem.call(`NetworkController:getNetworkClientById`, networkClientId);
+             }),
+             getNetworkClientRegistry,
++            getSelectedNetworkClientId: () => { var _a; return (_a = getNetworkState()) === null || _a === void 0 ? void 0 : _a.selectedNetworkClientId; },
+             removeIncomingTransactionHelperListeners: __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_removeIncomingTransactionHelperListeners).bind(this),
+             removePendingTransactionTrackerListeners: __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_removePendingTransactionTrackerListeners).bind(this),
+             createNonceTracker: __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_createNonceTracker).bind(this),
+@@ -168,13 +157,13 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         const etherscanRemoteTransactionSource = new EtherscanRemoteTransactionSource_1.EtherscanRemoteTransactionSource({
+             includeTokenTransfers: incomingTransactions.includeTokenTransfers,
+         });
++        const getSelectedNetworkClient = () => __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getSelectedNetworkClient();
+         this.incomingTransactionHelper = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_createIncomingTransactionHelper).call(this, {
+-            blockTracker,
++            getNetworkClient: getSelectedNetworkClient,
+             etherscanRemoteTransactionSource,
+         });
+         this.pendingTransactionTracker = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_createPendingTransactionTracker).call(this, {
+-            provider,
+-            blockTracker,
++            getNetworkClient: getSelectedNetworkClient,
+         });
+         this.gasFeeFlows = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getGasFeeFlows).call(this);
+         const gasFeePoller = new GasFeePoller_1.GasFeePoller({
+@@ -199,9 +188,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         onNetworkStateChange(() => {
+             (0, logger_1.projectLogger)('Detected network change', this.getChainId());
+             this.pendingTransactionTracker.startIfPendingTransactions();
+-            this.onBootCleanup();
++            this.initApprovedTransactions();
+         });
+-        this.onBootCleanup();
+     }
+     failTransaction(transactionMeta, error, actionId) {
+         const newTransactionMeta = Object.assign(Object.assign({}, transactionMeta), { error: (0, utils_2.normalizeTxError)(error), status: types_1.TransactionStatus.failed });
+@@ -216,8 +204,15 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+     }
+     registryLookup(fourBytePrefix) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            const registryMethod = yield this.registry.lookup(fourBytePrefix);
+-            const parsedRegistryMethod = this.registry.parse(registryMethod);
++            const selectedNetworkClient = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getSelectedNetworkClient();
++            if (!selectedNetworkClient) {
++                throw rpc_errors_1.providerErrors.disconnected();
++            }
++            const { provider } = selectedNetworkClient;
++            // @ts-expect-error the type in eth-method-registry is inappropriate and should be changed
++            const registry = new eth_method_registry_1.MethodRegistry({ provider });
++            const registryMethod = (yield registry.lookup(fourBytePrefix));
++            const parsedRegistryMethod = registry.parse(registryMethod);
+             return { registryMethod, parsedRegistryMethod };
+         });
+     }
+@@ -288,8 +283,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 yield (0, validation_1.validateTransactionOrigin)(yield this.getPermittedAccounts(origin), this.getSelectedAddress(), txParams.from, origin);
+             }
+             const dappSuggestedGasFees = this.generateDappSuggestedGasFees(txParams, origin);
+-            const chainId = this.getChainId(networkClientId);
+-            const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++            const chainId = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getChainIdOrThrow).call(this, networkClientId);
++            const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                 networkClientId,
+                 chainId,
+             });
+@@ -313,7 +308,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 type: transactionType,
+                 networkClientId,
+             };
+-            yield this.updateGasProperties(transactionMeta);
++            yield this.updateGasProperties(transactionMeta, ethQuery);
+             // Checks if a transaction already exists with a given actionId
+             if (!existingTransactionMeta) {
+                 // Set security provider response
+@@ -456,7 +451,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 newFee,
+                 txParams: newTxParams,
+             });
+-            const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++            const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                 networkClientId: transactionMeta.networkClientId,
+                 chainId: transactionMeta.chainId,
+             });
+@@ -553,6 +548,9 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 networkClientId: transactionMeta.networkClientId,
+                 chainId: transactionMeta.chainId,
+             });
++            if (!ethQuery) {
++                throw rpc_errors_1.providerErrors.disconnected();
++            }
+             const hash = yield this.publishTransactionForRetry(ethQuery, rawTx, transactionMeta);
+             const baseTransactionMeta = Object.assign(Object.assign({}, transactionMeta), { estimatedBaseFee, id: (0, uuid_1.v1)(), time: Date.now(), hash,
+                 actionId, originalGasEstimate: transactionMeta.txParams.gas, type: types_1.TransactionType.retry, originalType: transactionMeta.type });
+@@ -580,7 +578,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      */
+     estimateGas(transaction, networkClientId) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++            const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                 networkClientId,
+             });
+             const { estimatedGas, simulationFails } = yield (0, gas_1.estimateGas)(transaction, ethQuery);
+@@ -596,7 +594,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      */
+     estimateGasBuffered(transaction, multiplier, networkClientId) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++            const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                 networkClientId,
+             });
+             const { blockGasLimit, estimatedGas, simulationFails } = yield (0, gas_1.estimateGas)(transaction, ethQuery);
+@@ -650,7 +648,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             this.update({ transactions: [] });
+             return;
+         }
+-        const currentChainId = this.getChainId();
++        const currentChainId = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getChainIdOrThrow).call(this);
+         const newTransactions = this.state.transactions.filter(({ chainId, txParams }) => {
+             var _a;
+             const isMatchingNetwork = ignoreNetwork || chainId === currentChainId;
+@@ -811,7 +809,11 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+     }
+     getNonceLock(address, networkClientId) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            return __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getNonceLock(address, networkClientId);
++            const nonceLock = yield __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getNonceLock(address, networkClientId);
++            if (!nonceLock) {
++                throw rpc_errors_1.providerErrors.disconnected();
++            }
++            return nonceLock;
+         });
+     }
+     /**
+@@ -846,10 +848,11 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             };
+             editableParams.txParams = (0, lodash_1.pickBy)(editableParams.txParams);
+             const updatedTransaction = (0, lodash_1.merge)(transactionMeta, editableParams);
+-            const { type } = yield (0, transaction_type_1.determineTransactionType)(updatedTransaction.txParams, __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++            const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                 networkClientId: transactionMeta.networkClientId,
+                 chainId: transactionMeta.chainId,
+-            }));
++            });
++            const { type } = yield (0, transaction_type_1.determineTransactionType)(updatedTransaction.txParams, ethQuery);
+             updatedTransaction.type = type;
+             this.updateTransaction(updatedTransaction, `Update Editable Params for ${txId}`);
+             return this.getTransaction(txId);
+@@ -966,7 +969,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      * Creates approvals for all unapproved transactions persisted.
+      */
+     initApprovals() {
+-        const chainId = this.getChainId();
++        const chainId = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getChainIdOrThrow).call(this);
+         const unapprovedTxs = this.state.transactions.filter((transaction) => transaction.status === types_1.TransactionStatus.unapproved &&
+             transaction.chainId === chainId &&
+             !transaction.isUserOperation);
+@@ -981,6 +984,26 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             });
+         }
+     }
++    /**
++     * Sign and submit any previously approved transactions.
++     */
++    initApprovedTransactions() {
++        const approvedTransactions = this.state.transactions.filter((transaction) => transaction.status === types_1.TransactionStatus.approved);
++        if (!approvedTransactions.length) {
++            return;
++        }
++        (0, logger_1.projectLogger)('Processing previously approved transactions', {
++            count: approvedTransactions.length,
++        });
++        for (const transactionMeta of approvedTransactions) {
++            if (this.beforeApproveOnInit(transactionMeta)) {
++                this.approveTransaction(transactionMeta.id).catch((error) => {
++                    /* istanbul ignore next */
++                    console.error('Error while submitting persisted transaction', error);
++                });
++            }
++        }
++    }
+     /**
+      * Search transaction metadata for matching entries.
+      *
+@@ -992,7 +1015,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      * @returns An array of transactions matching the provided options.
+      */
+     getTransactions({ searchCriteria = {}, initialList, filterToCurrentNetwork = true, limit, } = {}) {
+-        const chainId = this.getChainId();
++        const chainId = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getChainIdOrThrow).call(this);
+         // searchCriteria is an object that might have values that aren't predicate
+         // methods. When providing any other value type (string, number, etc), we
+         // consider this shorthand for "check the value at key for strict equality
+@@ -1114,29 +1137,25 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         transactions.push(transactionMeta);
+         this.update({ transactions: this.trimTransactionsForState(transactions) });
+     }
+-    updateGasProperties(transactionMeta) {
++    updateGasProperties(transactionMeta, ethQuery) {
++        var _a;
+         return __awaiter(this, void 0, void 0, function* () {
+             const isEIP1559Compatible = (yield this.getEIP1559Compatibility(transactionMeta.networkClientId)) &&
+                 transactionMeta.txParams.type !== types_1.TransactionEnvelopeType.legacy;
+             const { networkClientId, chainId } = transactionMeta;
+-            const isCustomNetwork = networkClientId
++            const networkType = networkClientId
+                 ? this.messagingSystem.call(`NetworkController:getNetworkClientById`, networkClientId).configuration.type === network_controller_1.NetworkClientType.Custom
+-                : this.getNetworkState().providerConfig.type === controller_utils_1.NetworkType.rpc;
++                : (_a = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getSelectedNetworkClientConfiguration).call(this)) === null || _a === void 0 ? void 0 : _a.type;
++            const isCustomNetwork = networkType === network_controller_1.NetworkClientType.Custom;
+             yield (0, gas_1.updateGas)({
+-                ethQuery: __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
+-                    networkClientId,
+-                    chainId,
+-                }),
++                ethQuery,
+                 chainId,
+                 isCustomNetwork,
+                 txMeta: transactionMeta,
+             });
+             yield (0, gas_fees_1.updateGasFees)({
+                 eip1559: isEIP1559Compatible,
+-                ethQuery: __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
+-                    networkClientId,
+-                    chainId,
+-                }),
++                ethQuery,
+                 gasFeeFlows: this.gasFeeFlows,
+                 getGasFeeEstimates: this.getGasFeeEstimates,
+                 getSavedGasFees: this.getSavedGasFees.bind(this),
+@@ -1144,23 +1163,6 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             });
+         });
+     }
+-    onBootCleanup() {
+-        this.submitApprovedTransactions();
+-    }
+-    /**
+-     * Force submit approved transactions for all chains.
+-     */
+-    submitApprovedTransactions() {
+-        const approvedTransactions = this.state.transactions.filter((transaction) => transaction.status === types_1.TransactionStatus.approved);
+-        for (const transactionMeta of approvedTransactions) {
+-            if (this.beforeApproveOnInit(transactionMeta)) {
+-                this.approveTransaction(transactionMeta.id).catch((error) => {
+-                    /* istanbul ignore next */
+-                    console.error('Error while submitting persisted transaction', error);
+-                });
+-            }
+-        }
+-    }
+     processApproval(transactionMeta, { isExisting = false, requireApproval, shouldShowRequest = true, actionId, }) {
+         return __awaiter(this, void 0, void 0, function* () {
+             const transactionId = transactionMeta.id;
+@@ -1264,7 +1266,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                     (0, logger_1.projectLogger)('Skipping approval as signing in progress', transactionId);
+                     return;
+                 }
+-                const [nonce, releaseNonce] = yield (0, nonce_1.getNextNonce)(transactionMeta, (address) => __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getNonceLock(address, networkClientId));
++                const getNonceLock = (address) => __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getNonceLock(address, networkClientId);
++                const [nonce, releaseNonce] = yield (0, nonce_1.getNextNonce)(transactionMeta, getNonceLock);
+                 releaseNonceLock = releaseNonce;
+                 transactionMeta.status = types_1.TransactionStatus.approved;
+                 transactionMeta.txParams.nonce = nonce;
+@@ -1284,7 +1287,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 if (!rawTx) {
+                     return;
+                 }
+-                const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++                const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                     networkClientId: transactionMeta.networkClientId,
+                     chainId: transactionMeta.chainId,
+                 });
+@@ -1442,11 +1445,11 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         return { meta: transaction, isCompleted };
+     }
+     getChainId(networkClientId) {
++        var _a;
+         if (networkClientId) {
+             return this.messagingSystem.call(`NetworkController:getNetworkClientById`, networkClientId).configuration.chainId;
+         }
+-        const { providerConfig } = this.getNetworkState();
+-        return providerConfig.chainId;
++        return (_a = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getSelectedNetworkClientConfiguration).call(this)) === null || _a === void 0 ? void 0 : _a.chainId;
+     }
+     prepareUnsignedEthTx(chainId, txParams) {
+         return tx_1.TransactionFactory.fromTxData(txParams, {
+@@ -1633,6 +1636,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             (0, logger_1.projectLogger)('Signing transaction', txParams);
+             const unsignedEthTx = this.prepareUnsignedEthTx(transactionMeta.chainId, txParams);
+             this.inProcessOfSigning.add(transactionMeta.id);
++            (0, logger_1.projectLogger)('Signing Test', unsignedEthTx, txParams);
+             const signedTx = yield new Promise((resolve, reject) => {
+                 var _a;
+                 (_a = this.sign) === null || _a === void 0 ? void 0 : _a.call(this, unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)).then(resolve, reject);
+@@ -1661,7 +1665,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+     onTransactionStatusChange(transactionMeta) {
+         this.hub.emit('transaction-status-update', { transactionMeta });
+     }
+-    getNonceTrackerTransactions(status, address, chainId = this.getChainId()) {
++    getNonceTrackerTransactions(status, address, chainId) {
+         return (0, nonce_1.getAndFormatTransactionsForNonceTracker)(chainId, address, status, this.state.transactions);
+     }
+     onConfirmedTransaction(transactionMeta) {
+@@ -1680,7 +1684,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 if (transactionMeta.type !== types_1.TransactionType.swap) {
+                     return;
+                 }
+-                const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++                const ethQuery = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getEthQueryOrThrow).call(this, {
+                     networkClientId: transactionMeta.networkClientId,
+                     chainId: transactionMeta.chainId,
+                 });
+@@ -1738,14 +1742,13 @@ _TransactionController_incomingTransactionOptions = new WeakMap(), _TransactionC
+         provider: provider,
+         blockTracker,
+         getPendingTransactions: __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getNonceTrackerPendingTransactions).bind(this, chainId),
+-        getConfirmedTransactions: this.getNonceTrackerTransactions.bind(this, types_1.TransactionStatus.confirmed),
++        getConfirmedTransactions: this.getNonceTrackerTransactions.bind(this, types_1.TransactionStatus.confirmed, chainId),
+     });
+-}, _TransactionController_createIncomingTransactionHelper = function _TransactionController_createIncomingTransactionHelper({ blockTracker, etherscanRemoteTransactionSource, chainId, }) {
++}, _TransactionController_createIncomingTransactionHelper = function _TransactionController_createIncomingTransactionHelper({ getNetworkClient, etherscanRemoteTransactionSource, }) {
+     const incomingTransactionHelper = new IncomingTransactionHelper_1.IncomingTransactionHelper({
+-        blockTracker,
+         getCurrentAccount: this.getSelectedAddress,
+         getLastFetchedBlockNumbers: () => this.state.lastFetchedBlockNumbers,
+-        getChainId: chainId ? () => chainId : this.getChainId.bind(this),
++        getNetworkClient,
+         isEnabled: __classPrivateFieldGet(this, _TransactionController_incomingTransactionOptions, "f").isEnabled,
+         queryEntireHistory: __classPrivateFieldGet(this, _TransactionController_incomingTransactionOptions, "f").queryEntireHistory,
+         remoteTransactionSource: etherscanRemoteTransactionSource,
+@@ -1754,18 +1757,14 @@ _TransactionController_incomingTransactionOptions = new WeakMap(), _TransactionC
+     });
+     __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_addIncomingTransactionHelperListeners).call(this, incomingTransactionHelper);
+     return incomingTransactionHelper;
+-}, _TransactionController_createPendingTransactionTracker = function _TransactionController_createPendingTransactionTracker({ provider, blockTracker, chainId, }) {
+-    const ethQuery = new eth_query_1.default(provider);
+-    const getChainId = chainId ? () => chainId : this.getChainId.bind(this);
++}, _TransactionController_createPendingTransactionTracker = function _TransactionController_createPendingTransactionTracker({ getNetworkClient, }) {
+     const pendingTransactionTracker = new PendingTransactionTracker_1.PendingTransactionTracker({
+         approveTransaction: this.approveTransaction.bind(this),
+-        blockTracker,
+-        getChainId,
+-        getEthQuery: () => ethQuery,
++        getNetworkClient,
+         getTransactions: () => this.state.transactions,
+         isResubmitEnabled: __classPrivateFieldGet(this, _TransactionController_pendingTransactionOptions, "f").isResubmitEnabled,
+-        getGlobalLock: () => __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").acquireNonceLockForChainIdKey({
+-            chainId: getChainId(),
++        getGlobalLock: (chainId) => __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").acquireNonceLockForChainIdKey({
++            chainId,
+         }),
+         publishTransaction: this.publishTransaction.bind(this),
+         hooks: {
+@@ -1813,5 +1812,23 @@ _TransactionController_incomingTransactionOptions = new WeakMap(), _TransactionC
+     const index = transactions.findIndex(({ id }) => transactionMeta.id === id);
+     transactions[index] = transactionMeta;
+     this.update({ transactions: this.trimTransactionsForState(transactions) });
++}, _TransactionController_getEthQueryOrThrow = function _TransactionController_getEthQueryOrThrow({ networkClientId, chainId, }) {
++    const ethQuery = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getEthQuery({
++        networkClientId,
++        chainId,
++    });
++    if (!ethQuery) {
++        throw rpc_errors_1.providerErrors.disconnected();
++    }
++    return ethQuery;
++}, _TransactionController_getChainIdOrThrow = function _TransactionController_getChainIdOrThrow(networkClientId) {
++    const chainId = this.getChainId(networkClientId);
++    if (!chainId) {
++        throw rpc_errors_1.providerErrors.disconnected();
++    }
++    return chainId;
++}, _TransactionController_getSelectedNetworkClientConfiguration = function _TransactionController_getSelectedNetworkClientConfiguration() {
++    var _a;
++    return (_a = __classPrivateFieldGet(this, _TransactionController_multichainTrackingHelper, "f").getSelectedNetworkClient()) === null || _a === void 0 ? void 0 : _a.configuration;
+ };
+ //# sourceMappingURL=TransactionController.js.map
+\ No newline at end of file
+diff --git a/dist/helpers/GasFeePoller.d.ts b/dist/helpers/GasFeePoller.d.ts
+index 95bb979bdfd5109e604d409e0708659deaf85840..1ccca9f2ed801783634abb917d65c2fa7b49ea5c 100644
+--- a/dist/helpers/GasFeePoller.d.ts
++++ b/dist/helpers/GasFeePoller.d.ts
+@@ -23,7 +23,7 @@ export declare class GasFeePoller {
+      */
+     constructor({ gasFeeFlows, getEthQuery, getGasFeeControllerEstimates, getTransactions, onStateChange, }: {
+         gasFeeFlows: GasFeeFlow[];
+-        getEthQuery: (chainId: Hex, networkClientId?: NetworkClientId) => EthQuery;
++        getEthQuery: (chainId: Hex, networkClientId?: NetworkClientId) => EthQuery | undefined;
+         getGasFeeControllerEstimates: () => Promise<GasFeeState>;
+         getTransactions: () => TransactionMeta[];
+         onStateChange: (listener: () => void) => void;
+diff --git a/dist/helpers/GasFeePoller.js b/dist/helpers/GasFeePoller.js
+index c0ac2e7003664533eb2a4af143fa8eca656b2ee4..a6f7f264171c6e996e6ed998d880f8ea5d85c41b 100644
+--- a/dist/helpers/GasFeePoller.js
++++ b/dist/helpers/GasFeePoller.js
+@@ -112,6 +112,10 @@ _GasFeePoller_gasFeeFlows = new WeakMap(), _GasFeePoller_getEthQuery = new WeakM
+         else {
+             log('Found gas fee flow', gasFeeFlow.constructor.name, transactionMeta.id);
+         }
++        if (!ethQuery) {
++            log('Provider not available', transactionMeta.id);
++            return;
++        }
+         const request = {
+             ethQuery,
+             getGasFeeControllerEstimates: __classPrivateFieldGet(this, _GasFeePoller_getGasFeeControllerEstimates, "f"),
+diff --git a/dist/helpers/IncomingTransactionHelper.d.ts b/dist/helpers/IncomingTransactionHelper.d.ts
+index 8c91971d214bd9a0bdb09cd3b807ffbbc4d78d35..54eedfc74146887e74278c452faccaa29474d18b 100644
+--- a/dist/helpers/IncomingTransactionHelper.d.ts
++++ b/dist/helpers/IncomingTransactionHelper.d.ts
+@@ -1,5 +1,6 @@
+ /// <reference types="node" />
+-import type { BlockTracker } from '@metamask/network-controller';
++import type { NetworkClientConfiguration } from '@metamask/network-controller';
++import type { AutoManagedNetworkClient } from '@metamask/network-controller/src/create-auto-managed-network-client';
+ import type { Hex } from '@metamask/utils';
+ import EventEmitter from 'events';
+ import type { RemoteTransactionSource, TransactionMeta } from '../types';
+@@ -20,12 +21,11 @@ export declare type IncomingTransactionOptions = {
+ export declare class IncomingTransactionHelper {
+     #private;
+     hub: EventEmitter;
+-    constructor({ blockTracker, getCurrentAccount, getLastFetchedBlockNumbers, getLocalTransactions, getChainId, isEnabled, queryEntireHistory, remoteTransactionSource, transactionLimit, updateTransactions, }: {
+-        blockTracker: BlockTracker;
++    constructor({ getCurrentAccount, getLastFetchedBlockNumbers, getLocalTransactions, getNetworkClient, isEnabled, queryEntireHistory, remoteTransactionSource, transactionLimit, updateTransactions, }: {
+         getCurrentAccount: () => string;
+         getLastFetchedBlockNumbers: () => Record<string, number>;
+         getLocalTransactions?: () => TransactionMeta[];
+-        getChainId: () => Hex;
++        getNetworkClient: () => AutoManagedNetworkClient<NetworkClientConfiguration> | undefined;
+         isEnabled?: () => boolean;
+         queryEntireHistory?: boolean;
+         remoteTransactionSource: RemoteTransactionSource;
+diff --git a/dist/helpers/IncomingTransactionHelper.js b/dist/helpers/IncomingTransactionHelper.js
+index 8eb7d6e41423f7ba5e378dd385a92cae17d3d42b..538d9e4317276000da6aa82e47d114caf1606c88 100644
+--- a/dist/helpers/IncomingTransactionHelper.js
++++ b/dist/helpers/IncomingTransactionHelper.js
+@@ -22,7 +22,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _IncomingTransactionHelper_instances, _IncomingTransactionHelper_blockTracker, _IncomingTransactionHelper_getCurrentAccount, _IncomingTransactionHelper_getLastFetchedBlockNumbers, _IncomingTransactionHelper_getLocalTransactions, _IncomingTransactionHelper_getChainId, _IncomingTransactionHelper_isEnabled, _IncomingTransactionHelper_isRunning, _IncomingTransactionHelper_mutex, _IncomingTransactionHelper_onLatestBlock, _IncomingTransactionHelper_queryEntireHistory, _IncomingTransactionHelper_remoteTransactionSource, _IncomingTransactionHelper_transactionLimit, _IncomingTransactionHelper_updateTransactions, _IncomingTransactionHelper_sortTransactionsByTime, _IncomingTransactionHelper_getNewTransactions, _IncomingTransactionHelper_getUpdatedTransactions, _IncomingTransactionHelper_isTransactionOutdated, _IncomingTransactionHelper_getLastFetchedBlockNumberDec, _IncomingTransactionHelper_getFromBlock, _IncomingTransactionHelper_updateLastFetchedBlockNumber, _IncomingTransactionHelper_getBlockNumberKey, _IncomingTransactionHelper_canStart;
++var _IncomingTransactionHelper_instances, _IncomingTransactionHelper_blockTracker, _IncomingTransactionHelper_getCurrentAccount, _IncomingTransactionHelper_getLastFetchedBlockNumbers, _IncomingTransactionHelper_getLocalTransactions, _IncomingTransactionHelper_getNetworkClient, _IncomingTransactionHelper_isEnabled, _IncomingTransactionHelper_isRunning, _IncomingTransactionHelper_mutex, _IncomingTransactionHelper_onLatestBlock, _IncomingTransactionHelper_queryEntireHistory, _IncomingTransactionHelper_remoteTransactionSource, _IncomingTransactionHelper_transactionLimit, _IncomingTransactionHelper_updateTransactions, _IncomingTransactionHelper_sortTransactionsByTime, _IncomingTransactionHelper_getNewTransactions, _IncomingTransactionHelper_getUpdatedTransactions, _IncomingTransactionHelper_isTransactionOutdated, _IncomingTransactionHelper_getLastFetchedBlockNumberDec, _IncomingTransactionHelper_getFromBlock, _IncomingTransactionHelper_updateLastFetchedBlockNumber, _IncomingTransactionHelper_getBlockNumberKey, _IncomingTransactionHelper_canStart;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.IncomingTransactionHelper = void 0;
+ const async_mutex_1 = require("async-mutex");
+@@ -36,13 +36,13 @@ const UPDATE_CHECKS = [
+     (txMeta) => txMeta.txParams.gasUsed,
+ ];
+ class IncomingTransactionHelper {
+-    constructor({ blockTracker, getCurrentAccount, getLastFetchedBlockNumbers, getLocalTransactions, getChainId, isEnabled, queryEntireHistory, remoteTransactionSource, transactionLimit, updateTransactions, }) {
++    constructor({ getCurrentAccount, getLastFetchedBlockNumbers, getLocalTransactions, getNetworkClient, isEnabled, queryEntireHistory, remoteTransactionSource, transactionLimit, updateTransactions, }) {
+         _IncomingTransactionHelper_instances.add(this);
+         _IncomingTransactionHelper_blockTracker.set(this, void 0);
+         _IncomingTransactionHelper_getCurrentAccount.set(this, void 0);
+         _IncomingTransactionHelper_getLastFetchedBlockNumbers.set(this, void 0);
+         _IncomingTransactionHelper_getLocalTransactions.set(this, void 0);
+-        _IncomingTransactionHelper_getChainId.set(this, void 0);
++        _IncomingTransactionHelper_getNetworkClient.set(this, void 0);
+         _IncomingTransactionHelper_isEnabled.set(this, void 0);
+         _IncomingTransactionHelper_isRunning.set(this, void 0);
+         _IncomingTransactionHelper_mutex.set(this, new async_mutex_1.Mutex());
+@@ -52,11 +52,10 @@ class IncomingTransactionHelper {
+         _IncomingTransactionHelper_transactionLimit.set(this, void 0);
+         _IncomingTransactionHelper_updateTransactions.set(this, void 0);
+         this.hub = new events_1.default();
+-        __classPrivateFieldSet(this, _IncomingTransactionHelper_blockTracker, blockTracker, "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_getCurrentAccount, getCurrentAccount, "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_getLastFetchedBlockNumbers, getLastFetchedBlockNumbers, "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_getLocalTransactions, getLocalTransactions || (() => []), "f");
+-        __classPrivateFieldSet(this, _IncomingTransactionHelper_getChainId, getChainId, "f");
++        __classPrivateFieldSet(this, _IncomingTransactionHelper_getNetworkClient, getNetworkClient, "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_isEnabled, isEnabled !== null && isEnabled !== void 0 ? isEnabled : (() => true), "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_isRunning, false, "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_queryEntireHistory, queryEntireHistory !== null && queryEntireHistory !== void 0 ? queryEntireHistory : true, "f");
+@@ -78,14 +77,22 @@ class IncomingTransactionHelper {
+         if (__classPrivateFieldGet(this, _IncomingTransactionHelper_isRunning, "f")) {
+             return;
+         }
+-        if (!__classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_canStart).call(this)) {
++        const networkClient = __classPrivateFieldGet(this, _IncomingTransactionHelper_getNetworkClient, "f").call(this);
++        if (!networkClient) {
++            (0, logger_1.incomingTransactionsLogger)('Cannot start as network client is not available');
+             return;
+         }
++        if (!__classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_canStart).call(this, networkClient.configuration.chainId)) {
++            return;
++        }
++        __classPrivateFieldSet(this, _IncomingTransactionHelper_blockTracker, networkClient.blockTracker, "f");
+         __classPrivateFieldGet(this, _IncomingTransactionHelper_blockTracker, "f").addListener('latest', __classPrivateFieldGet(this, _IncomingTransactionHelper_onLatestBlock, "f"));
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_isRunning, true, "f");
+     }
+     stop() {
+-        __classPrivateFieldGet(this, _IncomingTransactionHelper_blockTracker, "f").removeListener('latest', __classPrivateFieldGet(this, _IncomingTransactionHelper_onLatestBlock, "f"));
++        var _a;
++        (_a = __classPrivateFieldGet(this, _IncomingTransactionHelper_blockTracker, "f")) === null || _a === void 0 ? void 0 : _a.removeListener('latest', __classPrivateFieldGet(this, _IncomingTransactionHelper_onLatestBlock, "f"));
++        __classPrivateFieldSet(this, _IncomingTransactionHelper_blockTracker, undefined, "f");
+         __classPrivateFieldSet(this, _IncomingTransactionHelper_isRunning, false, "f");
+     }
+     update(latestBlockNumberHex) {
+@@ -94,14 +101,19 @@ class IncomingTransactionHelper {
+             const releaseLock = yield __classPrivateFieldGet(this, _IncomingTransactionHelper_mutex, "f").acquire();
+             (0, logger_1.incomingTransactionsLogger)('Checking for incoming transactions');
+             try {
+-                if (!__classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_canStart).call(this)) {
++                const networkClient = __classPrivateFieldGet(this, _IncomingTransactionHelper_getNetworkClient, "f").call(this);
++                if (!networkClient || !__classPrivateFieldGet(this, _IncomingTransactionHelper_blockTracker, "f")) {
++                    (0, logger_1.incomingTransactionsLogger)('Cannot update as network client is not available');
++                    return;
++                }
++                if (!__classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_canStart).call(this, networkClient.configuration.chainId)) {
+                     return;
+                 }
+                 const latestBlockNumber = parseInt(latestBlockNumberHex || (yield __classPrivateFieldGet(this, _IncomingTransactionHelper_blockTracker, "f").getLatestBlock()), 16);
+                 const additionalLastFetchedKeys = (_c = (_b = (_a = __classPrivateFieldGet(this, _IncomingTransactionHelper_remoteTransactionSource, "f")).getLastBlockVariations) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : [];
+-                const fromBlock = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getFromBlock).call(this, latestBlockNumber);
++                const fromBlock = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getFromBlock).call(this, latestBlockNumber, networkClient.configuration.chainId);
+                 const address = __classPrivateFieldGet(this, _IncomingTransactionHelper_getCurrentAccount, "f").call(this);
+-                const currentChainId = __classPrivateFieldGet(this, _IncomingTransactionHelper_getChainId, "f").call(this);
++                const currentChainId = networkClient.configuration.chainId;
+                 let remoteTransactions = [];
+                 try {
+                     remoteTransactions =
+@@ -138,7 +150,7 @@ class IncomingTransactionHelper {
+                         updated: updatedTransactions,
+                     });
+                 }
+-                __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_updateLastFetchedBlockNumber).call(this, remoteTransactions, additionalLastFetchedKeys);
++                __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_updateLastFetchedBlockNumber).call(this, remoteTransactions, additionalLastFetchedKeys, currentChainId);
+             }
+             finally {
+                 releaseLock();
+@@ -147,7 +159,7 @@ class IncomingTransactionHelper {
+     }
+ }
+ exports.IncomingTransactionHelper = IncomingTransactionHelper;
+-_IncomingTransactionHelper_blockTracker = new WeakMap(), _IncomingTransactionHelper_getCurrentAccount = new WeakMap(), _IncomingTransactionHelper_getLastFetchedBlockNumbers = new WeakMap(), _IncomingTransactionHelper_getLocalTransactions = new WeakMap(), _IncomingTransactionHelper_getChainId = new WeakMap(), _IncomingTransactionHelper_isEnabled = new WeakMap(), _IncomingTransactionHelper_isRunning = new WeakMap(), _IncomingTransactionHelper_mutex = new WeakMap(), _IncomingTransactionHelper_onLatestBlock = new WeakMap(), _IncomingTransactionHelper_queryEntireHistory = new WeakMap(), _IncomingTransactionHelper_remoteTransactionSource = new WeakMap(), _IncomingTransactionHelper_transactionLimit = new WeakMap(), _IncomingTransactionHelper_updateTransactions = new WeakMap(), _IncomingTransactionHelper_instances = new WeakSet(), _IncomingTransactionHelper_sortTransactionsByTime = function _IncomingTransactionHelper_sortTransactionsByTime(transactions) {
++_IncomingTransactionHelper_blockTracker = new WeakMap(), _IncomingTransactionHelper_getCurrentAccount = new WeakMap(), _IncomingTransactionHelper_getLastFetchedBlockNumbers = new WeakMap(), _IncomingTransactionHelper_getLocalTransactions = new WeakMap(), _IncomingTransactionHelper_getNetworkClient = new WeakMap(), _IncomingTransactionHelper_isEnabled = new WeakMap(), _IncomingTransactionHelper_isRunning = new WeakMap(), _IncomingTransactionHelper_mutex = new WeakMap(), _IncomingTransactionHelper_onLatestBlock = new WeakMap(), _IncomingTransactionHelper_queryEntireHistory = new WeakMap(), _IncomingTransactionHelper_remoteTransactionSource = new WeakMap(), _IncomingTransactionHelper_transactionLimit = new WeakMap(), _IncomingTransactionHelper_updateTransactions = new WeakMap(), _IncomingTransactionHelper_instances = new WeakSet(), _IncomingTransactionHelper_sortTransactionsByTime = function _IncomingTransactionHelper_sortTransactionsByTime(transactions) {
+     transactions.sort((a, b) => (a.time < b.time ? -1 : 1));
+ }, _IncomingTransactionHelper_getNewTransactions = function _IncomingTransactionHelper_getNewTransactions(remoteTxs, localTxs) {
+     return remoteTxs.filter((tx) => !localTxs.some(({ hash }) => hash === tx.hash));
+@@ -156,21 +168,21 @@ _IncomingTransactionHelper_blockTracker = new WeakMap(), _IncomingTransactionHel
+         __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_isTransactionOutdated).call(this, remoteTx, localTx)));
+ }, _IncomingTransactionHelper_isTransactionOutdated = function _IncomingTransactionHelper_isTransactionOutdated(remoteTx, localTx) {
+     return UPDATE_CHECKS.some((getValue) => getValue(remoteTx) !== getValue(localTx));
+-}, _IncomingTransactionHelper_getLastFetchedBlockNumberDec = function _IncomingTransactionHelper_getLastFetchedBlockNumberDec() {
++}, _IncomingTransactionHelper_getLastFetchedBlockNumberDec = function _IncomingTransactionHelper_getLastFetchedBlockNumberDec(chainId) {
+     var _a, _b, _c;
+     const additionalLastFetchedKeys = (_c = (_b = (_a = __classPrivateFieldGet(this, _IncomingTransactionHelper_remoteTransactionSource, "f")).getLastBlockVariations) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : [];
+-    const lastFetchedKey = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getBlockNumberKey).call(this, additionalLastFetchedKeys);
++    const lastFetchedKey = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getBlockNumberKey).call(this, additionalLastFetchedKeys, chainId);
+     const lastFetchedBlockNumbers = __classPrivateFieldGet(this, _IncomingTransactionHelper_getLastFetchedBlockNumbers, "f").call(this);
+     return lastFetchedBlockNumbers[lastFetchedKey];
+-}, _IncomingTransactionHelper_getFromBlock = function _IncomingTransactionHelper_getFromBlock(latestBlockNumber) {
+-    const lastFetchedBlockNumber = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getLastFetchedBlockNumberDec).call(this);
++}, _IncomingTransactionHelper_getFromBlock = function _IncomingTransactionHelper_getFromBlock(latestBlockNumber, chainId) {
++    const lastFetchedBlockNumber = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getLastFetchedBlockNumberDec).call(this, chainId);
+     if (lastFetchedBlockNumber) {
+         return lastFetchedBlockNumber + 1;
+     }
+     return __classPrivateFieldGet(this, _IncomingTransactionHelper_queryEntireHistory, "f")
+         ? undefined
+         : latestBlockNumber - RECENT_HISTORY_BLOCK_RANGE;
+-}, _IncomingTransactionHelper_updateLastFetchedBlockNumber = function _IncomingTransactionHelper_updateLastFetchedBlockNumber(remoteTxs, additionalKeys) {
++}, _IncomingTransactionHelper_updateLastFetchedBlockNumber = function _IncomingTransactionHelper_updateLastFetchedBlockNumber(remoteTxs, additionalKeys, chainId) {
+     let lastFetchedBlockNumber = -1;
+     for (const tx of remoteTxs) {
+         const currentBlockNumberValue = tx.blockNumber
+@@ -181,7 +193,7 @@ _IncomingTransactionHelper_blockTracker = new WeakMap(), _IncomingTransactionHel
+     if (lastFetchedBlockNumber === -1) {
+         return;
+     }
+-    const lastFetchedKey = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getBlockNumberKey).call(this, additionalKeys);
++    const lastFetchedKey = __classPrivateFieldGet(this, _IncomingTransactionHelper_instances, "m", _IncomingTransactionHelper_getBlockNumberKey).call(this, additionalKeys, chainId);
+     const lastFetchedBlockNumbers = __classPrivateFieldGet(this, _IncomingTransactionHelper_getLastFetchedBlockNumbers, "f").call(this);
+     const previousValue = lastFetchedBlockNumbers[lastFetchedKey];
+     if (previousValue >= lastFetchedBlockNumber) {
+@@ -192,15 +204,13 @@ _IncomingTransactionHelper_blockTracker = new WeakMap(), _IncomingTransactionHel
+         lastFetchedBlockNumbers,
+         blockNumber: lastFetchedBlockNumber,
+     });
+-}, _IncomingTransactionHelper_getBlockNumberKey = function _IncomingTransactionHelper_getBlockNumberKey(additionalKeys) {
++}, _IncomingTransactionHelper_getBlockNumberKey = function _IncomingTransactionHelper_getBlockNumberKey(additionalKeys, chainId) {
+     var _a;
+-    const currentChainId = __classPrivateFieldGet(this, _IncomingTransactionHelper_getChainId, "f").call(this);
+     const currentAccount = (_a = __classPrivateFieldGet(this, _IncomingTransactionHelper_getCurrentAccount, "f").call(this)) === null || _a === void 0 ? void 0 : _a.toLowerCase();
+-    return [currentChainId, currentAccount, ...additionalKeys].join('#');
+-}, _IncomingTransactionHelper_canStart = function _IncomingTransactionHelper_canStart() {
++    return [chainId, currentAccount, ...additionalKeys].join('#');
++}, _IncomingTransactionHelper_canStart = function _IncomingTransactionHelper_canStart(chainId) {
+     const isEnabled = __classPrivateFieldGet(this, _IncomingTransactionHelper_isEnabled, "f").call(this);
+-    const currentChainId = __classPrivateFieldGet(this, _IncomingTransactionHelper_getChainId, "f").call(this);
+-    const isSupportedNetwork = __classPrivateFieldGet(this, _IncomingTransactionHelper_remoteTransactionSource, "f").isSupportedNetwork(currentChainId);
++    const isSupportedNetwork = __classPrivateFieldGet(this, _IncomingTransactionHelper_remoteTransactionSource, "f").isSupportedNetwork(chainId);
+     return isEnabled && isSupportedNetwork;
+ };
+ //# sourceMappingURL=IncomingTransactionHelper.js.map
+\ No newline at end of file
+diff --git a/dist/helpers/MultichainTrackingHelper.d.ts b/dist/helpers/MultichainTrackingHelper.d.ts
+index 054196422567b24a90998f67bd7f9d685ac6c344..020664690e0fd115ad8aca5fa70fa875b2de38c5 100644
+--- a/dist/helpers/MultichainTrackingHelper.d.ts
++++ b/dist/helpers/MultichainTrackingHelper.d.ts
+@@ -1,5 +1,7 @@
+ import EthQuery from '@metamask/eth-query';
+ import type { NetworkClientId, NetworkController, BlockTracker, Provider, NetworkControllerStateChangeEvent } from '@metamask/network-controller';
++import type { AutoManagedNetworkClient } from '@metamask/network-controller/src/create-auto-managed-network-client';
++import type { CustomNetworkClientConfiguration, NetworkClientConfiguration } from '@metamask/network-controller/src/types';
+ import type { Hex } from '@metamask/utils';
+ import type { NonceLock, NonceTracker } from 'nonce-tracker';
+ import { EtherscanRemoteTransactionSource } from './EtherscanRemoteTransactionSource';
+@@ -7,40 +9,36 @@ import type { IncomingTransactionHelper, IncomingTransactionOptions } from './In
+ import type { PendingTransactionTracker } from './PendingTransactionTracker';
+ export declare type MultichainTrackingHelperOptions = {
+     isMultichainEnabled: boolean;
+-    provider: Provider;
+-    nonceTracker: NonceTracker;
+     incomingTransactionOptions: IncomingTransactionOptions;
+     findNetworkClientIdByChainId: NetworkController['findNetworkClientIdByChainId'];
+     getNetworkClientById: NetworkController['getNetworkClientById'];
+     getNetworkClientRegistry: NetworkController['getNetworkClientRegistry'];
++    getSelectedNetworkClientId: () => string | undefined;
+     removeIncomingTransactionHelperListeners: (IncomingTransactionHelper: IncomingTransactionHelper) => void;
+     removePendingTransactionTrackerListeners: (pendingTransactionTracker: PendingTransactionTracker) => void;
+     createNonceTracker: (opts: {
+         provider: Provider;
+         blockTracker: BlockTracker;
+-        chainId?: Hex;
++        chainId: Hex;
+     }) => NonceTracker;
+     createIncomingTransactionHelper: (opts: {
+-        blockTracker: BlockTracker;
++        getNetworkClient: () => AutoManagedNetworkClient<NetworkClientConfiguration> | undefined;
+         etherscanRemoteTransactionSource: EtherscanRemoteTransactionSource;
+-        chainId?: Hex;
+     }) => IncomingTransactionHelper;
+     createPendingTransactionTracker: (opts: {
+-        provider: Provider;
+-        blockTracker: BlockTracker;
+-        chainId?: Hex;
++        getNetworkClient: () => AutoManagedNetworkClient<NetworkClientConfiguration> | undefined;
+     }) => PendingTransactionTracker;
+     onNetworkStateChange: (listener: (...payload: NetworkControllerStateChangeEvent['payload']) => void) => void;
+ };
+ export declare class MultichainTrackingHelper {
+     #private;
+-    constructor({ isMultichainEnabled, provider, nonceTracker, incomingTransactionOptions, findNetworkClientIdByChainId, getNetworkClientById, getNetworkClientRegistry, removeIncomingTransactionHelperListeners, removePendingTransactionTrackerListeners, createNonceTracker, createIncomingTransactionHelper, createPendingTransactionTracker, onNetworkStateChange, }: MultichainTrackingHelperOptions);
++    constructor({ isMultichainEnabled, incomingTransactionOptions, findNetworkClientIdByChainId, getNetworkClientById, getNetworkClientRegistry, getSelectedNetworkClientId, removeIncomingTransactionHelperListeners, removePendingTransactionTrackerListeners, createNonceTracker, createIncomingTransactionHelper, createPendingTransactionTracker, onNetworkStateChange, }: MultichainTrackingHelperOptions);
+     initialize(): void;
+     has(networkClientId: NetworkClientId): boolean;
+     getEthQuery({ networkClientId, chainId, }?: {
+         networkClientId?: NetworkClientId;
+         chainId?: Hex;
+-    }): EthQuery;
++    }): EthQuery | undefined;
+     /**
+      * Gets the mutex intended to guard the nonceTracker for a particular chainId and key .
+      *
+@@ -61,12 +59,13 @@ export declare class MultichainTrackingHelper {
+      * @param networkClientId - The network client ID for the transaction, used to fetch the correct nonce tracker.
+      * @returns object with the `nextNonce` `nonceDetails`, and the releaseLock.
+      */
+-    getNonceLock(address: string, networkClientId?: NetworkClientId): Promise<NonceLock>;
++    getNonceLock(address: string, networkClientId?: NetworkClientId): Promise<NonceLock | undefined>;
+     startIncomingTransactionPolling(networkClientIds?: NetworkClientId[]): void;
+     stopIncomingTransactionPolling(networkClientIds?: NetworkClientId[]): void;
+     stopAllIncomingTransactionPolling(): void;
+     updateIncomingTransactions(networkClientIds?: NetworkClientId[]): Promise<void>;
+     checkForPendingTransactionAndStartPolling: () => void;
+     stopAllTracking(): void;
++    getSelectedNetworkClient(): AutoManagedNetworkClient<CustomNetworkClientConfiguration> | undefined;
+ }
+ //# sourceMappingURL=MultichainTrackingHelper.d.ts.map
+\ No newline at end of file
+diff --git a/dist/helpers/MultichainTrackingHelper.js b/dist/helpers/MultichainTrackingHelper.js
+index 237e8a0625b8cbaf855079b35425c8df415d8a55..a85bb8de65d0e5ffe07f78796aea9301109bf563 100644
+--- a/dist/helpers/MultichainTrackingHelper.js
++++ b/dist/helpers/MultichainTrackingHelper.js
+@@ -22,23 +22,23 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _MultichainTrackingHelper_instances, _MultichainTrackingHelper_isMultichainEnabled, _MultichainTrackingHelper_provider, _MultichainTrackingHelper_nonceTracker, _MultichainTrackingHelper_incomingTransactionOptions, _MultichainTrackingHelper_findNetworkClientIdByChainId, _MultichainTrackingHelper_getNetworkClientById, _MultichainTrackingHelper_getNetworkClientRegistry, _MultichainTrackingHelper_removeIncomingTransactionHelperListeners, _MultichainTrackingHelper_removePendingTransactionTrackerListeners, _MultichainTrackingHelper_createNonceTracker, _MultichainTrackingHelper_createIncomingTransactionHelper, _MultichainTrackingHelper_createPendingTransactionTracker, _MultichainTrackingHelper_nonceMutexesByChainId, _MultichainTrackingHelper_trackingMap, _MultichainTrackingHelper_etherscanRemoteTransactionSourcesMap, _MultichainTrackingHelper_refreshTrackingMap, _MultichainTrackingHelper_stopTrackingByNetworkClientId, _MultichainTrackingHelper_startTrackingByNetworkClientId, _MultichainTrackingHelper_refreshEtherscanRemoteTransactionSources;
++var _MultichainTrackingHelper_instances, _MultichainTrackingHelper_isMultichainEnabled, _MultichainTrackingHelper_incomingTransactionOptions, _MultichainTrackingHelper_findNetworkClientIdByChainId, _MultichainTrackingHelper_getNetworkClientById, _MultichainTrackingHelper_getNetworkClientRegistry, _MultichainTrackingHelper_getSelectedNetworkClientId, _MultichainTrackingHelper_removeIncomingTransactionHelperListeners, _MultichainTrackingHelper_removePendingTransactionTrackerListeners, _MultichainTrackingHelper_createNonceTracker, _MultichainTrackingHelper_createIncomingTransactionHelper, _MultichainTrackingHelper_createPendingTransactionTracker, _MultichainTrackingHelper_nonceMutexesByChainId, _MultichainTrackingHelper_trackingMap, _MultichainTrackingHelper_etherscanRemoteTransactionSourcesMap, _MultichainTrackingHelper_refreshTrackingMap, _MultichainTrackingHelper_stopTrackingByNetworkClientId, _MultichainTrackingHelper_startTrackingByNetworkClientId, _MultichainTrackingHelper_refreshEtherscanRemoteTransactionSources, _MultichainTrackingHelper_getSelectedNonceTracker;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.MultichainTrackingHelper = void 0;
+ const eth_query_1 = __importDefault(require("@metamask/eth-query"));
+ const async_mutex_1 = require("async-mutex");
+ const logger_1 = require("../logger");
+ const EtherscanRemoteTransactionSource_1 = require("./EtherscanRemoteTransactionSource");
++const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'multichain');
+ class MultichainTrackingHelper {
+-    constructor({ isMultichainEnabled, provider, nonceTracker, incomingTransactionOptions, findNetworkClientIdByChainId, getNetworkClientById, getNetworkClientRegistry, removeIncomingTransactionHelperListeners, removePendingTransactionTrackerListeners, createNonceTracker, createIncomingTransactionHelper, createPendingTransactionTracker, onNetworkStateChange, }) {
++    constructor({ isMultichainEnabled, incomingTransactionOptions, findNetworkClientIdByChainId, getNetworkClientById, getNetworkClientRegistry, getSelectedNetworkClientId, removeIncomingTransactionHelperListeners, removePendingTransactionTrackerListeners, createNonceTracker, createIncomingTransactionHelper, createPendingTransactionTracker, onNetworkStateChange, }) {
+         _MultichainTrackingHelper_instances.add(this);
+         _MultichainTrackingHelper_isMultichainEnabled.set(this, void 0);
+-        _MultichainTrackingHelper_provider.set(this, void 0);
+-        _MultichainTrackingHelper_nonceTracker.set(this, void 0);
+         _MultichainTrackingHelper_incomingTransactionOptions.set(this, void 0);
+         _MultichainTrackingHelper_findNetworkClientIdByChainId.set(this, void 0);
+         _MultichainTrackingHelper_getNetworkClientById.set(this, void 0);
+         _MultichainTrackingHelper_getNetworkClientRegistry.set(this, void 0);
++        _MultichainTrackingHelper_getSelectedNetworkClientId.set(this, void 0);
+         _MultichainTrackingHelper_removeIncomingTransactionHelperListeners.set(this, void 0);
+         _MultichainTrackingHelper_removePendingTransactionTrackerListeners.set(this, void 0);
+         _MultichainTrackingHelper_createNonceTracker.set(this, void 0);
+@@ -80,12 +80,11 @@ class MultichainTrackingHelper {
+             });
+         });
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_isMultichainEnabled, isMultichainEnabled, "f");
+-        __classPrivateFieldSet(this, _MultichainTrackingHelper_provider, provider, "f");
+-        __classPrivateFieldSet(this, _MultichainTrackingHelper_nonceTracker, nonceTracker, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_incomingTransactionOptions, incomingTransactionOptions, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_findNetworkClientIdByChainId, findNetworkClientIdByChainId, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_getNetworkClientById, getNetworkClientById, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_getNetworkClientRegistry, getNetworkClientRegistry, "f");
++        __classPrivateFieldSet(this, _MultichainTrackingHelper_getSelectedNetworkClientId, getSelectedNetworkClientId, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_removeIncomingTransactionHelperListeners, removeIncomingTransactionHelperListeners, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_removePendingTransactionTrackerListeners, removePendingTransactionTrackerListeners, "f");
+         __classPrivateFieldSet(this, _MultichainTrackingHelper_createNonceTracker, createNonceTracker, "f");
+@@ -115,8 +114,11 @@ class MultichainTrackingHelper {
+         return __classPrivateFieldGet(this, _MultichainTrackingHelper_trackingMap, "f").has(networkClientId);
+     }
+     getEthQuery({ networkClientId, chainId, } = {}) {
+-        if (!__classPrivateFieldGet(this, _MultichainTrackingHelper_isMultichainEnabled, "f")) {
+-            return new eth_query_1.default(__classPrivateFieldGet(this, _MultichainTrackingHelper_provider, "f"));
++        if (!__classPrivateFieldGet(this, _MultichainTrackingHelper_isMultichainEnabled, "f") || (!networkClientId && !chainId)) {
++            const selectedNetworkClient = this.getSelectedNetworkClient();
++            return selectedNetworkClient
++                ? new eth_query_1.default(selectedNetworkClient.provider)
++                : undefined;
+         }
+         let networkClient;
+         if (networkClientId) {
+@@ -124,7 +126,7 @@ class MultichainTrackingHelper {
+                 networkClient = __classPrivateFieldGet(this, _MultichainTrackingHelper_getNetworkClientById, "f").call(this, networkClientId);
+             }
+             catch (err) {
+-                (0, logger_1.incomingTransactionsLogger)('failed to get network client by networkClientId');
++                log('Failed to get network client by networkClientId', networkClientId);
+             }
+         }
+         if (!networkClient && chainId) {
+@@ -133,16 +135,10 @@ class MultichainTrackingHelper {
+                 networkClient = __classPrivateFieldGet(this, _MultichainTrackingHelper_getNetworkClientById, "f").call(this, networkClientId);
+             }
+             catch (err) {
+-                (0, logger_1.incomingTransactionsLogger)('failed to get network client by chainId');
++                log('Failed to get network client by chainId', chainId);
+             }
+         }
+-        if (networkClient) {
+-            return new eth_query_1.default(networkClient.provider);
+-        }
+-        // NOTE(JL): we're not ready to drop globally selected ethQuery yet.
+-        // Some calls to getEthQuery only have access to optional networkClientId
+-        // throw new Error('failed to get eth query instance');
+-        return new eth_query_1.default(__classPrivateFieldGet(this, _MultichainTrackingHelper_provider, "f"));
++        return networkClient ? new eth_query_1.default(networkClient.provider) : undefined;
+     }
+     /**
+      * Gets the mutex intended to guard the nonceTracker for a particular chainId and key .
+@@ -178,7 +174,10 @@ class MultichainTrackingHelper {
+     getNonceLock(address, networkClientId) {
+         return __awaiter(this, void 0, void 0, function* () {
+             let releaseLockForChainIdKey;
+-            let nonceTracker = __classPrivateFieldGet(this, _MultichainTrackingHelper_nonceTracker, "f");
++            let nonceTracker;
++            if (!networkClientId || !__classPrivateFieldGet(this, _MultichainTrackingHelper_isMultichainEnabled, "f")) {
++                nonceTracker = __classPrivateFieldGet(this, _MultichainTrackingHelper_instances, "m", _MultichainTrackingHelper_getSelectedNonceTracker).call(this);
++            }
+             if (networkClientId && __classPrivateFieldGet(this, _MultichainTrackingHelper_isMultichainEnabled, "f")) {
+                 const networkClient = __classPrivateFieldGet(this, _MultichainTrackingHelper_getNetworkClientById, "f").call(this, networkClientId);
+                 releaseLockForChainIdKey = yield this.acquireNonceLockForChainIdKey({
+@@ -191,6 +190,9 @@ class MultichainTrackingHelper {
+                 }
+                 nonceTracker = trackers.nonceTracker;
+             }
++            if (!nonceTracker) {
++                return undefined;
++            }
+             // Acquires the lock for the chainId + address and the nonceLock from the nonceTracker, then
+             // couples them together by replacing the nonceLock's releaseLock method with
+             // an anonymous function that calls releases both the original nonceLock and the
+@@ -235,7 +237,7 @@ class MultichainTrackingHelper {
+             promises
+                 .filter((result) => result.status === 'rejected')
+                 .forEach((result) => {
+-                (0, logger_1.incomingTransactionsLogger)('failed to update incoming transactions', result.reason);
++                log('failed to update incoming transactions', result.reason);
+             });
+         });
+     }
+@@ -244,9 +246,19 @@ class MultichainTrackingHelper {
+             __classPrivateFieldGet(this, _MultichainTrackingHelper_instances, "m", _MultichainTrackingHelper_stopTrackingByNetworkClientId).call(this, networkClientId);
+         }
+     }
++    getSelectedNetworkClient() {
++        const selectedNetworkClientId = __classPrivateFieldGet(this, _MultichainTrackingHelper_getSelectedNetworkClientId, "f").call(this);
++        if (!selectedNetworkClientId) {
++            log('Cannot get selected client as no selected network client ID');
++            return undefined;
++        }
++        const selectedNetworkClient = __classPrivateFieldGet(this, _MultichainTrackingHelper_getNetworkClientById, "f").call(this, selectedNetworkClientId);
++        log('Retrieved selected network client', selectedNetworkClientId);
++        return selectedNetworkClient;
++    }
+ }
+ exports.MultichainTrackingHelper = MultichainTrackingHelper;
+-_MultichainTrackingHelper_isMultichainEnabled = new WeakMap(), _MultichainTrackingHelper_provider = new WeakMap(), _MultichainTrackingHelper_nonceTracker = new WeakMap(), _MultichainTrackingHelper_incomingTransactionOptions = new WeakMap(), _MultichainTrackingHelper_findNetworkClientIdByChainId = new WeakMap(), _MultichainTrackingHelper_getNetworkClientById = new WeakMap(), _MultichainTrackingHelper_getNetworkClientRegistry = new WeakMap(), _MultichainTrackingHelper_removeIncomingTransactionHelperListeners = new WeakMap(), _MultichainTrackingHelper_removePendingTransactionTrackerListeners = new WeakMap(), _MultichainTrackingHelper_createNonceTracker = new WeakMap(), _MultichainTrackingHelper_createIncomingTransactionHelper = new WeakMap(), _MultichainTrackingHelper_createPendingTransactionTracker = new WeakMap(), _MultichainTrackingHelper_nonceMutexesByChainId = new WeakMap(), _MultichainTrackingHelper_trackingMap = new WeakMap(), _MultichainTrackingHelper_etherscanRemoteTransactionSourcesMap = new WeakMap(), _MultichainTrackingHelper_refreshTrackingMap = new WeakMap(), _MultichainTrackingHelper_refreshEtherscanRemoteTransactionSources = new WeakMap(), _MultichainTrackingHelper_instances = new WeakSet(), _MultichainTrackingHelper_stopTrackingByNetworkClientId = function _MultichainTrackingHelper_stopTrackingByNetworkClientId(networkClientId) {
++_MultichainTrackingHelper_isMultichainEnabled = new WeakMap(), _MultichainTrackingHelper_incomingTransactionOptions = new WeakMap(), _MultichainTrackingHelper_findNetworkClientIdByChainId = new WeakMap(), _MultichainTrackingHelper_getNetworkClientById = new WeakMap(), _MultichainTrackingHelper_getNetworkClientRegistry = new WeakMap(), _MultichainTrackingHelper_getSelectedNetworkClientId = new WeakMap(), _MultichainTrackingHelper_removeIncomingTransactionHelperListeners = new WeakMap(), _MultichainTrackingHelper_removePendingTransactionTrackerListeners = new WeakMap(), _MultichainTrackingHelper_createNonceTracker = new WeakMap(), _MultichainTrackingHelper_createIncomingTransactionHelper = new WeakMap(), _MultichainTrackingHelper_createPendingTransactionTracker = new WeakMap(), _MultichainTrackingHelper_nonceMutexesByChainId = new WeakMap(), _MultichainTrackingHelper_trackingMap = new WeakMap(), _MultichainTrackingHelper_etherscanRemoteTransactionSourcesMap = new WeakMap(), _MultichainTrackingHelper_refreshTrackingMap = new WeakMap(), _MultichainTrackingHelper_refreshEtherscanRemoteTransactionSources = new WeakMap(), _MultichainTrackingHelper_instances = new WeakSet(), _MultichainTrackingHelper_stopTrackingByNetworkClientId = function _MultichainTrackingHelper_stopTrackingByNetworkClientId(networkClientId) {
+     const trackers = __classPrivateFieldGet(this, _MultichainTrackingHelper_trackingMap, "f").get(networkClientId);
+     if (trackers) {
+         trackers.pendingTransactionTracker.stop();
+@@ -260,7 +272,9 @@ _MultichainTrackingHelper_isMultichainEnabled = new WeakMap(), _MultichainTracki
+     if (trackers) {
+         return;
+     }
+-    const { provider, blockTracker, configuration: { chainId }, } = __classPrivateFieldGet(this, _MultichainTrackingHelper_getNetworkClientById, "f").call(this, networkClientId);
++    const networkClient = __classPrivateFieldGet(this, _MultichainTrackingHelper_getNetworkClientById, "f").call(this, networkClientId);
++    const { provider, blockTracker, configuration } = networkClient;
++    const { chainId } = configuration;
+     let etherscanRemoteTransactionSource = __classPrivateFieldGet(this, _MultichainTrackingHelper_etherscanRemoteTransactionSourcesMap, "f").get(chainId);
+     if (!etherscanRemoteTransactionSource) {
+         etherscanRemoteTransactionSource = new EtherscanRemoteTransactionSource_1.EtherscanRemoteTransactionSource({
+@@ -274,19 +288,25 @@ _MultichainTrackingHelper_isMultichainEnabled = new WeakMap(), _MultichainTracki
+         chainId,
+     });
+     const incomingTransactionHelper = __classPrivateFieldGet(this, _MultichainTrackingHelper_createIncomingTransactionHelper, "f").call(this, {
+-        blockTracker,
++        getNetworkClient: () => networkClient,
+         etherscanRemoteTransactionSource,
+-        chainId,
+     });
+     const pendingTransactionTracker = __classPrivateFieldGet(this, _MultichainTrackingHelper_createPendingTransactionTracker, "f").call(this, {
+-        provider,
+-        blockTracker,
+-        chainId,
++        getNetworkClient: () => networkClient,
+     });
+     __classPrivateFieldGet(this, _MultichainTrackingHelper_trackingMap, "f").set(networkClientId, {
+         nonceTracker,
+         incomingTransactionHelper,
+         pendingTransactionTracker,
+     });
++}, _MultichainTrackingHelper_getSelectedNonceTracker = function _MultichainTrackingHelper_getSelectedNonceTracker() {
++    const selectedNetworkClient = this.getSelectedNetworkClient();
++    if (!selectedNetworkClient) {
++        log('Cannot get nonce lock as selected network client is unavailable');
++        return undefined;
++    }
++    const { provider, blockTracker, configuration } = selectedNetworkClient;
++    const { chainId } = configuration;
++    return __classPrivateFieldGet(this, _MultichainTrackingHelper_createNonceTracker, "f").call(this, { provider, blockTracker, chainId });
+ };
+ //# sourceMappingURL=MultichainTrackingHelper.js.map
+\ No newline at end of file
+diff --git a/dist/helpers/PendingTransactionTracker.d.ts b/dist/helpers/PendingTransactionTracker.d.ts
+index 3d05faf1d5004dc11fe3adb9a42ac1f186871f29..afb7d12181060bb82defaf386549332e45061e58 100644
+--- a/dist/helpers/PendingTransactionTracker.d.ts
++++ b/dist/helpers/PendingTransactionTracker.d.ts
+@@ -1,6 +1,8 @@
+ /// <reference types="node" />
+-import type EthQuery from '@metamask/eth-query';
+-import type { BlockTracker, NetworkClientId } from '@metamask/network-controller';
++import EthQuery from '@metamask/eth-query';
++import type { NetworkClientConfiguration } from '@metamask/network-controller';
++import type { AutoManagedNetworkClient } from '@metamask/network-controller/src/create-auto-managed-network-client';
++import type { Hex } from '@metamask/utils';
+ import EventEmitter from 'events';
+ import type { TransactionMeta } from '../types';
+ declare type Events = {
+@@ -16,14 +18,12 @@ export interface PendingTransactionTrackerEventEmitter extends EventEmitter {
+ export declare class PendingTransactionTracker {
+     #private;
+     hub: PendingTransactionTrackerEventEmitter;
+-    constructor({ approveTransaction, blockTracker, getChainId, getEthQuery, getTransactions, isResubmitEnabled, getGlobalLock, publishTransaction, hooks, }: {
++    constructor({ approveTransaction, getNetworkClient, getTransactions, isResubmitEnabled, getGlobalLock, publishTransaction, hooks, }: {
+         approveTransaction: (transactionId: string) => Promise<void>;
+-        blockTracker: BlockTracker;
+-        getChainId: () => string;
+-        getEthQuery: (networkClientId?: NetworkClientId) => EthQuery;
++        getNetworkClient: () => AutoManagedNetworkClient<NetworkClientConfiguration> | undefined;
+         getTransactions: () => TransactionMeta[];
+         isResubmitEnabled?: boolean;
+-        getGlobalLock: () => Promise<() => void>;
++        getGlobalLock: (chainId: Hex) => Promise<() => void>;
+         publishTransaction: (ethQuery: EthQuery, rawTx: string) => Promise<string>;
+         hooks?: {
+             beforeCheckPendingTransaction?: (transactionMeta: TransactionMeta) => boolean;
+@@ -32,7 +32,7 @@ export declare class PendingTransactionTracker {
+     });
+     startIfPendingTransactions: () => void;
+     /**
+-     * Force checks the network if the given transaction is confirmed and updates it's status.
++     * Force checks the network if the given transaction is confirmed and updates its status.
+      *
+      * @param txMeta - The transaction to check
+      */
+diff --git a/dist/helpers/PendingTransactionTracker.js b/dist/helpers/PendingTransactionTracker.js
+index 26bde1b6d85d5725895f8c1eaab468ccafc79370..cfcfcccef9bf534324aaa17b7c374133f95dac66 100644
+--- a/dist/helpers/PendingTransactionTracker.js
++++ b/dist/helpers/PendingTransactionTracker.js
+@@ -22,10 +22,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _PendingTransactionTracker_instances, _PendingTransactionTracker_approveTransaction, _PendingTransactionTracker_blockTracker, _PendingTransactionTracker_droppedBlockCountByHash, _PendingTransactionTracker_getChainId, _PendingTransactionTracker_getEthQuery, _PendingTransactionTracker_getTransactions, _PendingTransactionTracker_isResubmitEnabled, _PendingTransactionTracker_listener, _PendingTransactionTracker_getGlobalLock, _PendingTransactionTracker_publishTransaction, _PendingTransactionTracker_running, _PendingTransactionTracker_beforeCheckPendingTransaction, _PendingTransactionTracker_beforePublish, _PendingTransactionTracker_start, _PendingTransactionTracker_onLatestBlock, _PendingTransactionTracker_checkTransactions, _PendingTransactionTracker_resubmitTransactions, _PendingTransactionTracker_isKnownTransactionError, _PendingTransactionTracker_resubmitTransaction, _PendingTransactionTracker_isResubmitDue, _PendingTransactionTracker_checkTransaction, _PendingTransactionTracker_onTransactionConfirmed, _PendingTransactionTracker_isTransactionDropped, _PendingTransactionTracker_isNonceTaken, _PendingTransactionTracker_getPendingTransactions, _PendingTransactionTracker_warnTransaction, _PendingTransactionTracker_failTransaction, _PendingTransactionTracker_dropTransaction, _PendingTransactionTracker_updateTransaction, _PendingTransactionTracker_getTransactionReceipt, _PendingTransactionTracker_getBlockByHash, _PendingTransactionTracker_getNetworkTransactionCount, _PendingTransactionTracker_getCurrentChainTransactions;
++var _PendingTransactionTracker_instances, _PendingTransactionTracker_approveTransaction, _PendingTransactionTracker_beforeCheckPendingTransaction, _PendingTransactionTracker_beforePublish, _PendingTransactionTracker_droppedBlockCountByHash, _PendingTransactionTracker_getGlobalLock, _PendingTransactionTracker_getNetworkClient, _PendingTransactionTracker_getTransactions, _PendingTransactionTracker_isResubmitEnabled, _PendingTransactionTracker_listener, _PendingTransactionTracker_networkClient, _PendingTransactionTracker_publishTransaction, _PendingTransactionTracker_running, _PendingTransactionTracker_start, _PendingTransactionTracker_onLatestBlock, _PendingTransactionTracker_checkTransactions, _PendingTransactionTracker_resubmitTransactions, _PendingTransactionTracker_isKnownTransactionError, _PendingTransactionTracker_resubmitTransaction, _PendingTransactionTracker_isResubmitDue, _PendingTransactionTracker_checkTransaction, _PendingTransactionTracker_onTransactionConfirmed, _PendingTransactionTracker_isTransactionDropped, _PendingTransactionTracker_isNonceTaken, _PendingTransactionTracker_getPendingTransactions, _PendingTransactionTracker_warnTransaction, _PendingTransactionTracker_failTransaction, _PendingTransactionTracker_dropTransaction, _PendingTransactionTracker_updateTransaction, _PendingTransactionTracker_getTransactionReceipt, _PendingTransactionTracker_getBlockByHash, _PendingTransactionTracker_getNetworkTransactionCount, _PendingTransactionTracker_getCurrentChainTransactions;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.PendingTransactionTracker = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
++const eth_query_1 = __importDefault(require("@metamask/eth-query"));
+ const utils_1 = require("@metamask/utils");
+ const events_1 = __importDefault(require("events"));
+ const logger_1 = require("../logger");
+@@ -48,28 +49,32 @@ const KNOWN_TRANSACTION_ERRORS = [
+ ];
+ const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'pending-transactions');
+ class PendingTransactionTracker {
+-    constructor({ approveTransaction, blockTracker, getChainId, getEthQuery, getTransactions, isResubmitEnabled, getGlobalLock, publishTransaction, hooks, }) {
++    constructor({ approveTransaction, getNetworkClient, getTransactions, isResubmitEnabled, getGlobalLock, publishTransaction, hooks, }) {
+         var _a, _b;
+         _PendingTransactionTracker_instances.add(this);
+         _PendingTransactionTracker_approveTransaction.set(this, void 0);
+-        _PendingTransactionTracker_blockTracker.set(this, void 0);
++        _PendingTransactionTracker_beforeCheckPendingTransaction.set(this, void 0);
++        _PendingTransactionTracker_beforePublish.set(this, void 0);
+         _PendingTransactionTracker_droppedBlockCountByHash.set(this, void 0);
+-        _PendingTransactionTracker_getChainId.set(this, void 0);
+-        _PendingTransactionTracker_getEthQuery.set(this, void 0);
++        _PendingTransactionTracker_getGlobalLock.set(this, void 0);
++        _PendingTransactionTracker_getNetworkClient.set(this, void 0);
+         _PendingTransactionTracker_getTransactions.set(this, void 0);
+         _PendingTransactionTracker_isResubmitEnabled.set(this, void 0);
+         // TODO: Replace `any` with type
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         _PendingTransactionTracker_listener.set(this, void 0);
+-        _PendingTransactionTracker_getGlobalLock.set(this, void 0);
++        _PendingTransactionTracker_networkClient.set(this, void 0);
+         _PendingTransactionTracker_publishTransaction.set(this, void 0);
+         _PendingTransactionTracker_running.set(this, void 0);
+-        _PendingTransactionTracker_beforeCheckPendingTransaction.set(this, void 0);
+-        _PendingTransactionTracker_beforePublish.set(this, void 0);
+         this.startIfPendingTransactions = () => {
+-            const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this);
++            __classPrivateFieldSet(this, _PendingTransactionTracker_networkClient, __classPrivateFieldGet(this, _PendingTransactionTracker_getNetworkClient, "f").call(this), "f");
++            if (!__classPrivateFieldGet(this, _PendingTransactionTracker_networkClient, "f")) {
++                log('Unable to start as network client is not available');
++                return;
++            }
++            const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this, __classPrivateFieldGet(this, _PendingTransactionTracker_networkClient, "f").configuration.chainId);
+             if (pendingTransactions.length) {
+-                __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_start).call(this);
++                __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_start).call(this, __classPrivateFieldGet(this, _PendingTransactionTracker_networkClient, "f"));
+             }
+             else {
+                 this.stop();
+@@ -77,10 +82,8 @@ class PendingTransactionTracker {
+         };
+         this.hub = new events_1.default();
+         __classPrivateFieldSet(this, _PendingTransactionTracker_approveTransaction, approveTransaction, "f");
+-        __classPrivateFieldSet(this, _PendingTransactionTracker_blockTracker, blockTracker, "f");
+         __classPrivateFieldSet(this, _PendingTransactionTracker_droppedBlockCountByHash, new Map(), "f");
+-        __classPrivateFieldSet(this, _PendingTransactionTracker_getChainId, getChainId, "f");
+-        __classPrivateFieldSet(this, _PendingTransactionTracker_getEthQuery, getEthQuery, "f");
++        __classPrivateFieldSet(this, _PendingTransactionTracker_getNetworkClient, getNetworkClient, "f");
+         __classPrivateFieldSet(this, _PendingTransactionTracker_getTransactions, getTransactions, "f");
+         __classPrivateFieldSet(this, _PendingTransactionTracker_isResubmitEnabled, isResubmitEnabled !== null && isResubmitEnabled !== void 0 ? isResubmitEnabled : true, "f");
+         __classPrivateFieldSet(this, _PendingTransactionTracker_listener, __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_onLatestBlock).bind(this), "f");
+@@ -91,67 +94,86 @@ class PendingTransactionTracker {
+         __classPrivateFieldSet(this, _PendingTransactionTracker_beforeCheckPendingTransaction, (_b = hooks === null || hooks === void 0 ? void 0 : hooks.beforeCheckPendingTransaction) !== null && _b !== void 0 ? _b : (() => true), "f");
+     }
+     /**
+-     * Force checks the network if the given transaction is confirmed and updates it's status.
++     * Force checks the network if the given transaction is confirmed and updates its status.
+      *
+      * @param txMeta - The transaction to check
+      */
+     forceCheckTransaction(txMeta) {
+         return __awaiter(this, void 0, void 0, function* () {
+-            const releaseLock = yield __classPrivateFieldGet(this, _PendingTransactionTracker_getGlobalLock, "f").call(this);
++            let releaseLock;
+             try {
+-                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransaction).call(this, txMeta);
++                const networkClient = __classPrivateFieldGet(this, _PendingTransactionTracker_getNetworkClient, "f").call(this);
++                if (!networkClient) {
++                    log('Cannot force check transaction as network client not available', txMeta.id);
++                    return;
++                }
++                releaseLock = yield __classPrivateFieldGet(this, _PendingTransactionTracker_getGlobalLock, "f").call(this, networkClient.configuration.chainId);
++                const ethQuery = new eth_query_1.default(networkClient.provider);
++                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransaction).call(this, txMeta, ethQuery, networkClient.configuration.chainId);
+             }
+             catch (error) {
+                 /* istanbul ignore next */
+-                log('Failed to check transaction', error);
++                log('Failed to force check transaction', error);
+             }
+             finally {
+-                releaseLock();
++                releaseLock === null || releaseLock === void 0 ? void 0 : releaseLock();
+             }
+         });
+     }
+     stop() {
++        var _a, _b;
+         if (!__classPrivateFieldGet(this, _PendingTransactionTracker_running, "f")) {
+             return;
+         }
+-        __classPrivateFieldGet(this, _PendingTransactionTracker_blockTracker, "f").removeListener('latest', __classPrivateFieldGet(this, _PendingTransactionTracker_listener, "f"));
++        (_b = (_a = __classPrivateFieldGet(this, _PendingTransactionTracker_networkClient, "f")) === null || _a === void 0 ? void 0 : _a.blockTracker) === null || _b === void 0 ? void 0 : _b.removeListener('latest', __classPrivateFieldGet(this, _PendingTransactionTracker_listener, "f"));
++        __classPrivateFieldSet(this, _PendingTransactionTracker_networkClient, undefined, "f");
+         __classPrivateFieldSet(this, _PendingTransactionTracker_running, false, "f");
+         log('Stopped polling');
+     }
+ }
+ exports.PendingTransactionTracker = PendingTransactionTracker;
+-_PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransactionTracker_blockTracker = new WeakMap(), _PendingTransactionTracker_droppedBlockCountByHash = new WeakMap(), _PendingTransactionTracker_getChainId = new WeakMap(), _PendingTransactionTracker_getEthQuery = new WeakMap(), _PendingTransactionTracker_getTransactions = new WeakMap(), _PendingTransactionTracker_isResubmitEnabled = new WeakMap(), _PendingTransactionTracker_listener = new WeakMap(), _PendingTransactionTracker_getGlobalLock = new WeakMap(), _PendingTransactionTracker_publishTransaction = new WeakMap(), _PendingTransactionTracker_running = new WeakMap(), _PendingTransactionTracker_beforeCheckPendingTransaction = new WeakMap(), _PendingTransactionTracker_beforePublish = new WeakMap(), _PendingTransactionTracker_instances = new WeakSet(), _PendingTransactionTracker_start = function _PendingTransactionTracker_start() {
++_PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransactionTracker_beforeCheckPendingTransaction = new WeakMap(), _PendingTransactionTracker_beforePublish = new WeakMap(), _PendingTransactionTracker_droppedBlockCountByHash = new WeakMap(), _PendingTransactionTracker_getGlobalLock = new WeakMap(), _PendingTransactionTracker_getNetworkClient = new WeakMap(), _PendingTransactionTracker_getTransactions = new WeakMap(), _PendingTransactionTracker_isResubmitEnabled = new WeakMap(), _PendingTransactionTracker_listener = new WeakMap(), _PendingTransactionTracker_networkClient = new WeakMap(), _PendingTransactionTracker_publishTransaction = new WeakMap(), _PendingTransactionTracker_running = new WeakMap(), _PendingTransactionTracker_instances = new WeakSet(), _PendingTransactionTracker_start = function _PendingTransactionTracker_start(networkClient) {
+     if (__classPrivateFieldGet(this, _PendingTransactionTracker_running, "f")) {
+         return;
+     }
+-    __classPrivateFieldGet(this, _PendingTransactionTracker_blockTracker, "f").on('latest', __classPrivateFieldGet(this, _PendingTransactionTracker_listener, "f"));
++    networkClient.blockTracker.on('latest', __classPrivateFieldGet(this, _PendingTransactionTracker_listener, "f"));
+     __classPrivateFieldSet(this, _PendingTransactionTracker_running, true, "f");
+     log('Started polling');
+ }, _PendingTransactionTracker_onLatestBlock = function _PendingTransactionTracker_onLatestBlock(latestBlockNumber) {
+     return __awaiter(this, void 0, void 0, function* () {
+-        const releaseLock = yield __classPrivateFieldGet(this, _PendingTransactionTracker_getGlobalLock, "f").call(this);
+-        try {
+-            yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransactions).call(this);
+-        }
+-        catch (error) {
+-            /* istanbul ignore next */
+-            log('Failed to check transactions', error);
+-        }
+-        finally {
+-            releaseLock();
+-        }
+         try {
+-            yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_resubmitTransactions).call(this, latestBlockNumber);
++            const networkClient = __classPrivateFieldGet(this, _PendingTransactionTracker_getNetworkClient, "f").call(this);
++            if (!networkClient) {
++                log('Cannot process latest block as network client not available');
++                return;
++            }
++            const releaseLock = yield __classPrivateFieldGet(this, _PendingTransactionTracker_getGlobalLock, "f").call(this, networkClient.configuration.chainId);
++            try {
++                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransactions).call(this, networkClient);
++            }
++            catch (error) {
++                /* istanbul ignore next */
++                log('Failed to check transactions', error);
++            }
++            finally {
++                releaseLock();
++            }
++            try {
++                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_resubmitTransactions).call(this, latestBlockNumber, networkClient);
++            }
++            catch (error) {
++                /* istanbul ignore next */
++                log('Failed to resubmit transactions', error);
++            }
+         }
+         catch (error) {
+-            /* istanbul ignore next */
+-            log('Failed to resubmit transactions', error);
++            log('Failed to process latest block', error);
+         }
+     });
+-}, _PendingTransactionTracker_checkTransactions = function _PendingTransactionTracker_checkTransactions() {
++}, _PendingTransactionTracker_checkTransactions = function _PendingTransactionTracker_checkTransactions(networkClient) {
+     return __awaiter(this, void 0, void 0, function* () {
+         log('Checking transactions');
+-        const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this);
++        const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this, networkClient.configuration.chainId);
+         if (!pendingTransactions.length) {
+             log('No pending transactions to check');
+             return;
+@@ -160,16 +182,17 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+             count: pendingTransactions.length,
+             ids: pendingTransactions.map((tx) => tx.id),
+         });
+-        yield Promise.all(pendingTransactions.map((tx) => __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransaction).call(this, tx)));
++        const ethQuery = new eth_query_1.default(networkClient.provider);
++        yield Promise.all(pendingTransactions.map((tx) => __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_checkTransaction).call(this, tx, ethQuery, networkClient.configuration.chainId)));
+     });
+-}, _PendingTransactionTracker_resubmitTransactions = function _PendingTransactionTracker_resubmitTransactions(latestBlockNumber) {
++}, _PendingTransactionTracker_resubmitTransactions = function _PendingTransactionTracker_resubmitTransactions(latestBlockNumber, networkClient) {
+     var _a, _b;
+     return __awaiter(this, void 0, void 0, function* () {
+         if (!__classPrivateFieldGet(this, _PendingTransactionTracker_isResubmitEnabled, "f") || !__classPrivateFieldGet(this, _PendingTransactionTracker_running, "f")) {
+             return;
+         }
+         log('Resubmitting transactions');
+-        const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this);
++        const pendingTransactions = __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getPendingTransactions).call(this, networkClient.configuration.chainId);
+         if (!pendingTransactions.length) {
+             log('No pending transactions to resubmit');
+             return;
+@@ -178,9 +201,10 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+             count: pendingTransactions.length,
+             ids: pendingTransactions.map((tx) => tx.id),
+         });
++        const ethQuery = new eth_query_1.default(networkClient.provider);
+         for (const txMeta of pendingTransactions) {
+             try {
+-                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_resubmitTransaction).call(this, txMeta, latestBlockNumber);
++                yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_resubmitTransaction).call(this, txMeta, latestBlockNumber, ethQuery);
+                 // TODO: Replace `any` with type
+                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             }
+@@ -197,14 +221,14 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+     });
+ }, _PendingTransactionTracker_isKnownTransactionError = function _PendingTransactionTracker_isKnownTransactionError(errorMessage) {
+     return KNOWN_TRANSACTION_ERRORS.some((knownError) => errorMessage.includes(knownError));
+-}, _PendingTransactionTracker_resubmitTransaction = function _PendingTransactionTracker_resubmitTransaction(txMeta, latestBlockNumber) {
++}, _PendingTransactionTracker_resubmitTransaction = function _PendingTransactionTracker_resubmitTransaction(txMeta, latestBlockNumber, ethQuery) {
+     var _a;
+     return __awaiter(this, void 0, void 0, function* () {
+         if (!__classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isResubmitDue).call(this, txMeta, latestBlockNumber)) {
+             return;
+         }
+         log('Resubmitting transaction', txMeta.id);
+-        const { rawTx } = txMeta;
++        const { id, rawTx } = txMeta;
+         if (!__classPrivateFieldGet(this, _PendingTransactionTracker_beforePublish, "f").call(this, txMeta)) {
+             return;
+         }
+@@ -213,7 +237,10 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+             yield __classPrivateFieldGet(this, _PendingTransactionTracker_approveTransaction, "f").call(this, txMeta.id);
+             return;
+         }
+-        const ethQuery = __classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this, txMeta.networkClientId);
++        if (!ethQuery) {
++            log('Cannot resubmit transaction as provider not available', id);
++            return;
++        }
+         yield __classPrivateFieldGet(this, _PendingTransactionTracker_publishTransaction, "f").call(this, ethQuery, rawTx);
+         txMeta.retryCount = ((_a = txMeta.retryCount) !== null && _a !== void 0 ? _a : 0) + 1;
+         __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_updateTransaction).call(this, txMeta, 'PendingTransactionTracker:transaction-retry - Retry count increased');
+@@ -231,7 +258,7 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+     // Capped at ~15 minutes between retries
+     const requiredBlocksSinceFirstRetry = Math.min(MAX_RETRY_BLOCK_DISTANCE, Math.pow(2, retryCount));
+     return blocksSinceFirstRetry >= requiredBlocksSinceFirstRetry;
+-}, _PendingTransactionTracker_checkTransaction = function _PendingTransactionTracker_checkTransaction(txMeta) {
++}, _PendingTransactionTracker_checkTransaction = function _PendingTransactionTracker_checkTransaction(txMeta, ethQuery, chainId) {
+     return __awaiter(this, void 0, void 0, function* () {
+         const { hash, id } = txMeta;
+         if (!hash && __classPrivateFieldGet(this, _PendingTransactionTracker_beforeCheckPendingTransaction, "f").call(this, txMeta)) {
+@@ -240,13 +267,13 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+             __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_failTransaction).call(this, txMeta, error);
+             return;
+         }
+-        if (__classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isNonceTaken).call(this, txMeta)) {
++        if (__classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isNonceTaken).call(this, txMeta, chainId)) {
+             log('Nonce already taken', id);
+             __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_dropTransaction).call(this, txMeta);
+             return;
+         }
+         try {
+-            const receipt = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getTransactionReceipt).call(this, hash);
++            const receipt = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getTransactionReceipt).call(this, ethQuery, hash);
+             const isSuccess = (receipt === null || receipt === void 0 ? void 0 : receipt.status) === RECEIPT_STATUS_SUCCESS;
+             const isFailure = (receipt === null || receipt === void 0 ? void 0 : receipt.status) === RECEIPT_STATUS_FAILURE;
+             if (isFailure) {
+@@ -257,7 +284,7 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+             const { blockNumber, blockHash } = receipt || {};
+             if (isSuccess && blockNumber && blockHash) {
+                 yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_onTransactionConfirmed).call(this, txMeta, Object.assign(Object.assign({}, receipt), { blockNumber,
+-                    blockHash }));
++                    blockHash }), ethQuery);
+                 return;
+             }
+             // TODO: Replace `any` with type
+@@ -268,16 +295,16 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+             __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_warnTransaction).call(this, txMeta, error.message, 'There was a problem loading this transaction.');
+             return;
+         }
+-        if (yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isTransactionDropped).call(this, txMeta)) {
++        if (yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_isTransactionDropped).call(this, txMeta, ethQuery)) {
+             __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_dropTransaction).call(this, txMeta);
+         }
+     });
+-}, _PendingTransactionTracker_onTransactionConfirmed = function _PendingTransactionTracker_onTransactionConfirmed(txMeta, receipt) {
++}, _PendingTransactionTracker_onTransactionConfirmed = function _PendingTransactionTracker_onTransactionConfirmed(txMeta, receipt, ethQuery) {
+     return __awaiter(this, void 0, void 0, function* () {
+         const { id } = txMeta;
+         const { blockHash } = receipt;
+         log('Transaction confirmed', id);
+-        const { baseFeePerGas, timestamp: blockTimestamp } = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getBlockByHash).call(this, blockHash, false);
++        const { baseFeePerGas, timestamp: blockTimestamp } = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getBlockByHash).call(this, blockHash, false, ethQuery);
+         txMeta.baseFeePerGas = baseFeePerGas;
+         txMeta.blockTimestamp = blockTimestamp;
+         txMeta.status = types_1.TransactionStatus.confirmed;
+@@ -287,14 +314,14 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+         __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_updateTransaction).call(this, txMeta, 'PendingTransactionTracker:#onTransactionConfirmed - Transaction confirmed');
+         this.hub.emit('transaction-confirmed', txMeta);
+     });
+-}, _PendingTransactionTracker_isTransactionDropped = function _PendingTransactionTracker_isTransactionDropped(txMeta) {
++}, _PendingTransactionTracker_isTransactionDropped = function _PendingTransactionTracker_isTransactionDropped(txMeta, ethQuery) {
+     return __awaiter(this, void 0, void 0, function* () {
+         const { hash, id, txParams: { nonce, from }, } = txMeta;
+         /* istanbul ignore next */
+         if (!nonce || !hash) {
+             return false;
+         }
+-        const networkNextNonceHex = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getNetworkTransactionCount).call(this, from);
++        const networkNextNonceHex = yield __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getNetworkTransactionCount).call(this, from, ethQuery);
+         const networkNextNonceNumber = parseInt(networkNextNonceHex, 16);
+         const nonceNumber = parseInt(nonce, 16);
+         if (nonceNumber >= networkNextNonceNumber) {
+@@ -314,15 +341,15 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+         __classPrivateFieldGet(this, _PendingTransactionTracker_droppedBlockCountByHash, "f").delete(hash);
+         return true;
+     });
+-}, _PendingTransactionTracker_isNonceTaken = function _PendingTransactionTracker_isNonceTaken(txMeta) {
++}, _PendingTransactionTracker_isNonceTaken = function _PendingTransactionTracker_isNonceTaken(txMeta, chainId) {
+     const { id, txParams } = txMeta;
+-    return __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getCurrentChainTransactions).call(this).some((tx) => tx.id !== id &&
++    return __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getCurrentChainTransactions).call(this, chainId).some((tx) => tx.id !== id &&
+         tx.txParams.from === txParams.from &&
+         tx.status === types_1.TransactionStatus.confirmed &&
+         tx.txParams.nonce === txParams.nonce &&
+         tx.type !== types_1.TransactionType.incoming);
+-}, _PendingTransactionTracker_getPendingTransactions = function _PendingTransactionTracker_getPendingTransactions() {
+-    return __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getCurrentChainTransactions).call(this).filter((tx) => tx.status === types_1.TransactionStatus.submitted &&
++}, _PendingTransactionTracker_getPendingTransactions = function _PendingTransactionTracker_getPendingTransactions(chainId) {
++    return __classPrivateFieldGet(this, _PendingTransactionTracker_instances, "m", _PendingTransactionTracker_getCurrentChainTransactions).call(this, chainId).filter((tx) => tx.status === types_1.TransactionStatus.submitted &&
+         !tx.verifiedOnBlockchain &&
+         !tx.isUserOperation);
+ }, _PendingTransactionTracker_warnTransaction = function _PendingTransactionTracker_warnTransaction(txMeta, error, message) {
+@@ -339,23 +366,22 @@ _PendingTransactionTracker_approveTransaction = new WeakMap(), _PendingTransacti
+     this.hub.emit('transaction-dropped', txMeta);
+ }, _PendingTransactionTracker_updateTransaction = function _PendingTransactionTracker_updateTransaction(txMeta, note) {
+     this.hub.emit('transaction-updated', txMeta, note);
+-}, _PendingTransactionTracker_getTransactionReceipt = function _PendingTransactionTracker_getTransactionReceipt(txHash) {
++}, _PendingTransactionTracker_getTransactionReceipt = function _PendingTransactionTracker_getTransactionReceipt(ethQuery, txHash) {
+     return __awaiter(this, void 0, void 0, function* () {
+-        return yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionReceipt', [txHash]);
++        return yield (0, controller_utils_1.query)(ethQuery, 'getTransactionReceipt', [txHash]);
+     });
+-}, _PendingTransactionTracker_getBlockByHash = function _PendingTransactionTracker_getBlockByHash(blockHash, includeTransactionDetails) {
++}, _PendingTransactionTracker_getBlockByHash = function _PendingTransactionTracker_getBlockByHash(blockHash, includeTransactionDetails, ethQuery) {
+     return __awaiter(this, void 0, void 0, function* () {
+-        return yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getBlockByHash', [
++        return yield (0, controller_utils_1.query)(ethQuery, 'getBlockByHash', [
+             blockHash,
+             includeTransactionDetails,
+         ]);
+     });
+-}, _PendingTransactionTracker_getNetworkTransactionCount = function _PendingTransactionTracker_getNetworkTransactionCount(address) {
++}, _PendingTransactionTracker_getNetworkTransactionCount = function _PendingTransactionTracker_getNetworkTransactionCount(address, ethQuery) {
+     return __awaiter(this, void 0, void 0, function* () {
+-        return yield (0, controller_utils_1.query)(__classPrivateFieldGet(this, _PendingTransactionTracker_getEthQuery, "f").call(this), 'getTransactionCount', [address]);
++        return yield (0, controller_utils_1.query)(ethQuery, 'getTransactionCount', [address]);
+     });
+-}, _PendingTransactionTracker_getCurrentChainTransactions = function _PendingTransactionTracker_getCurrentChainTransactions() {
+-    const currentChainId = __classPrivateFieldGet(this, _PendingTransactionTracker_getChainId, "f").call(this);
++}, _PendingTransactionTracker_getCurrentChainTransactions = function _PendingTransactionTracker_getCurrentChainTransactions(currentChainId) {
+     return __classPrivateFieldGet(this, _PendingTransactionTracker_getTransactions, "f").call(this).filter((tx) => tx.chainId === currentChainId);
+ };
+ //# sourceMappingURL=PendingTransactionTracker.js.map
+\ No newline at end of file
+diff --git a/dist/utils/nonce.d.ts b/dist/utils/nonce.d.ts
+index 0a5bf32ba41e11df6cfb0d21688fc27ecab1db47..64e24bc96603a9fd4334d30b2f2c9388eaf8bd2f 100644
+--- a/dist/utils/nonce.d.ts
++++ b/dist/utils/nonce.d.ts
+@@ -7,7 +7,7 @@ import type { TransactionMeta, TransactionStatus } from '../types';
+  * @param getNonceLock - An anonymous function that acquires the nonce lock for an address
+  * @returns The next hexadecimal nonce to be used for the given transaction, and optionally a function to release the nonce lock.
+  */
+-export declare function getNextNonce(txMeta: TransactionMeta, getNonceLock: (address: string) => Promise<NonceLock>): Promise<[string, (() => void) | undefined]>;
++export declare function getNextNonce(txMeta: TransactionMeta, getNonceLock: (address: string) => Promise<NonceLock | undefined>): Promise<[string, (() => void) | undefined]>;
+ /**
+  * Filter and format transactions for the nonce tracker.
+  *
+diff --git a/dist/utils/nonce.js b/dist/utils/nonce.js
+index f5f3ca7e06bd989da290e4d8db983ce41c4bcc04..34990b106b3c7ed607d89bff3f81c52ebe32b376 100644
+--- a/dist/utils/nonce.js
++++ b/dist/utils/nonce.js
+@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getAndFormatTransactionsForNonceTracker = exports.getNextNonce = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
++const rpc_errors_1 = require("@metamask/rpc-errors");
+ const logger_1 = require("../logger");
+ const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'nonce');
+ /**
+@@ -33,6 +34,9 @@ function getNextNonce(txMeta, getNonceLock) {
+             return [existingNonce, undefined];
+         }
+         const nonceLock = yield getNonceLock(from);
++        if (!nonceLock) {
++            throw rpc_errors_1.providerErrors.chainDisconnected();
++        }
+         const nonce = (0, controller_utils_1.toHex)(nonceLock.nextNonce);
+         const releaseLock = nonceLock.releaseLock.bind(nonceLock);
+         log('Using nonce from nonce tracker', nonce, nonceLock.nonceDetails);
