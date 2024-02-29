@@ -53,7 +53,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         await driver.delay(regularDelayMs);
 
-        // // Connect to Dapp
+        // Connect to Dapp
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({
@@ -85,7 +85,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        // // Connect to dapp
+        // Connect to dapp
         await driver.clickElement('#connectButton');
 
         await driver.delay(regularDelayMs);
