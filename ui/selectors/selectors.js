@@ -807,6 +807,10 @@ export function getIsSmartTransaction(state) {
   return sharedSelectors.getIsSmartTransaction(state);
 }
 
+export function getFeatureFlagsByChainId(state) {
+  return sharedSelectors.getFeatureFlagsByChainId(state);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {
