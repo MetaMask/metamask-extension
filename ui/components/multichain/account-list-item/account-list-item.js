@@ -70,8 +70,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptions = false,
-  showOptionTypes = MenuOptionTypes.AccountMenu,
+  showOptionTypes = MenuOptionTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -306,7 +305,8 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      {showOptions ? (
+
+      {showOptionTypes === MenuOptionTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -327,24 +327,20 @@ export const AccountListItem = ({
           }}
           data-testid="account-list-item-menu-button"
         />
-      ) : null}
-      {showOptions ? (
-        <>
-          {showOptionTypes === MenuOptionTypes.AccountMenu && (
-            <AccountListItemMenu
-              anchorElement={accountListItemMenuElement}
-              identity={identity}
-              onClose={() => setAccountOptionsMenuOpen(false)}
-              isOpen={accountOptionsMenuOpen}
-              isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
-              closeMenu={closeMenu}
-              isPinned={isPinned}
-              isHidden={isHidden}
-              isConnected={isConnected}
-            />
-          )}
-        </>
-      ) : null}
+      )}
+      {showOptionTypes === MenuOptionTypes.AccountMenu && (
+        <AccountListItemMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          isOpen={accountOptionsMenuOpen}
+          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
+          closeMenu={closeMenu}
+          isPinned={isPinned}
+          isHidden={isHidden}
+          isConnected={isConnected}
+        />
+      )}
     </Box>
   );
 };
@@ -382,10 +378,6 @@ AccountListItem.propTypes = {
    * Text used as the avatar alt text
    */
   connectedAvatarName: PropTypes.string,
-  /**
-   * Represents if the "Options" 3-dot menu should display
-   */
-  showOptions: PropTypes.bool,
   /**
    * Represents the type of menu to be rendered
    */

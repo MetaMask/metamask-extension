@@ -424,7 +424,6 @@ export const AccountListMenu = ({
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptions
                       showOptionTypes={MenuOptionTypes.AccountMenu}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}

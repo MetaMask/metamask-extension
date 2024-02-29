@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { AccountListItem } from '.';
+import { AccountListItem, MenuOptionTypes } from '.';
 
 const identity = {
   ...mockState.metamask.identities[
@@ -73,7 +73,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders the three-dot menu to launch the details menu', () => {
-    render({ showOptions: true });
+    render({ showOptionTypes: MenuOptionTypes.AccountMenu });
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
     );
@@ -94,7 +94,7 @@ describe('AccountListItem', () => {
 
   it('clicking the three-dot menu opens up options', () => {
     const onClick = jest.fn();
-    render({ onClick, showOptions: true });
+    render({ onClick, showOptionTypes: MenuOptionTypes.AccountMenu });
     const item = document.querySelector(
       '[data-testid="account-list-item-menu-button"]',
     );
