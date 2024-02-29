@@ -52,7 +52,7 @@ export interface ButtonBaseStyleUtilityProps
   /**
    * iconProps accepts all the props from Icon
    */
-  startIconProps?: Omit<IconProps<'span'>, 'name'>;
+  startIconProps?: Partial<IconProps<'span'>>;
   /**
    * Add icon to end (right side) of button text passing icon name
    * The name of the icon to display. Should be one of IconName
@@ -61,11 +61,11 @@ export interface ButtonBaseStyleUtilityProps
   /**
    * iconProps accepts all the props from Icon
    */
-  endIconProps?: Omit<IconProps<'span'>, 'name'>;
+  endIconProps?: Partial<IconProps<'span'>>;
   /**
    * iconLoadingProps accepts all the props from Icon
    */
-  iconLoadingProps?: Omit<IconProps<'span'>, 'name'>;
+  iconLoadingProps?: Partial<IconProps<'span'>>;
   /**
    * Boolean to show loading spinner in button
    */
