@@ -155,12 +155,14 @@ export default function InsightWarnings({
           }}
         >
           <Checkbox
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodyMd}
             isChecked={isChecked}
             onChange={handleOnChange}
             label={t('insightWarningCheckboxMessage', [
               t(InsightWarningLanguage[action].imperative),
-              stripHttpSchemes(origin),
+              <span key={action}>
+                <b>{stripHttpSchemes(origin)}</b>
+              </span>,
             ])}
           />
         </Box>
