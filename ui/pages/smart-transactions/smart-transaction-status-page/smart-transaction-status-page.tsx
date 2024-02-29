@@ -28,6 +28,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getRpcPrefsForCurrentProvider,
   getCurrentChainId,
+  getFeatureFlagsByChainId,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 
@@ -48,9 +49,6 @@ export const showRemainingTimeInMinAndSec = (
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const stxEstimatedDeadline = 45; // TODO: Use a value from backend instead.
-const stxMaxDeadline = 150; // TODO: Use a value from backend instead.
-
 export const SmartTransactionStatusPage = ({
   requestState,
   onCloseExtension,
@@ -63,6 +61,12 @@ export const SmartTransactionStatusPage = ({
   const isSmartTransactionSuccess = smartTransaction?.status === 'success';
   const isSmartTransactionCancelled =
     smartTransaction?.status.startsWith('cancelled');
+  const featureFlags: Record<string, any> | null = useSelector(
+    getFeatureFlagsByChainId,
+  );
+  const stxEstimatedDeadline =
+    featureFlags?.smartTransactions?.expectedDeadline || 45;
+  const stxMaxDeadline = featureFlags?.smartTransactions?.maxDeadline || 150;
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
     useState(stxEstimatedDeadline);
   const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =

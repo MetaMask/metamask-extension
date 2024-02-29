@@ -1,5 +1,15 @@
 import { ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS } from '../constants/smartTransactions';
 import { KeyringType } from '../constants/keyring';
+import { getNetworkNameByChainId } from './feature-flags';
+
+export const getProviderConfig = (state: Record<string, any>) => {
+  return state.metamask.providerConfig;
+};
+
+export const getCurrentChainId = (state: Record<string, any>): string => {
+  const { chainId } = getProviderConfig(state);
+  return chainId;
+};
 
 export const getSmartTransactionsOptInStatus = (
   state: Record<string, any>,
@@ -99,7 +109,7 @@ export function getHardwareWalletType(
 }
 
 export const getIsAllowedStxChainId = (state: Record<string, any>): boolean => {
-  const chainId = state.metamask.providerConfig?.chainId;
+  const chainId = getCurrentChainId(state);
   return ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
 };
 
@@ -127,11 +137,27 @@ export const getIsSmartTransaction = (state: Record<string, any>): boolean => {
   return smartTransactionsOptInStatus && smartTransactionsEnabled;
 };
 
-const smartTransactions = {
+export function getFeatureFlagsByChainId(state: Record<string, any>) {
+  const chainId = getCurrentChainId(state);
+  const networkName = getNetworkNameByChainId(chainId);
+  const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;
+  if (!featureFlags?.[networkName]) {
+    return null;
+  }
+  return {
+    smartTransactions: {
+      ...featureFlags[networkName].smartTransactions,
+      ...featureFlags.smartTransactions,
+    },
+  };
+}
+
+const sharedSelectors = {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
   getIsAllowedStxChainId,
+  getFeatureFlagsByChainId,
 };
 
-export default smartTransactions;
+export default sharedSelectors;
