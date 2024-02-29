@@ -136,8 +136,11 @@ describe('Phishing Detection', function () {
           text: 'continue to the site.',
         });
 
-        // Ensure we're not on the wallet home page
-        await driver.assertElementNotPresent('[data-testid="wallet-balance"]');
+        // We don't really know what we're going to see at this blocked site, so a waitAtLeast guard of 1000ms is the best choice
+        await driver.assertElementNotPresent(
+          '[data-testid="wallet-balance"]',
+          1000,
+        );
       },
     );
   });

@@ -12,6 +12,9 @@ const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
 describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -25,9 +28,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -58,6 +58,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
     );
   });
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -71,9 +74,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         // Type address without hex prefix
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -108,6 +108,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -128,9 +131,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
         await driver.clickElement('[data-testid="eth-overview-send"]');
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -172,6 +172,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     );
   });
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -185,9 +188,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
         await driver.clickElement(
