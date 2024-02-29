@@ -4,6 +4,7 @@ import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 import { Title } from '../components/confirm/title';
+import { Box } from '../../../components/component-library';
 import { Content, Page } from '../../../components/multichain/pages/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Footer } from '../components/confirm/footer';
@@ -19,8 +20,10 @@ const Confirm = () => {
       <Header />
       <Title />
       <Content backgroundColor={BackgroundColor.backgroundAlternative}>
-        <ScrollToBottom padding={4}>
-          <Info />
+        <ScrollToBottom>
+          <Box padding={4}>
+            <Info />
+          </Box>
         </ScrollToBottom>
       </Content>
       <Footer />

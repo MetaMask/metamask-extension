@@ -27,7 +27,7 @@ interface ContentProps extends StyleUtilityProps {
   children: React.ReactNode | React.ReactNode[];
 }
 
-const ScrollToBottom = ({ children, ...props }: ContentProps) => {
+const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
@@ -71,7 +71,6 @@ const ScrollToBottom = ({ children, ...props }: ContentProps) => {
         onScroll={onScroll}
         ref={ref}
         style={{ overflow: 'auto' }}
-        {...props}
       >
         {children}
 

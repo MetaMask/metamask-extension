@@ -95,37 +95,41 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
           style="min-height: 0; position: relative;"
         >
           <div
-            class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
             style="overflow: auto;"
           >
             <div
-              class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+              class="mm-box mm-box--padding-4"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+                class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
               >
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
-                  style="overflow-wrap: anywhere; min-height: 24px;"
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+                    style="overflow-wrap: anywhere; min-height: 24px;"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                     >
-                      Origin
-                    </p>
-                  </div>
-                  <div
-                    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                    style="column-gap: 8px;"
-                  >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      <p
+                        class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+                      >
+                        Origin
+                      </p>
+                    </div>
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                      style="column-gap: 8px;"
                     >
-                      https://metamask.github.io
-                    </p>
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      >
+                        https://metamask.github.io
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
