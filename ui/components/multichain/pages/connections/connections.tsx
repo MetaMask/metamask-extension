@@ -15,7 +15,10 @@ import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
+  getInternalAccounts,
+  getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getSelectedAccount,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -30,17 +33,29 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
+import { Tab } from '../../../ui/tabs';
+import Tabs from '../../../ui/tabs/tabs.component';
+import { mergeAccounts } from '../../account-list-menu/account-list-menu';
+import { AccountListItem } from '../..';
 import { Content, Footer, Header, Page } from '../page';
+import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+  const connectedAccounts = useSelector(
+    getOrderedConnectedAccountsForActiveTab,
+  );
+  const selectedAccount = useSelector(getSelectedAccount);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const mergedAccount = mergeAccounts(connectedAccounts, internalAccounts);
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -86,17 +101,51 @@ export const Connections = () => {
           </Text>
         </Box>
       </Header>
-      <Content>
-        {/* TODO: Replace null When accounts connected - create a separate component - Separate Ticket */}
+      <Content padding={0}>
+        {connectedSubjectsMetadata ? (
+          <Tabs defaultActiveTabKey="connections">
+            {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              <Tab
+                tabKey={CONNECTED_ACCOUNTS_TAB_KEY}
+                name={t('connectedaccountsTabKey')}
+                padding={4}
+              >
+                {mergedAccount.map((account: AccountType, index: number) => {
+                  const connectedSites: ConnectedSites = {};
 
-        {connectedSubjectsMetadata ? null : <NoConnectionContent />}
+                  const connectedSite = connectedSites[account.address]?.find(
+                    ({ origin }) => origin === activeTabOrigin,
+                  );
+                  return (
+                    <AccountListItem
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      currentTabOrigin={activeTabOrigin}
+                      isActive={index === 0 ? t('active') : null}
+                    />
+                  );
+                })}
+              </Tab>
+            }
+          </Tabs>
+        ) : (
+          <NoConnectionContent />
+        )}
       </Content>
       <Footer>
         {/* TODO: When accounts connected - Two Separate Buttons - Separate Ticket */}
 
-        <ButtonPrimary size={ButtonPrimarySize.Lg} block>
-          {t('connectAccounts')}
-        </ButtonPrimary>
+        {connectedSubjectsMetadata ? null : (
+          <ButtonPrimary size={ButtonPrimarySize.Lg} block>
+            {t('connectAccounts')}
+          </ButtonPrimary>
+        )}
       </Footer>
     </Page>
   );
