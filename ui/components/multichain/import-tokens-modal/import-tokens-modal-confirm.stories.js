@@ -23,7 +23,7 @@ const createStore = (
           decimals: 18,
           fees: {},
           iconUrl:
-            'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0000000de40dfa9b17854cbc7869d80f9f98d823.png',
+            'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0000000de40dfa9b17854cbc7869d80f9f98d823.png',
           name: 'delta theta'.repeat(tokenRepetition),
           occurrences: 3,
           symbol: 'DLTA',
@@ -36,7 +36,7 @@ const createStore = (
           decimals: 18,
           fees: {},
           iconUrl:
-            'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x00d8318e44780edeefcf3020a5448f636788883c.png',
+            'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x00d8318e44780edeefcf3020a5448f636788883c.png',
           name: 'dAppstore'.repeat(tokenRepetition),
           occurrences: 3,
           symbol: 'DAPPX',
@@ -48,7 +48,7 @@ const createStore = (
           aggregators: ['CoinGecko', 'Sonarwatch', 'Coinmarketcap'],
           decimals: 18,
           iconUrl:
-            'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x00e679ba63b509182c349f5614f0a07cdd0ce0c5.png',
+            'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x00e679ba63b509182c349f5614f0a07cdd0ce0c5.png',
           name: 'Damex Token'.repeat(tokenRepetition),
           occurrences: 3,
           symbol: 'DAMEX',
