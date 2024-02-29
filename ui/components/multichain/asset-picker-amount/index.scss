@@ -9,6 +9,11 @@
 
   &__input {
     & > div {
+      & > div.currency-input__conversion-component  {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline;
+      }
       // primary (i.e., input) and secondary (i.e., subtext) input sections
       & > div {
         max-width: 150px;
