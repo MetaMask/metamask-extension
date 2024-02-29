@@ -501,7 +501,7 @@ describe('EthOverview', () => {
         expect(button).toBeDisabled();
         expect(queryByText(buttonText).parentElement).toHaveAttribute(
           'data-original-title',
-          "This account can't sign transactions.",
+          'Not supported with this account.',
         );
       },
     );

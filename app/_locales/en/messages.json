@@ -130,9 +130,6 @@
   "account": {
     "message": "Account"
   },
-  "accountCannotSign": {
-    "message": "This account can't sign transactions."
-  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -2491,6 +2488,9 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "methodNotSupported": {
+    "message": "Not supported with this account."
   },
   "metrics": {
     "message": "Metrics"

@@ -127,18 +127,18 @@ const EthOverview = ({ className, showAddress }) => {
   const buttonTooltips = {
     buyButton: [
       { condition: !isBuyableChain, message: '' },
-      { condition: !signingEnabled, message: 'accountCannotSign' },
+      { condition: !signingEnabled, message: 'methodNotSupported' },
     ],
-    sendButton: [{ condition: !signingEnabled, message: 'accountCannotSign' }],
+    sendButton: [{ condition: !signingEnabled, message: 'methodNotSupported' }],
     swapButton: [
       { condition: !isSwapsChain, message: 'currentlyUnavailable' },
-      { condition: !signingEnabled, message: 'accountCannotSign' },
+      { condition: !signingEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBridgeChain, message: 'currentlyUnavailable' },
       ///: END:ONLY_INCLUDE_IF
-      { condition: !signingEnabled, message: 'accountCannotSign' },
+      { condition: !signingEnabled, message: 'methodNotSupported' },
     ],
   };
 
