@@ -125,6 +125,10 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   const buttonTooltips = {
+    buyButton: [
+      { condition: !isBuyableChain, message: '' },
+      { condition: !signingEnabled, message: 'accountCannotSign' },
+    ],
     sendButton: [{ condition: !signingEnabled, message: 'accountCannotSign' }],
     swapButton: [
       { condition: !isSwapsChain, message: 'currentlyUnavailable' },
@@ -141,7 +145,7 @@ const EthOverview = ({ className, showAddress }) => {
   const generateTooltip = (buttonKey, contents) => {
     const conditions = buttonTooltips[buttonKey];
     const tooltipInfo = conditions.find(({ condition }) => condition);
-    if (tooltipInfo) {
+    if (tooltipInfo && tooltipInfo.message) {
       return (
         <Tooltip title={t(tooltipInfo.message)} position="bottom">
           {contents}
@@ -266,7 +270,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain}
+              disabled={!isBuyableChain || !signingEnabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={() => {
@@ -282,6 +286,9 @@ const EthOverview = ({ className, showAddress }) => {
                   },
                 });
               }}
+              tooltipRender={(contents) =>
+                generateTooltip('buyButton', contents)
+              }
             />
             ///: END:ONLY_INCLUDE_IF
           }
