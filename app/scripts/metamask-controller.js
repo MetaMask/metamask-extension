@@ -503,10 +503,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SelectedNetworkController,
     });
 
-    const networkClient = this.networkController.getProviderAndBlockTracker();
-    this.provider = networkClient.provider;
-    this.blockTracker = networkClient.blockTracker;
-
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
