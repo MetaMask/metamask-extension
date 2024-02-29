@@ -33,6 +33,7 @@ import {
   TextVariant,
   FlexDirection,
   BlockSize,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -233,23 +234,10 @@ const AssetChart = ({
         loading={loading}
         ref={priceRef}
       />
-      <Box
-        style={{ opacity: prices && loading ? 0.2 : 1 }}
-        backgroundColor={
-          loading && !prices
-            ? BackgroundColor.backgroundAlternative
-            : BackgroundColor.backgroundDefault
-        }
-      >
-        <ChartTooltip ref={maxPriceTooltip} />
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          style={{
-            aspectRatio: `${chartOptions.aspectRatio}`,
-          }}
-        >
-          {data ? (
+      {data ? (
+        <Box>
+          <Box style={{ opacity: loading ? 0.2 : 1 }}>
+            <ChartTooltip ref={maxPriceTooltip} />
             <Line
               ref={chartRef}
               data={data}
@@ -281,66 +269,69 @@ const AssetChart = ({
                 });
               }}
             />
-          ) : (
-            !loading && (
-              <Box
-                width={BlockSize.Full}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                paddingBottom={4}
-                gap={1}
-              >
+            <ChartTooltip ref={minPriceTooltip} />
+          </Box>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            marginTop={4}
+            paddingLeft={4}
+            paddingRight={4}
+          >
+            {((buttons: [string, TimeRange][]) =>
+              buttons.map(([label, range]) => (
+                <ButtonBase
+                  key={range}
+                  className={classnames('time-range-button', {
+                    'time-range-button__selected': range === timeRange,
+                  })}
+                  onClick={() => setTimeRange(range)}
+                  variant={TextVariant.bodySmMedium}
+                  size={ButtonBaseSize.Sm}
+                  backgroundColor={BackgroundColor.transparent}
+                  color={TextColor.textAlternative}
+                >
+                  {label}
+                </ButtonBase>
+              )))([
+              [t('oneDayAbbreviation'), '1D'],
+              [t('oneWeekAbbreviation'), '7D'],
+              [t('oneMonthAbbreviation'), '1M'],
+              [t('threeMonthsAbbreviation'), '3M'],
+              [t('oneYearAbbreviation'), '1Y'],
+              [t('all'), '1000Y'],
+            ])}
+          </Box>
+        </Box>
+      ) : (
+        <Box style={{ aspectRatio: `${chartOptions.aspectRatio}` }}>
+          <Box
+            style={{ boxSizing: 'content-box' }}
+            height={BlockSize.Full}
+            backgroundColor={
+              loading
+                ? BackgroundColor.backgroundAlternative
+                : BackgroundColor.backgroundDefault
+            }
+            borderRadius={BorderRadius.LG}
+            marginLeft={4}
+            marginRight={4}
+            paddingTop={8}
+            paddingBottom={12}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
+            {!loading && (
+              <>
                 <Icon name={IconName.Info} size={IconSize.Xl} />
                 <Text>{t('noChartData')}</Text>
                 <Text>{t('couldNotFetchDataForToken')}</Text>
-              </Box>
-            )
-          )}
+              </>
+            )}
+          </Box>
         </Box>
-        <ChartTooltip ref={minPriceTooltip} />
-      </Box>
-
-      {data ? (
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceEvenly}
-          marginTop={4}
-        >
-          {((buttons: [string, TimeRange][]) =>
-            buttons.map(([label, range]) => (
-              <ButtonBase
-                key={range}
-                className={classnames('time-range-button', {
-                  'time-range-button__selected': range === timeRange,
-                })}
-                onClick={() => setTimeRange(range)}
-                variant={TextVariant.bodySmMedium}
-                size={ButtonBaseSize.Sm}
-                backgroundColor={BackgroundColor.transparent}
-                color={TextColor.textAlternative}
-              >
-                {label}
-              </ButtonBase>
-            )))([
-            [t('oneDayAbbreviation'), '1D'],
-            [t('oneWeekAbbreviation'), '7D'],
-            [t('oneMonthAbbreviation'), '1M'],
-            [t('threeMonthsAbbreviation'), '3M'],
-            [t('oneYearAbbreviation'), '1Y'],
-            [t('all'), '1000Y'],
-          ])}
-        </Box>
-      ) : (
-        <Box
-          backgroundColor={
-            loading
-              ? BackgroundColor.backgroundAlternative
-              : BackgroundColor.backgroundDefault
-          }
-          padding={5}
-        ></Box>
       )}
     </Box>
   );
