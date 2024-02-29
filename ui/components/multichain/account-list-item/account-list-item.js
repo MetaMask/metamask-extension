@@ -58,15 +58,11 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { AccountListItemMenuTypes } from './account-list-item.types';
+import { MenuOptionTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-export const MenuOptionTypes = {
-  ConnectionMenu: 'connectionMenu',
-  AccountMenu: 'accountMenu',
-};
 export const AccountListItem = ({
   identity,
   selected = false,
