@@ -5,8 +5,12 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
+<<<<<<< HEAD
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
+=======
+import { AccountListItem, MenuOptionTypes } from '.';
+>>>>>>> 50e9cfcb96 (updated types to use none)
 
 const account = {
   ...mockState.metamask.internalAccounts.accounts[
@@ -76,7 +80,11 @@ describe('AccountListItem', () => {
   });
 
   it('renders the three-dot menu to launch the details menu', () => {
+<<<<<<< HEAD
     render({ menuType: AccountListItemMenuTypes.Account });
+=======
+    render({ showOptionTypes: MenuOptionTypes.AccountMenu });
+>>>>>>> 50e9cfcb96 (updated types to use none)
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
     );
@@ -97,7 +105,11 @@ describe('AccountListItem', () => {
 
   it('clicking the three-dot menu opens up options', () => {
     const onClick = jest.fn();
+<<<<<<< HEAD
     render({ onClick, menuType: AccountListItemMenuTypes.Account });
+=======
+    render({ onClick, showOptionTypes: MenuOptionTypes.AccountMenu });
+>>>>>>> 50e9cfcb96 (updated types to use none)
     const item = document.querySelector(
       '[data-testid="account-list-item-menu-button"]',
     );

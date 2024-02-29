@@ -72,7 +72,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  menuType = AccountListItemMenuTypes.None,
+  showOptionTypes = MenuOptionTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -334,7 +334,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
 
-      {menuType === AccountListItemMenuTypes.None ? null : (
+      {showOptionTypes === MenuOptionTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -356,7 +356,7 @@ export const AccountListItem = ({
           data-testid="account-list-item-menu-button"
         />
       )}
-      {menuType === AccountListItemMenuTypes.Account && (
+      {showOptionTypes === MenuOptionTypes.AccountMenu && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -367,16 +367,6 @@ export const AccountListItem = ({
           isPinned={isPinned}
           isHidden={isHidden}
           isConnected={isConnected}
-        />
-      )}
-      {menuType === AccountListItemMenuTypes.Connection && (
-        <ConnectedAccountsMenu
-          anchorElement={accountListItemMenuElement}
-          identity={identity}
-          onClose={() => setAccountOptionsMenuOpen(false)}
-          closeMenu={closeMenu}
-          disableAccountSwitcher={isSingleAccount}
-          isOpen={accountOptionsMenuOpen}
         />
       )}
     </Box>
@@ -431,10 +421,6 @@ AccountListItem.propTypes = {
    * Text used as the avatar alt text
    */
   connectedAvatarName: PropTypes.string,
-  /**
-   * Represents the type of menu to be rendered
-   */
-  menuType: PropTypes.string,
   /**
    * Represents the type of menu to be rendered
    */

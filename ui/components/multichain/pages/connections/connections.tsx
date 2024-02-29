@@ -45,7 +45,11 @@ import {
 import { Tab } from '../../../ui/tabs';
 import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
+<<<<<<< HEAD
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
+=======
+import { AccountListItem, MenuOptionTypes } from '../..';
+>>>>>>> 50e9cfcb96 (updated types to use none)
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import { requestAccountsPermissionWithId } from '../../../../store/actions';
@@ -165,7 +169,11 @@ export const Connections = () => {
                       selected={isSelectedAccount}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
+<<<<<<< HEAD
                       menuType={AccountListItemMenuTypes.Connection}
+=======
+                      showOptionTypes={MenuOptionTypes.ConnectionMenu}
+>>>>>>> 50e9cfcb96 (updated types to use none)
                       currentTabOrigin={activeTabOrigin}
                       isActive={isSelectedAccount ? t('active') : null}
                     />
