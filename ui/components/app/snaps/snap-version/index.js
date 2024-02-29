@@ -1,1 +1,1 @@
-export { default } from './snap-version';
+export { default } from './snap-external-pill';
