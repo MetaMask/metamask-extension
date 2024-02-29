@@ -29,13 +29,30 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, any>) {
-  if (
-    !hasProperty(state, 'SelectedNetworkController') ||
-    !isObject(state.SelectedNetworkController) ||
-    !hasProperty(state.SelectedNetworkController, 'domains') ||
-    !isObject(state.SelectedNetworkController.domains)
-  ) {
+  if (!hasProperty(state, 'SelectedNetworkController')) {
     return state;
+  }
+
+  if (!isObject(state.SelectedNetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.SelectedNetworkController is type: ${typeof state.SelectedNetworkController}`,
+      ),
+    );
+    state.SelectedNetworkController = {};
+  } else if (!hasProperty(state.SelectedNetworkController, 'domains')) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.SelectedNetworkController.domains is missing from SelectedNetworkController state`,
+      ),
+    );
+  } else if (!isObject(state.SelectedNetworkController.domains)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.SelectedNetworkController.domains is type: ${typeof state
+          .SelectedNetworkController.domains}`,
+      ),
+    );
   }
 
   state.SelectedNetworkController.domains = {};

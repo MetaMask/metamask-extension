@@ -1,6 +1,16 @@
 import { migrate, version } from './111';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
+
 describe('migration #111', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: 110 },
@@ -107,5 +117,72 @@ describe('migration #111', () => {
     });
 
     expect(transformedState.data).toEqual(expectedState);
+  });
+
+  it('should capture an exception if SelectedNetworkController is in state but is not an object', async () => {
+    const oldData = {
+      other: 'data',
+      SelectedNetworkController: {
+        perDomainNetwork: false,
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `state.SelectedNetworkController.domains is missing from SelectedNetworkController state`,
+      ),
+    );
+  });
+
+  it('should capture an exception if SelectedNetworkController is in state but there is no domains property', async () => {
+    const oldData = {
+      other: 'data',
+      SelectedNetworkController: 'not an object',
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`state.SelectedNetworkController is type: string`),
+    );
+  });
+
+  it('should capture an exception if SelectedNetworkController has domains property but it is not an object', async () => {
+    const oldData = {
+      other: 'data',
+      SelectedNetworkController: {
+        perDomainNetwork: false,
+        domains: 'not an object',
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`state.SelectedNetworkController.domains is type: string`),
+    );
   });
 });
