@@ -82,6 +82,7 @@ export type TransactionMetricsRequest = {
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   trackEvent: (payload: any) => void;
+  getIsSmartTransaction: () => boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -971,6 +972,7 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    is_smart_transaction: transactionMetricsRequest.getIsSmartTransaction(),
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
