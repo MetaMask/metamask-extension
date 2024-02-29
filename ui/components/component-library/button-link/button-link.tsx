@@ -46,7 +46,9 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           ...startIconProps,
           className:
             size === ButtonLinkSize.Inherit
-              ? `mm-button-link--size-inherit__icon ${startIconProps?.className}`
+              ? `mm-button-link--size-inherit__icon ${
+                  startIconProps?.className || ''
+                }`
               : '',
         }}
         endIconProps={{
@@ -55,7 +57,9 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           ...endIconProps,
           className:
             size === ButtonLinkSize.Inherit
-              ? `mm-button-link--size-inherit__icon ${endIconProps?.className}`
+              ? `mm-button-link--size-inherit__icon ${
+                  endIconProps?.className || ''
+                }`
               : '',
         }}
         iconLoadingProps={{
