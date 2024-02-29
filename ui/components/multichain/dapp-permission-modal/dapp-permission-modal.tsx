@@ -23,19 +23,25 @@ import {
   IconName,
   ButtonVariant,
 } from '../../component-library';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getDappPermissionModal, getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { hideDappPermissionModal } from '../../../store/actions';
 import Confusable from '../../ui/confusable';
 
 export const DappPermissionModal = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const useBlockie = useSelector(getUseBlockie);
-  const { account } = useSelector(getDappPermissionModal);
+  const { open, account } = useSelector(getDappPermissionModal);
+
+  function closeModal() {
+    dispatch(hideDappPermissionModal());
+  }
 
   return (
-    <Modal isOpen={true} onClose={() => {}} className="snap-metadata-modal">
+    <Modal isOpen={open} onClose={closeModal}>
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
@@ -47,7 +53,7 @@ export const DappPermissionModal = () => {
           paddingBottom={4}
           paddingRight={4}
           paddingLeft={4}
-          onClose={() => {}}
+          onClose={closeModal}
         >
           <Box
             display={Display.Flex}
@@ -66,10 +72,7 @@ export const DappPermissionModal = () => {
               }
               marginInlineEnd={2}
             />
-            <Text
-              variant={TextVariant.headingSm}
-              className="address-list-item__label"
-            >
+            <Text variant={TextVariant.headingSm}>
               {account.label ? (
                 <Confusable input={account.label} />
               ) : (
