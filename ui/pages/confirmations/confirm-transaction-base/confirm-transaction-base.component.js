@@ -1006,7 +1006,6 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      isSmartTransaction,
       smartTransactionsOptInStatus,
       isAllowedStxChainId,
       setSwapsFeatureFlags,
