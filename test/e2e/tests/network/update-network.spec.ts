@@ -14,7 +14,9 @@ const selectors = {
   settingsOption: { text: 'Settings', tag: 'div' },
   networkOption: { text: 'Networks', tag: 'div' },
   generalOption: { text: 'General', tag: 'div' },
+  generalTabHeader: { text: 'General', tag: 'h4' },
   ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
+  newUpdateNetwork: { text: 'Update Network', tag: 'div' },
   deleteButton: { text: 'Delete', tag: 'button' },
   cancelButton: { text: 'Cancel', tag: 'button' },
   saveButton: { text: 'Save', tag: 'button' },
@@ -24,6 +26,10 @@ const selectors = {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
   },
   networkNameInputField: '[data-testid="network-form-network-name"]',
+  networkNameInputFieldSetToEthereumMainnet: {
+    xpath:
+      "//input[@data-testid = 'network-form-network-name'][@value = 'Ethereum Mainnet']",
+  },
   rpcUrlInputField: '[data-testid="network-form-rpc-url"]',
   chainIdInputField: '[data-testid="network-form-chain-id"]',
   errorContainer: '.settings-tab__error',
@@ -40,6 +46,7 @@ async function navigateToEditNetwork(driver: Driver) {
   await driver.clickElement(selectors.settingsOption);
   await driver.clickElement(selectors.networkOption);
 }
+
 describe('Update Network:', function (this: Suite) {
   it('update network details and validate the ui elements', async function () {
     await withFixtures(
@@ -99,14 +106,19 @@ describe('Update Network:', function (this: Suite) {
 
         await driver.clickElement(selectors.ethereumNetwork);
 
-        // Validate the Save,Cancel Delete button is not present for the default network
-        await driver.assertElementNotPresent(selectors.deleteButton);
+        // Validate the Save, Cancel, and Delete buttons are not present for the default network
+        await driver.assertElementNotPresent(selectors.deleteButton, {
+          findElementGuard: selectors.networkNameInputFieldSetToEthereumMainnet, // Wait for the network selection to complete
+        });
+        // The findElementGuard above is sufficient for the next two assertions
         await driver.assertElementNotPresent(selectors.cancelButton);
         await driver.assertElementNotPresent(selectors.saveButton);
 
-        // Validate the error does not appear for updating the network name and chain id
+        // Validate the error does not appear on the General tab
         await driver.clickElement(selectors.generalOption);
-        await driver.assertElementNotPresent(selectors.errorContainer);
+        await driver.assertElementNotPresent(selectors.errorContainer, {
+          findElementGuard: selectors.generalTabHeader, // Wait for the General tab to load
+        });
       },
     );
   });

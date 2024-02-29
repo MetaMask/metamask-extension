@@ -878,6 +878,9 @@
   "connectedWith": {
     "message": "Connected with"
   },
+  "connectedaccountsTabKey": {
+    "message": "Connected accounts"
+  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -2473,6 +2476,10 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metadataModalSourceTooltip": {
+    "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
+    "description": "$1 is the snap name and $2 is the snap NPM id."
+  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
@@ -3293,6 +3300,9 @@
   "pendingTransactionSingle": {
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
+  },
+  "permissionDetails": {
+    "message": "Permission details"
   },
   "permissionRequest": {
     "message": "Permission request"
@@ -4400,6 +4410,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed up"

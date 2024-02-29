@@ -1,5 +1,4 @@
 import { NameType } from '@metamask/name-controller';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   GetAllSnaps,
