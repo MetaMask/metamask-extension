@@ -113,6 +113,7 @@ export default class MMIController extends EventEmitter {
       custodyController: this.custodyController,
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
+      captureException,
     });
   }
 
@@ -201,12 +202,14 @@ export default class MMIController extends EventEmitter {
       await this.mmiConfigurationController.storeConfiguration();
     } catch (error) {
       log.error('Error while unlocking extension.', error);
+      captureException(error);
     }
 
     try {
       await this.transactionUpdateController.subscribeToEvents();
     } catch (error) {
       log.error('Error while unlocking extension.', error);
+      captureException(error);
     }
 
     const mmiConfigData =
@@ -580,7 +583,7 @@ export default class MMIController extends EventEmitter {
     const networks = [
       ...networkConfigurations,
       { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
+      { chainId: CHAIN_IDS.SEPOLIA },
     ];
 
     return handleMmiPortfolio({

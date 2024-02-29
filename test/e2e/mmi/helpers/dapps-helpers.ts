@@ -40,7 +40,7 @@ export async function callTestDappBtn(
   // Check network
   const networkPage = new MMINetworkPage(page);
   await networkPage.open();
-  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK ?? 'Goerli');
+  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK ?? 'Sepolia');
 
   // get token to access saturn
   // changed to get it from Saturn endpoint to avoid calling Auth0 API

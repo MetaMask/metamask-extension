@@ -193,7 +193,7 @@ describe('Test Snap Dialog', function () {
         );
 
         // fill '2323' in form field
-        await driver.pasteIntoField('.MuiInput-input', '2323');
+        await driver.pasteIntoField('.mm-input', '2323');
 
         // click submit button
         await driver.clickElement({

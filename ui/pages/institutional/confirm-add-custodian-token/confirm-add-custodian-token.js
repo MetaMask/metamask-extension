@@ -31,7 +31,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
+import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -125,7 +125,10 @@ const ConfirmAddCustodianToken = () => {
   const custodianLabel =
     connectRequest.labels?.find((label) => label.key === 'service')?.value ||
     t('custodian');
-  const custodian = findCustodianByDisplayName(custodianLabel, custodians);
+  const custodian = findCustodianByEnvName(
+    connectRequest.environment,
+    custodians,
+  );
 
   return (
     <Box className="page-container">

@@ -36,7 +36,8 @@ const render = ({ transactionProp = {}, contextProps = {} } = {}) => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      gasFeeEstimates:
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 
@@ -50,7 +51,14 @@ const render = ({ transactionProp = {}, contextProps = {} } = {}) => {
 
 describe('ConfirmGasDisplay', () => {
   it('should match snapshot', async () => {
-    const { container } = render();
+    const { container } = render({
+      transactionProp: {
+        txParams: {
+          gas: '0x5208',
+        },
+        userFeeLevel: 'medium',
+      },
+    });
     expect(container).toMatchSnapshot();
   });
   it('should render gas display labels for EIP1559 transcations', () => {
