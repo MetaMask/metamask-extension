@@ -4789,10 +4789,7 @@ export default class MetamaskController extends EventEmitter {
       // this means that origin does not have permissions (is not connected to the wallet)
       // and will therefore not have its own selected network even if perDomainNetwork is true
       // and so in this case too we want to use the globally selected network provider/blockTracker
-      proxyClient = {
-        provider: this.provider,
-        blockTracker: this.blockTracker,
-      };
+      proxyClient = this.networkController.getProviderAndBlockTracker();
     }
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
@@ -5809,7 +5806,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _notifyChainChange() {
-    if (this.preferencesController?.getUseRequestQueue()) {
+    if (this.preferencesController.getUseRequestQueue()) {
       this.notifyAllConnections((origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,
         params: this.getProviderNetworkState(origin),
