@@ -1479,6 +1479,10 @@ export default class MetamaskController extends EventEmitter {
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
+        getGlobalProviderAndBlockTracker: () =>
+          delayNetworkClient
+            ? undefined
+            : this.networkController.getProviderAndBlockTracker(),
         getNetworkClientRegistry:
           this.networkController.getNetworkClientRegistry.bind(
             this.networkController,
