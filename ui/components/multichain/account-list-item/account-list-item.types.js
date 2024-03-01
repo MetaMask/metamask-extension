@@ -1,5 +1,5 @@
-export const MenuOptionTypes = {
+export const AccountListItemMenuTypes = {
   None: 'none',
-  ConnectionMenu: 'connectionMenu',
-  AccountMenu: 'accountMenu',
+  Connection: 'connection',
+  Account: 'account',
 };
