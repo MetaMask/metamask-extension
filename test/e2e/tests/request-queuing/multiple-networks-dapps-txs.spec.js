@@ -15,7 +15,7 @@ const { PAGES } = require('../../webdriver/driver');
 // TODO: Test this in prod, refresh the extension when the setting is on and you have to disable/enable it for the switchEthereumChain notification to work.
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should show switch network confirmations for per dapp selected networks when calling send transactions', async function () {
+  it('should show switch network confirmations for per dapp selected networks when calling send transactions @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
