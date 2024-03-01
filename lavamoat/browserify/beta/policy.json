@@ -911,6 +911,16 @@
         "fetch": true
       }
     },
+    "@metamask/ens-controller": {
+      "packages": {
+        "@ethersproject/providers": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "ethereum-ens-network-map": true,
+        "punycode": true
+      }
+    },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
         "URL": true,
@@ -1623,6 +1633,12 @@
     "@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/permission-log-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/phishing-controller": {

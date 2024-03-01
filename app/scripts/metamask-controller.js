@@ -55,7 +55,7 @@ import {
   ApprovalRequestNotFoundError,
 } from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
-
+import { EnsController } from '@metamask/ens-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -72,6 +72,7 @@ import {
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
+import { PermissionLogController } from '@metamask/permission-log-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { RateLimitController } from '@metamask/rate-limit-controller';
@@ -256,7 +257,6 @@ import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
-import EnsController from './controllers/ens';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import AlertController from './controllers/alert';
@@ -282,7 +282,6 @@ import {
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
   NOTIFICATION_NAMES,
-  PermissionLogController,
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -901,9 +900,10 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.ensController = new EnsController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'EnsController',
+      }),
       provider: this.provider,
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:networkDidChange',
@@ -1123,8 +1123,11 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.permissionLogController = new PermissionLogController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'PermissionLogController',
+      }),
       restrictedMethods: new Set(Object.keys(RestrictedMethods)),
-      initState: initState.PermissionLogController,
+      state: initState.PermissionLogController,
     });
 
     this.subjectMetadataController = new SubjectMetadataController({
@@ -1943,7 +1946,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
       SwapsController: this.swapsController.store,
-      EnsController: this.ensController.store,
+      EnsController: this.ensController,
       ApprovalController: this.approvalController,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
@@ -1964,7 +1967,7 @@ export default class MetamaskController extends EventEmitter {
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       PermissionController: this.permissionController,
-      PermissionLogController: this.permissionLogController.store,
+      PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
       AnnouncementController: this.announcementController,
       NetworkOrderController: this.networkOrderController,
@@ -2016,7 +2019,7 @@ export default class MetamaskController extends EventEmitter {
         AlertController: this.alertController.store,
         OnboardingController: this.onboardingController.store,
         PermissionController: this.permissionController,
-        PermissionLogController: this.permissionLogController.store,
+        PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
         AnnouncementController: this.announcementController,
         NetworkOrderController: this.networkOrderController,
@@ -2063,7 +2066,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       this.signatureController.resetState.bind(this.signatureController),
       this.swapsController.resetState,
-      this.ensController.resetState,
+      this.ensController.resetState.bind(this.ensController),
       this.approvalController.clear.bind(this.approvalController),
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
@@ -4266,7 +4269,9 @@ export default class MetamaskController extends EventEmitter {
       networkClientId:
         dappRequest?.networkClientId ??
         this.networkController.state.selectedNetworkClientId,
-      selectedAccount: this.accountsController.getSelectedAccount(),
+      selectedAccount: this.accountsController.getAccountByAddress(
+        transactionParams.from,
+      ),
       transactionController: this.txController,
       transactionOptions,
       transactionParams,
