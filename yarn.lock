@@ -3393,6 +3393,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@keystonehq/alias-sampling@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@keystonehq/alias-sampling@npm:0.1.1"
+  checksum: 1a05a5f9a5780de2d14803c778b89d836525978bef1584f0332d9bf306dd5f55fe400e3d087bb6fd13baebc26b01bdcbd1be6f162aa0d82d2e4fe7ad7ef51e6e
+  languageName: node
+  linkType: hard
+
 "@keystonehq/base-eth-keyring@npm:^0.14.1":
   version: 0.14.1
   resolution: "@keystonehq/base-eth-keyring@npm:0.14.1"
@@ -3420,13 +3427,13 @@ __metadata:
   linkType: hard
 
 "@keystonehq/bc-ur-registry@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@keystonehq/bc-ur-registry@npm:0.6.0"
+  version: 0.6.4
+  resolution: "@keystonehq/bc-ur-registry@npm:0.6.4"
   dependencies:
     "@ngraveio/bc-ur": "npm:^1.1.5"
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
-  checksum: 9d5665eef6a62d43edab13706a7bd86af0b492306bc64d65c30faa7b1e8cab49cf3c73b7290f28f3fcc48b8ad22578979d31ea511f8f35357567a97fca407b2f
+  checksum: d4cdbefc14f3305543340d509564e1a795eb458327d46aad8665927999150df7e282939dcb714b81fea386061019e3b9f41eedbbb09a59d404355711c33159b2
   languageName: node
   linkType: hard
 
@@ -5510,7 +5517,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.1.5, @ngraveio/bc-ur@npm:^1.1.6":
+"@ngraveio/bc-ur@npm:^1.1.5":
+  version: 1.1.9
+  resolution: "@ngraveio/bc-ur@npm:1.1.9"
+  dependencies:
+    "@keystonehq/alias-sampling": "npm:^0.1.1"
+    assert: "npm:^2.0.0"
+    bignumber.js: "npm:^9.0.1"
+    cbor-sync: "npm:^1.0.4"
+    crc: "npm:^3.8.0"
+    jsbi: "npm:^3.1.5"
+    sha.js: "npm:^2.4.11"
+  checksum: 7f743fb0e87fcd485fb6403fb14f327229c333038ee6ccbeb760d1ad04c3fabb40328556faf7231b0b470a956b6dcc831fdca3a70de0aa4a04ad541c53bde274
+  languageName: node
+  linkType: hard
+
+"@ngraveio/bc-ur@npm:^1.1.6":
   version: 1.1.6
   resolution: "@ngraveio/bc-ur@npm:1.1.6"
   dependencies:
