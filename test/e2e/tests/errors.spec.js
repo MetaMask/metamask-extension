@@ -830,7 +830,7 @@ describe('Sentry errors', function () {
       // MMI properties
       opts: true,
       store: true,
-      configurationClient: true
+      configurationClient: true,
     };
     await withFixtures(
       {
