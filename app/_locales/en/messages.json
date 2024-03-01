@@ -894,6 +894,9 @@
   "connectedWith": {
     "message": "Connected with"
   },
+  "connectedaccountsTabKey": {
+    "message": "Connected accounts"
+  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -3345,6 +3348,9 @@
   "pendingTransactionSingle": {
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
+  },
+  "permissionDetails": {
+    "message": "Permission details"
   },
   "permissionRequest": {
     "message": "Permission request"

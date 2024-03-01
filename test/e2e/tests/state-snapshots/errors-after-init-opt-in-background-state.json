@@ -258,5 +258,7 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": { "userOperations": "object" }
+  "UserOperationController": {
+    "userOperations": "object"
+  }
 }
