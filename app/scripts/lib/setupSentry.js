@@ -340,7 +340,7 @@ export const SENTRY_BACKGROUND_STATE = {
     userOperations: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ...MMI_SENTRY_BACKGROUND_STATE
+  ...MMI_SENTRY_BACKGROUND_STATE,
   ///: END:ONLY_INCLUDE_IF
 };
 
