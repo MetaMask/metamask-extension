@@ -331,7 +331,6 @@
     "eth-method-registry": "^4.0.0",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
-    "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^3.0.0",

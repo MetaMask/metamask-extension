@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
-import ensNetworkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
@@ -36,6 +35,16 @@ import {
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
 const ENS = 'ENS';
+const ENS_NETWORK_MAP = {
+  // Mainnet
+  1: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  // Ropsten
+  3: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  // Rinkeby
+  4: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  // Goerli
+  5: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+};
 
 const initialState = {
   stage: 'UNINITIALIZED',
@@ -164,7 +173,7 @@ export function initializeDomainSlice() {
     const chainId = getCurrentChainId(state);
     const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
     const chainIdInt = parseInt(chainId, 16);
-    const ensAddress = ensNetworkMap[chainIdInt.toString()];
+    const ensAddress = ENS_NETWORK_MAP[chainIdInt.toString()];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {

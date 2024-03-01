@@ -24744,7 +24744,6 @@ __metadata:
     eth-method-registry: "npm:^4.0.0"
     eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
-    ethereum-ens-network-map: "npm:^1.0.2"
     ethereumjs-abi: "npm:^0.6.4"
     ethereumjs-util: "npm:^7.0.10"
     extension-port-stream: "npm:^3.0.0"

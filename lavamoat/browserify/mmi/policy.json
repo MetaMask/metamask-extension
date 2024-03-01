@@ -1061,8 +1061,8 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/ens-controller>ethereum-ens-network-map": true,
         "@metamask/utils": true,
-        "ethereum-ens-network-map": true,
         "punycode": true
       }
     },
