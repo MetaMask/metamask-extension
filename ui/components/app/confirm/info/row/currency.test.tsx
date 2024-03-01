@@ -1,10 +1,10 @@
 import React from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
 
 import { ConfirmInfoRowCurrency } from './currency';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 
 const render = (props: Record<string, any> = {}) => {
   const store = configureStore({
