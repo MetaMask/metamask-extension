@@ -201,7 +201,6 @@ export const NetworkListMenu = ({ onClose }) => {
               dispatch(setActiveNetwork(network.id));
             }
             dispatch(onNetworkChange());
-
             trackEvent({
               event: MetaMetricsEventName.NavNetworkSwitched,
               category: MetaMetricsEventCategory.Network,
