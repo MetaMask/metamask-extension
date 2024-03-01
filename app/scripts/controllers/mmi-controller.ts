@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
+import { CUSTODIAN_TYPES, CustodyKeyring } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
   custodianEventHandlerFactory,
@@ -19,20 +19,26 @@ import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import { MMIControllerOptions, ISignedEvent, IInteractiveRefreshTokenChangeEvent, Label, Signature, NetworkConfiguration } from '../../../shared/constants/mmi-controller'
 import { getPermissionBackgroundApiMethods } from './permissions';
 
-interface TransactionEvent {
-  transactionMeta: TransactionMeta;
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+interface UpdateCustodianTransactionsParameters {
+  keyring: CustodyKeyring;
+  type: string;
+  txList: any[];
+  custodyController: CustodyController;
+  transactionUpdateController: TransactionUpdateController;
+  txStateManager: any;
+  getPendingNonce: (string: any) => Promise<number>;
+  setTxHash: (number: any, string: any) => void;
 }
-
 export default class MMIController extends EventEmitter {
   private opts: MMIControllerOptions;
   private mmiConfigurationController: any;
   private keyringController: any;
-  private securityProviderRequest: any;
   private preferencesController: any;
   private appStateController: any;
   private transactionUpdateController: any;
-  private custodyController: any;
-  private institutionalFeaturesController: any;
+  private custodyController: CustodyController;
   private getState: () => any;
   private getPendingNonce: (address: string) => Promise<any>;
   private accountTracker: any;
@@ -44,7 +50,7 @@ export default class MMIController extends EventEmitter {
   private platform: any;
   private extension: any;
   private updateTransactionHash: (txId: string, txHash: string) => void;
-  private trackTransactionEvents: (transactionEvent: TransactionEvent, event: any) => void;
+  private trackTransactionEvents: ( args: {transactionMeta: TransactionMeta}, event: any) => void;
   private txStateManager: {
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
     setTxStatusSigned: (txId: string) => void;
@@ -60,12 +66,10 @@ export default class MMIController extends EventEmitter {
     this.opts = opts;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.securityProviderRequest = opts.securityProviderRequest;
     this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
-    this.institutionalFeaturesController = opts.institutionalFeaturesController;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTracker = opts.accountTracker;
@@ -78,6 +82,7 @@ export default class MMIController extends EventEmitter {
     this.extension = opts.extension;
 
     this.updateTransactionHash = opts.updateTransactionHash;
+
     this.trackTransactionEvents = opts.trackTransactionEvents;
     this.txStateManager = {
       getTransactions: opts.getTransactions,
@@ -148,6 +153,7 @@ export default class MMIController extends EventEmitter {
       signatureController: this.signatureController,
       txStateManager: this.txStateManager,
       custodyController: this.custodyController,
+      // @ts-ignore
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
       captureException,
@@ -158,7 +164,7 @@ export default class MMIController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(custodyType as KeyringTypes);
 
     const supportedChains = await keyring.getSupportedChains(address);
 
@@ -182,7 +188,7 @@ export default class MMIController extends EventEmitter {
 
     for (const type of custodyTypes) {
       try {
-        const keyring = await this.addKeyringIfNotExists(type);
+        const keyring = await this.addKeyringIfNotExists(type as KeyringTypes);
 
         keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
           log.info(`Refresh token change event for ${type}`);
@@ -222,7 +228,7 @@ export default class MMIController extends EventEmitter {
             txStateManager: this.txStateManager,
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
-          });
+          } as UpdateCustodianTransactionsParameters);
         } catch (error) {
           log.error('Error doing offline transaction updates', error);
           captureException(error);
@@ -319,7 +325,7 @@ export default class MMIController extends EventEmitter {
         address: toChecksumHexAddress(item),
         name: accounts[item].name,
         custodianDetails: accounts[item].custodianDetails,
-        labels: accounts[item].labels,
+        labels: accounts[item].labels as unknown as string[],
         custodyType: custodian.keyringClass.type,
         custodianName,
         chainId: accounts[item].chainId,
@@ -408,7 +414,7 @@ export default class MMIController extends EventEmitter {
     custodianType: string,
     getNonImportedAccounts: boolean,
   ) {
-    let currentCustodyType;
+    let currentCustodyType: string = '';
     if (!custodianType) {
       const address = this.preferencesController.getSelectedAddress();
       currentCustodyType = this.custodyController.getCustodyTypeByAddress(
@@ -426,7 +432,7 @@ export default class MMIController extends EventEmitter {
 
       keyring = await this.addKeyringIfNotExists(custodian.keyringClass.type);
     } else if (currentCustodyType) {
-      keyring = await this.addKeyringIfNotExists(currentCustodyType);
+      keyring = await this.addKeyringIfNotExists(currentCustodyType as KeyringTypes);
     } else {
       throw new Error('No custodian specified');
     }
@@ -466,7 +472,7 @@ export default class MMIController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(custodyType as KeyringTypes);
     return keyring.getTransactionDeepLink(address, txId);
   }
 
@@ -479,7 +485,7 @@ export default class MMIController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(custodyType as KeyringTypes);
     return {
       deepLink: await keyring.getTransactionDeepLink(
         txMeta.txParams.from,
@@ -493,7 +499,7 @@ export default class MMIController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(from),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(custodyType as KeyringTypes);
     return keyring.getTransactionDeepLink(from, custodyTxId);
   }
 
@@ -581,7 +587,7 @@ export default class MMIController extends EventEmitter {
       toChecksumHexAddress(address),
     );
 
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(custodyType as KeyringTypes);
 
     await keyring.replaceRefreshTokenAuthDetails(address, refreshToken);
   }
@@ -598,7 +604,7 @@ export default class MMIController extends EventEmitter {
     // This can only work if the extension is unlocked
     await this.appStateController.getUnlockPromise(true);
 
-    const keyring = await this.addKeyringIfNotExists(currentCustodyType);
+    const keyring = await this.addKeyringIfNotExists(currentCustodyType as KeyringTypes);
 
     return await this.custodyController.handleMmiCheckIfTokenIsPresent({
       token,
