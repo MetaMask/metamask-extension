@@ -51,19 +51,18 @@ const SnapUIRendererComponent = ({
 
   const isValidComponent = content && isComponent(content);
 
-  const elementKeyIndex = { value: 0 };
-
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
       isValidComponent &&
       mapToTemplate({
+        map: {},
         element: content,
-        rootKey: nanoid(),
-        elementKeyIndex,
       }),
-    [content, isValidComponent, elementKeyIndex],
+    [content, isValidComponent],
   );
+
+  console.log(sections);
 
   if (isLoading || !content) {
     return (
@@ -74,7 +73,7 @@ const SnapUIRendererComponent = ({
         isCollapsed={isCollapsed}
         onClick={onClick}
         boxProps={boxProps}
-        isLoading={isLoading}
+        isLoading
       />
     );
   }
@@ -97,6 +96,7 @@ const SnapUIRendererComponent = ({
     );
   }
 
+  console.log('Re-render renderer');
   return (
     <SnapDelineator
       snapName={snapName}
