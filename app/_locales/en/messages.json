@@ -634,12 +634,6 @@
   "bridge": {
     "message": "Bridge"
   },
-  "bridgeDescription": {
-    "message": "Transfer tokens from different networks"
-  },
-  "bridgeDisabled": {
-    "message": "Bridge is not available in this network"
-  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -657,12 +651,6 @@
   },
   "buyAndSell": {
     "message": "Buy & Sell"
-  },
-  "buyAndSellDescription": {
-    "message": "Buy crypto or sell your crypto for cash"
-  },
-  "buyAndSellDisabled": {
-    "message": "Buy & Sell is not available in this network"
   },
   "buyAsset": {
     "message": "Buy $1",
@@ -714,8 +702,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
+    "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -791,6 +778,12 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
+  },
+  "confirmTitleDescSignature": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleSignature": {
+    "message": "Signature request"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -916,9 +909,6 @@
   "connectionRequest": {
     "message": "Connection request"
   },
-  "connections": {
-    "message": "Connections"
-  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -988,6 +978,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyPrivateKey": {
+    "message": "Copy private key"
   },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
@@ -1670,10 +1663,10 @@
     "message": "External extension"
   },
   "externalNameSourcesSetting": {
-    "message": "Suggest address names"
+    "message": "Proposed nicknames"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We’ll fetch proposed nicknames for addresses you interact with from third-party sources like Etherscan, Infura, and Lens Protocol. These sources will be able to see the those addresses and your IP address. Your account address won’t be exposed to third parties."
   },
   "failed": {
     "message": "Failed"
@@ -1916,7 +1909,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-
   "hideToken": {
     "message": "Hide token"
   },
@@ -2522,27 +2514,55 @@
     "description": "Label above address field in name component modal."
   },
   "nameInstructionsNew": {
-    "message": "You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.",
+    "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
   },
+  "nameInstructionsRecognized": {
+    "message": "This address has a default nickname, but you can edit it or explore other suggestions.",
+    "description": "Instruction text in name component modal when value is recognized but not saved."
+  },
   "nameInstructionsSaved": {
-    "message": "Interactions with this address will always be identified using this personal display name.",
+    "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
   "nameLabel": {
-    "message": "Display name",
+    "message": "Nickname",
     "description": "Label above name input field in name component modal."
+  },
+  "nameModalMaybeProposedName": {
+    "message": "Maybe: $1",
+    "description": "$1 is the proposed name"
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
     "description": "Title of the modal created by the name component when value is not recognised."
   },
+  "nameModalTitleRecognized": {
+    "message": "Recognized address",
+    "description": "Title of the modal created by the name component when value is recognized but not saved."
+  },
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
+  "nameProviderProposedBy": {
+    "message": "Proposed by $1",
+    "description": "$1 is the name of the provider"
+  },
+  "nameProvider_ens": {
+    "message": "Ethereum Name Service (ENS)"
+  },
+  "nameProvider_etherscan": {
+    "message": "Etherscan"
+  },
+  "nameProvider_lens": {
+    "message": "Lens Protocol"
+  },
+  "nameProvider_token": {
+    "message": "MetaMask"
+  },
   "nameSetPlaceholder": {
-    "message": "Set a personal display name...",
+    "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
@@ -3145,6 +3165,18 @@
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
   },
+  "notificationsPetnamesActionText": {
+    "message": "Got it"
+  },
+  "notificationsPetnamesDescriptionOne": {
+    "message": "When you click on an address during a transaction, you can see suggested nicknames from third-party sources such as ENS, Lens, and Etherscan."
+  },
+  "notificationsPetnamesDescriptionTwo": {
+    "message": "This will make it easier for you to recognize addresses in the future, so be sure to give a nickname to addresses you trust."
+  },
+  "notificationsPetnamesTitle": {
+    "message": "Suggested nicknames are here!"
+  },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
@@ -3623,6 +3655,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "petnamesEnabledToggle": {
+    "message": "Allow nicknames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
@@ -4090,9 +4128,6 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
-  "selectActionButton": {
-    "message": "Select action"
-  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4107,9 +4142,6 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
-  "selectAnAction": {
-    "message": "Select an action"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
@@ -4140,9 +4172,6 @@
   },
   "sendBugReport": {
     "message": "Send us a bug report."
-  },
-  "sendDescription": {
-    "message": "Send crypto to any account"
   },
   "sendNoContactsConversionText": {
     "message": "click here"
@@ -4200,8 +4229,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"
@@ -4631,9 +4660,6 @@
   "stake": {
     "message": "Stake"
   },
-  "stakeDescription": {
-    "message": "Stake your crypto to earn rewards"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4831,14 +4857,8 @@
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
-  "swapDescription": {
-    "message": "Swap and trade your tokens"
-  },
   "swapDirectContract": {
     "message": "Direct contract"
-  },
-  "swapDisabled": {
-    "message": "Swap is not available in this network"
   },
   "swapEditLimit": {
     "message": "Edit limit"

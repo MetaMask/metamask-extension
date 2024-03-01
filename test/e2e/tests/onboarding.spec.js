@@ -36,7 +36,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -57,7 +56,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -82,7 +80,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -104,7 +101,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -117,12 +113,11 @@ describe('MetaMask onboarding @no-mmi', function () {
 
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        const dropdowns = await driver.findElements('select');
-        const dropdownElement = dropdowns[1];
-        await dropdownElement.click();
-        const options = await dropdownElement.findElements(
-          By.tagName('option'),
+        const dropdownElement = await driver.findElement(
+          '.import-srp__number-of-words-dropdown',
         );
+        await dropdownElement.click();
+        const options = await dropdownElement.findElements(By.css('option'));
 
         const iterations = options.length;
 
@@ -144,7 +139,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -186,7 +180,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -214,7 +207,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -281,6 +273,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           tag: 'button',
         });
 
+        await driver.waitForSelector('[data-testid="add-network-modal"]');
         const [
           networkNameField,
           networkUrlField,
@@ -293,7 +286,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.waitForElementNotPresent('span .modal');
+        await driver.waitForElementNotPresent(
+          '[data-testid="add-network-modal"]',
+        );
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // After login, check that notification message for added network is displayed

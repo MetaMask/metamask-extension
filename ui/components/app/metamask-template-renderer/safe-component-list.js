@@ -9,7 +9,7 @@ import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
 import TextArea from '../../ui/textarea/textarea';
 import TextField from '../../ui/text-field';
-import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
+import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { AvatarIcon, Text } from '../../component-library';

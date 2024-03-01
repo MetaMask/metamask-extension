@@ -174,7 +174,7 @@ export const TokenListItem = ({
                     variant={TextVariant.bodyMd}
                     ellipsis
                   >
-                    {tokenTitle}
+                    {tokenSymbol}
                   </Text>
                 </Tooltip>
               ) : (
@@ -184,7 +184,7 @@ export const TokenListItem = ({
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {tokenTitle}
+                  {tokenSymbol}
                 </Text>
               )}
             </Box>

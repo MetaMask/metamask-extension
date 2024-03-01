@@ -78,7 +78,7 @@ describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
           '[data-testid="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
         await driver.clickElement(
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );
@@ -90,7 +90,7 @@ describe('PPOM Blockaid Alert - Metrics @no-mmi', function () {
           '[data-testid="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
         await driver.clickElement(
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );

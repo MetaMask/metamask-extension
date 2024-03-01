@@ -13,7 +13,9 @@ import {
   getShouldHideZeroBalanceTokens,
   getIsBuyableChain,
   getCurrentChainId,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
+  ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
 } from '../../../selectors';
@@ -33,16 +35,20 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  BalanceOverview,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   AssetListConversionButton,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../multichain';
-
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
+///: END:ONLY_INCLUDE_IF
 import { Display } from '../../../helpers/constants/design-system';
 
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+///: END:ONLY_INCLUDE_IF
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   showPrimaryCurrency,
@@ -102,7 +108,7 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
+  const { tokensWithBalances, totalFiatBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
@@ -112,14 +118,13 @@ const AssetList = ({ onClickAsset }) => {
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const shouldShowReceive = balanceIsZero;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
-      {process.env.MULTICHAIN ? (
-        <BalanceOverview balance={totalWeiBalance} loading={loading} />
-      ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
@@ -134,30 +139,38 @@ const AssetList = ({ onClickAsset }) => {
           display={Display.Flex}
           gap={2}
         >
-          {shouldShowBuy ? (
-            <AssetListConversionButton
-              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
-              }}
-            />
-          ) : null}
-          {shouldShowReceive ? (
-            <AssetListConversionButton
-              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
-              onClick={() => setShowReceiveModal(true)}
-            />
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            shouldShowBuy ? (
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
+                onClick={() => {
+                  openBuyCryptoInPdapp();
+                  trackEvent({
+                    event: MetaMetricsEventName.NavBuyButtonClicked,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                      text: 'Buy',
+                      chain_id: chainId,
+                      token_symbol: defaultSwapsToken,
+                    },
+                  });
+                }}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            shouldShowReceive ? (
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
+                onClick={() => setShowReceiveModal(true)}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           {showReceiveModal ? (
             <ReceiveModal
               address={selectedAddress}

@@ -76,40 +76,35 @@ async function getSRP(driver) {
 
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
-    await withFixtures(
-      {
-        failOnConsoleError: false,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        // the first app launch opens a new tab, we need to switch the focus
-        // to the first one.
-        await driver.switchToWindowWithTitle('MetaMask');
-        // create a new vault through onboarding flow
-        await completeCreateNewWalletOnboardingFlowWithOptOut(
-          driver,
-          WALLET_PASSWORD,
-        );
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
-        // obtain SRP
-        const seedPhrase = await getSRP(driver);
+    await withFixtures({}, async ({ driver }) => {
+      await driver.navigate();
+      // the first app launch opens a new tab, we need to switch the focus
+      // to the first one.
+      await driver.switchToWindowWithTitle('MetaMask');
+      // create a new vault through onboarding flow
+      await completeCreateNewWalletOnboardingFlowWithOptOut(
+        driver,
+        WALLET_PASSWORD,
+      );
+      // close popover if any (Announcements etc..)
+      await closePopoverIfPresent(driver);
+      // obtain SRP
+      const seedPhrase = await getSRP(driver);
 
-        // navigate to the Vault decryptor webapp
-        await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
-        // fill the input field with storage recovered from filesystem
-        await driver.clickElement('[name="vault-source"]');
-        const inputField = await driver.findElement('#fileinput');
-        inputField.press(await getExtensionStorageFilePath(driver));
-        // fill in the password
-        await driver.fill('#passwordinput', WALLET_PASSWORD);
-        // decrypt
-        await driver.clickElement('.decrypt');
-        const decrypted = await driver.findElement('.content div div div');
-        const recoveredVault = JSON.parse(await decrypted.getText());
+      // navigate to the Vault decryptor webapp
+      await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
+      // fill the input field with storage recovered from filesystem
+      await driver.clickElement('[name="vault-source"]');
+      const inputField = await driver.findElement('#fileinput');
+      inputField.press(await getExtensionStorageFilePath(driver));
+      // fill in the password
+      await driver.fill('#passwordinput', WALLET_PASSWORD);
+      // decrypt
+      await driver.clickElement('.decrypt');
+      const decrypted = await driver.findElement('.content div div div');
+      const recoveredVault = JSON.parse(await decrypted.getText());
 
-        assert.equal(recoveredVault[0].data.mnemonic, seedPhrase);
-      },
-    );
+      assert.equal(recoveredVault[0].data.mnemonic, seedPhrase);
+    });
   });
 });
