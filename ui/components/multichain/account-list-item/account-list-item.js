@@ -8,6 +8,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu, AvatarGroup } from '..';
+import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -339,6 +340,15 @@ export const AccountListItem = ({
           isPinned={isPinned}
           isHidden={isHidden}
           isConnected={isConnected}
+        />
+      )}
+      {showOptionTypes === MenuOptionTypes.ConnectionMenu && (
+        <ConnectedAccountsMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={closeMenu}
+          isOpen={accountOptionsMenuOpen}
         />
       )}
     </Box>
