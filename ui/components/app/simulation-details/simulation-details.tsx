@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  SimulationBalanceChanges,
+  SimulationBalanceChange,
   SimulationData,
-  SimulationERC1155TransferSingleEvent,
-  SimulationERC20TransferEvent,
-  SimulationERC721TransferEvent,
-  SimulationEvent,
+  SimulationTokenBalanceChange,
+  SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
@@ -48,10 +46,13 @@ function useTokens(fromAddress: string, simulationData: SimulationData) {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const tokenAddresses = Object.values(simulationData.events)
-      .map((event) => event)
-      .flat()
-      .map((event: SimulationEvent) => event.contractAddress);
+    const tokenAddresses = [
+      ...new Set(
+        simulationData.tokenBalanceChanges.map(
+          (tokenBalanceChange) => tokenBalanceChange.address,
+        ),
+      ),
+    ];
 
     const tokenPromise = tokenAddresses.map((address) =>
       getTokenStandardAndDetails(
@@ -121,16 +122,7 @@ function Row({
   );
 }
 
-function getBalanceRowData(
-  address: Hex,
-  balanceChanges: SimulationBalanceChanges,
-  fromAddress: Hex,
-): RowData | null {
-  if (address !== fromAddress) {
-    return null;
-  }
-
-  const balanceChange = balanceChanges[address];
+function getBalanceRowData(balanceChange: SimulationBalanceChange): RowData {
   const isGain = !balanceChange.isDecrease;
 
   const amount = new Numeric(
@@ -150,21 +142,16 @@ function getBalanceRowData(
 }
 
 function getERC20TransferRowData(
-  fromAddress: Hex,
   token: Token,
-  transfer: SimulationERC20TransferEvent,
-): RowData | null {
-  if (![transfer.from, transfer.to].includes(fromAddress)) {
-    return null;
-  }
-
+  tokenBalanceChange: SimulationTokenBalanceChange,
+): RowData {
   const symbol = token?.symbol || 'Token';
   const decimals = token?.decimals ? parseInt(token.decimals, 10) : 18;
-  const isGain = transfer.to === fromAddress;
+  const isGain = !tokenBalanceChange.isDecrease;
   const message = isGain ? 'You gain' : 'You lose';
-  const valueAddress = transfer.contractAddress;
+  const valueAddress = tokenBalanceChange.address;
 
-  const amount = new Numeric(transfer.value, 16)
+  const amount = new Numeric(tokenBalanceChange.difference, 16)
     .shiftedBy(decimals)
     .round(6)
     .toBase(10)
@@ -182,20 +169,15 @@ function getERC20TransferRowData(
 }
 
 function getERC721TransferRowData(
-  fromAddress: Hex,
   token: Token,
-  transfer: SimulationERC721TransferEvent,
-): RowData | null {
-  if (![transfer.from, transfer.to].includes(fromAddress)) {
-    return null;
-  }
-
+  tokenBalanceChange: SimulationTokenBalanceChange,
+): RowData {
   const name = token?.name || 'NFT';
-  const tokenId = hexToDecimal(transfer.tokenId);
-  const isGain = transfer.to === fromAddress;
+  const tokenId = hexToDecimal(tokenBalanceChange.id as string);
+  const isGain = !tokenBalanceChange.isDecrease;
   const message = isGain ? 'You gain' : 'You lose';
   const value = `${name} #${tokenId}`;
-  const valueAddress = transfer.contractAddress;
+  const valueAddress = tokenBalanceChange.address;
 
   return {
     isGain,
@@ -207,20 +189,17 @@ function getERC721TransferRowData(
 }
 
 function getERC1155TransferRowData(
-  fromAddress: Hex,
   token: Token,
-  transfer: SimulationERC1155TransferSingleEvent,
-): RowData | null {
-  if (![transfer.from, transfer.to].includes(fromAddress)) {
-    return null;
-  }
-
+  tokenBalanceChange: SimulationTokenBalanceChange,
+): RowData {
   const name = token?.name || 'NFT';
-  const tokenId = hexToDecimal(transfer.id);
-  const isGain = transfer.to === fromAddress;
+  const tokenId = hexToDecimal(tokenBalanceChange.id as string);
+  const isGain = !tokenBalanceChange.isDecrease;
   const message = isGain ? 'You gain' : 'You lose';
-  const value = `${name} #${tokenId} x ${hexToDecimal(transfer.value)}`;
-  const valueAddress = transfer.contractAddress;
+  const value = `${name} #${tokenId} x ${hexToDecimal(
+    tokenBalanceChange.difference,
+  )}`;
+  const valueAddress = tokenBalanceChange.address;
 
   return {
     isGain,
@@ -247,43 +226,40 @@ export default function SimulationDetails({
 }: SimulationDetailsProps) {
   const { isLoading, tokens } = useTokens(fromAddress, simulationData);
 
-  const balanceRowData = Object.keys(simulationData.balanceChanges).map(
-    (address) =>
-      getBalanceRowData(
-        address as Hex,
-        simulationData.balanceChanges,
-        fromAddress as Hex,
-      ),
-  );
+  const rows = [];
 
-  const erc20TransferRows = (simulationData.events.erc20Transfer ?? []).map(
-    (e) =>
-      getERC20TransferRowData(fromAddress as Hex, tokens[e.contractAddress], e),
-  );
+  if (simulationData.nativeBalanceChange) {
+    rows.push(getBalanceRowData(simulationData.nativeBalanceChange));
+  }
 
-  const erc721TransferRows = (simulationData.events.erc721Transfer ?? []).map(
-    (e) =>
-      getERC721TransferRowData(
-        fromAddress as Hex,
-        tokens[e.contractAddress],
-        e,
-      ),
-  );
+  simulationData.tokenBalanceChanges.forEach((tokenBalanceChange) => {
+    if (tokenBalanceChange.standard === SimulationTokenStandard.erc20) {
+      rows.push(
+        getERC20TransferRowData(
+          tokens[tokenBalanceChange.address],
+          tokenBalanceChange,
+        ),
+      );
+    } else if (tokenBalanceChange.standard === SimulationTokenStandard.erc721) {
+      rows.push(
+        getERC721TransferRowData(
+          tokens[tokenBalanceChange.address],
+          tokenBalanceChange,
+        ),
+      );
+    } else if (
+      tokenBalanceChange.standard === SimulationTokenStandard.erc1155
+    ) {
+      rows.push(
+        getERC1155TransferRowData(
+          tokens[tokenBalanceChange.address],
+          tokenBalanceChange,
+        ),
+      );
+    }
+  });
 
-  const erc1155TransferRows = (
-    simulationData.events.erc1155TransferSingle ?? []
-  ).map((e) =>
-    getERC1155TransferRowData(fromAddress as Hex, tokens[e.contractAddress], e),
-  );
-
-  const rows = sortRows(
-    [
-      ...balanceRowData,
-      ...erc20TransferRows,
-      ...erc721TransferRows,
-      ...erc1155TransferRows,
-    ].filter((row) => row !== null) as RowData[],
-  );
+  const sortedRows = sortRows(rows);
 
   return (
     <Box
@@ -302,7 +278,7 @@ export default function SimulationDetails({
           <PulseLoader />
         </div>
       ) : (
-        rows.map((row, index) => (
+        sortedRows.map((row, index) => (
           <Row
             key={index}
             isGain={row.isGain}
