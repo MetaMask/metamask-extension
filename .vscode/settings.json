@@ -1,4 +1,5 @@
 {
+  "cSpell.words": ["blockaid", "lavamoat"],
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
@@ -7,6 +8,11 @@
     {
       "fileMatch": ["app/manifest/*/*.json"],
       "url": "https://json.schemastore.org/chrome-manifest"
+    },
+    {
+      // apply our package.json schema to our our root `package.json` only
+      "fileMatch": ["package.json", "!node_modules/**/package.json"],
+      "url": "./.vscode/package.json-schema.json"
     }
   ],
   "typescript.tsdk": "node_modules/typescript/lib"
