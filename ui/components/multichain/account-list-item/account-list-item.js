@@ -76,7 +76,7 @@ export const AccountListItem = ({
   isHidden = false,
   currentTabOrigin,
   isActive = false,
-  startAccessory = null,
+  startAccessory,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);

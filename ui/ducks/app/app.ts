@@ -39,6 +39,7 @@ interface AppState {
   };
   showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
+  showConnectAccoutsModal: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     subview?: string;
@@ -116,6 +117,7 @@ const initialState: AppState = {
   },
   showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
+  showConnectAccoutsModal: false,
   deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
@@ -237,6 +239,18 @@ export default function reduceApp(
       return {
         ...appState,
         deprecatedNetworkModalOpen: false,
+      };
+
+    case actionConstants.CONNECT_ACCOUNTS_MODAL_OPEN:
+      return {
+        ...appState,
+        showConnectAccoutsModal: true,
+      };
+
+    case actionConstants.CONNECT_ACCOUNTS_MODAL_CLOSE:
+      return {
+        ...appState,
+        showConnectAccoutsModal: false,
       };
 
     // alert methods

@@ -138,6 +138,8 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
+import { ConnectAccountsModal } from '../../components/multichain/connect-accounts-modal/connect-accounts-modal';
+import { hideConnectAccountsModal } from '../../components/multichain/connect-accounts-modal/connect-accounts-modal-actions';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -185,6 +187,7 @@ export default class Routes extends Component {
     isIpfsModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
+    isConnectAccountsModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
@@ -597,6 +600,7 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
+      isConnectAccountsModalOpen,
       isDeprecatedNetworkModalOpen,
       location,
       isImportNftsModalOpen,
@@ -689,6 +693,9 @@ export default class Routes extends Component {
         ) : null}
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
+        ) : null}
+        {isConnectAccountsModalOpen ? (
+          <ConnectAccountsModal onClose={() => hideConnectAccountsModal()} />
         ) : null}
         {isDeprecatedNetworkModalOpen ? (
           <DeprecatedNetworkModal
