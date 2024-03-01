@@ -3238,7 +3238,7 @@
     },
     "eslint>import-fresh>parent-module": {
       "packages": {
-        "eslint>import-fresh>parent-module>callsites": true
+        "@metamask/test-bundler>ow>callsites": true
       }
     },
     "eslint>import-fresh>resolve-from": {

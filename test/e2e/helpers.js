@@ -14,6 +14,9 @@ const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const { Bundler } = require('./bundler');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { ERC_4337_ACCOUNT } = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -27,6 +30,8 @@ const createDownloadFolder = async (downloadsFolder) => {
 };
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
+
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 async function withFixtures(options, testSuite) {
   const {
@@ -43,9 +48,13 @@ async function withFixtures(options, testSuite) {
     testSpecificMock = function () {
       // do nothing.
     },
+    useBundler,
+    usePaymaster,
   } = options;
+
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
@@ -77,6 +86,11 @@ async function withFixtures(options, testSuite) {
         ...ganacheOptions2,
       });
     }
+
+    if (useBundler) {
+      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+    }
+
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
@@ -157,6 +171,7 @@ async function withFixtures(options, testSuite) {
       ganacheServer,
       secondaryGanacheServer,
       mockedEndpoint,
+      bundlerServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -234,9 +249,15 @@ async function withFixtures(options, testSuite) {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
       await ganacheServer.quit();
+
       if (ganacheOptions?.concurrent) {
         await secondaryGanacheServer.quit();
       }
+
+      if (useBundler) {
+        await bundlerServer.stop();
+      }
+
       if (webDriver) {
         await driver.quit();
       }
@@ -278,6 +299,7 @@ const WINDOW_TITLES = Object.freeze({
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
   TestSnaps: 'Test Snaps',
+  ERC4337Snap: 'Account Abstraction Snap',
 });
 
 /**
@@ -659,8 +681,6 @@ const PRIVATE_KEY =
 const PRIVATE_KEY_TWO =
   '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
-const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
-
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
@@ -1021,6 +1041,33 @@ async function getCleanAppState(driver) {
       window.stateHooks?.getCleanAppState &&
       window.stateHooks.getCleanAppState(),
   );
+}
+
+async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+  try {
+    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+
+    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+
+    await ganacheSeeder.deploySmartContract(
+      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
+    );
+
+    if (usePaymaster) {
+      await ganacheSeeder.deploySmartContract(
+        SMART_CONTRACTS.VERIFYING_PAYMASTER,
+      );
+
+      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+    }
+
+    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+
+    await bundlerServer.start();
+  } catch (error) {
+    console.log('Failed to initialise bundler', error);
+    throw error;
+  }
 }
 
 module.exports = {
