@@ -4116,6 +4116,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/ens-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/ens-controller@npm:9.0.0"
+  dependencies:
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/utils": "npm:^8.3.0"
+    ethereum-ens-network-map: "npm:^1.0.2"
+    punycode: "npm:^2.1.1"
+  peerDependencies:
+    "@metamask/network-controller": ^17.2.0
+  checksum: d1f14db169614b3c403660eae3b1e7b74fd8347a5df6e94b67cd1f47f0bb43513dd109683568c284b6edfe1bf68088777fba55f59c1c2adad152f86932982623
+  languageName: node
+  linkType: hard
+
 "@metamask/eslint-config-jest@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/eslint-config-jest@npm:9.0.0"
@@ -4832,6 +4848,17 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^5.1.2
   checksum: ab10e4e1f9b3424ed4453289f772c5a7c62178b0459ffbea23282b2cd6d1e75c2deab01e647e6558369fa45cba3b6555c1b72f2354d57389e9480979182f769d
+  languageName: node
+  linkType: hard
+
+"@metamask/permission-log-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/permission-log-controller@npm:1.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: c9a53516aabe9af206e97222a169d440a2287075046fadc03b27d72e6db0063fe116a4368c0d785ad0157d8ee5c0f9337c4f2772e10418e39c59091b704d69aa
   languageName: node
   linkType: hard
 
@@ -24781,6 +24808,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^8.0.1"
     "@metamask/design-tokens": "npm:^2.1.1"
     "@metamask/desktop": "npm:^0.3.0"
+    "@metamask/ens-controller": "npm:^9.0.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
@@ -24811,6 +24839,7 @@ __metadata:
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^8.0.0"
+    "@metamask/permission-log-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^8.0.0"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/polling-controller": "npm:^4.0.0"
