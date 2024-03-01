@@ -65,7 +65,7 @@ import {
   addTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
-  cancelExistingTxAndCreateNewTxWithSameParams,
+  recreateWalletSendTransactionOnNewChain,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -1977,7 +1977,7 @@ export function onNetworkChange() {
     }
 
     const { id } = await dispatch(
-      cancelExistingTxAndCreateNewTxWithSameParams(existingTransaction),
+      recreateWalletSendTransactionOnNewChain(existingTransaction),
     );
     await dispatch(actions.updateExistingTransactionId(id));
   };

@@ -766,7 +766,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#cancelExistingTxAndCreateNewTxWithSameParams', () => {
+  describe('#recreateWalletSendTransactionOnNewChain', () => {
     const mockTxId = 'mockTxId';
     const mockTxMeta = {
       id: mockTxId,
@@ -800,7 +800,7 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(
-        actions.cancelExistingTxAndCreateNewTxWithSameParams(mockTxMeta, {
+        actions.recreateWalletSendTransactionOnNewChain(mockTxMeta, {
           type: mockType,
         }),
       );

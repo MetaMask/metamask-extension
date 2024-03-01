@@ -116,7 +116,7 @@ const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];
 describe('Send Slice', () => {
   let getTokenStandardAndDetailsStub;
   let addTransactionAndRouteToConfirmationPageStub;
-  let cancelExistingTxAndCreateNewTxWithSameParamsStub;
+  let recreateWalletSendTransactionOnNewChainStub;
   beforeEach(() => {
     jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
@@ -133,8 +133,8 @@ describe('Send Slice', () => {
       Actions,
       'addTransactionAndRouteToConfirmationPage',
     );
-    cancelExistingTxAndCreateNewTxWithSameParamsStub = jest
-      .spyOn(Actions, 'cancelExistingTxAndCreateNewTxWithSameParams')
+    recreateWalletSendTransactionOnNewChainStub = jest
+      .spyOn(Actions, 'recreateWalletSendTransactionOnNewChain')
       .mockImplementation(() => Promise.resolve());
 
     jest
@@ -3183,17 +3183,15 @@ describe('Send Slice', () => {
           },
         });
 
-        cancelExistingTxAndCreateNewTxWithSameParamsStub.mockImplementation(
-          () => ({
-            type: 'EXPECTED_ADD_TX_ACTION',
-            id: mockNewTransactionId,
-          }),
-        );
+        recreateWalletSendTransactionOnNewChainStub.mockImplementation(() => ({
+          type: 'EXPECTED_ADD_TX_ACTION',
+          id: mockNewTransactionId,
+        }));
 
         await store.dispatch(onNetworkChange());
 
         expect(
-          cancelExistingTxAndCreateNewTxWithSameParamsStub,
+          recreateWalletSendTransactionOnNewChainStub,
         ).toHaveBeenCalledWith(mockTransaction);
 
         const actionResult = store.getActions();

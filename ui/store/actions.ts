@@ -1456,7 +1456,7 @@ export function cancelTx(
  * @returns The new transaction meta
  */
 
-export function cancelExistingTxAndCreateNewTxWithSameParams(
+export function recreateWalletSendTransactionOnNewChain(
   txMeta: TransactionMeta,
   options?: {
     type?: TransactionType;
