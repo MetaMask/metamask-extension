@@ -13,9 +13,6 @@ const {
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-// TODO: Have to turn on the setting every time we want to test the setting!?!
-// TODO: Test this in prod, refresh the extension when the setting is on and you have to disable/enable it for the switchEthereumChain notification to work.
-
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
   it('should show switch network confirmations for per dapp selected networks when calling send transactions @no-mmi', async function () {
     const port = 8546;
@@ -49,6 +46,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await openDapp(driver, undefined, DAPP_URL);
 
         // Connect to dapp
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
         await driver.delay(regularDelayMs);
@@ -80,11 +78,15 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           css: 'p',
         });
 
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(2);
+
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Connect to dapp
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
         await driver.delay(regularDelayMs);

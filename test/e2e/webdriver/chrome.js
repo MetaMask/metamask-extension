@@ -51,6 +51,9 @@ class ChromeDriver {
       args.push('--headless=new');
     }
     const options = new chrome.Options().addArguments(args);
+    options.setChromeBinaryPath(
+      '/Users/gofer/chrome/mac_arm-119.0.6045.105/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
+    );
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
