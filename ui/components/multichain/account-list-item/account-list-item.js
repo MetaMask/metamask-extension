@@ -143,15 +143,29 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      {process.env.MULTICHAIN && (
-        <Box
-          display={[Display.Flex, Display.None]}
-          data-testid="account-list-item-badge"
-        >
-          <ConnectedStatus address={identity.address} isActive={isActive} />
-        </Box>
-      )}
-      <Box display={[Display.None, Display.Flex]}>
+      {process.env.MULTICHAIN ? (
+        <>
+          <Box
+            display={[Display.Flex, Display.None]}
+            data-testid="account-list-item-badge"
+          >
+            <ConnectedStatus address={identity.address} isActive={isActive} />
+          </Box>
+          <Box display={[Display.None, Display.Flex]}>
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={Size.MD}
+              address={identity.address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+          </Box>
+        </>
+      ) : (
         <AvatarAccount
           borderColor={BorderColor.transparent}
           size={Size.MD}
@@ -163,7 +177,7 @@ export const AccountListItem = ({
           }
           marginInlineEnd={2}
         />
-      </Box>
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
