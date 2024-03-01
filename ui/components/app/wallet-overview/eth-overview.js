@@ -120,7 +120,7 @@ const EthOverview = ({ className, showAddress }) => {
   }
 
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const signingEnabled = useSelector((state) =>
+  const isSigningEnabled = useSelector((state) =>
     checkIfMethodIsEnabled(state, EthMethod.SignTransaction),
   );
 
@@ -129,18 +129,18 @@ const EthOverview = ({ className, showAddress }) => {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBuyableChain, message: '' },
       ///: END:ONLY_INCLUDE_IF
-      { condition: !signingEnabled, message: 'methodNotSupported' },
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
-    sendButton: [{ condition: !signingEnabled, message: 'methodNotSupported' }],
+    sendButton: [{ condition: !isSigningEnabled, message: 'methodNotSupported' }],
     swapButton: [
       { condition: !isSwapsChain, message: 'currentlyUnavailable' },
-      { condition: !signingEnabled, message: 'methodNotSupported' },
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBridgeChain, message: 'currentlyUnavailable' },
       ///: END:ONLY_INCLUDE_IF
-      { condition: !signingEnabled, message: 'methodNotSupported' },
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
   };
 
@@ -272,7 +272,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain || !signingEnabled}
+              disabled={!isBuyableChain || !isSigningEnabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={() => {
@@ -310,7 +310,7 @@ const EthOverview = ({ className, showAddress }) => {
                 color={IconColor.primaryInverse}
               />
             }
-            disabled={!signingEnabled}
+            disabled={!isSigningEnabled}
             label={t('send')}
             onClick={() => {
               trackEvent({
@@ -335,7 +335,7 @@ const EthOverview = ({ className, showAddress }) => {
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain || !signingEnabled}
+            disabled={!isSwapsChain || !isSigningEnabled}
             Icon={
               <Icon
                 name={IconName.SwapHorizontal}
@@ -380,7 +380,7 @@ const EthOverview = ({ className, showAddress }) => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
-              disabled={!isBridgeChain || !signingEnabled}
+              disabled={!isBridgeChain || !isSigningEnabled}
               data-testid="eth-overview-bridge"
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
