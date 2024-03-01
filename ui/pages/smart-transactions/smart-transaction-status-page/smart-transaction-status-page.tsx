@@ -79,12 +79,12 @@ export const SmartTransactionStatusPage = ({
 
   const txHash = smartTransaction?.statusMetadata?.minedHash;
 
-  const baseNetworkUrl: string | undefined =
+  const baseNetworkUrl: string =
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
-    undefined;
+    '';
 
-  let blockExplorerUrl: string | undefined;
+  let blockExplorerUrl: string = '';
   if (txHash) {
     blockExplorerUrl = getBlockExplorerLink(
       { hash: txHash, chainId, metamaskNetworkId: '' },

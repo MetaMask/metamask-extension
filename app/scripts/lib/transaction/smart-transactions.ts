@@ -1,5 +1,6 @@
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { Fee } from '@metamask/smart-transactions-controller/dist/types';
+import type { Hex } from '@metamask/utils';
 import {
   TransactionController,
   TransactionMeta,
@@ -55,12 +56,14 @@ export async function submitSmartTransactionHook(
       feesResponse.tradeTxFees?.fees ?? [],
       false,
       transactionController,
+      chainId,
     );
     const signedCanceledTransactions = await createSignedTransactions(
       txParams,
       feesResponse.tradeTxFees?.cancelFees || [],
       true,
       transactionController,
+      chainId,
     );
     log.info('Smart Transaction - Generated signed transactions', {
       signedTransactions,
@@ -162,12 +165,17 @@ async function createSignedTransactions(
   fees: Fee[],
   isCancel: boolean,
   transactionController: TransactionController,
+  chainId: Hex,
 ): Promise<string[]> {
-  const unsignedTransactions = fees.map((fee) =>
-    applyFeeToTransaction(txParams, fee, isCancel),
-  );
+  const unsignedTransactions = fees.map((fee) => {
+    return applyFeeToTransaction(txParams, fee, isCancel);
+  });
+  const transactionsWithChainId = unsignedTransactions.map((tx) => ({
+    ...tx,
+    chainId: tx.chainId || chainId,
+  }));
   return (await transactionController.approveTransactionsWithSameNonce(
-    unsignedTransactions,
+    transactionsWithChainId,
     { hasNonce: true },
   )) as string[];
 }
