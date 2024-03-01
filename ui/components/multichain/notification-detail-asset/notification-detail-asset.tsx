@@ -98,20 +98,20 @@ export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
     TextColor.textAlternative,
     detail,
   );
-  const primaryTextRight = fiatValue
+  const primaryTextRight = value
     ? createTextComponent(
         TextVariant.bodyLgMedium,
         FontWeight.Medium,
         TextColor.textDefault,
-        fiatValue,
+        value,
       )
     : undefined;
-  const secondaryTextRight = value
+  const secondaryTextRight = fiatValue
     ? createTextComponent(
         TextVariant.bodyMd,
         FontWeight.Normal,
         TextColor.textAlternative,
-        value,
+        fiatValue,
       )
     : undefined;
 

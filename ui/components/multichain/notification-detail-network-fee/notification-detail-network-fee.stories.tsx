@@ -17,7 +17,7 @@ const Template = (args: NotificationDetailNetworkFeeProps) => (
 
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
-  networkFee: '$0.62 (0.00039275 ETH)',
+  networkFee: '0.00039275 ETH ($0.62)',
   gasLimit: '21000',
   gasUsed: '21000',
   baseFee: '17.202502617',

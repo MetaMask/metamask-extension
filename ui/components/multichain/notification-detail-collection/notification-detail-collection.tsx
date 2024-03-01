@@ -53,7 +53,7 @@ export const NotificationDetailCollection: FC<
         display={Display.Block}
         justifyContent={JustifyContent.center}
         backgroundColor={BackgroundColor.primaryMuted}
-        borderRadius={BorderRadius.SM}
+        borderRadius={BorderRadius.LG}
         className="notification-detail-collection__image"
       />
     </BadgeWrapper>
