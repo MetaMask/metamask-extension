@@ -19,6 +19,7 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -70,13 +71,14 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
   if (asset.type === AssetType.NFT) {
     return (
       <>
-        <Box marginLeft={'auto'}>
+        <Box
+          marginLeft={'auto'}
+          textAlign={TextAlign.End}
+          paddingTop={2}
+          paddingBottom={2}
+        >
           <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Bold}
-            marginLeft={10}
-          >
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Bold}>
             {asset?.details?.tokenId}
           </Text>
         </Box>
@@ -133,8 +135,8 @@ export const AssetPickerAmount = () => {
         borderStyle={BorderStyle.solid}
         borderWidth={2}
         marginTop={2}
-        paddingTop={3}
-        paddingBottom={3}
+        paddingTop={1}
+        paddingBottom={1}
       >
         <AssetPicker asset={asset} />
         {renderCurrencyInput(asset, amount)}
