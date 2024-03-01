@@ -23,14 +23,14 @@ describe('formatMenuItemDate', () => {
     const date = new Date();
     date.setMonth(date.getMonth() - 1);
     const result = formatMenuItemDate(date);
-    expect(result).toMatch(/^\w{3} \w{2}$/u);
+    expect(result).toMatch(/^\w{3} \d{1,2}$/u);
   });
 
   it('should format date as "Mon DD, YYYY" if the date is not this year', () => {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 1);
     const result = formatMenuItemDate(date);
-    expect(result).toMatch(/^\w{3} \d{2}, \d{4}$/u);
+    expect(result).toMatch(/^\w{3} \d{1,2}, \d{4}$/u);
   });
 });
 
