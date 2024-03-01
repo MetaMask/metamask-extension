@@ -1952,8 +1952,8 @@ export function updateRecipient({ address, nickname }) {
 }
 
 /**
- * This method is called when user changes the network in the send page.
- * It doesn't update the chain id for transaction, rather it reject the existing and create new transaction instead
+ * This method is called when user changes the network in the multichain send flow.
+ * It doesn't update the chain ID for the transaction, rather it rejects the existing transaction and creates an equivalent new transaction instead.
  * then it assigns the new transaction id to the draft transaction id.
  */
 export function onNetworkChange() {
