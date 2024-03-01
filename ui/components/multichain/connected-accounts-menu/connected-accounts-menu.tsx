@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   PopoverRole,
   PopoverPosition,
@@ -16,12 +16,16 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  removePermittedAccount,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getOriginOfCurrentTab } from '../../../selectors';
 
 const TsMenuItem = MenuItem as any;
 
@@ -39,6 +43,7 @@ export const ConnectedAccountsMenu = ({
   closeMenu: () => void;
 }) => {
   const trackEvent = useContext(MetaMetricsContext);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
@@ -99,6 +104,12 @@ export const ConnectedAccountsMenu = ({
             iconName={IconName.Logout}
             iconColor={IconColor.errorDefault}
             data-testid="disconnect-menu-item"
+            onClick={() => {
+              // not sure if this is the correct way to disconnect an account
+              dispatch(
+                removePermittedAccount(activeTabOrigin, identity.address),
+              );
+            }}
           >
             <Text color={TextColor.errorDefault} variant={TextVariant.bodyMd}>
               {t('disconnect')}
