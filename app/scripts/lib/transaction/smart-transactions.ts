@@ -1,5 +1,9 @@
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { Fee } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  Fee,
+  SmartTransactionStatuses,
+  SmartTransaction,
+} from '@metamask/smart-transactions-controller/dist/types';
 import type { Hex } from '@metamask/utils';
 import {
   TransactionController,
@@ -92,7 +96,7 @@ export async function submitSmartTransactionHook(
         type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
         requestState: {
           smartTransaction: {
-            status: 'pending',
+            status: SmartTransactionStatuses.PENDING,
             creationTime: Date.now(),
           },
           isDapp,
@@ -103,10 +107,10 @@ export async function submitSmartTransactionHook(
     let transactionHash: string | undefined | null;
     (smartTransactionsController as any).eventEmitter.on(
       `${uuid}:smartTransaction`,
-      async (smartTransaction: any) => {
+      async (smartTransaction: SmartTransaction) => {
         log.info('Smart Transaction: ', smartTransaction);
         const { status, statusMetadata } = smartTransaction;
-        if (!status || status === 'pending') {
+        if (!status || status === SmartTransactionStatuses.PENDING) {
           return;
         }
         await controllerMessenger.call(
