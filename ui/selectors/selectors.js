@@ -2070,9 +2070,9 @@ export function getUnconnectedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const unConnectedAccounts = accounts.filter((account) => {
-      return !connectedAccounts.some(
-        (connectedAccount) => connectedAccount.address === account.address,
-      );
+    return !connectedAccounts.some(
+      (connectedAccount) => connectedAccount.address === account.address,
+    );
   });
   return unConnectedAccounts;
 }

@@ -1,33 +1,10 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
-import { useSelector } from 'react-redux';
 import { ConnectAccountsList } from './connect-accounts-modal-list';
 
-// Maps to localizations for title and text
-export enum ConnectAccountsType {
-  Account = 'disconnectAllAccountsText',
-  Snap = 'disconnectAllSnapsText',
-}
-
-export interface AccountType {
-  name: string;
-  address: string;
-  balance: string;
-  keyring: KeyringType;
-  label?: string;
-}
-
-export interface KeyringType {
-  type: string;
-}
-
-export const ConnectAccountsModal = ({
-  onClose,
-}: {
-  type: ConnectAccountsType;
-  onClose: () => void;
-}) => {
+export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
   const accounts = useSelector(getUnconnectedAccounts);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);

@@ -8,30 +8,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AccountListItem } from '../index';
+import { AccountListItem } from '..';
+import { ConnectAccountsListProps } from './connect-account-modal.types';
 
-// Maps to localizations for title and text
-export enum ConnectAccountsType {
-  Account = 'disconnectAllAccountsText',
-  Snap = 'disconnectAllSnapsText',
-}
-
-export interface AccountType {
-  name: string;
-  address: string;
-  balance: string;
-  keyring: KeyringType;
-  label?: string;
-}
-
-export interface KeyringType {
-  type: string;
-}
-
-export const ConnectAccountsList = ({
+export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
   onClose,
   allAreSelected,
   deselectAll,
@@ -41,9 +23,6 @@ export const ConnectAccountsList = ({
   accounts,
   checked,
   isIndeterminate,
-}: {
-  type: ConnectAccountsType;
-  onClose: () => void;
 }) => {
   const t = useI18nContext();
 
@@ -51,6 +30,7 @@ export const ConnectAccountsList = ({
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
+        {/* Todo: Replace this with i18 text */}
         <ModalHeader onClose={onClose}>Connect more accounts</ModalHeader>
         <ModalBody>
           <Checkbox
@@ -59,8 +39,8 @@ export const ConnectAccountsList = ({
             onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
             isIndeterminate={isIndeterminate}
           />
-          {accounts.map((account: AccountType) => {
-            const isSelectedAccount = selectedAccounts?.includes(
+          {accounts.map((account) => {
+            const isSelectedAccount = selectedAccounts.includes(
               account.address,
             );
             return (
@@ -75,6 +55,7 @@ export const ConnectAccountsList = ({
           })}
         </ModalBody>
         <ModalFooter>
+          {/* Todo: Implement onClick handler */}
           <ButtonPrimary onClick={() => console.log(selectedAccounts)} block>
             {t('confirm')}
           </ButtonPrimary>
