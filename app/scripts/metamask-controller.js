@@ -73,6 +73,7 @@ import {
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
+import { PermissionLogController } from '@metamask/permission-log-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { RateLimitController } from '@metamask/rate-limit-controller';
@@ -283,7 +284,6 @@ import {
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
   NOTIFICATION_NAMES,
-  PermissionLogController,
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -1153,8 +1153,11 @@ export default class MetamaskController extends EventEmitter {
       );
 
     this.permissionLogController = new PermissionLogController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'PermissionLogController',
+      }),
       restrictedMethods: new Set(Object.keys(RestrictedMethods)),
-      initState: initState.PermissionLogController,
+      state: initState.PermissionLogController,
     });
 
     this.subjectMetadataController = new SubjectMetadataController({
@@ -1994,7 +1997,7 @@ export default class MetamaskController extends EventEmitter {
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       PermissionController: this.permissionController,
-      PermissionLogController: this.permissionLogController.store,
+      PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
       AnnouncementController: this.announcementController,
       NetworkOrderController: this.networkOrderController,
@@ -2046,7 +2049,7 @@ export default class MetamaskController extends EventEmitter {
         AlertController: this.alertController.store,
         OnboardingController: this.onboardingController.store,
         PermissionController: this.permissionController,
-        PermissionLogController: this.permissionLogController.store,
+        PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,
         AnnouncementController: this.announcementController,
         NetworkOrderController: this.networkOrderController,
@@ -4307,7 +4310,9 @@ export default class MetamaskController extends EventEmitter {
       networkClientId:
         dappRequest?.networkClientId ??
         this.networkController.state.selectedNetworkClientId,
-      selectedAccount: this.accountsController.getSelectedAccount(),
+      selectedAccount: this.accountsController.getAccountByAddress(
+        transactionParams.from,
+      ),
       transactionController: this.txController,
       transactionOptions,
       transactionParams,
