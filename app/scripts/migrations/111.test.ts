@@ -38,7 +38,6 @@ describe('migration #111', () => {
   it('resets domains if SelectedNetworkController state is present', async () => {
     const oldState = {
       SelectedNetworkController: {
-        perDomainNetwork: true,
         domains: {
           metamask: 'ropsten',
           otherDomain: 'value',
@@ -48,7 +47,6 @@ describe('migration #111', () => {
 
     const expectedState = {
       SelectedNetworkController: {
-        perDomainNetwork: true,
         domains: {},
       },
     };
@@ -64,7 +62,6 @@ describe('migration #111', () => {
   it('resets domains if existing state only contains metamask', async () => {
     const oldState = {
       SelectedNetworkController: {
-        perDomainNetwork: false,
         domains: {
           metamask: 'mainnet',
         },
@@ -73,7 +70,6 @@ describe('migration #111', () => {
 
     const expectedState = {
       SelectedNetworkController: {
-        perDomainNetwork: false,
         domains: {},
       },
     };
@@ -89,7 +85,6 @@ describe('migration #111', () => {
   it('handles complex state transformations correctly', async () => {
     const oldState = {
       SelectedNetworkController: {
-        perDomainNetwork: false,
         domains: {
           metamask: 'kovan',
           otherDomain1: 'value1',
@@ -103,7 +98,6 @@ describe('migration #111', () => {
 
     const expectedState = {
       SelectedNetworkController: {
-        perDomainNetwork: false,
         domains: {},
       },
       OtherController: {
@@ -122,9 +116,7 @@ describe('migration #111', () => {
   it('should capture an exception if SelectedNetworkController is in state but is not an object', async () => {
     const oldData = {
       other: 'data',
-      SelectedNetworkController: {
-        perDomainNetwork: false,
-      },
+      SelectedNetworkController: {},
     };
     const oldStorage = {
       meta: {
@@ -167,7 +159,6 @@ describe('migration #111', () => {
     const oldData = {
       other: 'data',
       SelectedNetworkController: {
-        perDomainNetwork: false,
         domains: 'not an object',
       },
     };

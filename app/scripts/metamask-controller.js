@@ -489,19 +489,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
-    this.selectedNetworkController = new SelectedNetworkController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SelectedNetworkController',
-        allowedActions: [
-          'NetworkController:getNetworkClientById',
-          'NetworkController:getState',
-          `PermissionController:hasPermissions`,
-        ],
-        allowedEvents: ['NetworkController:stateChange'],
-      }),
-      state: initState.SelectedNetworkController,
-    });
-
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
@@ -522,20 +509,6 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:stateChange',
           listener,
         ),
-    });
-
-    // Couple the useRequestQueue feature flag with the perDomainNetwork feature flag
-    // TODO remove the redundant perDomainNetwork state in the SelectedNetworkController and simply reference the useRequestQueue state
-    this.selectedNetworkController.setPerDomainNetwork(
-      this.preferencesController.store.getState().useRequestQueue,
-    );
-    this.preferencesController.store.subscribe(({ useRequestQueue }) => {
-      if (
-        useRequestQueue !==
-        this.selectedNetworkController.state.perDomainNetwork
-      ) {
-        this.selectedNetworkController.setPerDomainNetwork(useRequestQueue);
-      }
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -1136,21 +1109,25 @@ export default class MetamaskController extends EventEmitter {
       unrestrictedMethods,
     });
 
-    // Add any existing permissioned domains to the selected network controller domains if missing from that state.
-    // TODO remove this once this logic is pulled into the constructor of the SelectedNetworkController here: https://github.com/MetaMask/core/pull/3969
-    this.controllerMessenger
-      .call('PermissionController:getSubjectNames')
-      .filter(
-        (domain) =>
-          this.selectedNetworkController.state.domains[domain] === undefined,
-      )
-      .forEach((domain) =>
-        this.selectedNetworkController.setNetworkClientIdForDomain(
-          domain,
-          this.controllerMessenger.call('NetworkController:getState')
-            .selectedNetworkClientId,
-        ),
-      );
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SelectedNetworkController',
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          'PermissionController:hasPermissions',
+          'PermissionController:getSubjectNames',
+        ],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'PermissionController:stateChange',
+        ],
+      }),
+      state: initState.SelectedNetworkController,
+      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
+    });
 
     this.permissionLogController = new PermissionLogController({
       messenger: this.controllerMessenger.getRestricted({
@@ -2474,19 +2451,6 @@ export default class MetamaskController extends EventEmitter {
 
         for (const [origin, accounts] of changedAccounts.entries()) {
           this._notifyAccountsChange(origin, accounts);
-          // When permissions are added for a given origin we need to
-          // set the network client id for that origin to the current
-          // globally selected network client id.
-          if (accounts.length > 0) {
-            // TODO add this logic directly in the SelectedNetworkController
-            this.selectedNetworkController.setNetworkClientIdForDomain(
-              origin,
-              this.networkController.state.selectedNetworkClientId,
-            );
-          } else {
-            // TODO remove domain from selectedNetworkController when permissions are removed
-            // Add this logic directly in the SelectedNetworkController
-          }
         }
       },
       getPermittedAccountsByOrigin,
@@ -2691,13 +2655,10 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.getUseRequestQueue() &&
       origin !== METAMASK_DOMAIN
     ) {
-      // It would be nice to have selectedNetworkController always return a value, and have it decide how to default the values (in all cases we want the default to be 'what ever the globally selected network is').
-      // I ended up adding this defaulting here because of an issue where the selected network for the origin 'metamask' - it is `undefined` until you unlock the wallet and select a network for the first time.
-      const networkClientId =
-        this.controllerMessenger.call(
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-          origin,
-        ) || this.networkController.state.selectedNetworkClientId;
+      const networkClientId = this.controllerMessenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        origin,
+      );
 
       const networkClient = this.controllerMessenger.call(
         'NetworkController:getNetworkClientById',
@@ -4792,18 +4753,18 @@ export default class MetamaskController extends EventEmitter {
 
     let proxyClient;
     if (
-      this.selectedNetworkController.state.perDomainNetwork &&
+      this.preferencesController.getUseRequestQueue() &&
       this.selectedNetworkController.state.domains[origin]
     ) {
       proxyClient =
         this.selectedNetworkController.getProviderAndBlockTracker(origin);
     } else {
-      // if perDomainNetwork is false we want to use the globally selected network provider/blockTracker
+      // if useRequestQueue is false we want to use the globally selected network provider/blockTracker
       // since this means the per domain network feature is disabled
 
       // if the origin is not in the selectedNetworkController's `domains` state,
       // this means that origin does not have permissions (is not connected to the wallet)
-      // and will therefore not have its own selected network even if perDomainNetwork is true
+      // and will therefore not have its own selected network even if useRequestQueue is true
       // and so in this case too we want to use the globally selected network provider/blockTracker
       proxyClient = this.networkController.getProviderAndBlockTracker();
     }
