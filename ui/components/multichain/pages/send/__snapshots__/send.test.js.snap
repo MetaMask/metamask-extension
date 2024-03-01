@@ -204,49 +204,45 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
                 >
                   <div
-                    class="mm-box mm-box--display-none mm-box--sm:display-flex"
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                   >
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                      class="mm-avatar-account__jazzicon"
                     >
                       <div
-                        class="mm-avatar-account__jazzicon"
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
                       >
-                        <div
-                          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                        <svg
+                          height="32"
+                          width="32"
+                          x="0"
+                          y="0"
                         >
-                          <svg
+                          <rect
+                            fill="#2362E1"
                             height="32"
+                            transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
                             width="32"
                             x="0"
                             y="0"
-                          >
-                            <rect
-                              fill="#2362E1"
-                              height="32"
-                              transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#F94301"
-                              height="32"
-                              transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#FA7900"
-                              height="32"
-                              transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                          </svg>
-                        </div>
+                          />
+                          <rect
+                            fill="#F94301"
+                            height="32"
+                            transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#FA7900"
+                            height="32"
+                            transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -265,7 +261,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
                           >
-                            Account 1
+                            Test Account
                           </button>
                         </div>
                         <div
