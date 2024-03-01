@@ -3,7 +3,6 @@ import { CHAIN_IDS } from '../constants/network';
 export const ETHEREUM = 'ethereum';
 export const POLYGON = 'polygon';
 export const BSC = 'bsc';
-export const GOERLI = 'goerli';
 export const AVALANCHE = 'avalanche';
 export const OPTIMISM = 'optimism';
 export const ARBITRUM = 'arbitrum';
@@ -24,8 +23,6 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return BSC;
     case CHAIN_IDS.POLYGON:
       return POLYGON;
-    case CHAIN_IDS.GOERLI:
-      return GOERLI;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE;
     case CHAIN_IDS.OPTIMISM:

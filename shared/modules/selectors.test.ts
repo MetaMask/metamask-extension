@@ -183,7 +183,7 @@ describe('Selectors', () => {
 
     it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.internalAccounts.accounts[
+      (state.metamask.internalAccounts.accounts as any)[
         state.metamask.internalAccounts.selectedAccount
       ].metadata.keyring.type = 'Trezor Hardware';
       expect(getSmartTransactionsEnabled(state)).toBe(false);
@@ -191,20 +191,47 @@ describe('Selectors', () => {
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.POLYGON;
-      expect(getSmartTransactionsEnabled(state)).toBe(false);
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            chainId: CHAIN_IDS.POLYGON,
+          },
+        },
+      };
+      expect(getSmartTransactionsEnabled(newState)).toBe(false);
     });
 
     it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.BSC;
-      expect(getSmartTransactionsEnabled(state)).toBe(false);
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            chainId: CHAIN_IDS.BSC,
+          },
+        },
+      };
+      expect(getSmartTransactionsEnabled(newState)).toBe(false);
     });
 
     it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.GOERLI;
-      expect(getSmartTransactionsEnabled(state)).toBe(true);
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            chainId: CHAIN_IDS.GOERLI,
+          },
+        },
+      };
+      expect(getSmartTransactionsEnabled(newState)).toBe(true);
     });
 
     it('returns false if a snap account is used', () => {

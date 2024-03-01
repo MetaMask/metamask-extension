@@ -70,6 +70,7 @@ const mockTransactionMetricsRequest = {
   provider: provider as Provider,
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
+  getIsSmartTransaction: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
