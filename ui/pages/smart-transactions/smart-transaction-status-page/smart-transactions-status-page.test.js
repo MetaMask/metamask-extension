@@ -1,6 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+
 import {
   renderWithProvider,
   createSwapsMockStore,
@@ -13,7 +15,7 @@ const middleware = [thunk];
 describe('SmartTransactionStatusPage', () => {
   const requestState = {
     smartTransaction: {
-      status: 'pending',
+      status: SmartTransactionStatuses.PENDING,
       creationTime: Date.now(),
     },
   };
@@ -49,7 +51,7 @@ describe('SmartTransactionStatusPage', () => {
       mockStore.metamask.smartTransactionsState.smartTransactions[
         CHAIN_IDS.MAINNET
       ][1];
-    latestSmartTransaction.status = 'success';
+    latestSmartTransaction.status = SmartTransactionStatuses.SUCCESS;
     requestState.smartTransaction = latestSmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(
@@ -65,7 +67,7 @@ describe('SmartTransactionStatusPage', () => {
       mockStore.metamask.smartTransactionsState.smartTransactions[
         CHAIN_IDS.MAINNET
       ][1];
-    latestSmartTransaction.status = 'reverted';
+    latestSmartTransaction.status = SmartTransactionStatuses.REVERTED;
     requestState.smartTransaction = latestSmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(
@@ -87,7 +89,7 @@ describe('SmartTransactionStatusPage', () => {
         CHAIN_IDS.MAINNET
       ][1];
     requestState.smartTransaction = latestSmartTransaction;
-    latestSmartTransaction.status = 'cancelled_would_revert';
+    latestSmartTransaction.status = SmartTransactionStatuses.CANCELLED;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(
       <SmartTransactionStatusPage requestState={requestState} />,
@@ -107,14 +109,15 @@ describe('SmartTransactionStatusPage', () => {
       mockStore.metamask.smartTransactionsState.smartTransactions[
         CHAIN_IDS.MAINNET
       ][1];
-    latestSmartTransaction.status = 'deadline_missed';
+    latestSmartTransaction.status =
+      SmartTransactionStatuses.CANCELLED_DEADLINE_MISSED;
     requestState.smartTransaction = latestSmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(
       <SmartTransactionStatusPage requestState={requestState} />,
       store,
     );
-    expect(getByText('Your transaction failed')).toBeInTheDocument();
+    expect(getByText('Your transaction was canceled')).toBeInTheDocument();
   });
 
   it('renders the "unknown" STX status', () => {
@@ -123,7 +126,7 @@ describe('SmartTransactionStatusPage', () => {
       mockStore.metamask.smartTransactionsState.smartTransactions[
         CHAIN_IDS.MAINNET
       ][1];
-    latestSmartTransaction.status = 'unknown';
+    latestSmartTransaction.status = SmartTransactionStatuses.UNKNOWN;
     requestState.smartTransaction = latestSmartTransaction;
     const store = configureMockStore(middleware)(mockStore);
     const { getByText } = renderWithProvider(

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import {
+  SmartTransactionStatuses,
+  SmartTransaction,
+} from '@metamask/smart-transactions-controller/dist/types';
 
 import {
   Box,
@@ -32,8 +36,13 @@ import {
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 
+type RequestState = {
+  smartTransaction?: SmartTransaction;
+  isDapp: boolean;
+};
+
 export interface SmartTransactionStatusPageProps {
-  requestState: any;
+  requestState: RequestState;
   onCloseExtension: () => void;
   onViewActivity: () => void;
 }
@@ -57,10 +66,13 @@ export const SmartTransactionStatusPage = ({
   const t = useI18nContext();
   const { smartTransaction, isDapp } = requestState;
   const isSmartTransactionPending =
-    !smartTransaction || smartTransaction.status === 'pending';
-  const isSmartTransactionSuccess = smartTransaction?.status === 'success';
-  const isSmartTransactionCancelled =
-    smartTransaction?.status.startsWith('cancelled');
+    !smartTransaction ||
+    smartTransaction.status === SmartTransactionStatuses.PENDING;
+  const isSmartTransactionSuccess =
+    smartTransaction?.status === SmartTransactionStatuses.SUCCESS;
+  const isSmartTransactionCancelled = smartTransaction?.status?.startsWith(
+    SmartTransactionStatuses.CANCELLED,
+  );
   const featureFlags: Record<string, any> | null = useSelector(
     getFeatureFlagsByChainId,
   );
@@ -105,7 +117,7 @@ export const SmartTransactionStatusPage = ({
     iconColor = IconColor.primaryDefault;
   } else if (isSmartTransactionPending) {
     title = t('smartTransactionPending');
-    description = t('stxEstimatedCompletition', [
+    description = t('stxEstimatedCompletion', [
       showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec),
     ]);
     iconName = IconName.Clock;
@@ -131,9 +143,9 @@ export const SmartTransactionStatusPage = ({
     let intervalId: NodeJS.Timeout;
     if (isSmartTransactionPending) {
       const calculateRemainingTime = () => {
-        const secondsAfterStxSubmission = Math.round(
-          (Date.now() - smartTransaction?.creationTime) / 1000,
-        );
+        const secondsAfterStxSubmission = smartTransaction?.creationTime
+          ? Math.round((Date.now() - smartTransaction.creationTime) / 1000)
+          : 0;
         if (secondsAfterStxSubmission > stxDeadline) {
           if (isSmartTransactionTakingTooLong) {
             setTimeLeftForPendingStxInSec(0);
@@ -147,14 +159,8 @@ export const SmartTransactionStatusPage = ({
       intervalId = setInterval(calculateRemainingTime, 1000);
       calculateRemainingTime();
     }
-
     return () => clearInterval(intervalId);
-  }, [
-    isSmartTransactionPending,
-    stxEstimatedDeadline,
-    stxMaxDeadline,
-    isSmartTransactionTakingTooLong,
-  ]);
+  }, [isSmartTransactionPending, isSmartTransactionTakingTooLong]);
 
   return (
     <Box
