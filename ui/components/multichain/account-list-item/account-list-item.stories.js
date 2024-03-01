@@ -4,12 +4,8 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-<<<<<<< HEAD
 import { Checkbox } from '../../component-library';
-import { AccountListItem, AccountListItemMenuTypes } from '.';
-=======
 import { AccountListItem, MenuOptionTypes } from '.';
->>>>>>> 50e9cfcb96 (updated types to use none)
 
 const store = configureStore(testData);
 
@@ -110,22 +106,14 @@ export default {
     connectedAvatarName: {
       control: 'text',
     },
-<<<<<<< HEAD
     menuType: {
-=======
-    showOptionTypes: {
->>>>>>> 50e9cfcb96 (updated types to use none)
       control: 'text',
     },
   },
   args: {
     identity: SIMPLE_ACCOUNT,
     onClick,
-<<<<<<< HEAD
     menuType: AccountListItemMenuTypes.Account,
-=======
-    showOptionTypes: MenuOptionTypes.AccountMenu,
->>>>>>> 50e9cfcb96 (updated types to use none)
   },
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

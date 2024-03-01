@@ -369,6 +369,15 @@ export const AccountListItem = ({
           isConnected={isConnected}
         />
       )}
+      {showOptionTypes === MenuOptionTypes.ConnectionMenu && (
+        <ConnectedAccountsMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={closeMenu}
+          isOpen={accountOptionsMenuOpen}
+        />
+      )}
     </Box>
   );
 };

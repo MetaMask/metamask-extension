@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-export { AccountListItem, AccountListItemMenuTypes } from './account-list-item';
-=======
 export { AccountListItem, MenuOptionTypes } from './account-list-item';
->>>>>>> b1201f5723 (move account menu types to types file)
 export { AccountListItemMenu } from './account-list-item-menu';
 export { AccountListMenu } from './account-list-menu';
 export { AccountPicker } from './account-picker';
