@@ -131,7 +131,9 @@ const EthOverview = ({ className, showAddress }) => {
       ///: END:ONLY_INCLUDE_IF
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
-    sendButton: [{ condition: !isSigningEnabled, message: 'methodNotSupported' }],
+    sendButton: [
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
+    ],
     swapButton: [
       { condition: !isSwapsChain, message: 'currentlyUnavailable' },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
