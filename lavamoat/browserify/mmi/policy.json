@@ -1794,6 +1794,12 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/permission-log-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/phishing-controller": {
       "globals": {
         "fetch": true

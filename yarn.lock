@@ -4851,6 +4851,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/permission-log-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/permission-log-controller@npm:1.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: c9a53516aabe9af206e97222a169d440a2287075046fadc03b27d72e6db0063fe116a4368c0d785ad0157d8ee5c0f9337c4f2772e10418e39c59091b704d69aa
+  languageName: node
+  linkType: hard
+
 "@metamask/phishing-controller@npm:^8.0.0, @metamask/phishing-controller@npm:^8.0.1, @metamask/phishing-controller@npm:^8.0.2":
   version: 8.0.2
   resolution: "@metamask/phishing-controller@npm:8.0.2"
@@ -24828,6 +24839,7 @@ __metadata:
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^8.0.0"
+    "@metamask/permission-log-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^8.0.0"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/polling-controller": "npm:^4.0.0"
