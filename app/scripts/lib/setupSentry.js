@@ -114,6 +114,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   EnsController: {
     ensResolutionsByAddress: false,
+    ensEntries: false,
   },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
