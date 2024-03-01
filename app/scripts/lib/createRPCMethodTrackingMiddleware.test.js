@@ -45,7 +45,8 @@ const appStateController = {
 const handler = createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
-  rateLimitSeconds: 1,
+  rateLimitTimeout: 1000,
+  rateLimitSamplePercent: 0.1,
   securityProviderRequest,
   appStateController,
 });
@@ -290,31 +291,87 @@ describe('createRPCMethodTrackingMiddleware', () => {
       executeMiddlewareStack();
     });
 
-    it(`should only track events when not rate limited`, async () => {
-      const req = {
-        method: 'eth_chainId',
-        origin: 'some.dapp',
-      };
+    describe('events rated limited by timeout', () => {
+      it.each([
+        ['wallet_requestPermissions', 2],
+        ['eth_requestAccounts', 2],
+      ])(
+        `should only track '%s' events while the timeout rate limit is not active`,
+        async (method, eventsTrackedPerRequest) => {
+          const req = {
+            method,
+            origin: 'some.dapp',
+          };
 
-      const res = {
-        error: null,
-      };
+          const res = {
+            error: null,
+          };
 
-      let callCount = 0;
+          let callCount = 0;
 
-      while (callCount < 3) {
-        callCount += 1;
-        const { next, executeMiddlewareStack } = getNext();
-        handler(req, res, next);
-        await executeMiddlewareStack();
-        if (callCount !== 3) {
-          await waitForSeconds(0.6);
-        }
-      }
+          while (callCount < 3) {
+            callCount += 1;
+            const { next, executeMiddlewareStack } = getNext();
+            handler(req, res, next);
+            await executeMiddlewareStack();
+            if (callCount !== 3) {
+              await waitForSeconds(0.6);
+            }
+          }
 
-      expect(trackEvent).toHaveBeenCalledTimes(2);
-      expect(trackEvent.mock.calls[0][0].properties.method).toBe('eth_chainId');
-      expect(trackEvent.mock.calls[1][0].properties.method).toBe('eth_chainId');
+          const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
+          expect(trackEvent).toHaveBeenCalledTimes(expectedNumberOfCalls);
+          trackEvent.mock.calls.forEach((call) => {
+            expect(call[0].properties.method).toBe(method);
+          });
+        },
+      );
+    });
+
+    describe('events rated limited by random', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(Math, 'random')
+          .mockReturnValueOnce(0) // not rate limited
+          .mockReturnValueOnce(0.09) // not rate limited
+          .mockReturnValueOnce(0.1) // rate limited
+          .mockReturnValueOnce(0.11) // rate limited
+          .mockReturnValueOnce(1); // rate limited
+      });
+      afterEach(() => {
+        jest.spyOn(Math, 'random').mockRestore();
+      });
+      it.each([
+        ['any_method_without_rate_limit_type_set', 1],
+        ['eth_chainId', 1],
+      ])(
+        `should only track a random percentage of '%s' events`,
+        async (method, eventsTrackedPerRequest) => {
+          const req = {
+            method,
+            origin: 'some.dapp',
+          };
+
+          const res = {
+            error: null,
+          };
+
+          let callCount = 0;
+
+          while (callCount < 3) {
+            callCount += 1;
+            const { next, executeMiddlewareStack } = getNext();
+            handler(req, res, next);
+            await executeMiddlewareStack();
+          }
+
+          const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
+          expect(trackEvent).toHaveBeenCalledTimes(expectedNumberOfCalls);
+          trackEvent.mock.calls.forEach((call) => {
+            expect(call[0].properties.method).toBe(method);
+          });
+        },
+      );
     });
 
     it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
@@ -473,7 +530,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         fnHandler = createRPCMethodTrackingMiddleware({
           trackEvent,
           getMetricsState,
-          rateLimitSeconds: 1,
+          rateLimitTimeout: 1000,
           securityProviderRequest: securityProviderReq,
         });
       });
