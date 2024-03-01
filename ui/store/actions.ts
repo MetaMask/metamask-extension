@@ -1458,9 +1458,6 @@ export function cancelTx(
 
 export function recreateWalletSendTransactionOnNewChain(
   txMeta: TransactionMeta,
-  options?: {
-    type?: TransactionType;
-  },
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
