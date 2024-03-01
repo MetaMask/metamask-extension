@@ -1476,7 +1476,7 @@ export function recreateWalletSendTransactionOnNewChain(
 
     const newTransactionMeta = await submitRequestToBackground<TransactionMeta>(
       'addTransaction',
-      [txMeta.txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
+      [txMeta.txParams, { actionId, origin: ORIGIN_METAMASK }],
     );
 
     dispatch(hideLoadingIndication());
