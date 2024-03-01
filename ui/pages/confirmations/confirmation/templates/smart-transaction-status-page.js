@@ -17,6 +17,7 @@ function getValues(pendingApproval, t, actions, _history) {
         },
       },
     ],
+    hideSubmitButton: true,
   };
 }
 
