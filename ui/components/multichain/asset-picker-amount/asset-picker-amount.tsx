@@ -130,7 +130,7 @@ export const AssetPickerAmount = () => {
         paddingRight={4}
         borderRadius={BorderRadius.LG}
         borderColor={
-          amount.error ? BorderColor.errorDefault : BorderColor.primaryDefault
+          error ? BorderColor.errorDefault : BorderColor.primaryDefault
         }
         borderStyle={BorderStyle.solid}
         borderWidth={2}
