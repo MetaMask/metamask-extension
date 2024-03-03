@@ -5,6 +5,7 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
+import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 import {
   getCurrentChainId,
   getNameLookupSnapsIds,
@@ -185,9 +186,8 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
 
   const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
-    // TODO: add a caveat getter to the snaps monorepo for name lookup similar to the other caveat getters
-    const nameLookupCaveat = permission.caveats[0].value;
-    return nameLookupCaveat.includes(chainId);
+    const chainIdCaveat = getChainIdsCaveat(permission);
+    return chainIdCaveat?.includes(chainId) ?? true;
   });
 
   const snapRequestArgs = domain
@@ -215,10 +215,13 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
   const filteredResults = results.reduce(
     (successfulResolutions, result, idx) => {
       if (result.status !== 'rejected' && result.value !== null) {
-        successfulResolutions.push({
-          ...result.value,
-          snapId: filteredNameLookupSnapsIds[idx],
-        });
+        const resolutions = result.value.resolvedAddresses.map(
+          (resolution) => ({
+            ...resolution,
+            snapId: filteredNameLookupSnapsIds[idx],
+          }),
+        );
+        return successfulResolutions.concat(resolutions);
       }
       return successfulResolutions;
     },

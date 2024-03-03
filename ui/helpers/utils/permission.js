@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
+import { getRpcCaveatOrigins } from '@metamask/snaps-rpc-methods';
 import {
   SnapCaveatType,
   getSlip44ProtocolName,

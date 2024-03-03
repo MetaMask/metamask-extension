@@ -73,15 +73,16 @@ export function createPPOMMiddleware(
           .usePPOM(async (ppom: PPOM) => {
             try {
               const securityAlertResponse = await ppom.validateJsonRpc(req);
+              securityAlertResponse.securityAlertId = securityAlertId;
               return securityAlertResponse;
             } catch (error: any) {
               sentry?.captureException(error);
+              const errorObject = error as unknown as Error;
               console.error('Error validating JSON RPC using PPOM: ', error);
               const securityAlertResponse = {
-                result_type: BlockaidResultType.Failed,
-                reason: BlockaidReason.failed,
-                description:
-                  'Validating the confirmation failed by throwing error.',
+                result_type: BlockaidResultType.Errored,
+                reason: BlockaidReason.errored,
+                description: `${errorObject.name}: ${errorObject.message}`,
               };
 
               return securityAlertResponse;
@@ -114,12 +115,13 @@ export function createPPOMMiddleware(
         }
       }
     } catch (error: any) {
+      const errorObject = error as unknown as Error;
       sentry?.captureException(error);
       console.error('Error validating JSON RPC using PPOM: ', error);
       req.securityAlertResponse = {
-        result_type: BlockaidResultType.Failed,
-        reason: BlockaidReason.failed,
-        description: 'Validating the confirmation failed by throwing error.',
+        result_type: BlockaidResultType.Errored,
+        reason: BlockaidReason.errored,
+        description: `${errorObject.name}: ${errorObject.message}`,
       };
     } finally {
       next();

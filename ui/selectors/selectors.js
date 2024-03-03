@@ -106,13 +106,14 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 // eslint-disable-next-line import/order
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
+  ///: END:ONLY_INCLUDE_IF
+  getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
-///: END:ONLY_INCLUDE_IF
 import { createDeepEqualSelector } from './util';
 
 /**
@@ -894,6 +895,72 @@ export const getAnySnapUpdateAvailable = createSelector(
     return [...snapMap.values()].some((value) => value === true);
   },
 );
+
+/**
+ * Get a memoized version of the target subject metadata.
+ */
+export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
+  getTargetSubjectMetadata,
+  (interfaces) => interfaces,
+);
+
+/**
+ * Get the Snap interfaces from the redux state.
+ *
+ * @param state - Redux state object.
+ * @returns the Snap interfaces.
+ */
+const getInterfaces = (state) => state.metamask.interfaces;
+
+/**
+ * Input selector providing a way to pass a Snap interface ID as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param interfaceId - ID of a Snap interface.
+ * @returns ID of a Snap Interface that can be used as input selector.
+ */
+const selectInterfaceId = (_state, interfaceId) => interfaceId;
+
+/**
+ * Get a memoized version of the Snap interfaces.
+ */
+export const getMemoizedInterfaces = createDeepEqualSelector(
+  getInterfaces,
+  (interfaces) => interfaces,
+);
+
+/**
+ * Get a Snap Interface with a given ID.
+ */
+export const getInterface = createSelector(
+  [getMemoizedInterfaces, selectInterfaceId],
+  (interfaces, id) => interfaces[id],
+);
+
+/**
+ * Get a memoized version of a Snap interface with a given ID
+ */
+export const getMemoizedInterface = createDeepEqualSelector(
+  getInterface,
+  (snapInterface) => snapInterface,
+);
+
+/**
+ * Get the content from a Snap interface with a given ID.
+ */
+export const getInterfaceContent = createSelector(
+  [getMemoizedInterfaces, selectInterfaceId],
+  (interfaces, id) => interfaces[id]?.content,
+);
+
+/**
+ * Get a memoized version of the content from a Snap interface with a given ID.
+ */
+export const getMemoizedInterfaceContent = createDeepEqualSelector(
+  getInterfaceContent,
+  (content) => content,
+);
+
 ///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -1567,15 +1634,6 @@ export function getTestNetworks(state) {
 
   return [
     {
-      chainId: CHAIN_IDS.GOERLI,
-      nickname: GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
-      providerType: NETWORK_TYPES.GOERLI,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
-      id: NETWORK_TYPES.GOERLI,
-      removable: false,
-    },
-    {
       chainId: CHAIN_IDS.SEPOLIA,
       nickname: SEPOLIA_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
@@ -1664,7 +1722,8 @@ export function getAllNetworks(state) {
 export function getIsOptimism(state) {
   return (
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
   );
 }
 
@@ -1968,10 +2027,21 @@ export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
   const hiddenAddresses = getHiddenAccountsList(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
 
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses.includes(account.address));
     account.hidden = Boolean(hiddenAddresses.includes(account.address));
+    if (
+      connectedAccounts.length > 0 &&
+      account.address === connectedAccounts[0].address
+    ) {
+      // Update the active property of the matched account to true
+      account.active = true;
+    } else {
+      // If not the first element or no match found, set active to false
+      account.active = false;
+    }
   });
 
   const sortedPinnedAccounts = pinnedAddresses
@@ -2010,6 +2080,11 @@ export function getOnboardedInThisUISession(state) {
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
+
+export function getShowFiatInTestnets(state) {
+  const { showFiatInTestnets } = getPreferences(state);
+  return showFiatInTestnets;
+}
 
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
@@ -2054,17 +2129,19 @@ export function getIsDesktopEnabled(state) {
  */
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
-  return Object.entries(snaps).map(([key, snap]) => {
-    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-    return {
-      key,
-      id: snap.id,
-      iconUrl: targetSubjectMetadata?.iconUrl,
-      subjectType: targetSubjectMetadata?.subjectType,
-      packageName: stripSnapPrefix(snap.id),
-      name: getSnapName(snap.id, targetSubjectMetadata),
-    };
-  });
+  return Object.entries(snaps)
+    .filter(([_key, snap]) => !snap.preinstalled)
+    .map(([key, snap]) => {
+      const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+      return {
+        key,
+        id: snap.id,
+        iconUrl: targetSubjectMetadata?.iconUrl,
+        subjectType: targetSubjectMetadata?.subjectType,
+        packageName: stripSnapPrefix(snap.id),
+        name: getSnapName(snap.id, targetSubjectMetadata),
+      };
+    });
 }
 
 /**

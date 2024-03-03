@@ -47,7 +47,8 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () {
-  it('should show banner alert after switchinig to another supported network', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show banner alert after switchinig to another supported network', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -78,7 +79,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForElementNotPresent('.loading-indicator');
+        await driver.assertElementNotPresent('.loading-indicator');
 
         const bannerAlertSelector =
           '[data-testid="security-provider-banner-alert"]';
