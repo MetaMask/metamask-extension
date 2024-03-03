@@ -67,6 +67,7 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   return (
     <AssetV2
       asset={{
+        chainId,
         type: AssetType.token,
         address,
         symbol,

@@ -1,19 +1,18 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  ReactNode,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ReactNode } from 'react-markdown';
 import {
-  getCurrentChainId,
   getCurrentCurrency,
-  getCurrentKeyring,
   getIsBridgeChain,
-  getIsBuyableChain,
-  getIsSwapsChain,
   getMetaMetricsId,
-  getSwapsDefaultToken,
 } from '../../../selectors';
 import {
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
@@ -23,13 +22,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  ButtonPrimary,
   ButtonSecondary,
-  ButtonSecondarySize,
   Text,
 } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AddressCopyButton,
@@ -46,10 +42,7 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import {
-  BUILD_QUOTE_ROUTE,
-  SEND_ROUTE,
-} from '../../../helpers/constants/routes';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -57,92 +50,75 @@ import TokenCell from '../../../components/app/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
 import Tooltip from '../../../components/ui/tooltip';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import useRamps from '../../../hooks/experiences/useRamps';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import AssetChart from './asset-chart';
 import { getPricePrecision, localizeLargeNumber } from './util';
 import AssetHeader from './asset-header';
+import AssetFooter from './asset-footer';
 
-const renderRow = (leftColumn: string, rightColumn: ReactNode) => (
-  <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-    <Text color={TextColor.textAlternative} variant={TextVariant.bodyMdMedium}>
-      {leftColumn}
-    </Text>
-    {rightColumn}
-  </Box>
-);
+/** Information about a native or token asset */
+export type Asset = (
+  | {
+      type: AssetType.native;
+      /** */
+      isOriginalNativeSymbol: boolean;
+    }
+  | {
+      type: AssetType.token;
+      /** The token's contract address */
+      address: string;
+      /** The number of decimal places to move left when displaying balances */
+      decimals: number;
+      /** An array of token list sources the asset appears in, e.g. [1inch,Sushiswap]  */
+      aggregators?: [];
+    }
+) & {
+  /** The hexadecimal chain id */
+  chainId: string;
+  /** The asset's symbol, e.g. 'ETH' */
+  symbol: string;
+  /** The asset's name, e.g. 'Ethereum' */
+  name?: string;
+  /** A URL to the asset's image */
+  image: string;
+  /** The current price of 1 unit of the asset, in the user's fiat currency */
+  currentPrice?: number;
+  balance: {
+    /**
+     * A decimal representation of the balance before applying
+     * decimals e.g. '12300000000000000' for 0.0123 ETH
+     */
+    value: string;
+    /**
+     * A displayable representation of the balance after applying
+     * decimals e.g. '0.0123' for 12300000000000000 WEI
+     */
+    display: string;
+    /** The balance's localized value in fiat e.g. '$12.34' or '56,78 €' */
+    fiat?: string;
+  };
+};
 
-const renderTooltip = (button: JSX.Element, text: string, show: boolean) =>
-  show ? (
-    <Tooltip wrapperClassName="asset-tooltip" title={text} position="bottom">
-      {button}
-    </Tooltip>
-  ) : (
-    <Box width={BlockSize.Full}>{button}</Box>
-  );
-
-// A page representing details for a native or token asset
+// A page representing a native or token asset
 const AssetV2 = ({
   asset,
+  optionsButton,
 }: {
-  asset: (
-    | {
-        type: AssetType.native;
-        isOriginalNativeSymbol: boolean;
-      }
-    | {
-        type: AssetType.token;
-        address: string;
-        decimals: number;
-        aggregators?: [];
-      }
-  ) & {
-    symbol: string;
-    name?: string;
-    image: string;
-    /** The current price of 1 unit of the token, in the user's fiat currency */
-    currentPrice?: number;
-    balance: {
-      /**
-       * A decimal representation of the balance before applying
-       * decimals e.g. '12300000000000000' for 0.0123 ETH
-       */
-      value: string;
-
-      /**
-       * A displayable representation of the balance after applying
-       * decimals e.g. '0.0123' for 12300000000000000 WEI
-       */
-      display: string;
-
-      /** The balance's localized value in fiat e.g. '$12.34' or '56,78 €' */
-      fiat?: string;
-    };
-    optionsButton: React.ReactNode;
-  };
+  asset: Asset;
+  optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = hexToDecimal(useSelector(getCurrentChainId));
   const currency = useSelector(getCurrentCurrency);
-  const isSwapsChain = useSelector(getIsSwapsChain);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  const { openBuyCryptoInPdapp } = useRamps();
 
   const [marketData, setMarketData] = useState<any>();
   const headerRef = useRef<{ setBalanceOpacity: (o: number) => void }>(null);
 
-  const { type, symbol, name, image, balance, optionsButton, currentPrice } =
-    asset;
+  const { chainId, type, symbol, name, image, balance } = asset;
 
   const address =
     type === AssetType.token
@@ -195,7 +171,7 @@ const AssetV2 = ({
               : name ?? symbol}
           </Text>
         </Box>
-        <AssetChart address={address} currentPrice={currentPrice} />
+        <AssetChart address={address} currentPrice={asset.currentPrice} />
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -236,82 +212,83 @@ const AssetV2 = ({
               paddingLeft={[4, 12]}
               paddingRight={[4, 12]}
             >
-              {renderTooltip(
-                <ButtonSecondary
-                  disabled={!isBridgeChain}
-                  padding={5}
-                  width={BlockSize.Full}
-                  onClick={() => {
-                    const portfolioUrl = getPortfolioUrl(
-                      'bridge',
-                      'ext_bridge_button',
-                      metaMetricsId,
-                    );
-                    global.platform.openTab({
-                      url: `${portfolioUrl}&token=${
-                        type === AssetType.native ? 'native' : address
-                      }`,
-                    });
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.BridgeLinkClicked,
-                      properties: {
-                        location: 'Asset Overview',
-                        text: 'Bridge',
-                        chain_id: chainId,
-                        token_symbol: symbol,
-                      },
-                    });
-                  }}
-                >
-                  {t('bridge')}
-                </ButtonSecondary>,
-                t('currentlyUnavailable'),
-                !isBridgeChain,
-              )}
-
               <Box width={BlockSize.Full}>
-                <ButtonSecondary
-                  data-testid="asset-send-button"
-                  padding={5}
-                  width={BlockSize.Full}
-                  onClick={async () => {
-                    trackEvent({
-                      event: MetaMetricsEventName.NavSendButtonClicked,
-                      category: MetaMetricsEventCategory.Navigation,
-                      properties: {
-                        token_symbol: symbol,
-                        location: MetaMetricsSwapsEventSource.TokenView,
-                        text: 'Send',
-                        chain_id: chainId,
-                      },
-                    });
-                    try {
-                      await dispatch(
-                        startNewDraftTransaction({
-                          type,
-                          details:
-                            type === AssetType.native
-                              ? undefined
-                              : {
-                                  standard: TokenStandard.ERC20,
-                                  decimals: asset.decimals,
-                                  symbol,
-                                  address,
-                                },
-                        }),
-                      );
-                      history.push(SEND_ROUTE);
-                    } catch (err: any) {
-                      if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
-                        throw err;
-                      }
-                    }
-                  }}
+                <Tooltip
+                  disabled={isBridgeChain}
+                  title={t('currentlyUnavailable')}
+                  position="top"
                 >
-                  {t('send')}
-                </ButtonSecondary>
+                  <ButtonSecondary
+                    disabled={!isBridgeChain}
+                    width={BlockSize.Full}
+                    padding={5}
+                    onClick={() => {
+                      const portfolioUrl = getPortfolioUrl(
+                        'bridge',
+                        'ext_bridge_button',
+                        metaMetricsId,
+                      );
+                      global.platform.openTab({
+                        url: `${portfolioUrl}&token=${
+                          type === AssetType.native ? 'native' : address
+                        }`,
+                      });
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.BridgeLinkClicked,
+                        properties: {
+                          location: 'Asset Overview',
+                          text: 'Bridge',
+                          chain_id: chainId,
+                          token_symbol: symbol,
+                        },
+                      });
+                    }}
+                  >
+                    {t('bridge')}
+                  </ButtonSecondary>
+                </Tooltip>
               </Box>
+              <ButtonSecondary
+                width={BlockSize.Full}
+                data-testid="asset-send-button"
+                padding={5}
+                onClick={async () => {
+                  trackEvent({
+                    event: MetaMetricsEventName.NavSendButtonClicked,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      token_symbol: symbol,
+                      location: MetaMetricsSwapsEventSource.TokenView,
+                      text: 'Send',
+                      chain_id: chainId,
+                    },
+                  });
+                  try {
+                    await dispatch(
+                      startNewDraftTransaction({
+                        type,
+                        details:
+                          type === AssetType.native
+                            ? undefined
+                            : {
+                                standard: TokenStandard.ERC20,
+                                decimals: asset.decimals,
+                                symbol,
+                                address,
+                              },
+                      }),
+                    );
+                    history.push(SEND_ROUTE);
+                  } catch (err: any) {
+                    if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
+                      throw err;
+                    }
+                  }
+                }}
+              >
+                {t('send')}
+              </ButtonSecondary>
             </Box>
           </Box>
           {type === AssetType.token && (
@@ -407,7 +384,7 @@ const AssetV2 = ({
               </Box>
             </Box>
           )}
-          <Box marginBottom={5}>
+          <Box marginBottom={8}>
             <Text
               paddingLeft={4}
               paddingRight={4}
@@ -423,88 +400,24 @@ const AssetV2 = ({
           </Box>
         </Box>
       </Box>
-      <Box
-        className="asset-footer"
-        padding={4}
-        paddingLeft={[4, 12]}
-        paddingRight={[4, 12]}
-        backgroundColor={BackgroundColor.backgroundDefault}
-      >
-        <Box display={Display.Flex} gap={[4, 12]}>
-          {renderTooltip(
-            <ButtonSecondary
-              disabled={!isBuyableChain}
-              size={ButtonSecondarySize.Md}
-              padding={5}
-              width={BlockSize.Full}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Token Overview',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: symbol,
-                  },
-                });
-              }}
-            >
-              {t('buy')}
-            </ButtonSecondary>,
-            t('currentlyUnavailable'),
-            !isBuyableChain,
-          )}
-          {renderTooltip(
-            <ButtonPrimary
-              disabled={!isSwapsChain}
-              padding={5}
-              width={BlockSize.Full}
-              onClick={() => {
-                trackEvent({
-                  event: MetaMetricsEventName.NavSwapButtonClicked,
-                  category: MetaMetricsEventCategory.Swaps,
-                  properties: {
-                    token_symbol: symbol,
-                    location: MetaMetricsSwapsEventSource.TokenView,
-                    text: 'Swap',
-                    chain_id: chainId,
-                  },
-                });
-                dispatch(
-                  setSwapsFromToken(
-                    type === AssetType.native
-                      ? defaultSwapsToken
-                      : {
-                          symbol,
-                          name,
-                          address,
-                          decimals: asset.decimals,
-                          iconUrl: image,
-                          balance: balance.value,
-                          string: balance.display,
-                        },
-                  ),
-                );
-
-                if (usingHardwareWallet) {
-                  // @ts-expect-error not sure why this doesn't exist on type 'Platform'
-                  global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-                } else {
-                  history.push(BUILD_QUOTE_ROUTE);
-                }
-              }}
-            >
-              {t('swap')}
-            </ButtonPrimary>,
-            t('currentlyUnavailable'),
-            !isBridgeChain,
-          )}
-        </Box>
-      </Box>
+      {/* test this is being pased corectly */}
+      <AssetFooter asset={asset} />
     </Box>
   );
 };
+
+function renderRow(leftColumn: string, rightColumn: ReactNode) {
+  return (
+    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Text
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodyMdMedium}
+      >
+        {leftColumn}
+      </Text>
+      {rightColumn}
+    </Box>
+  );
+}
 
 export default AssetV2;

@@ -53,6 +53,7 @@ const NativeAssetV2 = () => {
   return (
     <AssetV2
       asset={{
+        chainId,
         type: AssetType.native,
         symbol: nativeCurrency,
         image,
