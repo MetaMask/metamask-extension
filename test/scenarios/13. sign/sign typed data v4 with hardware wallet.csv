@@ -1,6 +1,6 @@
 Steps,Test Steps,Preconditions,Test Data,Expected Result,Notes
 1,Open the extension.,,,The Welcome Back screen is shown.,
-2,Proceed to Unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview.
+2,Proceed to unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview.
 The wallet address is shown on the overview.",
 3,"Click on account menu icon. Click ""Add account or hardware wallet"".",,,"The ""Add account"" modal is shown.",
 4,"On ""Add account"" modal, click ""Add hardware wallet"" button.",,,"""Connect a hardware wallet"" screen is shown. User can choose between different options to connect a hardware: Ledger, Trezor, Lattice, or QR-based. ""Continue"" button is disabled.",
