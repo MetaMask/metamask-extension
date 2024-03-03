@@ -19,6 +19,7 @@ buildTypes:
       - snaps
       - keyring-snaps
       - blockaid
+      - notifications
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -60,6 +61,7 @@ buildTypes:
       - keyring-snaps
       - blockaid
       - petnames
+      - notifications
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -145,6 +147,12 @@ features:
       - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
   petnames:
   conf-redesign:
+  notifications:
+    env:
+      - AUTH_API
+      - OIDC_API
+      - OIDC_CLIENT_ID
+      - OIDC_GRANT_TYPE
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###

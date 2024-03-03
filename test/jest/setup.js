@@ -15,6 +15,10 @@ jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
   usePetnamesEnabled: () => false,
 }));
 
+jest.mock('../../app/scripts/snaps/preinstalled-snaps.js', () => ({
+  PREINSTALLED_SNAPS: [],
+}));
+
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later
