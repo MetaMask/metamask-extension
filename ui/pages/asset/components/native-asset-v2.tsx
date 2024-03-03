@@ -64,26 +64,26 @@ const NativeAssetV2 = () => {
         },
         isOriginalNativeSymbol: isOriginalNativeSymbol === true,
         currentPrice: conversionRate,
-        optionsButton: (
-          <AssetOptions
-            isNativeAsset={true}
-            onClickBlockExplorer={() => {
-              trackEvent({
-                event: 'Clicked Block Explorer Link',
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  link_type: 'Account Tracker',
-                  action: 'Asset Options',
-                  block_explorer_domain: getURLHostName(accountLink),
-                },
-              });
-              global.platform.openTab({
-                url: accountLink,
-              });
-            }}
-          />
-        ),
       }}
+      optionsButton={
+        <AssetOptions
+          isNativeAsset={true}
+          onClickBlockExplorer={() => {
+            trackEvent({
+              event: 'Clicked Block Explorer Link',
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                link_type: 'Account Tracker',
+                action: 'Asset Options',
+                block_explorer_domain: getURLHostName(accountLink),
+              },
+            });
+            global.platform.openTab({
+              url: accountLink,
+            });
+          }}
+        />
+      }
     />
   );
 };

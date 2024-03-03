@@ -87,30 +87,30 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
           )}`,
           fiat,
         },
-        optionsButton: (
-          <AssetOptions
-            isNativeAsset={false}
-            onRemove={() =>
-              dispatch(
-                showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
-              )
-            }
-            onClickBlockExplorer={() => {
-              trackEvent({
-                event: 'Clicked Block Explorer Link',
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  link_type: 'Token Tracker',
-                  action: 'Token Options',
-                  block_explorer_domain: getURLHostName(tokenTrackerLink),
-                },
-              });
-              global.platform.openTab({ url: tokenTrackerLink });
-            }}
-            tokenSymbol={token.symbol}
-          />
-        ),
       }}
+      optionsButton={
+        <AssetOptions
+          isNativeAsset={false}
+          onRemove={() =>
+            dispatch(
+              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
+            )
+          }
+          onClickBlockExplorer={() => {
+            trackEvent({
+              event: 'Clicked Block Explorer Link',
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                link_type: 'Token Tracker',
+                action: 'Token Options',
+                block_explorer_domain: getURLHostName(tokenTrackerLink),
+              },
+            });
+            global.platform.openTab({ url: tokenTrackerLink });
+          }}
+          tokenSymbol={token.symbol}
+        />
+      }
     />
   );
 };
