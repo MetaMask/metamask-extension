@@ -3942,6 +3942,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A24.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-24.0.0-dfef136464.patch%3A%3Aversion=24.0.0&hash=f321cb#~/.yarn/patches/@metamask-assets-controllers-patch-74191f09e4.patch":
+  version: 24.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A24.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-24.0.0-dfef136464.patch%3A%3Aversion=24.0.0&hash=f321cb#~/.yarn/patches/@metamask-assets-controllers-patch-74191f09e4.patch::version=24.0.0&hash=594a48"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/abi-utils": "npm:^2.0.2"
+    "@metamask/approval-controller": "npm:^5.1.1"
+    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^8.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/metamask-eth-abis": "npm:3.0.0"
+    "@metamask/network-controller": "npm:^17.1.0"
+    "@metamask/polling-controller": "npm:^4.0.0"
+    "@metamask/preferences-controller": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    "@types/uuid": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    cockatiel: "npm:^3.1.2"
+    ethereumjs-util: "npm:^7.0.10"
+    lodash: "npm:^4.17.21"
+    multiformats: "npm:^9.5.2"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^5.1.1
+    "@metamask/network-controller": ^17.1.0
+    "@metamask/preferences-controller": ^6.0.0
+  checksum: ff253095d2a72f73c0c5b8399d7f5e86ea210bf3f1a5eeb6b7fca732da2c1828bf36354b0e1ed912010fa5be50cc1ade3052c6dc02a5365ce53242d6be030544
+  languageName: node
+  linkType: hard
+
 "@metamask/auto-changelog@npm:^2.1.0":
   version: 2.6.1
   resolution: "@metamask/auto-changelog@npm:2.6.1"
