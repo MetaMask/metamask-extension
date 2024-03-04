@@ -53,7 +53,6 @@ export { Container, ContainerMaxWidth } from './container';
 export type { ContainerProps } from './container';
 export { FormTextField, FormTextFieldSize } from './form-text-field';
 export type { FormTextFieldProps } from './form-text-field';
-export { FormPasswordField } from './form-password-field';
 export { HeaderBase } from './header-base';
 export type { HeaderBaseProps } from './header-base';
 export { HelpText, HelpTextSeverity } from './help-text';
