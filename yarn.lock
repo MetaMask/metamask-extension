@@ -53,13 +53,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apocentre/alias-sampling@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "@apocentre/alias-sampling@npm:0.5.3"
-  checksum: b1050c19a4391875d042d573eb24d2a885612b98e903b47f0a90e18c98c2b8c82b796f1e622bd9fe61a01ed2a420a47a8acf8af578654634776cefd9b7a32dcd
-  languageName: node
-  linkType: hard
-
 "@aw-web-design/x-default-browser@npm:1.4.126":
   version: 1.4.126
   resolution: "@aw-web-design/x-default-browser@npm:1.4.126"
@@ -3394,9 +3387,9 @@ __metadata:
   linkType: hard
 
 "@keystonehq/alias-sampling@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@keystonehq/alias-sampling@npm:0.1.1"
-  checksum: 1a05a5f9a5780de2d14803c778b89d836525978bef1584f0332d9bf306dd5f55fe400e3d087bb6fd13baebc26b01bdcbd1be6f162aa0d82d2e4fe7ad7ef51e6e
+  version: 0.1.2
+  resolution: "@keystonehq/alias-sampling@npm:0.1.2"
+  checksum: 4dfdfb91e070b1d9f28058c92b5b8fad81696ac63bd432cd6bd359f2ab92eb50df75e8c5da1f75a351756387e9902f043b3ecc2cbf662c9c9456ecacc848abfd
   languageName: node
   linkType: hard
 
@@ -5544,9 +5537,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.1.5":
-  version: 1.1.9
-  resolution: "@ngraveio/bc-ur@npm:1.1.9"
+"@ngraveio/bc-ur@npm:^1.1.12, @ngraveio/bc-ur@npm:^1.1.5":
+  version: 1.1.12
+  resolution: "@ngraveio/bc-ur@npm:1.1.12"
   dependencies:
     "@keystonehq/alias-sampling": "npm:^0.1.1"
     assert: "npm:^2.0.0"
@@ -5555,22 +5548,7 @@ __metadata:
     crc: "npm:^3.8.0"
     jsbi: "npm:^3.1.5"
     sha.js: "npm:^2.4.11"
-  checksum: 7f743fb0e87fcd485fb6403fb14f327229c333038ee6ccbeb760d1ad04c3fabb40328556faf7231b0b470a956b6dcc831fdca3a70de0aa4a04ad541c53bde274
-  languageName: node
-  linkType: hard
-
-"@ngraveio/bc-ur@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "@ngraveio/bc-ur@npm:1.1.6"
-  dependencies:
-    "@apocentre/alias-sampling": "npm:^0.5.3"
-    assert: "npm:^2.0.0"
-    bignumber.js: "npm:^9.0.1"
-    cbor-sync: "npm:^1.0.4"
-    crc: "npm:^3.8.0"
-    jsbi: "npm:^3.1.5"
-    sha.js: "npm:^2.4.11"
-  checksum: 2fc883aca227b90e1e4a760ed7f85c439e84d358e0cd8db350746f538112ff8cbde20a79c0755cd8857b26c8ad5fe6fdef4bfd4a3f8fad26f53eba0692e7fa30
+  checksum: 43f030019afc3074546acd61041827c0d6a81a523239f336a25e1540f5353bc69af8a83c9f0989a0bafdb72ebbd32de79965f001f092227caef8e96ee472e21e
   languageName: node
   linkType: hard
 
@@ -24886,7 +24864,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^23.1.0"
     "@metamask/user-operation-controller": "npm:^4.0.0"
     "@metamask/utils": "npm:^8.2.1"
-    "@ngraveio/bc-ur": "npm:^1.1.6"
+    "@ngraveio/bc-ur": "npm:^1.1.12"
     "@playwright/test": "npm:^1.39.0"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "npm:^1.6.2"
