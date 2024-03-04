@@ -30,13 +30,14 @@ buildTypes:
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - VAPID_KEY
-      - FIREBASE_CONFIG
       - FIREBASE_API_KEY
       - FIREBASE_AUTH_DOMAIN
       - FIREBASE_STORAGE_BUCKET
       - FIREBASE_PROJECT_ID
       - FIREBASE_MESSAGING_SENDER_ID
       - FIREBASE_APP_ID
+      - FIREBASE_MEASUREMENT_ID
+      - PUSH_NOTIFICATIONS_SERVICE_URL
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places

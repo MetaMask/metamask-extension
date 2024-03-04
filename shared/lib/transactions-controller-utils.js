@@ -30,6 +30,14 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
     .replace(/(\.[0-9]*[1-9])0*|(\.0*)/u, '$1');
 }
 
+/**
+ * Calculates the token amount by dividing the given value by 10 raised to the power of the specified decimals.
+ * This function is useful for converting the smallest unit of a token (like Wei in Ethereum) to its decimal representation.
+ *
+ * @param {string | number | BigNumber} value - The value to be converted, in the smallest unit of the token.
+ * @param {number} decimals - The number of decimal places the token uses.
+ * @returns {BigNumber} The token amount in decimal form as a BigNumber.
+ */
 export function calcTokenAmount(value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0));
   return new BigNumber(String(value)).div(multiplier);

@@ -3790,6 +3790,78 @@
   "publicAddress": {
     "message": "Public address"
   },
+  "pushPlatformNotificationsFundsReceivedDefaultDescription": {
+    "message": "You received some tokens"
+  },
+  "pushPlatformNotificationsFundsReceivedDescription": {
+    "message": "You received $1 $2"
+  },
+  "pushPlatformNotificationsFundsReceivedTitle": {
+    "message": "Funds received"
+  },
+  "pushPlatformNotificationsFundsSentDefaultDescription": {
+    "message": "You successfully sent some tokens"
+  },
+  "pushPlatformNotificationsFundsSentDescription": {
+    "message": "You successfully sent $1 $2"
+  },
+  "pushPlatformNotificationsFundsSentTitle": {
+    "message": "Funds sent"
+  },
+  "pushPlatformNotificationsNftReceivedDescription": {
+    "message": "You received new NFTs"
+  },
+  "pushPlatformNotificationsNftReceivedTitle": {
+    "message": "NFT received"
+  },
+  "pushPlatformNotificationsNftSentDescription": {
+    "message": "You have successfully sent an NFT"
+  },
+  "pushPlatformNotificationsNftSentTitle": {
+    "message": "NFT sent"
+  },
+  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
+    "message": "Your Lido stake was successful"
+  },
+  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
+    "message": "Stake complete"
+  },
+  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
+    "message": "Your Lido stake is now ready to be withdrawn"
+  },
+  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
+    "message": "Stake ready for withdrawal"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
+    "message": "Your Lido withdrawal was successful"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
+    "message": "Withdrawal completed"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
+    "message": "Your Lido withdrawal request was submitted"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
+    "message": "Withdrawal requested"
+  },
+  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
+    "message": "Your RocketPool stake was successful"
+  },
+  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
+    "message": "Stake complete"
+  },
+  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
+    "message": "Your RocketPool unstake was successful"
+  },
+  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
+    "message": "Unstake complete"
+  },
+  "pushPlatformNotificationsSwapCompletedDescription": {
+    "message": "Your MetaMask Swap was successful"
+  },
+  "pushPlatformNotificationsSwapCompletedTitle": {
+    "message": "Swap completed"
+  },
   "queued": {
     "message": "Queued"
   },

@@ -26,6 +26,11 @@ export interface NotificationPayload {
   icon?: string;
 }
 
+export interface FcmOptions {
+  link?: string;
+  analyticsLabel?: string;
+}
+
 export interface MessagePayload {
   notification?: NotificationPayload;
   data?: { [key: string]: string };

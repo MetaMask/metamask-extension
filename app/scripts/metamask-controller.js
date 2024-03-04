@@ -2532,24 +2532,6 @@ export default class MetamaskController extends EventEmitter {
   ///: END:ONLY_INCLUDE_IF
 
   /**
-   * Enables push notifications for the MetaMask extension.
-   * This function triggers the push notifications controller to activate
-   * push notifications, allowing the extension to send notifications to the user's device.
-   */
-  enablePushNotifications() {
-    this.pushPlatformNotificationsController.enablePushNotifications();
-  }
-
-  /**
-   * Disables push notifications for the MetaMask extension.
-   * This function triggers the push notifications controller to deactivate
-   * push notifications, preventing the extension from sending notifications to the user's device.
-   */
-  disablePushNotifications() {
-    this.pushPlatformNotificationsController.disablePushNotifications();
-  }
-
-  /**
    * Sets up BaseController V2 event subscriptions. Currently, this includes
    * the subscriptions necessary to notify permission subjects of account
    * changes.
@@ -3431,8 +3413,6 @@ export default class MetamaskController extends EventEmitter {
         'SnapInterfaceController:updateInterfaceState',
       ),
       ///: END:ONLY_INCLUDE_IF
-      enablePushNotifications: this.enablePushNotifications.bind(this),
-      disablePushNotifications: this.disablePushNotifications.bind(this),
 
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       // Desktop

@@ -4,19 +4,13 @@ import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
+import log from 'loglevel';
 
-import { getApp, initializeApp } from './firebase/firebase-app';
-import {
-  getMessaging,
-  getToken,
-  deleteToken,
-} from './firebase/firebase-messaging';
-import type { Messaging } from './types/types';
+import { PushPlatformNotificationsUtils } from './utils/utils';
 
 const controllerName = 'PushPlatformNotificationsController';
 
 export type PushPlatformNotificationsControllerState = {
-  pushPlatformNotifications: string[];
   fcmToken: string;
 };
 
@@ -35,7 +29,7 @@ export type PushPlatformNotificationsControllerMessengerEvents =
       PushPlatformNotificationsControllerState
     >;
 
-declare type PushPlatformNotificationsControllerMessanger =
+export type PushPlatformNotificationsControllerMessanger =
   RestrictedControllerMessenger<
     typeof controllerName,
     PushPlatformNotificationsControllerMessengerActions,
@@ -45,10 +39,6 @@ declare type PushPlatformNotificationsControllerMessanger =
   >;
 
 const metadata = {
-  pushPlatformNotifications: {
-    persist: true,
-    anonymous: true,
-  },
   fcmToken: {
     persist: true,
     anonymous: true,
@@ -60,80 +50,43 @@ export class PushPlatformNotificationsController extends BaseController<
   PushPlatformNotificationsControllerState,
   PushPlatformNotificationsControllerMessanger
 > {
+  private getJwtToken: () => Promise<string>;
+
   constructor({
     messenger,
     state,
+    getJwtToken,
   }: {
     messenger: PushPlatformNotificationsControllerMessanger;
     state: PushPlatformNotificationsControllerState;
+    getJwtToken: () => Promise<string>;
   }) {
     super({
       messenger,
       metadata,
       name: controllerName,
       state: {
-        pushPlatformNotifications: state?.pushPlatformNotifications || [],
         fcmToken: state?.fcmToken || '',
       },
     });
+
+    this.getJwtToken = getJwtToken;
+    this.messageListener = this.messageListener.bind(this);
   }
 
   /**
-   * Attempts to retrieve an existing Firebase app instance. If no instance exists, it initializes a new app with the provided configuration.
+   * Listens for messages from the service worker.
+   * When a message is received, it publishes an event to the messaging system.
    *
-   * This method first tries to get an existing Firebase app by calling `getApp()`. If no app is found (an error is thrown), it then initializes a new Firebase app using the configuration specified in environment variables. The configuration includes the API key, auth domain, storage bucket, project ID, messaging sender ID, and app ID.
-   *
-   * @returns The Firebase app instance.
+   * @param event - The message event.
+   * @fires `${controllerName}:PushPlatformNotificationsReceived`
    */
-  private createFirebaseApp() {
-    try {
-      return getApp();
-    } catch {
-      const firebaseConfig = {
-        apiKey: process.env.FIREBASE_API_KEY,
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID,
-      };
-
-      return initializeApp(firebaseConfig);
-    }
+  private async messageListener(event: MessageEvent) {
+    this.messagingSystem.publish(
+      `${controllerName}:PushPlatformNotificationsReceived`,
+      event.data.msg,
+    );
   }
-
-  // This method is used to fetch the FCM token. This token must be sent to the server.
-  private fetchToken() {
-    const app = this.createFirebaseApp();
-    const messaging = getMessaging(app);
-
-    async function fetchToken(messagingInstance: Messaging) {
-      const token = await getToken(messagingInstance, {
-        vapidKey: process.env.VAPID_KEY,
-      });
-
-      return token;
-    }
-
-    const fmcToken = fetchToken(messaging);
-
-    return fmcToken;
-  }
-
-  private async deleteToken() {
-    const app = this.createFirebaseApp();
-    const messaging = getMessaging(app);
-
-    // Soft delete firebase token.
-    // If fails to delete, we will still delete from IDB so this is fine
-    await deleteToken(messaging);
-  }
-
-  // Placeholder: Currently logs messages from the service worker.
-  // TODO: Implement functionality to update the badge and notification counter based on the received messages.
-  private messageListener = (event: MessageEvent) => {
-    console.log('Message from the service worker:', event);
-  };
 
   /**
    * Enables push notifications for the application.
@@ -143,71 +96,127 @@ export class PushPlatformNotificationsController extends BaseController<
    * 2. Fetching the Firebase Cloud Messaging (FCM) token from Firebase.
    * 3. Sending the FCM token to the server responsible for sending notifications, to register the device.
    *
-   * Note: Step 3 are planned for future implementation.
+   * @param UUIDs - An array of UUIDs to enable push notifications for.
    */
-  public async enablePushNotifications() {
-    // 1. Register the service worker and listen for messages
-    navigator.serviceWorker
-      .register('./firebase-messaging-sw.js')
-      .then(() => {
-        navigator.serviceWorker.addEventListener(
-          'message',
-          this.messageListener,
-        );
-      })
-      .catch((error) => {
-        console.log('Service Worker registration failed:', error);
-      });
-
-    // 2. Fetch the FCM token and update the state
-    const fcmToken = await this.fetchToken();
-    console.log('FCM token:', fcmToken);
-    this.update((state) => {
-      state.fcmToken = fcmToken;
-    });
-
-    // 3. TODO: Send the FCM token to the server
-  }
-
-  public async disablePushNotifications() {
-    // 1. Stop the listener for messages
-    navigator.serviceWorker.removeEventListener(
-      'message',
-      this.messageListener,
-    );
-
-    // 2. Unregister the service worker
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.ready;
-
-        // Soft unregister service worker
-        // this is to ensure that when we remove the registration token,
-        // the service worker (that sends push notifications) is also removed
-        const unregistrationResult = await registration.unregister();
-        if (unregistrationResult) {
-          console.log('Service worker unregistered successfully.');
-        } else {
-          console.log(
-            'Service worker unregistration failed: No service worker found.',
-          );
-        }
-      } catch (error) {
-        console.error('Service worker unregistration failed:', error);
-      }
+  public async enablePushNotifications(UUIDs: string[]) {
+    const jwt = await this.getJwtToken();
+    if (!jwt) {
+      log.error('Failed to enable push notifications: JWT token is missing.');
+      throw new Error();
     }
 
-    // 3. TODO: Send a request to the server to unregister the token/device
+    try {
+      // 1. Register the service worker and listen for messages
+      navigator.serviceWorker
+        .register('./firebase-messaging-sw.js')
+        .then(() => {
+          navigator.serviceWorker.addEventListener(
+            'message',
+            this.messageListener,
+          );
+        })
+        .catch((error) => {
+          log.error('Service Worker registration failed:', error);
+          throw new Error();
+        });
 
-    // 4. Delete the FCM token and clear it from the state
-    await this.deleteToken();
-    this.update((state) => {
-      state.fcmToken = '';
-    });
+      // 2. Call the enablePushNotifications method from PushPlatformNotificationsUtils
+      const regToken =
+        await PushPlatformNotificationsUtils.enablePushNotifications(
+          jwt,
+          UUIDs,
+        );
+
+      // 3. Update the state with the FCM token
+      if (regToken) {
+        this.update((state) => {
+          state.fcmToken = regToken;
+        });
+      }
+    } catch (error) {
+      log.error('Failed to enable push notifications:', error);
+      throw new Error();
+    }
   }
 
-  public async updateTriggerPushNotifications() {
-    // TODO: Use thise method to update the push notification service when a user create new triggers
-    // We need to make sure that this can be called if push notifications are enabled.
+  /**
+   * Disables push notifications for the application.
+   * This method handles the process of disabling push notifications by:
+   * 1. Unregistering the service worker to stop listening for messages.
+   * 2. Sending a request to the server to unregister the device using the FCM token.
+   * 3. Removing the FCM token from the state to complete the process.
+   *
+   * @param UUIDs - An array of UUIDs for which push notifications should be disabled.
+   */
+  public async disablePushNotifications(UUIDs: string[]) {
+    const jwt = await this.getJwtToken();
+    if (!jwt) {
+      log.error('Failed to enable push notifications: JWT token is missing.');
+      throw new Error();
+    }
+
+    try {
+      // 1. Unregister the service worker
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        const targetRegistration = registrations.find(
+          (registration) =>
+            registration.active &&
+            registration.active.scriptURL.endsWith('firebase-messaging-sw.js'),
+        );
+        try {
+          // Soft unregister service worker
+          // this is to ensure that when we remove the registration token,
+          // the service worker (that sends push notifications) is also removed
+          await targetRegistration?.unregister().catch(() => null);
+        } catch (error) {
+          console.error('Service worker unregistration failed:', error);
+        }
+      }
+    } catch (error) {
+      log.error('Failed to disable push notifications:', error);
+      throw new Error();
+    }
+
+    // 2. Send a request to the server to unregister the token/device
+    const isPushNotificationsDisabled =
+      await PushPlatformNotificationsUtils.disablePushNotifications(
+        this.state.fcmToken,
+        jwt,
+        UUIDs,
+      );
+
+    // 3. Remove the FCM token from the state
+    if (isPushNotificationsDisabled) {
+      this.update((state) => {
+        state.fcmToken = '';
+      });
+    }
+  }
+
+  /**
+   * Updates the triggers for push notifications.
+   * This method is responsible for updating the server with the new set of UUIDs that should trigger push notifications.
+   * It uses the current FCM token and a JWT for authentication.
+   *
+   * @param UUIDs - An array of UUIDs that should trigger push notifications.
+   */
+  public async updateTriggerPushNotifications(UUIDs: string[]) {
+    const jwt = await this.getJwtToken();
+    if (!jwt) {
+      log.error('Failed to enable push notifications: JWT token is missing.');
+      throw new Error();
+    }
+
+    try {
+      PushPlatformNotificationsUtils.updateTriggerPushNotifications(
+        this.state.fcmToken,
+        jwt,
+        UUIDs,
+      );
+    } catch (error) {
+      log.error('Failed to update triggers for push notifications:', error);
+      throw new Error();
+    }
   }
 }
