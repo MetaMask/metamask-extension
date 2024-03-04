@@ -74,7 +74,7 @@ const SnapUIRendererComponent = ({
         isCollapsed={isCollapsed}
         onClick={onClick}
         boxProps={boxProps}
-        isLoading={isLoading}
+        isLoading
       />
     );
   }
