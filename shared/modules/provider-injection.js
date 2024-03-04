@@ -84,17 +84,20 @@ function blockedDomainCheck() {
     'https://cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
-  const { hostname, pathname } = window.location;
+  const { hostname: currentHostname, href: currentHref } = window.location;
 
   return (
     blockedDomains.some(
       (blockedDomain) =>
-        blockedDomain === hostname || hostname.endsWith(`.${blockedDomain}`),
+        blockedDomain === currentHostname ||
+        currentHostname.endsWith(`.${blockedDomain}`),
     ) ||
-    blockedHrefs.some((blockedHref) =>
-      (hostname + pathname).includes(blockedHref),
-    )
+    blockedHrefs.some((blockedHref) => {
+      return blockedHref === normalizeUrl(currentHref);
+    })
   );
+}
+
 /**
  * Normalizes the URL to remove trailing slashes and query parameters
  *
