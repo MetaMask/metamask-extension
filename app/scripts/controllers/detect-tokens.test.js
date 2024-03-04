@@ -259,6 +259,7 @@ describe('DetectTokensController', function () {
       networkConfigurations: {},
       onAccountRemoved: sinon.stub(),
       controllerMessenger: preferencesControllerMessenger,
+      onKeyringStateChange: sinon.stub(),
     });
     preferences.setUseTokenDetection(true);
 
@@ -488,6 +489,101 @@ describe('DetectTokensController', function () {
     ]);
   });
 
+  it('gets balances in single call using the networkClientId when provided', async function () {
+    sandbox.useFakeTimers();
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokenList: tokenListController,
+      tokensController,
+      assetsContractController,
+      trackMetaMetricsEvent: noop,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
+      getNetworkClientById: () => ({
+        configuration: {
+          chainId: '0x1',
+        },
+        provider: {},
+        blockTracker: {},
+        destroy: () => {
+          // noop
+        },
+      }),
+    });
+    controller.isOpen = true;
+    controller.isUnlocked = true;
+
+    const stub = sandbox.stub(
+      assetsContractController,
+      'getBalancesInSingleCall',
+    );
+
+    await controller.detectNewTokens({
+      networkClientId: 'mainnet',
+    });
+
+    sandbox.assert.calledWith(
+      stub,
+      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      [
+        '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+        '0x514910771af9ca656af840dff83e8264ecf986ca',
+        '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
+      ],
+      'mainnet',
+    );
+    sandbox.assert.calledWith(
+      stub,
+      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      [],
+      'mainnet',
+    );
+  });
+
+  it('uses the resolved chainId from networkClientId over the passed in chainId arg', async function () {
+    sandbox.useFakeTimers();
+    await network.setProviderType(NETWORK_TYPES.MAINNET);
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokenList: tokenListController,
+      tokensController,
+      assetsContractController,
+      trackMetaMetricsEvent: noop,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
+      getNetworkClientById: () => ({
+        configuration: {
+          chainId: '0x1',
+        },
+        provider: {},
+        blockTracker: {},
+        destroy: () => {
+          // noop
+        },
+      }),
+    });
+    controller.isOpen = true;
+    controller.isUnlocked = true;
+
+    const stub = sandbox.stub(
+      assetsContractController,
+      'getBalancesInSingleCall',
+    );
+
+    await controller.detectNewTokens({
+      // non supported chainId will cause this method to exit early if used instead of the networkClientId
+      chainId: '0xdeadbeef',
+      networkClientId: 'mainnet',
+    });
+
+    sandbox.assert.called(stub);
+  });
+
   it('should check and add tokens while on supported networks', async function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
@@ -712,8 +808,8 @@ describe('DetectTokensController', function () {
     await Promise.all([jest.advanceTimersByTime(1000), flushPromises()]);
     expect(detectNewTokensSpy).toHaveBeenCalledTimes(2);
     expect(detectNewTokensSpy.mock.calls).toStrictEqual([
-      [{ chainId: '0x1' }],
-      [{ chainId: '0x1' }],
+      [{ networkClientId: 'mainnet' }],
+      [{ networkClientId: 'mainnet' }],
     ]);
 
     detectNewTokensSpy.mockRestore();

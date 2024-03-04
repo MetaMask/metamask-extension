@@ -1,3 +1,5 @@
+@use "design-system";
+
 .connected-sites {
   h2 {
     text-overflow: ellipsis;
@@ -25,7 +27,7 @@
   }
 
   a {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-primary-default);
     cursor: pointer;

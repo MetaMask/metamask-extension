@@ -22,7 +22,7 @@ const dappsTest = async (
 
   // Sign and submit
   const statusName = await client.submitTransactionById(custodianTxId);
-  if (buttonId === 'useSuperPowers_goerli') {
+  if (buttonId === 'useSuperPowers_sepolia') {
     await mainPage.checkLastTransactionStatus(/Failed/iu);
   } else {
     await mainPage.checkLastTransactionStatus(statusName);
@@ -39,7 +39,7 @@ test.describe('MMI dapps', () => {
     page,
     context,
   }) => {
-    await dappsTest(page, context, 'showMeTheMoneyButton_goerli');
+    await dappsTest(page, context, 'showMeTheMoneyButton_sepolia');
   });
 
   test('MMI connects to dapp, clicks "Approve tokens" button and confirm from custody', async ({
@@ -49,10 +49,10 @@ test.describe('MMI dapps', () => {
     await dappsTest(page, context, 'approveTokens');
   });
 
-  test.skip('MMI connects to dapp, clicks "Use Super Powers" button, confirm from custody and check that the TX has failed', async ({
+  test('MMI connects to dapp, clicks "Use Super Powers" button, confirm from custody and check that the TX has failed', async ({
     page,
     context,
   }) => {
-    await dappsTest(page, context, 'useSuperPowers_goerli');
+    await dappsTest(page, context, 'useSuperPowers_sepolia');
   });
 });

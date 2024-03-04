@@ -69,7 +69,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
       </Box>
       {showSelectDisableWarn && (
         <HelpText marginTop={2} severity={HelpTextSeverity.Danger}>
-          For your safety, selecting this text is not available right now.
+          {t('lavaDomeCopyWarning')}
         </HelpText>
       )}
       <BannerAlert severity={Severity.Danger} marginTop={4}>

@@ -18,7 +18,12 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import { AccountListItem, CreateAccount, ImportAccount } from '..';
+import {
+  AccountListItem,
+  CreateAccount,
+  ImportAccount,
+  AccountListItemMenuTypes,
+} from '..';
 import {
   AlignItems,
   BackgroundColor,
@@ -419,9 +424,11 @@ export const AccountListMenu = ({
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptions
+                      menuType={AccountListItemMenuTypes.Account}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}
+                      currentTabOrigin={currentTabOrigin}
+                      isActive={Boolean(account.active)}
                       {...accountListItemProps}
                     />
                   </Box>
