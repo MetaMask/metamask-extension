@@ -1,17 +1,10 @@
-import React, {
-  useEffect,
-  MouseEvent as ReactMouseEvent,
-  useRef,
-  useState,
-} from 'react';
-import { useSelector } from 'react-redux';
+import React, { useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
   LinearScale,
   PointElement,
   Filler,
-  ChartData,
   ChartOptions,
   Decimation,
   Point,
@@ -23,7 +16,6 @@ import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
 import { useTheme } from '../../../hooks/useTheme';
-import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
@@ -44,15 +36,10 @@ import {
   IconSize,
   Text,
 } from '../../../components/component-library';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { MINUTE } from '../../../../shared/constants/time';
+import { TimeRange, useHistoricalPrices } from '../useHistoricalPrices';
 import AssetPrice from './asset-price';
 import ChartTooltip from './chart-tooltip';
-
-/** Time range units supported by the price API */
-type TimeRange = `${number}D` | `${number}M` | `${number}Y`;
 
 /** A Chart.js plugin that draws a vertical crosshair on hover */
 type CrosshairChart = Chart & { crosshairX?: number };
@@ -131,145 +118,91 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
 
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
+  chainId,
   address,
   currentPrice,
+  currency,
 }: {
+  chainId: string;
   address: string;
   currentPrice?: number;
+  currency: string;
 }) => {
   const t = useI18nContext();
-  const chainId = hexToDecimal(useSelector(getCurrentChainId));
-  const currency = useSelector(getCurrentCurrency);
   const theme = useTheme();
-
-  const [data, setData] = useState<ChartData<'line', Point[]>>();
-  const [loading, setLoading] = useState<boolean>(true);
   const [timeRange, setTimeRange] = useState<TimeRange>('1D');
-  const [chartOptions, setChartOptions] = useState(initialChartOptions);
 
   const chartRef = useRef<Chart<'line', Point[]>>();
   const priceRef = useRef<{
-    setPrices: (_: {
-      price?: number;
-      comparePrice?: number;
-      date?: number;
-    }) => void;
-  }>();
-  const maxPriceTooltip = useRef<{
-    setTooltip: (_: { xAxisPercent: number; price: number }) => void;
-  }>();
-  const minPriceTooltip = useRef<{
-    setTooltip: (_: { xAxisPercent: number; price: number }) => void;
+    setPrice: (_: { price?: number; date?: number }) => void;
   }>();
 
-  useEffect(() => {
-    setLoading(true);
+  const {
+    loading,
+    data: { prices, edges },
+  } = useHistoricalPrices({
+    chainId,
+    address,
+    currency,
+    timeRange,
+  });
 
-    fetchWithCache({
-      url: `https://price-api.metafi.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-      cacheOptions: { cacheRefreshTime: MINUTE },
-      functionName: 'GetAssetHistoricalPrices',
-    })
-      .catch(() => ({}))
-      .then((resp?: { prices?: number[][] }) => {
-        const prices = resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] }));
-
-        if (prices && prices?.length > 0) {
-          priceRef?.current?.setPrices({
-            price: undefined,
-            comparePrice: prices[0].y,
-            date: Date.now(),
-          });
-
-          let [xMin, xMax, yMin, yMax]: Point[] = [];
-          for (const p of prices) {
-            xMin = !xMin || p.x < xMin.x ? p : xMin;
-            xMax = !xMax || p.x > xMax.x ? p : xMax;
-            yMin = !yMin || p.y < yMin.y ? p : yMin;
-            yMax = !yMax || p.y > yMax.y ? p : yMax;
-          }
-
-          const drawTooltips = () => {
-            maxPriceTooltip.current?.setTooltip({
-              xAxisPercent: (yMax.x - xMin.x) / (xMax.x - xMin.x),
-              price: yMax.y,
-            });
-            minPriceTooltip.current?.setTooltip({
-              xAxisPercent: (yMin.x - xMin.x) / (xMax.x - xMin.x),
-              price: yMin.y,
-            });
-          };
-
-          setChartOptions((options) => ({
-            ...options,
-            onResize: () => drawTooltips(),
-            scales: {
-              x: { min: xMin.x, max: xMax.x, display: false, type: 'linear' },
-              y: { min: yMin.y, max: yMax.y, display: false },
-            },
-          }));
-          setData({ datasets: [{ data: prices }] });
-          drawTooltips();
-        }
-
-        setLoading(false);
-      });
-  }, [chainId, address, currency, timeRange]);
-
-  useEffect(
-    () =>
-      setChartOptions((options) => ({
-        ...options,
-        borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
-      })),
-    [theme],
-  );
-
-  const prices = chartRef?.current?.data?.datasets?.[0]?.data;
+  const { xMin, xMax, yMin, yMax } = edges ?? {};
+  const options = {
+    ...initialChartOptions,
+    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+    scales: {
+      x: { min: xMin?.x, max: xMax?.x, display: false, type: 'linear' },
+      y: { min: yMin?.y, max: yMax?.y, display: false },
+    },
+  } as const;
 
   return (
     <Box>
       <AssetPrice
-        currentPrice={currentPrice}
-        loading={loading}
         ref={priceRef}
+        loading={loading}
+        currentPrice={currentPrice}
+        comparePrice={prices?.[0]?.y}
+        currency={currency}
       />
-      {data ? (
+      {prices ? (
         <Box>
           <Box style={{ opacity: loading ? 0.2 : 1 }}>
-            <ChartTooltip ref={maxPriceTooltip} />
+            <ChartTooltip point={yMax} {...edges} currency={currency} />
             <Line
               ref={chartRef}
-              data={data}
-              options={chartOptions}
+              data={{ datasets: [{ data: prices }] }}
+              options={options}
               updateMode="none"
-              onMouseMove={({ nativeEvent: e }: ReactMouseEvent) => {
-                if (prices && chartRef.current) {
+              onMouseMove={(event) => {
+                const data = chartRef?.current?.data?.datasets?.[0]?.data;
+                if (data) {
+                  const target = event.target as HTMLElement;
                   const index = Math.max(
                     0,
                     Math.min(
-                      prices.length - 1,
+                      data.length - 1,
                       Math.round(
-                        (e.offsetX / chartRef.current.width) * prices.length,
+                        (event.nativeEvent.offsetX / target.clientWidth) *
+                          data.length,
                       ),
                     ),
                   );
-                  priceRef?.current?.setPrices({
-                    price: prices[index]?.y,
-                    comparePrice: prices[0]?.y,
-                    date: prices[index]?.x,
+                  priceRef?.current?.setPrice({
+                    price: data[index]?.y,
+                    date: data[index]?.x,
                   });
                 }
               }}
               onMouseOut={() => {
-                priceRef?.current?.setPrices({
+                priceRef?.current?.setPrice({
                   price: undefined,
-                  comparePrice: prices?.[0]?.y,
-                  date: Date.now(),
+                  date: undefined,
                 });
               }}
             />
-            <ChartTooltip ref={minPriceTooltip} />
+            <ChartTooltip point={yMin} {...edges} currency={currency} />
           </Box>
           <Box
             display={Display.Flex}
@@ -304,7 +237,7 @@ const AssetChart = ({
           </Box>
         </Box>
       ) : (
-        <Box style={{ aspectRatio: `${chartOptions.aspectRatio}` }}>
+        <Box style={{ aspectRatio: `${initialChartOptions.aspectRatio}` }}>
           <Box
             style={{ boxSizing: 'content-box' }}
             height={BlockSize.Full}

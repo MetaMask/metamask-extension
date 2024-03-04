@@ -1,5 +1,4 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
   BorderRadius,
@@ -9,7 +8,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getCurrentCurrency } from '../../../selectors';
 import { getPricePrecision, shortDateFormatter } from './util';
 
 const chartUp = (
@@ -55,19 +53,26 @@ const chartDown = (
   </svg>
 );
 
-//
 const AssetPrice = forwardRef(
   (
-    { currentPrice, loading }: { currentPrice?: number; loading: boolean },
+    {
+      loading,
+      currency,
+      currentPrice,
+      comparePrice,
+    }: {
+      loading: boolean;
+      currency: string;
+      currentPrice?: number;
+      comparePrice?: number;
+    },
     ref,
   ) => {
-    const currency = useSelector(getCurrentCurrency);
-    const [{ price, comparePrice, date }, setPrices] = useState({
-      price: currentPrice,
-      comparePrice: undefined as number | undefined,
+    const [{ price, date }, setPrice] = useState({
+      price: undefined as number | undefined,
       date: undefined as number | undefined,
     });
-    useImperativeHandle(ref, () => ({ setPrices }));
+    useImperativeHandle(ref, () => ({ setPrice }));
 
     const displayPrice = price ?? currentPrice;
 
@@ -126,7 +131,7 @@ const AssetPrice = forwardRef(
                 variant={TextVariant.bodyMdMedium}
                 color={TextColor.textAlternative}
               >
-                {shortDateFormatter.format(date)}
+                {shortDateFormatter.format(date ?? Date.now())}
               </Text>
             </Box>
           ) : (

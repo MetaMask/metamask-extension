@@ -1,17 +1,10 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  ReactNode,
-} from 'react';
+import React, { useEffect, useState, useRef, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getCurrentCurrency,
   getIsBridgeChain,
   getIsBuyableChain,
   getIsSwapsChain,
-  getMetaMetricsId,
 } from '../../../selectors';
 import {
   BackgroundColor,
@@ -28,7 +21,6 @@ import {
   AddressCopyButton,
   TokenListItem,
 } from '../../../components/multichain';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -155,7 +147,12 @@ const AssetV2 = ({
               : name ?? symbol}
           </Text>
         </Box>
-        <AssetChart address={address} currentPrice={asset.currentPrice} />
+        <AssetChart
+          chainId={chainId}
+          address={address}
+          currentPrice={asset.currentPrice}
+          currency={currency}
+        />
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}

@@ -1,11 +1,13 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import {
+  Point,
+  // @ts-expect-error suppress CommonJS vs ECMAScript error
+} from 'chart.js';
 import {
   Box,
   Text,
   TextDirection,
 } from '../../../components/component-library';
-import { getCurrentCurrency } from '../../../selectors';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import {
   TextAlign,
@@ -15,15 +17,19 @@ import {
 import { getPricePrecision } from './util';
 
 // A label indicating the minimum or maximum price on the chart
-const ChartTooltip = forwardRef((_, ref) => {
-  const currency = useSelector(getCurrentCurrency);
-
-  const [{ xAxisPercent, price }, setTooltip] = useState<{
-    xAxisPercent: number;
-    price?: number;
-  }>({ xAxisPercent: 0 });
-
-  useImperativeHandle(ref, () => ({ setTooltip }));
+const ChartTooltip = ({
+  point,
+  xMin,
+  xMax,
+  currency,
+}: {
+  point?: Point;
+  xMin?: Point;
+  xMax?: Point;
+  currency: string;
+}) => {
+  const xAxisPercent =
+    point && xMin && xMax ? (point.x - xMin.x) / (xMax.x - xMin.x) : 0;
 
   return (
     <Box
@@ -44,12 +50,16 @@ const ChartTooltip = forwardRef((_, ref) => {
         color={TextColor.textAlternative}
         textAlign={TextAlign.Center}
       >
-        {price === undefined
+        {point?.y === undefined
           ? '\u00A0'
-          : formatCurrency(`${price}`, currency, getPricePrecision(price))}
+          : formatCurrency(
+              `${point?.y}`,
+              currency,
+              getPricePrecision(point?.y),
+            )}
       </Text>
     </Box>
   );
-});
+};
 
 export default ChartTooltip;
