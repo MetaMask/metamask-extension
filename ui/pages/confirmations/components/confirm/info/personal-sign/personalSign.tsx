@@ -1,30 +1,26 @@
-import React, { memo, useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { MESSAGE_TYPE } from '../../../../../../../shared/constants/app';
 import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../../helpers/constants/design-system';
+  ConfirmInfoRow,
+  ConfirmInfoRowUrl,
+} from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
-import { Box } from '../../../../../../components/component-library';
-import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row';
 
-const Info: React.FC = memo(() => {
+const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
-  return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
-      <ConfirmInfoRowUrl url={currentConfirmation.msgParams?.origin} />
-    </Box>
-  );
-});
+  if (!currentConfirmation?.msgParams?.origin) {
+    return null;
+  }
 
-export default Info;
+  return (
+    <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+      <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
+    </ConfirmInfoRow>
+  );
+};
+
+export default PersonalSignInfo;

@@ -3202,6 +3202,12 @@
   "origin": {
     "message": "Origin"
   },
+  "requestFrom": {
+    "message": "Request from"
+  },
+  "requestFromInfo": {
+    "message": "This is the site asking for your signature."
+  },
   "osTheme": {
     "message": "System"
   },

@@ -1,7 +1,6 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import {
   BackgroundColor,
   BorderRadius,
@@ -11,34 +10,15 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { Box } from '../../../../../components/component-library';
 import {
-  ConfirmInfo,
-  ConfirmInfoRowType,
-} from '../../../../../components/app/confirm/info/info';
+  ConfirmInfoRow,
+  ConfirmInfoRowText,
+} from '../../../../../components/app/confirm/info/row';
 
 const SignatureMessage: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
-  const rowConfigs = useMemo(() => {
-    if (
-      !currentConfirmation ||
-      currentConfirmation.type !== MESSAGE_TYPE.PERSONAL_SIGN ||
-      !currentConfirmation.msgParams?.data
-    ) {
-      return null;
-    }
-    return [
-      {
-        label: t('message'),
-        type: ConfirmInfoRowType.Text,
-        rowProps: {
-          text: hexToText(currentConfirmation.msgParams?.data),
-        },
-      },
-    ];
-  }, [currentConfirmation]);
-
-  if (!rowConfigs?.length) {
+  if (!currentConfirmation?.msgParams?.data) {
     return null;
   }
 
@@ -49,7 +29,11 @@ const SignatureMessage: React.FC = memo(() => {
       padding={2}
       marginBottom={4}
     >
-      <ConfirmInfo rowConfigs={rowConfigs} />
+      <ConfirmInfoRow label={t('message')}>
+        <ConfirmInfoRowText
+          text={hexToText(currentConfirmation.msgParams?.data)}
+        />
+      </ConfirmInfoRow>
     </Box>
   );
 });
