@@ -197,7 +197,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     useRequestQueue &&
-    selectedTabOrigin
+    selectedTabOrigin &&
+    process.env.MULTICHAIN
   ) {
     const domainNetworks = getAllDomains(state);
     const networkForThisDomain = domainNetworks[selectedTabOrigin];
@@ -242,13 +243,18 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       // EXPERIMENTAL: Close other MetaMask Popups
       const windows = await browser.windows.getAll();
       const currentPopupId = getCurrentPopupId(state);
+
+      console.log("Windows are: ", windows);
+      console.log("Current popup ID is: ", currentPopupId);
       windows.forEach((win) => {
-        if (win?.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId) {
+        console.log(`win.id vs. currentPopupId: ${win.id} / ${currentPopupId}`);
+        if (win.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId) {
+          console.log("Closing window: ", win.id);
           win.close();
         }
       });
     } else {
-      console.log('No domainNetwork, not changing networks');
+      console.log('No domainNetwork or already on correct chain, not changing networks');
     }
   } else {
     console.log('useRequestQueue is off or no selectedTabOrigin');
