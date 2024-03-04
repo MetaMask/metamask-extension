@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.11.1]
+### Added
+- Adds a staking button to the mainnet Ethereum token list item  ([#22347](https://github.com/MetaMask/metamask-extension/pull/22347))
+
 ## [11.11.0]
 ### Added
 - Added 'Pet Names' feature, allowing users to see preferred or suggested nicknames in the places of addesses
@@ -4424,7 +4428,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.1...HEAD
+[11.11.1]: https://github.com/MetaMask/metamask-extension/compare/v11.11.0...v11.11.1
 [11.11.0]: https://github.com/MetaMask/metamask-extension/compare/v11.10.1...v11.11.0
 [11.10.1]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...v11.10.1
 [11.10.0]: https://github.com/MetaMask/metamask-extension/compare/v11.9.5...v11.10.0
