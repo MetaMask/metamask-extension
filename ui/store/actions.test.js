@@ -2191,4 +2191,97 @@ describe('Actions', () => {
       expect(expectedAction.payload.originalTransactionId).toBe(txId);
     });
   });
+
+  describe('updateNftMetadata', () => {
+    it('should throw if there is no address in nft', async () => {
+      const store = mockStore();
+      const testNfts = [
+        {
+          description: null,
+          favorite: false,
+          image: null,
+          isCurrentlyOwned: true,
+          name: null,
+          standard: 'ERC721',
+          tokenId: '2',
+          tokenURI: 'testUrI2',
+        },
+        {
+          address: 'Oxtest',
+          description: null,
+          favorite: false,
+          image: null,
+          isCurrentlyOwned: true,
+          name: null,
+          standard: 'ERC721',
+          tokenId: '3',
+          tokenURI: 'testUrI3',
+        },
+      ];
+
+      await expect(
+        store.dispatch(actions.updateNftMetadata(testNfts)),
+      ).rejects.toThrow('MetaMask - Cannot updateNftMetadata without address');
+    });
+
+    it('should throw if there is no tokenId in nft', async () => {
+      const store = mockStore();
+      const testNfts = [
+        {
+          address: 'Oxtest',
+          description: null,
+          favorite: false,
+          image: null,
+          isCurrentlyOwned: true,
+          name: null,
+          standard: 'ERC721',
+          tokenURI: 'testUrI2',
+        },
+        {
+          address: 'Oxtest',
+          description: null,
+          favorite: false,
+          image: null,
+          isCurrentlyOwned: true,
+          name: null,
+          standard: 'ERC721',
+          tokenId: '3',
+          tokenURI: 'testUrI3',
+        },
+      ];
+
+      await expect(
+        store.dispatch(actions.updateNftMetadata(testNfts)),
+      ).rejects.toThrow('MetaMask - Cannot updateNftMetadata without tokenId');
+    });
+
+    it('calls updateNftMetadata in background', async () => {
+      const store = mockStore();
+      const testNfts = [
+        {
+          address: 'Oxtest',
+          description: null,
+          favorite: false,
+          image: null,
+          isCurrentlyOwned: true,
+          name: null,
+          standard: 'ERC721',
+          tokenId: '3',
+          tokenURI: 'testUrI3',
+        },
+      ];
+
+      const updateNftMetadataStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        updateNftMetadata: updateNftMetadataStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.updateNftMetadata(testNfts));
+      expect(updateNftMetadataStub.callCount).toStrictEqual(1);
+    });
+  });
 });
