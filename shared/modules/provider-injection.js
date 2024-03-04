@@ -81,7 +81,7 @@ function blockedDomainCheck() {
   ];
 
   const blockedHrefs = [
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'https://cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
   const { hostname, pathname } = window.location;
