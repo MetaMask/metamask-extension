@@ -45,7 +45,7 @@ export function mockEndpointLogin(mockReply?: MockReply) {
   return mockLoginEndpoint;
 }
 
-export const MOCK_ACCESS_TOKEN = 'MOCK_ACCESS_TOKEN' + MOCK_JWT;
+export const MOCK_ACCESS_TOKEN = `MOCK_ACCESS_TOKEN-${MOCK_JWT}`;
 const MOCK_OATH_TOKEN_RESPONSE: OAuthTokenResponse = {
   access_token: MOCK_ACCESS_TOKEN,
   expires_in: new Date().getTime(),

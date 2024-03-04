@@ -1,30 +1,38 @@
 // eslint-disable-next-line import/unambiguous
 const fs = require('fs');
 
-module.exports.PREINSTALLED_SNAPS = Object.freeze([
-  // @metamask/message-signing-snap
-  getPreinstalledSnap(
-    '@metamask/message-signing-snap',
-    fs.readFileSync(
-      require.resolve('@metamask/message-signing-snap/snap.manifest.json'),
-      'utf-8',
-    ),
-    [
-      {
-        path: 'images/icon.svg',
-        value: fs.readFileSync(
-          require.resolve('@metamask/message-signing-snap/images/icon.svg'),
+const PREINSTALLED_SNAPS = [];
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+function tryAddSnap(snapName) {
+  try {
+    PREINSTALLED_SNAPS.push(
+      getPreinstalledSnap(
+        snapName,
+        fs.readFileSync(
+          require.resolve(`${snapName}/snap.manifest.json`),
+          'utf-8',
         ),
-      },
-      {
-        path: 'dist/bundle.js',
-        value: fs.readFileSync(
-          require.resolve('@metamask/message-signing-snap/dist/bundle.js'),
-        ),
-      },
-    ],
-  ),
-]);
+        [
+          {
+            path: 'images/icon.svg',
+            value: fs.readFileSync(
+              require.resolve(`${snapName}/images/icon.svg`),
+            ),
+          },
+          {
+            path: 'dist/bundle.js',
+            value: fs.readFileSync(
+              require.resolve(`${snapName}/dist/bundle.js`),
+            ),
+          },
+        ],
+      ),
+    );
+  } catch {
+    // Failed adding snap
+  }
+}
 
 function getPreinstalledSnap(npmPackage, manifest, files) {
   return {
@@ -34,3 +42,8 @@ function getPreinstalledSnap(npmPackage, manifest, files) {
     removable: false,
   };
 }
+
+tryAddSnap('@metamask/message-signing-snap');
+///: END:ONLY_INCLUDE_IF
+
+module.exports.PREINSTALLED_SNAPS = Object.freeze(PREINSTALLED_SNAPS);

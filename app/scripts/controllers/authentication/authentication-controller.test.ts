@@ -5,7 +5,6 @@ import AuthenticationController, {
 } from './authentication-controller';
 import {
   MOCK_ACCESS_TOKEN,
-  MOCK_JWT,
   MOCK_LOGIN_RESPONSE,
   mockEndpointAccessToken,
   mockEndpointGetNonce,

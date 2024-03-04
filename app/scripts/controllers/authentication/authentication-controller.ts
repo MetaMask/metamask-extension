@@ -133,7 +133,8 @@ export default class AuthenticationController extends BaseController<
   }
 
   /**
-   * @note this will be changed to use profileId in future task.
+   * NOTE this will be changed to use profileId in future task.
+   *
    * @returns the identifier id
    */
   public async getIdentifierId(): Promise<string> {
@@ -168,7 +169,7 @@ export default class AuthenticationController extends BaseController<
       const rawMessage = createLoginRawMessage(nonce, publicKey);
       const signature = await this.#snapSignMessage(rawMessage);
       const loginResponse = await login(rawMessage, signature);
-      if (!loginResponse || !loginResponse?.token) {
+      if (!loginResponse?.token) {
         throw new Error(`${controllerName}: Unable to login`);
       }
 
