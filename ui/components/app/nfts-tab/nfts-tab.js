@@ -18,11 +18,14 @@ import {
   getCurrentNetwork,
   getIsMainnet,
   getUseNftDetection,
+  getIpfsGateway,
+  getOpenSeaEnabled,
 } from '../../../selectors';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   showImportNftsModal,
+  updateNftMetadata,
 } from '../../../store/actions';
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
@@ -47,6 +50,8 @@ export default function NftsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const isIpfsEnabled = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
@@ -66,6 +71,37 @@ export default function NftsTab() {
   const showNftBanner = hasAnyNfts === false;
   const currentNetwork = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
+  const hasAnyPreviouslyOwnedNfts = previouslyOwnedCollection.nfts.length > 0;
+  useEffect(() => {
+    if (
+      (isIpfsEnabled || openSeaEnabled) &&
+      (hasAnyNfts || hasAnyPreviouslyOwnedNfts)
+    ) {
+      const allNfts = [...previouslyOwnedCollection.nfts];
+      for (const key in collections) {
+        if (Object.hasOwn(collections, key)) {
+          allNfts.push(...collections[key].nfts);
+        }
+      }
+      const nftsToUpdateMetadata = allNfts.filter(
+        (singleNft) =>
+          !singleNft.name && !singleNft.description && !singleNft.image,
+      );
+
+      if (nftsToUpdateMetadata.length !== 0) {
+        dispatch(updateNftMetadata(nftsToUpdateMetadata));
+      }
+    }
+  }, [
+    collections,
+    hasAnyNfts,
+    previouslyOwnedCollection,
+    hasAnyPreviouslyOwnedNfts,
+    isIpfsEnabled,
+    openSeaEnabled,
+    dispatch,
+  ]);
+
   useEffect(() => {
     if (!showNftBanner) {
       return;
