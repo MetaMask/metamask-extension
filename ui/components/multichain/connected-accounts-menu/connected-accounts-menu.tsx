@@ -26,18 +26,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getOriginOfCurrentTab } from '../../../selectors';
+import { Identity } from './connected-accounts-menu.types';
 
 const TsMenuItem = MenuItem as any;
-
-interface Identity {
-  name: string;
-  address: string;
-  balance: string;
-  keyring: {
-    type: string;
-  };
-  label?: string;
-}
 
 export const ConnectedAccountsMenu = ({
   isOpen,
