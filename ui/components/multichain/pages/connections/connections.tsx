@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
@@ -45,10 +45,12 @@ import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
+import { showConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal-actions';
 
 export const Connections = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -158,6 +160,7 @@ export const Connections = () => {
               block
               variant={ButtonVariant.Secondary}
               startIconName={IconName.Add}
+              onClick={() => dispatch(showConnectAccountsModal())}
             >
               {t('connectMoreAccounts')}
             </Button>
