@@ -59,13 +59,18 @@ export function useGasFeeEstimates(_networkClientId) {
   );
 
   useEffect(() => {
+    let isMounted = true;
     getNetworkConfigurationByNetworkClientId(networkClientId).then(
       (networkConfig) => {
-        if (networkConfig) {
+        if (networkConfig && isMounted) {
           setChainId(networkConfig.chainId);
         }
       },
     );
+
+    return () => {
+      isMounted = false;
+    };
   }, [networkClientId]);
 
   usePolling({
