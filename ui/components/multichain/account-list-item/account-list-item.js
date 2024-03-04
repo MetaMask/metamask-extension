@@ -57,6 +57,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -69,7 +70,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptions = false,
+  menuType = AccountListItemMenuTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -318,7 +319,8 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      {showOptions ? (
+
+      {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -339,8 +341,8 @@ export const AccountListItem = ({
           }}
           data-testid="account-list-item-menu-button"
         />
-      ) : null}
-      {showOptions ? (
+      )}
+      {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -352,7 +354,7 @@ export const AccountListItem = ({
           isHidden={isHidden}
           isConnected={isConnected}
         />
-      ) : null}
+      )}
     </Box>
   );
 };
@@ -391,9 +393,9 @@ AccountListItem.propTypes = {
    */
   connectedAvatarName: PropTypes.string,
   /**
-   * Represents if the "Options" 3-dot menu should display
+   * Represents the type of menu to be rendered
    */
-  showOptions: PropTypes.bool,
+  menuType: PropTypes.string,
   /**
    * Represents pinned accounts
    */
