@@ -87,13 +87,6 @@ export const ConnectedAccountsMenu = ({
             iconName={IconName.SwapHorizontal}
             data-testid="switch-account-menu-item"
             onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.NavAccountSwitched,
-                properties: {
-                  location: 'Main Menu',
-                },
-              });
               dispatch(setSelectedAccount(identity.address));
               onClose();
               closeMenu();
