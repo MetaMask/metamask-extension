@@ -453,6 +453,7 @@
       },
       "packages": {
         "@ngraveio/bc-ur": true,
+        "@ngraveio/bc-ur>crc>buffer": true,
         "browserify>buffer": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "mockttp>graphql-tag>tslib": true
@@ -2085,7 +2086,7 @@
     },
     "@ngraveio/bc-ur": {
       "packages": {
-        "@ngraveio/bc-ur>@apocentre/alias-sampling": true,
+        "@ngraveio/bc-ur>@keystonehq/alias-sampling": true,
         "@ngraveio/bc-ur>bignumber.js": true,
         "@ngraveio/bc-ur>cbor-sync": true,
         "@ngraveio/bc-ur>crc": true,
@@ -2118,6 +2119,15 @@
     "@ngraveio/bc-ur>crc": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@ngraveio/bc-ur>crc>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "base64-js": true,
+        "browserify>buffer>ieee754": true
       }
     },
     "@ngraveio/bc-ur>jsbi": {
