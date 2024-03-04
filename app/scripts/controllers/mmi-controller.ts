@@ -21,6 +21,15 @@ import { getPermissionBackgroundApiMethods } from './permissions';
 
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+import AppStateController from '../controllers/app-state';
+import { PreferencesController } from './preferences';
+import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
+import AccountTracker from '../lib/account-tracker';
+import MetaMetricsController from '../controllers/metametrics';
+import { SignatureController } from '@metamask/signature-controller';
+import { OriginalRequest, PersonalMessageParams } from '@metamask/message-manager';
+import { AccountsController } from '@metamask/accounts-controller';
+
 interface UpdateCustodianTransactionsParameters {
   keyring: CustodyKeyring;
   type: string;
@@ -33,20 +42,20 @@ interface UpdateCustodianTransactionsParameters {
 }
 export default class MMIController extends EventEmitter {
   private opts: MMIControllerOptions;
-  private mmiConfigurationController: any;
+  private mmiConfigurationController: MmiConfigurationController;
   private keyringController: any;
-  private preferencesController: any;
-  private appStateController: any;
-  private transactionUpdateController: any;
+  private preferencesController: PreferencesController;
+  private appStateController: AppStateController;
+  private transactionUpdateController: TransactionUpdateController;
   private custodyController: CustodyController;
   private getState: () => any;
   private getPendingNonce: (address: string) => Promise<any>;
-  private accountTracker: any;
-  private metaMetricsController: any;
+  private accountTracker: AccountTracker;
+  private metaMetricsController: MetaMetricsController;
   private networkController: any;
   private permissionController: any;
-  private signatureController: any;
-  private accountsController: any;
+  private signatureController: SignatureController;
+  private accountsController: AccountsController;
   private platform: any;
   private extension: any;
   private updateTransactionHash: (txId: string, txHash: string) => void;
@@ -650,21 +659,23 @@ export default class MMIController extends EventEmitter {
     const isCustodial = Boolean(accountDetails);
     const updatedMsgParams = { ...msgParams, deferSetAsSigned: isCustodial };
 
+
     if (req.method.includes('eth_signTypedData')) {
       return await this.signatureController.newUnsignedTypedMessage(
-        updatedMsgParams,
-        req,
+        updatedMsgParams as PersonalMessageParams,
+        req as OriginalRequest,
         version,
+        { parseJsonData: false },
       );
     } else if (req.method.includes('personal_sign')) {
       return await this.signatureController.newUnsignedPersonalMessage(
-        updatedMsgParams,
-        req,
+        updatedMsgParams as PersonalMessageParams,
+        req as OriginalRequest,
       );
     }
     return await this.signatureController.newUnsignedMessage(
-      updatedMsgParams,
-      req,
+      updatedMsgParams as PersonalMessageParams,
+      req as OriginalRequest,
     );
   }
 
@@ -683,6 +694,7 @@ export default class MMIController extends EventEmitter {
       });
     }
 
+    // @ts-ignore
     this.signatureController.setMessageMetadata(messageId, signature);
 
     return this.getState();
