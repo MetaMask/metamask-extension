@@ -1,10 +1,10 @@
 import shouldInjectProvider from './provider-injection';
 
-describe('provider injection check tests', () => {
-  let mockedWindow;
-  let originalDocument;
+describe('shouldInjectProvider', () => {
+  let mockedWindow: jest.SpyInstance;
+  let originalDocument: Document;
 
-  const mockUrl = (urlString) => {
+  function mockUrl(urlString: string) {
     const urlObj = new URL(urlString);
 
     mockedWindow.mockImplementation(() => ({
@@ -19,7 +19,7 @@ describe('provider injection check tests', () => {
         },
       },
     }));
-  };
+  }
 
   beforeEach(() => {
     mockedWindow = jest.spyOn(window, 'window', 'get');
@@ -28,7 +28,7 @@ describe('provider injection check tests', () => {
       documentElement: {
         nodeName: 'html',
       },
-    };
+    } as typeof global.document;
   });
 
   afterEach(() => {
