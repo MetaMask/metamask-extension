@@ -59,4 +59,9 @@ describe('Connections Content', () => {
     const { getByText } = render();
     expect(getByText('metamask.github.io')).toBeInTheDocument();
   });
+
+  it('it should render button of the page', () => {
+    const { getByText } = render();
+    expect(getByText('Connect accounts')).toBeInTheDocument();
+  });
 });
