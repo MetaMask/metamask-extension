@@ -10,7 +10,8 @@ describe('provider injection check tests', () => {
     mockedWindow.mockImplementation(() => ({
       location: {
         hostname: urlObj.hostname,
-        href: urlObj.href,
+        origin: urlObj.origin,
+        pathname: urlObj.pathname,
       },
       document: {
         doctype: {

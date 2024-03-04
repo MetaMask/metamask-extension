@@ -80,11 +80,19 @@ function blockedDomainCheck() {
     'battle.net',
   ];
 
-  const blockedHrefs = [
+  // Matching will happen based on the protocol, hostname, and path
+  const blockedUrlPaths = [
     'https://cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
-  const { hostname: currentHostname, href: currentHref } = window.location;
+  const {
+    hostname: currentHostname,
+    origin: currentOrigin,
+    pathname: currentPathname,
+  } = window.location;
+
+  const trimTrailingSlash = (str) =>
+    str.endsWith('/') ? str.slice(0, -1) : str;
 
   return (
     blockedDomains.some(
@@ -92,23 +100,10 @@ function blockedDomainCheck() {
         blockedDomain === currentHostname ||
         currentHostname.endsWith(`.${blockedDomain}`),
     ) ||
-    blockedHrefs.some((blockedHref) => {
-      return blockedHref === normalizeUrl(currentHref);
-    })
+    blockedUrlPaths.some(
+      (blockedUrlPath) =>
+        trimTrailingSlash(blockedUrlPath) ===
+        trimTrailingSlash(currentOrigin + currentPathname),
+    )
   );
-}
-
-/**
- * Normalizes the URL to remove trailing slashes and query parameters
- *
- * @param {string} urlString - The URL to normalize
- * @returns {string} The normalized URL
- */
-function normalizeUrl(urlString) {
-  const url = new URL(urlString);
-  const pathname = url.pathname.endsWith('/')
-    ? url.pathname.slice(0, -1)
-    : url.pathname;
-
-  return url.origin + pathname;
 }
