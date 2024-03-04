@@ -113,6 +113,10 @@
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": false
     },
+    "SelectedNetworkController": {
+      "perDomainNetwork": false,
+      "domains": "object"
+    },
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},

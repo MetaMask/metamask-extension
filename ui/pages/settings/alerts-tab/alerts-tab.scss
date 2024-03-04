@@ -1,6 +1,8 @@
+@use "design-system";
+
 .alerts-tab {
   &__body {
-    @include H6;
+    @include design-system.H6;
 
     display: grid;
     grid-template-columns: 8fr 30px max-content;

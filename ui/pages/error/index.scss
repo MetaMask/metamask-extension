@@ -1,3 +1,5 @@
+@use "design-system";
+
 .error-page {
   display: flex;
   flex-flow: column nowrap;
@@ -8,7 +10,7 @@
   height: 100%;
 
   &__header {
-    @include H1;
+    @include design-system.H1;
 
     display: flex;
     justify-content: center;
@@ -17,7 +19,7 @@
   }
 
   &__subheader {
-    @include H4;
+    @include design-system.H4;
 
     padding: 10px 0;
     width: 100%;
@@ -26,7 +28,7 @@
   }
 
   &__details {
-    @include H4;
+    @include design-system.H4;
 
     overflow-y: auto;
     width: 100%;
