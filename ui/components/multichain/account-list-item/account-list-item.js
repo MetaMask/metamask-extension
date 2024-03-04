@@ -369,7 +369,7 @@ export const AccountListItem = ({
           isConnected={isConnected}
         />
       )}
-      {showOptionTypes === MenuOptionTypes.ConnectionMenu && (
+      {menuType === AccountListItemMenuTypes.Connection && (
         <ConnectedAccountsMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
