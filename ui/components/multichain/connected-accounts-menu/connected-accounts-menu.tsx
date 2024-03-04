@@ -20,11 +20,6 @@ import {
   removePermittedAccount,
   setSelectedAccount,
 } from '../../../store/actions';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { Identity } from './connected-accounts-menu.types';
 
@@ -43,7 +38,6 @@ export const ConnectedAccountsMenu = ({
   onClose: () => void;
   closeMenu: () => void;
 }) => {
-  const trackEvent = useContext(MetaMetricsContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   const t = useI18nContext();
