@@ -26,16 +26,6 @@ import { Identity } from './connected-accounts-menu.types';
 
 const TsMenuItem = MenuItem as any;
 
-interface Identity {
-  name: string;
-  address: string;
-  balance: string;
-  keyring: {
-    type: string;
-  };
-  label?: string;
-}
-
 export const ConnectedAccountsMenu = ({
   isOpen,
   identity,
