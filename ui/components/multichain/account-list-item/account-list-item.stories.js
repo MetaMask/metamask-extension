@@ -21,6 +21,10 @@ const SIMPLE_ACCOUNT = {
       type: 'HD Key Tree',
     },
   },
+  label: 'Simple Account 1',
+  keyring: {
+    type: 'HD Key Tree',
+  },
 };
 
 const HARDWARE_ACCOUNT = {
@@ -31,11 +35,19 @@ const HARDWARE_ACCOUNT = {
       type: 'Ledger Hardware',
     },
   },
+  label: 'Ledger Account 1',
+  keyring: {
+    type: 'Ledger Hardware',
+  },
   balance: '0x152387ad22c3f0',
 };
 
 const CHAOS_ACCOUNT = {
   ...testData.metamask.internalAccounts.accounts[chaosId],
+  label: 'Chaos Account 1',
+  keyring: {
+    type: 'Simple Key Pair',
+  },
   balance: '0x152387ad22c3f0',
 };
 
@@ -54,6 +66,10 @@ const SNAP_IDENTITY = {
       id: 'snap-id',
       enabled: true,
     },
+  },
+  label: 'Snap Account 1',
+  keyring: {
+    type: 'Snap Keyring',
   },
   balance: '0x152387ad22c3f0',
 };
