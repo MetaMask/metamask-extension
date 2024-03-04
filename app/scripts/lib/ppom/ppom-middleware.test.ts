@@ -35,10 +35,16 @@ const createMiddleWare = (
   const networkController = {
     state: { providerConfig: { chainId: chainId || CHAIN_IDS.MAINNET } },
   };
+  const appStateController = {
+    addSignatureSecurityAlertResponse: () => undefined,
+  };
+
   return createPPOMMiddleware(
     ppomController as any,
     preferenceController as any,
     networkController as any,
+    appStateController as any,
+    () => undefined,
   );
 };
 
@@ -87,7 +93,7 @@ describe('PPOMMiddleware', () => {
     expect(req.securityAlertResponse).toBeUndefined();
   });
 
-  it('should set Failed type in response if usePPOM throw error', async () => {
+  it('should set error type in response if usePPOM throw error', async () => {
     const usePPOM = async () => {
       throw new Error('some error');
     };
@@ -98,10 +104,10 @@ describe('PPOMMiddleware', () => {
     };
     await middlewareFunction(req, undefined, () => undefined);
     expect((req.securityAlertResponse as any)?.result_type).toBe(
-      BlockaidResultType.Failed,
+      BlockaidResultType.Errored,
     );
     expect((req.securityAlertResponse as any)?.reason).toBe(
-      BlockaidReason.failed,
+      BlockaidReason.errored,
     );
   });
 

@@ -82,6 +82,7 @@ export default {
     identity: SIMPLE_IDENTITY,
     onClick,
   },
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
 export const DefaultStory = (args) => (

@@ -34,6 +34,7 @@ exports[`Security Tab should match snapshot 1`] = `
     <div
       class="settings-page__security-tab-sub-header"
     >
+      <span />
       <span
         class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
       >

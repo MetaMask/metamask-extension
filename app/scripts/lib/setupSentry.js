@@ -85,6 +85,7 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    showPermissionsTour: true,
     showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
@@ -250,6 +251,9 @@ export const SENTRY_BACKGROUND_STATE = {
     unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
+  },
+  SnapInterface: {
+    interfaces: false,
   },
   SnapsRegistry: {
     database: false,

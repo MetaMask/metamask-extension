@@ -61,6 +61,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
+import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -195,6 +196,9 @@ const ConfirmPageContainer = (props) => {
     fetchCollectionBalance,
     collectionBalance,
   ]);
+
+  const isMaliciousRequest =
+    txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious;
 
   return (
     <GasFeeContextProvider transaction={currentTransaction}>
@@ -348,7 +352,8 @@ const ConfirmPageContainer = (props) => {
             onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             submitButtonType={
-              isSetApproveForAll && isApprovalOrRejection
+              (isSetApproveForAll && isApprovalOrRejection) ||
+              isMaliciousRequest
                 ? 'danger-primary'
                 : 'primary'
             }

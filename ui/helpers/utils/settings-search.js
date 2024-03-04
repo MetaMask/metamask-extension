@@ -3,6 +3,7 @@ import { SETTINGS_CONSTANTS } from '../constants/settings';
 
 let settingsRoutes;
 
+/** @returns {SettingRouteConfig[]} */
 export function getSettingsRoutes() {
   if (settingsRoutes) {
     return settingsRoutes;
@@ -13,13 +14,23 @@ export function getSettingsRoutes() {
   return settingsRoutes;
 }
 
+/**
+ * @param {Function} t - context.t function
+ * @param {string} tabMessage
+ * @returns {SettingRouteConfig[]}
+ */
 function getFilteredSettingsRoutes(t, tabMessage) {
   return getSettingsRoutes().filter((routeObject) => {
     return routeObject.tabMessage(t) === tabMessage;
   });
 }
 
-export function getNumberOfSettingsInSection(t, tabMessage) {
+/**
+ * @param {Function} t - context.t function
+ * @param {string} tabMessage
+ * @returns {number}
+ */
+export function getNumberOfSettingRoutesInTab(t, tabMessage) {
   return getFilteredSettingsRoutes(t, tabMessage).length;
 }
 
@@ -32,10 +43,12 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
   if (settingsRefsIndex === -1) {
     return;
   }
+
   const settingsRef =
     settingsSearchJsonFiltered.length === 1
       ? settingsRefs
       : settingsRefs[settingsRefsIndex];
+
   if (settingsRef?.current) {
     settingsRef.current.scrollIntoView({
       behavior: 'smooth',
