@@ -1150,6 +1150,7 @@ export function getShowWhatsNewPopup(state) {
 }
 
 export function getCurrentPopupId(state) {
+  console.log("App state is: ", state.appState);
   return state.appState.currentPopupId;
 }
 
