@@ -103,7 +103,10 @@ export const NotificationListItem = ({
           textAlign={TextAlign.Left}
         >
           {/* Notification Title */}
-          <NotificationListItemText {...title} />
+          <NotificationListItemText
+            {...title}
+            color={TextColor.textAlternative}
+          />
           {/* Notification Description */}
           <NotificationListItemText {...description} />
         </Box>
