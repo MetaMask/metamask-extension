@@ -36,7 +36,7 @@ export const ConfirmInfoRowCurrency = ({
     }}
   >
     {currency ? (
-      <CurrDisplay currency={currency} value={value} ethNumberOfDecimals={4} />
+      <CurrDisplay currency={currency} value={value ? `${value}` : undefined} />
     ) : (
       <UserCurrDisplay value={value} />
     )}
