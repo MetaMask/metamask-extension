@@ -29,6 +29,16 @@ import { getOriginOfCurrentTab } from '../../../selectors';
 
 const TsMenuItem = MenuItem as any;
 
+interface Identity {
+  name: string;
+  address: string;
+  balance: string;
+  keyring: {
+    type: string;
+  };
+  label?: string;
+}
+
 export const ConnectedAccountsMenu = ({
   isOpen,
   identity,
@@ -37,7 +47,7 @@ export const ConnectedAccountsMenu = ({
   closeMenu,
 }: {
   isOpen: boolean;
-  identity: any;
+  identity: Identity;
   anchorElement: HTMLElement | null;
   onClose: () => void;
   closeMenu: () => void;
@@ -105,7 +115,6 @@ export const ConnectedAccountsMenu = ({
             iconColor={IconColor.errorDefault}
             data-testid="disconnect-menu-item"
             onClick={() => {
-              // not sure if this is the correct way to disconnect an account
               dispatch(
                 removePermittedAccount(activeTabOrigin, identity.address),
               );
