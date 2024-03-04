@@ -315,6 +315,10 @@ function onboardingFixture() {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
       },
+      SelectedNetworkController: {
+        domains: {},
+        perDomainNetwork: false,
+      },
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
@@ -865,6 +869,12 @@ class FixtureBuilder {
         [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
       },
       perDomainNetwork: true,
+    });
+  }
+
+  withPreferencesControllerUseRequestQueueEnabled() {
+    return this.withPreferencesController({
+      useRequestQueue: true,
     });
   }
 
