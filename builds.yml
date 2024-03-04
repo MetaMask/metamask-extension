@@ -39,6 +39,7 @@ buildTypes:
   beta:
     features:
       - build-beta
+      - notifications
     env:
       - INFURA_BETA_PROJECT_ID
       - SEGMENT_BETA_WRITE_KEY
@@ -83,6 +84,7 @@ buildTypes:
       - desktop
       - build-flask
       - keyring-snaps
+      - notifications
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -102,6 +104,7 @@ buildTypes:
     features:
       - build-mmi
       - snaps
+      - notifications
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
