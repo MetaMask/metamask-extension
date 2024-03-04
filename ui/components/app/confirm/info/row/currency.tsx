@@ -14,10 +14,6 @@ export type ConfirmInfoRowCurrencyProps = {
   currency?: string;
 };
 
-// Below is to avoid TS issues in using these components
-const UserCurrDisplay = UserPreferencedCurrencyDisplay as any;
-const CurrDisplay = CurrencyDisplay as any;
-
 // todo: the component currently takes care of displaying value in the currency passed
 // it will default to using User's preferred currency.
 // As we encounter different use cases in future we would need to extend this
@@ -36,9 +32,12 @@ export const ConfirmInfoRowCurrency = ({
     }}
   >
     {currency ? (
-      <CurrDisplay currency={currency} value={value ? `${value}` : undefined} />
+      <CurrencyDisplay
+        currency={currency}
+        value={value ? `${value}` : undefined}
+      />
     ) : (
-      <UserCurrDisplay value={value} />
+      <UserPreferencedCurrencyDisplay value={value} />
     )}
   </Box>
 );
