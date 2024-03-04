@@ -58,7 +58,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
-import { MenuOptionTypes } from './account-list-item.types';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -71,7 +71,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptionTypes = MenuOptionTypes.None,
+  menuType = AccountListItemMenuTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -144,15 +144,29 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      {process.env.MULTICHAIN && (
-        <Box
-          display={[Display.Flex, Display.None]}
-          data-testid="account-list-item-badge"
-        >
-          <ConnectedStatus address={identity.address} isActive={isActive} />
-        </Box>
-      )}
-      <Box display={[Display.None, Display.Flex]}>
+      {process.env.MULTICHAIN ? (
+        <>
+          <Box
+            display={[Display.Flex, Display.None]}
+            data-testid="account-list-item-badge"
+          >
+            <ConnectedStatus address={identity.address} isActive={isActive} />
+          </Box>
+          <Box display={[Display.None, Display.Flex]}>
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={Size.MD}
+              address={identity.address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+          </Box>
+        </>
+      ) : (
         <AvatarAccount
           borderColor={BorderColor.transparent}
           size={Size.MD}
@@ -164,7 +178,7 @@ export const AccountListItem = ({
           }
           marginInlineEnd={2}
         />
-      </Box>
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -307,7 +321,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
 
-      {showOptionTypes === MenuOptionTypes.None ? null : (
+      {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -329,7 +343,7 @@ export const AccountListItem = ({
           data-testid="account-list-item-menu-button"
         />
       )}
-      {showOptionTypes === MenuOptionTypes.AccountMenu && (
+      {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -340,15 +354,6 @@ export const AccountListItem = ({
           isPinned={isPinned}
           isHidden={isHidden}
           isConnected={isConnected}
-        />
-      )}
-      {showOptionTypes === MenuOptionTypes.ConnectionMenu && (
-        <ConnectedAccountsMenu
-          anchorElement={accountListItemMenuElement}
-          identity={identity}
-          onClose={() => setAccountOptionsMenuOpen(false)}
-          closeMenu={closeMenu}
-          isOpen={accountOptionsMenuOpen}
         />
       )}
     </Box>
@@ -391,7 +396,7 @@ AccountListItem.propTypes = {
   /**
    * Represents the type of menu to be rendered
    */
-  showOptionTypes: PropTypes.string,
+  menuType: PropTypes.string,
   /**
    * Represents pinned accounts
    */

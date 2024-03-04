@@ -22,7 +22,7 @@ import {
   AccountListItem,
   CreateAccount,
   ImportAccount,
-  MenuOptionTypes,
+  AccountListItemMenuTypes,
 } from '..';
 import {
   AlignItems,
@@ -424,7 +424,7 @@ export const AccountListMenu = ({
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptionTypes={MenuOptionTypes.AccountMenu}
+                      menuType={AccountListItemMenuTypes.Account}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}
                       currentTabOrigin={currentTabOrigin}

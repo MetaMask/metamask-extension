@@ -744,6 +744,9 @@ function createFactoredBuild({
           continue;
         }
 
+        const isTest =
+          buildTarget === BUILD_TARGETS.TEST ||
+          buildTarget === BUILD_TARGETS.TEST_DEV;
         switch (groupLabel) {
           case 'ui': {
             renderHtmlFile({
@@ -756,15 +759,14 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
-              isTest:
-                buildTarget === BUILD_TARGETS.TEST ||
-                buildTarget === BUILD_TARGETS.TEST_DEV,
+              isTest,
             });
             renderHtmlFile({
               htmlName: 'home',
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
+              isTest,
             });
             renderJavaScriptLoader({
               groupSet,
