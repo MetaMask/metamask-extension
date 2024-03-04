@@ -299,8 +299,10 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
-///: BEGIN:ONLY_INCLUDE_IF(notifications)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { PREINSTALLED_SNAPS } from './snaps/preinstalled-snaps';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(notifications)
 import AuthenticationController from './controllers/authentication/authentication-controller';
 ///: END:ONLY_INCLUDE_IF
 
