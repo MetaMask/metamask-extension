@@ -17472,6 +17472,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eta@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "eta@npm:3.2.0"
+  checksum: f4aa8ff6b9a4adf3d5db83255793be0136bdbcf2341154ad64c019bacc04d69e10218e54764af572eb8ba016996b8cbac9dc7a6fc2e9eb5005a0323bab883692
+  languageName: node
+  linkType: hard
+
 "etag@npm:~1.8.1":
   version: 1.8.1
   resolution: "etag@npm:1.8.1"
@@ -25201,6 +25208,7 @@ __metadata:
     eslint-plugin-react: "npm:^7.23.1"
     eslint-plugin-react-hooks: "npm:^4.2.0"
     eslint-plugin-storybook: "npm:^0.6.15"
+    eta: "npm:^3.2.0"
     eth-ens-namehash: "npm:^2.0.8"
     eth-json-rpc-filters: "npm:^6.0.0"
     eth-lattice-keyring: "npm:^0.12.4"
@@ -25320,7 +25328,6 @@ __metadata:
     source-map: "npm:^0.7.4"
     source-map-explorer: "npm:^2.4.2"
     sprintf-js: "npm:^1.1.3"
-    squirrelly: "npm:^9.0.0"
     storybook: "npm:^7.4.6"
     storybook-dark-mode: "npm:^3.0.1"
     stream-browserify: "npm:^3.0.0"
@@ -32459,20 +32466,6 @@ __metadata:
   version: 1.0.3
   resolution: "sprintf-js@npm:1.0.3"
   checksum: c34828732ab8509c2741e5fd1af6b767c3daf2c642f267788f933a65b1614943c282e74c4284f4fa749c264b18ee016a0d37a3e5b73aee446da46277d3a85daa
-  languageName: node
-  linkType: hard
-
-"squirrelly@npm:9.0.0":
-  version: 9.0.0
-  resolution: "squirrelly@npm:9.0.0"
-  checksum: c0c0b7f3f6825a3e601baaf0c3848bc56d2d05482a3cf4d4cf4a01ee25312e775b0ffbcca7b8660c3ad5a3dd905fd5d34642d4324c36d0ed45c2bcb4de343002
-  languageName: node
-  linkType: hard
-
-"squirrelly@patch:squirrelly@npm%3A9.0.0#./.yarn/patches/squirrelly-npm-9.0.0-3cf710c7bb.patch::locator=metamask-crx%40workspace%3A.":
-  version: 9.0.0
-  resolution: "squirrelly@patch:squirrelly@npm%3A9.0.0#./.yarn/patches/squirrelly-npm-9.0.0-3cf710c7bb.patch::version=9.0.0&hash=bf49f6&locator=metamask-crx%40workspace%3A."
-  checksum: 2b30969650de3350fa9db401af32633359a41b2500c10c8cf6f926f27c968cbedbbd3cb22b79a9f150f7e9d5ea0f31e1bccc2c2c851389d3d83e8347f19f9d6c
   languageName: node
   linkType: hard
 
