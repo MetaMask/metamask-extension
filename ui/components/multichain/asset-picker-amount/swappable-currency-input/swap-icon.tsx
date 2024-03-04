@@ -20,7 +20,7 @@ export default function SwapIcon({
   return (
     <ButtonIcon
       backgroundColor={BackgroundColor.transparent}
-      iconName={IconName.Refresh}
+      iconName={IconName.SwapVertical}
       size={ButtonIconSize.Sm}
       color={IconColor.primaryDefault}
       onClick={onClick}
