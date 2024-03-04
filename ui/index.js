@@ -244,6 +244,10 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       const windows = await browser.windows.getAll();
       const currentPopupId = getCurrentPopupId(state);
 
+      setInterval(() => {
+        console.log("currentPopupId: ", state.appState.currentPopupId);
+      }, 2000);
+
       console.log("Windows are: ", windows);
       console.log("Current popup ID is: ", currentPopupId);
       windows.forEach((win) => {
