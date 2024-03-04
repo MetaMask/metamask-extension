@@ -15,7 +15,7 @@ describe('Info', () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
-    expect(getByText('Origin')).toBeInTheDocument();
+    expect(getByText('Request from')).toBeInTheDocument();
     expect(getByText('https://metamask.github.io')).toBeInTheDocument();
   });
 });

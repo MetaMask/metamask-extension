@@ -15,7 +15,7 @@ describe('personalSign', () => {
     const mockStore = configureMockStore([])(mockState);
     const { getByText } = renderWithProvider(<PersonalSign />, mockStore);
 
-    expect(getByText('Origin')).toBeInTheDocument();
+    expect(getByText('Request from')).toBeInTheDocument();
     expect(getByText('https://metamask.github.io')).toBeInTheDocument();
   });
 
@@ -33,6 +33,6 @@ describe('personalSign', () => {
     const mockStore = configureMockStore([])(mockState);
     const { queryByText } = renderWithProvider(<PersonalSign />, mockStore);
 
-    expect(queryByText('Origin')).not.toBeInTheDocument();
+    expect(queryByText('Request from')).not.toBeInTheDocument();
   });
 });
