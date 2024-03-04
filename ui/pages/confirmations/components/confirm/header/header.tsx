@@ -15,6 +15,7 @@ import {
   Box,
   Text,
 } from '../../../../../components/component-library';
+import HeaderInfo from './header-info';
 
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
@@ -23,23 +24,26 @@ const Header = () => {
   return (
     <Box
       alignItems={AlignItems.center}
-      display={Display.Flex}
+      display={Display.Grid}
       padding={4}
       className="confirm_header__wrapper"
     >
-      <Box display={Display.Flex}>
-        <Identicon address={recipientAddress} diameter={32} />
-        <AvatarNetwork
-          src={networkImageUrl}
-          name={networkDisplayName}
-          size={AvatarNetworkSize.Xs}
-          className="confirm_header__avatar-network"
-        />
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
+        <Box display={Display.Flex}>
+          <Identicon address={recipientAddress} diameter={32} />
+          <AvatarNetwork
+            src={networkImageUrl}
+            name={networkDisplayName}
+            size={AvatarNetworkSize.Xs}
+            className="confirm_header__avatar-network"
+          />
+        </Box>
+        <Box marginInlineStart={4}>
+          <Text>{recipientName}</Text>
+          <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
+        </Box>
       </Box>
-      <Box marginInlineStart={4}>
-        <Text>{recipientName}</Text>
-        <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
-      </Box>
+      <HeaderInfo />
     </Box>
   );
 };
