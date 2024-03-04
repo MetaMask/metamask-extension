@@ -73,7 +73,7 @@ const sendTransaction = async (
 };
 
 test.describe('MMI send', () => {
-  test.skip('Send a transaction from one account to another and confirm it from custody', async ({
+  test('Send a transaction from one account to another and confirm it from custody', async ({
     page,
     context,
   }) => {
@@ -91,7 +91,7 @@ test.describe('MMI send', () => {
     await mainPage.checkLastTransactionStatus(statusName);
   });
 
-  test.skip('Send a transaction from one account to another and abort it from custody', async ({
+  test('Send a transaction from one account to another and abort it from custody', async ({
     page,
     context,
   }) => {
