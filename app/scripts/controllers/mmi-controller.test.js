@@ -47,6 +47,7 @@ describe('MMIController', function () {
         onAccountRemoved: jest.fn(),
         provider: {},
         networkConfigurations: {},
+        onKeyringStateChange: jest.fn(),
       }),
       appStateController: new AppStateController({
         addUnlockListener: jest.fn(),
@@ -65,13 +66,13 @@ describe('MMIController', function () {
         messenger: mockMessenger,
       }),
       custodianEventHandlerFactory: jest.fn(),
-        getTransactions: jest.fn(),
-        updateTransactionHash: jest.fn(),
-        trackTransactionEvents: jest.fn(),
-        setTxStatusSigned: jest.fn(),
-        setTxStatusSubmitted: jest.fn(),
-        setTxStatusFailed: jest.fn(),
-        updateTransaction: jest.fn(),
+      getTransactions: jest.fn(),
+      updateTransactionHash: jest.fn(),
+      trackTransactionEvents: jest.fn(),
+      setTxStatusSigned: jest.fn(),
+      setTxStatusSubmitted: jest.fn(),
+      setTxStatusFailed: jest.fn(),
+      updateTransaction: jest.fn(),
     });
   });
 

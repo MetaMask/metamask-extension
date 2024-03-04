@@ -114,6 +114,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   EnsController: {
     ensResolutionsByAddress: false,
+    ensEntries: false,
   },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
@@ -171,7 +172,6 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PPOMController: {
-    chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
     versionFileETag: false,
@@ -226,7 +226,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
   },
-  SelectedNetworkController: { domains: true, perDomainNetwork: false },
+  SelectedNetworkController: { domains: false, perDomainNetwork: true },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
+import { useSelector } from 'react-redux';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import {
   OverflowWrap,
@@ -19,6 +20,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 import LoadingIndicator from '../../../../../components/ui/loading-indicator';
+import { getCurrentChainId } from '../../../../../selectors';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
@@ -56,6 +58,8 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
 function BlockaidBannerAlert({ txData, ...props }) {
   const { securityAlertResponse, origin, msgParams, type, txParams, chainId } =
     txData;
+
+  const selectorChainId = useSelector(getCurrentChainId);
 
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -110,7 +114,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     const reportData = {
       blockNumber: block,
       blockaidVersion: BlockaidPackage.version,
-      chain: NETWORK_TO_NAME_MAP[chainId],
+      chain: NETWORK_TO_NAME_MAP[chainId ?? selectorChainId],
       classification: isFailedResultType ? 'error' : reason,
       domain: origin ?? msgParams?.origin ?? txParams?.origin,
       jsonRpcMethod: type,

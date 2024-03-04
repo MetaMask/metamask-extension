@@ -1,3 +1,5 @@
+@use "design-system";
+
 .info-tab {
   &__logo-wrapper {
     margin-bottom: 20px;
@@ -16,7 +18,7 @@
   &__link-header {
     padding-bottom: 15px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding-bottom: 5px;
     }
   }
@@ -29,13 +31,13 @@
   &__link-item {
     padding: 15px 0;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding: 5px 0;
     }
   }
 
   &__version-number {
-    @include H6;
+    @include design-system.H6;
 
     padding-top: 5px;
     color: var(--color-text-muted);
