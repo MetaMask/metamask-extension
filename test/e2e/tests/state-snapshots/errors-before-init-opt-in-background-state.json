@@ -114,8 +114,8 @@
       "useRequestQueue": false
     },
     "SelectedNetworkController": {
-      "domains": {},
-      "perDomainNetwork": "boolean"
+      "perDomainNetwork": false,
+      "domains": "object"
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {

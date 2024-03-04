@@ -1744,7 +1744,8 @@ export function getAllNetworks(state) {
 export function getIsOptimism(state) {
   return (
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
   );
 }
 

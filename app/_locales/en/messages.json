@@ -824,6 +824,9 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
+  "connectMoreAccounts": {
+    "message": "Connect more accounts"
+  },
   "connectSnap": {
     "message": "Connect $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -877,6 +880,9 @@
   },
   "connectedWith": {
     "message": "Connected with"
+  },
+  "connectedaccountsTabKey": {
+    "message": "Connected accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -3297,6 +3303,9 @@
   "pendingTransactionSingle": {
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
+  },
+  "permissionDetails": {
+    "message": "Permission details"
   },
   "permissionRequest": {
     "message": "Permission request"

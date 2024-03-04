@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { AccountListItem } from '.';
+import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
 
@@ -89,10 +89,14 @@ export default {
     connectedAvatarName: {
       control: 'text',
     },
+    menuType: {
+      control: 'text',
+    },
   },
   args: {
     identity: SIMPLE_ACCOUNT,
     onClick,
+    menuType: AccountListItemMenuTypes.Account,
   },
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
