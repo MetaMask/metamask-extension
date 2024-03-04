@@ -95,4 +95,17 @@ function blockedDomainCheck() {
       (hostname + pathname).includes(blockedHref),
     )
   );
+/**
+ * Normalizes the URL to remove trailing slashes and query parameters
+ *
+ * @param {string} urlString - The URL to normalize
+ * @returns {string} The normalized URL
+ */
+function normalizeUrl(urlString) {
+  const url = new URL(urlString);
+  const pathname = url.pathname.endsWith('/')
+    ? url.pathname.slice(0, -1)
+    : url.pathname;
+
+  return url.origin + pathname;
 }
