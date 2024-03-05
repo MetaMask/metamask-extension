@@ -64,6 +64,8 @@ export function useTokenTracker({
     }
   }, []);
 
+  console.log('global.ethereumProvider inside useTokenTracker', global.ethereumProvider);
+
   const buildTracker = useCallback(
     (usersAddress, tokenList) => {
       // clear out previous tracker, if it exists.

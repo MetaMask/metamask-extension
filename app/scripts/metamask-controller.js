@@ -1353,9 +1353,9 @@ export default class MetamaskController extends EventEmitter {
       // provider: this.provider,
       // blockTracker: this.blockTracker,
       getGlobalProviderAndBlockTracker: () =>
-          this.delayNetworkClient
-            ? undefined
-            : this.networkController.getProviderAndBlockTracker(),
+        this.delayNetworkClient
+          ? undefined
+          : this.networkController.getProviderAndBlockTracker(),
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
       getNetworkIdentifier: (providerConfig) => {
@@ -1395,7 +1395,6 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           console.log({ prevCompletedOnboarding, currCompletedOnboarding });
           this.networkProviderInitialization();
-          this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
     );
@@ -2163,9 +2162,8 @@ export default class MetamaskController extends EventEmitter {
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
 
-    // this.networkProviderInitialization();
     if (this.onboardingController.store.getState().completedOnboarding) {
-      console.log('end of the constructor')
+      console.log('end of the constructor');
       this.networkProviderInitialization();
     }
   }
@@ -2321,14 +2319,9 @@ export default class MetamaskController extends EventEmitter {
    * it in.
    */
   networkProviderInitialization() {
-    console.log("networkProviderInitialization")
+    console.log('networkProviderInitialization');
     this.networkController.initializeProvider();
-    console.log("finish initializeProvider")
-
-    console.log('before initApprovals')
     this.delayNetworkClient = false;
-    this.txController.initApprovals();
-    console.log('after initApprovals')
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
@@ -2339,12 +2332,15 @@ export default class MetamaskController extends EventEmitter {
     this.deprecatedNetworkId = null;
     this.updateDeprecatedNetworkId();
 
-    this.ensController.delayedInit(this.provider);
     this.accountTracker.delayedInit();
 
+    // this.triggerNetworkrequests();
 
-    this.swapsController.delayedInit(this.provider);
-    this.detectTokensController.restartTokenDetection();
+    // this.txController.initApprovals();
+    // console.log('after initApprovals');
+
+    // this.swapsController.delayedInit(this.provider);
+    // this.detectTokensController.restartTokenDetection();
   }
 
   /**

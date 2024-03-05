@@ -55,7 +55,7 @@ export default class AccountTracker {
 
   #currentBlockNumberByChainId = {};
 
-  #getGlobalProviderAndBlockTracker = () => {}
+  #getGlobalProviderAndBlockTracker = () => {};
 
   constructor(opts = {}) {
     const initState = {
@@ -80,20 +80,21 @@ export default class AccountTracker {
     // this.#provider = opts.provider;
     // this.#blockTracker = opts.blockTracker;
 
-    this.#getGlobalProviderAndBlockTracker = opts.getGlobalProviderAndBlockTracker;
+    this.#getGlobalProviderAndBlockTracker =
+      opts.getGlobalProviderAndBlockTracker;
 
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccounts([address]));
 
-    this.onboardingController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this.updateAccountsAllActiveNetworks();
-        }
-      }, this.onboardingController.store.getState()),
-    );
+    // this.onboardingController.store.subscribe(
+    //   previousValueComparator(async (prevState, currState) => {
+    //     const { completedOnboarding: prevCompletedOnboarding } = prevState;
+    //     const { completedOnboarding: currCompletedOnboarding } = currState;
+    //     if (!prevCompletedOnboarding && currCompletedOnboarding) {
+    //       this.updateAccountsAllActiveNetworks();
+    //     }
+    //   }, this.onboardingController.store.getState()),
+    // );
 
     this.selectedAccount = this.controllerMessenger.call(
       'AccountsController:getSelectedAccount',
@@ -133,7 +134,9 @@ export default class AccountTracker {
    */
   stop() {
     if (!this.#blockTracker) {
-      console.log('Cannot get block tracker as selected network client is unavailable');
+      console.log(
+        'Cannot get block tracker as selected network client is unavailable',
+      );
       return undefined;
     }
     // remove listener
@@ -158,6 +161,20 @@ export default class AccountTracker {
         identifier: this.getNetworkIdentifier(networkClient.configuration),
       };
     }
+
+    if (!this.#blockTracker || !this.#provider) {
+      const providerAndBlockTracker = this.#getGlobalProviderAndBlockTracker();
+      if (!providerAndBlockTracker) {
+        console.log(
+          'Cannot get provider and block tracker as selected network client is unavailable',
+        );
+        return undefined;
+      }
+
+      this.#blockTracker = providerAndBlockTracker.blockTracker;
+      this.#provider = providerAndBlockTracker.provider;
+    }
+
     return {
       chainId: this.getCurrentChainId(),
       provider: this.#provider,
@@ -177,8 +194,10 @@ export default class AccountTracker {
   delayedInit() {
     const providerAndBlockTracker = this.#getGlobalProviderAndBlockTracker();
     if (!providerAndBlockTracker) {
-      console.log('Cannot get provider and block tracker as selected network client is unavailable');
-      return undefined
+      console.log(
+        'Cannot get provider and block tracker as selected network client is unavailable',
+      );
+      return undefined;
     }
 
     this.#blockTracker = providerAndBlockTracker.blockTracker;
@@ -191,6 +210,8 @@ export default class AccountTracker {
     this.#provider.once('latest', (blockNumber) => {
       this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
     });
+
+    this.updateAccountsAllActiveNetworks();
   }
 
   /**
@@ -487,6 +508,7 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async updateAccounts(networkClientId) {
+    console.log('updateAccounts');
     const { completedOnboarding } = this.onboardingController.store.getState();
     if (!completedOnboarding) {
       return;
@@ -496,6 +518,8 @@ export default class AccountTracker {
       this.#getCorrectNetworkClient(networkClientId);
     const { useMultiAccountBalanceChecker } =
       this.preferencesController.store.getState();
+
+    console.log('provider line 510', { provider });
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {

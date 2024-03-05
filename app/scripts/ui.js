@@ -367,6 +367,7 @@ function setupWeb3Connection(connectionStream) {
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
   global.ethereumProvider = providerStream;
+  console.log('global.ethereumProvider inside setupWeb3Connection', global.ethereumProvider);
   global.ethQuery = new EthQuery(providerStream);
   global.eth = new Eth(providerStream);
 }

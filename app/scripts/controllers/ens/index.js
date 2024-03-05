@@ -12,6 +12,7 @@ export default class EnsController {
     const initState = {
       ensResolutionsByAddress: {},
     };
+    console.log('inside constructor on ENSController');
 
     this._ens = ens;
 
@@ -38,6 +39,7 @@ export default class EnsController {
   }
 
   delayedInit(passedProvider) {
+    console.log('inside delayed init on ENSController');
     if (!this._ens) {
       const chainId = this.getCurrentChainId();
       if (Ens.getChainEnsSupport(chainId)) {

@@ -124,10 +124,6 @@ import { createDeepEqualSelector } from './util';
  */
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
-  console.log({
-    selectedNetworkClientId,
-    networksMetadata: state.metamask.networksMetadata
-  });
 
   if (selectedNetworkClientId && state.metamask.networksMetadata[selectedNetworkClientId]) {
     return state.metamask.networksMetadata[selectedNetworkClientId].status !== NetworkStatus.Available
