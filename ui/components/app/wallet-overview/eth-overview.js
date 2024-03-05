@@ -121,7 +121,7 @@ const EthOverview = ({ className, showAddress }) => {
 
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) &&
+    account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
   const buttonTooltips = {
