@@ -375,7 +375,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
-          disableAccountSwitcher={accountsCount === 1}
+          disableAccountSwitcher={isSingleAccount}
           isOpen={accountOptionsMenuOpen}
         />
       )}
