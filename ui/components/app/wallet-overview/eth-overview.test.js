@@ -482,12 +482,14 @@ describe('EthOverview', () => {
     ];
 
     it.each(buttonTestCases)(
-      'should have the $buttonText button disabled when an account cannot sign transactions',
+      'should have the $buttonText button disabled when an account cannot sign transactions or user operations',
       ({ testId, buttonText }) => {
         mockStore.metamask.internalAccounts.accounts[
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ].methods = Object.values(EthMethod).filter(
-          (method) => method !== EthMethod.SignTransaction,
+          (method) =>
+            method !== EthMethod.SignTransaction &&
+            method !== EthMethod.SignUserOperation,
         );
 
         const mockedStore = configureMockStore([thunk])(mockStore);

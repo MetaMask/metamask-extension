@@ -31,12 +31,11 @@ import {
   getIsSwapsChain,
   getCurrentChainId,
   getPreferences,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
   getShowFiatInTestnets,
-  checkIfMethodIsEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -101,7 +100,8 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   // Total fiat balance
-  const selectedAddress = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
+  const selectedAddress = account.address;
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -120,9 +120,9 @@ const EthOverview = ({ className, showAddress }) => {
   }
 
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const isSigningEnabled = useSelector((state) =>
-    checkIfMethodIsEnabled(state, EthMethod.SignTransaction),
-  );
+  const isSigningEnabled =
+    account.methods.includes(EthMethod.SignTransaction) &&
+    account.methods.includes(EthMethod.SignUserOperation);
 
   const buttonTooltips = {
     buyButton: [
