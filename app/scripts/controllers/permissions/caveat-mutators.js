@@ -1,5 +1,6 @@
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
+import { toChecksumAddress } from 'ethereumjs-util';
 
 /**
  * Factories that construct caveat mutator functions that are passed to
@@ -24,7 +25,8 @@ export const CaveatMutatorFactories = {
  */
 function removeAccount(targetAccount, existingAccounts) {
   const newAccounts = existingAccounts.filter(
-    (address) => address.toLowerCase() !== targetAccount.toLowerCase(),
+    (address) =>
+      toChecksumAddress(address) !== toChecksumAddress(targetAccount),
   );
 
   if (newAccounts.length === existingAccounts.length) {
