@@ -368,6 +368,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                     } else {
                                       dispatch(setActiveNetwork(network.id));
                                     }
+                                    dispatch(onNetworkChange());
                                     trackEvent({
                                       event:
                                         MetaMetricsEventName.NavNetworkSwitched,
