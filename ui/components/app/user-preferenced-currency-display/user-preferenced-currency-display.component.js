@@ -10,7 +10,7 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
-/** @param {PropTypes.InferProps<typeof propTypes>>} */
+/** @param {PropTypes.InferProps<typeof UserPreferencedCurrencyDisplayPropTypes>>} */
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
   ethNumberOfDecimals,
@@ -62,7 +62,7 @@ export default function UserPreferencedCurrencyDisplay({
   );
 }
 
-const propTypes = {
+const UserPreferencedCurrencyDisplayPropTypes = {
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   prefix: PropTypes.string,
@@ -91,4 +91,5 @@ const propTypes = {
   ...CurrencyDisplay.propTypes,
 };
 
-UserPreferencedCurrencyDisplay.propTypes = propTypes;
+UserPreferencedCurrencyDisplay.propTypes =
+  UserPreferencedCurrencyDisplayPropTypes;

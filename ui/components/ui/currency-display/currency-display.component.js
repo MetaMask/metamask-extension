@@ -13,7 +13,7 @@ import {
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param
-/** @param {PropTypes.InferProps<typeof propTypes>>} */
+/** @param {PropTypes.InferProps<typeof CurrencyDisplayPropTypes>>} */
 export default function CurrencyDisplay({
   value,
   displayValue,
@@ -89,7 +89,7 @@ export default function CurrencyDisplay({
   );
 }
 
-const propTypes = {
+const CurrencyDisplayPropTypes = {
   className: PropTypes.string,
   currency: PropTypes.string,
   'data-testid': PropTypes.string,
@@ -111,4 +111,4 @@ const propTypes = {
   suffixProps: PropTypes.object,
 };
 
-CurrencyDisplay.propTypes = propTypes;
+CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;
