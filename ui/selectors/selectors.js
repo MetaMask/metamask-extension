@@ -364,13 +364,20 @@ export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
+/**
+ * Returns an array of internal accounts sorted by keyring.
+ *
+ * @param keyrings - The array of keyrings.
+ * @param accounts - The object containing the accounts.
+ * @returns The array of internal accounts sorted by keyring.
+ */
 export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
     // keep existing keyring order
     const internalAccounts = keyrings
-      .map(({ accounts: addressesOfKeyring }) => addressesOfKeyring)
+      .map(({ accounts: addresses }) => addresses)
       .flat()
       .map((address) => {
         return accounts[address];
