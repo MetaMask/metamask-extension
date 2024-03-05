@@ -53,32 +53,29 @@ const chartDown = (
   </svg>
 );
 
+// A component that shows the price of an asset at a
+// certain time, along with the delta from a previous price.
 const AssetPrice = forwardRef(
   (
-    {
-      loading,
-      currency,
-      currentPrice,
-      comparePrice,
-    }: {
+    props: {
       loading: boolean;
       currency: string;
-      currentPrice?: number;
+      price?: number;
+      date: number;
       comparePrice?: number;
     },
     ref,
   ) => {
     const [{ price, date }, setPrice] = useState({
-      price: undefined as number | undefined,
-      date: undefined as number | undefined,
+      price: props.price,
+      date: props.date,
     });
     useImperativeHandle(ref, () => ({ setPrice }));
 
-    const displayPrice = price ?? currentPrice;
-
+    const { loading, currency, comparePrice } = props;
     const priceDelta =
-      displayPrice !== undefined && comparePrice !== undefined
-        ? displayPrice - comparePrice
+      price !== undefined && comparePrice !== undefined
+        ? price - comparePrice
         : undefined;
 
     return (
@@ -90,17 +87,13 @@ const AssetPrice = forwardRef(
           borderRadius={BorderRadius.LG}
           marginBottom={1}
           backgroundColor={
-            loading && !displayPrice
+            loading && !price
               ? BackgroundColor.backgroundAlternative
               : BackgroundColor.backgroundDefault
           }
         >
-          {displayPrice
-            ? formatCurrency(
-                `${displayPrice}`,
-                currency,
-                getPricePrecision(displayPrice),
-              )
+          {price
+            ? formatCurrency(`${price}`, currency, getPricePrecision(price))
             : '\u00A0'}
         </Text>
         <Box paddingLeft={4} paddingBottom={3}>
@@ -131,7 +124,7 @@ const AssetPrice = forwardRef(
                 variant={TextVariant.bodyMdMedium}
                 color={TextColor.textAlternative}
               >
-                {shortDateFormatter.format(date ?? Date.now())}
+                {shortDateFormatter.format(date)}
               </Text>
             </Box>
           ) : (

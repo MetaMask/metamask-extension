@@ -162,11 +162,12 @@ const AssetChart = ({
       <AssetPrice
         ref={priceRef}
         loading={loading}
-        currentPrice={currentPrice}
-        comparePrice={prices?.[0]?.y}
         currency={currency}
+        price={currentPrice}
+        date={Date.now()}
+        comparePrice={prices?.[0]?.y}
       />
-      {prices ? (
+      {prices && currentPrice ? (
         <Box>
           <Box style={{ opacity: loading ? 0.2 : 1 }}>
             <ChartTooltip point={yMax} {...edges} currency={currency} />
@@ -175,6 +176,7 @@ const AssetChart = ({
               data={{ datasets: [{ data: prices }] }}
               options={options}
               updateMode="none"
+              // Update the price display on chart hover
               onMouseMove={(event) => {
                 const data = chartRef?.current?.data?.datasets?.[0]?.data;
                 if (data) {
@@ -195,10 +197,11 @@ const AssetChart = ({
                   });
                 }
               }}
+              // Revert to current price when not hovering
               onMouseOut={() => {
                 priceRef?.current?.setPrice({
-                  price: undefined,
-                  date: undefined,
+                  price: currentPrice,
+                  date: Date.now(),
                 });
               }}
             />
