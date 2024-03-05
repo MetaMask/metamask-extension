@@ -82,12 +82,11 @@ function blockedDomainCheck() {
 
   // Matching will happen based on the protocol, hostname, and path
   const blockedUrlPaths = [
-    'https://cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
   const {
     hostname: currentHostname,
-    origin: currentOrigin,
     pathname: currentPathname,
   } = window.location;
 
@@ -103,7 +102,7 @@ function blockedDomainCheck() {
     blockedUrlPaths.some(
       (blockedUrlPath) =>
         trimTrailingSlash(blockedUrlPath) ===
-        trimTrailingSlash(currentOrigin + currentPathname),
+        trimTrailingSlash(currentHostname + currentPathname),
     )
   );
 }
