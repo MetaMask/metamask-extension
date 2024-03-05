@@ -85,28 +85,24 @@ describe('authentication/authentication-controller - performSignIn() tests', () 
     const { messenger } = createMockAuthenticationMessenger();
     const controller = new AuthenticationController({ messenger });
 
-    expect.hasAssertions();
-    try {
-      await controller.performSignIn();
-    } catch {
-      const endpointsCalled = [
-        mockEndpoints.mockGetNonceEndpoint.isDone(),
-        mockEndpoints.mockLoginEndpoint.isDone(),
-        mockEndpoints.mockAccessTokenEndpoint.isDone(),
-      ];
-      if (endpointFail === 'nonce') {
-        expect(endpointsCalled).toEqual([true, false, false]);
-      }
+    await expect(controller.performSignIn()).rejects.toThrow();
+    expect(controller.state.isSignedIn).toBe(false);
 
-      if (endpointFail === 'login') {
-        expect(endpointsCalled).toEqual([true, true, false]);
-      }
+    const endpointsCalled = [
+      mockEndpoints.mockGetNonceEndpoint.isDone(),
+      mockEndpoints.mockLoginEndpoint.isDone(),
+      mockEndpoints.mockAccessTokenEndpoint.isDone(),
+    ];
+    if (endpointFail === 'nonce') {
+      expect(endpointsCalled).toEqual([true, false, false]);
+    }
 
-      if (endpointFail === 'token') {
-        expect(endpointsCalled).toEqual([true, true, true]);
-      }
+    if (endpointFail === 'login') {
+      expect(endpointsCalled).toEqual([true, true, false]);
+    }
 
-      expect(controller.state.isSignedIn).toBe(false);
+    if (endpointFail === 'token') {
+      expect(endpointsCalled).toEqual([true, true, true]);
     }
   }
 });
@@ -131,12 +127,7 @@ describe('authentication/authentication-controller - performSignOut() tests', ()
       state: { isSignedIn: false },
     });
 
-    expect.assertions(1);
-    try {
-      controller.performSignOut();
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-    }
+    expect(() => controller.performSignOut()).toThrow();
   });
 });
 
@@ -148,12 +139,7 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
       state: { isSignedIn: false },
     });
 
-    expect.assertions(1);
-    try {
-      await controller.getBearerToken();
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-    }
+    await expect(controller.getBearerToken()).rejects.toThrow();
   });
 
   test('Should return original access token in state', async () => {
@@ -200,12 +186,7 @@ describe('authentication/authentication-controller - getIdentifierId() tests', (
       state: { isSignedIn: false },
     });
 
-    expect.assertions(1);
-    try {
-      await controller.getIdentifierId();
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-    }
+    await expect(controller.getIdentifierId()).rejects.toThrow();
   });
 
   test('Should return original access token in state', async () => {
