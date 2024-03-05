@@ -101,11 +101,7 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
     asset.details?.standard === TokenStandard.ERC1155
   ) {
     return (
-      <Box
-        marginLeft={'auto'}
-        textAlign={TextAlign.End}
-        width={BlockSize.Max}
-      >
+      <Box marginLeft={'auto'} textAlign={TextAlign.End} width={BlockSize.Max}>
         <Text variant={TextVariant.bodyMd} ellipsis>
           {t('amount')}
         </Text>
