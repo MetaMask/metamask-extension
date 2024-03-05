@@ -1,3 +1,5 @@
+import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers/dist/token-prices-service/codefi-v2';
+
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
   month: 'short',
@@ -41,3 +43,11 @@ export const getPricePrecision = (price: number) => {
   }
   return precision;
 };
+
+/**
+ * Returns true if the price api supports the chain id.
+ *
+ * @param chainId
+ */
+export const chainSupportsPricing = (chainId: `0x${string}`) =>
+  (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);

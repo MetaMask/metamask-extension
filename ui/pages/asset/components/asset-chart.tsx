@@ -123,7 +123,7 @@ const AssetChart = ({
   currentPrice,
   currency,
 }: {
-  chainId: string;
+  chainId: `0x${string}`;
   address: string;
   currentPrice?: number;
   currency: string;

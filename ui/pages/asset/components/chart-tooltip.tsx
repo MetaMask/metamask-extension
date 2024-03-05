@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getPricePrecision } from './util';
+import { getPricePrecision } from '../util';
 
 // A label indicating the minimum or maximum price on the chart
 const ChartTooltip = ({

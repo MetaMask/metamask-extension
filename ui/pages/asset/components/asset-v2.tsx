@@ -26,8 +26,12 @@ import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../../shared/constants/time';
 import TokenCell from '../../../components/app/token-cell';
 import TransactionList from '../../../components/app/transaction-list';
+import {
+  chainSupportsPricing,
+  getPricePrecision,
+  localizeLargeNumber,
+} from '../util';
 import AssetChart from './asset-chart';
-import { getPricePrecision, localizeLargeNumber } from './util';
 import AssetHeader from './asset-header';
 import AssetSendButton from './buttons/asset-send-button';
 import AssetBridgeButton from './buttons/asset-bridge-button';
@@ -52,7 +56,7 @@ export type Asset = (
     }
 ) & {
   /** The hexadecimal chain id */
-  chainId: string;
+  chainId: `0x${string}`;
   /** The asset's symbol, e.g. 'ETH' */
   symbol: string;
   /** The asset's name, e.g. 'Ethereum' */
@@ -102,17 +106,20 @@ const AssetV2 = ({
       ? asset.address
       : '0x0000000000000000000000000000000000000000';
 
-  useEffect(() => {
-    setMarketData(undefined);
+  if (chainSupportsPricing(chainId)) {
+    useEffect(() => {
+      setMarketData(undefined);
 
-    fetchWithCache({
-      url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
-      cacheOptions: { cacheRefreshTime: MINUTE },
-      functionName: 'GetAssetMarketData',
-    })
-      .catch(() => null)
-      .then((data) => setMarketData(data?.[address.toLowerCase()]));
-  }, [chainId, address, currency]);
+      fetchWithCache({
+        url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
+        cacheOptions: { cacheRefreshTime: 0 },
+        // cacheOptions: { cacheRefreshTime: MINUTE },
+        functionName: 'GetAssetMarketData',
+      })
+        .catch(() => null)
+        .then((data) => setMarketData(data?.[address.toLowerCase()]));
+    }, [chainId, address, currency]);
+  }
 
   return (
     <Box
