@@ -23,7 +23,7 @@ const through = require('through2');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
-const Sqrl = require('squirrelly');
+const { Eta } = require('eta');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
@@ -1325,7 +1325,8 @@ function renderHtmlFile({
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI, isTest });
+  const eta = new Eta();
+  const htmlOutput = eta.renderString(htmlTemplate, { isMMI, isTest });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
