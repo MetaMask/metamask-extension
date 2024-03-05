@@ -224,20 +224,22 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       const neverShowSwitchedNetworkMessage =
         getNeverShowSwitchedNetworkMessage(state);
       if (!neverShowSwitchedNetworkMessage) {
-        console.log(
-          'Directing to show toast with: ',
-          currentNetwork.nickname,
-          selectedTabOrigin,
-        );
-
         // Get network for this id and update toast properties
-        const network = getAllNetworks(state).find(
+        const allNetworks = getAllNetworks(state);
+        const network = allNetworks.find(
           ({ id }) => id === networkForThisDomain,
         );
+        console.log('All networks: ', allNetworks);
+        console.log('setSwitchedNetworkDetails: ', network);
         await actions.setSwitchedNetworkDetails({
           network,
           siteName: selectedTabOrigin,
         });
+        console.log(
+          'Directing to show toast with: ',
+          network.nickname,
+          selectedTabOrigin,
+        );
       }
 
       // EXPERIMENTAL: Close other MetaMask Popups
@@ -245,20 +247,22 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       const currentPopupId = getCurrentPopupId(state);
 
       setInterval(() => {
-        console.log("currentPopupId: ", state.appState.currentPopupId);
+        console.log('currentPopupId: ', state.appState.currentPopupId);
       }, 2000);
 
-      console.log("Windows are: ", windows);
-      console.log("Current popup ID is: ", currentPopupId);
+      console.log('Windows are: ', windows);
+      console.log('Current popup ID is: ', currentPopupId);
       windows.forEach((win) => {
         console.log(`win.id vs. currentPopupId: ${win.id} / ${currentPopupId}`);
         if (win.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId) {
-          console.log("Closing window: ", win.id);
+          console.log('Closing window: ', win.id);
           win.close();
         }
       });
     } else {
-      console.log('No domainNetwork or already on correct chain, not changing networks');
+      console.log(
+        'No domainNetwork or already on correct chain, not changing networks',
+      );
     }
   } else {
     console.log('useRequestQueue is off or no selectedTabOrigin');

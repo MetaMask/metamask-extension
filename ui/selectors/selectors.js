@@ -104,7 +104,6 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
-import state from '../../.storybook/test-data';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -618,11 +617,12 @@ export function getGasIsLoading(state) {
 }
 
 export function getNeverShowSwitchedNetworkMessage(state) {
-  return state.appState.switchedNetworkNeverShowMessage;
+  return state.metamask.switchedNetworkNeverShowMessage;
 }
 
 export function getSwitchedNetworkDetails(state) {
-  return state.appState.switchedNetworkDetails;
+  console.log('getSwitchedNetworkDetails; appState is: ', state.appState);
+  return state.metamask.switchedNetworkDetails;
 }
 
 export function getAppIsLoading(state) {
@@ -1148,7 +1148,7 @@ export function getShowWhatsNewPopup(state) {
 }
 
 export function getCurrentPopupId(state) {
-  console.log("App state is: ", state.appState);
+  console.log('App state is: ', state.appState);
   return state.appState.currentPopupId;
 }
 
