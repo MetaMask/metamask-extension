@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PopoverRole,
@@ -44,6 +44,26 @@ export const ConnectedAccountsMenu = ({
   const dispatch = useDispatch();
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (
+        popoverDialogRef?.current &&
+        !popoverDialogRef.current.contains(event.target)
+      ) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   const handleKeyDown = useCallback(
     (event) => {
