@@ -1,3 +1,5 @@
+import { type InternalAccount } from '@metamask/keyring-api';
+
 // Define ConnectedSite interface
 export interface ConnectedSite {
   iconUrl: string;
@@ -19,10 +21,8 @@ export interface KeyringType {
 }
 
 // Define AccountType interface
-export interface AccountType {
-  name: string;
-  address: string;
+export type AccountType = InternalAccount & {
   balance: string;
   keyring: KeyringType;
-  label?: string;
-}
+  label: string;
+};
