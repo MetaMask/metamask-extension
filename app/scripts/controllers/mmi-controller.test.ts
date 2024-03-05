@@ -6,11 +6,16 @@ import { SignatureController } from '@metamask/signature-controller';
 
 import MMIController from './mmi-controller';
 import PreferencesController from './preferences';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import AppStateController from './app-state';
 
 describe('MMIController', function () {
-  let mmiController;
+  let mmiController: MMIController;
+  const createKeyringControllerMock = () => ({
+    decryptMessage: jest.fn(),
+  });
 
+  const keyringControllerMock = createKeyringControllerMock();
   beforeEach(function () {
     const mockMessenger = {
       call: jest.fn(() => ({
@@ -24,24 +29,20 @@ describe('MMIController', function () {
 
     mmiController = new MMIController({
       mmiConfigurationController: new MmiConfigurationController(),
-      keyringController: new KeyringController({
-        messenger: mockMessenger,
-        initState: {},
-      }),
+      keyringController: keyringControllerMock as any,
       transactionUpdateController: new TransactionUpdateController({
         getCustodyKeyring: jest.fn(),
+        mmiConfigurationController: new MmiConfigurationController(),
+        captureException: jest.fn(),
       }),
       signatureController: new SignatureController({
-        messenger: mockMessenger,
-        keyringController: new KeyringController({
-          initState: {},
-          messenger: mockMessenger,
-        }),
+        messenger: mockMessenger as any,
         isEthSignEnabled: jest.fn(),
         getAllState: jest.fn(),
         securityProviderRequest: jest.fn(),
         getCurrentChainId: jest.fn(),
       }),
+      // @ts-expect-error not relevant
       preferencesController: new PreferencesController({
         initState: {},
         onAccountRemoved: jest.fn(),
@@ -65,14 +66,15 @@ describe('MMIController', function () {
         },
         messenger: mockMessenger,
       }),
+      // @ts-expect-error not relevant
       custodianEventHandlerFactory: jest.fn(),
-        getTransactions: jest.fn(),
-        updateTransactionHash: jest.fn(),
-        trackTransactionEvents: jest.fn(),
-        setTxStatusSigned: jest.fn(),
-        setTxStatusSubmitted: jest.fn(),
-        setTxStatusFailed: jest.fn(),
-        updateTransaction: jest.fn(),
+      getTransactions: jest.fn(),
+      updateTransactionHash: jest.fn(),
+      trackTransactionEvents: jest.fn(),
+      setTxStatusSigned: jest.fn(),
+      setTxStatusSubmitted: jest.fn(),
+      setTxStatusFailed: jest.fn(),
+      updateTransaction: jest.fn(),
     });
   });
 
@@ -105,11 +107,30 @@ describe('MMIController', function () {
     it('should call trackTransactionEvents', function () {
       const event = 'event';
 
-      mmiController.trackTransactionEventFromCustodianEvent({}, event);
+      mmiController.trackTransactionEventFromCustodianEvent(
+        {
+          chainId: '0x',
+          id: '',
+          time: 0,
+          txParams: {
+            from: '',
+          },
+          status: TransactionStatus.approved,
+        },
+        event,
+      );
 
       expect(mmiController.trackTransactionEvents).toHaveBeenCalledWith(
         {
-          transactionMeta: {},
+          transactionMeta: {
+            chainId: '0x',
+            id: '',
+            status: 'approved',
+            time: 0,
+            txParams: {
+              from: '',
+            },
+          },
         },
         event,
       );

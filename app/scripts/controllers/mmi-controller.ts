@@ -45,25 +45,25 @@ import { PreferencesController } from './preferences';
 interface UpdateCustodianTransactionsParameters {
   keyring: CustodyKeyring;
   type: string;
-  txList: any[];
+  txList: string[];
   custodyController: CustodyController;
   transactionUpdateController: TransactionUpdateController;
   txStateManager: any;
-  getPendingNonce: (string: any) => Promise<number>;
-  setTxHash: (number: any, string: any) => void;
+  getPendingNonce: (address: string) => Promise<number>;
+  setTxHash: (txId: string, txHash: string) => void;
 }
 export default class MMIController extends EventEmitter {
-  private opts: MMIControllerOptions;
+  public opts: MMIControllerOptions;
 
-  private mmiConfigurationController: MmiConfigurationController;
+  public mmiConfigurationController: MmiConfigurationController;
 
-  private keyringController: any;
+  public keyringController: any;
 
-  private preferencesController: PreferencesController;
+  public preferencesController: PreferencesController;
 
-  private appStateController: AppStateController;
+  public appStateController: AppStateController;
 
-  private transactionUpdateController: TransactionUpdateController;
+  public transactionUpdateController: TransactionUpdateController;
 
   private custodyController: CustodyController;
 
@@ -89,7 +89,7 @@ export default class MMIController extends EventEmitter {
 
   private updateTransactionHash: (txId: string, txHash: string) => void;
 
-  private trackTransactionEvents: (
+  public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
     event: any,
   ) => void;
@@ -515,7 +515,7 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianAccountsByAddress(
-    token: any,
+    token: string,
     envName: string,
     address: string,
     custodianType: string,
