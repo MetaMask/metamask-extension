@@ -5,7 +5,6 @@ import { Box } from '../../../component-library';
 import {
   Display,
   FlexDirection,
-  TextColor,
 } from '../../../../helpers/constants/design-system';
 
 export type SnapUIFormProps = {
