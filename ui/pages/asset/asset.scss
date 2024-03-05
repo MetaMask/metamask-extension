@@ -1,18 +1,39 @@
 @use "design-system";
 
-.asset {
-  &__container {
-    background-color: var(--color-background-default);
-  }
 
-  &__overview {
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-  }
+
+.asset {
+  $max-width: 600px;
 
   &__wrapper {
     @media screen and (max-width: design-system.$screen-sm-max) {
       width: 100%;
     }
+  }
+
+  &__header {
+    min-height: 71px;
+    // z-index: 55;
+  }
+
+  &__container {
+    background-color: var(--color-background-default);
+  }
+
+  &__content {
+    max-width: $max-width;
+  }
+
+  &__footer {
+    position: sticky;
+    // z-index: 55;
+    bottom: 0;
+    box-shadow: 0 0 8px 0 var(--color-shadow-default);
+    & > :first-child { max-width: $max-width; }
+  }
+
+  &__overview {
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 }
 
@@ -46,18 +67,6 @@
     color: var(--color-text-default);
     background-color: var(--color-background-default-pressed);
   }
-}
-
-.asset-header {
-  min-height: 70px;
-  z-index: 55;
-}
-
-.asset-footer {
-  position: sticky;
-  z-index: 55;
-  bottom: 0;
-  box-shadow: 0 0 15px 0 var(--color-shadow-default);
 }
 
 .chart-up { stroke: var(--color-success-default); }

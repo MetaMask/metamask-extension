@@ -133,205 +133,221 @@ const AssetV2 = ({
         balance={balance}
         optionsButton={optionsButton}
       />
-      <Box
-        // Fade balance in/out of header.
-        onScroll={(e: React.UIEvent) =>
-          headerRef?.current?.setBalanceOpacity(
-            Math.max(
-              0,
-              Math.min(1, ((e.target as HTMLElement).scrollTop - 394) / 55),
-            ),
-          )
-        }
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        className="main-container asset__container"
-      >
-        <Box paddingLeft={4} paddingBottom={1}>
-          <Text color={TextColor.textAlternative}>
-            {name && symbol && name !== symbol
-              ? `${name} (${symbol})`
-              : name ?? symbol}
-          </Text>
-        </Box>
-        <AssetChart
-          chainId={chainId}
-          address={address}
-          currentPrice={asset.currentPrice}
-          currency={currency}
-        />
+      <Box className="main-container asset__container">
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          paddingTop={6}
-          gap={6}
+          marginLeft={'auto'}
+          marginRight={'auto'}
+          className="asset__content"
         >
-          <Box>
-            <Text
-              variant={TextVariant.headingMd}
-              paddingBottom={2}
-              paddingLeft={4}
-            >
-              {t('yourBalance')}
-            </Text>
-            <Box>
-              {type === AssetType.native ? (
-                <TokenListItem
-                  title={symbol}
-                  tokenSymbol={symbol}
-                  primary={balance.display}
-                  secondary={balance.fiat}
-                  tokenImage={image}
-                  isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
-                  isNativeCurrency={true}
-                />
-              ) : (
-                <TokenCell
-                  address={address}
-                  image={image}
-                  symbol={symbol}
-                  string={balance.display}
-                />
-              )}
+          <Box
+            // Fade balance in/out of header.
+            onScroll={(e: React.UIEvent) =>
+              headerRef?.current?.setBalanceOpacity(
+                Math.max(
+                  0,
+                  Math.min(1, ((e.target as HTMLElement).scrollTop - 394) / 55),
+                ),
+              )
+            }
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            // className="main-container asset__container"
+          >
+            <Box paddingLeft={4} paddingBottom={1}>
+              <Text color={TextColor.textAlternative}>
+                {name && symbol && name !== symbol
+                  ? `${name} (${symbol})`
+                  : name ?? symbol}
+              </Text>
             </Box>
-            {(isSwapsChain || isBuyableChain || isBridgeChain) && (
-              <Box
-                display={Display.Flex}
-                gap={[4, 12]}
-                paddingLeft={[4, 12]}
-                paddingRight={[4, 12]}
-              >
-                <AssetBridgeButton asset={asset} />
-                <AssetSendButton asset={asset} primary={false} />
-              </Box>
-            )}
-          </Box>
-          {type === AssetType.token && (
+            <AssetChart
+              chainId={chainId}
+              address={address}
+              currentPrice={asset.currentPrice}
+              currency={currency}
+            />
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
-              paddingLeft={4}
-              paddingRight={4}
+              paddingTop={6}
+              gap={6}
             >
-              <Text variant={TextVariant.headingMd} paddingBottom={4}>
-                {t('tokenDetails')}
-              </Text>
-              {renderRow(
-                t('contractAddress'),
-                <AddressCopyButton address={address} shorten />,
-              )}
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
-                {asset.decimals !== undefined &&
-                  renderRow(t('tokenDecimal'), <Text>{asset.decimals}</Text>)}
-                {asset.aggregators && asset.aggregators?.length > 0 && (
-                  <Box>
-                    <Text
-                      color={TextColor.textAlternative}
-                      variant={TextVariant.bodyMdMedium}
-                    >
-                      {'Token list'} {/* TODO localize */}
-                    </Text>
-                    <Text>{asset.aggregators?.join(', ')}</Text>
+              <Box>
+                <Text
+                  variant={TextVariant.headingMd}
+                  paddingBottom={2}
+                  paddingLeft={4}
+                >
+                  {t('yourBalance')}
+                </Text>
+                <Box>
+                  {type === AssetType.native ? (
+                    <TokenListItem
+                      title={symbol}
+                      tokenSymbol={symbol}
+                      primary={balance.display}
+                      secondary={balance.fiat}
+                      tokenImage={image}
+                      isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
+                      isNativeCurrency={true}
+                    />
+                  ) : (
+                    <TokenCell
+                      address={address}
+                      image={image}
+                      symbol={symbol}
+                      string={balance.display}
+                    />
+                  )}
+                </Box>
+                {(isSwapsChain || isBuyableChain || isBridgeChain) && (
+                  <Box
+                    display={Display.Flex}
+                    gap={4}
+                    paddingLeft={4}
+                    paddingRight={4}
+                  >
+                    <AssetBridgeButton asset={asset} />
+                    <AssetSendButton asset={asset} primary={false} />
                   </Box>
                 )}
               </Box>
-            </Box>
-          )}
-          {(marketData?.marketCap > 0 ||
-            marketData?.totalVolume > 0 ||
-            marketData?.circulatingSupply > 0 ||
-            marketData?.allTimeHigh > 0 ||
-            marketData?.allTimeLow > 0) && (
-            <Box paddingLeft={4} paddingRight={4}>
-              <Text variant={TextVariant.headingMd} paddingBottom={4}>
-                {t('marketDetails')}
-              </Text>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={2}
-              >
-                {marketData?.marketCap > 0 &&
-                  renderRow(
-                    t('marketCap'),
-                    <Text>{localizeLargeNumber(t, marketData.marketCap)}</Text>,
+              {type === AssetType.token && (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  paddingLeft={4}
+                  paddingRight={4}
+                >
+                  <Text variant={TextVariant.headingMd} paddingBottom={4}>
+                    {t('tokenDetails')}
+                  </Text>
+                  {renderRow(
+                    t('contractAddress'),
+                    <AddressCopyButton address={address} shorten />,
                   )}
-                {marketData?.totalVolume > 0 &&
-                  renderRow(
-                    t('totalVolume'),
-                    <Text>
-                      {localizeLargeNumber(t, marketData.totalVolume)}
-                    </Text>,
-                  )}
-                {marketData?.circulatingSupply > 0 &&
-                  renderRow(
-                    t('circulatingSupply'),
-                    <Text>
-                      {localizeLargeNumber(t, marketData.circulatingSupply)}
-                    </Text>,
-                  )}
-                {marketData?.allTimeHigh > 0 &&
-                  renderRow(
-                    t('allTimeHigh'),
-                    <Text>
-                      {formatCurrency(
-                        marketData.allTimeHigh,
-                        currency,
-                        getPricePrecision(marketData.allTimeHigh),
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    gap={2}
+                  >
+                    {asset.decimals !== undefined &&
+                      renderRow(
+                        t('tokenDecimal'),
+                        <Text>{asset.decimals}</Text>,
                       )}
-                    </Text>,
-                  )}
-                {marketData?.allTimeLow > 0 &&
-                  renderRow(
-                    t('allTimeLow'),
-                    <Text>
-                      {formatCurrency(
-                        marketData.allTimeLow,
-                        currency,
-                        getPricePrecision(marketData.allTimeLow),
+                    {asset.aggregators && asset.aggregators?.length > 0 && (
+                      <Box>
+                        <Text
+                          color={TextColor.textAlternative}
+                          variant={TextVariant.bodyMdMedium}
+                        >
+                          {'Token list'} {/* TODO localize */}
+                        </Text>
+                        <Text>{asset.aggregators?.join(', ')}</Text>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              )}
+              {(marketData?.marketCap > 0 ||
+                marketData?.totalVolume > 0 ||
+                marketData?.circulatingSupply > 0 ||
+                marketData?.allTimeHigh > 0 ||
+                marketData?.allTimeLow > 0) && (
+                <Box paddingLeft={4} paddingRight={4}>
+                  <Text variant={TextVariant.headingMd} paddingBottom={4}>
+                    {t('marketDetails')}
+                  </Text>
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    gap={2}
+                  >
+                    {marketData?.marketCap > 0 &&
+                      renderRow(
+                        t('marketCap'),
+                        <Text>
+                          {localizeLargeNumber(t, marketData.marketCap)}
+                        </Text>,
                       )}
-                    </Text>,
-                  )}
+                    {marketData?.totalVolume > 0 &&
+                      renderRow(
+                        t('totalVolume'),
+                        <Text>
+                          {localizeLargeNumber(t, marketData.totalVolume)}
+                        </Text>,
+                      )}
+                    {marketData?.circulatingSupply > 0 &&
+                      renderRow(
+                        t('circulatingSupply'),
+                        <Text>
+                          {localizeLargeNumber(t, marketData.circulatingSupply)}
+                        </Text>,
+                      )}
+                    {marketData?.allTimeHigh > 0 &&
+                      renderRow(
+                        t('allTimeHigh'),
+                        <Text>
+                          {formatCurrency(
+                            marketData.allTimeHigh,
+                            currency,
+                            getPricePrecision(marketData.allTimeHigh),
+                          )}
+                        </Text>,
+                      )}
+                    {marketData?.allTimeLow > 0 &&
+                      renderRow(
+                        t('allTimeLow'),
+                        <Text>
+                          {formatCurrency(
+                            marketData.allTimeLow,
+                            currency,
+                            getPricePrecision(marketData.allTimeLow),
+                          )}
+                        </Text>,
+                      )}
+                  </Box>
+                </Box>
+              )}
+              <Box marginBottom={8}>
+                <Text
+                  paddingLeft={4}
+                  paddingRight={4}
+                  variant={TextVariant.headingMd}
+                >
+                  {t('yourActivity')}
+                </Text>
+                {type === AssetType.native ? (
+                  <TransactionList hideTokenTransactions />
+                ) : (
+                  <TransactionList tokenAddress={address} />
+                )}
               </Box>
             </Box>
-          )}
-          <Box marginBottom={8}>
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              variant={TextVariant.headingMd}
-            >
-              {t('yourActivity')}
-            </Text>
-            {type === AssetType.native ? (
-              <TransactionList hideTokenTransactions />
+          </Box>
+        </Box>
+        <Box
+          className="asset__footer"
+          backgroundColor={BackgroundColor.backgroundDefault}
+        >
+          <Box
+            marginLeft={'auto'}
+            marginRight={'auto'}
+            gap={4}
+            padding={4}
+            display={Display.Flex}
+          >
+            {isSwapsChain || isBuyableChain || isBridgeChain ? (
+              <>
+                <AssetBuyButton asset={asset} />
+                <AssetSwapButton asset={asset} />
+              </>
             ) : (
-              <TransactionList tokenAddress={address} />
+              <AssetSendButton asset={asset} primary={true} />
             )}
           </Box>
         </Box>
-      </Box>
-      <Box
-        display={Display.Flex}
-        className="asset-footer"
-        gap={[4, 12]}
-        padding={4}
-        paddingLeft={[4, 12]}
-        paddingRight={[4, 12]}
-        backgroundColor={BackgroundColor.backgroundDefault}
-      >
-        {isSwapsChain || isBuyableChain || isBridgeChain ? (
-          <>
-            <AssetBuyButton asset={asset} />
-            <AssetSwapButton asset={asset} />
-          </>
-        ) : (
-          <AssetSendButton asset={asset} primary={true} />
-        )}
       </Box>
     </Box>
   );

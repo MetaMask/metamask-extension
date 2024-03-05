@@ -92,7 +92,7 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.7,
+  aspectRatio: 2.4,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
@@ -168,43 +168,45 @@ const AssetChart = ({
         comparePrice={prices?.[0]?.y}
       />
       {prices && currentPrice ? (
-        <Box>
+        <>
           <Box style={{ opacity: loading ? 0.2 : 1 }}>
             <ChartTooltip point={yMax} {...edges} currency={currency} />
-            <Line
-              ref={chartRef}
-              data={{ datasets: [{ data: prices }] }}
-              options={options}
-              updateMode="none"
-              // Update the price display on chart hover
-              onMouseMove={(event) => {
-                const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                if (data) {
-                  const target = event.target as HTMLElement;
-                  const index = Math.max(
-                    0,
-                    Math.min(
-                      data.length - 1,
-                      Math.round(
-                        (event.nativeEvent.offsetX / target.clientWidth) *
-                          data.length,
+            <Box style={{ aspectRatio: `${options.aspectRatio}` }}>
+              <Line
+                ref={chartRef}
+                data={{ datasets: [{ data: prices }] }}
+                options={options}
+                updateMode="none"
+                // Update the price display on chart hover
+                onMouseMove={(event) => {
+                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
+                  if (data) {
+                    const target = event.target as HTMLElement;
+                    const index = Math.max(
+                      0,
+                      Math.min(
+                        data.length - 1,
+                        Math.round(
+                          (event.nativeEvent.offsetX / target.clientWidth) *
+                            data.length,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                    priceRef?.current?.setPrice({
+                      price: data[index]?.y,
+                      date: data[index]?.x,
+                    });
+                  }
+                }}
+                // Revert to current price when not hovering
+                onMouseOut={() => {
                   priceRef?.current?.setPrice({
-                    price: data[index]?.y,
-                    date: data[index]?.x,
+                    price: currentPrice,
+                    date: Date.now(),
                   });
-                }
-              }}
-              // Revert to current price when not hovering
-              onMouseOut={() => {
-                priceRef?.current?.setPrice({
-                  price: currentPrice,
-                  date: Date.now(),
-                });
-              }}
-            />
+                }}
+              />
+            </Box>
             <ChartTooltip point={yMin} {...edges} currency={currency} />
           </Box>
           <Box
@@ -238,11 +240,20 @@ const AssetChart = ({
               [t('all'), '1000Y'],
             ])}
           </Box>
-        </Box>
+        </>
       ) : (
-        <Box style={{ aspectRatio: `${initialChartOptions.aspectRatio}` }}>
+        <Box style={{ aspectRatio: `${options.aspectRatio}` }}>
           <Box
-            style={{ boxSizing: 'content-box' }}
+            style={{
+
+            boxSizing: 'content-box',
+
+            // todo theme
+            ...(!loading && {
+            background: 'linear-gradient(0deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.20) 100%), linear-gradient(102deg, #E7F2F8 39.39%, #E9F2F9 44.98%, #EBF2FA 50.57%, #EDF2FB 56.16%, #EFF2FC 61.75%, #F0F2FD 67.35%, #F1F2FD 72.94%, #F2F2FE 78.53%, #F2F2FE 84.12%, #F3F2FE 89.71%, #F3F2FF 95.3%, #F4F2FF 100.89%, #F4F2FF 106.49%, #F4F2FF 112.08%, #F4F2FF 117.67%, #F4F2FF 123.26%, #F4F2FF 128.85%)'
+            })
+
+          }}
             height={BlockSize.Full}
             backgroundColor={
               loading
@@ -261,8 +272,7 @@ const AssetChart = ({
           >
             {!loading && (
               <>
-                <Icon name={IconName.Info} size={IconSize.Xl} />
-                <Text>{t('noChartData')}</Text>
+                <img height={'200px'} src="./images/chart.webp" />
                 <Text>{t('couldNotFetchDataForToken')}</Text>
               </>
             )}

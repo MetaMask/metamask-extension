@@ -75,7 +75,7 @@ const AssetHeader = forwardRef(
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
           padding={4}
-          className={'asset-header'}
+          className={'asset__header'}
         >
           <ButtonIcon
             size={ButtonIconSize.Sm}
