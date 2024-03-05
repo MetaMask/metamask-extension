@@ -19,7 +19,7 @@ export const SnapUIForm: FunctionComponent<SnapUIFormProps> = ({
 
   const handleSubmit = (event: FormEvent<HTMLElement>) => {
     event.preventDefault();
-    handleEvent(UserInputEventType.FormSubmitEvent, name);
+    handleEvent({ event: UserInputEventType.FormSubmitEvent, name });
   };
 
   return (

@@ -10,6 +10,14 @@ export type MapToTemplateParams = {
   form?: string;
 };
 
+/**
+ * A memoized function for generating a hash that represents a Snap UI component.
+ *
+ * This can be used to generate React keys for components.
+ *
+ * @param component - The component.
+ * @returns A hash as a string.
+ */
 const generateHash = memoize((component: Component) => {
   const { type, name } = component;
   const value =
@@ -29,6 +37,15 @@ const generateHash = memoize((component: Component) => {
   );
 });
 
+/**
+ * Generate a React key to be used for a Snap UI component.
+ *
+ * This function also handles collisions between duplicate keys.
+ *
+ * @param map - A map of previously used keys to be used for collision handling.
+ * @param component - The component.
+ * @returns A key.
+ */
 function generateKey(map: Record<string, number>, component: Component) {
   const hash = generateHash(component);
   const count = (map[hash] ?? 0) + 1;

@@ -16,12 +16,12 @@ import { getMemoizedInterface } from '../../selectors';
 import { handleSnapRequest, updateInterfaceState } from '../../store/actions';
 import { mergeValue } from './utils';
 
-export type HandleEvent = (
-  event: UserInputEventType,
-  name?: string,
-  value?: string,
-  flush?: boolean,
-) => void;
+export type HandleEvent = (args: {
+  event: UserInputEventType;
+  name?: string;
+  value?: string;
+  flush?: boolean;
+}) => void;
 
 export type HandleInputChange = (
   name: string,
@@ -122,17 +122,18 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   /**
    * Handle the submission of an user input event to the Snap.
    *
-   * @param event - The event object.
-   * @param name - The name of the component emitting the event.
-   * @param value - The value of the component emitting the event.
-   * @param flush - Optional flag to indicate whether the debounce should be flushed.
+   * @param options - An options bag.
+   * @param options.event - The event type.
+   * @param options.name - The name of the component emitting the event.
+   * @param options.value - The value of the component emitting the event.
+   * @param options.flush - Optional flag to indicate whether the debounce should be flushed.
    */
-  const handleEvent: HandleEvent = (
+  const handleEvent: HandleEvent = ({
     event,
     name,
     value = internalState.current[name],
     flush = false,
-  ) => {
+  }) => {
     // We always flush the debounced request for updating the state.
     updateStateDebounced.flush();
     const fn = THROTTLED_EVENTS.includes(event)
@@ -149,7 +150,12 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   const handleInputChangeDebounced = debounce(
     (name, value) =>
-      handleEvent(UserInputEventType.InputChangeEvent, name, value, true),
+      handleEvent({
+        event: UserInputEventType.InputChangeEvent,
+        name,
+        value,
+        flush: true,
+      }),
     300,
   );
 
