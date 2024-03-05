@@ -35,23 +35,21 @@ const dappsTest = async (
 test.describe('MMI dapps', () => {
   test.describe.configure({ mode: 'serial' });
 
-  // unskip after we move our testdapp to use Sepolia
-  test.skip('MMI connects to dapp, clicks "Show me the money" button and confirm from custody', async ({
+  test('MMI connects to dapp, clicks "Show me the money" button and confirm from custody', async ({
     page,
     context,
   }) => {
     await dappsTest(page, context, 'showMeTheMoneyButton_sepolia');
   });
 
-  // unskip after we move our testdapp to use Sepolia
-  test.skip('MMI connects to dapp, clicks "Approve tokens" button and confirm from custody', async ({
+  test('MMI connects to dapp, clicks "Approve tokens" button and confirm from custody', async ({
     page,
     context,
   }) => {
     await dappsTest(page, context, 'approveTokens');
   });
 
-  test.skip('MMI connects to dapp, clicks "Use Super Powers" button, confirm from custody and check that the TX has failed', async ({
+  test('MMI connects to dapp, clicks "Use Super Powers" button, confirm from custody and check that the TX has failed', async ({
     page,
     context,
   }) => {

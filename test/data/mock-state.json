@@ -82,6 +82,7 @@
         }
       }
     },
+    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,

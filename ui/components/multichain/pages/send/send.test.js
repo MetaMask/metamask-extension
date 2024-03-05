@@ -93,6 +93,7 @@ const baseStore = {
     },
   },
   metamask: {
+    permissionHistory: {},
     transactions: [
       {
         id: 1,
@@ -226,7 +227,17 @@ const render = async (state) => {
 describe('SendPage', () => {
   describe('render and initialization', () => {
     it('should initialize the ENS slice on render', async () => {
-      const { store } = await render(baseStore);
+      const { store } = await render({
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
+      });
       const actions = store.getActions();
       expect(actions).toStrictEqual(
         expect.arrayContaining([
@@ -240,6 +251,14 @@ describe('SendPage', () => {
     it('should render correctly even when a draftTransaction does not exist', async () => {
       const modifiedState = {
         ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
         send: {
           ...baseStore.send,
           currentTransactionUUID: null,
