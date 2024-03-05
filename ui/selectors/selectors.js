@@ -470,10 +470,14 @@ export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
   const selectedAccount = getSelectedInternalAccount(state);
 
-  return {
-    ...selectedAccount,
-    ...accounts[selectedAccount.address],
-  };
+  // At the time of onboarding there is no selected account
+  if (selectedAccount) {
+    return {
+      ...selectedAccount,
+      ...accounts[selectedAccount.address],
+    };
+  }
+  return undefined;
 }
 
 export function getTargetAccount(state, targetAddress) {
@@ -1730,7 +1734,8 @@ export function getAllNetworks(state) {
 export function getIsOptimism(state) {
   return (
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
   );
 }
 
