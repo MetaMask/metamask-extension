@@ -87,7 +87,6 @@ describe('SendPage', () => {
       },
       history: { mostRecentOverviewPage: 'activity' },
       metamask: {
-        permissionHistory: {},
         transactions: [
           {
             id: 1,
