@@ -80,15 +80,13 @@ function blockedDomainCheck() {
     'battle.net',
   ];
 
-  // Matching will happen based on the protocol, hostname, and path
+  // Matching will happen based on the hostname, and path
   const blockedUrlPaths = [
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ];
 
-  const {
-    hostname: currentHostname,
-    pathname: currentPathname,
-  } = window.location;
+  const { hostname: currentHostname, pathname: currentPathname } =
+    window.location;
 
   const trimTrailingSlash = (str) =>
     str.endsWith('/') ? str.slice(0, -1) : str;
