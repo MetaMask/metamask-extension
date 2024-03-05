@@ -126,6 +126,7 @@ import { ThemeType } from '../../../shared/constants/preferences';
 import {
   AvatarAccount,
   AvatarAccountSize,
+  AvatarNetwork,
   Box,
 } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
@@ -189,6 +190,9 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
+    switchedNetworkDetails: PropTypes.oneOfType([PropTypes.object, null]),
+    setSwitchedNetworkDetails: PropTypes.func.isRequired,
+    setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -607,12 +611,21 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       addPermittedAccount,
       switchedNetworkDetails,
+      setSwitchedNetworkDetails,
+      setSwitchedNetworkNeverShowMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
       pendingConfirmations,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
+
+    console.log(
+      'switched details stuff: ',
+      switchedNetworkDetails,
+      setSwitchedNetworkDetails,
+      setSwitchedNetworkNeverShowMessage,
+    );
 
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -632,7 +645,8 @@ export default class Routes extends Component {
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
       completedOnboarding &&
-      allAccountsOnNetworkAreEmpty;
+      allAccountsOnNetworkAreEmpty &&
+      switchedNetworkDetails === null;
 
     const windowType = getEnvironmentType();
 
@@ -718,6 +732,7 @@ export default class Routes extends Component {
         <ToastContainer>
           {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
             <Toast
+              key="connect-account-toast"
               startAdornment={
                 <AvatarAccount
                   address={account.address}
@@ -748,9 +763,26 @@ export default class Routes extends Component {
               onClose={() => this.setState({ hideConnectAccountToast: true })}
             />
           ) : null}
+          {switchedNetworkDetails ? (
+            <Toast
+              key="switched-network-toast"
+              startAdornment={
+                <AvatarNetwork
+                  size={AvatarAccountSize.Md}
+                  borderColor={BorderColor.transparent}
+                  src={switchedNetworkDetails.network.rpcPrefs?.imageUrl}
+                />
+              }
+              text={this.context.t('switchedNetworkToastMessage', [
+                switchedNetworkDetails.network.nickname.toUpperCase(),
+                getURLHost(switchedNetworkDetails.siteName).toUpperCase(),
+              ])}
+              actionText={this.context.t('switchedNetworkToastDecline')}
+              onActionClick={() => setSwitchedNetworkNeverShowMessage()}
+              onClose={() => setSwitchedNetworkDetails(null)}
+            />
+          ) : null}
         </ToastContainer>
-        {switchedNetworkDetails &&
-          console.log('switchedNetworkDetails: ', switchedNetworkDetails)}
       </div>
     );
   }

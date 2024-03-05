@@ -33,6 +33,8 @@ import {
   addPermittedAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
+  setSwitchedNetworkDetails,
+  neverShowSwitchedNetworkMessage,
   ///: END:ONLY_INCLUDE_IF
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
@@ -124,6 +126,10 @@ function mapDispatchToProps(dispatch) {
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
+    setSwitchedNetworkDetails: (value = null) =>
+      dispatch(setSwitchedNetworkDetails(value)),
+    setSwitchedNetworkNeverShowMessage: () =>
+      dispatch(neverShowSwitchedNetworkMessage()),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
