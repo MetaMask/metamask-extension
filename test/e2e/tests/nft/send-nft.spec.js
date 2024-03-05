@@ -12,9 +12,7 @@ describe('Send NFT', function () {
   const erc1155SmartContract = SMART_CONTRACTS.ERC1155;
 
   it('should be able to send ERC721 NFT', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
+    const isMultichain = process.env.MULTICHAIN;
     await withFixtures(
       {
         dapp: true,
@@ -35,7 +33,10 @@ describe('Send NFT', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({
+          text: isMultichain ? 'Continue' : 'Next',
+          tag: 'button',
+        });
 
         // Edit the NFT, ensure same address, and move forward
         await driver.clickElement(
@@ -51,7 +52,10 @@ describe('Send NFT', function () {
           '0xc427d562164062a23a5cff596a4a3208e72acd28',
         );
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({
+          text: isMultichain ? 'Continue' : 'Next',
+          tag: 'button',
+        });
 
         // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -83,6 +87,7 @@ describe('Send NFT', function () {
 
   it('should be able to send ERC1155 NFT', async function () {
     // TODO: Update Test when Multichain Send Flow is added
+    const isMultichain = process.env.MULTICHAIN;
     if (process.env.MULTICHAIN) {
       return;
     }
@@ -118,7 +123,10 @@ describe('Send NFT', function () {
 
         await driver.delay(1000);
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({
+          text: isMultichain ? 'Continue' : 'Next',
+          tag: 'button',
+        });
 
         // Edit the NFT, ensure same address, and move forward
         await driver.clickElement(
@@ -136,7 +144,10 @@ describe('Send NFT', function () {
 
         await driver.fill('input[placeholder="0"]', '1');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({
+          text: isMultichain ? 'Continue' : 'Next',
+          tag: 'button',
+        });
 
         // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
