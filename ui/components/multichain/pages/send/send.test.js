@@ -207,6 +207,9 @@ const baseStore = {
       },
     },
   },
+  activeTab: {
+    origin: 'https://uniswap.org/',
+  },
   appState: {
     sendInputCurrencySwitched: false,
   },
