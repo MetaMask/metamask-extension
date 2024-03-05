@@ -1,6 +1,6 @@
 import { CaveatMutatorOperation } from '@metamask/permission-controller';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
 
 /**
  * Factories that construct caveat mutator functions that are passed to
