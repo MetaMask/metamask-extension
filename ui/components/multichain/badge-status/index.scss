@@ -1,0 +1,31 @@
+.multichain-badge-status {
+  padding: 0;
+
+  &__badge {
+    height: 16px;
+    width: 16px;
+    z-index: 1;
+  }
+
+  .mm-badge-wrapper__badge-container {
+    //Need to override the zIndex, can't do it with badgeProps.
+    z-index: 1;
+  }
+
+  &__badge-not-connected {
+    height: 10px;
+    width: 10px;
+  }
+
+  &__badge-not-connected::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: var(--color-background-default);
+    z-index: -1;
+    border-radius: 50%;
+  }
+}

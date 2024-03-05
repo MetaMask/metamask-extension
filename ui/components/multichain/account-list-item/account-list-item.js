@@ -56,6 +56,8 @@ import {
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
+import { ConnectedStatus } from '../connected-status/connected-status';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -68,17 +70,18 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptions = false,
+  menuType = AccountListItemMenuTypes.None,
   isHidden = false,
   currentTabOrigin,
+  isActive = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
-
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -140,17 +143,41 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={Size.SM}
-        address={identity.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
+      {process.env.MULTICHAIN ? (
+        <>
+          <Box
+            display={[Display.Flex, Display.None]}
+            data-testid="account-list-item-badge"
+          >
+            <ConnectedStatus address={identity.address} isActive={isActive} />
+          </Box>
+          <Box display={[Display.None, Display.Flex]}>
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={Size.MD}
+              address={identity.address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+          </Box>
+        </>
+      ) : (
+        <AvatarAccount
+          borderColor={BorderColor.transparent}
+          size={Size.MD}
+          address={identity.address}
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          marginInlineEnd={2}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -292,7 +319,8 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      {showOptions ? (
+
+      {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -313,8 +341,8 @@ export const AccountListItem = ({
           }}
           data-testid="account-list-item-menu-button"
         />
-      ) : null}
-      {showOptions ? (
+      )}
+      {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -326,7 +354,7 @@ export const AccountListItem = ({
           isHidden={isHidden}
           isConnected={isConnected}
         />
-      ) : null}
+      )}
     </Box>
   );
 };
@@ -365,9 +393,9 @@ AccountListItem.propTypes = {
    */
   connectedAvatarName: PropTypes.string,
   /**
-   * Represents if the "Options" 3-dot menu should display
+   * Represents the type of menu to be rendered
    */
-  showOptions: PropTypes.bool,
+  menuType: PropTypes.string,
   /**
    * Represents pinned accounts
    */
@@ -380,6 +408,10 @@ AccountListItem.propTypes = {
    * Represents current tab origin
    */
   currentTabOrigin: PropTypes.string,
+  /**
+   * Represents active accounts
+   */
+  isActive: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

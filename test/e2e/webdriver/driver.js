@@ -3,7 +3,6 @@ const { strict: assert } = require('assert');
 const {
   By,
   Condition,
-  error: webdriverError,
   Key,
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -259,9 +258,56 @@ class Driver {
     }, this.timeout);
   }
 
-  async waitForElementNotPresent(rawLocator) {
+  /**
+   * Wait until an element is absent.
+   *
+   * This function MUST have a guard to prevent a race condition. For example,
+   * when the previous step is to click a button that loads a new page, then of course
+   * during page load, the rawLocator element will be absent, even though it will appear
+   * a half-second later.
+   *
+   * The first choice for the guard is to use the findElementGuard, which executes before
+   * the search for the rawLocator element.
+   *
+   * The second choice for the guard is to use the waitAtLeastGuard parameter.
+   *
+   * @param {string | object} rawLocator
+   * @param {object} guards
+   * @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
+   * @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout] - The maximum milliseconds to wait before failing
+   */
+  async assertElementNotPresent(
+    rawLocator,
+    {
+      findElementGuard = '',
+      waitAtLeastGuard = 0,
+      timeout = this.timeout,
+    } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+
+    if (findElementGuard) {
+      await this.findElement(findElementGuard);
+    }
+
     const locator = this.buildLocator(rawLocator);
-    return await this.driver.wait(until.elementIsNotPresent(locator));
+
+    try {
+      await this.driver.wait(
+        until.elementIsNotPresent(locator),
+        timeout - waitAtLeastGuard,
+      );
+    } catch (err) {
+      throw new Error(
+        `Found element ${JSON.stringify(
+          rawLocator,
+        )} that should not be present`,
+      );
+    }
   }
 
   async quit() {
@@ -385,19 +431,6 @@ class Driver {
     );
   }
 
-  async assertElementNotPresent(rawLocator) {
-    let dataTab;
-    try {
-      dataTab = await this.findElement(rawLocator);
-    } catch (err) {
-      assert(
-        err instanceof webdriverError.NoSuchElementError ||
-          err instanceof webdriverError.TimeoutError,
-      );
-    }
-    assert.ok(!dataTab, 'Found element that should not be present');
-  }
-
   async isElementPresent(rawLocator) {
     try {
       await this.findElement(rawLocator);
@@ -440,7 +473,7 @@ class Driver {
 
   async navigate(page = PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
-    // Wait for asyncronous JavaScript to load
+    // Wait for asynchronous JavaScript to load
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.metamask-loaded')),
       10 * 1000,
@@ -546,6 +579,43 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  async switchToWindowWithUrl(
+    url,
+    initialWindowHandles,
+    delayStep = 1000,
+    timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
+  ) {
+    let windowHandles =
+      initialWindowHandles || (await this.driver.getAllWindowHandles());
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      for (const handle of windowHandles) {
+        const handleUrl = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getCurrentUrl();
+          },
+        );
+
+        if (handleUrl === `${url}/`) {
+          return handle;
+        }
+      }
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+      // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with url: ${url}`);
+  }
+
   async closeWindow() {
     await this.driver.close();
   }
@@ -594,7 +664,7 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    // On occassion there may be a bug in the offscreen document which does
+    // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {

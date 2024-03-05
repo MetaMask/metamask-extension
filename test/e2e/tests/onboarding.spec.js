@@ -265,7 +265,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        // Add custome network localhost 8546 during onboarding
+        // Add custom network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
         await driver.clickElement('.mm-picker-network');
         await driver.clickElement({
@@ -286,7 +286,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="add-network-modal"]',
         );
         await driver.clickElement({ text: 'Done', tag: 'button' });

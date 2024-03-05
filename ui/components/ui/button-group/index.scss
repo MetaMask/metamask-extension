@@ -1,10 +1,12 @@
+@use "design-system";
+
 .button-group {
   display: flex;
   justify-content: center;
   align-items: center;
 
   &__button {
-    font-size: $font-size-h5;
+    font-size: design-system.$font-size-h5;
     border-style: solid;
     border-color: var(--color-border-default);
     border-width: 1px 1px 1px;
@@ -37,7 +39,7 @@
 
 .radio-button-group {
   .radio-button {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-alternative);
     border: 1px solid var(--color-border-muted);
