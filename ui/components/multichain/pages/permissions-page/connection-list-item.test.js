@@ -49,9 +49,6 @@ describe('ConnectionListItem', () => {
     expect(
       getByTestId('connection-list-item__avatar-favicon'),
     ).toBeInTheDocument();
-    console.log(
-      getByTestId('connection-list-item__avatar-favicon').getAttribute('src'),
-    );
   });
 
   it('calls onClick when clicked', () => {
