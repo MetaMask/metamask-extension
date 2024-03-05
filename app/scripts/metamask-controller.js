@@ -1675,7 +1675,17 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
+    const mmiControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'MMIController',
+      allowedActions: [
+        'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
+        'AccountsController:listAccounts',
+      ],
+    });
+
     this.mmiController = new MMIController({
+      messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
@@ -1691,7 +1701,6 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
-      accountsController: this.accountsController,
       platform: this.platform,
       extension: this.extension,
       getTransactions: this.txController.getTransactions.bind(
