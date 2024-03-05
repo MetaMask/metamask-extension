@@ -220,12 +220,10 @@ function sortRows(rows: RowData[]): RowData[] {
   });
 }
 
-export default function SimulationDetails({
-  fromAddress,
-  simulationData,
-}: SimulationDetailsProps) {
-  const { isLoading, tokens } = useTokens(fromAddress, simulationData);
-
+function getRows(
+  tokens: Record<string, Token>,
+  simulationData: SimulationData,
+) {
   const rows = [];
 
   if (simulationData.nativeBalanceChange) {
@@ -259,7 +257,30 @@ export default function SimulationDetails({
     }
   });
 
-  const sortedRows = sortRows(rows);
+  return sortRows(rows);
+}
+
+export default function SimulationDetails({
+  fromAddress,
+  simulationData,
+}: SimulationDetailsProps) {
+  const { isLoading, tokens } = useTokens(fromAddress, simulationData);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{ display: 'flex', padding: '20px', justifyContent: 'center' }}
+      >
+        <PulseLoader />
+      </div>
+    );
+  }
+
+  if (!simulationData) {
+    return 'Simulation failed';
+  }
+
+  const rows = getRows(tokens, simulationData);
 
   return (
     <Box
@@ -271,23 +292,15 @@ export default function SimulationDetails({
       padding={3}
       margin={4}
     >
-      {isLoading ? (
-        <div
-          style={{ display: 'flex', padding: '20px', justifyContent: 'center' }}
-        >
-          <PulseLoader />
-        </div>
-      ) : (
-        sortedRows.map((row, index) => (
-          <Row
-            key={index}
-            isGain={row.isGain}
-            message={row.message}
-            value={row.value}
-            valueAddress={row.valueAddress}
-          />
-        ))
-      )}
+      {rows.map((row, index) => (
+        <Row
+          key={index}
+          isGain={row.isGain}
+          message={row.message}
+          value={row.value}
+          valueAddress={row.valueAddress}
+        />
+      ))}
     </Box>
   );
 }
