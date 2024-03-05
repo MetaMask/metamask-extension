@@ -109,15 +109,24 @@ For Jest debugging guide using Node.js, see [docs/tests/jest.md](docs/tests/jest
 
 ### Running E2E Tests
 
-Our e2e test suite can be run on either Firefox or Chrome.
+Our e2e test suite ensures the MetaMask extension functions correctly across both Firefox and Chrome browsers. Here's how to get started with e2e testing:
 
-1. **required** `yarn build:test` to create a test build.
-2. run tests, targeting the browser:
+#### Preparing a Test Build
 
-- Firefox e2e tests can be run with `yarn test:e2e:firefox`.
-- Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
+Before running e2e tests, you'll need a test build. You have two options:
 
-These test scripts all support additional options, which might be helpful for debugging. Run the script with the flag `--help` to see all options.
+1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder.
+2. Create a Custom Test Build: For testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
+    - `build:test` for main build
+    - `build:test:flask` for flask build
+    - `build:test:mmi` for mmi build
+    - `build:test:mv3` for mv3 build
+
+#### Running Tests
+Once you have your test build ready, choose the browser for your e2e tests:
+- For Firefox, run `yarn test:e2e:firefox`.
+- For Chrome, run `yarn test:e2e:chrome`.
+These scripts support additional options for debugging. Use `--help`to see all available options.
 
 #### Running a single e2e test
 
@@ -138,7 +147,7 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 ```
 
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
-`yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --debug --leave-running`
+`yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --debug --leave-running`
 
 #### Running specific builds types e2e test
 
