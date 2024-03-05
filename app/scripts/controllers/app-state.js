@@ -411,10 +411,6 @@ export default class AppStateController extends EventEmitter {
    * @param switchedNetworkDetails
    */
   setSwitchedNetworkDetails(switchedNetworkDetails) {
-    console.log(
-      'background: setSwitchedNetworkDetails: ',
-      switchedNetworkDetails,
-    );
     this.store.updateState({ switchedNetworkDetails });
   }
 
@@ -425,10 +421,6 @@ export default class AppStateController extends EventEmitter {
    * @param switchedNetworkNeverShowMessage
    */
   setSwitchedNetworkNeverShowMessage(switchedNetworkNeverShowMessage) {
-    console.log(
-      'background: setSwitchedNetworkNeverShowMessage: ',
-      switchedNetworkNeverShowMessage,
-    );
     this.store.updateState({
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage,

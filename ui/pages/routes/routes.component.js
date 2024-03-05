@@ -628,13 +628,6 @@ export default class Routes extends Component {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
-    console.log(
-      'switched details stuff: ',
-      switchedNetworkDetails,
-      setSwitchedNetworkDetails,
-      setSwitchedNetworkNeverShowMessage,
-    );
-
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
