@@ -93,13 +93,11 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
+  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
-    },
-  );
+    });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
     useCurrencyDisplay(selectedAccountBalance, {
@@ -231,9 +229,8 @@ const AssetList = ({ onClickAsset }) => {
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
           )
-            ? primaryCurrencyProperties.value ??
-              secondaryCurrencyProperties.value
-            : null
+            ? primaryCurrencyDisplay
+            : undefined
         }
         tokenSymbol={
           useNativeCurrencyAsPrimaryCurrency
