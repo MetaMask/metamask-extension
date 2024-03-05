@@ -16,7 +16,7 @@ type SignatureRequestType = {
 
 type Confirmation = SignatureRequestType;
 
-type ConfirmMetamaskState = {
+export type ConfirmMetamaskState = {
   confirm: {
     currentConfirmation?: Confirmation;
   };

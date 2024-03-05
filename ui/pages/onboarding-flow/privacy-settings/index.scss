@@ -1,14 +1,16 @@
+@use "design-system";
+
 .privacy-settings {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     margin-bottom: 24px;
   }
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     margin-bottom: 40px;
   }
 
@@ -27,7 +29,7 @@
     max-width: 620px;
     margin-bottom: 20px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-inline-start: 48px;
       margin-inline-end: 48px;
     }
