@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 111;
+export const version = 112;
 
 /**
  * Fully remove perDomainNetwork setting from selectedNetworkController
