@@ -37,7 +37,7 @@ describe('shouldInjectProvider', () => {
   });
 
   describe('blockedDomainCheck', () => {
-    describe('should pevent injection when', () => {
+    describe('should prevent injection when', () => {
       it('the domain is blocked', () => {
         mockUrl('https://execution.consensys.io');
         expect(shouldInjectProvider()).toBe(false);
