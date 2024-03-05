@@ -38,13 +38,17 @@ function transformState(state: Record<string, any>) {
       ),
     );
     state.SelectedNetworkController = {};
-  } else if (!hasProperty(state.SelectedNetworkController, 'perDomainNetwork')) {
+  } else if (
+    !hasProperty(state.SelectedNetworkController, 'perDomainNetwork')
+  ) {
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController.perDomainNetwork is missing from SelectedNetworkController state`,
       ),
     );
-  } else if (typeof state.SelectedNetworkController.perDomainNetwork !== 'boolean') {
+  } else if (
+    typeof state.SelectedNetworkController.perDomainNetwork !== 'boolean'
+  ) {
     global.sentry?.captureException?.(
       new Error(
         `state.SelectedNetworkController.perDomainNetwork is type: ${typeof state

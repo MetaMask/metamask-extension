@@ -1,4 +1,3 @@
-
 import { migrate, version } from './112';
 
 const sentryCaptureExceptionMock = jest.fn();
@@ -58,13 +57,12 @@ describe('migration #112', () => {
     expect(transformedState.data).toEqual(expectedState);
   });
 
-
   it('should capture an exception if SelectedNetworkController.perDomainNetwork is in state but is not a boolean', async () => {
     const oldData = {
       other: 'data',
       SelectedNetworkController: {
         perDomainNetwork: 123,
-        domains: {}
+        domains: {},
       },
     };
     const oldStorage = {
@@ -78,7 +76,9 @@ describe('migration #112', () => {
 
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`state.SelectedNetworkController.perDomainNetwork is type: number`),
+      new Error(
+        `state.SelectedNetworkController.perDomainNetwork is type: number`,
+      ),
     );
   });
 
@@ -86,8 +86,8 @@ describe('migration #112', () => {
     const oldData = {
       other: 'data',
       SelectedNetworkController: {
-        domains: {}
-      }
+        domains: {},
+      },
     };
     const oldStorage = {
       meta: {
