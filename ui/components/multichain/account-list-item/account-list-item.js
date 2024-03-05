@@ -68,6 +68,7 @@ export const AccountListItem = ({
   selected = false,
   onClick,
   closeMenu,
+  accountsCount,
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
@@ -362,6 +363,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
+          disableAccountSwitcher={accountsCount === 1}
           isOpen={accountOptionsMenuOpen}
         />
       )}
@@ -390,6 +392,10 @@ AccountListItem.propTypes = {
    * Function to execute when the item is clicked
    */
   onClick: PropTypes.func,
+  /**
+   * Represents how many accounts are being listed
+   */
+  accountsCount: PropTypes.number,
   /**
    * Function that closes the menu
    */

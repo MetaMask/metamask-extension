@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useContext } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PopoverRole,
@@ -29,12 +29,14 @@ export const ConnectedAccountsMenu = ({
   isOpen,
   identity,
   anchorElement,
+  disableAccountSwitcher,
   onClose,
   closeMenu,
 }: {
   isOpen: boolean;
   identity: Identity;
   anchorElement: HTMLElement | null;
+  disableAccountSwitcher: boolean;
   onClose: () => void;
   closeMenu: () => void;
 }) => {
@@ -77,17 +79,21 @@ export const ConnectedAccountsMenu = ({
           >
             <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
           </TsMenuItem>
-          <TsMenuItem
-            iconName={IconName.SwapHorizontal}
-            data-testid="switch-account-menu-item"
-            onClick={() => {
-              dispatch(setSelectedAccount(identity.address));
-              onClose();
-              closeMenu();
-            }}
-          >
-            <Text variant={TextVariant.bodyMd}>{t('switchToThisAccount')}</Text>
-          </TsMenuItem>
+          {disableAccountSwitcher ? null : (
+            <TsMenuItem
+              iconName={IconName.SwapHorizontal}
+              data-testid="switch-account-menu-item"
+              onClick={() => {
+                dispatch(setSelectedAccount(identity.address));
+                onClose();
+                closeMenu();
+              }}
+            >
+              <Text variant={TextVariant.bodyMd}>
+                {t('switchToThisAccount')}
+              </Text>
+            </TsMenuItem>
+          )}
           <TsMenuItem
             iconName={IconName.Logout}
             iconColor={IconColor.errorDefault}
