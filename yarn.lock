@@ -5055,18 +5055,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/selected-network-controller@npm:8.0.0"
+"@metamask/selected-network-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/selected-network-controller@npm:9.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^4.1.1"
     "@metamask/json-rpc-engine": "npm:^7.3.2"
     "@metamask/network-controller": "npm:^17.2.0"
+    "@metamask/permission-controller": "npm:^8.0.1"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
     "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
     "@metamask/network-controller": ^17.2.0
-  checksum: 20669a83f7bcf6847b15c76200c312b141beedafbe2e6913437c0116693fc42f7d729c4dcd66a90c975589e14a3f51170f7d43a78f1637a442c738e8b92214f4
+    "@metamask/permission-controller": ^8.0.1
+  checksum: 5b784e1bb3623226408cc20c4263766a0fb495dacb052de38bb8a1bfab6786e8ce36938b3faa4a7e53d9f284046d5bff189e3104217cb7ccc8587d51a5f8e293
   languageName: node
   linkType: hard
 
@@ -24858,7 +24860,7 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^8.0.0"
+    "@metamask/selected-network-controller": "npm:^9.0.0"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^6.0.1"
