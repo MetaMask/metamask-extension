@@ -113,6 +113,15 @@ export async function submitSmartTransactionHook(
         if (!status || status === SmartTransactionStatuses.PENDING) {
           return;
         }
+        if (statusMetadata?.minedHash) {
+          log.info(
+            'Smart Transaction - Received tx hash: ',
+            statusMetadata?.minedHash,
+          );
+          transactionHash = statusMetadata.minedHash;
+        } else {
+          transactionHash = null;
+        }
         await controllerMessenger.call(
           'ApprovalController:updateRequestState',
           {
@@ -123,15 +132,6 @@ export async function submitSmartTransactionHook(
             },
           },
         );
-        if (statusMetadata?.minedHash) {
-          log.info(
-            'Smart Transaction - Received tx hash: ',
-            statusMetadata?.minedHash,
-          );
-          transactionHash = statusMetadata.minedHash;
-        } else {
-          transactionHash = null;
-        }
       },
     );
     const waitForTransactionHashChange = () => {
