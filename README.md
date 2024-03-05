@@ -109,23 +109,24 @@ For Jest debugging guide using Node.js, see [docs/tests/jest.md](docs/tests/jest
 
 ### Running E2E Tests
 
-Our e2e test suite ensures the MetaMask extension functions correctly across both Firefox and Chrome browsers. Here's how to get started with e2e testing:
+Our e2e test suite can be run on either Firefox or Chrome. Here's how to get started with e2e testing:
 
 #### Preparing a Test Build
 
 Before running e2e tests, you'll need a test build. You have two options:
 
 1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder.
-2. Create a Custom Test Build: For testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
-    - `build:test` for main build
-    - `build:test:flask` for flask build
-    - `build:test:mmi` for mmi build
-    - `build:test:mv3` for mv3 build
+2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
+    - `yarn build:test` for main build
+    - `yarn build:test:flask` for flask build
+    - `yarn build:test:mmi` for mmi build
+    - `yarn build:test:mv3` for mv3 build
 
 #### Running Tests
 Once you have your test build ready, choose the browser for your e2e tests:
 - For Firefox, run `yarn test:e2e:firefox`.
 - For Chrome, run `yarn test:e2e:chrome`.
+
 These scripts support additional options for debugging. Use `--help`to see all available options.
 
 #### Running a single e2e test
