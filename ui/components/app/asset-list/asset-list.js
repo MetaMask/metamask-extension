@@ -51,10 +51,6 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 ///: END:ONLY_INCLUDE_IF
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
-} from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 
 const AssetList = ({ onClickAsset }) => {
@@ -90,13 +86,11 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
+  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
-    },
-  );
+    });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
     useCurrencyDisplay(selectedAccountBalance, {
@@ -191,27 +185,17 @@ const AssetList = ({ onClickAsset }) => {
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
         primary={
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyProperties.value ??
-              secondaryCurrencyProperties.value
-            : null
-        }
-        tokenSymbol={
           useNativeCurrencyAsPrimaryCurrency
-            ? primaryCurrencyProperties.suffix
-            : secondaryCurrencyProperties.suffix
+            ? primaryCurrencyProperties.value
+            : secondaryCurrencyProperties.value
         }
+        tokenSymbol={nativeCurrency}
         secondary={
           showFiat &&
-          showSecondaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
+          isOriginalNativeSymbol &&
+          (useNativeCurrencyAsPrimaryCurrency
             ? secondaryCurrencyDisplay
-            : undefined
+            : primaryCurrencyDisplay)
         }
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
