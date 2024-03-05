@@ -358,7 +358,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
           let callCount = 0;
 
-          while (callCount < 3) {
+          while (callCount < 5) {
             callCount += 1;
             const { next, executeMiddlewareStack } = getNext();
             handler(req, res, next);
