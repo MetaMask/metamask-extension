@@ -119,6 +119,7 @@ export const AccountListItem = ({
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
+  const isSingleAccount = accountsCount === 1;
 
   return (
     <Box
@@ -363,7 +364,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
-          disableAccountSwitcher={accountsCount === 1}
+          disableAccountSwitcher={isSingleAccount}
           isOpen={accountOptionsMenuOpen}
         />
       )}
