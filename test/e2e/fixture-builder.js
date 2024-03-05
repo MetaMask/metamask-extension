@@ -191,7 +191,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -317,7 +316,6 @@ function onboardingFixture() {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -863,13 +861,15 @@ class FixtureBuilder {
   }
 
   withSelectedNetworkControllerPerDomain() {
-    return this.withSelectedNetworkController({
-      domains: {
-        [DAPP_URL]: 'networkConfigurationId',
-        [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-      },
-      perDomainNetwork: true,
-    });
+    return merge(
+      this.withSelectedNetworkController({
+        domains: {
+          [DAPP_URL]: 'networkConfigurationId',
+          [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        },
+      }),
+      this.withPreferencesControllerUseRequestQueueEnabled(),
+    );
   }
 
   withPreferencesControllerUseRequestQueueEnabled() {
