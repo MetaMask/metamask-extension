@@ -1825,7 +1825,7 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     this.userOperationController = new UserOperationController({
-      entrypoint: process.env.EIP_4337_ENTRYPOINT,
+      entrypoint: '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b', // process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
