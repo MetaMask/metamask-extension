@@ -158,7 +158,10 @@ export const AssetPickerAmount = () => {
         />
       );
     }
-    if (asset.details?.standard === TokenStandard.ERC20) {
+    if (
+      asset.details?.standard === TokenStandard.ERC20 ||
+      asset.details?.standard === TokenStandard.ERC721
+    ) {
       return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: Details should be defined for token assets
