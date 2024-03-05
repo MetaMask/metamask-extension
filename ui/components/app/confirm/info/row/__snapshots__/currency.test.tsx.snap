@@ -8,7 +8,6 @@ exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
   >
     <div
       class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-      ethnumberofdecimals="4"
       title="$82.65 USD"
     >
       <span
