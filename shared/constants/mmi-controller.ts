@@ -3,12 +3,12 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 export interface MMIControllerOptions {
   mmiConfigurationController: any;
   keyringController: any;
-  securityProviderRequest: any;
   preferencesController: any;
   appStateController: any;
   transactionUpdateController: any;
   custodyController: any;
   institutionalFeaturesController: any;
+  messenger: any;
   getState: () => any;
   getPendingNonce: (address: string) => Promise<any>;
   accountTracker: any;
