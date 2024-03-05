@@ -1395,6 +1395,7 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           console.log({ prevCompletedOnboarding, currCompletedOnboarding });
           this.networkProviderInitialization();
+          // this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
     );
@@ -2323,18 +2324,16 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.initializeProvider();
     this.delayNetworkClient = false;
 
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
+    // this.provider =
+    //   this.networkController.getProviderAndBlockTracker().provider;
+    // this.blockTracker =
+    //   this.networkController.getProviderAndBlockTracker().blockTracker;
 
     // TODO: Delete when ready to remove `networkVersion` from provider object
     this.deprecatedNetworkId = null;
     this.updateDeprecatedNetworkId();
 
     this.accountTracker.delayedInit();
-
-    // this.triggerNetworkrequests();
 
     // this.txController.initApprovals();
     // console.log('after initApprovals');
