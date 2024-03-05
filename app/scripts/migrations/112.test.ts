@@ -13,7 +13,7 @@ describe('migration #112', () => {
 
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 110 },
+      meta: { version: 111 },
       data: {},
     };
 
@@ -28,7 +28,7 @@ describe('migration #112', () => {
     };
 
     const transformedState = await migrate({
-      meta: { version: 110 },
+      meta: { version: 111 },
       data: oldState,
     });
 
@@ -50,7 +50,7 @@ describe('migration #112', () => {
     };
 
     const transformedState = await migrate({
-      meta: { version: 110 },
+      meta: { version: 111 },
       data: oldState,
     });
 
@@ -67,7 +67,7 @@ describe('migration #112', () => {
     };
     const oldStorage = {
       meta: {
-        version: 93,
+        version: 111,
       },
       data: oldData,
     };
@@ -91,7 +91,7 @@ describe('migration #112', () => {
     };
     const oldStorage = {
       meta: {
-        version: 93,
+        version: 111,
       },
       data: oldData,
     };
