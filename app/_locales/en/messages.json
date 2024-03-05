@@ -136,6 +136,9 @@
   "accountIdenticon": {
     "message": "Account identicon"
   },
+  "accountIsntConnectedToastText": {
+    "message": "$1 isn't connected to $2"
+  },
   "accountName": {
     "message": "Account name"
   },
