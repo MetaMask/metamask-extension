@@ -1,4 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { createSelector } from 'reselect';
+import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -26,6 +28,7 @@ const initialState = {
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   identities: {},
+  internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
@@ -97,7 +100,26 @@ export default function reduceMetamask(state = initialState, action) {
       const id = {};
       id[account] = { ...metamaskState.identities[account], name };
       const identities = { ...metamaskState.identities, ...id };
-      return Object.assign(metamaskState, { identities });
+      const accountToUpdate = Object.values(
+        metamaskState.internalAccounts.accounts,
+      ).find((internalAccount) => {
+        return internalAccount.address.toLowerCase() === account.toLowerCase();
+      });
+
+      const internalAccounts = {
+        ...metamaskState.internalAccounts,
+        accounts: {
+          ...metamaskState.internalAccounts.accounts,
+          [accountToUpdate.id]: {
+            ...accountToUpdate,
+            metadata: {
+              ...accountToUpdate.metadata,
+              name,
+            },
+          },
+        },
+      };
+      return Object.assign(metamaskState, { identities, internalAccounts });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
@@ -344,9 +366,35 @@ export function getGasEstimateType(state) {
   return state.metamask.gasEstimateType;
 }
 
-export function getGasFeeEstimates(state) {
+export function getGasFeeControllerEstimates(state) {
   return state.metamask.gasFeeEstimates;
 }
+
+export function getTransactionGasFeeEstimates(state) {
+  const transactionMetadata = state.confirmTransaction?.txData;
+  return transactionMetadata?.gasFeeEstimates;
+}
+
+export const getGasFeeEstimates = createSelector(
+  getGasEstimateType,
+  getGasFeeControllerEstimates,
+  getTransactionGasFeeEstimates,
+  (
+    gasFeeControllerEstimateType,
+    gasFeeControllerEstimates,
+    transactionGasFeeEstimates,
+  ) => {
+    if (transactionGasFeeEstimates) {
+      return mergeGasFeeEstimates({
+        gasFeeControllerEstimateType,
+        gasFeeControllerEstimates,
+        transactionGasFeeEstimates,
+      });
+    }
+
+    return gasFeeControllerEstimates;
+  },
+);
 
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;

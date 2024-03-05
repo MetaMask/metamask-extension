@@ -136,6 +136,9 @@
   "accountIdenticon": {
     "message": "Account identicon"
   },
+  "accountIsntConnectedToastText": {
+    "message": "$1 isn't connected to $2"
+  },
   "accountName": {
     "message": "Account name"
   },
@@ -806,6 +809,9 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
+  "connectAccounts": {
+    "message": "Connect accounts"
+  },
   "connectCustodialAccountMenu": {
     "message": "Connect Custodial Account"
   },
@@ -820,6 +826,9 @@
   },
   "connectManually": {
     "message": "Manually connect to current site"
+  },
+  "connectMoreAccounts": {
+    "message": "Connect more accounts"
   },
   "connectSnap": {
     "message": "Connect $1",
@@ -872,11 +881,11 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
-  "connectedaccount": {
-    "message": "account"
+  "connectedWith": {
+    "message": "Connected with"
   },
-  "connectedaccounts": {
-    "message": "accounts"
+  "connectedaccountsTabKey": {
+    "message": "Connected accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1863,7 +1872,7 @@
     "message": "Goerli test network"
   },
   "gotIt": {
-    "message": "Got it!"
+    "message": "Got it"
   },
   "grantedToWithColon": {
     "message": "Granted to:"
@@ -2473,6 +2482,10 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metadataModalSourceTooltip": {
+    "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
+    "description": "$1 is the snap name and $2 is the snap NPM id."
+  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
@@ -2818,6 +2831,12 @@
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
+  },
+  "noConnectedAccountDescription": {
+    "message": "Select an account you want to use on this site to continue."
+  },
+  "noConnectedAccountTitle": {
+    "message": "MetaMask isn’t connected to this site"
   },
   "noConversionDateAvailable": {
     "message": "No currency conversion date available"
@@ -3288,6 +3307,9 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
+  "permissionDetails": {
+    "message": "Permission details"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3509,7 +3531,6 @@
   "permissionsPageEmptySubContent": {
     "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
   },
-
   "permissionsPageTourDescription": {
     "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
   },
@@ -4396,6 +4417,9 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
+  "source": {
+    "message": "Source"
+  },
   "speedUp": {
     "message": "Speed up"
   },
@@ -5275,6 +5299,9 @@
   "tooltipSatusConnected": {
     "message": "connected"
   },
+  "tooltipSatusConnectedUpperCase": {
+    "message": "Connected"
+  },
   "tooltipSatusNotConnected": {
     "message": "not connected"
   },
@@ -5726,6 +5753,12 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"
+  },
+  "yourTransactionConfirmed": {
+    "message": "Transaction already confirmed"
+  },
+  "yourTransactionJustConfirmed": {
+    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
