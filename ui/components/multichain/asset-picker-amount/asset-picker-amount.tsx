@@ -104,8 +104,6 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
       <Box
         marginLeft={'auto'}
         textAlign={TextAlign.End}
-        paddingTop={2}
-        paddingBottom={2}
         width={BlockSize.Max}
       >
         <Text variant={TextVariant.bodyMd} ellipsis>
@@ -261,8 +259,8 @@ export const AssetPickerAmount = () => {
             alignItems={AlignItems.flexEnd}
           >
             <Text
-              variant={TextVariant.bodyMd}
-              width={BlockSize.ThreeFourths}
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
               ellipsis
             >
               ID: {`#${asset.details?.tokenId}`}
