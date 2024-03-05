@@ -137,10 +137,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.scrollToElement(sendButton);
         sendButton.click();
 
-        if (process.env.MULTICHAIN) {
-          return;
-        }
-
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
