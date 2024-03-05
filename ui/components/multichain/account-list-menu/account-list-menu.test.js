@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -89,7 +90,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
-    expect(listItems).toHaveLength(5);
+    expect(listItems).toHaveLength(6);
 
     const searchBox = document.querySelector('input[type=search]');
     fireEvent.change(searchBox, {
@@ -132,6 +133,25 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+        },
         permissionHistory: {
           'https://test.dapp': {
             eth_accounts: {
@@ -388,7 +408,6 @@ describe('AccountListMenu', () => {
           },
         },
         internalAccounts: {
-          ...mockState.metamask.internalAccounts,
           accounts: {
             ...mockState.metamask.internalAccounts.accounts,
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -403,6 +422,7 @@ describe('AccountListMenu', () => {
               },
             },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
       },
     });
@@ -450,7 +470,6 @@ describe('AccountListMenu', () => {
           },
         },
         internalAccounts: {
-          ...mockState.metamask.internalAccounts,
           accounts: {
             ...mockState.metamask.internalAccounts.accounts,
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -464,10 +483,12 @@ describe('AccountListMenu', () => {
                 },
                 snap: {
                   name: 'Test Snap Name',
+                  id: 'test-snap-id',
                 },
               },
             },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
       },
     });

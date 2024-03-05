@@ -85,6 +85,31 @@ const renderComponent = ({
       identities: {
         '0xAddress': {},
       },
+      internalAccounts: {
+        accounts: {
+          mockId: {
+            address: '0xAddress',
+            id: 'mockId',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+        },
+        selectedAccount: 'mock-id',
+      },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
