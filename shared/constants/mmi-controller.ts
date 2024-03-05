@@ -20,7 +20,10 @@ export interface MMIControllerOptions {
   platform: any;
   extension: any;
   updateTransactionHash: (txId: string, txHash: string) => void;
-  trackTransactionEvents: ( args: {transactionMeta: TransactionMeta}, event: any) => void;
+  trackTransactionEvents: (
+    args: { transactionMeta: TransactionMeta },
+    event: any,
+  ) => void;
   getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
   setTxStatusSigned: (txId: string) => void;
   setTxStatusSubmitted: (txId: string) => void;
