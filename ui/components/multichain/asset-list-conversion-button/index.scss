@@ -18,3 +18,16 @@
     }
   }
 }
+
+
+.ramps-card {
+  position: relative;
+
+  &__close-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
+}
+
+

@@ -58,6 +58,10 @@ import {
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -183,38 +187,8 @@ const AssetList = ({ onClickAsset }) => {
           display={Display.Flex}
           gap={2}
         >
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            shouldShowBuy ? (
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
-                onClick={() => {
-                  openBuyCryptoInPdapp();
-                  trackEvent({
-                    event: MetaMetricsEventName.NavBuyButtonClicked,
-                    category: MetaMetricsEventCategory.Navigation,
-                    properties: {
-                      location: 'Home',
-                      text: 'Buy',
-                      chain_id: currentNetwork.chainId,
-                      token_symbol: defaultSwapsToken,
-                    },
-                  });
-                }}
-              />
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            shouldShowReceive ? (
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
-                onClick={() => setShowReceiveModal(true)}
-              />
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />
+
           {showReceiveModal ? (
             <ReceiveModal
               address={selectedAddress}

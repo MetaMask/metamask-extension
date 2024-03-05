@@ -1,20 +1,9 @@
 .ramps-card {
-  min-width: 157px;
-  height: 56px;
-  flex-grow: 1;
-
-
-  &__contents {
-    flex-grow: 1;
-
-    &__button-wrapper {
-      background: var(--brand-colors-white-white000);
-      width: 24px;
-      height: 24px;
-    }
-
-    &__text {
-      color: var(--brand-colors-white-white000);
-    }
+  &__close-button {
+    background: red;
+    position: absolute;
+    right: 0;
   }
 }
+
+

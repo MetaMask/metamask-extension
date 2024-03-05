@@ -16,10 +16,16 @@ import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Box, Text } from '../../component-library';
 import {
+  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RAMPS_CARD_VARIANTS,
+} from '../../multichain/ramps-card/ramps-card';
+import { RampsCard } from '../../multichain/ramps-card';
 
 const PAGE_INCREMENT = 10;
 
@@ -279,11 +285,16 @@ export default function TransactionList({
                 );
               })
           ) : (
-            <Box className="transaction-list__empty">
-              <Box className="transaction-list__empty-text">
-                {t('noTransactions')}
+            <>
+              <Box paddingInlineStart={4} paddingInlineEnd={4} paddingTop={4}>
+                <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
               </Box>
-            </Box>
+              <Box className="transaction-list__empty">
+                <Box className="transaction-list__empty-text">
+                  {t('noTransactions')}
+                </Box>
+              </Box>
+            </>
           )}
           {completedTransactions.length > limit && (
             <Button

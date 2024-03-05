@@ -39,6 +39,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { RampsCard } from '../../multichain/ramps-card';
+import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -100,34 +102,34 @@ export default function NftsTab() {
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            showNftBanner ? (
-              <Box
-                paddingInlineStart={4}
-                paddingInlineEnd={4}
-                display={Display.Flex}
-                paddingTop={4}
-              >
-                <AssetListConversionButton
-                  variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
-                  onClick={() => {
-                    global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
-                    trackEvent({
-                      event: MetaMetricsEventName.EmptyNftsBannerClicked,
-                      properties: {
-                        chain_id: currentNetwork.chainId,
-                        locale: currentLocale,
-                        network: currentNetwork.nickname,
-                        referrer: ORIGIN_METAMASK,
-                      },
-                    });
-                  }}
-                />
-              </Box>
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
+
+          <Box paddingInlineStart={4} paddingInlineEnd={4} paddingTop={4}>
+            <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
+          </Box>
+
+          {/* <Box */}
+          {/*  paddingInlineStart={4}*/}
+          {/*  paddingInlineEnd={4}*/}
+          {/*  display={Display.Flex}*/}
+          {/*  paddingTop={4}*/}
+          {/* > */}
+          {/*  <AssetListConversionButton*/}
+          {/*    variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}*/}
+          {/*    onClick={() => {*/}
+          {/*      global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });*/}
+          {/*      trackEvent({*/}
+          {/*        event: MetaMetricsEventName.EmptyNftsBannerClicked,*/}
+          {/*        properties: {*/}
+          {/*          chain_id: currentNetwork.chainId,*/}
+          {/*          locale: currentLocale,*/}
+          {/*          network: currentNetwork.nickname,*/}
+          {/*          referrer: ORIGIN_METAMASK,*/}
+          {/*        },*/}
+          {/*      });*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/* </Box>*/}
+
           <Box
             padding={12}
             display={Display.Flex}
