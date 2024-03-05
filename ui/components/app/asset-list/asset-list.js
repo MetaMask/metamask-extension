@@ -191,7 +191,9 @@ const AssetList = ({ onClickAsset }) => {
         }
         tokenSymbol={nativeCurrency}
         secondary={
-          showFiat && useNativeCurrencyAsPrimaryCurrency
+          showFiat &&
+          isOriginalNativeSymbol &&
+          useNativeCurrencyAsPrimaryCurrency
             ? secondaryCurrencyDisplay
             : primaryCurrencyDisplay
         }
