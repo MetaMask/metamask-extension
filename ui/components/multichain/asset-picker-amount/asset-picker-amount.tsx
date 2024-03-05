@@ -260,6 +260,8 @@ export const AssetPickerAmount = () => {
             <Text
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
+              width={BlockSize.ThreeFourths}
+              textAlign={TextAlign.End}
               ellipsis
             >
               ID: {`#${asset.details?.tokenId}`}
