@@ -16,7 +16,12 @@ import { getMemoizedInterface } from '../../selectors';
 import { handleSnapRequest, updateInterfaceState } from '../../store/actions';
 import { mergeValue } from './utils';
 
-export type HandleEvent = (event: UserInputEventType, name?: string) => void;
+export type HandleEvent = (
+  event: UserInputEventType,
+  name?: string,
+  value?: string,
+  flush?: boolean,
+) => void;
 
 export type HandleInputChange = (
   name: string,
@@ -72,8 +77,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   // The submittion of user input events is debounced to avoid crashing the snap if
   // there's too much events sent at the same time
-  const snapRequestDebounced: HandleEvent = debounce(
-    (event, name) =>
+  const snapRequestDebounced = debounce(
+    (event, name, value) =>
       handleSnapRequest({
         snapId,
         origin: '',
@@ -85,7 +90,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             event: {
               type: event,
               name,
-              value: internalState.current[name],
+              value,
             },
             id: interfaceId,
           },
@@ -105,12 +110,30 @@ export const SnapInterfaceContextProvider: FunctionComponent<
    * Handle the submission of an user input event to the Snap.
    *
    * @param event - The event object.
-   * @param name - The name of the component emmitting the event.
+   * @param name - The name of the component emitting the event.
+   * @param value - The value of the component emitting the event.
+   * @param flush - Optional flag to indicate whether the debounce should be flushed.
    */
-  const handleEvent: HandleEvent = (event, name) => {
+  const handleEvent: HandleEvent = (
+    event,
+    name,
+    value = internalState.current[name],
+    flush = false,
+  ) => {
+    // We always flush the debounced request for updating the state.
     updateStateDebounced.flush();
-    snapRequestDebounced(event, name);
+    snapRequestDebounced(event, name, value);
+
+    if (flush) {
+      snapRequestDebounced.flush();
+    }
   };
+
+  const handleInputChangeDebounced = debounce(
+    (name, value) =>
+      handleEvent(UserInputEventType.InputChangeEvent, name, value, true),
+    400,
+  );
 
   /**
    * Handle the value change of an input.
@@ -125,6 +148,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
     internalState.current = state;
     updateStateDebounced(state);
+    handleInputChangeDebounced(name, value);
   };
 
   /**
