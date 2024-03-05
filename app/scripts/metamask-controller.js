@@ -1692,7 +1692,6 @@ export default class MetamaskController extends EventEmitter {
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
-      institutionalFeaturesController: this.institutionalFeaturesController,
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTracker: this.accountTracker,
