@@ -29,7 +29,7 @@ export const ConnectedAccountsMenu = ({
   isOpen,
   identity,
   anchorElement,
-  disableAccountSwitcher,
+  disableAccountSwitcher = false,
   onClose,
   closeMenu,
 }: {
