@@ -8,6 +8,9 @@ import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
 import { getCurrentNetwork } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
+/* eslint-disable jsdoc/require-param-name */
+// eslint-disable-next-line jsdoc/require-param
+/** @param {PropTypes.InferProps<typeof propTypes>>} */
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
   ethNumberOfDecimals,
@@ -58,7 +61,8 @@ export default function UserPreferencedCurrencyDisplay({
     />
   );
 }
-UserPreferencedCurrencyDisplay.propTypes = {
+
+const propTypes = {
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   prefix: PropTypes.string,
@@ -86,3 +90,5 @@ UserPreferencedCurrencyDisplay.propTypes = {
    */
   ...CurrencyDisplay.propTypes,
 };
+
+UserPreferencedCurrencyDisplay.propTypes = propTypes;
