@@ -60,6 +60,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
+  getInternalAccounts,
   getSelectedNetworkClientId,
 } from '../selectors';
 import {
@@ -449,13 +450,13 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldIdentities = getState().metamask.identities;
+    const oldAccounts = getInternalAccounts(getState());
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldIdentities).length,
+        Object.keys(oldAccounts).length,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
