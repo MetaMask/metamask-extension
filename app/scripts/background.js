@@ -273,6 +273,7 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   try {
     const initData = await loadStateFromPersistence();
     const initState = initData.data;

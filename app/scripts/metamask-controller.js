@@ -1362,7 +1362,7 @@ export default class MetamaskController extends EventEmitter {
         this.onboardingController.store.getState();
       if (activeControllerConnections > 0 && completedOnboarding) {
         this.triggerNetworkrequests();
-      } else {
+      } else if (completedOnboarding) {
         this.stopNetworkRequests();
       }
     });
@@ -2139,7 +2139,10 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
-    this.networkProviderInitialization();
+
+    if (this.onboardingController.store.getState().completedOnboarding) {
+      this.networkProviderInitialization();
+    }
   }
 
   triggerNetworkrequests() {
