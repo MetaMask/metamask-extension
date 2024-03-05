@@ -147,7 +147,7 @@ const AssetV2 = ({
         flexDirection={FlexDirection.Column}
         className="main-container asset__container"
       >
-        <Box padding={4} paddingBottom={1}>
+        <Box paddingLeft={4} paddingBottom={1}>
           <Text color={TextColor.textAlternative}>
             {name && symbol && name !== symbol
               ? `${name} (${symbol})`
