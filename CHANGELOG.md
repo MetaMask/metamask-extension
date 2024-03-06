@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.11.2]
+### Changed
+- Update the image in the Staking button What's New popup ([#23330](https://github.com/MetaMask/metamask-extension/pull/23330))
+
+### Fixed
+- [MMI] Fixed bug that prevents MMI users from submitting multiple Txs ([#23342](https://github.com/MetaMask/metamask-extension/pull/23342))
+- Fix the display of the native currency token symbol in the asset list
+    - ([#23355](https://github.com/MetaMask/metamask-extension/pull/23355))
+    - ([#23327](https://github.com/MetaMask/metamask-extension/pull/23327))
 
 ## [11.11.1]
 ### Added
