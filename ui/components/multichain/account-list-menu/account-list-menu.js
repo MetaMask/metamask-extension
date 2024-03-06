@@ -37,16 +37,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getInternalAccounts,
   getOnboardedInThisUISession,
   getShowAccountBanner,
 } from '../../../selectors';
@@ -95,7 +94,6 @@ export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
       return {
         ...account,
         ...internalAccount,
-        name: internalAccount.metadata.name || account.name,
         keyring: internalAccount.metadata.keyring,
         label: getAccountLabel(
           internalAccount.metadata.keyring.type,
@@ -115,8 +113,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -143,12 +140,12 @@ export const AccountListMenu = ({
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address'],
+      keys: ['metadata.name', 'address'],
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, internalAccounts);
+  searchResults = mergeAccounts(searchResults, accounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
