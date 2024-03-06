@@ -3790,17 +3790,11 @@
   "publicAddress": {
     "message": "Public address"
   },
-  "pushPlatformNotificationsFundsReceivedDefaultDescription": {
-    "message": "You received some tokens"
-  },
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"
   },
   "pushPlatformNotificationsFundsReceivedTitle": {
     "message": "Funds received"
-  },
-  "pushPlatformNotificationsFundsSentDefaultDescription": {
-    "message": "You successfully sent some tokens"
   },
   "pushPlatformNotificationsFundsSentDescription": {
     "message": "You successfully sent $1 $2"
