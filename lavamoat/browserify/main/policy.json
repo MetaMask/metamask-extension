@@ -929,8 +929,8 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "pify": true,
@@ -1389,6 +1389,21 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
+      }
+    },
     "@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-api>uuid": true,
@@ -1559,10 +1574,10 @@
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-query": true,
         "@metamask/eth-token-tracker>eth-block-tracker": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "browserify>assert": true,
@@ -1574,8 +1589,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/json-rpc-engine": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
@@ -1583,8 +1598,8 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true
+        "@metamask/json-rpc-engine": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": {
@@ -1649,8 +1664,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/permission-controller>nanoid": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -1784,21 +1799,6 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
-    "@metamask/providers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
-      }
-    },
     "@metamask/providers>@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -1823,7 +1823,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/selected-network-controller": true
       }
@@ -1833,16 +1833,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/rate-limit-controller>@metamask/base-controller": true,
-        "json-rpc-engine>eth-rpc-errors": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true,
+        "@metamask/rpc-errors": true
       }
     },
     "@metamask/rpc-errors": {
@@ -1975,9 +1967,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
@@ -2270,7 +2262,7 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
         "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/utils": true,
@@ -3144,7 +3136,7 @@
         "@metamask/safe-event-emitter": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-json-rpc-filters>eth-query": true,
-        "json-rpc-engine": true,
+        "eth-json-rpc-filters>json-rpc-engine": true,
         "pify": true
       }
     },
@@ -3161,6 +3153,17 @@
         "@metamask/eth-query>json-rpc-random-id": true,
         "nock>debug": true,
         "watchify>xtend": true
+      }
+    },
+    "eth-json-rpc-filters>json-rpc-engine": {
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "eth-json-rpc-filters>json-rpc-engine>eth-rpc-errors": true
+      }
+    },
+    "eth-json-rpc-filters>json-rpc-engine>eth-rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -3675,17 +3678,6 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>has-symbols": true
-      }
-    },
-    "json-rpc-engine": {
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "json-rpc-engine>eth-rpc-errors": true
-      }
-    },
-    "json-rpc-engine>eth-rpc-errors": {
-      "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
     "json-rpc-middleware-stream": {
