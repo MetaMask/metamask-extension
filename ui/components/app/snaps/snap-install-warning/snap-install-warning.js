@@ -264,7 +264,7 @@ export default function SnapInstallWarning({
         <ModalFooter
           onSubmit={onConfirm}
           submitButtonProps={{ children: t('confirm'), disabled: !userAgree }}
-        ></ModalFooter>
+        />
       </ModalContent>
     </Modal>
   );

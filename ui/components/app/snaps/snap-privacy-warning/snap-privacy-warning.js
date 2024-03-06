@@ -32,7 +32,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
     useScrollRequired();
 
   return (
-    <Modal onClose={onCanceled} isOpen className="snap-install-warning">
+    <Modal onClose={() => null} isOpen className="snap-install-warning">
       <ModalContent>
         <ModalBody className="snap-privacy-warning">
           <Box>
@@ -119,7 +119,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
             disabled: !isScrolledToBottom,
           }}
           cancelButtonProps={{ children: t('cancel') }}
-        ></ModalFooter>
+        />
       </ModalContent>
     </Modal>
   );
