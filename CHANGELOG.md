@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.11.2]
+### Changed
+- Update the image in the Staking button What's New popup ([#23330](https://github.com/MetaMask/metamask-extension/pull/23330))
+
+### Fixed
+- [MMI] Fixed bug that prevents MMI users from submitting multiple Txs ([#23342](https://github.com/MetaMask/metamask-extension/pull/23342))
+- Fix the display of the native currency token symbol in the asset list
+    - ([#23355](https://github.com/MetaMask/metamask-extension/pull/23355))
+    - ([#23327](https://github.com/MetaMask/metamask-extension/pull/23327))
+
 ## [11.11.1]
 ### Added
 - Adds a staking button to the mainnet Ethereum token list item  ([#22347](https://github.com/MetaMask/metamask-extension/pull/22347))
@@ -4428,7 +4438,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.2...HEAD
+[11.11.2]: https://github.com/MetaMask/metamask-extension/compare/v11.11.1...v11.11.2
 [11.11.1]: https://github.com/MetaMask/metamask-extension/compare/v11.11.0...v11.11.1
 [11.11.0]: https://github.com/MetaMask/metamask-extension/compare/v11.10.1...v11.11.0
 [11.10.1]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...v11.10.1
