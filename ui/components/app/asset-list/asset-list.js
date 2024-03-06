@@ -36,20 +36,11 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  AssetListConversionButton,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
 ///: END:ONLY_INCLUDE_IF
-import { Display } from '../../../helpers/constants/design-system';
-
-import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
-///: END:ONLY_INCLUDE_IF
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   showPrimaryCurrency,
