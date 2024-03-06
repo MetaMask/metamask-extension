@@ -79,7 +79,7 @@ async function main() {
     updatePrivacySnapshot,
   } = argv;
 
-  const runTestOnSingleBrowser = async (selectedBrowserForRun) => {
+  const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
       exitWithError(
         `"The browser must be set, via the '--browser' flag or the SELENIUM_BROWSER environment variable`,
@@ -159,10 +159,10 @@ async function main() {
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      await runTestOnSingleBrowser(currentBrowser);
+      await runTestsOnSingleBrowser(currentBrowser);
     }
   } else {
-    await runTestOnSingleBrowser(browser);
+    await runTestsOnSingleBrowser(browser);
   }
 }
 
