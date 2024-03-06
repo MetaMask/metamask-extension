@@ -2902,6 +2902,16 @@ describe('Send Slice', () => {
             },
             fromAccount: {
               address: mockAddress1,
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
               balance: '0x0',
             },
             gas: {
@@ -3067,6 +3077,16 @@ describe('Send Slice', () => {
             },
             fromAccount: {
               address: mockAddress1,
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
               balance: '0x0',
             },
             gas: {
@@ -3280,6 +3300,16 @@ describe('Send Slice', () => {
           },
           fromAccount: {
             address: mockAddress1,
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
             balance: '0x0',
           },
           gas: {

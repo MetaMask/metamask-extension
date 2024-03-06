@@ -60,7 +60,7 @@ export const UI_NOTIFICATIONS = {
     id: Number(NOTIFICATION_STAKING_PORTFOLIO),
     date: null,
     image: {
-      src: 'images/portfolio-stake-notification-light-mode.png',
+      src: 'images/staking-light-mode-preview.png',
       width: '100%',
     },
   },

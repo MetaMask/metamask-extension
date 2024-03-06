@@ -376,7 +376,7 @@ export default function TokenAllowance({
       </Box>
       <NetworkAccountBalanceHeader
         networkName={networkName}
-        accountName={fromAccount.name}
+        accountName={fromAccount.metadata.name}
         accountBalance={currentTokenBalance}
         tokenName={tokenSymbol}
         accountAddress={userAddress}
