@@ -113,7 +113,7 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 
 #### Preparing a Test Build
 
-Before running e2e tests, you'll need a test build. You have two options:
+Before running e2e tests, ensure you've run `yarn install` to download ependencies. Next, you'll need a test build. You have 3 options:
 
 1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
@@ -121,6 +121,12 @@ Before running e2e tests, you'll need a test build. You have two options:
     - `yarn build:test:flask` for flask build
     - `yarn build:test:mmi` for mmi build
     - `yarn build:test:mv3` for mv3 build
+3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
+    - `yarn start:test` for main build
+    - `yarn start:test:flask` for flask build
+    - `yarn start:test:mv3` for mv3 build
+
+Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
 
 #### Running Tests
 Once you have your test build ready, choose the browser for your e2e tests:
@@ -156,7 +162,7 @@ While developing new features, we often use feature flags. As we prepare to make
 
 - To enable a feature flag in your local configuration, you should first ensure you have a `.metamaskrc` file copied from `.metamaskrc.dist`. Then, within your local `.metamaskrc` file, you can set the desired feature flag to true. Following this, a test build with the feature flag enabled can be created by executing `yarn build:test`.
 
-- Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test`. This method allows for quick adjustments to feature flags without altering the .metamaskrc file.
+- Alternatively, for enabling a feature flag directly during the test build creation, you can pass the parameter as true via the command line. For instance, activating the MULTICHAIN feature flag can be done by running `MULTICHAIN=1 yarn build:test` or `MULTICHAIN=1 yarn start:test` . This method allows for quick adjustments to feature flags without altering the `.metamaskrc` file.
 
 Once you've created a test build with the desired feature flag enabled, proceed to run your tests as usual. Your tests will now run against the version of the extension with the specific feature flag activated. For example:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --debug --leave-running`
