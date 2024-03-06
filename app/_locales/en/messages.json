@@ -2502,6 +2502,9 @@
   "metamaskVersion": {
     "message": "MetaMask Version"
   },
+  "methodNotSupported": {
+    "message": "Not supported with this account."
+  },
   "metrics": {
     "message": "Metrics"
   },

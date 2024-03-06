@@ -163,7 +163,6 @@
     "allNfts": "object",
     "ignoredNfts": "object",
     "domains": "object",
-    "perDomainNetwork": false,
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
