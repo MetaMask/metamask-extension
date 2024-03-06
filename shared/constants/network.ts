@@ -147,6 +147,7 @@ export const CHAIN_IDS = {
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
+  BLAST: '0x13e31',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
