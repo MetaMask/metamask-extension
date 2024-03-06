@@ -24,7 +24,7 @@ function buildTransactionCommon(txMeta) {
     // Sources:
     // <https://community.optimism.io/docs/developers/build/transaction-fees/#the-l2-execution-fee>
     // <https://docs.scroll.io/en/developers/ethereum-and-scroll-differences/#user-content-fnref-eip1559>
-    defaultHardfork: Hardfork.Shanghai,
+    defaultHardfork: Hardfork.London,
   });
 }
 

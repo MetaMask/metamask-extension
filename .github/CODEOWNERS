@@ -12,6 +12,13 @@
 development/                         @MetaMask/extension-devs @kumavis
 lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
 
+# The offscreen.ts script file that is included in the offscreedocument html
+# file is responsible, at present, for loading the snaps execution environment
+# for MV3. Any changes to this file should require at least one member of the
+# snaps development team to review and approve the changes.
+offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
+
+
 # The .circleci/ folder instructs Circle CI on the process by which it
 # should test, build and publish releases of our application. Due to the
 # impact that changes to the files contained within this folder may have
@@ -40,3 +47,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # that agreement and can only be approved by those with the knowledge
 # and responsibility to publish libraries under the MetaMask name.
 .github/CODEOWNERS                   @MetaMask/library-admins @kumavis
+
+# For now, restricting approvals inside the .devcontainer folder to devs
+# who were involved with the Codespaces project.
+.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral @brad-decker

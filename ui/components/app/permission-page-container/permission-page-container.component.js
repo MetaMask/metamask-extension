@@ -21,8 +21,8 @@ export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
-    selectedIdentities: PropTypes.array,
-    allIdentitiesSelected: PropTypes.bool,
+    selectedAccounts: PropTypes.array,
+    allAccountsSelected: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
@@ -42,8 +42,8 @@ export default class PermissionPageContainer extends Component {
   static defaultProps = {
     request: {},
     requestMetadata: {},
-    selectedIdentities: [],
-    allIdentitiesSelected: false,
+    selectedAccounts: [],
+    allAccountsSelected: false,
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: {},
     ///: END:ONLY_INCLUDE_IF
@@ -57,7 +57,7 @@ export default class PermissionPageContainer extends Component {
   state = {};
 
   getRequestedPermissions() {
-    return Object.entries(this.props.request.permissions).reduce(
+    return Object.entries(this.props.request.permissions ?? {}).reduce(
       (acc, [permissionName, permissionValue]) => {
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         if (permissionName === RestrictedMethods.wallet_snap) {
@@ -127,14 +127,14 @@ export default class PermissionPageContainer extends Component {
       request: _request,
       approvePermissionsRequest,
       rejectPermissionsRequest,
-      selectedIdentities,
+      selectedAccounts,
     } = this.props;
 
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      approvedAccounts: selectedIdentities.map(
-        (selectedIdentity) => selectedIdentity.address,
+      approvedAccounts: selectedAccounts.map(
+        (selectedAccount) => selectedAccount.address,
       ),
     };
 
@@ -149,8 +149,8 @@ export default class PermissionPageContainer extends Component {
     const {
       requestMetadata,
       targetSubjectMetadata,
-      selectedIdentities,
-      allIdentitiesSelected,
+      selectedAccounts,
+      allAccountsSelected,
     } = this.props;
 
     const requestedPermissions = this.getRequestedPermissions();
@@ -186,8 +186,8 @@ export default class PermissionPageContainer extends Component {
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={requestedPermissions}
-          selectedIdentities={selectedIdentities}
-          allIdentitiesSelected={allIdentitiesSelected}
+          selectedAccounts={selectedAccounts}
+          allAccountsSelected={allAccountsSelected}
         />
         <div className="permission-approval-container__footers">
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (

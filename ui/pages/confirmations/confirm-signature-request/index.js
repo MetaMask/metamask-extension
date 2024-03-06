@@ -21,12 +21,16 @@ import {
   getTargetSubjectMetadata,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  getInternalAccounts,
   getMemoizedUnapprovedMessages,
   getMemoizedUnapprovedPersonalMessages,
   getMemoizedUnapprovedTypedMessages,
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { useSignatureInsights } from '../../../hooks/snaps/useSignatureInsights';
+///: END:ONLY_INCLUDE_IF
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getSendTo } from '../../../ducks/send';
 
@@ -58,13 +62,10 @@ const ConfirmTxScreen = ({ match }) => {
     getTotalUnapprovedSignatureRequestCount,
   );
   const sendTo = useSelector(getSendTo);
+  const internalAccounts = useSelector(getInternalAccounts);
 
-  const {
-    identities,
-    currentCurrency,
-    blockGasLimit,
-    signatureSecurityAlertResponses,
-  } = useSelector((state) => state.metamask);
+  const { currentCurrency, blockGasLimit, signatureSecurityAlertResponses } =
+    useSelector((state) => state.metamask);
   const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
   const unapprovedPersonalMsgs = useSelector(
     getMemoizedUnapprovedPersonalMessages,
@@ -199,6 +200,9 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedTypedMessages,
   ]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const { warnings } = useSignatureInsights({ txData });
+  ///: END:ONLY_INCLUDE_IF
   const resolvedSecurityAlertResponse =
     signatureSecurityAlertResponses?.[
       txData.securityAlertResponse?.securityAlertId
@@ -223,11 +227,14 @@ const ConfirmTxScreen = ({ match }) => {
       history={history}
       txData={txData}
       key={txData.id}
-      identities={identities}
+      accounts={internalAccounts}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       selectedAccount={selectedAccount}
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      warnings={warnings}
       ///: END:ONLY_INCLUDE_IF
     />
   );

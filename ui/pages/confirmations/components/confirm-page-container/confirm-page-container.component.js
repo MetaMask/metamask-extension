@@ -41,7 +41,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useTransactionInsights from '../../../../hooks/useTransactionInsights';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import TxInsightWarnings from '../../../../components/app/snaps/tx-insight-warnings/tx-insight-warnings';
+import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import {
   getAccountName,
@@ -61,6 +61,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
+import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -195,6 +196,9 @@ const ConfirmPageContainer = (props) => {
     fetchCollectionBalance,
     collectionBalance,
   ]);
+
+  const isMaliciousRequest =
+    txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious;
 
   return (
     <GasFeeContextProvider transaction={currentTransaction}>
@@ -348,7 +352,8 @@ const ConfirmPageContainer = (props) => {
             onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             submitButtonType={
-              isSetApproveForAll && isApprovalOrRejection
+              (isSetApproveForAll && isApprovalOrRejection) ||
+              isMaliciousRequest
                 ? 'danger-primary'
                 : 'primary'
             }
@@ -378,7 +383,7 @@ const ConfirmPageContainer = (props) => {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         }
         {isShowingTxInsightWarnings && (
-          <TxInsightWarnings
+          <InsightWarnings
             warnings={insightObject.warnings}
             origin={origin}
             onCancel={() => setIsShowingTxInsightWarnings(false)}

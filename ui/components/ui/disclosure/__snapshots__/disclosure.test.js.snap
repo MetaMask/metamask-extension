@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Disclosure matches snapshot with title prop 1`] = `
+<div>
+  <div
+    class="disclosure"
+    data-testid="disclosure"
+  >
+    <details>
+      <summary
+        class="disclosure__summary"
+      >
+        <span
+          class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/add.svg');"
+        />
+        Test Title
+      </summary>
+      <div
+        class="disclosure__content small"
+      >
+        Test
+      </div>
+      <div
+        class="disclosure__footer"
+      />
+    </details>
+  </div>
+</div>
+`;
+
+exports[`Disclosure matches snapshot without title prop 1`] = `
+<div>
+  <div
+    class="disclosure"
+    data-testid="disclosure"
+  >
+    Test
+  </div>
+</div>
+`;

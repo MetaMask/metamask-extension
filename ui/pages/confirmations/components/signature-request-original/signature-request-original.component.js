@@ -10,12 +10,12 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   getURLHostName,
+  hexToText,
   sanitizeString,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
-import { stripHexPrefix } from '../../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import Typography from '../../../../components/ui/typography/typography';
@@ -55,6 +55,10 @@ import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
+///: END:ONLY_INCLUDE_IF
+import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -87,20 +91,16 @@ export default class SignatureRequestOriginal extends Component {
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    warnings: PropTypes.array,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     showSignatureRequestWarning: false,
-  };
-
-  msgHexToText = (hex) => {
-    try {
-      const stripped = stripHexPrefix(hex);
-      const buff = Buffer.from(stripped, 'hex');
-      return buff.length === 32 ? hex : buff.toString('utf8');
-    } catch (e) {
-      return hex;
-    }
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    showSignatureInsights: false,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   renderTypedData = (data) => {
@@ -139,9 +139,7 @@ export default class SignatureRequestOriginal extends Component {
     } = txData;
 
     if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-      rows = [
-        { name: this.context.t('message'), value: this.msgHexToText(data) },
-      ];
+      rows = [{ name: this.context.t('message'), value: hexToText(data) }];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data;
     } else if (type === MESSAGE_TYPE.ETH_SIGN) {
@@ -308,10 +306,16 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
-      resolvePendingApproval,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      warnings,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const { t } = this.context;
 
+    const submitButtonType =
+      txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious
+        ? 'danger-primary'
+        : 'primary';
     return (
       <PageContainerFooter
         cancelText={t('reject')}
@@ -326,19 +330,14 @@ export default class SignatureRequestOriginal extends Component {
         }}
         onSubmit={async () => {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
-            this.setState({ showSignatureRequestWarning: true });
-          } else {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            if (this.props.mmiOnSignCallback) {
-              await this.props.mmiOnSignCallback(txData);
-              return;
-            }
-            ///: END:ONLY_INCLUDE_IF
-
-            await resolvePendingApproval(txData.id);
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
+            return this.setState({ showSignatureRequestWarning: true });
           }
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          if (warnings?.length >= 1) {
+            return this.setState({ showSignatureInsights: true });
+          }
+          ///: END:ONLY_INCLUDE_IF
+          return await this.onSubmit();
         }}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -346,6 +345,7 @@ export default class SignatureRequestOriginal extends Component {
           ///: END:ONLY_INCLUDE_IF
           hardwareWalletRequiresConnection
         }
+        submitButtonType={submitButtonType}
       />
     );
   };
@@ -376,6 +376,9 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      warnings,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
@@ -400,10 +403,40 @@ export default class SignatureRequestOriginal extends Component {
           <SignatureRequestOriginalWarning
             senderAddress={address}
             name={name}
-            onSubmit={async (event) => await this.onSubmit(event)}
+            onSubmit={async () => {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              if (warnings?.length >= 1) {
+                return this.setState({
+                  showSignatureInsights: true,
+                  showSignatureRequestWarning: false,
+                });
+              }
+              ///: END:ONLY_INCLUDE_IF
+              return await this.onSubmit();
+            }}
             onCancel={async (event) => await this.onCancel(event)}
           />
         )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        }
+        {this.state.showSignatureInsights && (
+          <InsightWarnings
+            warnings={warnings}
+            action="signing"
+            origin={txData.msgParams.origin}
+            onCancel={() => {
+              this.setState({ showSignatureInsights: false });
+            }}
+            onSubmit={async () => {
+              await this.onSubmit();
+              this.setState({ showSignatureInsights: false });
+            }}
+          />
+        )}
+        {
+          ///: END:ONLY_INCLUDE_IF
+        }
         {this.renderFooter()}
         {messagesCount > 1 ? (
           <ButtonLink

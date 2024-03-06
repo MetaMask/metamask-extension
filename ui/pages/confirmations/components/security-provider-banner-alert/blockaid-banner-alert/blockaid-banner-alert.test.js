@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Sentry from '@sentry/browser';
 import { fireEvent, screen } from '@testing-library/react';
+import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -70,13 +71,13 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Errored}`, () => {
     const { container } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
-            result_type: BlockaidResultType.Failed,
+            result_type: BlockaidResultType.Errored,
           },
         }}
       />,
@@ -140,13 +141,13 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
-  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.failed}"`, () => {
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.errored}"`, () => {
     const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
-            reason: BlockaidReason.failed,
+            reason: BlockaidReason.errored,
           },
         }}
       />,
@@ -243,19 +244,19 @@ describe('Blockaid Banner Alert', () => {
 
     const elm = getByRole('link', { name: 'Report an issue' });
     expect(elm.href).toBe(
-      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
+      `https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%22${BlockaidPackage.version}%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom`,
     );
   });
 
   describe('when constructing the Blockaid Report URL', () => {
-    describe(`when result_type='${BlockaidResultType.Failed}'`, () => {
+    describe(`when result_type='${BlockaidResultType.Errored}'`, () => {
       it('should pass the classification as "error" and the resultType as "Error"', () => {
         const { getByRole } = renderWithProvider(
           <BlockaidBannerAlert
             txData={{
               securityAlertResponse: {
                 ...mockSecurityAlertResponse,
-                result_type: BlockaidResultType.Failed,
+                result_type: BlockaidResultType.Errored,
               },
             }}
           />,
@@ -264,7 +265,7 @@ describe('Blockaid Banner Alert', () => {
 
         const elm = getByRole('link', { name: 'Report an issue' });
         expect(elm.href).toBe(
-          'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom',
+          `https://blockaid-false-positive-portal.metamask.io/?data=%7B%22blockaidVersion%22%3A%22${BlockaidPackage.version}%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom`,
         );
       });
     });
@@ -276,7 +277,7 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams might take all your assets.',
       [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
-      [BlockaidReason.failed]:
+      [BlockaidReason.errored]:
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",

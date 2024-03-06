@@ -86,7 +86,7 @@ describe('Incremental Security', function () {
         await driver.clickElement('button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="account-details-modal"]',
         );
 
@@ -112,10 +112,10 @@ describe('Incremental Security', function () {
         // should have the correct amount of eth
         let currencyDisplay = await driver.waitForSelector({
           css: '.currency-display-component__text',
-          text: '1',
+          text: '$1,700.00',
         });
         let balance = await currencyDisplay.getText();
-        assert.strictEqual(balance, '1');
+        assert.strictEqual(balance, '$1,700.00');
 
         // backs up the Secret Recovery Phrase
         // should show a backup reminder
@@ -134,7 +134,7 @@ describe('Incremental Security', function () {
         await driver.fill('[placeholder="Password"]', WALLET_PASSWORD);
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="reveal-srp-modal"]',
         );
 
@@ -163,13 +163,13 @@ describe('Incremental Security', function () {
         // should have the correct amount of eth
         currencyDisplay = await driver.waitForSelector({
           css: '.currency-display-component__text',
-          text: '1',
+          text: '$1,700.00',
         });
         balance = await currencyDisplay.getText();
 
-        assert.strictEqual(balance, '1');
+        assert.strictEqual(balance, '$1,700.00');
 
-        // should not show a backup reminder
+        // The previous currencyDisplay wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent('.backup-notification');
       },
     );

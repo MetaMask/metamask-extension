@@ -1,3 +1,5 @@
+@use "design-system";
+
 .dropdown-input-pair {
   display: flex;
   width: 312px;
@@ -8,7 +10,7 @@
     margin: 0 !important;
 
     input {
-      @include H4;
+      @include design-system.H4;
 
       padding-top: 6px;
     }
@@ -40,7 +42,7 @@
   }
 
   &__left-value {
-    @include H7;
+    @include design-system.H7;
 
     position: absolute;
     right: 16px;

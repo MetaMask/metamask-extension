@@ -75,6 +75,7 @@ import { Icon, IconName, Text } from '../../../components/component-library';
 import { ConfirmPageContainerWarning } from '../components/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
+import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -331,6 +332,10 @@ export default function TokenAllowance({
     </Box>
   );
 
+  const submitButtonType =
+    txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious
+      ? 'danger-primary'
+      : 'primary';
   return (
     <Box className="token-allowance-container page-container">
       <Box>
@@ -371,7 +376,7 @@ export default function TokenAllowance({
       </Box>
       <NetworkAccountBalanceHeader
         networkName={networkName}
-        accountName={fromAccount.name}
+        accountName={fromAccount.metadata.name}
         accountBalance={currentTokenBalance}
         tokenName={tokenSymbol}
         accountAddress={userAddress}
@@ -622,6 +627,7 @@ export default function TokenAllowance({
         disabled={
           inputChangeInProgress || disableNextButton || disableApproveButton
         }
+        submitButtonType={submitButtonType}
       >
         {unapprovedTxCount > 1 && (
           <Button

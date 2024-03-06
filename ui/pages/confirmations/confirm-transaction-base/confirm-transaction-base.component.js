@@ -13,6 +13,7 @@ import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
+  USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 
@@ -157,6 +158,7 @@ export default class ConfirmTransactionBase extends Component {
     isUsingPaymaster: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
+    isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
   };
@@ -277,7 +279,15 @@ export default class ConfirmTransactionBase extends Component {
       noGasPrice,
       gasFeeIsCustom,
       isSigningOrSubmitting,
+      isUserOpContractDeployError,
     } = this.props;
+
+    if (isUserOpContractDeployError) {
+      return {
+        valid: false,
+        errorKey: USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
+      };
+    }
 
     const insufficientBalance =
       balance &&
@@ -559,7 +569,7 @@ export default class ConfirmTransactionBase extends Component {
               detailText={
                 useCurrencyRateCheck && renderTotalDetailText(getTotalAmount())
               }
-              detailTotal={renderTotalMaxAmount(true)}
+              detailTotal={renderTotalMaxAmount(false)}
               subTitle={t('transactionDetailGasTotalSubtitle')}
               subText={
                 <div className="confirm-page-container-content__total-amount">

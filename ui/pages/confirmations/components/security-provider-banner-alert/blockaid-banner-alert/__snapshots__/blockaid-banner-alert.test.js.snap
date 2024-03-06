@@ -24,6 +24,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
     </p>
     <div
       class="disclosure"
+      data-testid="disclosure"
     >
       <details>
         <summary
@@ -50,7 +51,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
               Something doesn't look right? 
               <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Malicious%22%7D&utm_source=metamask-ppom"
+                href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.4%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Malicious%22%7D&utm_source=metamask-ppom"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -92,7 +93,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
 </div>
 `;
 
-exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Failed 1`] = `
+exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Error 1`] = `
 <div
   class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
   data-testid="security-provider-banner-alert"
@@ -116,6 +117,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     </p>
     <div
       class="disclosure"
+      data-testid="disclosure"
     >
       <details>
         <summary
@@ -142,7 +144,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
               Something doesn't look right? 
               <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom"
+                href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.4%22%2C%22classification%22%3A%22error%22%2C%22resultType%22%3A%22Error%22%7D&utm_source=metamask-ppom"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -208,6 +210,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     </p>
     <div
       class="disclosure"
+      data-testid="disclosure"
     >
       <details>
         <summary
@@ -234,7 +237,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
               Something doesn't look right? 
               <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom"
+                href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.4%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -301,6 +304,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
@@ -327,7 +331,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom"
+                  href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.4%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
@@ -395,6 +399,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
@@ -433,7 +438,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%2C%22reproduce%22%3A%22%5B%5C%22Operator%20is%20an%20EOA%5C%22%2C%5C%22Operator%20is%20untrusted%20according%20to%20previous%20activity%5C%22%5D%22%7D&utm_source=metamask-ppom"
+                  href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.4%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%2C%22reproduce%22%3A%22%5B%5C%22Operator%20is%20an%20EOA%5C%22%2C%5C%22Operator%20is%20untrusted%20according%20to%20previous%20activity%5C%22%5D%22%7D&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
@@ -501,6 +506,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
@@ -527,7 +533,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.0%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom"
+                  href="https://blockaid-false-positive-portal.metamask.io?data=%7B%22blockaidVersion%22%3A%221.4.4%22%2C%22classification%22%3A%22set_approval_for_all%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >

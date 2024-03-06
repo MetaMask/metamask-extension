@@ -65,6 +65,7 @@ const GasDetailsItem = ({
     estimateUsed,
     hasSimulationError,
     maximumCostInHexWei: hexMaximumTransactionFee,
+    minimumCostInHexWei: hexMinimumTransactionFee,
     maxPriorityFeePerGas,
     maxFeePerGas,
   } = useGasFeeContext();
@@ -72,8 +73,15 @@ const GasDetailsItem = ({
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-
   const getTransactionFeeTotal = useMemo(() => {
+    if (isMultiLayerFeeNetwork) {
+      return sumHexes(hexMinimumTransactionFee, estimatedL1Fees || 0);
+    }
+
+    return hexMinimumTransactionFee;
+  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, estimatedL1Fees]);
+
+  const getMaxTransactionFeeTotal = useMemo(() => {
     if (isMultiLayerFeeNetwork) {
       return sumHexes(hexMaximumTransactionFee, estimatedL1Fees || 0);
     }
@@ -102,18 +110,19 @@ const GasDetailsItem = ({
       detailTitle={<Text>{t('estimatedFee')}</Text>}
       detailTitleColor={TextColor.textDefault}
       detailText={
-        useCurrencyRateCheck &&
         Object.keys(draftTransaction).length === 0 && (
           <div className="gas-details-item__currency-container">
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
-            <UserPreferencedCurrencyDisplay
-              type={SECONDARY}
-              value={getTransactionFeeTotal}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-            />
+            {useCurrencyRateCheck && (
+              <UserPreferencedCurrencyDisplay
+                type={SECONDARY}
+                value={getTransactionFeeTotal}
+                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              />
+            )}
           </div>
         )
       }
@@ -155,7 +164,9 @@ const GasDetailsItem = ({
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
-                value={getTransactionFeeTotal || draftHexMaximumTransactionFee}
+                value={
+                  getMaxTransactionFeeTotal || draftHexMaximumTransactionFee
+                }
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />
             </div>

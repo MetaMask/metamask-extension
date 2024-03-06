@@ -6,7 +6,9 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
  */
 function isOptimism(chainId: string) {
   return (
-    chainId === CHAIN_IDS.OPTIMISM || chainId === CHAIN_IDS.OPTIMISM_TESTNET
+    chainId === CHAIN_IDS.OPTIMISM ||
+    chainId === CHAIN_IDS.OPTIMISM_TESTNET ||
+    chainId === CHAIN_IDS.OPTIMISM_GOERLI
   );
 }
 

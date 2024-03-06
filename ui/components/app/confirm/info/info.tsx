@@ -1,19 +1,24 @@
 import React from 'react';
+
 import { captureException } from '@sentry/browser';
 
-import { Box } from '../../../component-library';
 import {
   BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
+import { Box } from '../../../component-library';
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowProps,
   ConfirmInfoRowAddress,
   ConfirmInfoRowAddressProps,
   ConfirmInfoRowDivider,
+  ConfirmInfoRowProps,
+  ConfirmInfoRowText,
+  ConfirmInfoRowTextProps,
+  ConfirmInfoRowUrl,
+  ConfirmInfoRowUrlProps,
   ConfirmInfoRowValueDouble,
   ConfirmInfoRowValueDoubleProps,
   ConfirmInfoRowVariant,
@@ -22,11 +27,15 @@ import {
 export enum ConfirmInfoRowType {
   Address = 'address',
   Divider = 'divider',
+  Text = 'text',
+  UrlType = 'url',
   ValueDouble = 'value-double',
 }
 
 type ConfirmInfoTypeProps =
   | ConfirmInfoRowAddressProps
+  | ConfirmInfoRowTextProps
+  | ConfirmInfoRowUrlProps
   | ConfirmInfoRowValueDoubleProps;
 
 const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
@@ -35,6 +44,12 @@ const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
   },
   [ConfirmInfoRowType.Divider]: () => {
     return <ConfirmInfoRowDivider />;
+  },
+  [ConfirmInfoRowType.Text]: ({ text }: ConfirmInfoRowTextProps) => {
+    return <ConfirmInfoRowText text={text} />;
+  },
+  [ConfirmInfoRowType.UrlType]: ({ url }: ConfirmInfoRowUrlProps) => {
+    return <ConfirmInfoRowUrl url={url} />;
   },
   [ConfirmInfoRowType.ValueDouble]: ({
     left,
