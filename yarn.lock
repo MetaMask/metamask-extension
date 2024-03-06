@@ -3832,10 +3832,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/accounts-controller@npm:10.0.0"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@11.0.0-preview.e5c396b":
+  version: 11.0.0-preview.e5c396b
+  resolution: "@metamask-previews/accounts-controller@npm:11.0.0-preview.e5c396b"
   dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^4.1.1"
     "@metamask/eth-snap-keyring": "npm:^2.1.1"
     "@metamask/keyring-api": "npm:^3.0.0"
@@ -3843,34 +3844,13 @@ __metadata:
     "@metamask/snaps-utils": "npm:^5.1.2"
     "@metamask/utils": "npm:^8.3.0"
     deepmerge: "npm:^4.2.2"
-    ethereumjs-util: "npm:^7.0.10"
+    ethereum-cryptography: "npm:^2.1.2"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^12.2.0
+    "@metamask/keyring-controller": ^13.0.0
     "@metamask/snaps-controllers": ^4.0.0
-  checksum: 67bde84bd7d4215635ac1e5121fefca43a111743e922d6b8c050b136571a7887119bd8d1c08e41c5806292260309b27853fe959ff593731434bcbdbb7a22b076
-  languageName: node
-  linkType: hard
-
-"@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A10.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-10.0.0-247993ca9a.patch":
-  version: 10.0.0
-  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A10.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-10.0.0-247993ca9a.patch::version=10.0.0&hash=0a18f3"
-  dependencies:
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/eth-snap-keyring": "npm:^2.1.1"
-    "@metamask/keyring-api": "npm:^3.0.0"
-    "@metamask/snaps-sdk": "npm:^1.3.2"
-    "@metamask/snaps-utils": "npm:^5.1.2"
-    "@metamask/utils": "npm:^8.3.0"
-    deepmerge: "npm:^4.2.2"
-    ethereumjs-util: "npm:^7.0.10"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/keyring-controller": ^12.2.0
-    "@metamask/snaps-controllers": ^4.0.0
-  checksum: 809c1a3bfe0982b6113c7c76c43576fc9a454c66ec5403b839e10468ec753d742027cb7674045c9005de32ca7822dcd2bc0a19f68be37e1184486652c7befba3
+  checksum: 909f496ab702b66967e79cdb8674a4096c9a5996099d2a702eab5e752c20e322dcf0cc608b1691fee29fc64edec24194a33bfc38c43e25e91566d58d091b543d
   languageName: node
   linkType: hard
 
@@ -24805,7 +24785,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.1.23"
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A10.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-10.0.0-247993ca9a.patch"
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@11.0.0-preview.e5c396b"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^5.1.2"
