@@ -1,4 +1,6 @@
 import React from 'react';
+import { flatten } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Display,
   FlexDirection,
@@ -23,22 +25,46 @@ import {
   IconName,
   ButtonVariant,
 } from '../../component-library';
-import { useDispatch, useSelector } from 'react-redux';
-import { getDappPermissionModal, getUseBlockie } from '../../../selectors';
+import {
+  getDappPermissionModal,
+  getPermissionsForActiveTab,
+  getOriginOfCurrentTab,
+  getUseBlockie,
+  getPermissionSubjects,
+} from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { hideDappPermissionModal } from '../../../store/actions';
+import {
+  hideDappPermissionModal,
+  removePermittedAccount,
+} from '../../../store/actions';
 import Confusable from '../../ui/confusable';
+import { getPermissionDescription } from '../../../helpers/utils/permission';
+import PermissionCell from '../../app/permission-cell';
 
 export const DappPermissionModal = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const permissionSubjects = useSelector(getPermissionSubjects);
+  const permissions = useSelector(getPermissionsForActiveTab);
   const useBlockie = useSelector(getUseBlockie);
   const { open, account } = useSelector(getDappPermissionModal);
 
   function closeModal() {
     dispatch(hideDappPermissionModal());
   }
+
+  const permissionLabels = flatten(
+    permissions.map(({ key, value }) =>
+      getPermissionDescription({
+        t,
+        permissionName: key,
+        permissionValue: value,
+        targetSubjectMetadata: permissionSubjects,
+      }),
+    ),
+  );
 
   return (
     <Modal isOpen={open} onClose={closeModal}>
@@ -82,14 +108,31 @@ export const DappPermissionModal = () => {
           </Box>
         </ModalHeader>
         <Box marginLeft={4} marginRight={4}>
-          -Content Goes Here-
+          {permissionLabels.map((permission, index) => (
+            <PermissionCell
+              permissionName={permission.permissionName}
+              title={permission.label}
+              description={permission.description}
+              weight={permission.weight}
+              avatarIcon={permission.leftIcon}
+              invoker={(permission?.permissionValue as any).invoker}
+              dateApproved={(permission?.permissionValue as any).date}
+              key={`${permission.permissionName}-${index}`}
+              disableInfoSection={true}
+            />
+          ))}
         </Box>
         <ModalFooter>
           <Button
             startIconName={IconName.Logout}
             width={BlockSize.Full}
             variant={ButtonVariant.Secondary}
-            onClick={() => {}}
+            onClick={() => {
+              dispatch(
+                removePermittedAccount(activeTabOrigin, account.address),
+              );
+              closeModal();
+            }}
             danger
           >
             {t('disconnect')}

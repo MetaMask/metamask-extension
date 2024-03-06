@@ -27,11 +27,21 @@ import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
 
+function extractDomainOrOriginal(input) {
+  try {
+    const parsedUrl = new URL(input);
+    return parsedUrl.hostname;
+  } catch (error) {
+    return input;
+  }
+}
+
 const PermissionCell = ({
   snapId,
   permissionName,
   title,
   description,
+  invoker,
   weight,
   avatarIcon,
   dateApproved,
@@ -39,6 +49,7 @@ const PermissionCell = ({
   showOptions,
   hideStatus,
   accounts,
+  disableInfoSection,
 }) => {
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
@@ -105,7 +116,12 @@ const PermissionCell = ({
             'permission-cell__title-revoked': revoked,
           })}
         >
-          {title}
+          {invoker ? (
+            <Box display={Display.InlineBlock} size={Size.MD} marginRight={1}>
+              {extractDomainOrOriginal(invoker)}
+            </Box>
+          ) : null}
+          {invoker ? t('permissionCan', [title.toLowerCase()]) : title}
         </Text>
         {!hideStatus && (
           <PermissionCellStatus
@@ -115,31 +131,32 @@ const PermissionCell = ({
           />
         )}
       </Box>
-      <Box display={Display.Flex}>
-        {showOptions && snapId ? (
-          <PermissionCellOptions
-            snapId={snapId}
-            permissionName={permissionName}
-            description={description}
-          />
-        ) : (
-          description && (
-            <Tooltip
-              html={
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                >
-                  {description}
-                </Text>
-              }
-              position="bottom"
-            >
-              <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
-            </Tooltip>
-          )
-        )}
-      </Box>
+      {disableInfoSection ? null : (
+        <Box display={Display.Flex}>
+          {showOptions && snapId ? (
+            <PermissionCellOptions
+              snapId={snapId}
+              permissionName={permissionName}
+              description={description}
+            />
+          ) : (
+            description && (
+              <Tooltip
+                html={
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                  >
+                    {description}
+                  </Text>
+                }
+                position="bottom"
+              >
+                <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
+              </Tooltip>
+            )
+          )}
+        </Box>)}
     </Box>
   );
 };
@@ -157,9 +174,11 @@ PermissionCell.propTypes = {
   avatarIcon: PropTypes.any.isRequired,
   dateApproved: PropTypes.number,
   revoked: PropTypes.bool,
+  invoker: PropTypes.string,
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
+  disableInfoSection: PropTypes.bool,
 };
 
 export default PermissionCell;

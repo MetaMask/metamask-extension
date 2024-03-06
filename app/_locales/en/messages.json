@@ -3404,6 +3404,10 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
+  "permissionCan": {
+    "message": "can $1",
+    "description": "$1 is the permission being granted"
+  },
   "permissionDetails": {
     "message": "Permission details"
   },
