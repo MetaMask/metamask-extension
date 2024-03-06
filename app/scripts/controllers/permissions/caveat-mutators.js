@@ -24,9 +24,9 @@ export const CaveatMutatorFactories = {
  * account permissions.
  */
 function removeAccount(targetAccount, existingAccounts) {
+  const checkSumTargetAccount = toChecksumAddress(targetAccount);
   const newAccounts = existingAccounts.filter(
-    (address) =>
-      toChecksumAddress(address) !== toChecksumAddress(targetAccount),
+    (address) => toChecksumAddress(address) !== checkSumTargetAccount,
   );
 
   if (newAccounts.length === existingAccounts.length) {
