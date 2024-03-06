@@ -250,7 +250,6 @@ describe('SendPage', () => {
       ).toBeTruthy();
 
       expect(container).toMatchSnapshot();
-      expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
       expect(getByTestId('send-page-account-picker')).toBeInTheDocument();
 
       // Ensure we start a new draft transaction when its missing.

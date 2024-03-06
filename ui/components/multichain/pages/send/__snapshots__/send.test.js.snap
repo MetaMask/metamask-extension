@@ -41,27 +41,6 @@ exports[`SendPage render and initialization should render correctly even when a 
         <div
           class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
         >
-          <button
-            class="mm-box mm-picker-network mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
-            data-testid="send-page-network-picker"
-          >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-            >
-              ?
-            </div>
-            <span
-              class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
-            />
-            <span
-              class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-down.svg');"
-            />
-          </button>
-        </div>
-        <div
-          class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
-        >
           <label
             class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
           >
