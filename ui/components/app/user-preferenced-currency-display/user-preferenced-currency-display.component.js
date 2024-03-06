@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -86,9 +87,20 @@ const UserPreferencedCurrencyDisplayPropTypes = {
   showNative: PropTypes.bool,
   showCurrencySuffix: PropTypes.bool,
   /**
+   * Following are the props from CurrencyDisplay component.
    * UserPreferencedCurrencyDisplay component should also accept all the props from Currency component
    */
-  ...CurrencyDisplay.propTypes,
+  currency: PropTypes.string,
+  denomination: PropTypes.oneOf([
+    EtherDenomination.GWEI,
+    EtherDenomination.ETH,
+  ]),
+  displayValue: PropTypes.string,
+  prefixComponent: PropTypes.node,
+  suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  prefixComponentWrapperProps: PropTypes.object,
+  textProps: PropTypes.object,
+  suffixProps: PropTypes.object,
 };
 
 UserPreferencedCurrencyDisplay.propTypes =
