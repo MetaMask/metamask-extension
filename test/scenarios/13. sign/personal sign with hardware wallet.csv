@@ -11,6 +11,6 @@ Steps,Test Steps,Preconditions,Test Data,Expected Result,Notes
 10,Open the test dapp in another tab.,,https://metamask.github.io/test-dapp/,,
 11,Click Connect.,,,"The MetaMask popup is opened with the Connect with MetaMask screen displayed. Your imported hardware wallet account is selected.",
 12,Click Next and Connect with the hardware wallet account.,,,"The MetaMask popup is closed. You are connected to the test dapp.",
-13,"Click Sign in the ""Personal Sign"" section".,,,"The info modal instructions for signing with hardware wallet is displayed. The signature message is in Plain Text.",
-14,"Click Sign in the displayed modal. Then the Accept the Signature in the hardware wallet device.,,,The signature hash is displayed on the test dapp.,
+13,"Click Sign in the ""Personal Sign"" section",,,"The info modal instructions for signing with hardware wallet is displayed. The signature message is in Plain Text.",
+14,"Click Sign in the displayed modal. Then the Accept the Signature in the hardware wallet device.",,,The signature hash is displayed on the test dapp.,
 15,Verify signed hash.,,,The signed address is correctly verified.,The address shown in the test dapp is the same as the hardware wallet account.
