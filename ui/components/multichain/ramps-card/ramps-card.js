@@ -18,6 +18,9 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import useRamps from '../../../hooks/experiences/useRamps';
 
+const darkenGradient =
+  'linear-gradient(rgba(0, 0, 0, 0.12),rgba(0, 0, 0, 0.12))';
+
 export const RAMPS_CARD_VARIANT_TYPES = {
   TOKEN: 'token',
   NFT: 'nft',
@@ -26,20 +29,23 @@ export const RAMPS_CARD_VARIANT_TYPES = {
 
 export const RAMPS_CARD_VARIANTS = {
   [RAMPS_CARD_VARIANT_TYPES.TOKEN]: {
-    backgroundImage: "url('/images/ramps-card-token-gradient.png')",
     illustrationSrc: './images/ramps-card-token-illustration.png',
+    gradient:
+      'linear-gradient(90deg, #0189EC 0%, #4B7AED 35%, #6774EE 58%, #706AF4 80.5%, #7C5BFC 100%)',
     title: 'fundYourWallet',
     body: 'fundYourWalletDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.NFT]: {
-    backgroundImage: "url('/images/ramps-card-nft-gradient.png')",
     illustrationSrc: './images/ramps-card-nft-illustration.png',
+    gradient: 'linear-gradient(90deg, #F6822D 0%, #F894A7 52%, #ED94FB 92.5%)',
     title: 'getStartedWithNFTs',
     body: 'getStartedWithNFTsDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: {
-    backgroundImage: "url('/images/ramps-card-activity-gradient.png')",
     illustrationSrc: './images/ramps-card-activity-illustration.png',
+    gradient:
+      'linear-gradient(90deg, #57C5DC 0%, #06BFDD 49.39%, #35A9C7 100%)',
+
     title: 'startYourJourney',
     body: 'startYourJourneyDescription',
   },
@@ -47,7 +53,7 @@ export const RAMPS_CARD_VARIANTS = {
 
 export const RampsCard = ({ variant }) => {
   const t = useI18nContext();
-  const { backgroundImage, illustrationSrc, title, body } =
+  const { backgroundImage, gradient, illustrationSrc, title, body } =
     RAMPS_CARD_VARIANTS[variant];
   const { openBuyCryptoInPdapp } = useRamps();
   const trackEvent = useContext(MetaMetricsContext);
@@ -77,17 +83,10 @@ export const RampsCard = ({ variant }) => {
       borderRadius={BorderRadius.LG}
       margin={2}
       style={{
-        backgroundImage,
+        background: `url(${illustrationSrc}) no-repeat right bottom / contain,
+            ${darkenGradient}, ${gradient}`,
       }}
     >
-      <img
-        className={classnames(
-          'ramps-card-illustration',
-          `ramps-card-${variant}-illustration`,
-        )}
-        src={illustrationSrc}
-        alt=""
-      />
       <Text className="ramps-card__title" variant={TextVariant.headingSm}>
         {t(title, [symbol])}
       </Text>

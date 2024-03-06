@@ -1,7 +1,4 @@
 .ramps-card {
-  position: relative;
-  background-size: 100% 100%;
-  overflow: hidden;
   padding: 8px 12px;
 
   &__cta-button {
@@ -18,41 +15,16 @@
     color: var(--brand-colors-white-white000);
     width: 80%
   }
-
 }
 
 .ramps-card-token {
   background-color: var(--color-info-default);
 }
 
-.ramps-card-illustration {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.ramps-card-token-illustration {
-  height: 240%;
-  right: -25px;
-  top: -35px;
-}
-
 .ramps-card-nft {
   background-color: var(--color-flask-default);
 }
 
-.ramps-card-nft-illustration {
-  height: 80%;
-  right: -25px;
-  top: 40px;
-}
-
 .ramps-card-activity {
   background-color: var(--color-error-alternative);
-}
-
-.ramps-card-activity-illustration {
-  height: 140%;
-  right: -45px;
-  top: 0;
 }
