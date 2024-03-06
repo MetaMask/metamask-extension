@@ -180,23 +180,7 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {shouldShowBuy || shouldShowReceive ? (
-        <Box
-          paddingInlineStart={4}
-          paddingInlineEnd={4}
-          display={Display.Flex}
-          gap={2}
-        >
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />
-
-          {showReceiveModal ? (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          ) : null}
-        </Box>
-      ) : null}
+      {shouldShowBuy && <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}

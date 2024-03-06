@@ -28,8 +28,6 @@ import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { AssetListConversionButton } from '../../multichain';
-import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -97,38 +95,13 @@ export default function NftsTab() {
         />
       ) : (
         <>
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
+
           {isMainnet && !useNftDetection ? (
             <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-
-          <Box paddingInlineStart={4} paddingInlineEnd={4} paddingTop={4}>
-            <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
-          </Box>
-
-          {/* <Box */}
-          {/*  paddingInlineStart={4}*/}
-          {/*  paddingInlineEnd={4}*/}
-          {/*  display={Display.Flex}*/}
-          {/*  paddingTop={4}*/}
-          {/* > */}
-          {/*  <AssetListConversionButton*/}
-          {/*    variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}*/}
-          {/*    onClick={() => {*/}
-          {/*      global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });*/}
-          {/*      trackEvent({*/}
-          {/*        event: MetaMetricsEventName.EmptyNftsBannerClicked,*/}
-          {/*        properties: {*/}
-          {/*          chain_id: currentNetwork.chainId,*/}
-          {/*          locale: currentLocale,*/}
-          {/*          network: currentNetwork.nickname,*/}
-          {/*          referrer: ORIGIN_METAMASK,*/}
-          {/*        },*/}
-          {/*      });*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/* </Box>*/}
 
           <Box
             padding={12}

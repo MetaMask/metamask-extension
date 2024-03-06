@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import classnames from 'classnames';
+import { Box, Text, ButtonBase } from '../../component-library';
 import {
-  Box,
-  IconName,
-  Text,
-  ButtonBase,
-  ButtonIconSize,
-  ButtonIcon,
-} from '../../component-library';
-import {
-  BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentNetwork, getSwapsDefaultToken } from '../../../selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 export const RAMPS_CARD_VARIANT_TYPES = {
   TOKEN: 'token',
@@ -26,78 +26,74 @@ export const RAMPS_CARD_VARIANT_TYPES = {
 
 export const RAMPS_CARD_VARIANTS = {
   [RAMPS_CARD_VARIANT_TYPES.TOKEN]: {
-    color: 'var(--color-info-default)',
-    backgroundImage: 'url(/images/ramps-card-tokens-background.png)',
-    illustration: './images/ramps-card-tokens-illustration.png',
-    imageStyle: { height: '240%', right: '-25px', top: '-35px' },
-    title: 'Fund your wallet',
-    body: 'Get started by adding some [TokenName] to your wallet.',
+    backgroundImage: "url('/images/ramps-card-token-gradient.png')",
+    illustrationSrc: './images/ramps-card-token-illustration.png',
+    title: 'fundYourWallet',
+    body: 'fundYourWalletDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.NFT]: {
-    color: 'var(--color-flask-default)',
-    backgroundImage: 'url(/images/ramps-card-nfts-background.png)',
-    illustration: './images/ramps-card-nft-illustration.png',
-    imageStyle: { height: '80%', right: '-25px', top: '40px' },
-    title: 'Get [TokenName] to buy NFTs',
-    body: 'Get started with NFTs by adding some [TokenName] to your wallet.',
+    backgroundImage: "url('/images/ramps-card-nft-gradient.png')",
+    illustrationSrc: './images/ramps-card-nft-illustration.png',
+    title: 'getStartedWithNFTs',
+    body: 'getStartedWithNFTsDescription',
   },
   [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: {
-    color: 'var(--color-error-alternative)',
-    backgroundImage: 'url(/images/ramps-card-activity-background.png)',
-    illustration: './images/ramps-card-activity-illustration.png',
-    imageStyle: { height: '140%', right: '-45px', top: 0 },
-    title: 'Start your journey with [TokenName]',
-    body: 'Get started with web3 by adding some [TokenName] to your wallet.',
+    backgroundImage: "url('/images/ramps-card-activity-gradient.png')",
+    illustrationSrc: './images/ramps-card-activity-illustration.png',
+    title: 'startYourJourney',
+    body: 'startYourJourneyDescription',
   },
 };
 
 export const RampsCard = ({ variant }) => {
   const t = useI18nContext();
-  const { color, backgroundImage, illustration, imageStyle, title, body } =
+  const { backgroundImage, illustrationSrc, title, body } =
     RAMPS_CARD_VARIANTS[variant];
+  const { openBuyCryptoInPdapp } = useRamps();
+  const trackEvent = useContext(MetaMetricsContext);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const { symbol = 'ETH' } = useSelector(getSwapsDefaultToken);
+
+  const onClick = () => {
+    openBuyCryptoInPdapp();
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: `${variant} tab`,
+        text: `Buy ${symbol}`,
+        chain_id: currentNetwork.chainId,
+        token_symbol: symbol,
+      },
+    });
+  };
 
   return (
     <Box
-      className="ramps-card"
+      className={classnames('ramps-card', `ramps-card-${variant}`)}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       gap={2}
       borderRadius={BorderRadius.LG}
+      margin={2}
       style={{
-        width: '100%',
         backgroundImage,
-        backgroundSize: '100% 100%',
-        backgroundColor: color,
-        overflow: 'hidden',
-        padding: '8px 12px',
       }}
     >
       <img
-        src={illustration}
+        className={classnames(
+          'ramps-card-illustration',
+          `ramps-card-${variant}-illustration`,
+        )}
+        src={illustrationSrc}
         alt=""
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          ...imageStyle,
-        }}
       />
-      <ButtonIcon
-        className="ramps-card__close-button"
-        iconName={IconName.Close}
-        size={ButtonIconSize.Sm}
-        ariaLabel={t('close')}
-      />
-      <Text variant={TextVariant.headingSm}>{title}</Text>
-      <Text style={{ width: '80%' }}>{body}</Text>
-      <ButtonBase
-        style={{
-          width: 'fit-content',
-          color: TextColor.textDefault,
-          backgroundColor: BackgroundColor.backgroundDefault,
-        }}
-      >
-        Buy TokenName
+      <Text className="ramps-card__title" variant={TextVariant.headingSm}>
+        {t(title, [symbol])}
+      </Text>
+      <Text className="ramps-card__body">{t(body, [symbol])}</Text>
+      <ButtonBase className="ramps-card__cta-button" onClick={onClick}>
+        {t('buyToken', [symbol])}
       </ButtonBase>
     </Box>
   );
