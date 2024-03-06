@@ -224,12 +224,14 @@ const AssetList = ({ onClickAsset }) => {
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
+        // The primary and secondary currencies are subject to change based on the user's settings
+        // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
         primary={
-          showPrimaryCurrency(
+          showSecondaryCurrency(
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
           )
-            ? primaryCurrencyDisplay
+            ? secondaryCurrencyDisplay
             : undefined
         }
         tokenSymbol={
@@ -239,11 +241,11 @@ const AssetList = ({ onClickAsset }) => {
         }
         secondary={
           showFiat &&
-          showSecondaryCurrency(
+          showPrimaryCurrency(
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
           )
-            ? secondaryCurrencyDisplay
+            ? primaryCurrencyDisplay
             : undefined
         }
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
