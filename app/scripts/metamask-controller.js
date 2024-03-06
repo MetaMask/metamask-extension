@@ -13,9 +13,9 @@ import {
   RatesController,
   fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, throttle, memoize, wrap } from 'lodash';
