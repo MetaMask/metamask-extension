@@ -94,15 +94,35 @@ describe('Test Snap UI Links', function () {
           tag: 'b',
         });
 
-        // wait for and click back button
+        // wait for and click visit site button
         await driver.waitForSelector({
-          text: 'Back',
-          tag: 'button',
+          text: 'Visit site',
+          tag: 'a',
         });
         await driver.clickElement({
-          text: 'Back',
-          tag: 'button',
+          text: 'Visit site',
+          tag: 'a',
         });
+
+        // switch to new tab
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Snaps Directory',
+          windowHandles,
+        );
+
+        // check that the correct page has been opened
+        await driver.waitForSelector({
+          text: 'Most Popular',
+          tag: 'h2',
+        });
+
+        // switch back to metamask window
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Dialog,
+          windowHandles,
+        );
 
         // wait for and click approve button
         await driver.waitForSelector({
@@ -115,7 +135,7 @@ describe('Test Snap UI Links', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for false result
