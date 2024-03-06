@@ -226,16 +226,17 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                {identity.metadata.name.length >
+                MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={identity.name}
+                    title={identity.metadata.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {identity.name}
+                    {identity.metadata.name}
                   </Tooltip>
                 ) : (
-                  identity.name
+                  identity.metadata.name
                 )}
               </Text>
             </Box>
@@ -317,7 +318,9 @@ export const AccountListItem = ({
               color: Color.textAlternative,
             }}
             startIconName={
-              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
+              identity.metadata.keyring.type === KeyringType.snap
+                ? IconName.Snaps
+                : null
             }
           />
         ) : null}
@@ -325,7 +328,7 @@ export const AccountListItem = ({
 
       {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
-          ariaLabel={`${identity.name} ${t('options')}`}
+          ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountListItemMenuRef}
@@ -374,12 +377,23 @@ export const AccountListItem = ({
 
 AccountListItem.propTypes = {
   /**
-   * Identity of the account
+   * An account object that has name, address, and balance data
    */
   identity: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
     keyring: PropTypes.shape({
       type: PropTypes.string.isRequired,
     }).isRequired,
