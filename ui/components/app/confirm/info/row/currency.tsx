@@ -32,12 +32,9 @@ export const ConfirmInfoRowCurrency = ({
     }}
   >
     {currency ? (
-      <CurrencyDisplay
-        currency={currency}
-        value={value ? `${value}` : undefined}
-      />
+      <CurrencyDisplay currency={currency} value={`${value}`} />
     ) : (
-      <UserPreferencedCurrencyDisplay value={value ? `${value}` : undefined} />
+      <UserPreferencedCurrencyDisplay value={`${value}`} />
     )}
   </Box>
 );
