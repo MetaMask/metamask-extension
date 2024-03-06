@@ -42,7 +42,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
       actions.resolvePendingApproval(pendingApproval.id, true);
     },
     onCancel: () => {
-      trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountCancelled);
+      trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountCanceled);
       actions.resolvePendingApproval(pendingApproval.id, false);
     },
   };

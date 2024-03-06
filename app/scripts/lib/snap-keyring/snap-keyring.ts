@@ -213,7 +213,7 @@ export const snapKeyringBuilder = (
           } else {
             // User has cancelled account creation
             await handleUserInput(confirmationResult);
-            trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCancelled);
+            trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
 
             throw new Error('User denied account creation');
           }
@@ -324,7 +324,7 @@ export const snapKeyringBuilder = (
           } else {
             await handleUserInput(confirmationResult);
             trackSnapAccountEvent(
-              MetaMetricsEventName.RemoveSnapAccountCancelled,
+              MetaMetricsEventName.RemoveSnapAccountCanceled,
             );
 
             throw new Error('User denied account removal');
