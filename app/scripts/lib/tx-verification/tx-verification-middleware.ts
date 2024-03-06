@@ -8,8 +8,8 @@ import type {
   JsonRpcResponse,
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-} from 'json-rpc-engine';
-import { JsonRpcRequest } from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
+import { JsonRpcRequest } from '@metamask/json-rpc-engine';
 import {
   EXPERIENCES_TO_VERIFY,
   getExperience,

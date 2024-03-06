@@ -5581,7 +5581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.2":
+"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.2, @metamask/json-rpc-engine@npm:^7.3.3":
   version: 7.3.3
   resolution: "@metamask/json-rpc-engine@npm:7.3.3"
   dependencies:
@@ -18479,15 +18479,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-rpc-errors@npm:^4.0.2":
-  version: 4.0.3
-  resolution: "eth-rpc-errors@npm:4.0.3"
-  dependencies:
-    fast-safe-stringify: "npm:^2.0.6"
-  checksum: 10/47ce14170eabaee51ab1cc7e643bb3ef96ee6b15c6404806aedcd51750e00ae0b1a12c37785b180679b8d452b6dd44a0240bb018d01fa73efc85fcfa808b35a7
-  languageName: node
-  linkType: hard
-
 "ethereum-cryptography@npm:^0.1.3":
   version: 0.1.3
   resolution: "ethereum-cryptography@npm:0.1.3"
@@ -24179,16 +24170,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-engine@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "json-rpc-engine@npm:6.1.0"
-  dependencies:
-    "@metamask/safe-event-emitter": "npm:^2.0.0"
-    eth-rpc-errors: "npm:^4.0.2"
-  checksum: 10/00d5b5228e90f126dd52176598db6e5611d295d3a3f7be21254c30c1b6555811260ef2ec2df035cd8e583e4b12096259da721e29f4ea2affb615f7dfc960a6a6
-  languageName: node
-  linkType: hard
-
 "json-rpc-middleware-stream@npm:^5.0.1":
   version: 5.0.1
   resolution: "json-rpc-middleware-stream@npm:5.0.1"
@@ -26130,6 +26111,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^18.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
+    "@metamask/json-rpc-engine": "npm:^7.3.3"
     "@metamask/keyring-api": "npm:^8.1.3"
     "@metamask/keyring-controller": "npm:^17.2.2"
     "@metamask/logging-controller": "npm:^6.0.0"
@@ -26347,7 +26329,6 @@ __metadata:
     jest-environment-jsdom: "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch"
     jest-junit: "npm:^14.0.1"
     jsdom: "npm:^16.7.0"
-    json-rpc-engine: "npm:^6.1.0"
     json-rpc-middleware-stream: "npm:^5.0.1"
     json-schema-to-ts: "npm:^3.0.1"
     koa: "npm:^2.7.0"
