@@ -106,7 +106,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "Español" and verify that language persists with page refresh and sessions', async function () {
+  it('User selects "Español" and verify that language persists with page refresh and sessions @no-mmi', async function () {
     if (process.env.MULTICHAIN) {
       return;
     }
@@ -270,7 +270,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "Magyar" language and verify that hypertext are updated with the selected language change', async function () {
+  it('User selects "Magyar" language and verify that hypertext are updated with the selected language change @no-mmi', async function () {
     const languageIndex = 23;
     await withFixtures(
       {

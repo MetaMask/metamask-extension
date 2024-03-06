@@ -579,6 +579,43 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  async switchToWindowWithUrl(
+    url,
+    initialWindowHandles,
+    delayStep = 1000,
+    timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
+  ) {
+    let windowHandles =
+      initialWindowHandles || (await this.driver.getAllWindowHandles());
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      for (const handle of windowHandles) {
+        const handleUrl = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getCurrentUrl();
+          },
+        );
+
+        if (handleUrl === `${url}/`) {
+          return handle;
+        }
+      }
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+      // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with url: ${url}`);
+  }
+
   async closeWindow() {
     await this.driver.close();
   }
