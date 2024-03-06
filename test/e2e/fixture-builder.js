@@ -8,6 +8,7 @@ const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
+const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 
 function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
@@ -190,7 +191,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -313,6 +313,9 @@ function onboardingFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
+      },
+      SelectedNetworkController: {
+        domains: {},
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -563,8 +566,9 @@ class FixtureBuilder {
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                    ERC_4337_ACCOUNT.toLowerCase(),
                   ],
                 },
               ],
@@ -857,12 +861,20 @@ class FixtureBuilder {
   }
 
   withSelectedNetworkControllerPerDomain() {
-    return this.withSelectedNetworkController({
-      domains: {
-        [DAPP_URL]: 'networkConfigurationId',
-        [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-      },
-      perDomainNetwork: true,
+    return merge(
+      this.withSelectedNetworkController({
+        domains: {
+          [DAPP_URL]: 'networkConfigurationId',
+          [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        },
+      }),
+      this.withPreferencesControllerUseRequestQueueEnabled(),
+    );
+  }
+
+  withPreferencesControllerUseRequestQueueEnabled() {
+    return this.withPreferencesController({
+      useRequestQueue: true,
     });
   }
 

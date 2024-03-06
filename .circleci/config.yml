@@ -28,7 +28,7 @@ executors:
     resource_class: small
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.41.1-jammy
+      - image: mcr.microsoft.com/playwright:v1.41.1-focal
     resource_class: medium
 
 orbs:
