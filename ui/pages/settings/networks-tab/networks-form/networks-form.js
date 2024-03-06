@@ -18,6 +18,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   BUILT_IN_NETWORKS,
+  CHAIN_IDS,
   FEATURED_RPCS,
   infuraProjectId,
 } from '../../../../../shared/constants/network';
@@ -40,6 +41,7 @@ import {
   editAndSetNetworkConfiguration,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
+  showDeprecatedNetworkModal,
   showModal,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
@@ -90,6 +92,7 @@ const prefixChainId = (chainId) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  setActiveOnSubmit = false,
   restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
@@ -570,7 +573,9 @@ const NetworksForm = ({
       const prefixedChainId = prefixChainId(formChainId);
       let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
-      if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
+      if (prefixedChainId === CHAIN_IDS.GOERLI) {
+        dispatch(showDeprecatedNetworkModal());
+      } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
           editAndSetNetworkConfiguration(
             {
@@ -605,20 +610,11 @@ const NetworksForm = ({
               },
             },
             {
-              setActive: true,
+              setActive: setActiveOnSubmit,
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
-      }
-      if (addNewNetwork) {
-        dispatch(
-          setNewNetworkAdded({
-            nickname: networkName,
-            networkConfigurationId,
-          }),
-        );
-
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -631,9 +627,21 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
-
-        submitCallback?.();
       }
+
+      if (
+        addNewNetwork &&
+        !setActiveOnSubmit &&
+        prefixedChainId !== CHAIN_IDS.GOERLI
+      ) {
+        dispatch(
+          setNewNetworkAdded({
+            nickname: networkName,
+            networkConfigurationId,
+          }),
+        );
+      }
+      submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
       throw error;
@@ -709,6 +717,7 @@ const NetworksForm = ({
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
+          dataTestId="network-form-network-name"
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
@@ -723,6 +732,7 @@ const NetworksForm = ({
               : rpcUrl
           }
           disabled={viewOnly}
+          dataTestId="network-form-rpc-url"
         />
         <FormField
           warning={warnings.chainId?.msg || ''}
@@ -736,15 +746,17 @@ const NetworksForm = ({
           value={chainId}
           disabled={viewOnly}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
+          dataTestId="network-form-chain-id"
         />
         <FormTextField
           data-testid="network-form-ticker"
           helpText={
-            suggestedTicker ? (
+            suggestedTicker && suggestedTicker !== ticker ? (
               <Text
                 as="span"
                 variant={TextVariant.bodySm}
                 color={TextColor.textDefault}
+                data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedTokenSymbol')}
                 <ButtonLink
@@ -802,6 +814,7 @@ const NetworksForm = ({
           value={blockExplorerUrl}
           disabled={viewOnly}
           autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
+          dataTestId="network-form-block-explorer-url"
         />
       </div>
       <div
@@ -846,6 +859,7 @@ NetworksForm.propTypes = {
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
+  setActiveOnSubmit: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .recovery-phrase {
   display: flex;
   flex-direction: column;
@@ -26,7 +28,7 @@
     row-gap: 16px;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       grid-template-columns: 1fr 1fr 1fr;
     }
 
@@ -67,7 +69,7 @@
     text-align: center;
 
     &__number {
-      font-size: $font-size-h5;
+      font-size: design-system.$font-size-h5;
     }
   }
 
@@ -78,7 +80,7 @@
     align-items: center;
     width: 100%;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       margin-inline-start: 40px;
       margin-inline-end: 40px;
       margin-bottom: 40px;
@@ -91,7 +93,7 @@
       align-items: center;
       width: 100%;
 
-      @include screen-md-min {
+      @include design-system.screen-md-min {
         margin-top: 20px;
       }
 
@@ -105,7 +107,7 @@
     &--button {
       align-self: center;
 
-      @include screen-sm-min {
+      @include design-system.screen-sm-min {
         max-width: 300px;
       }
     }
@@ -120,13 +122,13 @@
         flex-direction: row;
         justify-content: space-between;
 
-        @include screen-sm-min {
+        @include design-system.screen-sm-min {
           justify-content: space-around;
         }
       }
 
       &__button {
-        @include H6;
+        @include design-system.H6;
 
         background-color: transparent;
         border: none;
@@ -145,7 +147,7 @@
           justify-content: flex-end;
         }
 
-        @include screen-sm-max {
+        @include design-system.screen-sm-max {
           justify-content: center;
           width: 100%;
         }
@@ -180,7 +182,7 @@
   }
 
   &__confirm {
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       display: flex;
       flex-direction: column;
       align-items: center;

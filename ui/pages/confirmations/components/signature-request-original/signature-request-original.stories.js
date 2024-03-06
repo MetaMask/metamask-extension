@@ -5,8 +5,8 @@ import testData from '../../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequestOriginal from './signature-request-original.component';
 
-const [MOCK_PRIMARY_IDENTITY, MOCK_SECONDARY_IDENTITY] = Object.values(
-  testData.metamask.identities,
+const [MOCK_PRIMARY_ACCOUNT, MOCK_SECONDARY_ACCOUNT] = Object.values(
+  testData.metamask.internalAccounts.accounts,
 );
 
 const MOCK_SIGN_DATA = JSON.stringify({
@@ -42,7 +42,7 @@ const MOCK_SIGN_DATA = JSON.stringify({
 });
 
 export default {
-  title: 'Components/App/SignatureRequestOriginal',
+  title: 'Confirmations/Components/SignatureRequestOriginal',
 
   component: SignatureRequestOriginal,
   parameters: {
@@ -67,14 +67,14 @@ export default {
     sign: { action: 'Sign' },
   },
   args: {
-    fromAccount: MOCK_PRIMARY_IDENTITY,
+    fromAccount: MOCK_PRIMARY_ACCOUNT,
     history: {
       push: action('history.push()'),
     },
     mostRecentOverviewPage: '/',
     nativeCurrency: 'ETH',
     providerConfig: { name: 'Goerli ETH' },
-    selectedAccount: MOCK_PRIMARY_IDENTITY,
+    selectedAccount: MOCK_PRIMARY_ACCOUNT,
   },
 };
 
@@ -151,5 +151,5 @@ AccountMismatchStory.args = {
     },
     type: MESSAGE_TYPE.PERSONAL_SIGN,
   },
-  selectedAccount: MOCK_SECONDARY_IDENTITY,
+  selectedAccount: MOCK_SECONDARY_ACCOUNT,
 };

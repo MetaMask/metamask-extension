@@ -16,6 +16,7 @@ export default function UserPreferencedCurrencyDisplay({
   showEthLogo,
   type,
   showFiat,
+  showNative,
   showCurrencySuffix,
   ...restProps
 }) {
@@ -26,6 +27,7 @@ export default function UserPreferencedCurrencyDisplay({
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
     showFiatOverride: showFiat,
+    showNativeOverride: showNative,
   });
   const prefixComponent = useMemo(() => {
     return (
@@ -77,6 +79,7 @@ UserPreferencedCurrencyDisplay.propTypes = {
     PropTypes.number,
   ]),
   showFiat: PropTypes.bool,
+  showNative: PropTypes.bool,
   showCurrencySuffix: PropTypes.bool,
   /**
    * UserPreferencedCurrencyDisplay component should also accept all the props from Currency component

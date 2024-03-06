@@ -7,6 +7,7 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { CHAIN_IDS } = require('../../../shared/constants/network');
 
 describe('Add hide token', function () {
   it('hides the token when clicked', async function () {
@@ -54,7 +55,7 @@ describe('Add hide token', function () {
 
         await driver.clickElement({ text: 'Tokens', tag: 'button' });
 
-        await driver.clickElement({ text: 'TST', tag: 'p' });
+        await driver.clickElement({ text: 'TST', tag: 'span' });
 
         await driver.clickElement('[data-testid="asset-options__button"]');
 
@@ -69,7 +70,7 @@ describe('Add hide token', function () {
         );
 
         // wait for confirm hide modal to be removed from DOM.
-        await driver.waitForElementNotPresent(confirmHideModal);
+        await driver.assertElementNotPresent(confirmHideModal);
 
         assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 1);
@@ -80,14 +81,41 @@ describe('Add hide token', function () {
 
 /* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Add existing token using search', function () {
+  // Mock call to core to fetch BAT token price
+  async function mockPriceFetch(mockServer) {
+    return [
+      await mockServer
+        .forGet(
+          'https://price-api.metafi.codefi.network/v2/chains/56/spot-prices',
+        )
+        .withQuery({
+          tokenAddresses: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+          vsCurrency: 'ETH',
+        })
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              '0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+                eth: 0.0001,
+              },
+            },
+          };
+        }),
+    ];
+  }
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
           .withPreferencesController({ useTokenDetection: true })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          chainId: parseInt(CHAIN_IDS.BSC, 16),
+        },
         title: this.test.fullTitle(),
+        testSpecificMock: mockPriceFetch,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -102,7 +130,6 @@ describe('Add existing token using search', function () {
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
-
         await driver.clickElement('[data-testid="home__asset-tab"]');
         const [, tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',

@@ -39,7 +39,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -101,7 +101,7 @@ export default class SecurityTab extends PureComponent {
   settingsRefCounter = 0;
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(
+    getNumberOfSettingRoutesInTab(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),
@@ -198,10 +198,15 @@ export default class SecurityTab extends PureComponent {
     return (
       <>
         <div
-          ref={this.settingsRefs[14]}
+          ref={this.settingsRefs[15]}
           className="settings-page__security-tab-sub-header"
         >
-          <Text variant={TextVariant.inherit} color={TextColor.textAlternative}>
+          <span ref={this.settingsRefs[16]} />
+          <Text
+            ref={this.settingsRefs[17]}
+            variant={TextVariant.inherit}
+            color={TextColor.textAlternative}
+          >
             {t('securityAlerts')}
           </Text>
           <div className="settings-page__content-padded">
@@ -432,7 +437,6 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
         display={Display.Flex}
@@ -485,7 +489,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[13]}
         className="settings-page__content-row"
         data-testid="setting-safe-chains-validation"
         display={Display.Flex}
@@ -954,7 +958,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[13]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1071,7 +1075,10 @@ export default class SecurityTab extends PureComponent {
           {this.renderIncomingTransactionsOptIn()}
         </div>
 
-        <span className="settings-page__security-tab-sub-header">
+        <span
+          className="settings-page__security-tab-sub-header"
+          ref={this.settingsRefs[5]}
+        >
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">

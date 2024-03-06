@@ -8,7 +8,7 @@ import README from './README.mdx';
 import TransactionDetailItem from '.';
 
 export default {
-  title: 'Components/App/TransactionDetailItem',
+  title: 'Confirmations/Components/TransactionDetailItem',
   component: TransactionDetailItem,
   parameters: {
     docs: {

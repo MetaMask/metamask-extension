@@ -48,7 +48,7 @@ function useTokens(fromAddress: string, simulationData: SimulationData) {
   useEffect(() => {
     const tokenAddresses = [
       ...new Set(
-        simulationData.tokenBalanceChanges.map(
+        (simulationData?.tokenBalanceChanges ?? []).map(
           (tokenBalanceChange) => tokenBalanceChange.address,
         ),
       ),

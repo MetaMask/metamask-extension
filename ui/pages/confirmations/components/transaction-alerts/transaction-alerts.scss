@@ -1,3 +1,5 @@
+@use "design-system";
+
 .transaction-alerts {
   text-align: left;
   margin: 15px;
@@ -25,7 +27,7 @@
     border: 0 transparent;
     display: inline;
     padding: 0;
-    font-size: $font-size-h7;
+    font-size: design-system.$font-size-h7;
   }
 
   // We plan to deprecate SecurityProviderBannerMessage in favor of SecurityProviderBannerAlert. This override should be temporary

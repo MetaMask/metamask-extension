@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Если вы одобрите этот запрос, кто-то может украсть ваши активы, указанные в Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Из-за ошибки этот запрос не был подтвержден поставщиком услуг безопасности. Действуйте осторожно."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Заменить токен депозитария"
-  },
-  "custodyApiUrl": {
-    "message": "URL $1 API"
   },
   "custodyDeeplinkDescription": {
     "message": "Подтвердите транзакцию в приложении $1. После того как все необходимые разрешения на депозитарное хранение будут предоставлены, транзакция будет завершена. Проверьте статус своего приложения $1."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "Уведомления"
   },
-  "notifications10ActionText": {
-    "message": "Смотреть в настройках",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Улучшенное определение токенов в настоящее время доступно в сетях Мейн-нет Ethereum, Polygon, BSC и Avalanche. Это еще не все!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Функция обнаружения токена сейчас ВЫКЛЮЧЕНА по умолчанию. Вы можете отключить ее в настройках."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Мы получаем токены из списков сторонних токенов. Токены, указанные более чем в двух списках токенов, будут определены автоматически."
-  },
-  "notifications10Title": {
-    "message": "Улучшено определение токенов"
-  },
-  "notifications11Description": {
-    "message": "Токены могут быть созданы кем угодно и могут иметь повторяющиеся имена. Если вы видите токен, которому вы не доверяете или с которым не взаимодействовали, безопаснее не доверять ему."
-  },
-  "notifications11Title": {
-    "message": "Риски мошенничества и безопасности"
-  },
-  "notifications12ActionText": {
-    "message": "Включить темный режим"
-  },
-  "notifications12Description": {
-    "message": "Наконец-то появился тёмный режим расширения! Чтобы включить его, перейдите в «Настройки» > «Экспериментальные» и выберите один из вариантов отображения: «Светлая», «Темная» и «Системная»."
-  },
-  "notifications12Title": {
-    "message": "Когда появится темный режим? Он уже появился! ️"
-  },
-  "notifications13ActionText": {
-    "message": "Показать пользовательский список сетей"
-  },
-  "notifications13Description": {
-    "message": "Теперь вы можете легко добавить следующие популярные пользовательские сети: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm и Polygon! Чтобы включить эту функцию, перейдите в «Настройки» -> «Экспериментальные» и включите «Показать пользовательский список сетей»!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Добавить популярные сети"
-  },
-  "notifications14ActionText": {
-    "message": "Показать настройки создания резервной копии"
-  },
-  "notifications14Description": {
-    "message": "В начале октября мы закрываем нашу функцию данных 3Box. Чтобы создать резервную копию и восстановить свой кошелек вручную, используйте кнопку «Создать резервную копию сейчас» в Дополнительных настройках.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Закрытие 3Box"
-  },
-  "notifications15Description": {
-    "message": "От вас не требуется никаких действий, поэтому продолжайте пользоваться своим кошельком в обычном режиме. Будьте в курсе разных видов потенциального мошенничества, связанного со «Слиянием».",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Уже доступно «Слияние» Ethereum!"
-  },
-  "notifications18ActionText": {
-    "message": "Включить предупреждения безопасности"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Получайте оповещения от третьих лиц, когда вы, возможно, получаете вредоносный запрос.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Всегда обязательно проводите собственную комплексную проверку, прежде чем утверждать какие-либо запросы.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea является первым поставщиком услуг для этой функции. Скоро появятся новые поставщики!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Избегайте опасности с помощью оповещений безопасности"
-  },
-  "notifications19ActionText": {
-    "message": "Включить автоопределение NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Два способа начать работу:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "На данный момент мы поддерживаем только ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Добавьте свои NFT вручную или включите автоопределение NFT в меню «Настройки» > «Экспериментальные».",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Просматривайте свои NFT как никогда раньше"
-  },
-  "notifications1Description": {
-    "message": "Теперь пользователи MetaMask Mobile могут выполнять своп токенов в своем мобильном кошельке. Отсканируйте QR-код, чтобы скачать мобильное приложение и начать своп.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Своп на мобильном устройстве уже доступен!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Подробнее",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Пользователи Ledger и Firefox испытывают проблемы с подключением",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Попробовать"
-  },
-  "notifications21Description": {
-    "message": "Мы обновили свопы в расширении MetaMask, чтобы их было проще и быстрее использовать.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Представляем новые и обновленные свопы!"
-  },
-  "notifications22ActionText": {
-    "message": "Понятно"
-  },
-  "notifications22Description": {
-    "message": "💡 Просто нажмите глобальное меню или меню счета, чтобы найти их!"
-  },
-  "notifications22Title": {
-    "message": "Ищете данные своего счета или URL обозревателя блоков?"
-  },
-  "notifications23ActionText": {
-    "message": "Включить оповещения безопасности"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Избегайте известных мошенников, сохраняя при этом свою конфиденциальность с помощью оповещений безопасности Blockaid в Мейн-нете Ethereum."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Всегда проводите собственную комплексную проверку перед утверждением запросов."
-  },
-  "notifications23Title": {
-    "message": "Избегайте угроз с помощью оповещений безопасности"
-  },
   "notifications24ActionText": {
     "message": "Понятно"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Дополнительная плата за газ по сети"
-  },
-  "notifications3ActionText": {
-    "message": "Подробнее",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Ознакомьтесь с методами безопасной работы в MetaMask и актуальными советами по безопасности на официальном сайте поддержки MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Следуйте рекомендациям по безопасности",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Начать своп",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Получайте лучшие ценовые предложения на своп токенов прямо в своем кошельке. Теперь через MetaMask можно взаимодействовать с несколькими агрегаторами децентрализованных бирж и профессиональными маркет-мейкерами в Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Выполняйте своп токенов в Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Ваша «сид-фраза» теперь называется «секретная фраза для восстановления».",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Начиная с Chrome версии 91, API, обеспечивавший нашу поддержку Ledger (U2F), больше не поддерживают аппаратные кошельки . Компания MetaMask реализовала новую поддержку Ledger Live, которая позволяет по-прежнему подключаться к устройству Ledger через приложение Ledger Live для ПК.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "При использовании счета вашего Ledger в MetaMask откроется новая вкладка,и будет предложено открыть приложение Ledger Live.  Когда приложение откроется, вы увидите запрос разрешения на WebSocket-соединение с вашим счетом MetaMask.  Вот и все!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Вы можете включить поддержку Ledger Live, нажав «Настройки» > «Дополнительно» > «Использовать Ledger Live».",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Обновление поддержки Ledger для пользователей Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 включает новую поддержку транзакций EIP-1559 при использовании устройств Ledger.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Перед выполнением транзакций в Мейн-нете Ethereum убедитесь, что в вашем Ledger установлена последняя версия прошивки.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Обновление прошивки Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Перейдите в «Настройки»> «Дополнительно».",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Улучшение связи с Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Теперь мы предоставляем вам больше информации на вкладке «Данные» при подтверждении транзакций со смарт-контрактами."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Теперь вы можете лучше понять реквизиты своей транзакции перед подтверждением и проще добавлять адреса транзакций в адресную книгу, что поможет вам принимать безопасные и обоснованные решения."
-  },
-  "notifications9Title": {
-    "message": "👓 Мы упрощаем просмотр реквизитов транзакций."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox больше не поддерживает U2F, поэтому Ledger не будет работать с MetaMask в Firefox. Вместо этого попробуйте MetaMask в Google Chrome.",
