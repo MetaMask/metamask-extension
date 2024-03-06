@@ -961,6 +961,12 @@
   "contractNFT": {
     "message": "NFT contract"
   },
+  "assetOrFulfilmentContract": {
+    "message": "Asset/Fulfilment contract"
+  },
+  "thirdPartyBeneficiary": {
+    "message": "Beneficiary"
+  },
   "contractRequestingAccess": {
     "message": "Third party requesting access"
   },
