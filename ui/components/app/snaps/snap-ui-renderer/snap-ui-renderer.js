@@ -1,7 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
-import { nanoid } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
 import { isEqual } from 'lodash';
@@ -51,18 +50,15 @@ const SnapUIRendererComponent = ({
 
   const isValidComponent = content && isComponent(content);
 
-  const elementKeyIndex = { value: 0 };
-
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
       isValidComponent &&
       mapToTemplate({
+        map: {},
         element: content,
-        rootKey: nanoid(),
-        elementKeyIndex,
       }),
-    [content, isValidComponent, elementKeyIndex],
+    [content, isValidComponent],
   );
 
   if (isLoading || !content) {

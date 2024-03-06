@@ -87,7 +87,6 @@ describe('SendPage', () => {
       },
       history: { mostRecentOverviewPage: 'activity' },
       metamask: {
-        permissionHistory: {},
         transactions: [
           {
             id: 1,
@@ -181,6 +180,15 @@ describe('SendPage', () => {
             address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
             iconUrl: 'cryptokek.svg',
             occurrences: null,
+          },
+        },
+        permissionHistory: {
+          'https://uniswap.org/': {
+            eth_accounts: {
+              accounts: {
+                '0x0': 1709225290848,
+              },
+            },
           },
         },
       },
