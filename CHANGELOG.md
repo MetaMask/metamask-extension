@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.11.2]
+### Fixed
+- [MMI] Fixed bug caused by a PR from confirmations that prevents MMI users from submitting multiple Txs ([#23342](https://github.com/MetaMask/metamask-extension/pull/23342))
 
 ## [11.11.1]
 ### Added
