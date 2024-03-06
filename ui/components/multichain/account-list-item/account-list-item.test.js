@@ -8,9 +8,9 @@ import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
-const identity = {
-  ...mockState.metamask.identities[
-    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+const account = {
+  ...mockState.metamask.internalAccounts.accounts[
+    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
   balance: '0x152387ad22c3f0',
   keyring: {
@@ -19,7 +19,7 @@ const identity = {
 };
 
 const DEFAULT_PROPS = {
-  identity,
+  identity: account,
   onClick: jest.fn(),
 };
 
@@ -43,9 +43,9 @@ const render = (props = {}) => {
 describe('AccountListItem', () => {
   it('renders AccountListItem component and shows account name, address, and balance', () => {
     const { container } = render();
-    expect(screen.getByText(identity.name)).toBeInTheDocument();
+    expect(screen.getByText(account.metadata.name)).toBeInTheDocument();
     expect(
-      screen.getByText(shortenAddress(toChecksumHexAddress(identity.address))),
+      screen.getByText(shortenAddress(toChecksumHexAddress(account.address))),
     ).toBeInTheDocument();
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
 
@@ -63,8 +63,11 @@ describe('AccountListItem', () => {
     render({
       selected: true,
       identity: {
-        ...identity,
-        name: 'This is a super long name that requires tooltip',
+        ...account,
+        metadata: {
+          ...account.metadata,
+          name: 'This is a super long name that requires tooltip',
+        },
       },
     });
     expect(
@@ -117,7 +120,7 @@ describe('AccountListItem', () => {
   it('does not render a tag for a null label', () => {
     const { container } = render({
       identity: {
-        ...identity,
+        ...account,
         label: null,
       },
     });
@@ -128,8 +131,7 @@ describe('AccountListItem', () => {
   it('renders the snap label for unnamed snap accounts', () => {
     const { container } = render({
       identity: {
-        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
-        name: 'Snap Account',
+        ...account,
         balance: '0x0',
         keyring: 'Snap Keyring',
         label: 'Snaps (Beta)',
@@ -142,8 +144,7 @@ describe('AccountListItem', () => {
   it('renders the snap name for named snap accounts', () => {
     const { container } = render({
       identity: {
-        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
-        name: 'Snap Account',
+        ...account,
         balance: '0x0',
         keyring: 'Snap Keyring',
         label: 'Test Snap Name (Beta)',
