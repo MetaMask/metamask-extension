@@ -113,7 +113,7 @@ export default {
         rpcUrl: 'https://mainnet.era.zksync.io/',
         ticker: 'ETH',
         rpcPrefs: {
-          blockExplorerUrl: 'https://era.zksync.network/',
+          blockExplorerUrl: 'https://explorer.zksync.io/',
           imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
         },
       },
