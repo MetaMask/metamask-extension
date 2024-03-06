@@ -856,6 +856,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
+    | typeof CHAIN_IDS.BLAST
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
