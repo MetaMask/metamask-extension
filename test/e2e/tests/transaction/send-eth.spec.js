@@ -15,9 +15,6 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -184,11 +181,6 @@ describe('Send ETH', function () {
           }
 
           // Continue to next screen
-          // We need to wait for the text "Max Fee" to be calculated before clicking Continue
-          await driver.assertElementNotPresent({
-            text: '0.000',
-            tag: 'span',
-          });
           await driver.clickElement({ text: 'Continue', tag: 'button' });
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
