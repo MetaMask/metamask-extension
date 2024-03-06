@@ -299,6 +299,9 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+///: BEGIN:ONLY_INCLUDE_IF(notifications)
+import UserStorageController from './controllers/user-storage/user-storage-controller';
+///: END:ONLY_INCLUDE_IF
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1336,6 +1339,24 @@ export default class MetamaskController extends EventEmitter {
       messenger: snapInterfaceControllerMessenger,
     });
 
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(notifications)
+    // Notification Controllers
+    this.userStorageController = new UserStorageController(
+      this.controllerMessenger.getRestricted({
+        name: 'UserStorageController',
+        allowedActions: [`${this.snapController.name}:handleRequest`],
+      }),
+      {
+        getBearerToken: () => {
+          throw new Error('Unimplemented Method');
+        },
+        getSessionIdentifier: () => {
+          throw new Error('Unimplemented Method');
+        },
+      },
+    );
     ///: END:ONLY_INCLUDE_IF
 
     // account tracker watches balances, nonces, and any code at their address
