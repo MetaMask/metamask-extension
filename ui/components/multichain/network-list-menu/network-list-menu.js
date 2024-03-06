@@ -414,7 +414,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork || !isUnlocked}
+              disabled={currentlyOnTestNetwork}
               onToggle={handleToggle}
             />
           </Box>
