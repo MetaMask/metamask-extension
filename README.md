@@ -113,15 +113,16 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 
 #### Preparing a Test Build
 
-Before running e2e tests, ensure you've run `yarn install` to download ependencies. Next, you'll need a test build. You have 3 options:
+Before running e2e tests, ensure you've run `yarn install` to download dependencies. Next, you'll need a test build. You have 3 options:
 
-1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder.
+1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
     - `yarn build:test` for main build
     - `yarn build:test:flask` for flask build
     - `yarn build:test:mmi` for mmi build
     - `yarn build:test:mv3` for mv3 build
-3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
+3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes.This option is ideal for iterative testing and development.
+This command also allows you to generate test builds for various types, including:
     - `yarn start:test` for main build
     - `yarn start:test:flask` for flask build
     - `yarn start:test:mv3` for mv3 build
