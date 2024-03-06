@@ -142,6 +142,15 @@ const baseStore = {
           methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
+        permissionHistory: {
+          'https://uniswap.org/': {
+            eth_accounts: {
+              accounts: {
+                '0x0': 1709225290848,
+              },
+            },
+          },
+        },
       },
       activeTab: {
         origin: 'https://uniswap.org/',
