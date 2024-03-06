@@ -504,6 +504,7 @@
     "@lavamoat/lavadome-react": {
       "globals": {
         "Document.prototype": true,
+        "DocumentFragment.prototype": true,
         "Element.prototype": true,
         "Node.prototype": true,
         "console.warn": true,
