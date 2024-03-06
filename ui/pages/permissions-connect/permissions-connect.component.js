@@ -35,7 +35,26 @@ export default class PermissionConnect extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     getRequestAccountTabIds: PropTypes.func.isRequired,
-    accounts: PropTypes.array.isRequired,
+    accounts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        address: PropTypes.string.isRequired,
+        metadata: PropTypes.shape({
+          name: PropTypes.string.isRequired,
+          snap: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string,
+            enabled: PropTypes.bool,
+          }),
+          keyring: PropTypes.shape({
+            type: PropTypes.string.isRequired,
+          }).isRequired,
+        }).isRequired,
+        addressLabel: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
+        balance: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
     currentAddress: PropTypes.string.isRequired,
     origin: PropTypes.string,
     showNewAccountModal: PropTypes.func.isRequired,
@@ -397,7 +416,7 @@ export default class PermissionConnect extends Component {
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
-                  selectedIdentities={accounts.filter((account) =>
+                  selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
