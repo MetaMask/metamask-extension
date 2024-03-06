@@ -354,6 +354,7 @@ const SignatureRequest = ({
             rpcPrefs={rpcPrefs}
             onClose={() => setShowContractDetails(false)}
             isContractRequestingSignature
+            fullSignatureRequest={data}
           />
         )}
         {unapprovedMessagesCount > 1 ? (
