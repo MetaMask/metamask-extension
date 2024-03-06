@@ -1295,24 +1295,24 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/utils>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
+      }
+    },
+    "@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@sentry/cli>which": {
@@ -2289,8 +2289,8 @@
     },
     "del>p-map>aggregate-error": {
       "packages": {
-        "@testing-library/jest-dom>redent>indent-string": true,
-        "del>p-map>aggregate-error>clean-stack": true
+        "del>p-map>aggregate-error>clean-stack": true,
+        "prettier-eslint>indent-string": true
       }
     },
     "del>p-map>aggregate-error>clean-stack": {
@@ -3238,7 +3238,7 @@
     },
     "eslint>import-fresh>parent-module": {
       "packages": {
-        "eslint>import-fresh>parent-module>callsites": true
+        "@metamask/test-bundler>ow>callsites": true
       }
     },
     "eslint>import-fresh>resolve-from": {
@@ -3281,6 +3281,15 @@
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
+      }
+    },
+    "eta": {
+      "builtin": {
+        "node:fs": true,
+        "node:path": true
+      },
+      "globals": {
+        "define": true
       }
     },
     "fancy-log": {
@@ -7432,37 +7441,77 @@
     },
     "sass": {
       "builtin": {
-        "fs": true,
-        "readline": true,
         "url": true
       },
       "env": "unfrozen",
       "globals": {
-        "Buffer": true,
-        "HTMLElement": true,
-        "InternalError": true,
-        "TextDecoder": true,
-        "WorkerGlobalScope": true,
+        "Buffer": true
+      }
+    },
+    "sass-embedded": {
+      "builtin": {
+        "assert.strict": true,
+        "child_process.spawn": true,
+        "events.EventEmitter": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.delimiter": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "stream.Writable": true,
+        "url.URL": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true,
+        "util.inspect": true,
+        "worker_threads.MessageChannel": true,
+        "worker_threads.Worker": true,
+        "worker_threads.receiveMessageOnPort": true
+      },
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.from": true,
+        "URL": true,
         "__dirname": true,
         "__filename": true,
-        "__non_webpack_require__": true,
-        "__webpack_require__": true,
-        "console": true,
-        "dartExperimentalFixupGetTag": true,
-        "dartMainRunner": true,
-        "dartNativeDispatchHooksTransformer": true,
-        "dartPrint": true,
-        "document": true,
-        "load": true,
-        "navigator": true,
-        "print": true,
-        "process": true,
-        "setImmediate": true,
-        "setTimeout": true,
-        "version": true
+        "console.error": true,
+        "process.arch": true,
+        "process.cwd": true,
+        "process.execPath": true,
+        "process.platform": true,
+        "process.stderr.write": true
       },
       "packages": {
-        "chokidar": true
+        "mocha>supports-color": true,
+        "sass-embedded>@bufbuild/protobuf": true,
+        "sass-embedded>buffer-builder": true,
+        "sass-embedded>immutable": true,
+        "sass-embedded>varint": true,
+        "wait-on>rxjs": true
+      }
+    },
+    "sass-embedded>@bufbuild/protobuf": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "__values": true,
+        "process": true
+      }
+    },
+    "sass-embedded>buffer-builder": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "sass-embedded>immutable": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "semver": {
@@ -7491,15 +7540,6 @@
         "console.time": true,
         "console.timeEnd": true,
         "fetch": true
-      }
-    },
-    "squirrelly": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.resolve": true
       }
     },
     "string.prototype.matchall": {
@@ -8764,6 +8804,17 @@
         "path.dirname": true,
         "path.extname": true,
         "path.join": true
+      }
+    },
+    "wait-on>rxjs": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setInterval.apply": true,
+        "setTimeout.apply": true
       }
     },
     "watchify": {

@@ -3,7 +3,7 @@ import {
   InterfaceState,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 import React, {
   FunctionComponent,
   createContext,
@@ -16,7 +16,12 @@ import { getMemoizedInterface } from '../../selectors';
 import { handleSnapRequest, updateInterfaceState } from '../../store/actions';
 import { mergeValue } from './utils';
 
-export type HandleEvent = (event: UserInputEventType, name?: string) => void;
+export type HandleEvent = (args: {
+  event: UserInputEventType;
+  name?: string;
+  value?: string;
+  flush?: boolean;
+}) => void;
 
 export type HandleInputChange = (
   name: string,
@@ -39,6 +44,14 @@ export type SnapInterfaceContextProviderProps = {
   interfaceId: string;
   snapId: string;
 };
+
+// We want button clicks to be instant and therefore use throttling
+// to protect the Snap
+// Any event not in this array will be debounced instead of throttled
+const THROTTLED_EVENTS = [
+  UserInputEventType.ButtonClickEvent,
+  UserInputEventType.FormSubmitEvent,
+];
 
 /**
  * The Snap interface context provider that handles all the interface state operations.
@@ -70,29 +83,34 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     internalState.current = initialState;
   }, [initialState]);
 
-  // The submittion of user input events is debounced to avoid crashing the snap if
-  // there's too much events sent at the same time
-  const snapRequestDebounced: HandleEvent = debounce(
-    (event, name) =>
-      handleSnapRequest({
-        snapId,
-        origin: '',
-        handler: 'onUserInput',
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: {
-            event: {
-              type: event,
-              name,
-              value: internalState.current[name],
-            },
-            id: interfaceId,
+  const rawSnapRequestFunction = (
+    event: UserInputEventType,
+    name?: string,
+    value?: string,
+  ) =>
+    handleSnapRequest({
+      snapId,
+      origin: '',
+      handler: 'onUserInput',
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: event,
+            // TODO: Allow null in the types and simplify this
+            ...(name !== undefined && name !== null ? { name } : {}),
+            ...(value !== undefined && value !== null ? { value } : {}),
           },
+          id: interfaceId,
         },
-      }),
-    200,
-  );
+      },
+    });
+
+  // The submittion of user input events is debounced or throttled to avoid crashing the snap if
+  // there's too much events sent at the same time
+  const snapRequestDebounced = debounce(rawSnapRequestFunction, 200);
+  const snapRequestThrottled = throttle(rawSnapRequestFunction, 200);
 
   // The update of the state is debounced to avoid crashes due to too much
   // updates in a short amount of time.
@@ -104,13 +122,42 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   /**
    * Handle the submission of an user input event to the Snap.
    *
-   * @param event - The event object.
-   * @param name - The name of the component emmitting the event.
+   * @param options - An options bag.
+   * @param options.event - The event type.
+   * @param options.name - The name of the component emitting the event.
+   * @param options.value - The value of the component emitting the event.
+   * @param options.flush - Optional flag to indicate whether the debounce should be flushed.
    */
-  const handleEvent: HandleEvent = (event, name) => {
+  const handleEvent: HandleEvent = ({
+    event,
+    name,
+    value = internalState.current[name],
+    flush = false,
+  }) => {
+    // We always flush the debounced request for updating the state.
     updateStateDebounced.flush();
-    snapRequestDebounced(event, name);
+    const fn = THROTTLED_EVENTS.includes(event)
+      ? snapRequestThrottled
+      : snapRequestDebounced;
+    fn(event, name, value);
+
+    // Certain events have their own debounce or throttling logic
+    // and therefore may want to flush
+    if (flush) {
+      fn.flush();
+    }
   };
+
+  const handleInputChangeDebounced = debounce(
+    (name, value) =>
+      handleEvent({
+        event: UserInputEventType.InputChangeEvent,
+        name,
+        value,
+        flush: true,
+      }),
+    300,
+  );
 
   /**
    * Handle the value change of an input.
@@ -125,6 +172,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
     internalState.current = state;
     updateStateDebounced(state);
+    handleInputChangeDebounced(name, value ?? '');
   };
 
   /**

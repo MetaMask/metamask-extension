@@ -120,6 +120,7 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
+
 // typedef import statements
 /**
  * @typedef {(

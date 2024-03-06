@@ -1681,6 +1681,83 @@ describe('Send Slice', () => {
         );
       });
 
+      it('should create an action to update send amount ERC1155', async () => {
+        const sendState = {
+          metamask: {
+            blockGasLimit: '',
+            selectedAddress: '',
+            internalAccounts: {
+              accounts: {
+                'mock-id': {
+                  address: '0x0',
+                  id: 'mock-id',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'mock-id',
+            },
+            accounts: {},
+            providerConfig: {
+              chainId: '0x1',
+            },
+          },
+          send: getInitialSendStateWithExistingTxState({
+            asset: {
+              balance: '0x1',
+              details: {
+                address: '0x24204A596025b871BD01F31D89474C1c15785baF',
+                description: 'This is a collection of Rock NFTs.',
+                favorite: false,
+                image:
+                  'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link',
+                isCurrentlyOwned: true,
+                name: 'ERC1155',
+                standard: 'ERC1155',
+                tokenId: '1',
+                tokenURI:
+                  'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
+                balance: '6',
+              },
+              error: null,
+              type: 'NFT',
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            userInputHexData: '',
+          }),
+        };
+        const store = mockStore(sendState);
+
+        const newSendAmount = '0x12';
+
+        await store.dispatch(updateSendAmount(newSendAmount));
+
+        const expectedActionResult = {
+          type: 'send/updateSendAmount',
+          payload: '0x12',
+        };
+
+        const actionResult = store.getActions();
+
+        expect(null).toBe(null);
+        expect(actionResult[1]).toStrictEqual(expectedActionResult);
+      });
+
       it('should create an action to update send amount mode to `INPUT` when mode is `MAX`', async () => {
         const sendState = {
           metamask: {
@@ -2825,6 +2902,16 @@ describe('Send Slice', () => {
             },
             fromAccount: {
               address: mockAddress1,
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
               balance: '0x0',
             },
             gas: {
@@ -2990,6 +3077,16 @@ describe('Send Slice', () => {
             },
             fromAccount: {
               address: mockAddress1,
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
               balance: '0x0',
             },
             gas: {
@@ -3203,6 +3300,16 @@ describe('Send Slice', () => {
           },
           fromAccount: {
             address: mockAddress1,
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
             balance: '0x0',
           },
           gas: {

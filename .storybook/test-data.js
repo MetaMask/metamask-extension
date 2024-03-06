@@ -369,6 +369,19 @@ const state = {
           methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
+        'b990b846-b384-4508-93d9-587461f1123e': {
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          id: 'b990b846-b384-4508-93d9-587461f1123e',
+          metadata: {
+            name: 'Test Account 1',
+            keyring: {
+              type: 'Test Keyring',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
@@ -473,7 +486,7 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5': {
+      '0xaa36a7': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -673,11 +686,11 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     providerConfig: {
-      type: 'goerli',
+      type: 'sepolia',
       ticker: 'ETH',
-      nickname: 'Goerli',
+      nickname: 'Sepolia',
       rpcUrl: '',
-      chainId: '0x5',
+      chainId: '0xaa36a7',
     },
     network: '5',
     accounts: {
