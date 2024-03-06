@@ -17,9 +17,7 @@ export const ConfirmInfoRowText = ({ text }: ConfirmInfoRowTextProps) => {
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
-      style={{
-        columnGap: '8px',
-      }}
+      gap={2}
     >
       <Text color={TextColor.inherit}>{text}</Text>
     </Box>
