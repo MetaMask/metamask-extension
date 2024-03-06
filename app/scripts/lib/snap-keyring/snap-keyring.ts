@@ -206,6 +206,8 @@ export const snapKeyringBuilder = (
                 },
               );
 
+              trackSnapAccountEvent(MetaMetricsEventName.AccountAddFailed);
+
               throw new Error(
                 `Error occurred while creating snap account: ${error}`,
               );
@@ -217,11 +219,11 @@ export const snapKeyringBuilder = (
             throw new Error('User denied account creation');
           }
         } finally {
-          trackSnapAccountEvent(
-            confirmationResult
-              ? MetaMetricsEventName.AccountAdded
-              : MetaMetricsEventName.AccountAddFailed,
-          );
+          // We do not have a `else` clause here, as it's used if the request was
+          // canceled by the user, thus it's not a "fail" (not an error).
+          if (confirmationResult) {
+            trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
+          }
 
           controllerMessenger.call('ApprovalController:endFlow', {
             id: addAccountApprovalId,
@@ -316,6 +318,8 @@ export const snapKeyringBuilder = (
                 },
               );
 
+              trackSnapAccountEvent(MetaMetricsEventName.AccountRemoveFailed);
+
               throw new Error(
                 `Error occurred while removing snap account: ${error}`,
               );
@@ -326,11 +330,11 @@ export const snapKeyringBuilder = (
             throw new Error('User denied account removal');
           }
         } finally {
-          trackSnapAccountEvent(
-            confirmationResult
-              ? MetaMetricsEventName.AccountRemoved
-              : MetaMetricsEventName.AccountRemoveFailed,
-          );
+          // We do not have a `else` clause here, as it's used if the request was
+          // canceled by the user, thus it's not a "fail" (not an error).
+          if (confirmationResult) {
+            trackSnapAccountEvent(MetaMetricsEventName.AccountRemoved);
+          }
 
           controllerMessenger.call('ApprovalController:endFlow', {
             id: removeAccountApprovalId,
