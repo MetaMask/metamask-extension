@@ -3,13 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
-    {{ @if (it.isTest) }}
-    <title>MetaMask</title>
-    {{ #elif (it.isMMI) }}
+    <% if (it.isMMI && !it.isTest) { %>
     <title>MetaMask Institutional</title>
-    {{ #else }}
+    <% } else { %>
     <title>MetaMask</title>
-    {{/if}}
+    <% } %>
     <link rel="stylesheet" type="text/css" href="./index.css">
   </head>
   <body>

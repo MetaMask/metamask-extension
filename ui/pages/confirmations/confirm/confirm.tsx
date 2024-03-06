@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Box } from '../../../components/component-library';
 import { Content, Page } from '../../../components/multichain/pages/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
+import { SignatureMessage } from '../components/confirm/signature-message';
 import { Title } from '../components/confirm/title';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
@@ -20,7 +20,7 @@ const Confirm = () => {
       <Content backgroundColor={BackgroundColor.backgroundAlternative}>
         <Title />
         <Info />
-        <Box>CONFIRMATION PAGE BODY TO COME HERE</Box>
+        <SignatureMessage />
       </Content>
       <Footer />
     </Page>
