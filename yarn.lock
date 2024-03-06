@@ -5010,14 +5010,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rate-limit-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/rate-limit-controller@npm:3.0.0"
+"@metamask/rate-limit-controller@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@metamask/rate-limit-controller@npm:4.0.2"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-    eth-rpc-errors: "npm:^4.0.2"
-    immer: "npm:^9.0.6"
-  checksum: afd31010b9ed83b09aa5366aeda44b226684ebce0948e85b74b94227e7d311c087afd008767704be243b4e22ce4f8ea4dde02d3a0a157d48791cd42374bb419b
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+  checksum: 2bbe2f5bdf7812ce36a82bd189740e3ad7879264534227667e052c33b5ae99a0ad151db471d4fa807a3262cf9a4758994ff8562daace6298efed08549aae50f9
   languageName: node
   linkType: hard
 
@@ -24838,6 +24837,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^13.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
+    "@metamask/json-rpc-engine": "npm:^7.3.2"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch"
     "@metamask/logging-controller": "npm:^2.0.2"
@@ -24857,7 +24857,8 @@ __metadata:
     "@metamask/ppom-validator": "npm:^0.27.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^0.3.0"
-    "@metamask/rate-limit-controller": "npm:^3.0.0"
+    "@metamask/rate-limit-controller": "npm:^4.0.2"
+    "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^9.0.0"
@@ -24993,7 +24994,6 @@ __metadata:
     eth-json-rpc-filters: "npm:^6.0.0"
     eth-lattice-keyring: "npm:^0.12.4"
     eth-method-registry: "npm:^4.0.0"
-    eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
     ethereum-ens-network-map: "npm:^1.0.2"
     ethereumjs-util: "npm:^7.0.10"
@@ -25032,7 +25032,6 @@ __metadata:
     jest-junit: "npm:^14.0.1"
     js-yaml: "npm:^4.1.0"
     jsdom: "npm:^16.7.0"
-    json-rpc-engine: "npm:^6.1.0"
     json-rpc-middleware-stream: "npm:^5.0.1"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
