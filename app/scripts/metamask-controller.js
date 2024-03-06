@@ -23,8 +23,10 @@ import {
   wrap,
   ///: END:ONLY_INCLUDE_IF
 } from 'lodash';
-import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
-import { KeyringController } from '@metamask/keyring-controller';
+import {
+  KeyringController,
+  keyringBuilderFactory,
+} from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
