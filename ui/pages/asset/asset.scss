@@ -3,7 +3,7 @@
 
 
 .asset {
-  $max-width: 600px;
+  $max-width: 650px;
 
   &__wrapper {
     @media screen and (max-width: design-system.$screen-sm-max) {
@@ -13,7 +13,6 @@
 
   &__header {
     min-height: 71px;
-    // z-index: 55;
   }
 
   &__container {
@@ -26,7 +25,6 @@
 
   &__footer {
     position: sticky;
-    // z-index: 55;
     bottom: 0;
     box-shadow: 0 0 8px 0 var(--color-shadow-default);
     & > :first-child { max-width: $max-width; }

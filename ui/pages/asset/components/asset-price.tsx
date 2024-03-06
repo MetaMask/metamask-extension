@@ -82,7 +82,6 @@ const AssetPrice = forwardRef(
       <Box>
         <Text
           style={{ width: '100px' }}
-          marginLeft={4}
           variant={TextVariant.headingLg}
           borderRadius={BorderRadius.LG}
           marginBottom={1}
@@ -96,7 +95,7 @@ const AssetPrice = forwardRef(
             ? formatCurrency(`${price}`, currency, getPricePrecision(price))
             : '\u00A0'}
         </Text>
-        <Box paddingLeft={4} paddingBottom={3}>
+        <Box>
           {priceDelta !== undefined && comparePrice !== undefined ? (
             <Box style={{ opacity: loading ? 0.2 : 1 }}>
               {priceDelta >= 0 ? chartUp : chartDown}

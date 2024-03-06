@@ -33,7 +33,8 @@ export const useHistoricalPrices = ({
       setLoading(true);
       fetchWithCache({
         url: `https://price-api.metafi.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-        cacheOptions: { cacheRefreshTime: MINUTE },
+        // cacheOptions: { cacheRefreshTime: MINUTE },
+        cacheOptions: { cacheRefreshTime: 0 },
         functionName: 'GetAssetHistoricalPrices',
       })
         .catch(() => ({}))
