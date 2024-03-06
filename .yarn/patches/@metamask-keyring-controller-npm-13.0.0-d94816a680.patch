@@ -1,0 +1,28 @@
+diff --git a/dist/KeyringController.d.ts b/dist/KeyringController.d.ts
+index c2dd8811a07b7379958ec56236fd157dc9cc7c81..dc8c55614fef983ff9ae14a4162471b2e20a4f6c 100644
+--- a/dist/KeyringController.d.ts
++++ b/dist/KeyringController.d.ts
+@@ -528,9 +528,9 @@ export declare class KeyringController extends BaseController<typeof name, Keyri
+     /**
+      * Verifies the that the seed phrase restores the current keychain's accounts.
+      *
+-     * @returns Promise resolving to the seed phrase as Uint8Array.
++     * @returns Promise resolving if the seed phrase is valid.
+      */
+-    verifySeedPhrase(): Promise<Uint8Array>;
++    verifySeedPhrase(): Promise<void>;
+     /**
+      * Get QR Hardware keyring.
+      *
+diff --git a/dist/KeyringController.js b/dist/KeyringController.js
+index fc649ea6fc97b905d811b236de638172fb10b548..f86753c3ee2a16f15ba63e2434496409f7c67b98 100644
+--- a/dist/KeyringController.js
++++ b/dist/KeyringController.js
+@@ -945,7 +945,6 @@ class KeyringController extends base_controller_1.BaseController {
+                     throw new Error('Seed phrase imported different accounts.');
+                 }
+             });
+-            return seedWords;
+         });
+     }
+     // QR Hardware related methods
