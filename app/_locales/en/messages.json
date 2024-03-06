@@ -3763,6 +3763,12 @@
   "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
     "message": "Request flagged as malicious"
   },
+  "requestFrom": {
+    "message": "Request from"
+  },
+  "requestFromInfo": {
+    "message": "This is the site asking for your signature."
+  },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
   },
