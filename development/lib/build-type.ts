@@ -20,14 +20,15 @@ import {
   nullable,
   never,
   literal,
+  StructError,
 } from 'superstruct';
 import yaml from 'js-yaml';
 
-import { uniqWith } from 'lodash';
+import uniqWith from 'lodash/uniqWith';
 
 const BUILDS_YML_PATH = path.resolve('./builds.yml');
 
-let cachedBuildTypes: Infer<typeof BuildTypesStruct> | null = null;
+let cachedBuildTypes: Infer<typeof BuildTypesStruct> | undefined;
 
 /**
  * Ensures that the array item contains only elements that are distinct from each other
@@ -122,7 +123,7 @@ const BuildTypesStruct = refine(
   }),
   'BuildTypes',
   (value) => {
-    if (!Object.keys(value.buildTypes).includes(value.default)) {
+    if (!Object.keys(value.buildTypes).includes(value.default as string)) {
       return `Default build type "${value.default}" does not exist in builds declarations`;
     }
     return true;
@@ -135,7 +136,7 @@ const BuildTypesStruct = refine(
  * @returns
  */
 function loadBuildTypesConfig(): Infer<typeof BuildTypesStruct> {
-  if (cachedBuildTypes !== null) {
+  if (cachedBuildTypes) {
     return cachedBuildTypes;
   }
   const buildsData = yaml.load(fs.readFileSync(BUILDS_YML_PATH, 'utf8'), {
@@ -159,7 +160,7 @@ function loadBuildTypesConfig(): Infer<typeof BuildTypesStruct> {
  * @param structError
  * @returns
  */
-function constructFailureMessage(structError) {
+function constructFailureMessage(structError: StructError): string {
   return `Failed to parse builds.yml
   -> ${structError
     .failures()
