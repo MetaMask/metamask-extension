@@ -1690,10 +1690,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "@blockaid/ppom_release@npm:1.4.2"
-  checksum: 5cf85e2f1a731036db02e337b9048a05ccf759890acc5b717b7fdce68a85da7a4b36675ab5478f4f29a586ef74af83d0efccba228972c2a806893bb82c8fad54
+"@blockaid/ppom_release@npm:^1.4.4":
+  version: 1.4.4
+  resolution: "@blockaid/ppom_release@npm:1.4.4"
+  checksum: 71f6276b21a59bc3b16d3335a266d199071e98009bb789ce26ab066da650b72068dff7743c3fbe86fef6dcbcef1eccef0e90362686283865b34514a956a5f4cd
   languageName: node
   linkType: hard
 
@@ -3493,25 +3493,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-core@npm:^0.0.11":
-  version: 0.0.11
-  resolution: "@lavamoat/lavadome-core@npm:0.0.11"
+"@lavamoat/lavadome-core@npm:^0.0.17":
+  version: 0.0.17
+  resolution: "@lavamoat/lavadome-core@npm:0.0.17"
   dependencies:
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
-  checksum: 5c64915fbb6f50ed85653a475d9be5fdd9dc8c4dbcc9edd86984a1c9e1088f9fe8f0e1020c155cfc75603d4789834ff1a39a6d5e91c2b50af2f2ed1a4e22bc8a
+  checksum: 9628bc4662a495c4213d82b4651642670558e29e6d614cd92bcc4eba9356834030216309adabad0ad7870bb770206bde05d584e605297486ab9bab53e83e7ecb
   languageName: node
   linkType: hard
 
-"@lavamoat/lavadome-react@npm:0.0.11":
-  version: 0.0.11
-  resolution: "@lavamoat/lavadome-react@npm:0.0.11"
+"@lavamoat/lavadome-react@npm:0.0.17":
+  version: 0.0.17
+  resolution: "@lavamoat/lavadome-react@npm:0.0.17"
   dependencies:
-    "@lavamoat/lavadome-core": "npm:^0.0.11"
+    "@lavamoat/lavadome-core": "npm:^0.0.17"
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
   peerDependencies:
     react: ^16.12.0
     react-dom: ^16.12.0
-  checksum: 5c357430b875e561f2da4b6f84bb5c7a5aa86c73afc3fb5cae4cf6f58d1b81f56cbf8b1703695107f5a3efeda968bf172aa0e29b32118cc5def095a4af070545
+  checksum: 62c1047115f7b566af87abb1c21364236af9d79ad655f280ac5424c3e839efd9f120cbf042123a88e59c7b98660ad6ea0e9a54e9143f853b372419e5efa92835
   languageName: node
   linkType: hard
 
@@ -24778,7 +24778,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
-    "@blockaid/ppom_release": "npm:^1.4.2"
+    "@blockaid/ppom_release": "npm:^1.4.4"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24792,7 +24792,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^3.0.1"
     "@lavamoat/lavadome-core": "npm:0.0.10"
-    "@lavamoat/lavadome-react": "npm:0.0.11"
+    "@lavamoat/lavadome-react": "npm:0.0.17"
     "@lavamoat/lavapack": "npm:^6.1.0"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
