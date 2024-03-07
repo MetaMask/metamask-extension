@@ -4,7 +4,9 @@ import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   Display,
+  FlexDirection,
   IconColor,
   JustifyContent,
   TextAlign,
@@ -24,10 +26,13 @@ import {
   AvatarFavicon,
   AvatarFaviconSize,
   Box,
+  Button,
   ButtonIcon,
   ButtonIconSize,
   ButtonPrimary,
   ButtonPrimarySize,
+  ButtonSize,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
@@ -36,7 +41,7 @@ import {
 import { Tab } from '../../../ui/tabs';
 import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
-import { AccountListItem } from '../..';
+import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
@@ -55,7 +60,7 @@ export const Connections = () => {
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccount = mergeAccounts(connectedAccounts, internalAccounts);
+  const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -112,7 +117,7 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
-                {mergedAccount.map((account: AccountType, index: number) => {
+                {mergedAccounts.map((account: AccountType, index: number) => {
                   const connectedSites: ConnectedSites = {};
 
                   const connectedSite = connectedSites[account.address]?.find(
@@ -122,10 +127,11 @@ export const Connections = () => {
                     <AccountListItem
                       identity={account}
                       key={account.address}
+                      accountsCount={mergedAccounts.length}
                       selected={selectedAccount.address === account.address}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptions
+                      menuType={AccountListItemMenuTypes.Connection}
                       currentTabOrigin={activeTabOrigin}
                       isActive={index === 0 ? t('active') : null}
                     />
@@ -139,10 +145,38 @@ export const Connections = () => {
         )}
       </Content>
       <Footer>
-        {/* TODO: When accounts connected - Two Separate Buttons - Separate Ticket */}
-
-        {connectedSubjectsMetadata ? null : (
-          <ButtonPrimary size={ButtonPrimarySize.Lg} block>
+        {connectedSubjectsMetadata ? (
+          <Box
+            display={Display.Flex}
+            gap={2}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            data-test-id="connections-button"
+          >
+            <Button
+              size={ButtonSize.Lg}
+              block
+              variant={ButtonVariant.Secondary}
+              startIconName={IconName.Add}
+            >
+              {t('connectMoreAccounts')}
+            </Button>
+            <Button
+              size={ButtonSize.Lg}
+              block
+              variant={ButtonVariant.Secondary}
+              startIconName={IconName.Logout}
+              danger
+            >
+              {t('disconnectAllAccounts')}
+            </Button>
+          </Box>
+        ) : (
+          <ButtonPrimary
+            size={ButtonPrimarySize.Lg}
+            block
+            data-test-id="no-connections-button"
+          >
             {t('connectAccounts')}
           </ButtonPrimary>
         )}

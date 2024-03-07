@@ -21,6 +21,7 @@ import {
   getTargetSubjectMetadata,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  getInternalAccounts,
   getMemoizedUnapprovedMessages,
   getMemoizedUnapprovedPersonalMessages,
   getMemoizedUnapprovedTypedMessages,
@@ -61,13 +62,10 @@ const ConfirmTxScreen = ({ match }) => {
     getTotalUnapprovedSignatureRequestCount,
   );
   const sendTo = useSelector(getSendTo);
+  const internalAccounts = useSelector(getInternalAccounts);
 
-  const {
-    identities,
-    currentCurrency,
-    blockGasLimit,
-    signatureSecurityAlertResponses,
-  } = useSelector((state) => state.metamask);
+  const { currentCurrency, blockGasLimit, signatureSecurityAlertResponses } =
+    useSelector((state) => state.metamask);
   const unapprovedMsgs = useSelector(getMemoizedUnapprovedMessages);
   const unapprovedPersonalMsgs = useSelector(
     getMemoizedUnapprovedPersonalMessages,
@@ -229,7 +227,7 @@ const ConfirmTxScreen = ({ match }) => {
       history={history}
       txData={txData}
       key={txData.id}
-      identities={identities}
+      accounts={internalAccounts}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

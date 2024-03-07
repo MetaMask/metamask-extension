@@ -257,9 +257,13 @@ const mapStateToProps = (state, ownProps) => {
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
-  const isSigningOrSubmitting = Boolean(
+  let isSigningOrSubmitting = Boolean(
     getApprovedAndSignedTransactions(state).length,
   );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isSigningOrSubmitting = false;
+  ///: END:ONLY_INCLUDE_IF
 
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;

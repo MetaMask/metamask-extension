@@ -68,6 +68,7 @@ import {
 } from '@metamask/permission-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
+  METAMASK_DOMAIN,
   SelectedNetworkController,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
@@ -486,14 +487,6 @@ export default class MetamaskController extends EventEmitter {
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
       allowedEvents: ['NetworkController:stateChange'],
-    });
-
-    this.selectedNetworkController = new SelectedNetworkController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SelectedNetworkController',
-        allowedActions: ['NetworkController:getNetworkClientById'],
-        allowedEvents: ['NetworkController:stateChange'],
-      }),
     });
 
     this.tokenListController = new TokenListController({
@@ -987,11 +980,17 @@ export default class MetamaskController extends EventEmitter {
 
     const getSnapController = () => this.snapController;
 
+    // Necessary to persist the keyrings and update the accounts both within the keyring controller and accounts controller
+    const persistAndUpdateAccounts = async () => {
+      await this.keyringController.persistAllKeyrings();
+      await this.accountsController.updateAccounts();
+    };
+
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
         getSnapController,
-        async () => await this.keyringController.persistAllKeyrings(),
+        persistAndUpdateAccounts,
         (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
@@ -1115,6 +1114,26 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IF
       },
       unrestrictedMethods,
+    });
+
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SelectedNetworkController',
+        allowedActions: [
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          'PermissionController:hasPermissions',
+          'PermissionController:getSubjectNames',
+        ],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'PermissionController:stateChange',
+        ],
+      }),
+      state: initState.SelectedNetworkController,
+      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
     });
 
     this.permissionLogController = new PermissionLogController({
@@ -1640,7 +1659,17 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
+    const mmiControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'MMIController',
+      allowedActions: [
+        'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
+        'AccountsController:listAccounts',
+      ],
+    });
+
     this.mmiController = new MMIController({
+      messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
@@ -1656,7 +1685,6 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
-      accountsController: this.accountsController,
       platform: this.platform,
       extension: this.extension,
       getTransactions: this.txController.getTransactions.bind(
@@ -1771,7 +1799,11 @@ export default class MetamaskController extends EventEmitter {
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
       name: 'PetnamesBridge',
-      allowedEvents: ['NameController:stateChange'],
+      allowedEvents: [
+        'NameController:stateChange',
+        'AccountsController:stateChange',
+      ],
+      allowedActions: ['AccountsController:listAccounts'],
     });
 
     new AddressBookPetnamesBridge({
@@ -1781,7 +1813,6 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     new AccountIdentitiesPetnamesBridge({
-      preferencesController: this.preferencesController,
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
@@ -2625,16 +2656,16 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
    * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  getProviderNetworkState(origin = 'metamask') {
+  getProviderNetworkState(origin = METAMASK_DOMAIN) {
     let chainId;
-    if (this.preferencesController.getUseRequestQueue()) {
-      // It would be nice to have selectedNetworkController always return a value, and have it decide how to default the values (in all cases we want the default to be 'what ever the globally selected network is').
-      // I ended up adding this defaulting here because of an issue where the selected network for the origin 'metamask' - it is `undefined` until you unlock the wallet and select a network for the first time.
-      const networkClientId =
-        this.controllerMessenger.call(
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-          origin,
-        ) || this.networkController.state.selectedNetworkClientId;
+    if (
+      this.preferencesController.getUseRequestQueue() &&
+      origin !== METAMASK_DOMAIN
+    ) {
+      const networkClientId = this.controllerMessenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        origin,
+      );
 
       const networkClient = this.controllerMessenger.call(
         'NetworkController:getNetworkClientById',
@@ -2893,14 +2924,9 @@ export default class MetamaskController extends EventEmitter {
 
       // network management
       setProviderType: (type) => {
-        // when using this format, type happens to be the same as the networkClientId...
-        this.selectedNetworkController.setNetworkClientIdForMetamask(type);
         return this.networkController.setProviderType(type);
       },
       setActiveNetwork: (networkConfigurationId) => {
-        this.selectedNetworkController.setNetworkClientIdForMetamask(
-          networkConfigurationId,
-        );
         return this.networkController.setActiveNetwork(networkConfigurationId);
       },
       rollbackToPreviousProvider:
@@ -3505,7 +3531,7 @@ export default class MetamaskController extends EventEmitter {
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warning(`Failed to get token balance. Error: ${e}`);
+        log.warn(`Failed to get token balance. Error: ${e}`);
       }
     }
 
@@ -3545,7 +3571,7 @@ export default class MetamaskController extends EventEmitter {
       } catch (e) {
         // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
         // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
-        log.warning('Failed to get token balance. Error:', e);
+        log.warn('Failed to get token balance. Error:', e);
       }
     }
 
@@ -4430,9 +4456,6 @@ export default class MetamaskController extends EventEmitter {
 
   setUseRequestQueue(value) {
     this.preferencesController.setUseRequestQueue(value);
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = value;
-    });
   }
 
   //=============================================================================
@@ -4735,25 +4758,22 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    const { selectedNetworkClientId } = this.networkController.state;
+    let proxyClient;
+    if (
+      this.preferencesController.getUseRequestQueue() &&
+      this.selectedNetworkController.state.domains[origin]
+    ) {
+      proxyClient =
+        this.selectedNetworkController.getProviderAndBlockTracker(origin);
+    } else {
+      // if useRequestQueue is false we want to use the globally selected network provider/blockTracker
+      // since this means the per domain network feature is disabled
 
-    const selectedNetworkClientIdForDomain =
-      this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-
-    // Not sure that this will happen anymore
-    if (selectedNetworkClientIdForDomain === undefined) {
-      this.selectedNetworkController.setNetworkClientIdForDomain(
-        origin,
-        selectedNetworkClientId,
-      );
-    }
-
-    let proxyProviderForDomain = provider;
-    if (this.preferencesController.getUseRequestQueue()) {
-      proxyProviderForDomain =
-        this.selectedNetworkController.getProviderAndBlockTracker(
-          origin,
-        ).provider;
+      // if the origin is not in the selectedNetworkController's `domains` state,
+      // this means that origin does not have permissions (is not connected to the wallet)
+      // and will therefore not have its own selected network even if useRequestQueue is true
+      // and so in this case too we want to use the globally selected network provider/blockTracker
+      proxyClient = this.networkController.getProviderAndBlockTracker();
     }
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
@@ -4766,7 +4786,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(requestQueueMiddleware);
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+    const filterMiddleware = createFilterMiddleware(proxyClient);
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({
@@ -4888,6 +4908,10 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        hasPermissions: this.permissionController.hasPermissions.bind(
+          this.permissionController,
+          origin,
+        ),
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -4925,10 +4949,6 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         setActiveNetwork: (networkClientId) => {
-          // setActiveNetwork is used for custom (non-infura) networks, and for these networks networkClientId === networkConfigurationId
-          this.selectedNetworkController.setNetworkClientIdForMetamask(
-            networkClientId,
-          );
           this.networkController.setActiveNetwork(networkClientId);
         },
         findNetworkClientIdByChainId:
@@ -4950,8 +4970,6 @@ export default class MetamaskController extends EventEmitter {
         ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
-          // when using this format, type happens to be the same as the networkClientId...
-          this.selectedNetworkController.setNetworkClientIdForMetamask(type);
           return this.networkController.setProviderType(type);
         },
 
@@ -5075,7 +5093,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    engine.push(providerAsMiddleware(proxyProviderForDomain));
+    engine.push(providerAsMiddleware(proxyClient.provider));
 
     return engine;
   }
