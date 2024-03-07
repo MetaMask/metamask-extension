@@ -3,13 +3,13 @@
 exports[`Header should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box confirm_header__wrapper mm-box--padding-4 mm-box--display-grid mm-box--align-items-center"
+    class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--align-items-center"
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
     >
       <div
-        class="mm-box mm-box--display-flex"
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
           class=""
@@ -77,26 +77,31 @@ exports[`Header should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+      class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
     >
-      <div>
-        <div
-          aria-describedby="tippy-tooltip-1"
-          class=""
-          data-original-title="Account details"
-          data-tooltipped=""
-          style="display: inline;"
-          tabindex="0"
-        >
-          <button
-            aria-label="Account details"
-            class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+        style="align-self: flex-end;"
+      >
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="Account details"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </button>
+            <button
+              aria-label="Account details"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/info.svg');"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

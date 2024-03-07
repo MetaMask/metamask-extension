@@ -20,15 +20,17 @@ import HeaderInfo from './header-info';
 
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
-  const { fromAddress, fromName } = useConfirmationRecipientInfo();
+  const { recipientAddress: fromAddress, recipientName: fromName } =
+    useConfirmationRecipientInfo();
 
   return (
-    <Box display={Display.Flex} className="confirm_header__wrapper" alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
-      <Box
-        alignItems={AlignItems.flexStart}
-        display={Display.Flex}
-        padding={4}
-      >
+    <Box
+      display={Display.Flex}
+      className="confirm_header__wrapper"
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
+    >
+      <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
         <Box display={Display.Flex} marginTop={2}>
           <Identicon address={fromAddress} diameter={32} />
           <AvatarNetwork
@@ -43,12 +45,8 @@ const Header = () => {
           <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
         </Box>
       </Box>
-      <Box
-        alignItems={AlignItems.flexEnd}
-        display={Display.Flex}
-        padding={4}
-      >
-      <HeaderInfo />
+      <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>
+        <HeaderInfo />
       </Box>
     </Box>
   );

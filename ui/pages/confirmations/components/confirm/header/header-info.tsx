@@ -21,7 +21,6 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  TextAlign,
 } from '../../../../../helpers/constants/design-system';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { AddressCopyButton } from '../../../../../components/multichain';
@@ -42,7 +41,8 @@ import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/in
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
-  const { fromAddress, fromName } = useConfirmationRecipientInfo();
+  const { recipientAddress: fromAddress, recipientName: fromName } =
+    useConfirmationRecipientInfo();
 
   const t = useI18nContext();
 
@@ -114,10 +114,7 @@ const HeaderInfo = () => {
                   address={fromAddress}
                   size={AvatarAccountSize.Lg}
                 />
-                <Text
-                  fontWeight={FontWeight.Bold}
-                  marginTop={2}
-                >
+                <Text fontWeight={FontWeight.Bold} marginTop={2}>
                   {fromName}
                 </Text>
               </Box>

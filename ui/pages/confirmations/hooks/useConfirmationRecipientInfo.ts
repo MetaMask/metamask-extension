@@ -10,25 +10,25 @@ function useConfirmationRecipientInfo() {
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
-  let fromAddress = '';
-  let fromName = '';
+  let recipientAddress = '';
+  let recipientName = '';
 
   if (currentConfirmation) {
     const { msgParams } = currentConfirmation;
     // url for all signature requests
     if (msgParams) {
-      fromAddress = msgParams.from;
-      const fromAccount = getAccountByAddress(allAccounts, fromAddress);
+      recipientAddress = msgParams.from;
+      const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
       console.log('Dickie: fromAccount', fromAccount);
-      fromName = fromAccount?.metadata?.name;
+      recipientName = fromAccount?.metadata?.name;
     }
     // TODO: as we add support for more transaction code to find recipient address for different
     // transaction types will come here
   }
 
   return {
-    fromAddress: fromAddress,
-    fromName: fromName,
+    recipientAddress,
+    recipientName,
   };
 }
 
