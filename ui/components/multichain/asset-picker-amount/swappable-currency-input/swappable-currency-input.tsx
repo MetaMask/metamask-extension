@@ -78,7 +78,7 @@ export function SwappableCurrencyInput({
           isLongSymbol={
             (asset?.details?.symbol?.length || 0) > LARGE_SYMBOL_LENGTH
           }
-          tokenSymbol={asset?.details?.symbol}
+          asset={asset?.details}
         />
       );
 

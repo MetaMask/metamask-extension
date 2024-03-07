@@ -34,7 +34,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
  * @param options0.swapIcon
  * @param options0.isLongSymbol
  * @param options0.className
- * @param options0.tokenSymbol
+ * @param options0.asset
  */
 export default function CurrencyInput({
   hexValue,
@@ -44,7 +44,8 @@ export default function CurrencyInput({
   swapIcon,
   isLongSymbol = false,
   className = '',
-  tokenSymbol,
+  // if null, the asset is the native currency
+  asset,
 }) {
   const t = useContext(I18nContext);
 
@@ -61,7 +62,7 @@ export default function CurrencyInput({
   );
   const hideSecondary = !showFiat;
   const primarySuffix =
-    tokenSymbol || preferredCurrency || EtherDenomination.ETH;
+    asset?.symbol || preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
 
   const [newHexValue, setNewHexValue] = useState(hexValue);
@@ -209,5 +210,10 @@ CurrencyInput.propTypes = {
   swapIcon: PropTypes.func,
   isLongSymbol: PropTypes.bool,
   className: PropTypes.string,
-  tokenSymbol: PropTypes.string,
+  asset: PropTypes.shape({
+    address: PropTypes.string,
+    symbol: PropTypes.string,
+    decimals: PropTypes.number,
+    isERC721: PropTypes.bool,
+  }),
 };
