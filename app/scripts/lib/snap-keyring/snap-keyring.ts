@@ -164,6 +164,8 @@ export const snapKeyringBuilder = (
                 internalAccount.id,
               );
 
+              // TODO: Add events tracking to the dialog itself, so that events are more
+              // "linked" to UI actions
               // User should now see the "Successfuly added account" page
               trackSnapAccountEvent(
                 MetaMetricsEventName.AddSnapAccountSuccessViewed,
@@ -276,6 +278,8 @@ export const snapKeyringBuilder = (
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
 
+              // TODO: Add events tracking to the dialog itself, so that events are more
+              // "linked" to UI actions
               // User should now see the "Successfuly removed account" page
               trackSnapAccountEvent(
                 MetaMetricsEventName.RemoveSnapAccountSuccessViewed,
