@@ -160,9 +160,9 @@ export default function InsightWarnings({
             onChange={handleOnChange}
             label={t('insightWarningCheckboxMessage', [
               t(InsightWarningLanguage[action].imperative),
-              <span key={action}>
-                <b>{stripHttpSchemes(origin)}</b>
-              </span>,
+              <Text as="span" key={action] fontWeight={FontWeight.Medium}>
+                {stripHttpSchemes(origin)}
+              </Text>
             ])}
           />
         </Box>
