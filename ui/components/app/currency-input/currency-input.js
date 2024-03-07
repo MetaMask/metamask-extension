@@ -65,6 +65,7 @@ export default function CurrencyInput({
   const showFiat = useSelector(getShouldShowFiat);
   const hideSecondary = !showFiat;
   const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
+  const isTokenPrimary = !shouldUseFiat;
 
   const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
@@ -81,11 +82,9 @@ export default function CurrencyInput({
 
   const processNewDecimalValue = useProcessNewDecimalValue(
     assetDecimals,
-    shouldUseFiat,
+    !isTokenPrimary,
     tokenToFiatConversionRate,
   );
-
-  const isPrimary = !shouldUseFiat;
 
   const swap = async () => {
     await onPreferenceToggle();
@@ -94,7 +93,7 @@ export default function CurrencyInput({
 
   // if the conversion rate is undefined, do not allow a fiat input
   useEffect(() => {
-    if (isPrimary) {
+    if (isTokenPrimary) {
       return;
     }
 
@@ -102,7 +101,7 @@ export default function CurrencyInput({
       onPreferenceToggle();
       setShouldDisplayFiat(false);
     }
-  }, [tokenToFiatConversionRate, isPrimary, onPreferenceToggle]);
+  }, [tokenToFiatConversionRate, isTokenPrimary, onPreferenceToggle]);
 
   const handleChange = (newDecimalValue) => {
     const { newTokenDecimalValue, newFiatDecimalValue } =
@@ -119,7 +118,7 @@ export default function CurrencyInput({
 
   useEffect(() => {
     // do not override the input when it is using fiat, since it is imprecise
-    if (shouldUseFiat) {
+    if (!isTokenPrimary) {
       return;
     }
 
@@ -133,7 +132,7 @@ export default function CurrencyInput({
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
-  }, [hexValue, assetDecimals, processNewDecimalValue, shouldUseFiat]);
+  }, [hexValue, assetDecimals, processNewDecimalValue, isTokenPrimary]);
 
   const renderSwapButton = () => {
     if (!isOriginalNativeSymbol) {
@@ -163,22 +162,22 @@ export default function CurrencyInput({
       return null;
     }
 
-    if (shouldUseFiat) {
-      // Display ETH
-      suffix = primarySuffix;
-      displayValue = new Numeric(tokenDecimalValue, 10).toString();
-    } else {
-      // Display Fiat; `displayValue` bypasses calculations
+    if (isTokenPrimary) {
+      // Display fiat; `displayValue` bypasses calculations
       displayValue = formatCurrency(
         new Numeric(fiatDecimalValue, 10).toString(),
         secondaryCurrency,
       );
+    } else {
+      // Display token
+      suffix = primarySuffix;
+      displayValue = new Numeric(tokenDecimalValue, 10).toString();
     }
 
     return (
       <CurrencyDisplay
         // hides the fiat suffix
-        hideLabel={isPrimary || isLongSymbol}
+        hideLabel={isTokenPrimary || isLongSymbol}
         suffix={suffix}
         className="currency-input__conversion-component"
         displayValue={displayValue}
@@ -188,11 +187,11 @@ export default function CurrencyInput({
 
   return (
     <UnitInput
-      hideSuffix={isPrimary && isLongSymbol}
+      hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
-      suffix={isPrimary ? primarySuffix : secondarySuffix}
+      suffix={isTokenPrimary ? primarySuffix : secondarySuffix}
       onChange={handleChange ?? onChange}
-      value={shouldUseFiat ? fiatDecimalValue : tokenDecimalValue}
+      value={isTokenPrimary ? tokenDecimalValue : fiatDecimalValue}
       className={className}
       actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
     >
