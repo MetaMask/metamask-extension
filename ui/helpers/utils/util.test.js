@@ -1,3 +1,6 @@
+/* eslint-disable jest/expect-expect */
+/* eslint-disable jest/no-focused-tests */
+import { log } from 'console';
 import Bowser from 'bowser';
 import { BN, toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -463,6 +466,14 @@ describe('util', () => {
           { name: 'wallets', type: 'address[]' },
         ],
       };
+    });
+
+    it('should not be vulnerable to ReDoS when stripping nesting', () => {
+      const startTime = Date.now();
+      util.stripOneLayerofNesting(`${'['.repeat(90000)}|[]`);
+      const endTime = Date.now();
+      const executionTime = endTime - startTime;
+      expect(executionTime).toBeLessThan(3000);
     });
 
     it('should throw an error if types is undefined', () => {
