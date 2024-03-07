@@ -83,7 +83,7 @@ export const SnapDelineator = ({
           />
           <Text
             variant={TextVariant.bodySm}
-            color={isError ? TextColor.errorDefault : TextColor.textAlternative}
+            color={TextColor.Default}
             className="snap-delineator__header__text"
             marginLeft={1}
             marginTop={0}
