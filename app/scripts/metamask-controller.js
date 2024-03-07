@@ -4750,8 +4750,6 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    const { blockTracker, provider } = this;
-
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
@@ -4789,10 +4787,7 @@ export default class MetamaskController extends EventEmitter {
     const filterMiddleware = createFilterMiddleware(proxyClient);
 
     // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
-    });
+    const subscriptionManager = createSubscriptionManager(proxyClient);
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
