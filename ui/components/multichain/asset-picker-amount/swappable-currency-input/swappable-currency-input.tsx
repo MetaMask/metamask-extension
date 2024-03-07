@@ -1,7 +1,6 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 import type { Asset, Amount } from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -11,6 +10,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import CurrencyInput from '../../../app/currency-input';
+import { getIsFiatPrimary } from '../utils';
 import SwapIcon from './swap-icon';
 
 interface BaseProps {
@@ -58,7 +58,7 @@ export function SwappableCurrencyInput({
 
   const t = useI18nContext();
 
-  const isFiatPrimary = useIsFiatPrimary();
+  const isFiatPrimary = useSelector(getIsFiatPrimary);
 
   switch (assetType) {
     case AssetType.token:

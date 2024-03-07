@@ -17,7 +17,7 @@ import CurrencyDisplay from '../../../ui/currency-display';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
+import { getIsFiatPrimary } from '../utils';
 
 export interface AssetBalanceTextProps {
   asset: Asset;
@@ -30,7 +30,7 @@ export function AssetBalanceText({
 }: AssetBalanceTextProps) {
   const secondaryCurrency = useSelector(getCurrentCurrency);
 
-  const isFiatPrimary = useIsFiatPrimary();
+  const isFiatPrimary = useSelector(getIsFiatPrimary);
 
   const { tokensWithBalances } = useTokenTracker({
     tokens: [{ address: asset.details?.address }],

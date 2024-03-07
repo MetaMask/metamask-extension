@@ -22,7 +22,7 @@ import {
 } from './asset-picker/asset-picker';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 import { AssetBalance } from './asset-balance/asset-balance';
-import useIsFiatPrimary from './hooks/useIsFiatPrimary';
+import { getIsFiatPrimary } from './utils';
 
 interface AssetPickerAmountProps extends AssetPickerProps {
   // all of these props should be explicitly received
@@ -42,7 +42,7 @@ export const AssetPickerAmount = ({
 
   const selectedAccount = useSelector(getSelectedIdentity);
 
-  const isFiatPrimary = useIsFiatPrimary();
+  const isFiatPrimary = useSelector(getIsFiatPrimary);
 
   const [isFocused, setIsFocused] = useState(false);
 
