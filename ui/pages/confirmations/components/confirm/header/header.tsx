@@ -5,6 +5,7 @@ import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipien
 import {
   AlignItems,
   Display,
+  JustifyContent,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 
@@ -19,18 +20,17 @@ import HeaderInfo from './header-info';
 
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
-  const { recipientAddress, recipientName } = useConfirmationRecipientInfo();
+  const { fromAddress, fromName } = useConfirmationRecipientInfo();
 
   return (
-    <Box
-      alignItems={AlignItems.center}
-      display={Display.Grid}
-      padding={4}
-      className="confirm_header__wrapper"
-    >
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <Box display={Display.Flex}>
-          <Identicon address={recipientAddress} diameter={32} />
+    <Box display={Display.Flex} className="confirm_header__wrapper" alignItems={AlignItems.center} justifyContent={JustifyContent.spaceBetween}>
+      <Box
+        alignItems={AlignItems.flexStart}
+        display={Display.Flex}
+        padding={4}
+      >
+        <Box display={Display.Flex} marginTop={2}>
+          <Identicon address={fromAddress} diameter={32} />
           <AvatarNetwork
             src={networkImageUrl}
             name={networkDisplayName}
@@ -39,11 +39,17 @@ const Header = () => {
           />
         </Box>
         <Box marginInlineStart={4}>
-          <Text>{recipientName}</Text>
+          <Text>{fromName}</Text>
           <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
         </Box>
       </Box>
+      <Box
+        alignItems={AlignItems.flexEnd}
+        display={Display.Flex}
+        padding={4}
+      >
       <HeaderInfo />
+      </Box>
     </Box>
   );
 };
