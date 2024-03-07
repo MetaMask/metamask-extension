@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
@@ -13,9 +13,6 @@ import {
   getShouldHideZeroBalanceTokens,
   getIsBuyableChain,
   getCurrentNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getSwapsDefaultToken,
-  ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
   getIsMainnet,
@@ -37,9 +34,6 @@ import {
   TokenListItem,
   ImportTokenLink,
 } from '../../multichain';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useRamps from '../../../hooks/experiences/useRamps';
-///: END:ONLY_INCLUDE_IF
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
@@ -47,8 +41,6 @@ import {
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
@@ -60,7 +52,6 @@ const AssetList = ({ onClickAsset }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const currentNetwork = useSelector(getCurrentNetwork);
-  const currentLocale = useSelector(getCurrentLocale);
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
@@ -76,8 +67,6 @@ const AssetList = ({ onClickAsset }) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const {
     currency: primaryCurrency,
@@ -115,44 +104,6 @@ const AssetList = ({ onClickAsset }) => {
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
-  const shouldShowReceive = balanceIsZero;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const { openBuyCryptoInPdapp } = useRamps();
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  ///: END:ONLY_INCLUDE_IF
-
-  useEffect(() => {
-    if (shouldShowBuy) {
-      trackEvent({
-        event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          chain_id: currentNetwork.chainId,
-          locale: currentLocale,
-          network: currentNetwork.nickname,
-          referrer: ORIGIN_METAMASK,
-        },
-      });
-    }
-    if (shouldShowReceive) {
-      trackEvent({
-        event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          chain_id: currentNetwork.chainId,
-          locale: currentLocale,
-          network: currentNetwork.nickname,
-          referrer: ORIGIN_METAMASK,
-        },
-      });
-    }
-  }, [
-    shouldShowBuy,
-    shouldShowReceive,
-    trackEvent,
-    currentNetwork,
-    currentLocale,
-  ]);
 
   let isStakeable = isMainnet;
 

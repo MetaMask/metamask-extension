@@ -16,15 +16,11 @@ import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Box, Text } from '../../component-library';
 import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import {
-  RAMPS_CARD_VARIANT_TYPES,
-  RAMPS_CARD_VARIANTS,
-} from '../../multichain/ramps-card/ramps-card';
+import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
 import { RampsCard } from '../../multichain/ramps-card';
 
 const PAGE_INCREMENT = 10;

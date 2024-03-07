@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -17,6 +17,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import useRamps from '../../../hooks/experiences/useRamps';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 const darkenGradient =
   'linear-gradient(rgba(0, 0, 0, 0.12),rgba(0, 0, 0, 0.12))';
@@ -53,12 +55,26 @@ export const RAMPS_CARD_VARIANTS = {
 
 export const RampsCard = ({ variant }) => {
   const t = useI18nContext();
-  const { backgroundImage, gradient, illustrationSrc, title, body } =
+  const { gradient, illustrationSrc, title, body } =
     RAMPS_CARD_VARIANTS[variant];
   const { openBuyCryptoInPdapp } = useRamps();
   const trackEvent = useContext(MetaMetricsContext);
+  const currentLocale = useSelector(getCurrentLocale);
   const currentNetwork = useSelector(getCurrentNetwork);
   const { symbol = 'ETH' } = useSelector(getSwapsDefaultToken);
+
+  useEffect(() => {
+    trackEvent({
+      event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        chain_id: currentNetwork.chainId,
+        locale: currentLocale,
+        network: currentNetwork.nickname,
+        referrer: ORIGIN_METAMASK,
+      },
+    });
+  }, []);
 
   const onClick = () => {
     openBuyCryptoInPdapp();
