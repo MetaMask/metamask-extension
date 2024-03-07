@@ -10,6 +10,8 @@ exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title=""
       >
         <input
           class="unit-input__input"

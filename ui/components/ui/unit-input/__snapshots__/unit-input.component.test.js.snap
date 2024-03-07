@@ -10,6 +10,8 @@ exports[`UnitInput Component rendering should match snapshot of error class when
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title=""
       >
         <input
           class="unit-input__input"
@@ -35,6 +37,8 @@ exports[`UnitInput Component rendering should match snapshot with a child compon
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title=""
       >
         <input
           class="unit-input__input"
@@ -65,6 +69,8 @@ exports[`UnitInput Component rendering should match snapshot with a suffix 1`] =
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title=""
       >
         <input
           class="unit-input__input"
@@ -95,6 +101,8 @@ exports[`UnitInput Component rendering should match snapshot without a suffix 1`
     >
       <div
         class="unit-input__input-container"
+        style="display: inherit;"
+        title=""
       >
         <input
           class="unit-input__input"
