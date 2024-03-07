@@ -1,12 +1,11 @@
-import { createSelector } from '@reduxjs/toolkit';
-import {
-  getPreferences,
-  getSendInputCurrencySwitched,
-} from '../../../selectors';
+import { createSelector } from 'reselect';
 
 export const getIsFiatPrimary = createSelector(
-  getPreferences,
-  getSendInputCurrencySwitched,
+  (state: {
+    metamask: { preferences: { useNativeCurrencyAsPrimaryCurrency: boolean } };
+    appState: { sendInputCurrencySwitched: boolean };
+  }) => state.metamask.preferences,
+  (state) => state.appState.sendInputCurrencySwitched,
   ({ useNativeCurrencyAsPrimaryCurrency }, sendInputCurrencySwitched) => {
     const isFiatPrimary = Boolean(
       (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
