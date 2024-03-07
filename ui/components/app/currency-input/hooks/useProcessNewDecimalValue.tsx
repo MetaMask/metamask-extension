@@ -6,9 +6,9 @@ const MAX_DECIMALS_TOKEN_SECONDARY = 6;
 /**
  * A hook that creates a function which processes a new decimal value and returns the new fiat and token decimal values
  *
- * @param assetDecimals The number of decimals that asset supports
- * @param isFiatPrimary If the fiat currency is the input currency
- * @param tokenToFiatConversionRate The conversion rate from the asset to the user's fiat currency
+ * @param assetDecimals - The number of decimals that asset supports
+ * @param isFiatPrimary - If the fiat currency is the input currency
+ * @param tokenToFiatConversionRate - The conversion rate from the asset to the user's fiat currency
  * @returns A function that processes a new decimal value and returns the new fiat and token decimal values
  */
 export default function useProcessNewDecimalValue(
