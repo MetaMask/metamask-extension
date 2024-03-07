@@ -57,6 +57,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -69,7 +70,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptions = false,
+  menuType = AccountListItemMenuTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -222,16 +223,17 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                {identity.metadata.name.length >
+                MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={identity.name}
+                    title={identity.metadata.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {identity.name}
+                    {identity.metadata.name}
                   </Tooltip>
                 ) : (
-                  identity.name
+                  identity.metadata.name
                 )}
               </Text>
             </Box>
@@ -313,14 +315,17 @@ export const AccountListItem = ({
               color: Color.textAlternative,
             }}
             startIconName={
-              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
+              identity.metadata.keyring.type === KeyringType.snap
+                ? IconName.Snaps
+                : null
             }
           />
         ) : null}
       </Box>
-      {showOptions ? (
+
+      {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
-          ariaLabel={`${identity.name} ${t('options')}`}
+          ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountListItemMenuRef}
@@ -339,8 +344,8 @@ export const AccountListItem = ({
           }}
           data-testid="account-list-item-menu-button"
         />
-      ) : null}
-      {showOptions ? (
+      )}
+      {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -352,19 +357,30 @@ export const AccountListItem = ({
           isHidden={isHidden}
           isConnected={isConnected}
         />
-      ) : null}
+      )}
     </Box>
   );
 };
 
 AccountListItem.propTypes = {
   /**
-   * Identity of the account
+   * An account object that has name, address, and balance data
    */
   identity: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
     keyring: PropTypes.shape({
       type: PropTypes.string.isRequired,
     }).isRequired,
@@ -391,9 +407,9 @@ AccountListItem.propTypes = {
    */
   connectedAvatarName: PropTypes.string,
   /**
-   * Represents if the "Options" 3-dot menu should display
+   * Represents the type of menu to be rendered
    */
-  showOptions: PropTypes.bool,
+  menuType: PropTypes.string,
   /**
    * Represents pinned accounts
    */

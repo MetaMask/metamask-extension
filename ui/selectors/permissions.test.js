@@ -1,4 +1,4 @@
-import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   getConnectedSubjectsForSelectedAddress,
@@ -12,6 +12,24 @@ describe('selectors', () => {
     it('should return the list of connected subjects when there is 1 connected account', () => {
       const mockState = {
         metamask: {
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Really Long Name That Should Be Truncated',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           selectedAddress: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
           subjectMetadata: {
             'peepeth.com': {
@@ -343,9 +361,70 @@ describe('selectors', () => {
     it('should return connected accounts sorted by last selected, then by keyring controller order', () => {
       expect(getOrderedConnectedAccountsForActiveTab(mockState)).toStrictEqual([
         {
-          lastSelected: 1586359844193,
+          address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+          balance: '0x0',
+          id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+          metadata: {
+            name: 'Account 1',
+            lastActive: 1586359844192,
+            lastSelected: 1586359844192,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        {
+          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          balance: '0x0',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Really Long Name That Should Be Truncated',
+            lastActive: 1586359844192,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        {
+          address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+          balance: '0x0',
+          id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+          metadata: {
+            name: 'Account 3',
+            lastActive: 1586359844192,
+            lastSelected: 1586359844192,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          balance: '0x0',
+          id: 'f9305241-c50f-4725-ad0f-cbd3f24ac7ab',
+          metadata: {
+            name: 'Account 4',
+            lastActive: 1586359844192,
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        {
           address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-          name: 'Account 2',
+          balance: '0x0',
           id: '15e69915-2a1a-4019-93b3-916e11fd432f',
           metadata: {
             name: 'Account 2',
@@ -356,130 +435,8 @@ describe('selectors', () => {
             },
           },
           options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-            'eth_prepareUserOperation',
-            'eth_patchUserOperation',
-            'eth_signUserOperation',
-          ],
-          type: 'eip155:eoa',
-          balance: undefined,
-          lastActive: 1586359844192,
-        },
-        {
-          address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-          lastSelected: 1586359844192,
-          name: 'Account 1',
-          id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-          metadata: {
-            name: 'Account 1',
-            lastSelected: 1586359844192,
-            lastActive: 1586359844192,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-            'eth_prepareUserOperation',
-            'eth_patchUserOperation',
-            'eth_signUserOperation',
-          ],
-          type: 'eip155:eoa',
-          balance: undefined,
-          lastActive: 1586359844192,
-        },
-        {
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          lastSelected: 1586359844192,
-          name: 'Account 3',
-          id: 'f9305241-c50f-4725-ad0f-cbd3f24ac7ab',
-          metadata: {
-            name: 'Account 4',
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-            'eth_prepareUserOperation',
-            'eth_patchUserOperation',
-            'eth_signUserOperation',
-          ],
-          type: 'eip155:eoa',
-          balance: undefined,
-          lastActive: 1586359844192,
-        },
-        {
-          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-          name: 'Really Long Name That Should Be Truncated',
-          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-          metadata: {
-            name: 'Really Long Name That Should Be Truncated',
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-            'eth_prepareUserOperation',
-            'eth_patchUserOperation',
-            'eth_signUserOperation',
-          ],
-          type: 'eip155:eoa',
-          balance: undefined,
-          lastActive: 1586359844192,
-        },
-        {
-          address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-          name: 'Account 4',
-          id: '784225f4-d30b-4e77-a900-c8bbce735b88',
-          metadata: {
-            name: 'Account 3',
-            lastSelected: 1586359844192,
-            lastActive: 1586359844192,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-            'eth_prepareUserOperation',
-            'eth_patchUserOperation',
-            'eth_signUserOperation',
-          ],
-          type: 'eip155:eoa',
-          balance: undefined,
-          lastActive: 1586359844192,
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
       ]);
     });
@@ -534,6 +491,69 @@ describe('selectors', () => {
             address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
             name: 'Account 2',
           },
+        },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Really Long Name That Should Be Truncated',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1586359844192,
+                lastActive: 1586359844192,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '15e69915-2a1a-4019-93b3-916e11fd432f': {
+              address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+              id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+              metadata: {
+                name: 'Account 2',
+                lastActive: 1586359844192,
+                lastSelected: 1586359844193,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '784225f4-d30b-4e77-a900-c8bbce735b88': {
+              address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+              id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+              metadata: {
+                name: 'Account 3',
+                lastSelected: 1586359844192,
+                lastActive: 1586359844192,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         subjects: {
           'https://remix.ethereum.org': {
