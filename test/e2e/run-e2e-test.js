@@ -15,9 +15,9 @@ async function main() {
         _yargs
           .option('browser', {
             default: process.env.SELENIUM_BROWSER,
-            description: `Set the browser used; either 'chrome' or 'firefox'.`,
+            description: `Set the browser to be used; specify 'chrome', 'firefox', or leave unset to run on both by default.`,
             type: 'string',
-            choices: ['chrome', 'firefox', 'all'],
+            choices: ['chrome', 'firefox'],
           })
           .option('debug', {
             default: process.env.E2E_DEBUG === 'true',
@@ -157,12 +157,12 @@ async function main() {
   };
 
   const allBrowsers = ['chrome', 'firefox'];
-  if (browser === 'all') {
+  if (browser) {
+    await runTestsOnSingleBrowser(browser);
+  } else {
     for (const currentBrowser of allBrowsers) {
       await runTestsOnSingleBrowser(currentBrowser);
     }
-  } else {
-    await runTestsOnSingleBrowser(browser);
   }
 }
 
