@@ -185,8 +185,7 @@
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": "object",
-    "perDomainNetwork": false
+    "domains": "object"
   },
   "SignatureController": {
     "unapprovedMsgs": "object",

@@ -10,12 +10,12 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   getURLHostName,
+  hexToText,
   sanitizeString,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
-import { stripHexPrefix } from '../../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import Typography from '../../../../components/ui/typography/typography';
@@ -103,16 +103,6 @@ export default class SignatureRequestOriginal extends Component {
     ///: END:ONLY_INCLUDE_IF
   };
 
-  msgHexToText = (hex) => {
-    try {
-      const stripped = stripHexPrefix(hex);
-      const buff = Buffer.from(stripped, 'hex');
-      return buff.length === 32 ? hex : buff.toString('utf8');
-    } catch (e) {
-      return hex;
-    }
-  };
-
   renderTypedData = (data) => {
     const { t } = this.context;
     const { domain, message } = JSON.parse(data);
@@ -149,9 +139,7 @@ export default class SignatureRequestOriginal extends Component {
     } = txData;
 
     if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-      rows = [
-        { name: this.context.t('message'), value: this.msgHexToText(data) },
-      ];
+      rows = [{ name: this.context.t('message'), value: hexToText(data) }];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data;
     } else if (type === MESSAGE_TYPE.ETH_SIGN) {
