@@ -1539,11 +1539,6 @@ export default class MetamaskController extends EventEmitter {
             () => listener(),
           );
         },
-        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-        getNetworkClientRegistry:
-          this.networkController.getNetworkClientRegistry.bind(
-            this.networkController,
-          ),
         hooks: {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           afterSign: (txMeta, signedEthTx) =>
@@ -2337,6 +2332,9 @@ export default class MetamaskController extends EventEmitter {
    * Saves provider connection details for setting up trusted or untrusted
    * communication that needs to be delayed until the provider is initialized in
    * the Network Controller.
+   *
+   * @param {any} providerConnectionDetails - Object with properties mux,
+   * subStreamName, sender and subjectType.
    */
   enqueueProviderConnectionDetails(providerConnectionDetails) {
     this.providerConnectionDetailsQueue.push(providerConnectionDetails);
