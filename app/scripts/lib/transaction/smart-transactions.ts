@@ -84,26 +84,33 @@ export async function submitSmartTransactionHook(
       },
     );
     const uuid = response?.uuid;
+    const onApproveOrReject = () => {
+      controllerMessenger.call('ApprovalController:endFlow', {
+        id: smartTransactionStatusApprovalId,
+      });
+    };
     if (!uuid) {
       throw new Error('No smart transaction UUID');
     }
     log.info('Smart Transaction - Received UUID', uuid);
-    controllerMessenger.call(
-      'ApprovalController:addRequest',
-      {
-        id: smartTransactionStatusApprovalId,
-        origin,
-        type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-        requestState: {
-          smartTransaction: {
-            status: SmartTransactionStatuses.PENDING,
-            creationTime: Date.now(),
+    controllerMessenger
+      .call(
+        'ApprovalController:addRequest',
+        {
+          id: smartTransactionStatusApprovalId,
+          origin,
+          type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+          requestState: {
+            smartTransaction: {
+              status: SmartTransactionStatuses.PENDING,
+              creationTime: Date.now(),
+            },
+            isDapp,
           },
-          isDapp,
         },
-      },
-      true,
-    );
+        true,
+      )
+      .then(onApproveOrReject, onApproveOrReject);
     let transactionHash: string | undefined | null;
     (smartTransactionsController as any).eventEmitter.on(
       `${uuid}:smartTransaction`,
