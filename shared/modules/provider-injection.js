@@ -78,6 +78,10 @@ function blockedDomainCheck() {
     'blueskybooking.com',
     'sharefile.com',
     'battle.net',
+    // Avoid initializing the inpage provider in this iFrame because the network
+    // controller provider hasn't been initialized yet.
+    // https://github.com/MetaMask/metamask-extension/blob/a43c6455266b5ebf45956d5077a7d4ce40f3d270/ui/pages/onboarding-flow/create-password/create-password.js#L89
+    'start.metamask.io',
   ];
 
   // Matching will happen based on the hostname, and path
