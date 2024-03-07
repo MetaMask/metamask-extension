@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetPicker matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="mm-box asset-picker mm-box--padding-2 mm-box--display-flex mm-box--gap-3 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+    >
+      <img
+        aria-hidden="true"
+        class="mm-avatar-token__token-image--blurred"
+        src="./images/eth_logo.svg"
+      />
+      <img
+        alt="undefined logo"
+        class="mm-avatar-token__token-image--size-reduced"
+        src="./images/eth_logo.svg"
+      />
+    </div>
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-1"
+        class=""
+        data-original-title="NATIVE TICKER"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          NATIVE...
+        </p>
+      </div>
+    </div>
+    <span
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/arrow-down.svg');"
+    />
+  </div>
+</DocumentFragment>
+`;
