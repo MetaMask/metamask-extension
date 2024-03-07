@@ -12,7 +12,6 @@ describe('Send NFT', function () {
   const erc1155SmartContract = SMART_CONTRACTS.ERC1155;
 
   it('should be able to send ERC721 NFT', async function () {
-    const isMultichain = process.env.MULTICHAIN;
     await withFixtures(
       {
         dapp: true,
@@ -34,7 +33,7 @@ describe('Send NFT', function () {
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
         await driver.clickElement({
-          text: isMultichain ? 'Continue' : 'Next',
+          text: 'Continue',
           tag: 'button',
         });
 
@@ -53,7 +52,7 @@ describe('Send NFT', function () {
         );
 
         await driver.clickElement({
-          text: isMultichain ? 'Continue' : 'Next',
+          text: 'Continue',
           tag: 'button',
         });
 
@@ -86,11 +85,6 @@ describe('Send NFT', function () {
   });
 
   it('should be able to send ERC1155 NFT', async function () {
-    // TODO: Update Test when Multichain Send Flow is added
-    const isMultichain = process.env.MULTICHAIN;
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -104,7 +98,6 @@ describe('Send NFT', function () {
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        // await sleep(100000);
 
         const erc1155Token = await driver.findElement('.nft-item__container');
         await driver.scrollToElement(erc1155Token);
@@ -123,7 +116,7 @@ describe('Send NFT', function () {
         await driver.delay(1000);
 
         await driver.clickElement({
-          text: isMultichain ? 'Continue' : 'Next',
+          text: 'Continue',
           tag: 'button',
         });
 
@@ -144,7 +137,7 @@ describe('Send NFT', function () {
         await driver.fill('input[placeholder="0"]', '1');
 
         await driver.clickElement({
-          text: isMultichain ? 'Continue' : 'Next',
+          text: 'Continue',
           tag: 'button',
         });
 
