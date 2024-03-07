@@ -124,8 +124,10 @@ These test scripts all support additional options, which might be helpful for de
 Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
-  --browser           Set the browser used; either 'chrome' or 'firefox'.
-                                            [string] [choices: "chrome", "firefox"]
+   --browser                  Set the browser to be used; specify 'chrome',
+                                 'firefox','all' or leave unset to run on both
+                                 by default.
+                 [string] [choices: "chrome", "firefox", "all"] [default: "all"]
   --debug             Run tests in debug mode, logging each driver interaction
                                                          [boolean] [default: false]
   --retries           Set how many times the test should be retried upon failure.
