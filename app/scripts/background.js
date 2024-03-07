@@ -202,7 +202,6 @@ browser.runtime.onConnect.addListener(async (...args) => {
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-
   // This is set in `setupController`, which is called as part of initialization
   connectExternal(...args);
 });

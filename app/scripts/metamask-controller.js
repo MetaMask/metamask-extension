@@ -2146,7 +2146,6 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.store.getState().completedOnboarding) {
       this.networkProviderInitialization();
     }
-    // this.networkProviderInitialization();
   }
 
   triggerNetworkrequests() {
@@ -2295,9 +2294,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Initializes the provider on the Network Controller. It also runs
-   * controllers' logic that relies on that provider being initialized, passing
-   * it in.
+   * Initializes the provider on the Network Controller. It also ensures the
+   * provider connection to the stream multiplexer is made and runs controllers'
+   * initialization and onboarding logic that relies on that provider being
+   * initialized.
    */
   networkProviderInitialization() {
     this.networkController.initializeProvider();
@@ -2325,6 +2325,31 @@ export default class MetamaskController extends EventEmitter {
       this.txController.nonceTracker.getNonceLock,
     );
     this.detectTokensController.restartTokenDetection();
+  }
+
+  /**
+   * Saves provider connection details for setting up trusted or untrusted
+   * communication that needs to be delayed until the provider is initialized in
+   * the Network Controller.
+   */
+  enqueueProviderConnectionDetails(providerConnectionDetails) {
+    this.providerConnectionDetailsQueue.push(providerConnectionDetails);
+  }
+
+  /**
+   * Sets up the provider connections that have been delayed until the provider
+   * was initialized in the Network Controller.
+   */
+  processProviderConnectionDetailsQueue() {
+    while (this.providerConnectionDetailsQueue.length > 0) {
+      const connectionDetails = this.providerConnectionDetailsQueue.shift();
+
+      this.setupProviderConnection(
+        connectionDetails.mux.createStream(connectionDetails.subStreamName),
+        connectionDetails.sender,
+        connectionDetails.subjectType,
+      );
+    }
   }
 
   /**
@@ -6001,21 +6026,5 @@ export default class MetamaskController extends EventEmitter {
     this.txController.hub.emit('transaction-status-update', {
       transactionMeta,
     });
-  }
-
-  enqueueProviderConnectionDetails(providerConnectionDetails) {
-    this.providerConnectionDetailsQueue.push(providerConnectionDetails);
-  }
-
-  processProviderConnectionDetailsQueue() {
-    while (this.providerConnectionDetailsQueue.length > 0) {
-      const connectionDetails = this.providerConnectionDetailsQueue.shift();
-
-      this.setupProviderConnection(
-        connectionDetails.mux.createStream(connectionDetails.subStreamName),
-        connectionDetails.sender,
-        connectionDetails.subjectType,
-      );
-    }
   }
 }

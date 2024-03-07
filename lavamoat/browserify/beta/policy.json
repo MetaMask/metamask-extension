@@ -1980,6 +1980,7 @@
     },
     "@metamask/transaction-controller": {
       "globals": {
+        "clearTimeout": true,
         "console.error": true,
         "setTimeout": true
       },
@@ -1993,6 +1994,7 @@
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
