@@ -1,6 +1,3 @@
-/* eslint-disable jest/expect-expect */
-/* eslint-disable jest/no-focused-tests */
-import { log } from 'console';
 import Bowser from 'bowser';
 import { BN, toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
