@@ -1019,9 +1019,6 @@
   "copyTransactionId": {
     "message": "Copy transaction ID"
   },
-  "couldNotFetchDataForToken": {
-    "message": "Prices could not be fetched for this token"
-  },
   "create": {
     "message": "Create"
   },
@@ -1968,6 +1965,9 @@
   },
   "highLowercase": {
     "message": "high"
+  },
+  "historicalPricesCouldNotBeFetched": {
+    "message": "Historical prices could not be fetched"
   },
   "history": {
     "message": "History"
@@ -3636,6 +3636,9 @@
   },
   "prev": {
     "message": "Prev"
+  },
+  "pricesCouldNotBeFetched": {
+    "message": "Prices could not be fetched"
   },
   "primaryCurrencySetting": {
     "message": "Primary currency"

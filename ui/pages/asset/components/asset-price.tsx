@@ -88,7 +88,7 @@ const AssetPrice = forwardRef(
           backgroundColor={
             loading && !price
               ? BackgroundColor.backgroundAlternative
-              : BackgroundColor.backgroundDefault
+              : BackgroundColor.transparent
           }
         >
           {price
@@ -132,7 +132,7 @@ const AssetPrice = forwardRef(
               backgroundColor={
                 loading
                   ? BackgroundColor.backgroundAlternative
-                  : BackgroundColor.backgroundDefault
+                  : BackgroundColor.transparent
               }
               borderRadius={BorderRadius.LG}
               variant={TextVariant.bodyMdMedium}

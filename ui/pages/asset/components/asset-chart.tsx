@@ -9,31 +9,24 @@ import {
   Decimation,
   Point,
   ChartEvent,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
 import { useTheme } from '../../../hooks/useTheme';
 import {
-  AlignItems,
   BackgroundColor,
   Display,
   JustifyContent,
   TextColor,
   TextVariant,
-  FlexDirection,
-  BlockSize,
   BorderRadius,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -52,7 +45,6 @@ const crosshairPlugin = {
   },
   afterDraw(chart: CrosshairChart) {
     if (chart.crosshairX !== undefined) {
-      const { x: xAxis, y: yAxis } = chart.scales;
       const data = chart.data.datasets[0].data as Point[];
       const index = Math.max(
         0,
@@ -62,20 +54,24 @@ const crosshairPlugin = {
         ),
       );
 
-      const x = xAxis.getPixelForValue(data[index].x);
-      const y = yAxis.getPixelForValue(data[index].y);
+      const point = data[index];
+      if (point) {
+        const { x: xAxis, y: yAxis } = chart.scales;
+        const x = xAxis.getPixelForValue(point.x);
+        const y = yAxis.getPixelForValue(point.y);
 
-      chart.ctx.lineWidth = 1;
-      chart.ctx.strokeStyle = '#BBC0C5';
-      chart.ctx.beginPath();
-      chart.ctx.moveTo(x, 0);
-      chart.ctx.lineTo(x, chart.height);
-      chart.ctx.stroke();
+        chart.ctx.lineWidth = 1;
+        chart.ctx.strokeStyle = '#BBC0C5';
+        chart.ctx.beginPath();
+        chart.ctx.moveTo(x, 0);
+        chart.ctx.lineTo(x, chart.height);
+        chart.ctx.stroke();
 
-      chart.ctx.beginPath();
-      chart.ctx.arc(x, y, 3, 0, 2 * Math.PI);
-      chart.ctx.fillStyle = chart.options.borderColor as string;
-      chart.ctx.fill();
+        chart.ctx.beginPath();
+        chart.ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        chart.ctx.fillStyle = chart.options.borderColor as string;
+        chart.ctx.fill();
+      }
     }
   },
 };
@@ -157,158 +153,135 @@ const AssetChart = ({
     },
   } as const;
 
+  const noData = !loading && !prices;
+
   return (
-    <Box>
-      {loading || (prices && currentPrice) ? (
-
-          // maybe skeleton juggling because toolti0p font is bigger when screen large
-
-        <Box>
-          {/* <AssetPrice
-            ref={priceRef}
-            loading={loading}
-            currency={currency}
-            price={currentPrice}
-            date={Date.now()}
-            comparePrice={prices?.[0]?.y}
-          /> */}
-          {prices ? (
-            <Box marginTop={4}>
-              <Box style={{ opacity: loading ? 0.2 : 1 }}>
-                <ChartTooltip point={yMax} {...edges} currency={currency} />
-                <Box marginLeft={4} marginRight={4} style={{ aspectRatio: `${options.aspectRatio}` }}>
-                  <Line
-                    ref={chartRef}
-                    data={{ datasets: [{ data: prices }] }}
-                    options={options}
-                    updateMode="none"
-                    // Update the price display on chart hover
-                    onMouseMove={(event) => {
-                      const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                      if (data) {
-                        const target = event.target as HTMLElement;
-                        const index = Math.max(
-                          0,
-                          Math.min(
-                            data.length - 1,
-                            Math.round(
-                              (event.nativeEvent.offsetX / target.clientWidth) *
-                                data.length,
-                            ),
-                          ),
-                        );
-                        priceRef?.current?.setPrice({
-                          price: data[index]?.y,
-                          date: data[index]?.x,
-                        });
-                      }
-                    }}
-                    // Revert to current price when not hovering
-                    onMouseOut={() => {
+    <Box
+      className={classnames({
+        'asset__chart--no-data': noData && !currentPrice,
+        'asset__chart--no-data-dark':
+          noData && !currentPrice && theme === 'dark',
+      })}
+      marginLeft={4}
+      marginRight={4}
+      borderRadius={BorderRadius.LG}
+      backgroundColor={
+        loading || prices
+          ? BackgroundColor.backgroundDefault
+          : BackgroundColor.transparent
+      }
+    >
+      <AssetPrice
+        ref={priceRef}
+        loading={loading}
+        currency={currency}
+        price={currentPrice}
+        date={Date.now()}
+        comparePrice={prices?.[0]?.y}
+      />
+      <Box
+        className={classnames({
+          'asset__chart--no-data': noData,
+          'asset__chart--no-data-dark': noData && theme === 'dark',
+        })}
+        {...(noData ? { paddingTop: 4 } : { marginTop: 4 })}
+        borderRadius={BorderRadius.LG}
+        backgroundColor={
+          loading && !prices
+            ? BackgroundColor.backgroundAlternative
+            : BackgroundColor.transparent
+        }
+      >
+        <Box style={{ opacity: loading && prices ? 0.2 : 1 }}>
+          <ChartTooltip point={yMax} {...edges} currency={currency} />
+          <Box style={{ aspectRatio: `${options.aspectRatio}` }}>
+            {loading || prices ? (
+              <Line
+                ref={chartRef}
+                data={{ datasets: [{ data: prices }] }}
+                options={options}
+                updateMode="none"
+                // Update the price display on chart hover
+                onMouseMove={(event) => {
+                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
+                  if (data) {
+                    const target = event.target as HTMLElement;
+                    const index = Math.max(
+                      0,
+                      Math.min(
+                        data.length - 1,
+                        Math.round(
+                          (event.nativeEvent.offsetX / target.clientWidth) *
+                            data.length,
+                        ),
+                      ),
+                    );
+                    const point = data[index];
+                    if (point) {
                       priceRef?.current?.setPrice({
-                        price: currentPrice,
-                        date: Date.now(),
+                        price: point.y,
+                        date: point.x,
                       });
-                    }}
-                  />
-                </Box>
-                <ChartTooltip point={yMin} {...edges} currency={currency} />
+                    }
+                  }
+                }}
+                // Revert to current price when not hovering
+                onMouseOut={() => {
+                  priceRef?.current?.setPrice({
+                    price: currentPrice,
+                    date: Date.now(),
+                  });
+                }}
+              />
+            ) : (
+              <Box textAlign={TextAlign.Center}>
+                <img width="35%" src="./images/chart.webp"></img>
+                <Text
+                  variant={TextVariant.bodySmMedium}
+                  color={TextColor.textAlternative}
+                  margin={4}
+                >
+                  {currentPrice
+                    ? t('historicalPricesCouldNotBeFetched')
+                    : t('pricesCouldNotBeFetched')}
+                </Text>
               </Box>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-                marginTop={4}
-              >
-                {((buttons: [string, TimeRange][]) =>
-                  buttons.map(([label, range]) => (
-                    <ButtonBase
-                      key={range}
-                      className={classnames('time-range-button', {
-                        'time-range-button__selected': range === timeRange,
-                      })}
-                      onClick={() => setTimeRange(range)}
-                      variant={TextVariant.bodySmMedium}
-                      size={ButtonBaseSize.Sm}
-                      backgroundColor={BackgroundColor.transparent}
-                      color={TextColor.textAlternative}
-                    >
-                      {label}
-                    </ButtonBase>
-                  )))([
-                  [t('oneDayAbbreviation'), '1D'],
-                  [t('oneWeekAbbreviation'), '7D'],
-                  [t('oneMonthAbbreviation'), '1M'],
-                  [t('threeMonthsAbbreviation'), '3M'],
-                  [t('oneYearAbbreviation'), '1Y'],
-                  [t('all'), '1000Y'],
-                ])}
-              </Box>
-            </Box>
-          ) : (
-            <Box
-              marginTop={1}
-              borderRadius={BorderRadius.LG}
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              marginLeft={4}
-              marginRight={4}
-              paddingTop={11}
-              paddingBottom={12}
-              style={{
-                aspectRatio: `${options.aspectRatio}`,
-                boxSizing: 'content-box',
-              }}
-            />
-          )}
+            )}
+          </Box>
+          <ChartTooltip point={yMin} {...edges} currency={currency} />
         </Box>
-      ) : (
-        <Box
-              marginTop={1}
-              borderRadius={BorderRadius.LG}
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              marginLeft={4}
-              marginRight={4}
-              // paddingTop={11}
-              // paddingBottom={12}
-              style={{
-                paddingTop: '76px',
-                paddingBottom: '74px',
-                aspectRatio: `${options.aspectRatio}`,
-                boxSizing: 'content-box',
-              }}
-            />
-        // <Box
-        //   style={{
-        //     aspectRatio: `${options.aspectRatio}`,
-        //     boxSizing: 'content-box',
 
-        //     // todo theme
-        //     background:
-        //       'linear-gradient(0deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.20) 100%), linear-gradient(102deg, #E7F2F8 39.39%, #E9F2F9 44.98%, #EBF2FA 50.57%, #EDF2FB 56.16%, #EFF2FC 61.75%, #F0F2FD 67.35%, #F1F2FD 72.94%, #F2F2FE 78.53%, #F2F2FE 84.12%, #F3F2FE 89.71%, #F3F2FF 95.3%, #F4F2FF 100.89%, #F4F2FF 106.49%, #F4F2FF 112.08%, #F4F2FF 117.67%, #F4F2FF 123.26%, #F4F2FF 128.85%)',
-        //   }}
-        //   // height={BlockSize.Full}
-        //   backgroundColor={
-        //     loading
-        //       ? BackgroundColor.backgroundAlternative
-        //       : BackgroundColor.backgroundDefault
-        //   }
-        //   borderRadius={BorderRadius.LG}
-        //   marginLeft={4}
-        //   marginRight={4}
-        //   paddingTop={12}
-        //   paddingBottom={12}
-        //   display={Display.Flex}
-        //   flexDirection={FlexDirection.Column}
-        //   justifyContent={JustifyContent.center}
-        //   alignItems={AlignItems.center}
-        // >
-        //   {!loading && (
-        //     <>
-        //       {/* <img height={'208px'} src="./images/chart.webp" /> */}
-        //       <Text>{t('couldNotFetchDataForToken')}</Text>
-        //     </>
-        //   )}
-        // </Box>
-      )}
+        <Box
+          style={{ ...(!prices && { visibility: 'hidden' }) }}
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          marginTop={4}
+        >
+          {((buttons: [string, TimeRange][]) =>
+            buttons.map(([label, range]) => (
+              <ButtonBase
+                key={range}
+                className={classnames('time-range-button', {
+                  'time-range-button__selected': range === timeRange,
+                })}
+                onClick={() => setTimeRange(range)}
+                variant={TextVariant.bodySmMedium}
+                size={ButtonBaseSize.Sm}
+                backgroundColor={BackgroundColor.transparent}
+                color={TextColor.textAlternative}
+              >
+                {label}
+              </ButtonBase>
+            )))([
+            [t('oneDayAbbreviation'), '1D'],
+            [t('oneWeekAbbreviation'), '7D'],
+            [t('oneMonthAbbreviation'), '1M'],
+            [t('threeMonthsAbbreviation'), '3M'],
+            [t('oneYearAbbreviation'), '1Y'],
+            [t('all'), '1000Y'],
+          ])}
+        </Box>
+      </Box>
     </Box>
   );
 };

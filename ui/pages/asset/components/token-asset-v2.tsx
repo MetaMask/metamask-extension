@@ -56,9 +56,10 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
   const exchangeRate = exchangeRates?.[toChecksumHexAddress(address)];
 
-  const currentPrice = exchangeRate > 0 && conversionRate > 0
-  ? exchangeRate * conversionRate
-  : undefined;
+  const currentPrice =
+    exchangeRate > 0 && conversionRate > 0
+      ? exchangeRate * conversionRate
+      : undefined;
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
