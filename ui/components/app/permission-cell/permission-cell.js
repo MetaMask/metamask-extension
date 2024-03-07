@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box';
 import {
   AlignItems,
   Color,
@@ -10,6 +9,10 @@ import {
   Size,
   TextColor,
   TextVariant,
+  Display,
+  BlockSize,
+  FlexWrap,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -18,6 +21,7 @@ import {
   IconName,
   IconSize,
   Text,
+  Box,
 } from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -67,14 +71,13 @@ const PermissionCell = ({
   return (
     <Box
       className="permission-cell"
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.flexStart}
-      marginLeft={4}
-      marginRight={4}
       paddingTop={2}
       paddingBottom={2}
     >
-      <Box>
+      <Box display={Display.Flex}>
         {typeof permissionIcon === 'string' ? (
           <AvatarIcon
             iconName={permissionIcon}
@@ -89,7 +92,14 @@ const PermissionCell = ({
           permissionIcon
         )}
       </Box>
-      <Box width="full" marginLeft={4} marginRight={4}>
+      <Box
+        display={Display.Flex}
+        flexWrap={FlexWrap.Wrap}
+        flexDirection={FlexDirection.Column}
+        width={BlockSize.Full}
+        marginLeft={4}
+        marginRight={4}
+      >
         <Text
           size={Size.MD}
           variant={TextVariant.bodyMd}
@@ -113,7 +123,7 @@ const PermissionCell = ({
           </Text>
         )}
       </Box>
-      <Box>
+      <Box display={Display.Flex}>
         {showOptions && snapId ? (
           <PermissionCellOptions
             snapId={snapId}

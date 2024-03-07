@@ -1295,24 +1295,24 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/utils>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
+      }
+    },
+    "@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@sentry/cli>which": {
