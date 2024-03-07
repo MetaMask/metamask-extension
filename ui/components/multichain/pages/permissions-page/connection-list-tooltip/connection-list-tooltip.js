@@ -51,14 +51,14 @@ export const ConnectionListTooltip = ({ connection }) => {
             {t('connectedAccounts')}
           </Text>
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {connection.addresses?.slice(0, TOOLTIP_LIMIT).map((address, i) => {
+            {connection.addresses?.slice(0, TOOLTIP_LIMIT).map((address) => {
               return (
                 <Box
                   display={Display.Flex}
                   flexDirection={FlexDirection.Row}
                   alignItems={AlignItems.center}
                   textAlign={TextAlign.Left}
-                  key={i}
+                  key={`cl-tooltip-${connection.addressToNameMap[address]}-${address}`}
                   padding={1}
                   paddingInline={2}
                   gap={2}
