@@ -5952,8 +5952,9 @@ export default class MetamaskController extends EventEmitter {
       'Generated from user operation',
     );
 
-    this.txController.hub.emit('transaction-status-update', {
-      transactionMeta,
-    });
+    this.controllerMessenger.publish(
+      'TransactionController:transactionStatusUpdated',
+      { transactionMeta },
+    );
   }
 }
