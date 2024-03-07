@@ -11,6 +11,18 @@ import { SendPageRecipient } from '.';
 const render = (stateChanges = {}) => {
   const store = configureStore({
     ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      permissionHistory: {
+        'https://test.dapp': {
+          eth_accounts: {
+            accounts: {
+              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
+            },
+          },
+        },
+      },
+    },
     ...stateChanges,
     activeTab: {
       origin: 'https://test.dapp',
