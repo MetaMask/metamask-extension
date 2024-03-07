@@ -17,7 +17,7 @@
     gap: 8px;
   }
 
-  &__panel_root:has(.snap-ui-renderer__panel) {
+  &__content > &__panel:has(.snap-ui-renderer__panel) {
     gap: 16px;
   }
 }
