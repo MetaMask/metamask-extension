@@ -20,7 +20,7 @@ async function main() {
             choices: ['chrome', 'firefox', 'all'],
           })
           .option('debug', {
-            default: process.env.E2E_DEBUG === 'true',
+            default: true,
             description:
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
