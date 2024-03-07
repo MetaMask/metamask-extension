@@ -22,6 +22,7 @@ import {
   BlockSize,
   BorderRadius,
   Display,
+  FontWeight,
   FlexDirection,
   IconColor,
   JustifyContent,
@@ -124,16 +125,16 @@ export default function InsightWarnings({
         <Text variant={TextVariant.bodyMd} paddingBottom={4}>
           {warnings.length === 1
             ? t('insightWarningContentSingular', [
-                <span key={warnings.id}>
-                  <b>{`${warnings.length} ${t('insightWarning')}`}</b>
-                </span>,
+                <Text as="span" key={warnings.id} fontWeight={FontWeight.Bold}>
+                  {`${warnings.length} ${t('insightWarnings')}`}
+                </Text>,
                 action,
                 InsightWarningLanguage[action].noun,
               ])
             : t('insightWarningContentPlural', [
-                <span key={warnings.id}>
-                  <b>{`${warnings.length} ${t('insightWarnings')}`}</b>
-                </span>,
+                <Text as="span" key={warnings.id} fontWeight={FontWeight.Bold}>
+                  {`${warnings.length} ${t('insightWarnings')}`}
+                </Text>,
                 warnings.length,
                 action,
                 InsightWarningLanguage[action].noun,
@@ -160,9 +161,9 @@ export default function InsightWarnings({
             onChange={handleOnChange}
             label={t('insightWarningCheckboxMessage', [
               t(InsightWarningLanguage[action].imperative),
-              <Text as="span" key={action] fontWeight={FontWeight.Medium}>
+              <Text as="span" key={action} fontWeight={FontWeight.Bold}>
                 {stripHttpSchemes(origin)}
-              </Text>
+              </Text>,
             ])}
           />
         </Box>
