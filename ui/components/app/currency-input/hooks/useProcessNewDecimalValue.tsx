@@ -14,7 +14,7 @@ const MAX_DECIMALS_TOKEN_SECONDARY = 6;
 export default function useProcessNewDecimalValue(
   assetDecimals: number,
   isFiatPrimary: boolean,
-  tokenToFiatConversionRate: Numeric,
+  tokenToFiatConversionRate: Numeric | undefined,
 ) {
   return useCallback(
     (newDecimalValue) => {
@@ -38,14 +38,16 @@ export default function useProcessNewDecimalValue(
 
       if (isFiatPrimary) {
         newFiatDecimalValue = numericDecimalValue.toFixed(2);
-        newTokenDecimalValue = truncateToDecimals(
-          numericDecimalValue.divide(tokenToFiatConversionRate),
-          MAX_DECIMALS_TOKEN_SECONDARY,
-        );
+        newTokenDecimalValue = tokenToFiatConversionRate
+          ? truncateToDecimals(
+              numericDecimalValue.divide(tokenToFiatConversionRate),
+              MAX_DECIMALS_TOKEN_SECONDARY,
+            )
+          : undefined;
       } else {
-        newFiatDecimalValue = numericDecimalValue
-          .times(tokenToFiatConversionRate)
-          .toFixed(2);
+        newFiatDecimalValue = tokenToFiatConversionRate
+          ? numericDecimalValue.times(tokenToFiatConversionRate).toFixed(2)
+          : undefined;
         newTokenDecimalValue = truncateToDecimals(numericDecimalValue);
       }
 
