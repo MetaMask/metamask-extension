@@ -2100,20 +2100,16 @@
   "inputLogicHigherNumber": {
     "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
+  "insightWarning": {
+    "message": "warning"
+  },
   "insightWarningCheckboxMessage": {
     "message": "$1 the request by $2",
     "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
   },
-  "insightWarnings" :{
-    "message": "warnings"
-  },
-
   "insightWarningContentPlural": {
     "message": "Review $1 before $2. Once made, the $3 is irreversible.",
     "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "insightWarning" :{
-    "message": "warning"
   },
   "insightWarningContentSingular": {
     "message": "Review $1 before $2. Once made, the $3 is irreversible.",
@@ -2122,6 +2118,10 @@
   "insightWarningHeader": {
     "message": "This request may be risky"
   },
+  "insightWarnings": {
+    "message": "warnings"
+  },
+
   "insightsFromSnap": {
     "message": "Insights from $1",
     "description": "$1 represents the name of the snap"
