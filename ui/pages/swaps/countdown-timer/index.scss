@@ -1,10 +1,12 @@
+@use "design-system";
+
 .countdown-timer {
-  @include H7;
+  @include design-system.H7;
 
   display: flex;
   justify-content: center;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     margin: 0;
   }
 
@@ -26,7 +28,7 @@
   }
 
   &__time {
-    @include H7;
+    @include design-system.H7;
 
     font-weight: bold;
     width: 24px;

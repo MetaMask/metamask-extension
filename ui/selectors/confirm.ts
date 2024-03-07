@@ -10,13 +10,14 @@ type SignatureRequestType = {
   msgParams?: {
     from: string;
     origin: string;
+    data: string;
   };
   type: TransactionType;
 };
 
 type Confirmation = SignatureRequestType;
 
-type ConfirmMetamaskState = {
+export type ConfirmMetamaskState = {
   confirm: {
     currentConfirmation?: Confirmation;
   };

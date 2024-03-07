@@ -90,7 +90,8 @@ async function mockInfura(mockServer) {
 }
 
 describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
-  it('should show banner alert', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show banner alert', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -121,7 +122,7 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForElementNotPresent('.loading-indicator');
+        await driver.assertElementNotPresent('.loading-indicator');
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,

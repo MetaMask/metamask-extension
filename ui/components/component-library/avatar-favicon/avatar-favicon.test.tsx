@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+import { IconName } from '..';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 import { AvatarFavicon } from '.';
 
@@ -40,6 +41,7 @@ describe('AvatarFavicon', () => {
         data-testid="avatar-favicon"
         fallbackIconProps={{
           'data-testid': 'fallback-icon',
+          name: IconName.Global,
         }}
       />
     );
@@ -106,9 +108,10 @@ describe('AvatarFavicon', () => {
     expect(getByTestId('classname')).toHaveClass('mm-avatar-favicon--test');
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
-    render(<AvatarFavicon ref={ref} />);
+    const ref = React.createRef<HTMLSpanElement>();
+    render(<AvatarFavicon {...args} ref={ref} />);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(ref.current!.nodeName).toBe('DIV');
   });
 });

@@ -6,6 +6,15 @@ import { migrate } from './105';
 const MOCK_ADDRESS = '0x0';
 const MOCK_ADDRESS_2 = '0x1';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  startSession: jest.fn(),
+  endSession: jest.fn(),
+  toggleSession: jest.fn(),
+  captureException: sentryCaptureExceptionMock,
+};
+
 function addressToUUID(address: string): string {
   return uuid({
     random: sha256FromString(address).slice(0, 16),
@@ -256,6 +265,25 @@ describe('migration #105', () => {
           },
         },
       });
+    });
+
+    it('captures an exception if the selectedAddress state is invalid', async () => {
+      const oldData = {
+        PreferencesController: {
+          identities: {},
+          selectedAddress: undefined,
+        },
+      };
+      const oldStorage = {
+        meta: { version: 103 },
+        data: oldData,
+      };
+      await migrate(oldStorage);
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(`state.PreferencesController?.selectedAddress is undefined`),
+      );
     });
   });
 });

@@ -12,7 +12,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import {
@@ -28,8 +27,11 @@ import {
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { AssetListConversionButton } from '../../multichain';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
@@ -98,30 +100,34 @@ export default function NftsTab() {
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-          {showNftBanner ? (
-            <Box
-              paddingInlineStart={4}
-              paddingInlineEnd={4}
-              display={Display.Flex}
-              paddingTop={4}
-            >
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
-                onClick={() => {
-                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
-                  trackEvent({
-                    event: MetaMetricsEventName.EmptyNftsBannerClicked,
-                    properties: {
-                      chain_id: currentNetwork.chainId,
-                      locale: currentLocale,
-                      network: currentNetwork.nickname,
-                      referrer: ORIGIN_METAMASK,
-                    },
-                  });
-                }}
-              />
-            </Box>
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            showNftBanner ? (
+              <Box
+                paddingInlineStart={4}
+                paddingInlineEnd={4}
+                display={Display.Flex}
+                paddingTop={4}
+              >
+                <AssetListConversionButton
+                  variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
+                  onClick={() => {
+                    global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
+                    trackEvent({
+                      event: MetaMetricsEventName.EmptyNftsBannerClicked,
+                      properties: {
+                        chain_id: currentNetwork.chainId,
+                        locale: currentLocale,
+                        network: currentNetwork.nickname,
+                        referrer: ORIGIN_METAMASK,
+                      },
+                    });
+                  }}
+                />
+              </Box>
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Box
             padding={12}
             display={Display.Flex}
@@ -149,13 +155,17 @@ export default function NftsTab() {
               >
                 {t('noNFTs')}
               </Text>
-              <ButtonLink
-                size={Size.MD}
-                href={ZENDESK_URLS.NFT_TOKENS}
-                externalLink
-              >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                <ButtonLink
+                  size={Size.MD}
+                  href={ZENDESK_URLS.NFT_TOKENS}
+                  externalLink
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+                ///: END:ONLY_INCLUDE_IF
+              }
             </Box>
           </Box>
         </>

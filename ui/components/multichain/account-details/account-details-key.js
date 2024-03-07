@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { LavaDome as LavaDomeReact } from '@lavamoat/lavadome-react';
+import {
+  LavaDome as LavaDomeReact,
+  toLavaDomeToken,
+} from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
@@ -57,7 +60,10 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           style={{ wordBreak: 'break-word' }}
           onClick={() => setShowDisableSelectWarn(true)}
         >
-          <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
+          <LavaDomeReact
+            unsafeOpenModeShadow={inTest}
+            text={toLavaDomeToken(privateKey)}
+          />
         </Text>
         <ButtonIcon
           onClick={() =>
