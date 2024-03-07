@@ -56,6 +56,7 @@ const SnapUIRendererComponent = ({
       isValidComponent &&
       mapToTemplate({
         map: {},
+        root: true,
         element: content,
       }),
     [content, isValidComponent],

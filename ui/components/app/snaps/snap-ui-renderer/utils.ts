@@ -7,6 +7,7 @@ import { COMPONENT_MAPPING } from './components';
 export type MapToTemplateParams = {
   map: Record<string, number>;
   element: Component;
+  root?: boolean;
   form?: string;
 };
 
