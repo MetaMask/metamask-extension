@@ -857,6 +857,9 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
+  "connectedAccounts": {
+    "message": "Connected accounts"
+  },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
     "description": "$1 is the number of accounts"
@@ -3566,6 +3569,10 @@
   },
   "pleaseConfirm": {
     "message": "Please confirm"
+  },
+  "plusMore": {
+    "message": "+ $1 more",
+    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 more",
