@@ -81,16 +81,6 @@ export default class AccountTracker {
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccounts([address]));
 
-    this.onboardingController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
-        if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this.updateAccountsAllActiveNetworks();
-        }
-      }, this.onboardingController.store.getState()),
-    );
-
     this.selectedAccount = this.controllerMessenger.call(
       'AccountsController:getSelectedAccount',
     );

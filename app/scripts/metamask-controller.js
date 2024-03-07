@@ -424,6 +424,9 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IF
 
+    this.hasNetworkControllerProviderBeenInitialized = false;
+    this.providerConnectionDetailsQueue = [];
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
     });
@@ -2143,6 +2146,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.store.getState().completedOnboarding) {
       this.networkProviderInitialization();
     }
+    // this.networkProviderInitialization();
   }
 
   triggerNetworkrequests() {
@@ -2298,8 +2302,12 @@ export default class MetamaskController extends EventEmitter {
   networkProviderInitialization() {
     this.networkController.initializeProvider();
 
+    this.hasNetworkControllerProviderBeenInitialized = true;
+    this.processProviderConnectionDetailsQueue();
+
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
+
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
@@ -2308,6 +2316,8 @@ export default class MetamaskController extends EventEmitter {
     this.updateDeprecatedNetworkId();
 
     this.accountTracker.delayedInit(this.blockTracker, this.provider);
+    this.accountTracker.updateAccountsAllActiveNetworks();
+
     this.txController.initialization();
     this.swapsController.delayedInit(this.provider);
     this.smartTransactionsController.delayedInit(
@@ -4546,11 +4556,16 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
 
     // messages between inpage and background
-    this.setupProviderConnection(
-      mux.createStream('metamask-provider'),
+    this.enqueueProviderConnectionDetails({
+      mux,
+      subStreamName: 'metamask-provider',
       sender,
-      _subjectType,
-    );
+      subjectType: _subjectType,
+    });
+
+    if (this.hasNetworkControllerProviderBeenInitialized) {
+      this.processProviderConnectionDetailsQueue();
+    }
 
     // TODO:LegacyProvider: Delete
     if (sender.url) {
@@ -4573,11 +4588,17 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
-    this.setupProviderConnection(
-      mux.createStream('provider'),
+
+    this.enqueueProviderConnectionDetails({
+      mux,
+      subStreamName: 'provider',
       sender,
-      SubjectType.Internal,
-    );
+      subjectType: SubjectType.Internal,
+    });
+
+    if (this.hasNetworkControllerProviderBeenInitialized) {
+      this.processProviderConnectionDetailsQueue();
+    }
   }
 
   /**
@@ -5980,5 +6001,21 @@ export default class MetamaskController extends EventEmitter {
     this.txController.hub.emit('transaction-status-update', {
       transactionMeta,
     });
+  }
+
+  enqueueProviderConnectionDetails(providerConnectionDetails) {
+    this.providerConnectionDetailsQueue.push(providerConnectionDetails);
+  }
+
+  processProviderConnectionDetailsQueue() {
+    while (this.providerConnectionDetailsQueue.length > 0) {
+      const connectionDetails = this.providerConnectionDetailsQueue.shift();
+
+      this.setupProviderConnection(
+        connectionDetails.mux.createStream(connectionDetails.subStreamName),
+        connectionDetails.sender,
+        connectionDetails.subjectType,
+      );
+    }
   }
 }

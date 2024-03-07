@@ -202,6 +202,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
+
   // This is set in `setupController`, which is called as part of initialization
   connectExternal(...args);
 });
@@ -273,7 +274,6 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
   try {
     const initData = await loadStateFromPersistence();
     const initState = initData.data;
