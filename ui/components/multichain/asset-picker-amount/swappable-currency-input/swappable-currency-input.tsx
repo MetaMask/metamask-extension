@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { toHex } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 import type { Asset, Amount } from '../../../../ducks/send';
@@ -70,7 +69,7 @@ export function SwappableCurrencyInput({
           className="asset-picker-amount__input"
           featureSecondary={isFiatPrimary}
           onChange={onAmountChange}
-          hexValue={toHex(value)}
+          hexValue={value}
           swapIcon={(onClick: React.MouseEventHandler) => (
             <SwapIcon onClick={onClick} />
           )}
