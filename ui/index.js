@@ -25,7 +25,6 @@ import {
   getUseRequestQueue,
   getCurrentNetwork,
   getNeverShowSwitchedNetworkMessage,
-  getCurrentPopupId,
   getAllNetworks,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
@@ -202,13 +201,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   ) {
     const domainNetworks = getAllDomains(state);
     const networkForThisDomain = domainNetworks[selectedTabOrigin];
-
-    console.log('selectedTabOrigin: ', selectedTabOrigin);
-    console.log('domainNetworks: ', domainNetworks);
-    console.log('networkForThisDomain: ', networkForThisDomain);
-
     const currentNetwork = getCurrentNetwork(state);
-    console.log('currentNetwork: ', currentNetwork);
 
     // If we have a match, "silently" switch networks if the network differs
     // from the current network
@@ -218,7 +211,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       } else {
         await store.dispatch(actions.setActiveNetwork(networkForThisDomain));
       }
-      console.log('Switched network to ', networkForThisDomain);
 
       // Show toast notifying user of network change
       const neverShowSwitchedNetworkMessage =
@@ -229,43 +221,12 @@ async function startApp(metamaskState, backgroundConnection, opts) {
         const network = allNetworks.find(
           ({ id }) => id === networkForThisDomain,
         );
-        console.log('All networks: ', allNetworks);
-        console.log('setSwitchedNetworkDetails: ', network);
         await actions.setSwitchedNetworkDetails({
           network,
           siteName: selectedTabOrigin,
         });
-        console.log(
-          'Directing to show toast with: ',
-          network.nickname,
-          selectedTabOrigin,
-        );
       }
-
-      // EXPERIMENTAL: Close other MetaMask Popups
-      const windows = await browser.windows.getAll();
-      const currentPopupId = getCurrentPopupId(state);
-
-      setInterval(() => {
-        console.log('currentPopupId: ', state.appState.currentPopupId);
-      }, 2000);
-
-      console.log('Windows are: ', windows);
-      console.log('Current popup ID is: ', currentPopupId);
-      windows.forEach((win) => {
-        console.log(`win.id vs. currentPopupId: ${win.id} / ${currentPopupId}`);
-        if (win.type === ENVIRONMENT_TYPE_POPUP && win.id !== currentPopupId) {
-          console.log('Closing window: ', win.id);
-          win.close();
-        }
-      });
-    } else {
-      console.log(
-        'No domainNetwork or already on correct chain, not changing networks',
-      );
     }
-  } else {
-    console.log('useRequestQueue is off or no selectedTabOrigin');
   }
 
   // global metamask api - used by tooling
