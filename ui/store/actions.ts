@@ -4944,6 +4944,16 @@ export function updateInterfaceState(
 }
 
 /**
+ * Update the currentPopupid generated when the user opened the popup
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export async function setCurrentExtensionPopupId(id: number) {
+  await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
+}
+
+/**
  * Delete the Snap interface from state.
  *
  * @param id - The Snap interface ID.

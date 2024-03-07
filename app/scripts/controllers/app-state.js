@@ -53,6 +53,7 @@ export default class AppStateController extends EventEmitter {
       showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
+      currentExtensionPopupId: undefined,
       // This key is only used for checking if the user had set advancedGasFee
       // prior to Migration 92.3 where we split out the setting to support
       // multiple networks.
@@ -521,6 +522,10 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({
       currentPopupId,
     });
+  }
+
+  setCurrentExtensionPopupId(currentExtensionPopupId) {
+    this.store.updateState({ currentExtensionPopupId });
   }
 
   /**
