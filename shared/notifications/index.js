@@ -77,7 +77,7 @@ export const UI_NOTIFICATIONS = {
     id: Number(NOTIFICATION_PORTFOLIO_V2),
     date: null,
     image: {
-      src: 'images/portfolio-v2-whatsnew-banner.jpg',
+      src: 'images/portfolio-v2-whatsnew-banner.png',
       width: '100%',
     },
   },
