@@ -23,6 +23,7 @@ import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
+const LARGE_SYMBOL_LENGTH = 7;
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -35,7 +36,6 @@ const NATIVE_CURRENCY_DECIMALS = 18;
  * @param options0.onChange
  * @param options0.onPreferenceToggle
  * @param options0.swapIcon
- * @param options0.isLongSymbol
  * @param options0.className
  * @param options0.asset
  */
@@ -45,7 +45,6 @@ export default function CurrencyInput({
   onChange,
   onPreferenceToggle,
   swapIcon,
-  isLongSymbol = false,
   className = '',
   // if null, the asset is the native currency
   asset,
@@ -60,6 +59,7 @@ export default function CurrencyInput({
   const primarySuffix =
     asset?.symbol || preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
+  const isLongSymbol = (primarySuffix?.length || 0) > LARGE_SYMBOL_LENGTH;
 
   const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
   const showFiat = useSelector(getShouldShowFiat);
@@ -206,7 +206,6 @@ CurrencyInput.propTypes = {
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
   swapIcon: PropTypes.func,
-  isLongSymbol: PropTypes.bool,
   className: PropTypes.string,
   asset: PropTypes.shape({
     address: PropTypes.string,

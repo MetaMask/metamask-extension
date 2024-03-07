@@ -4,7 +4,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useIsFiatPrimary from '../hooks/useIsFiatPrimary';
 import type { Asset, Amount } from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
-import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box, Text } from '../../../component-library';
 import {
@@ -74,9 +73,6 @@ export function SwappableCurrencyInput({
             <SwapIcon onClick={onClick} />
           )}
           onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
-          isLongSymbol={
-            (asset?.details?.symbol?.length || 0) > LARGE_SYMBOL_LENGTH
-          }
           asset={asset?.details}
         />
       );
