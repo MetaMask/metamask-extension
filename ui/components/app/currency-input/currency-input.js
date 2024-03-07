@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable no-constant-condition */
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -5,7 +7,6 @@ import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  getConversionRate,
   getNativeCurrency,
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
@@ -14,12 +15,14 @@ import {
   getCurrentCurrency,
   getShouldShowFiat,
 } from '../../../selectors';
-import {
-  getValueFromWeiHex,
-  getWeiHexFromDecimalValue,
-} from '../../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import useTokenExchangeRate from './hooks/useTokenExchangeRate';
+import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
+
+const NATIVE_CURRENCY_DECIMALS = 18;
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -49,10 +52,23 @@ export default function CurrencyInput({
 }) {
   const t = useContext(I18nContext);
 
+  const assetDecimals = asset?.decimals || NATIVE_CURRENCY_DECIMALS;
+
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);
-  const conversionRate = useSelector(getConversionRate);
+
+  const primarySuffix =
+    asset?.symbol || preferredCurrency || EtherDenomination.ETH;
+  const secondarySuffix = secondaryCurrency.toUpperCase();
+
+  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
   const showFiat = useSelector(getShouldShowFiat);
+  const hideSecondary = !showFiat;
+  const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
+
+  const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
+  const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
+
   const chainId = useSelector(getCurrentChainId);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
@@ -60,70 +76,64 @@ export default function CurrencyInput({
     ticker,
     type,
   );
-  const hideSecondary = !showFiat;
-  const primarySuffix =
-    asset?.symbol || preferredCurrency || EtherDenomination.ETH;
-  const secondarySuffix = secondaryCurrency.toUpperCase();
 
-  const [newHexValue, setNewHexValue] = useState(hexValue);
-  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
-  const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
+  const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);
+
+  const processNewDecimalValue = useProcessNewDecimalValue(
+    assetDecimals,
+    shouldUseFiat,
+    tokenToFiatConversionRate,
+  );
 
   const isPrimary = !shouldUseFiat;
-
-  const getDecimalValue = () => {
-    const decimalValueString = shouldUseFiat
-      ? getValueFromWeiHex({
-          value: hexValue,
-          toCurrency: secondaryCurrency,
-          conversionRate,
-          numberOfDecimals: 2,
-        })
-      : getValueFromWeiHex({
-          value: hexValue,
-          toCurrency: EtherDenomination.ETH,
-          numberOfDecimals: 8,
-        });
-
-    return Number(decimalValueString) || 0;
-  };
-
-  const initialDecimalValue = hexValue ? getDecimalValue() : 0;
 
   const swap = async () => {
     await onPreferenceToggle();
     setShouldDisplayFiat(!shouldDisplayFiat);
   };
 
-  const handleChange = (newDecimalValue) => {
-    const hexValueNew = shouldUseFiat
-      ? getWeiHexFromDecimalValue({
-          value: newDecimalValue,
-          fromCurrency: secondaryCurrency,
-          conversionRate,
-          invertConversionRate: true,
-        })
-      : getWeiHexFromDecimalValue({
-          value: newDecimalValue,
-          fromCurrency: EtherDenomination.ETH,
-          fromDenomination: EtherDenomination.ETH,
-          conversionRate,
-        });
+  // if the conversion rate is undefined, do not allow a fiat input
+  useEffect(() => {
+    if (isPrimary) {
+      return;
+    }
 
-    setNewHexValue(hexValueNew);
-    onChange(hexValueNew);
+    if (!tokenToFiatConversionRate) {
+      onPreferenceToggle();
+      setShouldDisplayFiat(false);
+    }
+  }, [tokenToFiatConversionRate, isPrimary, onPreferenceToggle]);
+
+  const handleChange = (newDecimalValue) => {
+    const { newTokenDecimalValue, newFiatDecimalValue } =
+      processNewDecimalValue(newDecimalValue);
+    setTokenDecimalValue(newTokenDecimalValue);
+    setFiatDecimalValue(newFiatDecimalValue);
+
+    onChange(
+      new Numeric(newTokenDecimalValue, 10)
+        .times(Math.pow(10, assetDecimals), 10)
+        .toPrefixedHexString(),
+    );
   };
 
   useEffect(() => {
-    setNewHexValue(hexValue);
-  }, [hexValue]);
-
-  useEffect(() => {
-    if (featureSecondary) {
-      handleChange(initialDecimalValue);
+    // do not override the input when it is using fiat, since it is imprecise
+    if (shouldUseFiat) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [featureSecondary, initialDecimalValue]);
+
+    const decimalizedHexValue = new Numeric(hexValue, 16)
+      .toBase(10)
+      .shiftedBy(assetDecimals)
+      .toString();
+
+    const { newTokenDecimalValue, newFiatDecimalValue } =
+      processNewDecimalValue(decimalizedHexValue);
+
+    setTokenDecimalValue(newTokenDecimalValue);
+    setFiatDecimalValue(newFiatDecimalValue);
+  }, [hexValue, assetDecimals, processNewDecimalValue, shouldUseFiat]);
 
   const renderSwapButton = () => {
     if (!isOriginalNativeSymbol) {
@@ -140,9 +150,9 @@ export default function CurrencyInput({
     );
   };
   const renderConversionComponent = () => {
-    let currency, numberOfDecimals, suffix;
+    let suffix, displayValue;
 
-    if (hideSecondary) {
+    if (hideSecondary || !tokenToFiatConversionRate) {
       return (
         <div className="currency-input__conversion-component">
           {t('noConversionRateAvailable')}
@@ -155,13 +165,14 @@ export default function CurrencyInput({
 
     if (shouldUseFiat) {
       // Display ETH
-      currency = preferredCurrency || EtherDenomination.ETH;
       suffix = primarySuffix;
-      numberOfDecimals = 8;
+      displayValue = new Numeric(tokenDecimalValue, 10).toString();
     } else {
-      // Display Fiat
-      currency = isOriginalNativeSymbol ? secondaryCurrency : null;
-      numberOfDecimals = 2;
+      // Display Fiat; `displayValue` bypasses calculations
+      displayValue = formatCurrency(
+        new Numeric(fiatDecimalValue, 10).toString(),
+        secondaryCurrency,
+      );
     }
 
     return (
@@ -170,9 +181,7 @@ export default function CurrencyInput({
         hideLabel={isPrimary || isLongSymbol}
         suffix={suffix}
         className="currency-input__conversion-component"
-        currency={currency}
-        value={newHexValue}
-        numberOfDecimals={numberOfDecimals}
+        displayValue={displayValue}
       />
     );
   };
