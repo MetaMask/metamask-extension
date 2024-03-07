@@ -4,7 +4,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import useTokenExchangeRate from './useTokenExchangeRate';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 
 const renderUseTokenExchangeRate = (tokenAddress) => {
   const state = {
