@@ -133,7 +133,6 @@
     "json-schema": "^0.4.0",
     "ast-types": "^0.14.2",
     "x-default-browser": "^0.5.2",
-    "web3-provider-engine/eth-json-rpc-filters": "^6.0.0",
     "acorn@^7.0.0": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.4.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
     "acorn@^7.1.1": "patch:acorn@npm:7.4.1#.yarn/patches/acorn-npm-7.4.1-f450b4646c.patch",
