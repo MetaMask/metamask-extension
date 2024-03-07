@@ -1,0 +1,64 @@
+import React from 'react';
+import { Provider } from 'react-redux';
+import { renderHook } from '@testing-library/react-hooks';
+import mockState from '../../../../../test/data/mock-state.json';
+import configureStore from '../../../../store/store';
+import useTokenExchangeRate from './useTokenExchangeRate';
+import { Numeric } from '../../../../../shared/modules/Numeric';
+
+const renderUseTokenExchangeRate = (tokenAddress) => {
+  const state = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      currencyRates: {
+        ETH: {
+          conversionRate: 11.1,
+        },
+      },
+      contractExchangeRates: {
+        'existing token address': 0.5,
+        '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
+      },
+      providerConfig: {
+        ticker: 'ETH',
+      },
+    },
+  };
+
+  const wrapper = ({ children }) => (
+    <Provider store={configureStore(state)}>{children}</Provider>
+  );
+
+  return renderHook(() => useTokenExchangeRate(tokenAddress), { wrapper });
+};
+
+describe('useProcessNewDecimalValue', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('ERC-20: price is available', () => {
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate('existing token address');
+
+    expect(String(exchangeRate?.value)).toEqual('5.55');
+  });
+
+  it('ERC-20: price is unavailable', () => {
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate('non-existing token address');
+
+    expect(exchangeRate?.value).toBe(undefined);
+  });
+
+  it('native: price is available', () => {
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(undefined);
+
+    expect(String(exchangeRate?.value)).toBe('11.1');
+  });
+});
