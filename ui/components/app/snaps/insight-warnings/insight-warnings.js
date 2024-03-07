@@ -174,6 +174,7 @@ export default function InsightWarnings({
           <Button
             size={ButtonPrimarySize.Lg}
             width={BlockSize.Half}
+            data-testid="snapInsightsButtonConfirm"
             danger
             onClick={onSubmit}
             disabled={!isChecked}
