@@ -1375,7 +1375,7 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this.networkProviderInitialization();
+          this.initializeNetworkProvider();
           this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
@@ -1480,9 +1480,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController = new TransactionController(
       {
-        blockTracker: this.blockTracker,
-        provider: this.provider,
-        cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
           this.networkController.getEIP1559Compatibility.bind(
             this.networkController,
@@ -1494,11 +1491,18 @@ export default class MetamaskController extends EventEmitter {
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
+        getGlobalProviderAndBlockTracker: () =>
+          this.hasNetworkControllerProviderBeenInitialized
+            ? this.networkController.getProviderAndBlockTracker()
+            : undefined,
         getNetworkClientRegistry:
           this.networkController.getNetworkClientRegistry.bind(
             this.networkController,
           ),
-        getNetworkState: () => this.networkController.state,
+        getNetworkState: () =>
+          this.hasNetworkControllerProviderBeenInitialized
+            ? this.networkController.state
+            : undefined,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
         getSavedGasFees: () =>
           this.preferencesController.store.getState().advancedGasFee[
@@ -1750,6 +1754,9 @@ export default class MetamaskController extends EventEmitter {
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
+        ),
+        getNonceLock: this.txController.getNonceLock.bind(
+          this.txController.nonceTracker,
         ),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
@@ -2144,7 +2151,7 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
 
     if (this.onboardingController.store.getState().completedOnboarding) {
-      this.networkProviderInitialization();
+      this.initializeNetworkProvider();
     }
   }
 
@@ -2299,11 +2306,13 @@ export default class MetamaskController extends EventEmitter {
    * initialization and onboarding logic that relies on that provider being
    * initialized.
    */
-  networkProviderInitialization() {
+  initializeNetworkProvider() {
     this.networkController.initializeProvider();
 
     this.hasNetworkControllerProviderBeenInitialized = true;
     this.processProviderConnectionDetailsQueue();
+
+    this.txController.initApprovals();
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
@@ -2318,12 +2327,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.delayedInit(this.blockTracker, this.provider);
     this.accountTracker.updateAccountsAllActiveNetworks();
 
-    this.txController.initialization();
+    // this.txController.initialization();
     this.swapsController.delayedInit(this.provider);
-    this.smartTransactionsController.delayedInit(
-      this.provider,
-      this.txController.nonceTracker.getNonceLock,
-    );
+    // this.smartTransactionsController.delayedInit(this.provider);
     this.detectTokensController.restartTokenDetection();
   }
 
