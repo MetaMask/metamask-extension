@@ -19,6 +19,7 @@ buildTypes:
       - snaps
       - keyring-snaps
       - blockaid
+      - notifications
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -60,6 +61,7 @@ buildTypes:
       - keyring-snaps
       - blockaid
       - petnames
+      - notifications
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -146,8 +148,8 @@ features:
   petnames:
   conf-redesign:
   notifications:
-  env:
-    - USER_STORAGE_API: https://user-storage.dev-api.cx.metamask.io
+    env:
+      - USER_STORAGE_API: https://user-storage.dev-api.cx.metamask.io
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
