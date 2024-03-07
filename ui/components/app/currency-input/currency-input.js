@@ -179,21 +179,11 @@ export default function CurrencyInput({
 
   return (
     <UnitInput
-      {...{
-        hexValue,
-        preferredCurrency,
-        secondaryCurrency,
-        hideSecondary,
-        featureSecondary,
-        conversionRate,
-        onChange,
-        onPreferenceToggle,
-      }}
       hideSuffix={isPrimary && isLongSymbol}
       dataTestId="currency-input"
       suffix={isPrimary ? primarySuffix : secondarySuffix}
-      onChange={handleChange}
-      value={initialDecimalValue}
+      onChange={handleChange ?? onChange}
+      value={shouldUseFiat ? fiatDecimalValue : tokenDecimalValue}
       className={className}
       actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
     >
