@@ -30,6 +30,7 @@ export const SnapUIForm: FunctionComponent<SnapUIFormProps> = ({
       id={name}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
+      gap={2}
     >
       {children}
     </Box>
