@@ -126,7 +126,7 @@ export default function InsightWarnings({
           {warnings.length === 1
             ? t('insightWarningContentSingular', [
                 <Text as="span" key={warnings.id} fontWeight={FontWeight.Bold}>
-                  {`${warnings.length} ${t('insightWarnings')}`}
+                  {`${warnings.length} ${t('insightWarning')}`}
                 </Text>,
                 action,
                 InsightWarningLanguage[action].noun,
