@@ -31,6 +31,7 @@ export const SnapUIInput: FunctionComponent<
     setValue(event.target.value);
     handleInputChange(name, event.target.value ?? null, form);
   };
+
   return (
     <FormTextField
       className="snap-ui-renderer__input"
