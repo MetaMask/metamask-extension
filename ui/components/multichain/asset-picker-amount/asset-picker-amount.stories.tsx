@@ -145,7 +145,7 @@ TokenStory.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
 
-export const NFTStory = () => (
+export const FungibleTokenStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount
       onAmountChange={(newAmount: string) =>
@@ -161,12 +161,39 @@ export const NFTStory = () => (
           symbol: 'BAYC',
           isERC721: true,
           tokenId: 1,
+          standard: 'ERC721',
         },
       }}
     />{' '}
   </div>
 );
-NFTStory.storyName = 'ERC721 Token';
+FungibleTokenStory.storyName = 'ERC721 Token';
+FungibleTokenStory.decorators = [
+  (story) => <Provider store={store}>{story()}</Provider>,
+];
+
+export const NFTStory = () => (
+  <div style={{ width: '400px' }}>
+    <AssetPickerAmount
+      onAmountChange={(newAmount: string) =>
+        store.dispatch(updateSendAmount(newAmount))
+      }
+      onAssetChange={noop}
+      amount={{ value: '0xff' }}
+      asset={{
+        type: AssetType.NFT,
+        balance: '0xfff',
+        details: {
+          address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+          symbol: 'BAYC',
+          isERC721: false,
+          tokenId: 1,
+        },
+      }}
+    />{' '}
+  </div>
+);
+NFTStory.storyName = 'ERC1155 Token';
 NFTStory.decorators = [(story) => <Provider store={store}>{story()}</Provider>];
 
 export const TokenStoryWithLargeNameAndValue = () => (
@@ -184,6 +211,7 @@ export const TokenStoryWithLargeNameAndValue = () => (
           address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
           symbol: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
           isERC721: false,
+          standard: 'ERC1155',
         },
       }}
     />
