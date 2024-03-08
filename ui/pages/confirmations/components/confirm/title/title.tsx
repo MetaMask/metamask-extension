@@ -9,10 +9,13 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
+import useAlerts from '../../../hooks/useAlerts';
+import { BannerAlert } from '../../alerts/banner-alert';
 
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { generalAlerts } = useAlerts(currentConfirmation?.id || '');
 
   const typeToTitleTKey: Partial<Record<TransactionType, string>> = useMemo(
     () => ({
@@ -37,6 +40,9 @@ const ConfirmTitle: React.FC = memo(() => {
 
   return (
     <>
+      {generalAlerts.map((alert, index) => (
+        <BannerAlert message={alert.message} key={index} />
+      ))}
       <Text
         variant={TextVariant.headingLg}
         paddingTop={4}

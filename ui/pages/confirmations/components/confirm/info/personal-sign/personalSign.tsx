@@ -17,7 +17,11 @@ const PersonalSignInfo: React.FC = () => {
   }
 
   return (
-    <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+    <ConfirmInfoRow
+      alertKey="from"
+      label={t('requestFrom')}
+      tooltip={t('requestFromInfo')}
+    >
       <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
     </ConfirmInfoRow>
   );

@@ -1,4 +1,5 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import { Box, Icon, IconName, Text } from '../../../../component-library';
 import {
@@ -15,6 +16,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import useAlerts from '../../../../../pages/confirmations/hooks/useAlerts';
+import { InlineAlert } from '../../../../../pages/confirmations/components/alerts/inline-alert';
+import { AlertModal } from '../../../../../pages/confirmations/components/alerts/alert-modal/alert-modal';
+import { currentConfirmationSelector } from '../../../../../selectors';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -23,6 +28,7 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
+  alertKey?: string;
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
@@ -58,57 +64,91 @@ export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
+function Alert({ alertKey }: { alertKey: string | undefined }) {
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const alertOwnerId = currentConfirmation?.id as string;
+  const { getFieldAlerts } = useAlerts(alertOwnerId);
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
+
+  if (!hasFieldAlert) {
+    return null;
+  }
+
+  return (
+    <>
+      {alertModalVisible && (
+        <AlertModal
+          ownerId={alertOwnerId}
+          handleButtonClick={() => {
+            setAlertModalVisible(false);
+          }}
+        />
+      )}
+      <InlineAlert
+        onClick={() => {
+          setAlertModalVisible(true);
+        }}
+      />
+    </>
+  );
+}
+
 export const ConfirmInfoRow = ({
+  alertKey,
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
   style,
-}: ConfirmInfoRowProps) => (
-  <ConfirmInfoRowContext.Provider value={{ variant }}>
-    <Box
-      className="confirm-info-row"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      flexWrap={FlexWrap.Wrap}
-      backgroundColor={BACKGROUND_COLORS[variant]}
-      borderRadius={BorderRadius.LG}
-      marginTop={2}
-      marginBottom={2}
-      paddingLeft={2}
-      paddingRight={2}
-      color={TEXT_COLORS[variant] as TextColor}
-      style={{
-        overflowWrap: OverflowWrap.Anywhere,
-        minHeight: '24px',
-        ...style,
-      }}
-    >
+}: ConfirmInfoRowProps) => {
+  return (
+    <ConfirmInfoRowContext.Provider value={{ variant }}>
       <Box
+        className="confirm-info-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+        flexWrap={FlexWrap.Wrap}
+        backgroundColor={BACKGROUND_COLORS[variant]}
+        borderRadius={BorderRadius.LG}
+        marginTop={2}
+        marginBottom={2}
+        paddingLeft={2}
+        paddingRight={2}
+        color={TEXT_COLORS[variant] as TextColor}
+        style={{
+          overflowWrap: OverflowWrap.Anywhere,
+          minHeight: '24px',
+          ...style,
+        }}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
-          {label}
-        </Text>
-        {tooltip && tooltip.length > 0 && (
-          <Tooltip title={tooltip} style={{ display: 'flex' }}>
-            <Icon
-              name={TOOLTIP_ICONS[variant]}
-              marginLeft={1}
-              color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
-            />
-          </Tooltip>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+        >
+          <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
+            {label}
+          </Text>
+          <Alert alertKey={alertKey} />
+          {tooltip && tooltip.length > 0 && (
+            <Tooltip title={tooltip} style={{ display: 'flex' }}>
+              <Icon
+                name={TOOLTIP_ICONS[variant]}
+                marginLeft={1}
+                color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+              />
+            </Tooltip>
+          )}
+        </Box>
+        {typeof children === 'string' ? (
+          <Text color={TextColor.inherit}>{children}</Text>
+        ) : (
+          children
         )}
       </Box>
-      {typeof children === 'string' ? (
-        <Text color={TextColor.inherit}>{children}</Text>
-      ) : (
-        children
-      )}
-    </Box>
-  </ConfirmInfoRowContext.Provider>
-);
+    </ConfirmInfoRowContext.Provider>
+  );
+};

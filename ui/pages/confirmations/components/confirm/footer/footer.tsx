@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useDispatch } from 'react-redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   Button,
   ButtonSize,
@@ -7,9 +9,14 @@ import {
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { rejectPendingApproval } from '../../../../../store/actions';
+import useCurrentConfirmation from '../../../hooks/useCurrentConfirmation';
 
 const Footer = () => {
   const t = useI18nContext();
+  const { currentConfirmation } = useCurrentConfirmation();
+  const dispatch = useDispatch();
+
   return (
     <PageFooter>
       <Button
@@ -17,6 +24,14 @@ const Footer = () => {
         data-testid="confirm-footer-cancel-button"
         variant={ButtonVariant.Secondary}
         size={ButtonSize.Lg}
+        onClick={() => {
+          dispatch(
+            rejectPendingApproval(
+              currentConfirmation?.id as string,
+              serializeError(ethErrors.provider.userRejectedRequest()),
+            ),
+          );
+        }}
       >
         {t('cancel')}
       </Button>
