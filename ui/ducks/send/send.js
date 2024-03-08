@@ -1300,7 +1300,7 @@ const slice = createSlice({
         case draftTransaction.asset.type === AssetType.NFT &&
           draftTransaction.asset.details.standard === TokenStandard.ERC1155 &&
           !isERC1155BalanceSufficient({
-            tokenBalance: draftTransaction.asset.details.balance ?? '0x0',
+            tokenBalance: draftTransaction.asset.balance ?? '0x0',
             amount: draftTransaction.amount.value,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
