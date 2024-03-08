@@ -50,7 +50,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        // Confirm switchEtheruemChain
+        // Confirm switchEthereumChain
         await switchToNotificationWindow(driver, 4);
         await driver.findClickableElements({
           text: 'Switch network',
@@ -206,7 +206,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#sendButton');
         await driver.delay(2000);
 
-        // Switch to nofication that should still be switchEthereumChain request but with an warning.
+        // Switch to notification that should still be switchEthereumChain request but with an warning.
         await switchToNotificationWindow(driver, 4);
 
         await driver.findElement({
@@ -214,7 +214,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Switching networks will cancel all pending confirmations',
         });
 
-        // Confirm switchEtheruemChain with queued pending tx
+        // Confirm switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Window handles should only be expanded mm, dapp one, dapp 2 (3 total)
@@ -287,7 +287,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
           text: 'Switching networks will cancel all pending confirmations',
         });
 
-        // Cancel switchEtheruemChain with queued pending tx
+        // Cancel switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // Delay for second notification of the pending tx
