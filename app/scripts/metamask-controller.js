@@ -42,6 +42,7 @@ import {
   LedgerIframeBridge,
 } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { rawChainData } from 'eth-chainlist';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
 import EthJSQuery from '@metamask/ethjs-query';
@@ -200,6 +201,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
+import { getStorageItem, setStorageItem } from '../../shared/lib/storage-helpers';
 import {
   getTokenIdParam,
   fetchTokenBalance,
@@ -412,6 +414,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
+
+    this.initializeChainlist();
 
     this.controllerMessenger = new ControllerMessenger();
 
@@ -6302,6 +6306,18 @@ export default class MetamaskController extends EventEmitter {
       addressFrom: address,
       status: 'pending',
     });
+  }
+
+  /**
+  * The chain list is fetched live at runtime, falling back to a cache.
+  * This preseeds the cache at startup with a static list provided at build.
+  */
+  async initializeChainlist() {
+    const cacheKey = 'cachedFetch:https://chainid.network/chains.json';
+    if (await getStorageItem(cacheKey)) {
+      return;
+    }
+    await setStorage(cacheKey, rawChainData());
   }
 
   /**
