@@ -15,10 +15,10 @@ async function main() {
         _yargs
           .option('browser', {
             default: process.env.SELENIUM_BROWSER,
-            description: `Set the browser to be used; specify 'chrome', 'firefox','all' or leave unset to run on both by default.`,
+            description: `Set the browser to be used; specify 'chrome', 'firefox', 'all' or leave unset to run on 'all' by default.`,
             type: 'string',
             choices: ['chrome', 'firefox', 'all'],
-            default:'all',
+            default: 'all',
           })
           .option('debug', {
             default: process.env.E2E_DEBUG === 'true',
