@@ -1,15 +1,15 @@
 import React from 'react';
-import { getByRole, render } from '@testing-library/react';
-import { SwappableCurrencyInput } from './swappable-currency-input';
+import { Provider } from 'react-redux';
+import { render } from '@testing-library/react';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
-import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
+import { SwappableCurrencyInput } from './swappable-currency-input';
 
 const createStore = ({
   useNativeCurrencyAsPrimaryCurrency,
   sendInputCurrencySwitched,
-}) =>
+}: Record<string, boolean>) =>
   configureStore({
     ...mockSendState,
     metamask: {

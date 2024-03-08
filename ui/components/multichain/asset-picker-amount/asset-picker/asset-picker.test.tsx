@@ -1,10 +1,10 @@
 import React from 'react';
-import { getByRole, render } from '@testing-library/react';
-import { AssetPicker } from './asset-picker';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
-import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
+import { AssetPicker } from './asset-picker';
 
 const store = (
   nativeTicker = 'NATIVE TICKER',
@@ -144,7 +144,7 @@ describe('AssetPicker', () => {
     };
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText } = render(
       <Provider
         store={store("SHOULDN'T MATTER", [
           { address: 'token address', iconUrl: 'token icon url' },

@@ -1,11 +1,11 @@
 import configureStore from '../../../store/store';
-import { getIsFiatPrimary } from './utils.ts';
 import mockSendState from '../../../../test/data/mock-send-state.json';
+import { getIsFiatPrimary } from './utils';
 
 const createStore = ({
   useNativeCurrencyAsPrimaryCurrency,
   sendInputCurrencySwitched,
-}) =>
+}: Record<string, boolean>) =>
   configureStore({
     ...mockSendState,
     metamask: {

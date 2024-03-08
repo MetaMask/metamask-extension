@@ -51,8 +51,8 @@ describe('AssetPickerAmount', () => {
 
     const { getByText } = renderWithProvider(
       <AssetPickerAmount
-        onAmountChange={() => {}}
-        onAssetChange={() => {}}
+        onAmountChange={() => ({})}
+        onAssetChange={() => ({})}
         amount={{ value: '100' }}
         asset={tokenAssetState.send.draftTransactions['1-tx'].asset}
       />,

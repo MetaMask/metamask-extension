@@ -1,12 +1,11 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import useProcessNewDecimalValue from './useProcessNewDecimalValue';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import useProcessNewDecimalValue from './useProcessNewDecimalValue';
 
 const renderUseProcessNewDecimalValue = (
-  assetDecimals,
-  isFiatPrimary,
-  tokenToFiatConversionRate,
+  assetDecimals: number,
+  isFiatPrimary: boolean,
+  tokenToFiatConversionRate: Numeric,
 ) => {
   return renderHook(() =>
     useProcessNewDecimalValue(
