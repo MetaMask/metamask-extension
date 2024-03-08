@@ -7,8 +7,8 @@ import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import NftsTab from '.';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import NftsTab from '.';
 
 const NFTS = [
   {
@@ -338,8 +338,6 @@ describe('NFT Items', () => {
   });
 
   describe('NFT Tab Ramps Card', () => {
-    useIsOriginalNativeTokenSymbol.mockReturnValue(true);
-
     it('shows the ramp card when there are no NFTs', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
