@@ -172,8 +172,10 @@ describe('Send ETH', function () {
           const inputAmount = await driver.findElement('.unit-input__input');
           await inputAmount.fill('1');
 
-          // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
-          await driver.findElement({ text: '0.000', tag: 'span' });
+          if (!process.env.MULTICHAIN) {
+            // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
+            await driver.findElement({ text: '0.000', tag: 'span' });
+          }
 
           // Continue to next screen
           if (process.env.MULTICHAIN) {

@@ -10,7 +10,6 @@ import {
   acknowledgeRecipientWarning,
   getSendAsset,
 } from '../../../../../ducks/send';
-import { ConfirmGasDisplay } from '../../../../../pages/confirmations/components/confirm-gas-display';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
 import { Display } from '../../../../../helpers/constants/design-system';
@@ -68,9 +67,6 @@ export const SendPageContent = ({
         <AssetPickerAmount />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
-      <SendPageRow>
-        <ConfirmGasDisplay />
-      </SendPageRow>
     </Box>
   );
 };
