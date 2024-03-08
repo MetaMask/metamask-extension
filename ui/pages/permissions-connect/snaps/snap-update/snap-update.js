@@ -164,12 +164,14 @@ export default function SnapUpdate({
                 </Text>,
               ])}
             </Text>
-            <UpdateSnapPermissionList
-              approvedPermissions={approvedPermissions}
-              revokedPermissions={revokedPermissions}
-              newPermissions={newPermissions}
-              targetSubjectMetadata={targetSubjectMetadata}
-            />
+            <Box marginLeft={4} marginRight={4}>
+              <UpdateSnapPermissionList
+                approvedPermissions={approvedPermissions}
+                revokedPermissions={revokedPermissions}
+                newPermissions={newPermissions}
+                targetSubjectMetadata={targetSubjectMetadata}
+              />
+            </Box>
             {isScrollable && !isScrolledToBottom ? (
               <AvatarIcon
                 className="snap-install__scroll-button"

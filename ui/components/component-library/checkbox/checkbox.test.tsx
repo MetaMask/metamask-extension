@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { BorderColor } from '../../../helpers/constants/design-system';
+import { IconName } from '..';
 import { Checkbox } from '.';
 
 describe('Checkbox', () => {
@@ -41,7 +42,10 @@ describe('Checkbox', () => {
 
   it('should render isChecked', () => {
     const { getByRole, getByTestId } = render(
-      <Checkbox isChecked={true} iconProps={{ 'data-testid': 'check-bold' }} />,
+      <Checkbox
+        isChecked={true}
+        iconProps={{ 'data-testid': 'check-bold', name: IconName.CheckBold }}
+      />,
     );
     expect(getByRole('checkbox')).toBeChecked();
     expect(window.getComputedStyle(getByTestId('check-bold')).maskImage).toBe(
@@ -53,7 +57,7 @@ describe('Checkbox', () => {
     const { getByRole, getByTestId } = render(
       <Checkbox
         isIndeterminate={true}
-        iconProps={{ 'data-testid': 'minus-bold' }}
+        iconProps={{ 'data-testid': 'minus-bold', name: IconName.MinusBold }}
       />,
     );
     expect(getByRole('checkbox').getAttribute('data-indeterminate')).toBe(

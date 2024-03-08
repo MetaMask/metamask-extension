@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "このリクエストを承認すると、Blurに登録されている資産を誰かに盗まれる可能性があります。"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "エラーが発生したため、このリクエストはセキュリティプロバイダーにより確認されませんでした。慎重に進めてください。"
   },
   "blockaidDescriptionMaliciousDomain": {

@@ -4,46 +4,74 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { AccountListItem } from '.';
+import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
 
-const [chaosAddress, simpleAddress, hardwareAddress] = Object.keys(
-  testData.metamask.identities,
+const [chaosId, simpleId, hardwareId] = Object.keys(
+  testData.metamask.internalAccounts.accounts,
 );
 
-const SIMPLE_IDENTITY = {
-  ...testData.metamask.identities[simpleAddress],
+const SIMPLE_ACCOUNT = {
+  ...testData.metamask.internalAccounts.accounts[simpleId],
   balance: '0x152387ad22c3f0',
+  metadata: {
+    ...testData.metamask.internalAccounts.accounts[simpleId].metadata,
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  label: 'Simple Account 1',
   keyring: {
     type: 'HD Key Tree',
   },
 };
 
-const HARDWARE_IDENTITY = {
-  ...testData.metamask.identities[hardwareAddress],
-  balance: '0x152387ad22c3f0',
+const HARDWARE_ACCOUNT = {
+  ...testData.metamask.internalAccounts.accounts[hardwareId],
+  metadata: {
+    ...testData.metamask.internalAccounts.accounts[hardwareId].metadata,
+    keyring: {
+      type: 'Ledger Hardware',
+    },
+  },
+  label: 'Ledger Account 1',
   keyring: {
     type: 'Ledger Hardware',
   },
+  balance: '0x152387ad22c3f0',
 };
 
-const CHAOS_IDENTITY = {
-  ...testData.metamask.identities[chaosAddress],
-  balance: '0x152387ad22c3f0',
+const CHAOS_ACCOUNT = {
+  ...testData.metamask.internalAccounts.accounts[chaosId],
+  label: 'Chaos Account 1',
   keyring: {
-    type: 'HD Key Tree',
+    type: 'Simple Key Pair',
   },
+  balance: '0x152387ad22c3f0',
 };
 
 const SNAP_IDENTITY = {
-  ...testData.metamask.identities[simpleAddress],
-  name: 'Snap Account',
-  balance: '0x152387ad22c3f0',
+  ...testData.metamask.internalAccounts.accounts[
+    '784225f4-d30b-4e77-a900-c8bbce735b88'
+  ],
+  metadata: {
+    name: 'Snap Account 1',
+    keyring: {
+      type: 'Snap Keyring',
+      name: 'snap-name',
+    },
+    snap: {
+      name: 'Test Snap Name',
+      id: 'snap-id',
+      enabled: true,
+    },
+  },
+  label: 'Snap Account 1',
   keyring: {
     type: 'Snap Keyring',
   },
-  label: 'Test Snap Name',
+  balance: '0x152387ad22c3f0',
 };
 
 const CONTAINER_STYLES = {
@@ -77,11 +105,16 @@ export default {
     connectedAvatarName: {
       control: 'text',
     },
+    menuType: {
+      control: 'text',
+    },
   },
   args: {
-    identity: SIMPLE_IDENTITY,
+    identity: SIMPLE_ACCOUNT,
     onClick,
+    menuType: AccountListItemMenuTypes.Account,
   },
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
 export const DefaultStory = (args) => (
@@ -102,7 +135,7 @@ export const HardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-HardwareItem.args = { identity: HARDWARE_IDENTITY };
+HardwareItem.args = { identity: HARDWARE_ACCOUNT };
 HardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -112,7 +145,7 @@ export const SelectedHardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-SelectedHardwareItem.args = { identity: HARDWARE_IDENTITY, selected: true };
+SelectedHardwareItem.args = { identity: HARDWARE_ACCOUNT, selected: true };
 SelectedHardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -122,7 +155,7 @@ export const ChaosDataItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-ChaosDataItem.args = { identity: CHAOS_IDENTITY };
+ChaosDataItem.args = { identity: CHAOS_ACCOUNT };
 
 export const ConnectedSiteItem = (args) => (
   <div {...CONTAINER_STYLES}>
@@ -140,7 +173,7 @@ export const ConnectedSiteChaosItem = (args) => (
   </div>
 );
 ConnectedSiteChaosItem.args = {
-  identity: CHAOS_IDENTITY,
+  identity: CHAOS_ACCOUNT,
   connectedAvatar: 'https://uniswap.org/favicon.ico',
   connectedAvatarName: 'Uniswap',
 };

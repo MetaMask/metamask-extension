@@ -136,6 +136,9 @@
   "accountIdenticon": {
     "message": "Account identicon"
   },
+  "accountIsntConnectedToastText": {
+    "message": "$1 isn't connected to $2"
+  },
   "accountName": {
     "message": "Account name"
   },
@@ -352,9 +355,6 @@
   "alerts": {
     "message": "Alerts"
   },
-  "allConnections": {
-    "message": "All Connections"
-  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -364,6 +364,9 @@
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
+  "allPermissions": {
+    "message": "All Permissions"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -601,7 +604,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -800,8 +803,14 @@
   "connect": {
     "message": "Connect"
   },
+  "connectAccount": {
+    "message": "Connect account"
+  },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
+  },
+  "connectAccounts": {
+    "message": "Connect accounts"
   },
   "connectCustodialAccountMenu": {
     "message": "Connect Custodial Account"
@@ -817,6 +826,9 @@
   },
   "connectManually": {
     "message": "Manually connect to current site"
+  },
+  "connectMoreAccounts": {
+    "message": "Connect more accounts"
   },
   "connectSnap": {
     "message": "Connect $1",
@@ -845,6 +857,9 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
+  "connectedAccounts": {
+    "message": "Connected accounts"
+  },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
     "description": "$1 is the number of accounts"
@@ -869,11 +884,11 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
-  "connectedaccount": {
-    "message": "account"
+  "connectedWith": {
+    "message": "Connected with"
   },
-  "connectedaccounts": {
-    "message": "accounts"
+  "connectedaccountsTabKey": {
+    "message": "Connected accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1219,6 +1234,15 @@
   },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
+  },
+  "deprecatedNetwork": {
+    "message": "This network is deprecated"
+  },
+  "deprecatedNetworkButtonMsg": {
+    "message": "Got it"
+  },
+  "deprecatedNetworkDescription": {
+    "message": "The network you're trying to connect to is no longer supported by Metamask. $1"
   },
   "description": {
     "message": "Description"
@@ -1865,7 +1889,7 @@
     "message": "Goerli test network"
   },
   "gotIt": {
-    "message": "Got it!"
+    "message": "Got it"
   },
   "grantedToWithColon": {
     "message": "Granted to:"
@@ -2279,6 +2303,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "lavaDomeCopyWarning": {
+    "message": "For your safety, selecting this text is not available right now."
+  },
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
@@ -2472,6 +2499,10 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metadataModalSourceTooltip": {
+    "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
+    "description": "$1 is the snap name and $2 is the snap NPM id."
+  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
@@ -2480,6 +2511,9 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "methodNotSupported": {
+    "message": "Not supported with this account."
   },
   "metrics": {
     "message": "Metrics"
@@ -2817,6 +2851,12 @@
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
+  },
+  "noConnectedAccountDescription": {
+    "message": "Select an account you want to use on this site to continue."
+  },
+  "noConnectedAccountTitle": {
+    "message": "MetaMask isn’t connected to this site"
   },
   "noConversionDateAvailable": {
     "message": "No currency conversion date available"
@@ -3287,6 +3327,9 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
+  "permissionDetails": {
+    "message": "Permission details"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3502,6 +3545,18 @@
   "permissions": {
     "message": "Permissions"
   },
+  "permissionsPageEmptyContent": {
+    "message": "Nothing to see here"
+  },
+  "permissionsPageEmptySubContent": {
+    "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
+  },
+  "permissionsPageTourDescription": {
+    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
+  },
+  "permissionsPageTourTitle": {
+    "message": "Connected sites are now permissions"
+  },
   "permissionsTitle": {
     "message": "Permissions"
   },
@@ -3528,6 +3583,10 @@
   },
   "pleaseConfirm": {
     "message": "Please confirm"
+  },
+  "plusMore": {
+    "message": "+ $1 more",
+    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 more",
@@ -3576,6 +3635,18 @@
   "privateKeyCopyWarning": {
     "message": "Private key for $1",
     "description": "$1 represents the account name"
+  },
+  "privateKeyHidden": {
+    "message": "The private key is hidden",
+    "description": "Explains that the private key input is hidden"
+  },
+  "privateKeyShow": {
+    "message": "Show/Hide the private key input",
+    "description": "Describes a toggle that is used to show or hide the private key input"
+  },
+  "privateKeyShown": {
+    "message": "This private key is being shown",
+    "description": "Explains that the private key input is being shown"
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
@@ -3724,6 +3795,12 @@
   },
   "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
     "message": "Request flagged as malicious"
+  },
+  "requestFrom": {
+    "message": "Request from"
+  },
+  "requestFromInfo": {
+    "message": "This is the site asking for your signature."
   },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
@@ -4381,6 +4458,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed up"
@@ -5261,6 +5341,9 @@
   "tooltipSatusConnected": {
     "message": "connected"
   },
+  "tooltipSatusConnectedUpperCase": {
+    "message": "Connected"
+  },
   "tooltipSatusNotConnected": {
     "message": "not connected"
   },
@@ -5526,6 +5609,9 @@
   "userName": {
     "message": "Username"
   },
+  "userOpContractDeployError": {
+    "message": "Contract deployment from a smart contract account is not supported"
+  },
   "verifyContractDetails": {
     "message": "Verify third-party details"
   },
@@ -5709,6 +5795,12 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"
+  },
+  "yourTransactionConfirmed": {
+    "message": "Transaction already confirmed"
+  },
+  "yourTransactionJustConfirmed": {
+    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
