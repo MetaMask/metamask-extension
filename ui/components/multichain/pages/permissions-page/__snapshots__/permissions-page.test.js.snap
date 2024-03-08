@@ -76,10 +76,15 @@ exports[`All Connections render renders correctly 1`] = `
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-default mm-box--border-color-background-default box--border-style-solid box--border-width-1"
-                  style="mask-image: url('./images/icons/global.svg');"
-                />
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <img
+                    alt="Ethereum Mainnet logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
               </div>
             </div>
           </div>

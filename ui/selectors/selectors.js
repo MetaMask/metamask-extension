@@ -24,6 +24,7 @@ import {
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  NETWORK_TYPES_TO_CHAIN_IDS_MAP,
   NetworkStatus,
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
@@ -40,6 +41,7 @@ import {
   BASE_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  NETWORK_TO_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -471,6 +473,10 @@ export function getSelectedAccountCachedBalance(state) {
 
 export function getAllTokens(state) {
   return state.metamask.allTokens;
+}
+
+export function getAllDomains(state) {
+  return state.metamask.domains;
 }
 
 export const getConfirmationExchangeRates = (state) => {
@@ -1244,17 +1250,34 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
   getMetaMaskIdentities,
+  getAllDomains,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
+  (
+    connectedSubjectsForAllAddresses,
+    identities,
+    domains,
+    connectedAddresses,
+  ) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
-
+        const connectedNetwork =
+          NETWORK_TYPES_TO_CHAIN_IDS_MAP[domains[siteKey]];
+        // I'd love to do something like:
+        // if(domains[siteKey]{
+        //   connectedNetwork = NETWORK_TYPES_TO_CHAIN_IDS_MAP[domains[siteKey]]
+        // } else {
+        //   connectedNetwork = getChainId(networkConfigId)
+        // }
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
             identities[connectedAddress].name; // Map address to name
+          sitesList[siteKey].networkIconUrl =
+            CHAIN_ID_TOKEN_IMAGE_MAP[connectedNetwork];
+          sitesList[siteKey].networkName =
+            NETWORK_TO_NAME_MAP[connectedNetwork];
         } else {
           sitesList[siteKey] = {
             ...app,
@@ -1262,6 +1285,8 @@ export const getConnectedSitesList = createDeepEqualSelector(
             addressToNameMap: {
               [connectedAddress]: identities[connectedAddress].name,
             },
+            networkIconUrl: CHAIN_ID_TOKEN_IMAGE_MAP[connectedNetwork],
+            networkName: NETWORK_TO_NAME_MAP[connectedNetwork],
           };
         }
       });
