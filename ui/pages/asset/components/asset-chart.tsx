@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import {
   Chart,
   LineElement,
@@ -10,6 +9,7 @@ import {
   Decimation,
   Point,
   ChartEvent,
+  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
