@@ -1130,7 +1130,6 @@
   "ui/hooks/useIncrementedGasFees.js",
   "ui/hooks/useOriginMetadata.js",
   "ui/hooks/usePrevious.js",
-  "ui/hooks/useSafeGasEstimatePolling.js",
   "ui/hooks/useSegmentContext.js",
   "ui/hooks/useShouldAnimateGasEstimations.js",
   "ui/hooks/useShouldShowSpeedUp.js",
