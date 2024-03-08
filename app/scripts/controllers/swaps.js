@@ -157,7 +157,7 @@ export default class SwapsController {
     this._ethersProviderChainId = this._getCurrentChainId();
   }
 
-  delayedInit(passedProvider) {
+  initialize(passedProvider) {
     this.provider = passedProvider;
 
     this.ethersProvider = new Web3Provider(passedProvider);

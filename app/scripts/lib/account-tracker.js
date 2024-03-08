@@ -20,7 +20,6 @@ import { cloneDeep } from 'lodash';
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
-import { previousValueComparator } from './util';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -159,7 +158,7 @@ export default class AccountTracker {
    * @param passedBlockTracker - Reference to the block tracker proxy object
    * @param passedProvider - Reference to the provider proxy object
    */
-  delayedInit(passedBlockTracker, passedProvider) {
+  initialize(passedBlockTracker, passedProvider) {
     this.#blockTracker = passedBlockTracker;
     this.#provider = passedProvider;
 

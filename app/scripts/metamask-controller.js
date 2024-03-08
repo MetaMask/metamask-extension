@@ -2298,33 +2298,28 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Initializes the provider on the Network Controller. It also ensures the
    * provider connection to the stream multiplexer is made and runs controllers'
-   * initialization and onboarding logic that relies on that provider being
-   * initialized.
+   * initialization logic that relies on that provider being initialized.
    */
   initializeNetworkProvider() {
     this.networkController.initializeProvider();
+    // TODO: Delete when ready to remove `networkVersion` from provider object
+    this.deprecatedNetworkId = null;
+    this.updateDeprecatedNetworkId();
+    this.provider =
+      this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker =
+      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.hasNetworkControllerProviderBeenInitialized = true;
     this.processProviderConnectionDetailsQueue();
 
     this.txController.initApprovals();
 
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
-
-    // TODO: Delete when ready to remove `networkVersion` from provider object
-    this.deprecatedNetworkId = null;
-    this.updateDeprecatedNetworkId();
-
-    this.accountTracker.delayedInit(this.blockTracker, this.provider);
+    this.accountTracker.initialize(this.blockTracker, this.provider);
     this.accountTracker.updateAccountsAllActiveNetworks();
 
-    // this.txController.initialization();
-    this.swapsController.delayedInit(this.provider);
-    // this.smartTransactionsController.delayedInit(this.provider);
+    this.swapsController.initialize(this.provider);
+
     this.detectTokensController.restartTokenDetection();
   }
 
