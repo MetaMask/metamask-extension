@@ -40,7 +40,7 @@ const render = (
   );
 };
 
-describe.only('AssetList Buy/Receive', () => {
+describe('AssetList Buy/Receive', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
 
   it('shows the ramp card when the account is empty', () => {
