@@ -1251,33 +1251,29 @@ export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
   getMetaMaskIdentities,
   getAllDomains,
+  getAllNetworks,
   getAllConnectedAccounts,
   (
     connectedSubjectsForAllAddresses,
     identities,
-    domains,
+    domains, // I think something is going on here (possibly with dapps connected before the change), devtools inspect
+    networks,
     connectedAddresses,
   ) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
-        const connectedNetwork =
-          NETWORK_TYPES_TO_CHAIN_IDS_MAP[domains[siteKey]];
-        // I'd love to do something like:
-        // if(domains[siteKey]{
-        //   connectedNetwork = NETWORK_TYPES_TO_CHAIN_IDS_MAP[domains[siteKey]]
-        // } else {
-        //   connectedNetwork = getChainId(networkConfigId)
-        // }
+        const connectedNetwork = networks.find(
+          (network) => network.id === domains[siteKey],
+        )?.rpcPrefs?.imageUrl;
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
             identities[connectedAddress].name; // Map address to name
           sitesList[siteKey].networkIconUrl =
-            CHAIN_ID_TOKEN_IMAGE_MAP[connectedNetwork];
-          sitesList[siteKey].networkName =
-            NETWORK_TO_NAME_MAP[connectedNetwork];
+            connectedNetwork.rpcPrefs.imageUrl;
+          sitesList[siteKey].networkName = connectedNetwork.nickname;
         } else {
           sitesList[siteKey] = {
             ...app,
@@ -1285,8 +1281,8 @@ export const getConnectedSitesList = createDeepEqualSelector(
             addressToNameMap: {
               [connectedAddress]: identities[connectedAddress].name,
             },
-            networkIconUrl: CHAIN_ID_TOKEN_IMAGE_MAP[connectedNetwork],
-            networkName: NETWORK_TO_NAME_MAP[connectedNetwork],
+            networkIconUrl: connectedNetwork.rpcPrefs.imageUrl,
+            networkName: connectedNetwork.nickname,
           };
         }
       });
