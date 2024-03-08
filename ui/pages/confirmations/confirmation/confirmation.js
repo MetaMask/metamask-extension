@@ -370,6 +370,7 @@ export default function ConfirmationPage({
         if (useSafeChainsListValidation) {
           const response = await fetchWithCache({
             url: 'https://chainid.network/chains.json',
+            allowStale: true,
             cacheOptions: { cacheRefreshTime: DAY },
             functionName: 'getSafeChainsList',
           });
