@@ -649,9 +649,6 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
-  },
   "buyAndSell": {
     "message": "Buy & Sell"
   },
@@ -2815,9 +2812,6 @@
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
-  },
-  "nftLearnMore": {
-    "message": "Learn more about NFTs"
   },
   "nftOptions": {
     "message": "NFT Options"
