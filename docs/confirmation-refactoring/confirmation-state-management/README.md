@@ -16,7 +16,7 @@ Refactorings:
   - [confirm-transaction](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/confirm-transaction): this is redundant and we should be able to get rid of it.
   - [gas](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/gas): this is not used anywhere and can be removed.
   - [send](https://github.com/MetaMask/metamask-extension/tree/develop/ui/ducks/send): this duck is important state machine for send flow and we should continue to maintain.
-- [gasFeeContext](https://github.com/MetaMask/metamask-extension/blob/develop/ui/contexts/gasFee.js) is huge context written on top of [gasFeeInput](https://github.com/MetaMask/metamask-extension/tree/develop/ui/hooks/gasFeeInput) hook. The context / hook provides about 20 different values used in different places in confirmation pages. We need to break this down:
+- [gasFeeContext](/ui/contexts/gasFee.js) is huge context written on top of [gasFeeInput](https://github.com/MetaMask/metamask-extension/tree/develop/ui/hooks/gasFeeInput) hook. The context / hook provides about 20 different values used in different places in confirmation pages. We need to break this down:
 
   - Context is required only to provide temporary UI state for confirmation pages which includes:
 
@@ -38,10 +38,10 @@ Refactorings:
     - `gasFeeEstimates`
     - `isNetworkBusy`
   - `minimumGasLimitDec` is a constant value 21000 should be removed from the context, this can be moved to constants file.
-  - Create separate hook for transaction functions [here](https://github.com/MetaMask/metamask-extension/blob/develop/ui/hooks/gasFeeInput/useTransactionFunctions.js), this hook can consume GasFeeContext.
+  - Create separate hook for transaction functions [here](/ui/hooks/gasFeeInput/useTransactionFunctions.js), this hook can consume GasFeeContext.
   - Setters and manual update functions are only used by legacy gas component [edit-gas-fee-popover](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/edit-gas-popover). This component uses useGasFeeInputs hook. We need to create a smaller hook just for this component using the above context and hooks.
 
-* [confirm-transaction-base.container.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction-base/confirm-transaction-base.container.js) and [confirm-transaction-base.component.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction-base/confirm-transaction-base.component.js) has a lot of code to derive values from state and selected transactions. This can be simplified by using hooks that will he created.
+* [confirm-transaction-base.container.js](/ui/pages/confirm-transaction-base/confirm-transaction-base.container.js) and [confirm-transaction-base.component.js](/ui/pages/confirm-transaction-base/confirm-transaction-base.component.js) has a lot of code to derive values from state and selected transactions. This can be simplified by using hooks that will he created.
 * We will have a lot of hooks for transaction related fields, these can be grouped into same file / folder.
 
 As we work on the components we will be able to identify more areas of improvement.

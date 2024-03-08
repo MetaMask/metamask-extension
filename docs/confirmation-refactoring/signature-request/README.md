@@ -44,9 +44,9 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
    Currently we have 3 different message managers:
 
-   - [MessageManager](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/message-manager.js)
-   - [PersonalMessageManager](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/personal-message-manager.js)
-   - [TypedMessageManager](https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/typed-message-manager.js)
+   - [MessageManager](/app/scripts/lib/message-manager.js)
+   - [PersonalMessageManager](/app/scripts/lib/personal-message-manager.js)
+   - [TypedMessageManager](/app/scripts/lib/typed-message-manager.js)
 
    Above message managers handle different types of message requests sent by DAPP. There is a lot of code duplication between the 3 classes.
 
@@ -56,14 +56,14 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
    Current navigation to Signature Request pages is un-necessarily complicated. It can be simplified to great extent.
 
-   - To the navigation code in [Home](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/singature-request`.
-   - In [Routes](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/singature-request`.
-   - Refactor out [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/conf-tx.js) into pages/confirm-signature-request component. [#17240](https://github.com/MetaMask/metamask-extension/issues/17240)
+   - To the navigation code in [Home](/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/singature-request`.
+   - In [Routes](/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/singature-request`.
+   - Refactor out [conf-tx.js](/ui/pages/confirm-transaction/conf-tx.js) into pages/confirm-signature-request component. [#17240](https://github.com/MetaMask/metamask-extension/issues/17240)
 
-3. ### Refactoring in [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/conf-tx.js)
+3. ### Refactoring in [conf-tx.js](/ui/pages/confirm-transaction/conf-tx.js)
 
-   - [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/conf-tx.js) to be renamed to `pages/confirm-signature-request component`
-   - Get rid of [confirm-transaction](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction/confirm-transaction.component.js) component from signature request routing. Thus, we need to ensure that any required logic from the component is extracted into a reusable hook and included in pages/confirm-signature-request.
+   - [conf-tx.js](/ui/pages/confirm-transaction/conf-tx.js) to be renamed to `pages/confirm-signature-request component`
+   - Get rid of [confirm-transaction](/ui/pages/confirm-transaction/confirm-transaction.component.js) component from signature request routing. Thus, we need to ensure that any required logic from the component is extracted into a reusable hook and included in pages/confirm-signature-request.
    - Convert to functional react component and use selectors to get state and get rid of `mapStateToProps`. [#17239](https://github.com/MetaMask/metamask-extension/issues/17239)
    - Various callbacks to `sign message`, `cancel request`, etc for different types of messages can be moved to respective child components.
    - On component `mount/update` if there are no unapproved messages redirect to `mostRecentlyOverviewedPage` as [here](https://github.com/MetaMask/metamask-extension/blob/76a2a9bb8b6ea04025328d36404ac3b59121dfc8/ui/app/pages/confirm-transaction/conf-tx.js#L187).
