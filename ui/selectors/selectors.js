@@ -1264,7 +1264,7 @@ export const getConnectedSitesList = createDeepEqualSelector(
         const siteKey = app.origin;
         const connectedNetwork = networks.find(
           (network) => network.id === domains[siteKey],
-        )?.rpcPrefs?.imageUrl;
+        );
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
