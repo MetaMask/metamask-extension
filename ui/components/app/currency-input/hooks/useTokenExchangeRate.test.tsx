@@ -5,7 +5,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import useTokenExchangeRate from './useTokenExchangeRate';
 
-const renderUseTokenExchangeRate = (tokenAddress) => {
+const renderUseTokenExchangeRate = (tokenAddress?: string) => {
   const state = {
     ...mockState,
     metamask: {
@@ -25,7 +25,7 @@ const renderUseTokenExchangeRate = (tokenAddress) => {
     },
   };
 
-  const wrapper = ({ children }) => (
+  const wrapper = ({ children }: any) => (
     <Provider store={configureStore(state)}>{children}</Provider>
   );
 

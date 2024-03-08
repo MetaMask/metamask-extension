@@ -3,7 +3,7 @@ import type { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
 export interface UserPrefrencedCurrencyDisplayProps
   extends CurrencyDisplayProps {
-  type: PRIMARY | SECONDARY;
+  type?: PRIMARY | SECONDARY;
   currency?: string;
   showEthLogo?: boolean;
   ethLogoHeight?: number;
