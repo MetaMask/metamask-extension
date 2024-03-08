@@ -9,8 +9,8 @@ import {
 } from '../services';
 
 type MockReply = {
-  status: number;
-  body?: Record<string, unknown>;
+  status: nock.StatusCode;
+  body?: nock.Body;
 };
 
 export const MOCK_NONCE = '4cbfqzoQpcNxVImGv';

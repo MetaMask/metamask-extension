@@ -1,11 +1,13 @@
+import type { PreinstalledSnap } from '@metamask/snaps-controllers';
+
 // eslint-disable-next-line import/unambiguous
 const fs = require('fs');
 
-const PREINSTALLED_SNAPS = [];
+const TEMP_PREINSTALLED_SNAPS = [];
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 try {
-  PREINSTALLED_SNAPS.push(
+  TEMP_PREINSTALLED_SNAPS.push(
     getPreinstalledSnap(
       '@metamask/message-signing-snap',
       fs.readFileSync(
@@ -32,9 +34,13 @@ try {
   // Failed adding snap
 }
 
-function getPreinstalledSnap(npmPackage, manifest, files) {
+function getPreinstalledSnap(
+  npmPackage: string,
+  manifest: PreinstalledSnap['manifest'],
+  files: PreinstalledSnap['files'],
+): PreinstalledSnap {
   return {
-    snapId: `npm:${npmPackage}`,
+    snapId: `npm:${npmPackage}` as PreinstalledSnap['snapId'],
     manifest: JSON.parse(manifest),
     files,
     removable: false,
@@ -42,4 +48,4 @@ function getPreinstalledSnap(npmPackage, manifest, files) {
 }
 ///: END:ONLY_INCLUDE_IF
 
-module.exports.PREINSTALLED_SNAPS = Object.freeze(PREINSTALLED_SNAPS);
+export const PREINSTALLED_SNAPS = Object.freeze(TEMP_PREINSTALLED_SNAPS);

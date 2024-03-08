@@ -15,7 +15,7 @@ jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
   usePetnamesEnabled: () => false,
 }));
 
-jest.mock('../../app/scripts/snaps/preinstalled-snaps.js', () => ({
+jest.mock('../../app/scripts/snaps/preinstalled-snaps', () => ({
   PREINSTALLED_SNAPS: [],
 }));
 
