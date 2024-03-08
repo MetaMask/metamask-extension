@@ -31,7 +31,10 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { NetworkClientId } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -4267,6 +4270,31 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
   ]);
 }
 
+/**
+ * Informs the GasFeeController that the UI requires gas fee polling
+ *
+ * @param networkClientId - unique identifier for the network client
+ * @returns polling token that can be used to stop polling
+ */
+export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
+  return submitRequestToBackground('gasFeeStartPollingByNetworkClientId', [
+    networkClientId,
+  ]);
+}
+
+/**
+ * Informs the GasFeeController that the UI no longer requires gas fee polling
+ * for the given network client.
+ * If all network clients unsubscribe, the controller stops polling.
+ *
+ * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ */
+export function gasFeeStopPollingByPollingToken(pollingToken: string) {
+  return submitRequestToBackground('gasFeeStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+}
+
 export function getGasFeeTimeEstimate(
   maxPriorityFeePerGas: string,
   maxFeePerGas: string,
@@ -4772,6 +4800,22 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
     console.error(error);
   }
   return networkEIP1559Compatibility;
+}
+
+export async function getNetworkConfigurationByNetworkClientId(
+  networkClientId: NetworkClientId,
+): Promise<NetworkConfiguration | undefined> {
+  let networkConfiguration;
+  try {
+    networkConfiguration =
+      await submitRequestToBackground<NetworkConfiguration>(
+        'getNetworkConfigurationByNetworkClientId',
+        [networkClientId],
+      );
+  } catch (error) {
+    console.error(error);
+  }
+  return networkConfiguration;
 }
 
 export function updateProposedNames(
