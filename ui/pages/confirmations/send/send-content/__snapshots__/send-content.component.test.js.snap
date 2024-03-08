@@ -118,6 +118,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     data-testid="currency-input"
                     dir="ltr"
                     placeholder="0"
+                    step="any"
                     style="width: 1.5ch;"
                     type="number"
                     value="0"

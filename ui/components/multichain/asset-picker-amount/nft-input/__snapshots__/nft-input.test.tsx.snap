@@ -18,6 +18,7 @@ exports[`NFTInput matches snapshot 1`] = `
           data-testid="nft-input"
           dir="ltr"
           placeholder="0"
+          step="any"
           style="width: 1.5ch;"
           type="number"
           value="1"
