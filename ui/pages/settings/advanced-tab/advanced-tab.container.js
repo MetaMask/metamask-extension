@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { getPreferences } from '../../../selectors';
+import { getPreferences, getIsStxOptInAvailable } from '../../../selectors';
 import {
   backupUserData,
   displayWarning,
@@ -38,6 +38,7 @@ export const mapStateToProps = (state) => {
     stxOptIn,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
+  const isStxOptInAvailable = getIsStxOptInAvailable(state);
 
   return {
     warning,
@@ -50,6 +51,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     dismissSeedBackUpReminder,
     disabledRpcMethodPreferences,
+    isStxOptInAvailable,
   };
 };
 
