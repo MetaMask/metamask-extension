@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.11.4]
+### Changed
+- Enable Snaps home pages ([#23383](https://github.com/MetaMask/metamask-extension/pull/23383))
+
+### Fixed
+- Fix intermittent Snaps installation issues due to faulty validation ([#23380](https://github.com/MetaMask/metamask-extension/pull/23380))
+
 ## [11.11.3]
 
 ## [11.11.2]
@@ -4440,7 +4447,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.4...HEAD
+[11.11.4]: https://github.com/MetaMask/metamask-extension/compare/v11.11.3...v11.11.4
 [11.11.3]: https://github.com/MetaMask/metamask-extension/compare/v11.11.2...v11.11.3
 [11.11.2]: https://github.com/MetaMask/metamask-extension/compare/v11.11.1...v11.11.2
 [11.11.1]: https://github.com/MetaMask/metamask-extension/compare/v11.11.0...v11.11.1
