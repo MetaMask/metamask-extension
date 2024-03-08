@@ -18,31 +18,30 @@ import {
   Box,
   Button,
   ButtonVariant,
-  ButtonLink,
-  ButtonLinkSize,
+  ModalHeader,
+  ModalContent,
 } from '../../../components/component-library';
-import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 
 interface Props {
-  onStartSwapping: () => void;
-  onManageStxInSettings: () => void;
+  onContinue: () => void;
+  onNoRightNow: () => void;
   isOpen: boolean;
 }
 
 export default function SmartTransactionsModal({
-  onStartSwapping,
-  onManageStxInSettings,
+  onContinue,
+  onNoRightNow,
   isOpen,
 }: Props) {
   const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onStartSwapping}
+      onClose={onContinue}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       className="mm-modal__custom-scrollbar"
+      autoFocus={false}
     >
       <ModalOverlay />
       <ModalContent>
@@ -55,7 +54,8 @@ export default function SmartTransactionsModal({
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          marginTop={4}
+          paddingLeft={4}
+          paddingRight={4}
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <img
@@ -81,7 +81,7 @@ export default function SmartTransactionsModal({
             marginTop={6}
             type="link"
             variant={ButtonVariant.Link}
-            onClick={onManageStxInSettings}
+            onClick={onNoRightNow}
             width={BlockSize.Full}
           >
             {t('notRightNow')}
@@ -89,7 +89,7 @@ export default function SmartTransactionsModal({
           <Button
             marginTop={4}
             variant={ButtonVariant.Primary}
-            onClick={onStartSwapping}
+            onClick={onContinue}
             width={BlockSize.Full}
           >
             {t('continue')}
