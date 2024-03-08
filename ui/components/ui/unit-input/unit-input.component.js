@@ -27,6 +27,7 @@ export default class UnitInput extends PureComponent {
     suffix: PropTypes.string,
     hideSuffix: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    keyPressRegex: PropTypes.instanceOf(RegExp),
   };
 
   static defaultProps = {
@@ -157,6 +158,11 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
+              onKeyPress={(e) =>
+                this.props.keyPressRegex &&
+                !this.props.keyPressRegex.test(e.key) &&
+                e.preventDefault()
+              }
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
                 this.unitInput = ref;

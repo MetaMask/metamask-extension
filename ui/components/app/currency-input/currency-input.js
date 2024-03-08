@@ -22,6 +22,7 @@ import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
 const LARGE_SYMBOL_LENGTH = 7;
+const DECIMAL_INPUT_REGEX = /^\d*\.?\d*$/u;
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -192,6 +193,7 @@ export default function CurrencyInput({
       value={isTokenPrimary ? tokenDecimalValue : fiatDecimalValue}
       className={className}
       actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
+      keyPressRegex={DECIMAL_INPUT_REGEX}
     >
       {renderConversionComponent()}
     </UnitInput>

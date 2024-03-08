@@ -21,8 +21,6 @@ import {
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
-  NEGATIVE_ETH_ERROR,
-  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
 } from '../../pages/confirmations/send/send.constants';
 
@@ -1307,23 +1305,12 @@ const slice = createSlice({
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
           break;
-        // if the amount of tokens is negative or equal to zero, set error to NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
-        case amountValue.lessThanOrEqualTo() &&
-          draftTransaction.asset.type === AssetType.NFT &&
-          draftTransaction.asset.details.standard === TokenStandard.ERC1155:
-          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
-          break;
 
         // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
         case amountValue.isFloat() &&
           draftTransaction.asset.type === AssetType.NFT &&
           draftTransaction.asset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
-          break;
-        // if the amount is negative, set error to NEGATIVE_ETH_ERROR
-        // TODO: change this to NEGATIVE_ERROR and remove the currency bias.
-        case amountValue.isNegative():
-          draftTransaction.amount.error = NEGATIVE_ETH_ERROR;
           break;
         // If none of the above are true, set error to null
         default:
