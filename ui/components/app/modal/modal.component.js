@@ -16,6 +16,7 @@ export default class Modal extends PureComponent {
     children: PropTypes.node,
     contentClass: PropTypes.string,
     containerClass: PropTypes.string,
+    testId: PropTypes.string,
     // Header text
     headerText: PropTypes.string,
     onClose: PropTypes.func,
@@ -51,10 +52,14 @@ export default class Modal extends PureComponent {
       contentClass,
       containerClass,
       hideFooter,
+      testId,
     } = this.props;
 
     return (
-      <div className={classnames('modal-container', containerClass)}>
+      <div
+        className={classnames('modal-container', containerClass)}
+        data-testid={testId}
+      >
         {headerText && (
           <div className="modal-container__header">
             <div className="modal-container__header-text">{headerText}</div>

@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFTs जोड़ें"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snaps के साथ अपने अकाउंट को सुरक्षित रखने के विकल्प खोजें"
-  },
   "addSuggestedNFTs": {
     "message": "सुझाए गए NFTs जोड़ें"
   },
@@ -559,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "यदि आप इस रिक्वेस्ट को स्वीकार करते हैं, तो कोई Blur पर लिस्टेड आपके सारे एसेट चुरा सकता है।"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "कोई समस्या होने के कारण, इस रिक्वेस्ट को सिक्यूरिटी प्रोवाइडर द्वारा वेरीफ़ाई नहीं किया गया। सावधानी से आगे बढ़ें।"
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -588,12 +585,6 @@
   },
   "bridge": {
     "message": "ब्रिज"
-  },
-  "bridgeDescription": {
-    "message": "अलग-अलग नेटवर्कों से टोकन ट्रांसफर करें"
-  },
-  "bridgeDisabled": {
-    "message": "इस नेटवर्क में ब्रिज उपलब्ध नहीं है"
   },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
@@ -655,10 +646,6 @@
   },
   "chainIdExistsErrorMsg": {
     "message": "यह चेन ID वर्तमान में $1 नेटवर्क द्वारा इस्तेमाल की जाती है।"
-  },
-  "chainListReturnedDifferentTickerSymbol": {
-    "message": "चेन ID $1 वाला नेटवर्क आपके द्वारा एंटर किए गए करेंसी सिंबल ($2) से अलग करेंसी चिह्न का इस्तेमाल कर सकता है। कृपया जारी रखने से पहले वेरीफ़ाई करें।",
-    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "अपना नेटवर्क चुनें"
@@ -831,9 +818,6 @@
   "connectionRequest": {
     "message": "कनेक्शन अनुरोध"
   },
-  "connections": {
-    "message": "कनेक्शन"
-  },
   "contactUs": {
     "message": "हमसे कॉन्टेक्ट करें"
   },
@@ -985,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "कस्टोडियन टोकन बदलें"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "$1 ऐप में ट्रांसेक्शन को एप्रूव करें। एक बार सभी आवश्यक कस्टडी एप्रूवल किए जाने के बाद ट्रांसेक्शन पूरा हो जाएगा। स्केटेटस लिए अपना $1 ऐप देखें।"
@@ -1668,9 +1649,6 @@
   },
   "general": {
     "message": "सामान्य"
-  },
-  "getStarted": {
-    "message": "शुरू करें"
   },
   "globalTitle": {
     "message": "वैश्विक मेन्यू"
@@ -2526,108 +2504,6 @@
   "notifications": {
     "message": "सूचनाएं"
   },
-  "notifications10ActionText": {
-    "message": "सेटिंग्स में जाएं",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "बेहतर टोकन डिटेक्शन वर्तमान में  Ethereum Mainnet, Polygon, BSC और Avalanche के नेटवर्कों पर उपलब्ध है। और भी आने वाला है!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "टोकन डिटेक्शन फीचर डिफॉल्ट रूप से बंद है। लेकिन आप इसे सेटिंग्स में जाकर इनेबल कर सकते हैं।"
-  },
-  "notifications10DescriptionTwo": {
-    "message": "हम थर्ड पार्टी टोकन लिस्टों से टोकन प्राप्त करते हैं। दो से अधिक टोकन लिस्टों पर लिस्टेड टोकन ऑटोमेटिक तरीके से पहचाने जाएंगे।"
-  },
-  "notifications10Title": {
-    "message": "बेहतर टोकन डिटेक्शन यहां है"
-  },
-  "notifications11Description": {
-    "message": "टोकन कोई भी बना सकता है और उनके डुप्लीकेट नाम हो सकते हैं। अगर आपको कोई ऐसा टोकन दिखाई देता है जिसपर आपको भरोसा नहीं है या आपने उसके साथ इंटरैक्ट नहीं किया है - तो उसपर भरोसा नहीं करना अधिक सुरक्षित है।"
-  },
-  "notifications11Title": {
-    "message": "स्कैम और सुरक्षा संबंधी जोखिम"
-  },
-  "notifications12ActionText": {
-    "message": "डार्क मोड इनेबल करें"
-  },
-  "notifications12Description": {
-    "message": "एक्सटेंशन पर डार्क मोड आखिरकार आ गया है! इसे चालू करने के लिए, सेटिंग्स पर जाएं -> एक्सपेरिमेंटल और डिस्प्ले विकल्पों में से एक को चुनें: लाइट, डार्क, सिस्टम।"
-  },
-  "notifications12Title": {
-    "message": "वेन डार्क मोड? अब डार्क मोड! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "कस्टम नेटवर्क लिस्ट दिखाएं"
-  },
-  "notifications13Description": {
-    "message": "अब आप निम्नलिखित पॉपुलर कस्टम नेटवर्क्स आसानी से जोड़ सकते हैं:  Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon!! इस फीचर को इनेबल करने के लिए, सेटिंग्स पर जाएं ->एक्सपेरिमेंटल और \"कस्टम नेटवर्क लिस्ट दिखाएँ\" ऑन करें!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "पॉपुलर नेटवर्क्स जोड़ें"
-  },
-  "notifications14ActionText": {
-    "message": "बैकअप सेटिंग दिखाएं"
-  },
-  "notifications14Description": {
-    "message": "हम अक्टूबर की शुरुआत में अपनी 3Box डेटा सुविधा को हटा रहे हैं। अपने वॉलेट को मैन्युअल रूप से बैकअप और रीस्टोर करने के लिए, एडवांस्ड सेटिंग्स में \"अभी बैकअप लें\" बटन का इस्तेमाल करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Box को हटाया गया"
-  },
-  "notifications15Description": {
-    "message": "आपकी ओर से कुछ भी करने की आवश्यकता नहीं है, इसलिए हमेशा की तरह अपने वॉलेट का इस्तेमाल करते रहें। मर्ज के आसपास संभावित घोटालों से अवगत रहें।",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Ethereum मर्ज यहाँ है!"
-  },
-  "notifications18ActionText": {
-    "message": "सुरक्षा अलर्ट इनेबल करें"
-  },
-  "notifications18DescriptionOne": {
-    "message": "जब आपको कोई बुरी नीयत वाला रिक्वेस्ट प्राप्त हुआ हो, तो थर्ड पार्टियों से अलर्ट प्राप्त करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "किसी भी रिक्वेस्ट को स्वीकार करने से पहले हमेशा अपनी खुद की सावधानी बरतना पक्का करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea इस सुविधा का पहला प्रोवाइडर है। अधिक प्रोवाइडर जल्द ही आ रहे हैं!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "सुरक्षा अलर्ट के साथ सुरक्षित रहें"
-  },
-  "notifications19ActionText": {
-    "message": "NFT ऑटो-डिटेक्शन इनेबल करें"
-  },
-  "notifications19DescriptionOne": {
-    "message": "आप दो तरीकों से शुरुआत कर सकते हैं:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "हम इस समय केवल ERC-721 का सपोर्ट करते हैं।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "अपने NFT को मैन्युअल रूप से जोड़ें, या सेटिंग> एक्सपेरिमेंटल में जाकर NFT ऑटोडिटेक्शन चालू करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "अपने NFTs को ऐसे देखें जैसे पहले कभी नहीं देखा"
-  },
-  "notifications1Description": {
-    "message": "MetaMask Mobile यूज़र अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "मोबाइल पर स्वैपिंग यहां है!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "और अधिक जानें",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2640,37 +2516,6 @@
     "message": "Ledger और फायरफॉक्स यूज़र कनेक्शन संबंधी समस्याओं का सामना कर रहे हैं",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "इसे आजमाएं"
-  },
-  "notifications21Description": {
-    "message": "हमने MetaMask एक्सटेंशन में स्वैप को इस्तेमाल में आसान और तेज़ बनाने के लिए अपडेट किया है।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "ला रहे हैं नया और फ्रेश स्वैप!"
-  },
-  "notifications22ActionText": {
-    "message": "समझ गए"
-  },
-  "notifications22Description": {
-    "message": "💡 उन्हें ढूंढने के लिए बस ग्लोबल मेनू या अकाउंट मेनू पर क्लिक करें!"
-  },
-  "notifications22Title": {
-    "message": "क्या आप अपने अकाउंट की जानकारी या ब्लॉक एक्सप्लोरर URL खोज रहे हैं?"
-  },
-  "notifications23ActionText": {
-    "message": "सुरक्षा अलर्ट इनेबल करें"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Ethereum Mainnet पर Blockaid द्वारा दिए गए सुरक्षा अलर्ट के साथ अपनी गोपनीयता बनाए रखते हुए पहचाने गए स्कैमों से बचें।"
-  },
-  "notifications23DescriptionTwo": {
-    "message": "रिक्वेस्ट को स्वीकार करने से पहले हमेशा अपनी खुद की सावधानी बरतें।"
-  },
-  "notifications23Title": {
-    "message": "सुरक्षा अलर्ट के साथ सुरक्षित रहें"
-  },
   "notifications24ActionText": {
     "message": "समझ गए"
   },
@@ -2679,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "नेटवर्क द्वारा एडवांस्ड गैस फीस"
-  },
-  "notifications3ActionText": {
-    "message": "और पढ़ें",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "MetaMask सुरक्षा की सर्वोत्तम प्रथाओं पर अद्यतित रहें और आधिकारिक MetaMask सपोर्ट से लेटेस्ट सुरक्षा युक्तियां प्राप्त करें।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "सुरक्षित रहें",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "स्वैप करना शुरू करें",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "अपने वॉलेट के अंदर ही टोकन स्वैप पर सर्वोत्तम मूल्य प्राप्त करें। MetaMask अब आपको Binance Smart Chain पर कई विकेन्द्रीकृत एक्सचेंज एग्रीगेटर और पेशेवर बाजार निर्माताओं से जोड़ता है।",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Binance Smart Chain पर स्वैप करें",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "आपके \"सीड फ्रेज\" को अब आपका \"सीक्रेट रिकवरी फ्रेज\" कहा जाता है।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Chrome के वर्शन 91 से, वह API जो हमारे Ledger सपोर्ट (U2F) को इनेबल करती है वह अब hardware wallet को सपोर्ट नहीं करती। MetaMask ने एक नया Ledger Live सपोर्ट लागू किया है, जिसकी मदद से आप Ledger Live डेस्कटॉप ऐप के माध्यम से अपने Ledger डिवाइस से कनेक्ट करना जारी रख सकते हैं।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "MetaMask में अपने Ledger अकाउंट पर काम करते समय, एक नया टैब खुल जाएगा और आपको Ledger Live ऐप खोलने के लिए कहा जाएगा।  ऐप खुलने के बाद, आपको अपने MetaMask अकाउंट के लिए एक WebSocket कनेक्शन को अनुमति देने के लिए कहा जाएगा।  बस इतना ही!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "आप सेटिंग > एडवांस्ड > Ledger Live का इस्तेमाल करें पर क्लिक करके Ledger Live सहायता को इनेबल कर सकते हैं।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Chrome यूज़र्स के लिए Ledger सहायता अपडेट",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 ने Ledger डिवाइस का इस्तेमाल करते समय EIP-1559 ट्रांसेक्शन के लिए नया सपोर्ट शामिल किया",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": " Ethereum Mainnet पर ट्रांसेक्शन पूरा करने के लिए, पक्का करें कि आपके Ledger डिवाइस में लेटेस्ट फर्मवेयर है।",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger फर्मवेयर अपडेट",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "सेटिंग्स पर जाएं > एडवांस्ड",
@@ -2751,15 +2540,6 @@
   "notifications8Title": {
     "message": "Ledger कनेक्शन में सुधार",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "स्मार्ट कॉन्ट्रैक्ट ट्रांसेक्शन को कन्फर्म करते समय अब हम आपको 'डेटा' टैब पर अधिक जानकारी प्रदान करेंगे।"
-  },
-  "notifications9DescriptionTwo": {
-    "message": "अब आप पुष्टि करने से पहले अपने ट्रांसेक्शन की जानकारी को बेहतर तरीके से समझ सकते हैं, और अधिक आसानी से अपनी एड्रेस पुस्तिका में ट्रांसेक्शन के एड्रेस जोड़ सकते हैं, जिससे आपको सुरक्षित और सूचित निर्णय लेने में मदद मिलेगी।"
-  },
-  "notifications9Title": {
-    "message": "👓 हम ट्रांसेक्शन को पढ़ना आसान बना रहे हैं।"
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox अब U2F का सपोर्ट नहीं करता है, इसलिए Firefox पर MetaMask के साथ Ledger काम नहीं करेगा। इसके बजाय, Google Chrome पर MetaMask इस्तेमाल करके देखें।",
@@ -3148,10 +2928,6 @@
   "portfolioDashboard": {
     "message": "पोर्टफोलियो डैशबोर्ड"
   },
-  "preferredLedgerConnectionType": {
-    "message": "वरीयता वाले Ledger कनेक्शन के प्रकार",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
   },
@@ -3473,9 +3249,6 @@
   "searchAccounts": {
     "message": "अकाउंट्स खोजें"
   },
-  "searchResults": {
-    "message": "खोज परिणाम"
-  },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज"
   },
@@ -3582,9 +3355,6 @@
   "selectAnAccountHelp": {
     "message": "MetaMask Institutional में इस्तेमाल करने के लिए कस्टोडियन एकाउंट्स को चुनें।"
   },
-  "selectAnAction": {
-    "message": "एक एक्शन चुनें"
-  },
   "selectHdPath": {
     "message": "HD पथ को चुनें"
   },
@@ -3608,9 +3378,6 @@
   },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
-  },
-  "sendDescription": {
-    "message": "किसी भी खाता में क्रिप्टो भेजें"
   },
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
@@ -3743,9 +3510,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
   },
-  "snapConfigure": {
-    "message": "कॉन्फिगर करें"
-  },
   "snapConnectionWarning": {
     "message": "$1 चाहता है कि $2 के साथ जुड़े. तभी आगे बढ़ें अगर आप इस वेबसाइट पर भरोसा करते हैं।",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3754,49 +3518,8 @@
     "message": "यह कंटेंट $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask Snaps का इस्तेमाल करके अपने नए अकाउंट को सुरक्षित करने का तरीका चुनें।"
-  },
-  "snapCreateAccountTitle": {
-    "message": "एक $1 वाला अकाउंट बनाएं",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "MetaMask द्वारा"
-  },
-  "snapDetailAudits": {
-    "message": "ऑडिट करें"
-  },
-  "snapDetailDeveloper": {
-    "message": "डेवलपर"
-  },
-  "snapDetailLastUpdated": {
-    "message": "अपडेट किया गया"
-  },
-  "snapDetailManageSnap": {
-    "message": "Snap को प्रबंधित करें"
-  },
-  "snapDetailTags": {
-    "message": "टैग"
-  },
-  "snapDetailVersion": {
-    "message": "वर्शन"
-  },
   "snapDetailWebsite": {
     "message": "वेबसाइट"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "एक Snap अकाउंट बनाएं"
-  },
-  "snapDetailsInstalled": {
-    "message": "इंस्टॉल किया गया"
-  },
-  "snapInstall": {
-    "message": "Snap इंस्टाल करें"
   },
   "snapInstallRequest": {
     "message": "$1 इंस्टॉल करने से इसे निम्नलिखित अनुमतियां मिलती हैं। अगर आप $1 पर भरोसा करते हैं तो ही जारी रखें।",
@@ -3815,9 +3538,6 @@
   "snapInstallationErrorTitle": {
     "message": "इंस्टॉलेशन नहीं हो पाया",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "ऑडिट किया गया"
   },
   "snapResultError": {
     "message": "गड़बड़ी"
@@ -4008,9 +3728,6 @@
   "stake": {
     "message": "हिस्सेदारी"
   },
-  "stakeDescription": {
-    "message": "अपने क्रिप्टो को रोक कर रखें और शानदार लाभ कमाएं"
-  },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"
   },
@@ -4196,14 +3913,8 @@
   "swapDecentralizedExchange": {
     "message": "विकेंद्रीकृत विनिमय"
   },
-  "swapDescription": {
-    "message": "अपने टोकन स्वैप करें और ट्रेड करें"
-  },
   "swapDirectContract": {
     "message": "प्रत्यक्ष कॉन्ट्रैक्ट"
-  },
-  "swapDisabled": {
-    "message": "इस नेटवर्क में स्वैप उपलब्ध नहीं है"
   },
   "swapEditLimit": {
     "message": "सीमा बदलें"
@@ -4897,12 +4608,6 @@
   "unknown": {
     "message": "अज्ञात"
   },
-  "unknownCameraError": {
-    "message": "आपके कैमरे तक पहुंचने की कोशिश करते समय एक गड़बड़ी हुई। कृपया फिर से कोशिश करें..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ओह! कुछ गलत हो गया...."
-  },
   "unknownCollection": {
     "message": "अनाम संग्रह"
   },
@@ -4982,10 +4687,6 @@
   },
   "verifyContractDetails": {
     "message": "थर्ड-पार्टी विवरण वेरीफ़ाई करें"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "टोकन डेसीमल $1 पर पाया जा सकता है",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "इस टोकन को $1 पर वेरीफ़ाई करें",

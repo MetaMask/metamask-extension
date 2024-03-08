@@ -39,7 +39,7 @@ interface AppState {
   };
   showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
-  showSelectActionModal: boolean;
+  deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -76,6 +76,7 @@ interface AppState {
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
+  newTokensImportedError: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
@@ -115,7 +116,7 @@ const initialState: AppState = {
   },
   showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
-  showSelectActionModal: false,
+  deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -151,6 +152,7 @@ const initialState: AppState = {
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
+  newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
@@ -225,16 +227,16 @@ export default function reduceApp(
         importTokensModalOpen: false,
       };
 
-    case actionConstants.SELECT_ACTION_MODAL_OPEN:
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
       return {
         ...appState,
-        showSelectActionModal: true,
+        deprecatedNetworkModalOpen: true,
       };
 
-    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE:
       return {
         ...appState,
-        showSelectActionModal: false,
+        deprecatedNetworkModalOpen: false,
       };
 
     // alert methods
@@ -434,6 +436,12 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImported: action.payload,
+      };
+
+    case actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR:
+      return {
+        ...appState,
+        newTokensImportedError: action.payload,
       };
 
     case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:

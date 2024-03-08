@@ -1,22 +1,14 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
+  generateGanacheOptions,
   withFixtures,
   regularDelayMs,
   unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Stores custom RPC history', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
+describe('Custom RPC history', function () {
   it(`creates first custom RPC entry`, async function () {
     const port = 8546;
     const chainId = 1338;
@@ -24,7 +16,9 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
+        ganacheOptions: generateGanacheOptions({
+          concurrent: { port, chainId },
+        }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -33,7 +27,7 @@ describe('Stores custom RPC history', function () {
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -69,7 +63,7 @@ describe('Stores custom RPC history', function () {
           '.networks-tab__add-network-form-footer .btn-primary',
         );
 
-        await driver.findElement({ text: networkName, tag: 'span' });
+        await driver.findElement({ text: networkName, tag: 'h6' });
       },
     );
   });
@@ -78,7 +72,7 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -87,7 +81,7 @@ describe('Stores custom RPC history', function () {
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -118,9 +112,8 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -129,7 +122,7 @@ describe('Stores custom RPC history', function () {
         const newRpcUrl = 'http://localhost:8544';
         const duplicateChainId = '1';
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -177,13 +170,13 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
@@ -216,13 +209,13 @@ describe('Stores custom RPC history', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement('.toggle-button');
@@ -266,55 +259,59 @@ describe('Stores custom RPC history', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
+        // Click add network from network options
         await driver.clickElement('[data-testid="network-display"]');
-
         await driver.clickElement({ text: 'Add network', tag: 'button' });
-
+        // Open network settings page
         await driver.findElement('.add-network__networks-container');
-
+        // Click Add network manually to trigger form
         await driver.clickElement({
           text: 'Add a network manually',
           tag: 'h6',
         });
-
-        // // cancel new custom rpc
+        // cancel new custom rpc
         await driver.clickElement(
           '.networks-tab__add-network-form-footer button.btn-secondary',
         );
-
+        // find custom network http://127.0.0.1:8545/2
+        const networkItemClassName = '.networks-tab__networks-list-name';
+        const customNetworkName = 'http://127.0.0.1:8545/2';
         const networkListItems = await driver.findClickableElements(
-          '.networks-tab__networks-list-name',
+          networkItemClassName,
         );
         const lastNetworkListItem =
           networkListItems[networkListItems.length - 1];
         await lastNetworkListItem.click();
-
         await driver.waitForSelector({
           css: '.form-field .form-field__input:nth-of-type(1)',
-          value: 'http://127.0.0.1:8545/2',
+          value: customNetworkName,
+        });
+        // delete custom network in a modal
+        await driver.clickElement('.networks-tab__network-form .btn-danger');
+        await driver.findVisibleElement(
+          '[data-testid="confirm-delete-network-modal"]',
+        );
+        await driver.clickElement({ text: 'Delete', tag: 'button' });
+        await driver.assertElementNotPresent(
+          '[data-testid="confirm-delete-network-modal"]',
+        );
+        // There's a short slot to process deleting the network,
+        // hence there's a need to wait for the element to be removed to guarantee the action is executed completely
+        await driver.assertElementNotPresent({
+          tag: 'div',
+          text: customNetworkName,
         });
 
-        await driver.clickElement('.btn-danger');
-
-        // wait for confirm delete modal to be visible
-        await driver.findVisibleElement('span .modal');
-
-        await driver.clickElement(
-          '.button.btn-danger-primary.modal-container__footer-button',
-        );
-
-        await driver.waitForElementNotPresent('span .modal');
-
+        // custom network http://127.0.0.1:8545/2 is removed from network list
         const newNetworkListItems = await driver.findElements(
-          '.networks-tab__networks-list-name',
+          networkItemClassName,
         );
 
         assert.equal(networkListItems.length - 1, newNetworkListItems.length);

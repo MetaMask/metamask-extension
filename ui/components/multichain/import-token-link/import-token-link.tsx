@@ -51,16 +51,13 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
           startIconName={IconName.Add}
           onClick={() => {
             dispatch(showImportTokensModal());
-            trackEvent(
-              {
-                event: MetaMetricsEventName.TokenImportButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Home',
-                },
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
+              properties: {
+                location: 'HOME',
               },
-              {},
-            );
+            });
           }}
         >
           {isTokenDetectionAvailable

@@ -13,7 +13,7 @@ export function createPendingNonceMiddleware({ getPendingNonce }) {
       next();
       return;
     }
-    res.result = await getPendingNonce(param);
+    res.result = await getPendingNonce(param, req.networkClientId);
   });
 }
 

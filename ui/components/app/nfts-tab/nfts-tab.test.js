@@ -1,10 +1,12 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import NftsTab from '.';
 
 const NFTS = [
@@ -163,8 +165,26 @@ const render = ({
           [chainId]: nftContracts,
         },
       },
-      providerConfig: { chainId },
+      providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       selectedAddress,
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: selectedAddress,
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       useNftDetection,
       nftsDropdownState,
     },
@@ -298,7 +318,6 @@ describe('NFT Items', () => {
 
   describe('nft conversion banner', () => {
     it('shows the NFT conversion banner when there are no NFTs', () => {
-      process.env.MULTICHAIN = 1;
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
         nfts: [],
@@ -308,7 +327,6 @@ describe('NFT Items', () => {
     });
 
     it('does not show the NFT conversion banner when there are NFTs', () => {
-      process.env.MULTICHAIN = 1;
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,

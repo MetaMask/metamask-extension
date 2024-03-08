@@ -1,4 +1,5 @@
 const {
+  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
   switchToNotificationWindow,
@@ -9,20 +10,10 @@ const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap bip-44', function () {
   it('can pop up bip-44 snap and get private key result', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        failOnConsoleError: false,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -30,14 +21,18 @@ describe('Test Snap bip-44', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the bip44 test and connect
         const snapButton1 = await driver.findElement('#connectbip44');
         await driver.scrollToElement(snapButton1);
-        await driver.delay(1000);
+        await driver.waitForSelector('#connectbip44');
         await driver.clickElement('#connectbip44');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect and approve
         await switchToNotificationWindow(driver, 2);
@@ -55,7 +50,7 @@ describe('Test Snap bip-44', function () {
         });
 
         // deal with permissions popover
-        await driver.delay(500);
+        await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
@@ -87,10 +82,9 @@ describe('Test Snap bip-44', function () {
 
         // enter a message to sign
         await driver.pasteIntoField('#bip44Message', '1234');
-        await driver.delay(500);
         const snapButton3 = await driver.findElement('#signBip44Message');
         await driver.scrollToElement(snapButton3);
-        await driver.delay(500);
+        await driver.waitForSelector('#signBip44Message');
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve

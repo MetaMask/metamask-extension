@@ -2,8 +2,12 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { getRpcCaveatOrigins } from '@metamask/snaps-rpc-methods';
+import {
+  SnapCaveatType,
+  getSlip44ProtocolName,
+  getSnapDerivationPathName,
+} from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import classnames from 'classnames';
@@ -31,11 +35,7 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
-import {
-  coinTypeToProtocolName,
-  getSnapDerivationPathName,
-  getSnapName,
-} from './util';
+import { getSnapName } from './util';
 ///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -134,6 +134,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             >
               {friendlyName}
             </Text>,
+            getSnapNameComponent(targetSubjectMetadata),
           ]),
         };
       }
@@ -177,7 +178,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           .join('-')
           ?.replace(/'/gu, 'h')}-${curve}-${i}`,
         warningMessageSubject:
-          getSnapDerivationPathName(path, curve) ||
+          getSnapDerivationPathName(path, curve) ??
           `${t('unknownNetworkForKeyEntropy')} ${path.join('/')} (${curve})`,
       };
 
@@ -231,7 +232,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           fontWeight={FontWeight.Medium}
           key={`coin-type-${coinType}`}
         >
-          {coinTypeToProtocolName(coinType) ||
+          {getSlip44ProtocolName(coinType) ??
             `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`}
         </Text>,
       ]),
@@ -242,7 +243,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       weight: 1,
       id: `key-access-bip44-${coinType}-${i}`,
       warningMessageSubject:
-        coinTypeToProtocolName(coinType) ||
+        getSlip44ProtocolName(coinType) ??
         `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`,
     })),
   [RestrictedMethods.snap_getEntropy]: ({ t, targetSubjectMetadata }) => ({
@@ -545,6 +546,44 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: getLeftIcon(IconName.Search),
     weight: 4,
   }),
+  [EndowmentPermissions['endowment:signature-insight']]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) => {
+    const baseDescription = {
+      leftIcon: IconName.Warning,
+      weight: 3,
+    };
+
+    const result = [
+      {
+        ...baseDescription,
+        label: t('permission_signatureInsight'),
+        description: t('permission_signatureInsightDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
+      },
+    ];
+
+    if (
+      isNonEmptyArray(permissionValue.caveats) &&
+      permissionValue.caveats.find((caveat) => {
+        return caveat.type === SnapCaveatType.SignatureOrigin && caveat.value;
+      })
+    ) {
+      result.push({
+        ...baseDescription,
+        label: t('permission_signatureInsightOrigin'),
+        description: t('permission_signatureInsightOriginDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
+        leftIcon: IconName.Explore,
+      });
+    }
+
+    return result;
+  },
   ///: END:ONLY_INCLUDE_IF
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),

@@ -1,39 +1,33 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "inlineSources": true,
+    // ensures single-file compilers, like babel, webpack+swc, etc work
     "isolatedModules": true,
+    // makes typechecking faster (also see `tsBuildInfoFile` setting)
+    "incremental": true,
     "jsx": "react",
-    "lib": ["dom", "es2020"],
-    "moduleResolution": "node",
+    // todo: make two tsconfigs, one for node (development and test) and one for
+    // browser (app, ui, shared?) and ensure the code is split up into the right
+    // directories that make sense for their environment.
+    // I think this would eliminate a lot of eslint overrides complexity
+    // In the meantime, we need DOM libs and should target the ES version in
+    // "@tsconfig/node20/tsconfig.json" (`libs` here overwrites extends's `libs`)
+    "lib": ["DOM", "es2023"],
+    // we only use tsc for type checking (yarn lint:tsc)
     "noEmit": true,
-    "noEmitOnError": true,
-    "outDir": "tsout",
-    "rootDir": ".",
-    "sourceMap": true,
-    "strict": true,
-    "resolveJsonModule": true
+    // matches webpack's `symlinks: false`
+    "preserveSymlinks": true,
+    "resolveJsonModule": true,
+    // sets output file location for the `incremental` setting
+    "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
+    "useUnknownInCatchVariables": true
   },
   "exclude": [
-    "**/jest-coverage/**/*",
-    "**/__mocks__/**/*",
-    "**/storybook-build/**/*",
-    "**/*.stories.*",
-    ".storybook/**/*",
-    "app/scripts/controllers/*.test.ts",
-    "app/scripts/lib/**/*.test.ts",
-    "builds/**/*",
-    "dist/**/*",
-    "node_modules/**",
-    "development/ts-migration-dashboard/build/**/*",
-    "development/ts-migration-dashboard/intermediate/**/*",
-    "ui/**/*.test.js",
-    "ui/**/*.test.ts",
-    "ui/**/*.test.tsx"
+    // don't typecheck stories, as they don't yet pass the type checker.
+    "**/*.stories.tsx",
+    "**/*.stories.ts"
   ],
-  "extends": "@tsconfig/node16/tsconfig.json",
+  // this should match our node version in .nvmrc
+  "extends": "@tsconfig/node20/tsconfig.json",
   "include": ["app", "development", "shared", "types", "ui", "offscreen"]
 }

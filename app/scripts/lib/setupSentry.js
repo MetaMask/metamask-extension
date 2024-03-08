@@ -24,6 +24,19 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
+export const MMI_SENTRY_BACKGROUND_STATE = {
+  MMIController: {
+    opts: true,
+  },
+  CustodyController: {
+    store: true,
+  },
+  MmiConfigurationController: {
+    store: true,
+    configurationClient: true,
+  },
+};
+
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
@@ -56,6 +69,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AccountOrderController: {
     pinnedAccountList: [],
+    hiddenAccountList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -84,7 +98,10 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    showPermissionsTour: true,
     showProductTour: true,
+    showNetworkBanner: true,
+    showAccountBanner: true,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -92,9 +109,6 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  CachedBalancesController: {
-    cachedBalances: false,
   },
   CronjobController: {
     jobs: false,
@@ -113,6 +127,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   EnsController: {
     ensResolutionsByAddress: false,
+    ensEntries: false,
   },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
@@ -135,6 +150,11 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+  },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
   },
   NetworkController: {
     networkConfigurations: false,
@@ -165,7 +185,6 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PPOMController: {
-    chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
     versionFileETag: false,
@@ -188,6 +207,7 @@ export const SENTRY_BACKGROUND_STATE = {
     forgottenPassword: true,
     identities: false,
     incomingTransactionsPreferences: true,
+    isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     knownMethodData: false,
     ledgerTransportType: true,
@@ -196,13 +216,16 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
     },
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
+    signatureSecurityAlertResponses: false,
     transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
@@ -215,7 +238,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
   },
-  SelectedNetworkController: { domains: true, perDomainNetwork: false },
+  SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,
@@ -240,6 +263,9 @@ export const SENTRY_BACKGROUND_STATE = {
     unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
+  },
+  SnapInterface: {
+    interfaces: false,
   },
   SnapsRegistry: {
     database: false,
@@ -310,6 +336,12 @@ export const SENTRY_BACKGROUND_STATE = {
   TxController: {
     transactions: false,
   },
+  UserOperationController: {
+    userOperations: false,
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  ...MMI_SENTRY_BACKGROUND_STATE,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 const flattenedBackgroundStateMask = Object.values(
@@ -338,6 +370,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,

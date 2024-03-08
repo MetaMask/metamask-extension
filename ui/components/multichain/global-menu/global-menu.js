@@ -9,6 +9,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
+  PERMISSIONS,
   ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
@@ -19,9 +20,11 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Text,
   ///: END:ONLY_INCLUDE_IF(snaps)
+  Popover,
+  PopoverPosition,
 } from '../../component-library';
 
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -45,7 +48,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifySnaps,
@@ -59,6 +62,7 @@ import {
   BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderStyle,
   Display,
   JustifyContent,
   TextAlign,
@@ -70,12 +74,12 @@ import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
 
-export const GlobalMenu = ({ closeMenu, anchorElement }) => {
+export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const address = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -103,18 +107,57 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   supportLink = SUPPORT_REQUEST_LINK;
   ///: END:ONLY_INCLUDE_IF
 
+  // Accessibility improvement for popover
+  const lastItemRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const lastItem = lastItemRef.current;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Tab' && !event.shiftKey) {
+        event.preventDefault();
+        closeMenu();
+      }
+    };
+
+    if (lastItem) {
+      lastItem.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      if (lastItem) {
+        lastItem.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+  }, [closeMenu]);
+
   return (
-    <Menu anchorElement={anchorElement} onHide={closeMenu}>
-      <AccountDetailsMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={address}
-      />
-      <ViewExplorerMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={address}
-      />
+    <Popover
+      referenceElement={anchorElement}
+      isOpen={isOpen}
+      padding={0}
+      onClickOutside={closeMenu}
+      onPressEscKey={closeMenu}
+      style={{
+        overflow: 'hidden',
+        minWidth: 225,
+      }}
+      borderStyle={BorderStyle.none}
+      position={PopoverPosition.BottomEnd}
+    >
+      {account && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+          <ViewExplorerMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+        </>
+      )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
@@ -138,6 +181,25 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       >
         {t('connectedSites')}
       </MenuItem>
+      {process.env.MULTICHAIN ? (
+        <MenuItem
+          iconName={IconName.SecurityTick}
+          onClick={() => {
+            history.push(PERMISSIONS);
+            trackEvent({
+              event: MetaMetricsEventName.NavPermissionsOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-connected-sites"
+        >
+          {t('allPermissions')}
+        </MenuItem>
+      ) : null}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -279,6 +341,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('settings')}
       </MenuItem>
       <MenuItem
+        ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
@@ -296,7 +359,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       >
         {t('lockMetaMask')}
       </MenuItem>
-    </Menu>
+    </Popover>
   );
 };
 
@@ -309,4 +372,8 @@ GlobalMenu.propTypes = {
    * Function that closes this menu
    */
   closeMenu: PropTypes.func.isRequired,
+  /**
+   * Whether or not the menu is open
+   */
+  isOpen: PropTypes.bool.isRequired,
 };

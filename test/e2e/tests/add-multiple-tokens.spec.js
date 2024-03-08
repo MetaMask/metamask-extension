@@ -81,7 +81,7 @@ describe('Multiple ERC20 Watch Asset', function () {
           tag: 'button',
         });
 
-        // Switch to watchAsset notificaiton
+        // Switch to watchAsset notification
         await switchToNotificationWindow(driver);
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',
@@ -99,7 +99,7 @@ describe('Multiple ERC20 Watch Asset', function () {
 
         // Check all three tokens have been added to the token list.
         const addedTokens = await driver.findElements({
-          tag: 'p',
+          tag: 'span',
           text: 'TST',
         });
         assert.equal(addedTokens.length, 3);

@@ -1,23 +1,17 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Auto-Lock Timer', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('should automatically lock the wallet once the idle time has elapsed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -39,11 +33,15 @@ describe('Auto-Lock Timer', function () {
           text: 'Lock time must be a number between 0 and 10080',
         });
         await autoLockTimerInput.fill(sixSecsInMins);
-        await driver.assertElementNotPresent('#autoTimeout-helper-text');
+
+        await driver.assertElementNotPresent('#autoTimeout-helper-text', {
+          waitAtLeastGuard: 100, // A findElementGuard is not possible here, because only this element changes, but a waitAtLeast of 100ms should be sufficient
+        });
+
         await driver.clickElement(
           '[data-testid="advanced-setting-auto-lock"] button',
         );
-        // Verify the wallet is loccked
+        // Verify the wallet is locked
         const pageTitle = await driver.findElement('.unlock-page__title');
         const unlockButton = await driver.findElement('.unlock-page button');
         assert.equal(await pageTitle.getText(), 'Welcome back!');

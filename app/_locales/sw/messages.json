@@ -587,9 +587,6 @@
   "search": {
     "message": "Tafuta"
   },
-  "searchResults": {
-    "message": "Matokeo ya Utafutaji"
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -757,12 +754,6 @@
   },
   "unknown": {
     "message": "Haijulikani"
-  },
-  "unknownCameraError": {
-    "message": "Kulikuwa na hitilafu wakati wa kujaribu kufikia kamera yako. Tafadhali jaribu tena..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ayaa! Hitilafu fulani imetokea..."
   },
   "unknownNetwork": {
     "message": "Mtandao Binafsi Usiojulikana"

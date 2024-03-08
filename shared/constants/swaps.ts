@@ -97,6 +97,14 @@ export const GOERLI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
 } as const;
 
+export const SEPOLIA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: CURRENCY_SYMBOLS.ETH,
+  name: 'Ether',
+  address: DEFAULT_TOKEN_ADDRESS,
+  decimals: 18,
+  iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
+} as const;
+
 export const ARBITRUM_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   ...ETH_SWAPS_TOKEN_OBJECT,
 } as const;
@@ -151,7 +159,7 @@ const SWAPS_TESTNET_CHAIN_ID = '0x539';
 
 export const SWAPS_API_V2_BASE_URL = 'https://swap.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
-export const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network';
+export const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
 export const GAS_DEV_API_BASE_URL = 'https://gas.uat-api.cx.metamask.io';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
@@ -264,6 +272,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.BSC]: BNB_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.POLYGON]: MATIC_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.GOERLI]: GOERLI_SWAPS_TOKEN_OBJECT,
+  [CHAIN_IDS.SEPOLIA]: GOERLI_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.AVALANCHE]: AVAX_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.ARBITRUM]: ARBITRUM_SWAPS_TOKEN_OBJECT,

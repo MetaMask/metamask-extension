@@ -3,12 +3,15 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
-import slip44 from '@metamask/slip44';
+import {
+  getFormattedIpfsUrl,
+  fetchTokenContractExchangeRates,
+  CodefiTokenPricesServiceV2,
+} from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { getSnapPrefix } from '@metamask/snaps-utils';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
@@ -29,10 +32,7 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import {
-  SNAPS_DERIVATION_PATHS,
-  SNAPS_METADATA,
-} from '../../../shared/constants/snaps';
+import { SNAPS_METADATA } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -554,21 +554,6 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
 }
 
 /**
- * Gets the name of the SLIP-44 protocol corresponding to the specified
- * `coin_type`.
- *
- * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
- * to retrieve.
- * @returns {string | undefined} The name of the protocol if found.
- */
-export function coinTypeToProtocolName(coinType) {
-  if (String(coinType) === '1') {
-    return 'Test Networks';
-  }
-  return slip44[coinType]?.name || undefined;
-}
-
-/**
  * Tests "nullishness". Used to guard a section of a component from being
  * rendered based on a value.
  *
@@ -580,46 +565,21 @@ export function isNullish(value) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-/**
- * @param {string[]} path
- * @param {string} curve
- * @returns {string | null}
- */
-export function getSnapDerivationPathName(path, curve) {
-  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
-    (derivationPath) =>
-      derivationPath.curve === curve &&
-      lodash.isEqual(derivationPath.path, path),
-  );
-
-  if (pathMetadata) {
-    return pathMetadata.name;
-  }
-
-  // If the curve is secp256k1 and the path is a valid BIP44 path
-  // we try looking for the network/protocol name in SLIP44
-  if (
-    curve === 'secp256k1' &&
-    path[0] === 'm' &&
-    path[1] === `44'` &&
-    path[2].endsWith(`'`)
-  ) {
-    const coinType = path[2].slice(0, -1);
-    return coinTypeToProtocolName(coinType) ?? null;
-  }
-
-  return null;
-}
-
-export const removeSnapIdPrefix = (snapId) =>
-  snapId?.replace(getSnapPrefix(snapId), '');
-
 export const getSnapName = (snapId, subjectMetadata) => {
   if (SNAPS_METADATA[snapId]?.name) {
     return SNAPS_METADATA[snapId].name;
   }
 
-  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+  if (subjectMetadata) {
+    return subjectMetadata.name;
+  }
+
+  // Mirrors a legacy behaviour of stripSnapPrefix
+  if (!snapId) {
+    return null;
+  }
+
+  return stripSnapPrefix(snapId);
 };
 
 export const getSnapRoute = (snapId) => {
@@ -719,4 +679,42 @@ export const checkTokenIdExists = (address, tokenId, obj) => {
     });
   }
   return false;
+};
+
+/**
+ * Retrieves token prices
+ *
+ * @param {string} nativeCurrency - native currency to fetch prices for.
+ * @param {Hex[]} tokenAddresses - set of contract addresses
+ * @param {Hex} chainId - current chainId
+ * @returns The prices for the requested tokens.
+ */
+export const fetchTokenExchangeRates = async (
+  nativeCurrency,
+  tokenAddresses,
+  chainId,
+) => {
+  try {
+    return await fetchTokenContractExchangeRates({
+      tokenPricesService: new CodefiTokenPricesServiceV2(),
+      nativeCurrency,
+      tokenAddresses,
+      chainId,
+    });
+  } catch (err) {
+    return {};
+  }
+};
+
+export const hexToText = (hex) => {
+  if (!hex) {
+    return hex;
+  }
+  try {
+    const stripped = stripHexPrefix(hex);
+    const buff = Buffer.from(stripped, 'hex');
+    return buff.length === 32 ? hex : buff.toString('utf8');
+  } catch (e) {
+    return hex;
+  }
 };

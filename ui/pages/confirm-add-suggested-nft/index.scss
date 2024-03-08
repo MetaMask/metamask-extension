@@ -1,7 +1,9 @@
+@use "design-system";
+
 .confirm-add-suggested-nft {
   &__card {
     margin: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
   }
 
   &__header {
@@ -49,15 +51,13 @@
   }
 
   &__nft-name {
-    @include H6;
+    @include design-system.H6;
 
     align-self: flex-start;
   }
 
   &__nft-tokenid {
-    @include H7;
-
-    color: #606060;
+    @include design-system.H7;
   }
 
   &__nft-remove-tooltip {

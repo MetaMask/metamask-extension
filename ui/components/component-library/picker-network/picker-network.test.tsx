@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+import { IconName } from '..';
 import { PickerNetwork } from './picker-network';
 
 describe('PickerNetwork', () => {
@@ -17,12 +18,12 @@ describe('PickerNetwork', () => {
       <PickerNetwork
         data-testid="picker-network"
         label="Imported"
-        src="./images/matic-token.png"
+        src="./images/matic-token.svg"
       />,
     );
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
-    expect(image).toHaveAttribute('src', './images/matic-token.png');
+    expect(image).toHaveAttribute('src', './images/matic-token.svg');
   });
   it('should render avatar network inside the PickerNetwork with custom props', () => {
     const container = (
@@ -45,14 +46,12 @@ describe('PickerNetwork', () => {
         data-testid="picker-network"
         label="Imported"
         iconProps={{
-          name: 'down-arrow-picker-icon',
+          name: IconName.ArrowDown,
         }}
       />
     );
 
-    expect(container.props.iconProps.name).toStrictEqual(
-      'down-arrow-picker-icon',
-    );
+    expect(container.props.iconProps.name).toStrictEqual(IconName.ArrowDown);
   });
   // className
   it('should render with custom className', () => {

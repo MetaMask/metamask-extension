@@ -11,11 +11,12 @@ exports[`NetworkListItem renders properly 1`] = `
       <img
         alt="Polygon logo"
         class="mm-avatar-network__network-image"
-        src="./images/matic-token.png"
+        src="./images/matic-token.svg"
       />
     </div>
     <div
       class="mm-box multichain-network-list-item__network-name mm-box--display-flex mm-box--align-items-center"
+      data-testid="Polygon"
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"

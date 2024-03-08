@@ -72,7 +72,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 >
                   <img
                     alt="Ethereum Mainnet"
-                    src="./images/eth_logo.png"
+                    src="./images/eth_logo.svg"
                     style="height: 16px; width: 16px;"
                   />
                 </div>
@@ -185,7 +185,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                       CryptoKitty
                     </p>
                     <p
-                      class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-alternative"
                     >
                       #
                       15
@@ -282,7 +282,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               >
                 <img
                   alt="Ethereum Mainnet"
-                  src="./images/eth_logo.png"
+                  src="./images/eth_logo.svg"
                   style="height: 16px; width: 16px;"
                 />
               </div>
@@ -395,7 +395,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                     CryptoKitty
                   </p>
                   <p
-                    class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-default"
+                    class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-alternative"
                   >
                     #
                     15

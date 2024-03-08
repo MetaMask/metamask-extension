@@ -609,9 +609,6 @@
   "search": {
     "message": "Ieškoti"
   },
-  "searchResults": {
-    "message": "Paieškos rezultatai"
-  },
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
@@ -779,12 +776,6 @@
   },
   "unknown": {
     "message": "Nežinoma"
-  },
-  "unknownCameraError": {
-    "message": "Kreipiantis į jūsų kamerą iškilo problema. Bandykite dar kartą..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Vaje! Kažkas negerai..."
   },
   "unknownNetwork": {
     "message": "Nežinomas privatusis tinklas"

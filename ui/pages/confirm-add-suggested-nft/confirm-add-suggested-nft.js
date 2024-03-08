@@ -33,7 +33,7 @@ import {
   getSuggestedNfts,
   getIpfsGateway,
   getNetworkIdentifier,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
 } from '../../selectors';
@@ -50,6 +50,7 @@ import {
   TextAlign,
   TextVariant,
   BlockSize,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
@@ -74,7 +75,7 @@ const ConfirmAddSuggestedNFT = () => {
   const ipfsGateway = useSelector(getIpfsGateway);
   const trackEvent = useContext(MetaMetricsContext);
   const networkIdentifier = useSelector(getNetworkIdentifier);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const accountName = useSelector((state) =>
     getAddressBookEntryOrAccountName(state, selectedAddress),
@@ -294,6 +295,7 @@ const ConfirmAddSuggestedNFT = () => {
                           )}
                           <Text
                             variant={TextVariant.bodyMd}
+                            color={TextColor.textAlternative}
                             className="confirm-add-suggested-nft__nft-tokenId"
                           >
                             #{tokenId}
@@ -359,6 +361,7 @@ const ConfirmAddSuggestedNFT = () => {
                         )}
                         <Text
                           variant={TextVariant.bodySm}
+                          color={TextColor.textAlternative}
                           className="confirm-add-suggested-nft__nft-tokenId"
                         >
                           #{tokenId}

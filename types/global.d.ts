@@ -38,13 +38,21 @@ declare class MessageSender {
   url?: string;
 }
 
+export interface LedgerIframeMissingResponse {
+  success: false;
+  payload: {
+    error: Error;
+  };
+}
+
 type ResponseType =
   | Unsuccessful
   | Success<{ publicKey: string; chainCode: string }>
   | Success<EthereumSignedTx>
   | Success<PROTO.MessageSignature>
   | Success<PROTO.EthereumTypedDataSignature>
-  | Record<string, unknown>;
+  | Record<string, unknown>
+  | LedgerIframeMissingResponse;
 
 /**
  * Defines an overloaded set of function call signatures for the chrome
@@ -104,6 +112,86 @@ interface sendMessage {
         | Success<{ publicKey: string; chainCode: string }>,
     ) => void,
   ): Promise<Unsuccessful | Success<{ publicKey: string; chainCode: string }>>;
+  (
+    message: {
+      target: OffscreenCommunicationTarget.ledgerOffscreen;
+      action: LedgerAction.signTransaction;
+      params: { hdPath: string; tx: string };
+    },
+    callback: (response: {
+      success: boolean;
+      payload: { v: string; s: string; r: string; error?: Error };
+    }) => void,
+  ): Promise<{
+    success: boolean;
+    payload?: { v: string; s: string; r: string };
+  }>;
+  (
+    message:
+      | {
+          target: OffscreenCommunicationTarget.ledgerOffscreen;
+          action: LedgerAction.signMessage;
+          params: { hdPath: string; message: string };
+        }
+      | {
+          target: OffscreenCommunicationTarget.ledgerOffscreen;
+          action: LedgerAction.signTypedData;
+          params: {
+            hdPath: string;
+            domainSeparatorHex: string;
+            hashStructMessageHex: string;
+          };
+        },
+    callback: (response: {
+      success: boolean;
+      payload: {
+        v: number;
+        s: string;
+        r: string;
+        error?: Error;
+      };
+    }) => void,
+  ): Promise<{ v: number; s: string; r: string }>;
+  (
+    message: {
+      target: OffscreenCommunicationTarget.ledgerOffscreen;
+      action: LedgerAction.getPublicKey;
+      params: { hdPath: string };
+    },
+    callback: (response: {
+      success: boolean;
+      payload: {
+        publicKey: string;
+        address: string;
+        chainCode?: string;
+        error?: Error;
+      };
+    }) => void,
+  ): Promise<{ publicKey: string; address: string; chainCode?: string }>;
+  (
+    message: {
+      target: OffscreenCommunicationTarget.ledgerOffscreen;
+      action: LedgerAction.updateTransport;
+      params: { transportType: string };
+    },
+    callback: (response: { success: boolean }) => void,
+  ): Promise<boolean>;
+  (
+    message: {
+      target: OffscreenCommunicationTarget.ledgerOffscreen;
+      action: LedgerAction.makeApp;
+    },
+    callback: (response: { success: boolean; error?: Error }) => void,
+  ): Promise<boolean>;
+  (
+    message: {
+      target: OffscreenCommunicationTarget.latticeOffscreen;
+      params: {
+        url: string;
+      };
+    },
+    callback: (response: { result: any; error?: Error }) => void,
+  );
   (
     message: Record<string, unknown>,
     callback?: (response: ResponseType) => void,
