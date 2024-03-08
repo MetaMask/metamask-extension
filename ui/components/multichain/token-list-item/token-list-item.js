@@ -298,7 +298,7 @@ export const TokenListItem = ({
                 variant={TextVariant.bodyMd}
                 textAlign={TextAlign.End}
               >
-                {primary} {tokenSymbol}{' '}
+                {primary} {isNativeCurrency ? '' : tokenSymbol}
               </Text>
             </Box>
           </Box>

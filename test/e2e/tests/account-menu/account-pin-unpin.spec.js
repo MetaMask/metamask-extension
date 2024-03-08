@@ -7,29 +7,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Account list - pin/unpin functionality - ', function () {
-  it('pin account by clicking the pin button', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-      async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement(
-          '[data-testid="account-list-item-menu-button"]',
-        );
-        await driver.clickElement('[data-testid="account-list-menu-pin"]');
-
-        const pinnedIcon = await driver.findElement('.account-pinned-icon');
-        assert.equal(await pinnedIcon.isDisplayed(), true);
-      },
-    );
-  });
-
-  it('unpin account by cliking the unpin button', async function () {
+  it('pin and unpin account by clicking the pin/unpin button', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -39,6 +17,8 @@ describe('Account list - pin/unpin functionality - ', function () {
       async ({ driver }) => {
         const pinnedIconSelector = '.account-pinned-icon';
         await unlockWallet(driver);
+
+        // pin account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
@@ -46,12 +26,16 @@ describe('Account list - pin/unpin functionality - ', function () {
         await driver.clickElement('[data-testid="account-list-menu-pin"]');
         const pinnedIcon = await driver.findElement(pinnedIconSelector);
         assert.equal(await pinnedIcon.isDisplayed(), true);
+
+        // unpin account
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );
         await driver.clickElement('[data-testid="account-list-menu-pin"]');
-        await driver.waitForElementNotPresent(pinnedIconSelector);
-        await driver.assertElementNotPresent(pinnedIconSelector);
+
+        await driver.assertElementNotPresent(pinnedIconSelector, {
+          waitAtLeastGuard: 200, // A waitAtLeastGuard of 200ms is the best choice here
+        });
       },
     );
   });

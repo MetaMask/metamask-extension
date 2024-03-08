@@ -65,6 +65,7 @@ describe('TagUrl', () => {
         actionButtonLabel="Permissions"
         avatarFaviconProps={{
           'data-testid': 'fallback avatar',
+          name: '',
         }}
       />
     );

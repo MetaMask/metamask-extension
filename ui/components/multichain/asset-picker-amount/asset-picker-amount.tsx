@@ -10,7 +10,7 @@ import {
   Display,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getSelectedIdentity } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 
 import { AssetType } from '../../../../shared/constants/transaction';
 import type { Amount, Asset } from '../../../ducks/send';
@@ -40,7 +40,7 @@ export const AssetPickerAmount = ({
 }: AssetPickerAmountProps) => {
   const t = useI18nContext();
 
-  const selectedAccount = useSelector(getSelectedIdentity);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 
@@ -61,6 +61,7 @@ export const AssetPickerAmount = ({
   } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
   }
+
   return (
     <Box className="asset-picker-amount">
       <Box display={Display.Flex}>

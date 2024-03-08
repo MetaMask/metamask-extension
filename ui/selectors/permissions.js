@@ -293,7 +293,10 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     .filter((account) => connectedAccounts.includes(account.address))
     .map((account) => ({
       ...account,
-      lastActive: permissionHistoryByAccount?.[account.address],
+      metadata: {
+        ...account.metadata,
+        lastActive: permissionHistoryByAccount?.[account.address],
+      },
     }))
     .sort(
       ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
