@@ -90,7 +90,7 @@ export default class PreferencesController {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        stxOptIn: false,
+        stxOptIn: null,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,

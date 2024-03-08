@@ -48,6 +48,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
+  getPreferences,
 } from '../../selectors';
 
 import {
@@ -67,6 +68,7 @@ import {
   setActiveNetwork,
   setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
+  setStxOptIn,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -141,6 +143,8 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  const { stxOptIn } = getPreferences(state);
+
   return {
     forgottenPassword,
     hasWatchTokenPendingApprovals,
@@ -193,6 +197,7 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
+    stxOptIn,
   };
 };
 
@@ -271,6 +276,9 @@ const mapDispatchToProps = (dispatch) => {
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setStxOptIn: (value) => {
+      return dispatch(setStxOptIn(value));
+    },
   };
 };
 

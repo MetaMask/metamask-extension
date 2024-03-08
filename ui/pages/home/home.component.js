@@ -207,6 +207,8 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    setStxOptIn: PropTypes.func.isRequired,
+    stxOptIn: PropTypes.bool,
   };
 
   state = {
@@ -420,6 +422,16 @@ export default class Home extends PureComponent {
         location: 'Terms Of Use Popover',
       },
     });
+  };
+
+  onStxNotRightNow = () => {
+    const { setStxOptIn } = this.props;
+    setStxOptIn(false);
+  };
+
+  onStxContinue = () => {
+    const { setStxOptIn } = this.props;
+    setStxOptIn(true);
   };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -805,6 +817,7 @@ export default class Home extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IF
+      stxOptIn,
     } = this.props;
 
     if (forgottenPassword) {
@@ -865,9 +878,9 @@ export default class Home extends PureComponent {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
           <SmartTransactionsModal
-            onStartSwapping={() => {}}
-            onManageStxInSettings={() => {}}
-            isOpen={showSmartTransactionsModal}
+            onContinue={this.onStxContinue}
+            onNoRightNow={this.onStxNotRightNow}
+            isOpen={stxOptIn === null}
           />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
