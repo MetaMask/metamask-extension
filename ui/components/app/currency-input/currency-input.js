@@ -1,5 +1,3 @@
-/* eslint-disable prefer-const */
-/* eslint-disable no-constant-condition */
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
