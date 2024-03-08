@@ -62,7 +62,7 @@ export const ALL_NETWORKS_DATA = [
     removable: false,
   },
   {
-    chainId: '0xe705', // TODO: change this when linea sepolia network is ready
+    chainId: '0xe705',
     nickname: 'Linea Sepolia',
     rpcUrl:
       'https://linea-sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',

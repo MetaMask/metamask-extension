@@ -137,7 +137,7 @@ export const CHAIN_IDS = {
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
   LINEA_GOERLI: '0xe704',
-  LINEA_SEPOLIA: '0xe705', // TODO: change the value once linea sepolia network is ready
+  LINEA_SEPOLIA: '0xe705',
   LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
