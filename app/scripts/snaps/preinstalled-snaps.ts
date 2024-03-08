@@ -1,7 +1,5 @@
+import * as fs from 'fs';
 import type { PreinstalledSnap } from '@metamask/snaps-controllers';
-
-// eslint-disable-next-line import/unambiguous
-const fs = require('fs');
 
 const TEMP_PREINSTALLED_SNAPS = [];
 
