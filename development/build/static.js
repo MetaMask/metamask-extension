@@ -143,10 +143,6 @@ function getCopyTargets(
       dest: `fonts/fontawesome`,
     },
     {
-      src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),
-      dest: 'react-gallery/',
-    },
-    {
       src: `./ui/css/output/`,
       pattern: `*.css`,
       dest: ``,
