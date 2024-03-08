@@ -26,6 +26,7 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
 
         const safeChainsList = await fetchWithCache({
           url: 'https://chainid.network/chains.json',
+          allowStale: true,
           cacheOptions: { cacheRefreshTime: DAY },
           functionName: 'getSafeChainsList',
         });
