@@ -103,6 +103,7 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
     point: { pointStyle: false },
   },
   plugins: {
+    // Downsample to maximum number of points
     decimation: {
       algorithm: 'lttb',
       samples: 150,
