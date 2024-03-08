@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { Asset, Amount } from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
-import { AssetType } from '../../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../shared/constants/transaction';
 import { Box, Text } from '../../../component-library';
 import {
   FontWeight,
@@ -11,6 +14,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import CurrencyInput from '../../../app/currency-input';
 import { getIsFiatPrimary } from '../utils';
+import { NFTInput } from '../nft-input/nft-input';
 import SwapIcon from './swap-icon';
 
 interface BaseProps {
@@ -76,19 +80,31 @@ export function SwappableCurrencyInput({
           asset={asset?.details}
         />
       );
-
-    default:
+    case AssetType.NFT:
+      if (asset.details?.standard === TokenStandard.ERC721) {
+        return null;
+      }
       return (
-        <Box marginLeft={'auto'}>
-          <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Bold}
-            marginLeft={10}
-          >
-            {asset?.details?.tokenId}
-          </Text>
-        </Box>
+        <NFTInput
+          integerValue={parseInt(value, 16)}
+          onChange={onAmountChange}
+          className="asset-picker-amount__input-nft"
+        />
       );
+    default:
+    // do nothing
   }
+
+  return (
+    <Box marginLeft={'auto'}>
+      <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
+      <Text
+        variant={TextVariant.bodySm}
+        fontWeight={FontWeight.Bold}
+        marginLeft={10}
+      >
+        {asset?.details?.tokenId}
+      </Text>
+    </Box>
+  );
 }

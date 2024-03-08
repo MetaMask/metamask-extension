@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../selectors';
 
-import { AssetType } from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import type { Amount, Asset } from '../../../ducks/send';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MaxClearButton from './max-clear-button';
@@ -65,9 +65,7 @@ export const AssetPickerAmount = ({
   return (
     <Box className="asset-picker-amount">
       <Box display={Display.Flex}>
-        <Label variant={TextVariant.bodyMdMedium}>
-          {asset.type === AssetType.NFT ? t('asset') : t('amount')}
-        </Label>
+        <Label variant={TextVariant.bodyMdMedium}>{t('amount')}</Label>
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
         {!isFiatPrimary && <MaxClearButton asset={asset} />}
       </Box>
@@ -84,6 +82,9 @@ export const AssetPickerAmount = ({
         marginTop={1}
         marginBottom={1}
         padding={1}
+        // apply extra padding if there isn't an input component to apply it
+        paddingTop={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
+        paddingBottom={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
       >
         <AssetPicker asset={asset} {...assetPickerProps} />
         <SwappableCurrencyInput

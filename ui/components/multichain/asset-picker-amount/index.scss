@@ -7,6 +7,30 @@
     padding: 0;
   }
 
+  // input for NFTs
+  &__input-nft {
+    &:focus-within {
+      border-color: inherit;
+    }
+
+    // input field itself
+    & div > div > input {
+      text-align: right;
+    }
+
+    flex-shrink: 1;
+
+    box-sizing: border-box;
+    border-width: 1px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+
+    // 4 padding + 1 border
+    margin: -5px -5px -5px 0;
+    padding: 24px 16px 24px 16px;
+  }
+
+  // input for tokens
   &__input {
     & > div {
       // primary (i.e., input) and secondary (i.e., subtext) input sections

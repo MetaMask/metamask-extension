@@ -64,7 +64,10 @@ export const SendPageContent = ({
       dispatch(
         updateSendAsset({
           type: token.type ?? AssetType.token,
-          details: { ...token, standard: TokenStandard.ERC20 },
+          details: {
+            ...token,
+            standard: token.standard ?? TokenStandard.ERC20,
+          },
           skipComputeEstimatedGasLimit: true,
         }),
       );

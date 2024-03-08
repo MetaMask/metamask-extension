@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Text } from '../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import TokenBalance from '../../../ui/token-balance';
@@ -12,12 +13,15 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   type TextColor,
   TextVariant,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import CurrencyDisplay from '../../../ui/currency-display';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIsFiatPrimary } from '../utils';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 export interface AssetBalanceTextProps {
   asset: Asset;
@@ -28,6 +32,7 @@ export function AssetBalanceText({
   asset,
   balanceColor,
 }: AssetBalanceTextProps) {
+  const t = useI18nContext();
   const secondaryCurrency = useSelector(getCurrentCurrency);
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
@@ -52,6 +57,16 @@ export function AssetBalanceText({
     undefined,
     true,
   );
+
+  if (asset.type === AssetType.NFT) {
+    const numberOfTokens = hexToDecimal(asset.balance);
+    return (
+      <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodyMd}>
+        {numberOfTokens}{' '}
+        {t(numberOfTokens === '1' ? 'token' : 'tokens')?.toLowerCase()}
+      </Text>
+    );
+  }
 
   const formattedFiat =
     asset.type === AssetType.native

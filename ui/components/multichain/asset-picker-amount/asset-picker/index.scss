@@ -1,6 +1,7 @@
 .asset-picker {
   min-width: 80px;
   height: 30px;
+  flex-grow: 1;
 
   &:hover {
     cursor: pointer;

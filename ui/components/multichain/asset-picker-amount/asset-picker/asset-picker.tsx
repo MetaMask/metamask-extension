@@ -15,6 +15,8 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
+  JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -82,14 +84,27 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         alignItems={AlignItems.center}
         gap={3}
         padding={2}
+        justifyContent={
+          asset.type === AssetType.NFT ? JustifyContent.spaceBetween : undefined
+        }
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.pill}
         onClick={() => setShowAssetPickerModal(true)}
       >
-        <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
-        <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
-          <Text variant={TextVariant.bodyMd}>{shortFormSymbol}</Text>
-        </Tooltip>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+          <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
+          <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
+            <Text variant={TextVariant.bodyMd}>{shortFormSymbol}</Text>
+            {asset.details?.tokenId && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                #{asset.details.tokenId}
+              </Text>
+            )}
+          </Tooltip>
+        </Box>
         <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
       </Box>
     </>
