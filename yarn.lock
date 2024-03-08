@@ -25011,7 +25011,6 @@ __metadata:
     jest-canvas-mock: "npm:^2.3.1"
     jest-environment-jsdom: "npm:^29.1.2"
     jest-junit: "npm:^14.0.1"
-    js-yaml: "npm:^4.1.0"
     jsdom: "npm:^16.7.0"
     json-rpc-engine: "npm:^6.1.0"
     json-rpc-middleware-stream: "npm:^5.0.1"
@@ -25113,6 +25112,7 @@ __metadata:
     web3-stream-provider: "npm:^4.0.0"
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:^5.75.0"
+    yaml: "npm:^2.4.1"
     yargs: "npm:^17.0.1"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -35978,6 +35978,15 @@ __metadata:
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: e088b37b4d4885b70b50c9fa1b7e54bd2e27f5c87205f9deaffd1fb293ab263d9c964feadb9817a7b129a5bf30a06582cb08750f810568ecc14f3cdbabb79cb3
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "yaml@npm:2.4.1"
+  bin:
+    yaml: bin.mjs
+  checksum: 2c54fd69ef59126758ae710f9756405a7d41abcbb61aca894250d0e81e76057c14dc9bb00a9528f72f99b8f24077f694a6f7fd09cdd6711fcec2eebfbb5df409
   languageName: node
   linkType: hard
 
