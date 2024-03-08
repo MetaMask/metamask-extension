@@ -807,6 +807,13 @@ export function getIsSmartTransaction(state) {
   return sharedSelectors.getIsSmartTransaction(state);
 }
 
+export function getIsStxOptInAvailable(state) {
+  const currentNetwork = getCurrentNetwork(state);
+  const isAllowedStxChainId = getIsAllowedStxChainId(state);
+  const usesInfuraRpc = currentNetwork?.rpcUrl?.includes('.infura.io');
+  return isAllowedStxChainId && usesInfuraRpc;
+}
+
 export function getFeatureFlagsByChainId(state) {
   return sharedSelectors.getFeatureFlagsByChainId(state);
 }
