@@ -20,9 +20,14 @@ import {
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
+import {
+  getIpfsGateway,
+  getNativeCurrencyImage,
+  getTokenList,
+} from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
+import { getAssetImageURL } from '../../../../helpers/utils/util';
 
 export interface AssetPickerProps {
   asset: Asset;
@@ -35,6 +40,8 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList: Record<string, any> = useSelector(getTokenList);
 
+  const ipfsGateway = useSelector(getIpfsGateway);
+
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
   let image: string | undefined;
@@ -42,7 +49,9 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
   if (asset.type === AssetType.native) {
     image = nativeCurrencyImageUrl;
   } else if (tokenList && asset.details) {
-    image = tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
+    image =
+      getAssetImageURL(asset.details?.image, ipfsGateway) ||
+      tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
   }
 
   const symbol =
