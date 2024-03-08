@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
+import * as Actions from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import mockState from '../../../../test/data/mock-state.json';
@@ -28,6 +28,9 @@ describe('Confirm Transaction', () => {
     mockState.metamask.transactions,
   )[0];
   it('should render correct information for approve transaction with value', () => {
+    jest
+      .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
+      .mockResolvedValue(null);
     const store = configureMockStore(middleware)({
       ...mockState,
       confirmTransaction: {

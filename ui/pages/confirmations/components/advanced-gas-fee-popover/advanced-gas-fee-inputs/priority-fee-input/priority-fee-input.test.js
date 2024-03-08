@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 
 import {
   EditGasModes,
@@ -19,15 +19,16 @@ import PriorityfeeInput from './priority-fee-input';
 const LOW_PRIORITY_FEE = 0.000000001;
 
 jest.mock('../../../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
 }));
 
-const render = (txProps, contextProps) => {
+const render = async (txProps, contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -41,36 +42,51 @@ const render = (txProps, contextProps) => {
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 
-  return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        userFeeLevel: 'custom',
-        ...txProps,
-      }}
-      {...contextProps}
-    >
-      <AdvancedGasFeePopoverContextProvider>
-        <PriorityfeeInput />
-        <AdvancedGasFeeGasLimit />
-      </AdvancedGasFeePopoverContextProvider>
-    </GasFeeContextProvider>,
-    store,
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            userFeeLevel: 'custom',
+            ...txProps,
+          }}
+          {...contextProps}
+        >
+          <AdvancedGasFeePopoverContextProvider>
+            <PriorityfeeInput />
+            <AdvancedGasFeeGasLimit />
+          </AdvancedGasFeePopoverContextProvider>
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
+
+  return result;
 };
 
 describe('PriorityfeeInput', () => {
-  it('should renders advancedGasFee.priorityfee value if current estimate used is not custom', () => {
-    render({
+  it('should renders advancedGasFee.priorityfee value if current estimate used is not custom', async () => {
+    await render({
       userFeeLevel: 'high',
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
-  it('should not use advancedGasFee.priorityfee value for swaps', () => {
-    render(
+  it('should not use advancedGasFee.priorityfee value for swaps', async () => {
+    await render(
       {
         userFeeLevel: 'high',
       },
@@ -101,8 +117,8 @@ describe('PriorityfeeInput', () => {
 
     it.each(testCases)(
       '$description',
-      ({ maxPriorityFeePerGas, expectedValue }) => {
-        render({
+      async ({ maxPriorityFeePerGas, expectedValue }) => {
+        await render({
           txParams: {
             maxPriorityFeePerGas,
           },
@@ -114,13 +130,13 @@ describe('PriorityfeeInput', () => {
     );
   });
 
-  it('should show current priority fee range in subtext', () => {
-    render();
+  it('should show current priority fee range in subtext', async () => {
+    await render();
     expect(screen.queryByText('1 - 20 GWEI')).toBeInTheDocument();
   });
 
-  it('should show current value of priority fee in users primary currency in right side of input box', () => {
-    render({
+  it('should show current value of priority fee in users primary currency in right side of input box', async () => {
+    await render({
       txParams: {
         gas: '0x5208',
         maxPriorityFeePerGas: '0x77359400',
@@ -129,13 +145,13 @@ describe('PriorityfeeInput', () => {
     expect(screen.queryByText('≈ 0.000042 ETH')).toBeInTheDocument();
   });
 
-  it('should show 12hr range value in subtext', () => {
-    render();
+  it('should show 12hr range value in subtext', async () => {
+    await render();
     expect(screen.queryByText('2 - 125 GWEI')).toBeInTheDocument();
   });
 
-  it('should not show error if value entered is 0', () => {
-    render({
+  it('should not show error if value entered is 0', async () => {
+    await render({
       txParams: {
         maxPriorityFeePerGas: '0x174876E800',
       },
@@ -151,8 +167,8 @@ describe('PriorityfeeInput', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should not show the error if priority fee is 0', () => {
-    render({
+  it('should not show the error if priority fee is 0', async () => {
+    await render({
       txParams: {
         maxPriorityFeePerGas: '0x0',
       },
@@ -163,8 +179,8 @@ describe('PriorityfeeInput', () => {
   });
 
   describe('updatePriorityFee', () => {
-    it('updates base fee correctly', () => {
-      const { getByTestId } = render(<PriorityfeeInput />);
+    it('updates base fee correctly', async () => {
+      const { getByTestId } = await render(<PriorityfeeInput />);
       const input = getByTestId('priority-fee-input');
 
       fireEvent.change(input, { target: { value: '1' } });
@@ -172,8 +188,8 @@ describe('PriorityfeeInput', () => {
       expect(input.value).toBe('1');
     });
 
-    it('handles low numbers', () => {
-      const { getByTestId } = render(<PriorityfeeInput />);
+    it('handles low numbers', async () => {
+      const { getByTestId } = await render(<PriorityfeeInput />);
       const input = getByTestId('priority-fee-input');
 
       fireEvent.change(input, { target: { value: LOW_PRIORITY_FEE } });
