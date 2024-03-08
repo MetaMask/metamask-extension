@@ -842,7 +842,6 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
     | typeof CHAIN_IDS.OPTIMISM_GOERLI
     | typeof CHAIN_IDS.BASE_TESTNET
-    | typeof CHAIN_IDS.BASE
     | typeof CHAIN_IDS.OPBNB_TESTNET
     | typeof CHAIN_IDS.OPBNB
     | typeof CHAIN_IDS.BSC_TESTNET
@@ -918,6 +917,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.ZKSYNC_ERA]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'zksync',
+  },
+  [CHAIN_IDS.BASE]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'base',
   },
 };
 
