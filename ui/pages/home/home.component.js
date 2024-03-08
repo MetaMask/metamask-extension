@@ -208,6 +208,7 @@ export default class Home extends PureComponent {
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
     setStxOptIn: PropTypes.func.isRequired,
+    isStxOptInAvailable: PropTypes.bool.isRequired,
     stxOptIn: PropTypes.bool,
   };
 
@@ -818,6 +819,7 @@ export default class Home extends PureComponent {
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IF
       stxOptIn,
+      isStxOptInAvailable,
     } = this.props;
 
     if (forgottenPassword) {
@@ -832,7 +834,8 @@ export default class Home extends PureComponent {
       completedOnboarding &&
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       !process.env.IN_TEST &&
-      !newNetworkAddedConfigurationId;
+      !newNetworkAddedConfigurationId &&
+      isStxOptInAvailable;
 
     const showWhatsNew =
       completedOnboarding &&

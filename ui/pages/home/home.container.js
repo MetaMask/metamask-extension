@@ -49,6 +49,7 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
   getPreferences,
+  getIsStxOptInAvailable,
 } from '../../selectors';
 
 import {
@@ -198,6 +199,7 @@ const mapStateToProps = (state) => {
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
     stxOptIn,
+    isStxOptInAvailable: getIsStxOptInAvailable(state),
   };
 };
 

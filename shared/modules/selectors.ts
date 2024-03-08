@@ -13,8 +13,8 @@ export const getCurrentChainId = (state: Record<string, any>): string => {
 
 export const getSmartTransactionsOptInStatus = (
   state: Record<string, any>,
-): boolean => {
-  return Boolean(state.metamask.preferences?.stxOptIn);
+): boolean | null => {
+  return state.metamask.preferences?.stxOptIn;
 };
 
 export function getSelectedInternalAccount(state: Record<string, any>) {
