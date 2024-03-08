@@ -131,11 +131,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
-        const sendButton = await driver.findElement(
-          '[data-testid="asset-send-button"]',
-        );
-        await driver.scrollToElement(sendButton);
-        sendButton.click();
+        await clickSend(driver);
 
         // Paste address without hex prefix
         await driver.pasteIntoField(
@@ -200,11 +196,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
-        const sendButton = await driver.findElement(
-          '[data-testid="asset-send-button"]',
-        );
-        await driver.scrollToElement(sendButton);
-        sendButton.click();
+        await clickSend(driver);
 
         // Type address without hex prefix
         await driver.fill(
@@ -247,3 +239,15 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     );
   });
 });
+
+async function clickSend(driver) {
+  try {
+    await driver.clickElement('[data-testid="eth-overview-send"]');
+  } catch {
+    const sendButton = await driver.findElement(
+      '[data-testid="asset-send-button"]',
+    );
+    await driver.scrollToElement(sendButton);
+    sendButton.click();
+  }
+}
