@@ -279,7 +279,17 @@ export const AccountListItem = ({
             </Text>
           </Box>
           {orderedTokenList.length > 1 ? (
-            <AvatarGroup members={orderedTokenList} limit={4} />
+            <AvatarGroup
+              members={orderedTokenList.map((token) =>
+                token
+                  ? {
+                      ...token,
+                      avatarValue: token.iconUrl,
+                    }
+                  : undefined,
+              )}
+              limit={4}
+            />
           ) : (
             <Box
               display={Display.Flex}
