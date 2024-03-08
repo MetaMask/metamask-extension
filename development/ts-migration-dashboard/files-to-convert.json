@@ -10,8 +10,6 @@
   "app/scripts/controllers/app-state.js",
   "app/scripts/controllers/cached-balances.js",
   "app/scripts/controllers/cached-balances.test.js",
-  "app/scripts/controllers/detect-tokens.js",
-  "app/scripts/controllers/detect-tokens.test.js",
   "app/scripts/controllers/ens/ens.js",
   "app/scripts/controllers/ens/index.js",
   "app/scripts/controllers/ens/index.test.js",
