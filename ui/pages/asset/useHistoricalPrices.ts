@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Point,
-} from 'chart.js';
+import { Point } from 'chart.js';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../shared/constants/time';
 import { chainSupportsPricing } from './util';
