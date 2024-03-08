@@ -1,0 +1,14 @@
+diff --git a/dist/utils.js b/dist/utils.js
+index 0a77dd709e786ee586b70677fa951f34d5097e34..dbb30f1116fc7c9f174548836c2d6d4e15049253 100644
+--- a/dist/utils.js
++++ b/dist/utils.js
+@@ -39,6 +39,9 @@ function keyringTypeToName(keyringType) {
+         case keyring_controller_1.KeyringTypes.snap: {
+             return 'Snap Account';
+         }
++        case keyring_controller_1.KeyringTypes.custody: {
++            return 'Custody';
++        }
+         default: {
+             throw new Error(`Unknown keyring ${keyringType}`);
+         }
