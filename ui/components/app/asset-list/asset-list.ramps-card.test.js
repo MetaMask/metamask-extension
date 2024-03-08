@@ -53,6 +53,6 @@ describe('AssetList Ramps Card', () => {
 
   it('does not show the ramp card when the account has a balance', () => {
     const { queryByText } = render();
-    expect(queryByText('Buy')).not.toBeInTheDocument();
+    expect(queryByText('Fund your wallet')).not.toBeInTheDocument();
   });
 });

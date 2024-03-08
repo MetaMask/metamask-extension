@@ -8,6 +8,7 @@ import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import NftsTab from '.';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 
 const NFTS = [
   {
@@ -333,6 +334,26 @@ describe('NFT Items', () => {
       });
 
       expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('NFT Tab Ramps Card', () => {
+    useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
+    it('shows the ramp card when there are no NFTs', () => {
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        nfts: [],
+      });
+      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
+    });
+
+    it('does not show the ramp card when the account has a balance', () => {
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+      });
+      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
   });
 });
