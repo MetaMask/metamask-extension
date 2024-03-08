@@ -170,6 +170,7 @@ import {
 } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
+  CHAIN_SPEC_URL,
   NETWORK_TYPES,
   NetworkStatus,
   MAINNET_DISPLAY_NAME,
@@ -201,7 +202,10 @@ import {
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
-import { getStorageItem, setStorageItem } from '../../shared/lib/storage-helpers';
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../shared/lib/storage-helpers';
 import {
   getTokenIdParam,
   fetchTokenBalance,
@@ -6309,15 +6313,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-  * The chain list is fetched live at runtime, falling back to a cache.
-  * This preseeds the cache at startup with a static list provided at build.
-  */
+   * The chain list is fetched live at runtime, falling back to a cache.
+   * This preseeds the cache at startup with a static list provided at build.
+   */
   async initializeChainlist() {
-    const cacheKey = 'cachedFetch:https://chainid.network/chains.json';
-    if (await getStorageItem(cacheKey)) {
+    const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
+    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
+    if (cachedResponse) {
       return;
     }
-    await setStorage(cacheKey, rawChainData());
+    await setStorageItem(cacheKey, {
+      cachedResponse: rawChainData(),
+      // Cached value is immediately invalidated
+      cachedTime: 0,
+    });
   }
 
   /**
