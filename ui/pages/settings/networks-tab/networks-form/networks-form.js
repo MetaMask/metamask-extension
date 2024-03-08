@@ -19,6 +19,7 @@ import {
 import {
   BUILT_IN_NETWORKS,
   CHAIN_IDS,
+  CHAIN_SPEC_URL,
   FEATURED_RPCS,
   infuraProjectId,
 } from '../../../../../shared/constants/network';
@@ -133,7 +134,7 @@ const NetworksForm = ({
     async function fetchChainList() {
       try {
         const chainList = await fetchWithCache({
-          url: 'https://chainid.network/chains.json',
+          url: CHAIN_SPEC_URL,
           functionName: 'getSafeChainsList',
           allowStale: true,
         });
