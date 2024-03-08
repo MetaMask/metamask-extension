@@ -110,6 +110,8 @@ exports[`SendContent Component render should match snapshot 1`] = `
               >
                 <div
                   class="unit-input__input-container"
+                  style="display: inherit;"
+                  title="1"
                 >
                   <input
                     class="unit-input__input"
@@ -118,7 +120,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     placeholder="0"
                     style="width: 1.5ch;"
                     type="number"
-                    value="1"
+                    value="0"
                   />
                   <div
                     class="unit-input__suffix"
