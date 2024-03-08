@@ -33,7 +33,12 @@ describe('Send ERC20 token to contract address', function () {
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+
+        const sendButton = await driver.findElement(
+          '[data-testid="asset-send-button"]',
+        );
+        await driver.scrollToElement(sendButton);
+        sendButton.click();
 
         // Type contract address
         await driver.fill(
