@@ -143,6 +143,7 @@ const NetworksForm = ({
         const chainList = await fetchWithCache({
           url: 'https://chainid.network/chains.json',
           functionName: 'getSafeChainsList',
+          allowStale: true,
         });
         Object.values(BUILT_IN_NETWORKS).forEach((network) => {
           const index = chainList.findIndex(
