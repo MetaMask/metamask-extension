@@ -19,11 +19,10 @@
     }
 
     flex-shrink: 1;
-
     box-sizing: border-box;
     border-width: 1px;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 
     // 4 padding + 1 border
     margin: -5px -5px -5px 0;
