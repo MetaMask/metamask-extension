@@ -3622,6 +3622,18 @@
     "message": "Private key for $1",
     "description": "$1 represents the account name"
   },
+  "privateKeyHidden": {
+    "message": "The private key is hidden",
+    "description": "Explains that the private key input is hidden"
+  },
+  "privateKeyShow": {
+    "message": "Show/Hide the private key input",
+    "description": "Describes a toggle that is used to show or hide the private key input"
+  },
+  "privateKeyShown": {
+    "message": "This private key is being shown",
+    "description": "Explains that the private key input is being shown"
+  },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
