@@ -426,7 +426,6 @@ export const NetworkListMenu = ({ onClose }) => {
           <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
-              disabled={!isUnlocked}
               startIconName={IconName.Add}
               block
               onClick={() => {
