@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useReducer,
   useState,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +22,7 @@ import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getTargetSubjectMetadata,
@@ -195,6 +197,7 @@ export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const pendingConfirmations = useSelector(
@@ -312,6 +315,9 @@ export default function ConfirmationPage({
             matchedChain,
             currencySymbolWarning,
           },
+          // Passing `t` in the contexts object is a bit redundant but since it's a
+          // context too, it makes sense (for completeness)
+          { t, trackEvent },
         )
       : {};
   }, [
@@ -321,11 +327,18 @@ export default function ConfirmationPage({
     history,
     matchedChain,
     currencySymbolWarning,
+    trackEvent,
     ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
     ///: END:ONLY_INCLUDE_IF
   ]);
+
+  useEffect(() => {
+    if (templatedValues.onLoad) {
+      templatedValues.onLoad();
+    }
+  }, [templatedValues]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
