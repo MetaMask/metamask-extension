@@ -7,7 +7,6 @@ import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import NftsTab from '.';
 
 const NFTS = [
