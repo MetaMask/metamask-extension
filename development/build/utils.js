@@ -5,14 +5,6 @@ const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
-const BUILD_TYPES_TO_SVG_LOGO_PATH = {
-  main: './app/images/logo/metamask-fox.svg',
-  beta: './app/build-types/beta/images/logo/metamask-fox.svg',
-  flask: './app/build-types/flask/images/logo/metamask-fox.svg',
-  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
-  desktop: './app/build-types/desktop/images/logo/metamask-fox.svg',
-};
-
 /**
  * Returns whether the current build is a development build or not.
  *
@@ -262,32 +254,6 @@ function getBuildName({
 }
 
 /**
- * Get the app ID for the current build. Should be valid reverse FQDN.
- *
- * @param {object} options - The build options.
- * @param {string} options.buildType - The build type of the current build.
- * @returns {string} The build app ID.
- */
-function getBuildAppId({ buildType }) {
-  const baseDomain = 'io.metamask';
-  return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
-}
-
-/**
- * Get the image data uri for the svg icon for the current build.
- *
- * @param {object} options - The build options.
- * @param {string} options.buildType - The build type of the current build.
- * @returns {string} The image data uri for the icon.
- */
-function getBuildIcon({ buildType }) {
-  const svgLogoPath =
-    BUILD_TYPES_TO_SVG_LOGO_PATH[buildType] ||
-    BUILD_TYPES_TO_SVG_LOGO_PATH.main;
-  // encode as base64 as its more space-efficient for most SVGs than a data uri
-  return `data:image/svg+xml;base64,${readFileSync(svgLogoPath, 'base64')}`;
-}
-/**
  * Takes the given JavaScript file at `filePath` and replaces its contents with
  * a script that injects the original file contents into the document in which
  * the file is loaded. Useful for MV2 extensions to run scripts synchronously in the
@@ -306,8 +272,6 @@ function makeSelfInjecting(filePath) {
 module.exports = {
   getBrowserVersionMap,
   getBuildName,
-  getBuildAppId,
-  getBuildIcon,
   getEnvironment,
   isDevBuild,
   isTestBuild,
