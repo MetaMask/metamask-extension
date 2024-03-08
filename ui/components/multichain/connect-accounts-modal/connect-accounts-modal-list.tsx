@@ -23,9 +23,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getOriginOfCurrentTab } from '../../../selectors/selectors';
 import { getURLHost } from '../../../helpers/utils/util';
+import { addMorePermittedAccounts } from '../../../store/actions';
 
 export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
   onClose,
@@ -40,7 +41,7 @@ export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
 }) => {
   const t = useI18nContext();
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
+  const dispatch = useDispatch();
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -90,8 +91,7 @@ export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
           })}
         </ModalBody>
         <ModalFooter>
-          {/* Todo: Implement onClick handler */}
-          <ButtonPrimary onClick={() => console.log(selectedAccounts)} block>
+          <ButtonPrimary onClick={() => dispatch(addMorePermittedAccounts(activeTabOrigin, selectedAccounts))} block>
             {t('confirm')}
           </ButtonPrimary>
         </ModalFooter>
