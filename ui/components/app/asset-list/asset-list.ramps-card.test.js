@@ -40,7 +40,7 @@ const render = (
   );
 };
 
-describe('AssetList Buy/Receive', () => {
+describe('AssetList Ramps Card', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
 
   it('shows the ramp card when the account is empty', () => {
@@ -48,7 +48,7 @@ describe('AssetList Buy/Receive', () => {
       '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       '0x0',
     );
-    expect(queryByText('Buy')).toBeInTheDocument();
+    expect(queryByText('Fund your wallet')).toBeInTheDocument();
   });
 
   it('does not show the ramp card when the account has a balance', () => {
