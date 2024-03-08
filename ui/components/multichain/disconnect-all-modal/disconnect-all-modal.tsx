@@ -8,7 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -18,8 +18,13 @@ export enum DisconnectType {
   Snap = 'disconnectAllSnapsText',
 }
 
-export const DisconnectAllModal = ({ type, hostname, onClick, onClose } : {
-  type: DisconnectType,
+export const DisconnectAllModal = ({
+  type,
+  hostname,
+  onClick,
+  onClose,
+}: {
+  type: DisconnectType;
   hostname: string;
   onClick: () => void;
   onClose: () => void;
@@ -34,10 +39,7 @@ export const DisconnectAllModal = ({ type, hostname, onClick, onClose } : {
           {t('disconnectAllTitle', [t(type)])}
         </ModalHeader>
         <ModalBody>
-          <Text>{t('disconnectAllText', [
-            t(type),
-            hostname
-          ])}</Text>
+          <Text>{t('disconnectAllText', [t(type), hostname])}</Text>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -45,9 +47,12 @@ export const DisconnectAllModal = ({ type, hostname, onClick, onClose } : {
             startIconName={IconName.Logout}
             block
             danger
-          >{t('disconnect')}</Button>
+            data-testid="disconnect-all"
+          >
+            {t('disconnect')}
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  )
-}
+  );
+};
