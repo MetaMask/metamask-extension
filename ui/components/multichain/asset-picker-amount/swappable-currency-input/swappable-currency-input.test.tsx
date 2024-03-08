@@ -79,11 +79,11 @@ describe('SwappableCurrencyInput', () => {
 
   it('ERC721: matches snapshot', () => {
     const asset = {
-      type: AssetType.token,
+      type: AssetType.NFT,
       details: {
         address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
         symbol: 'TOKEN',
-        isERC721: true,
+        standard: 'ERC721',
         tokenId: 1234,
         decimals: 0,
       },
@@ -91,7 +91,7 @@ describe('SwappableCurrencyInput', () => {
     };
     const mockAssetChange = jest.fn();
 
-    const { asFragment, getByText } = render(
+    const { asFragment } = render(
       <Provider
         store={createStore({
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -107,7 +107,39 @@ describe('SwappableCurrencyInput', () => {
       </Provider>,
     );
 
-    expect(asFragment()).toMatchSnapshot('nft');
-    expect(getByText('1234')).toBeInTheDocument();
+    expect(asFragment()).toMatchSnapshot('ERC721');
+  });
+
+  it('ERC1155: matches snapshot', () => {
+    const asset = {
+      type: AssetType.NFT,
+      details: {
+        address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+        symbol: 'TOKEN',
+        standard: 'ERC1155',
+        tokenId: 1234,
+        decimals: 0,
+      },
+      balance: '1000000',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { asFragment } = render(
+      <Provider
+        store={createStore({
+          useNativeCurrencyAsPrimaryCurrency: true,
+          sendInputCurrencySwitched: true,
+        })}
+      >
+        <SwappableCurrencyInput
+          asset={asset}
+          assetType={AssetType.NFT}
+          amount={{ value: '5000' }}
+          onAmountChange={mockAssetChange}
+        />
+      </Provider>,
+    );
+
+    expect(asFragment()).toMatchSnapshot('ERC1155');
   });
 });

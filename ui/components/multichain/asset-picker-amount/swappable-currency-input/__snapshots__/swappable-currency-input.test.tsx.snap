@@ -1,20 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SwappableCurrencyInput ERC721: matches snapshot: nft 1`] = `
+exports[`SwappableCurrencyInput ERC721: matches snapshot: ERC721 1`] = `<DocumentFragment />`;
+
+exports[`SwappableCurrencyInput ERC1155: matches snapshot: ERC1155 1`] = `
 <DocumentFragment>
   <div
-    class="mm-box mm-box--margin-left-auto"
+    class="unit-input asset-picker-amount__input-nft"
   >
-    <p
-      class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+    <div
+      class="unit-input__inputs"
     >
-      [tokenId]
-    </p>
-    <p
-      class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-left-10 mm-box--color-text-default"
-    >
-      1234
-    </p>
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="20480"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="nft-input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 5.5ch;"
+          type="number"
+          value="20480"
+        />
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
