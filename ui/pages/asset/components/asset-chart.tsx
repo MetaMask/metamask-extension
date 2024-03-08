@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import {
   Chart,
   LineElement,
@@ -10,6 +11,7 @@ import {
   Point,
   ChartEvent,
 } from 'chart.js';
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';

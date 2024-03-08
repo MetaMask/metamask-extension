@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../shared/constants/time';
