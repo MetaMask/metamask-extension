@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
   Point,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'chart.js';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../shared/constants/time';
