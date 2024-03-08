@@ -163,6 +163,7 @@ export default class UnitInput extends PureComponent {
                 !this.props.keyPressRegex.test(e.key) &&
                 e.preventDefault()
               }
+              step="any"
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
                 this.unitInput = ref;
