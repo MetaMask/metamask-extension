@@ -27,6 +27,7 @@ export const useSafeChains = () => {
       fetchWithCache({
         url: 'https://chainid.network/chains.json',
         functionName: 'getSafeChainsList',
+        allowStale: true,
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
