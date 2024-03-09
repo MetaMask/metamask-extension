@@ -1,17 +1,5 @@
 {
-  "dictionaries": [],
-  "dictionaryDefinitions": [],
-  "ignorePaths": [
-    "app/images",
-    "builds*/",
-    "coverage/",
-    "dist/",
-    "node-modules/",
-    "package.json",
-    "storybook-build/",
-    "test-artifacts/",
-    "test-results/"
-  ],
+  "ignorePaths": ["app/images", "package.json"],
   "ignoreWords": [
     "acitores",
     "C01LUJL3T98",
@@ -32,7 +20,7 @@
     "webextension",
     "xvfb"
   ],
-  "import": [],
+  "useGitignore": true,
   "version": "0.2",
   "words": [
     "bignumber",

@@ -206,7 +206,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('#sendButton');
         await driver.delay(2000);
 
-        // Switch to notification that should still be switchEthereumChain request but with an warning.
+        // Switch to notification that should still be switchEthereumChain request but with a warning.
         await switchToNotificationWindow(driver, 4);
 
         await driver.findElement({
