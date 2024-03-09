@@ -510,6 +510,15 @@ export default class MetamaskController extends EventEmitter {
           listener,
         ),
     });
+    this.controllerMessenger.registerActionHandler(
+      `PreferencesController:getState`,
+      () => this.preferencesController.store.getState(),
+    );
+    this.controllerMessenger.registerInitialEventPayload({
+      eventType: `PreferencesController:stateChange`,
+      getPayload: () => [this.preferencesController.store.getState(), []],
+    });
+    this.controllerMessenger.subscribe(`PreferencesController:stateChange`);
 
     this.assetsContractController = new AssetsContractController(
       {
