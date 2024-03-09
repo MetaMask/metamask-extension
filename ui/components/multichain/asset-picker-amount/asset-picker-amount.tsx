@@ -19,9 +19,16 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  TextAlign,
+  FlexDirection,
+  JustifyContent,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 
-import { AssetType } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import UserPreferencedCurrencyInput from '../../app/user-preferenced-currency-input/user-preferenced-currency-input.container';
 import UserPreferencedTokenInput from '../../app/user-preferenced-token-input/user-preferenced-token-input.component';
 import {
@@ -34,7 +41,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import TokenBalance from '../../ui/token-balance';
-import { getSelectedIdentity } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
+import UnitInput from '../../ui/unit-input/unit-input.component';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import MaxClearButton from './max-clear-button';
 import AssetPicker from './asset-picker/asset-picker';
 
@@ -67,20 +76,44 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
       </>
     );
   }
-  if (asset.type === AssetType.NFT) {
+  if (
+    asset.type === AssetType.NFT &&
+    asset.details?.standard === TokenStandard.ERC721
+  ) {
     return (
       <>
-        <Box marginLeft={'auto'}>
+        <Box
+          marginLeft={'auto'}
+          textAlign={TextAlign.End}
+          paddingTop={2}
+          paddingBottom={2}
+        >
           <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Bold}
-            marginLeft={10}
-          >
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Bold}>
             {asset?.details?.tokenId}
           </Text>
         </Box>
       </>
+    );
+  }
+  if (
+    asset.type === AssetType.NFT &&
+    asset.details?.standard === TokenStandard.ERC1155
+  ) {
+    return (
+      <Box marginLeft={'auto'} textAlign={TextAlign.End} width={BlockSize.Max}>
+        <Text variant={TextVariant.bodyMd} ellipsis>
+          {t('amount')}
+        </Text>
+        <UnitInput
+          onChange={(newAmount: string) =>
+            dispatch(updateSendAmount(decimalToHex(newAmount)))
+          }
+          type="number"
+          min="0"
+          className="erc1155-input"
+        ></UnitInput>
+      </Box>
     );
   }
 
@@ -98,19 +131,70 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
 export const AssetPickerAmount = () => {
   const t = useI18nContext();
   const { asset, amount } = useSelector(getCurrentDraftTransaction);
-  const selectedAccount = useSelector(getSelectedIdentity);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const { error } = amount;
+
+  const balanceColor = error
+    ? TextColor.errorDefault
+    : TextColor.textAlternative;
+
+  const renderAssetDisplay = () => {
+    if (asset.type === AssetType.native) {
+      return (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore: Other props are optional but the compiler expects them
+        <UserPreferencedCurrencyDisplay
+          value={asset.balance}
+          type={PRIMARY}
+          textProps={{
+            color: balanceColor,
+            variant: TextVariant.bodySm,
+          }}
+          suffixProps={{
+            color: balanceColor,
+            variant: TextVariant.bodySm,
+          }}
+        />
+      );
+    }
+    if (
+      asset.details?.standard === TokenStandard.ERC20 ||
+      asset.details?.standard === TokenStandard.ERC721
+    ) {
+      return (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore: Details should be defined for token assets
+        <TokenBalance
+          token={asset.details}
+          textProps={{
+            color: balanceColor,
+            variant: TextVariant.bodySm,
+          }}
+          suffixProps={{
+            color: balanceColor,
+            variant: TextVariant.bodySm,
+          }}
+        />
+      );
+    } else if (asset.details?.standard === TokenStandard.ERC1155) {
+      const {
+        details: { balance },
+      } = asset as any;
+      return (
+        <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>
+          {balance}
+        </Text>
+      );
+    }
+    return null;
+  };
 
   useEffect(() => {
     if (!asset) {
       throw new Error('No asset is drafted for sending');
     }
   }, [selectedAccount]);
-
-  const balanceColor = error
-    ? TextColor.errorDefault
-    : TextColor.textAlternative;
 
   return (
     <Box className="asset-picker-amount">
@@ -128,57 +212,79 @@ export const AssetPickerAmount = () => {
         paddingRight={4}
         borderRadius={BorderRadius.LG}
         borderColor={
-          amount.error ? BorderColor.errorDefault : BorderColor.primaryDefault
+          error ? BorderColor.errorDefault : BorderColor.primaryDefault
         }
         borderStyle={BorderStyle.solid}
         borderWidth={2}
         marginTop={2}
-        paddingTop={3}
-        paddingBottom={3}
+        paddingTop={1}
+        paddingBottom={1}
       >
         <AssetPicker asset={asset} />
         {renderCurrencyInput(asset, amount)}
       </Box>
-      <Box display={Display.Flex}>
-        <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>
-          {t('balance')}:
-        </Text>
-        {asset.type === AssetType.native ? (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore: Other props are optional but the compiler expects them
-          <UserPreferencedCurrencyDisplay
-            value={asset.balance}
-            type={PRIMARY}
-            textProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-            suffixProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-          />
-        ) : (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore: Details should be defined for token assets
-          <TokenBalance
-            token={asset.details}
-            textProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-            suffixProps={{
-              color: balanceColor,
-              variant: TextVariant.bodySm,
-            }}
-          />
-        )}
-        {error ? (
-          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
-            . {t(error)}
+
+      {asset.type === AssetType.NFT &&
+      asset.details?.standard === TokenStandard.ERC1155 ? (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexStart}
+            width={BlockSize.TwoThirds}
+            gap={1}
+          >
+            <Text
+              color={balanceColor}
+              marginRight={1}
+              variant={TextVariant.bodySm}
+            >
+              {t('balance')}:
+            </Text>
+            {renderAssetDisplay()}
+            {error ? (
+              <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+                . {t(error)}
+              </Text>
+            ) : null}
+          </Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.OneThird}
+            alignItems={AlignItems.flexEnd}
+          >
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              width={BlockSize.ThreeFourths}
+              textAlign={TextAlign.End}
+              ellipsis
+            >
+              ID: {`#${asset.details?.tokenId}`}
+            </Text>
+          </Box>
+        </Box>
+      ) : (
+        <Box display={Display.Flex}>
+          <Text
+            color={balanceColor}
+            marginRight={1}
+            variant={TextVariant.bodySm}
+          >
+            {t('balance')}:
           </Text>
-        ) : null}
-      </Box>
+          {renderAssetDisplay()}
+          {error ? (
+            <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+              . {t(error)}
+            </Text>
+          ) : null}
+        </Box>
+      )}
     </Box>
   );
 };

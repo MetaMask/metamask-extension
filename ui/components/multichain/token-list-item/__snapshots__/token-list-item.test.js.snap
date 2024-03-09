@@ -72,7 +72,6 @@ exports[`TokenListItem should render correctly 1`] = `
               data-testid="multichain-token-list-item-value"
             >
                
-               
             </p>
           </div>
         </div>

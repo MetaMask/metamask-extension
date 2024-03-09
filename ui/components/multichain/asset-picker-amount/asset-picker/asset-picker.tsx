@@ -18,23 +18,35 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
+import {
+  getIpfsGateway,
+  getNativeCurrencyImage,
+  getTokenList,
+} from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import { getAssetImageURL } from '../../../../helpers/utils/util';
 
 // A component that lets the user pick from a list of assets.
 export default function AssetPicker({ asset }: { asset: Asset }) {
   const nativeCurrency = useSelector(getNativeCurrency);
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList);
+  const ipfsGateway = useSelector(getIpfsGateway);
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  const image =
-    asset.type === AssetType.native
-      ? nativeCurrencyImage
-      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore: type 'string' can't be used to index type '{}'
-        tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
+  let image: string | undefined;
+  if (asset.type === AssetType.native) {
+    image = nativeCurrencyImage;
+  } else if (asset.type === AssetType.token) {
+    image =
+      asset.details?.image ??
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: type 'string' can't be used to index type '{}'
+      tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
+  } else if (asset.type === AssetType.NFT) {
+    image = getAssetImageURL(asset.details?.image, ipfsGateway);
+  }
 
   // TODO: Handle long symbols in the UI
   const symbol =

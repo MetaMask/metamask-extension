@@ -2,10 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { unapprovedPersonalMsg } from '../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
-import { unapprovedPersonalMsg } from './mock-data';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
