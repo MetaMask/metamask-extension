@@ -46,6 +46,7 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/transactions/etherscan.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.test.ts',
+    '<rootDir>/app/scripts/controllers/platform-notifications/**/*.test.(js|ts)',
     '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/controllers/preferences.test.js',
