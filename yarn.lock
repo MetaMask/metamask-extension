@@ -4744,7 +4744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^17.0.0, @metamask/network-controller@npm:^17.1.0, @metamask/network-controller@npm:^17.2.0, @metamask/network-controller@npm:^17.2.1":
+"@metamask/network-controller@npm:^17.0.0, @metamask/network-controller@npm:^17.2.0, @metamask/network-controller@npm:^17.2.1":
   version: 17.2.1
   resolution: "@metamask/network-controller@npm:17.2.1"
   dependencies:
@@ -4914,23 +4914,6 @@ __metadata:
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
   checksum: 12702062f0fb84b029d330d1f05a7d6cd6bdc28e7bc0f3507267944a93e5274d1c92920fb2d96dbce7997d949af14a1ca0726ee6485527ec9663577c1393bda2
-  languageName: node
-  linkType: hard
-
-"@metamask/polling-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/polling-controller@npm:4.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/controller-utils": "npm:^8.0.1"
-    "@metamask/network-controller": "npm:^17.1.0"
-    "@metamask/utils": "npm:^8.2.0"
-    "@types/uuid": "npm:^8.3.0"
-    fast-json-stable-stringify: "npm:^2.1.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/network-controller": ^17.1.0
-  checksum: b309b3ea131b854f162f831ea48f87afee6787960ce44febbeefc980c5dcd84138d7b412ac317d8c65bf3e4bae7a2e8f2b70839185a9baf88d3b7d010c2ffe42
   languageName: node
   linkType: hard
 
@@ -24848,7 +24831,6 @@ __metadata:
     "@metamask/permission-log-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^8.0.0"
     "@metamask/phishing-warning": "npm:^3.0.3"
-    "@metamask/polling-controller": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.27.0"
     "@metamask/providers": "npm:^14.0.2"
