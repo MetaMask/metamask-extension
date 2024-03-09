@@ -1422,14 +1422,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenDetectionController = new TokenDetectionController({
       messenger: tokenDetectionControllerMessenger,
-      networkClientId: this.networkController.state.selectedNetworkClientId,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
           this.assetsContractController,
-        ),
-      getCurrentSelectedAccount:
-        this.accountsController.getSelectedAccount.bind(
-          this.accountsController,
         ),
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
