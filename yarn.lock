@@ -3856,7 +3856,7 @@ __metadata:
 
 "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-11.0.0-c67f9a2901.patch":
   version: 11.0.0
-  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-11.0.0-c67f9a2901.patch::version=11.0.0&hash=716e41"
+  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A11.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-11.0.0-c67f9a2901.patch::version=11.0.0&hash=9fffbb"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/base-controller": "npm:^4.1.1"
@@ -3872,7 +3872,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^13.0.0
     "@metamask/snaps-controllers": ^4.0.0
-  checksum: b0ba19b96c7dd4cfdeb5adb1d6c66e3109c5278ef2fbd104bc2ca575b67bcbb2e48d6273b105760cc5eea0464da1f443ac95c5275a44d42059868cd904bf8a3b
+  checksum: 2b5793240384ad8e1a7cd1ffd28e32a72b2b92561169a244f9a8236121e2d41519ffe8d9795225071bcd996f7ff2e257fc9ca0c9e31f9fc9f03b44c83ca9bc06
   languageName: node
   linkType: hard
 
