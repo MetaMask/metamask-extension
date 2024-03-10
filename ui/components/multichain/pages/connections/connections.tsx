@@ -60,7 +60,7 @@ export const Connections = () => {
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccount = mergeAccounts(connectedAccounts, internalAccounts);
+  const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -117,7 +117,7 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
-                {mergedAccount.map((account: AccountType, index: number) => {
+                {mergedAccounts.map((account: AccountType, index: number) => {
                   const connectedSites: ConnectedSites = {};
 
                   const connectedSite = connectedSites[account.address]?.find(
@@ -127,6 +127,7 @@ export const Connections = () => {
                     <AccountListItem
                       identity={account}
                       key={account.address}
+                      accountsCount={mergedAccounts.length}
                       selected={selectedAccount.address === account.address}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
