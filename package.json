@@ -216,7 +216,6 @@
     "@trezor/connect-web": "9.0.11",
     "lavamoat-core@npm:^15.1.1": "patch:lavamoat-core@npm%3A15.1.1#~/.yarn/patches/lavamoat-core-npm-15.1.1-51fbe39988.patch",
     "@metamask/keyring-controller@npm:^12.2.0": "patch:@metamask/keyring-controller@npm%3A12.2.0#~/.yarn/patches/@metamask-keyring-controller-npm-12.2.0-2b196324d1.patch",
-    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
     "@metamask/snaps-sdk": "^3.1.0"
   },
   "dependencies": {
@@ -272,7 +271,7 @@
     "@metamask/gas-fee-controller": "^13.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^3.0.0",
-    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
+    "@metamask/keyring-controller": "^13.0.0",
     "@metamask/logging-controller": "^2.0.2",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
