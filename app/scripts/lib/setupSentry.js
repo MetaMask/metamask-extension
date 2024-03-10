@@ -304,6 +304,7 @@ export const SENTRY_BACKGROUND_STATE = {
       tradeTxId: false,
     },
   },
+  TokenDetectionController: {},
   TokenListController: {
     preventPollingOnNetworkRestart: true,
     tokenList: false,
