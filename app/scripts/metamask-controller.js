@@ -5606,9 +5606,11 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
-    (open
-      ? this.tokenDetectionController.enable()
-      : this.tokenDetectionController.disable())();
+    if (open) {
+      this.tokenDetectionController.enable();
+    } else {
+      this.tokenDetectionController.disable();
+    }
   }
   /* eslint-enable accessor-pairs */
 
