@@ -15,13 +15,3 @@ index 0a77dd709e786ee586b70677fa951f34d5097e34..24dbc12c31686a3ad1b78de702801e19
      switch (keyringType) {
          case keyring_controller_1.KeyringTypes.simple: {
              return 'Account';
-@@ -38,6 +38,9 @@ function keyringTypeToName(keyringType) {
-         case keyring_controller_1.KeyringTypes.snap: {
-             return 'Snap Account';
-         }
-+        case keyring_controller_1.KeyringTypes.custody: {
-+            return 'Custody';
-+        }
-         default: {
-             throw new Error(`Unknown keyring ${keyringType}`);
-         }
