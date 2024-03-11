@@ -7,7 +7,7 @@ executors:
     resource_class: small
     environment:
       FONTCONFIG_PATH: /etc/fonts
-      NODE_OPTIONS: --max_old_space_size=1024
+      NODE_OPTIONS: --max_old_space_size=1536
   node-browsers-medium:
     docker:
       - image: cimg/node:20.11-browsers
