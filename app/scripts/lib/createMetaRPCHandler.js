@@ -1,4 +1,4 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { rpcErrors, serializeError } from '@metamask/rpc-errors';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
@@ -9,7 +9,7 @@ const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
     if (!api[data.method]) {
       outStream.write({
         jsonrpc: '2.0',
-        error: ethErrors.rpc.methodNotFound({
+        error: rpcErrors.methodNotFound({
           message: `${data.method} not found`,
         }),
         id: data.id,

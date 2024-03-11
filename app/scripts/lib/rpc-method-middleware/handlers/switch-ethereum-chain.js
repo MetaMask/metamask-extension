@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
@@ -70,7 +70,7 @@ async function switchEthereumChainHandler(
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Expected single, object parameter. Received:\n${JSON.stringify(
           req.params,
         )}`,
@@ -86,7 +86,7 @@ async function switchEthereumChainHandler(
 
   if (otherKeys.length > 0) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
       }),
     );
@@ -96,7 +96,7 @@ async function switchEthereumChainHandler(
 
   if (!isPrefixedFormattedHexString(_chainId)) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
       }),
     );
@@ -104,7 +104,7 @@ async function switchEthereumChainHandler(
 
   if (!isSafeChainId(parseInt(_chainId, 16))) {
     return end(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
       }),
     );
@@ -160,7 +160,7 @@ async function switchEthereumChainHandler(
   }
 
   return end(
-    ethErrors.provider.custom({
+    providerErrors.custom({
       code: 4902, // To-be-standardized "unrecognized chain ID" error
       message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
     }),

@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
@@ -51,7 +51,7 @@ async function mmiSetAccountAndNetworkHandler(
 
     if (!req.params?.[0] || typeof req.params[0] !== 'object') {
       return end(
-        ethErrors.rpc.invalidParams({
+        rpcErrors.invalidParams({
           message: `Expected single, object parameter. Received:\n${JSON.stringify(
             req.params,
           )}`,
