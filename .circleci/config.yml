@@ -377,7 +377,7 @@ jobs:
           command: .circleci/scripts/release-create-release-pr.sh
 
   prep-deps:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - run:
