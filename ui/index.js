@@ -197,6 +197,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     useRequestQueue &&
     selectedTabOrigin &&
+    numberOfUnapprovedTx === 0 &&
     process.env.MULTICHAIN
   ) {
     const domainNetworks = getAllDomains(state);
