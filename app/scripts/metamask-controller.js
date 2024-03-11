@@ -510,14 +510,17 @@ export default class MetamaskController extends EventEmitter {
           listener,
         ),
     });
+    // TODO: Remove once `PreferencesController` is migrated to the core repo
     this.controllerMessenger.registerActionHandler(
       `PreferencesController:getState`,
       () => this.preferencesController.store.getState(),
     );
+    // TODO: Remove once `PreferencesController` is migrated to the core repo
     this.controllerMessenger.registerInitialEventPayload({
       eventType: `PreferencesController:stateChange`,
       getPayload: () => [this.preferencesController.store.getState(), []],
     });
+    // TODO: Remove once `PreferencesController` is migrated to the core repo
     this.controllerMessenger.subscribe(`PreferencesController:stateChange`);
 
     this.assetsContractController = new AssetsContractController(
@@ -592,6 +595,7 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
+    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
     this.controllerMessenger.registerActionHandler(
       'TokensController:getState',
       () => this.tokensController.state,
