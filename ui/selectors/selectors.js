@@ -188,9 +188,10 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
+ * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
  */
-export function checkNetworkAndAccountSupports1559(state) {
-  const networkSupports1559 = isEIP1559Network(state);
+export function checkNetworkAndAccountSupports1559(state, networkClientId) {
+  const networkSupports1559 = isEIP1559Network(state, networkClientId);
   return networkSupports1559;
 }
 
@@ -1232,8 +1233,9 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 );
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
+  getMetaMaskIdentities,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
@@ -1241,8 +1243,16 @@ export const getConnectedSitesList = createDeepEqualSelector(
 
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
+          sitesList[siteKey].addressToNameMap[connectedAddress] =
+            identities[connectedAddress].name; // Map address to name
         } else {
-          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+          sitesList[siteKey] = {
+            ...app,
+            addresses: [connectedAddress],
+            addressToNameMap: {
+              [connectedAddress]: identities[connectedAddress].name,
+            },
+          };
         }
       });
     });

@@ -329,23 +329,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
-                Network is busy. Gas prices are high and estimates are less accurate.
-              </p>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
-              style="mask-image: url('./images/icons/danger.svg');"
-            />
-            <div
-              class="mm-box mm-box--min-width-0"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-              >
                 You are sending 0 ETH.
               </p>
             </div>
@@ -398,12 +381,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         </button>
                         <div
                           class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                          title="0.00021"
+                          title="0.000021"
                         >
                           <span
                             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                           >
-                            0.00021
+                            0.000021
                           </span>
                         </div>
                       </div>
@@ -416,12 +399,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       >
                         <div
                           class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                          title="0.00021 ETH"
+                          title="0.000021 ETH"
                         >
                           <span
                             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                           >
-                            0.00021
+                            0.000021
                           </span>
                           <span
                             class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
