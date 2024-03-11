@@ -152,11 +152,16 @@ const PermissionCell = ({
                 }
                 position="bottom"
               >
-                <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
+                <Icon
+                  color={infoIconColor}
+                  name={infoIcon}
+                  size={IconSize.Sm}
+                />
               </Tooltip>
             )
           )}
-        </Box>)}
+        </Box>
+      )}
     </Box>
   );
 };
