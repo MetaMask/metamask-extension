@@ -1269,6 +1269,11 @@
         "Buffer": true
       }
     },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -2793,7 +2798,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "obj-multiplex>once": true
+        "@metamask/object-multiplex>once": true
       }
     },
     "eslint": {
@@ -5814,10 +5819,10 @@
         "process.nextTick": true
       },
       "packages": {
+        "@metamask/object-multiplex>once": true,
         "browserify>readable-stream>process-nextick-args": true,
         "duplexify>end-of-stream": true,
-        "gulp>glob-watcher>async-done>stream-exhaust": true,
-        "obj-multiplex>once": true
+        "gulp>glob-watcher>async-done>stream-exhaust": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -6376,8 +6381,8 @@
         "fs": true
       },
       "packages": {
-        "duplexify>end-of-stream": true,
-        "obj-multiplex>once": true
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
       }
     },
     "gulp>vinyl-fs>glob-stream>readable-stream": {
@@ -6610,8 +6615,8 @@
         "fs": true
       },
       "packages": {
-        "duplexify>end-of-stream": true,
-        "obj-multiplex>once": true
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
       }
     },
     "gulp>vinyl-fs>readable-stream": {
@@ -6823,7 +6828,7 @@
     },
     "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": {
       "packages": {
-        "obj-multiplex>once": true
+        "@metamask/object-multiplex>once": true
       }
     },
     "ini": {
@@ -7155,11 +7160,11 @@
         "process.platform": true
       },
       "packages": {
+        "@metamask/object-multiplex>once": true,
         "eslint>minimatch": true,
         "gulp-watch>path-is-absolute": true,
         "nyc>glob>fs.realpath": true,
         "nyc>glob>inflight": true,
-        "obj-multiplex>once": true,
         "pumpify>inherits": true
       }
     },
@@ -7193,8 +7198,8 @@
         "process.nextTick": true
       },
       "packages": {
-        "obj-multiplex>once": true,
-        "obj-multiplex>once>wrappy": true
+        "@metamask/object-multiplex>once": true,
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "nyc>resolve-from": {
@@ -7226,11 +7231,6 @@
       "globals": {
         "process.stderr": true,
         "process.stdout": true
-      }
-    },
-    "obj-multiplex>once": {
-      "packages": {
-        "obj-multiplex>once>wrappy": true
       }
     },
     "postcss": {
@@ -8115,8 +8115,8 @@
         "process.version": true
       },
       "packages": {
-        "duplexify>end-of-stream": true,
-        "obj-multiplex>once": true
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
       }
     },
     "randomcolor": {

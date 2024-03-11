@@ -1642,8 +1642,13 @@
         "console.warn": true
       },
       "packages": {
-        "obj-multiplex>once": true,
+        "@metamask/object-multiplex>once": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "@metamask/obs-store": {
@@ -3721,11 +3726,6 @@
         "Request": true,
         "Response": true,
         "fetch": true
-      }
-    },
-    "obj-multiplex>once": {
-      "packages": {
-        "obj-multiplex>once>wrappy": true
       }
     },
     "promise-to-callback": {

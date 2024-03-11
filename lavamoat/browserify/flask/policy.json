@@ -959,11 +959,11 @@
         "@metamask/desktop>@metamask/obs-store": true,
         "@metamask/desktop>eciesjs": true,
         "@metamask/desktop>extension-port-stream": true,
+        "@metamask/desktop>obj-multiplex": true,
         "@metamask/desktop>otpauth": true,
         "browserify>buffer": true,
         "duplexify>end-of-stream": true,
         "loglevel": true,
-        "obj-multiplex": true,
         "stream-browserify": true,
         "uuid": true,
         "webextension-polyfill": true,
@@ -1031,6 +1031,41 @@
       "packages": {
         "browserify>buffer": true,
         "stream-browserify": true
+      }
+    },
+    "@metamask/desktop>obj-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/desktop>obj-multiplex>readable-stream": true,
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
+      }
+    },
+    "@metamask/desktop>obj-multiplex>readable-stream": {
+      "packages": {
+        "@metamask/desktop>obj-multiplex>readable-stream>isarray": true,
+        "@metamask/desktop>obj-multiplex>readable-stream>safe-buffer": true,
+        "@metamask/desktop>obj-multiplex>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/desktop>obj-multiplex>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/desktop>obj-multiplex>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/desktop>obj-multiplex>readable-stream>safe-buffer": true
       }
     },
     "@metamask/desktop>otpauth": {
@@ -1744,8 +1779,13 @@
         "console.warn": true
       },
       "packages": {
-        "obj-multiplex>once": true,
+        "@metamask/object-multiplex>once": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "@metamask/obs-store": {
@@ -3164,8 +3204,8 @@
     },
     "duplexify>end-of-stream": {
       "packages": {
-        "browserify>process": true,
-        "obj-multiplex>once": true
+        "@metamask/object-multiplex>once": true,
+        "browserify>process": true
       }
     },
     "eslint-plugin-react>array-includes>is-string": {
@@ -3829,46 +3869,6 @@
         "Request": true,
         "Response": true,
         "fetch": true
-      }
-    },
-    "obj-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "duplexify>end-of-stream": true,
-        "obj-multiplex>once": true,
-        "obj-multiplex>readable-stream": true
-      }
-    },
-    "obj-multiplex>once": {
-      "packages": {
-        "obj-multiplex>once>wrappy": true
-      }
-    },
-    "obj-multiplex>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>process": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>timers-browserify": true,
-        "obj-multiplex>readable-stream>isarray": true,
-        "obj-multiplex>readable-stream>safe-buffer": true,
-        "obj-multiplex>readable-stream>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
-    "obj-multiplex>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "obj-multiplex>readable-stream>string_decoder": {
-      "packages": {
-        "obj-multiplex>readable-stream>safe-buffer": true
       }
     },
     "promise-to-callback": {
