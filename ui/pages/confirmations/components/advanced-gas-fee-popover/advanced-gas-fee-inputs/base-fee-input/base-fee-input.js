@@ -62,23 +62,24 @@ const BaseFeeInput = () => {
   } = useAdvancedGasFeePopoverContext();
 
   const { estimatedBaseFee, historicalBaseFeeRange, baseFeeTrend } =
-    gasFeeEstimates;
+    gasFeeEstimates ?? {};
+
   const [baseFeeError, setBaseFeeError] = useState();
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
-  const [baseFee, setBaseFee] = useState(() => {
-    if (
-      estimateUsed !== PriorityLevels.custom &&
-      advancedGasFeeValues?.maxBaseFee &&
-      editGasMode !== EditGasModes.swaps
-    ) {
-      return advancedGasFeeValues.maxBaseFee;
-    }
+  const defaultBaseFee =
+    estimateUsed !== PriorityLevels.custom &&
+    advancedGasFeeValues?.maxBaseFee &&
+    editGasMode !== EditGasModes.swaps
+      ? advancedGasFeeValues.maxBaseFee
+      : maxFeePerGas;
 
-    return maxFeePerGas;
-  });
+  const [baseFee, setBaseFee] = useState(defaultBaseFee);
+  useEffect(() => {
+    setBaseFee(defaultBaseFee);
+  }, [defaultBaseFee, setBaseFee]);
 
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),
