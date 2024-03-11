@@ -36,6 +36,12 @@ import {
   TextVariant,
 } from '../constants/design-system';
 ///: END:ONLY_INCLUDE_IF
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  getSnapName,
+  ///: END:ONLY_INCLUDE_IF
+  getDomainFromURL,
+} from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
@@ -69,9 +75,23 @@ function getSnapNameComponent(snapName) {
   );
 }
 
+function getPermissionSubjectComponent(targetSubjectMetadata) {
+  return (
+    <Text
+      fontWeight={FontWeight.Medium}
+      variant={TextVariant.inherit}
+      color={TextColor.inherit}
+    >
+      {getDomainFromURL(Object.values(targetSubjectMetadata)?.[0]?.origin)}
+    </Text>
+  );
+}
+
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
-  [RestrictedMethods.eth_accounts]: ({ t }) => ({
-    label: t('permission_ethereumAccounts'),
+  [RestrictedMethods.eth_accounts]: ({ t, targetSubjectMetadata }) => ({
+    label: t('permission_ethereumAccounts', [
+      getPermissionSubjectComponent(targetSubjectMetadata),
+    ]),
     leftIcon: getLeftIcon(IconName.Eye),
     rightIcon: null,
     weight: 3,

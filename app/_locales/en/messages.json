@@ -3404,10 +3404,6 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
-  "permissionCan": {
-    "message": "can $1",
-    "description": "$1 is the permission being granted"
-  },
   "permissionDetails": {
     "message": "Permission details"
   },
@@ -3468,7 +3464,7 @@
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
-    "message": "See address, account balance, activity and suggest transactions to approve",
+    "message": "$1 can see address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_ethereumProvider": {

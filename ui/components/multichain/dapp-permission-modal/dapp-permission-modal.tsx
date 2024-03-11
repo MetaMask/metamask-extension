@@ -115,7 +115,6 @@ export const DappPermissionModal = () => {
               description={permission.description}
               weight={permission.weight}
               avatarIcon={permission.leftIcon}
-              invoker={(permission?.permissionValue as any).invoker}
               dateApproved={(permission?.permissionValue as any).date}
               key={`${permission.permissionName}-${index}`}
               disableInfoSection={true}

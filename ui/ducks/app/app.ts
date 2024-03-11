@@ -35,7 +35,6 @@ type AppState = {
   showIpfsModalOpen: boolean;
   dappPermissionModal: {
     open: boolean;
-    // might be a different way to do this:
     account?: {
       label?: string;
       address?: string;
