@@ -7,10 +7,6 @@ import {
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../../helpers/constants/common';
-import {
-  bnGreaterThan,
-  bnLessThan,
-} from '../../../../../../helpers/utils/util';
 import { getAdvancedGasFeeValues } from '../../../../../../selectors';
 import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -22,22 +18,24 @@ import FormField from '../../../../../../components/ui/form-field';
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../../../../shared/modules/Numeric';
 
 const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
-  if (bnGreaterThan(maxPriorityFeePerGas, value)) {
+  const baseFeeValue = new Numeric(value, 10);
+  if (new Numeric(maxPriorityFeePerGas, 10).greaterThan(baseFeeValue)) {
     return 'editGasMaxBaseFeeGWEIImbalance';
   }
   if (
     gasFeeEstimates?.low &&
-    bnLessThan(value, gasFeeEstimates.low.suggestedMaxFeePerGas)
+    baseFeeValue.lessThan(gasFeeEstimates.low.suggestedMaxFeePerGas, 10)
   ) {
     return 'editGasMaxBaseFeeLow';
   }
   if (
     gasFeeEstimates?.high &&
-    bnGreaterThan(
-      value,
+    baseFeeValue.greaterThan(
       gasFeeEstimates.high.suggestedMaxFeePerGas * HIGH_FEE_WARNING_MULTIPLIER,
+      10,
     )
   ) {
     return 'editGasMaxBaseFeeHigh';
@@ -48,8 +46,13 @@ const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
 const BaseFeeInput = () => {
   const t = useI18nContext();
 
-  const { gasFeeEstimates, estimateUsed, maxFeePerGas, editGasMode } =
-    useGasFeeContext();
+  const {
+    gasFeeEstimates,
+    estimateUsed,
+    maxFeePerGas: maxBaseFeeNumber,
+    editGasMode,
+  } = useGasFeeContext();
+  const maxFeePerGas = new Numeric(maxBaseFeeNumber, 10).toString();
   const {
     gasLimit,
     maxPriorityFeePerGas,
@@ -59,23 +62,24 @@ const BaseFeeInput = () => {
   } = useAdvancedGasFeePopoverContext();
 
   const { estimatedBaseFee, historicalBaseFeeRange, baseFeeTrend } =
-    gasFeeEstimates;
+    gasFeeEstimates ?? {};
+
   const [baseFeeError, setBaseFeeError] = useState();
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
-  const [baseFee, setBaseFee] = useState(() => {
-    if (
-      estimateUsed !== PriorityLevels.custom &&
-      advancedGasFeeValues?.maxBaseFee &&
-      editGasMode !== EditGasModes.swaps
-    ) {
-      return advancedGasFeeValues.maxBaseFee;
-    }
+  const defaultBaseFee =
+    estimateUsed !== PriorityLevels.custom &&
+    advancedGasFeeValues?.maxBaseFee &&
+    editGasMode !== EditGasModes.swaps
+      ? advancedGasFeeValues.maxBaseFee
+      : maxFeePerGas;
 
-    return maxFeePerGas;
-  });
+  const [baseFee, setBaseFee] = useState(defaultBaseFee);
+  useEffect(() => {
+    setBaseFee(defaultBaseFee);
+  }, [defaultBaseFee, setBaseFee]);
 
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),

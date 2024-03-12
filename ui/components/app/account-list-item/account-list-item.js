@@ -14,7 +14,11 @@ export default function AccountListItem({
   hideDefaultMismatchWarning = false,
   ///: END:ONLY_INCLUDE_IF
 }) {
-  const { name, address, balance } = account || {};
+  const {
+    metadata: { name },
+    address,
+    balance,
+  } = account;
 
   let showDefaultMismatchWarning = true;
 
@@ -61,10 +65,21 @@ AccountListItem.propTypes = {
    * An account object that has name, address, and balance data
    */
   account: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
-    balance: PropTypes.string,
-    name: PropTypes.string,
-  }),
+    balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+  }).isRequired,
   /**
    * Additional className to add to the root div element of AccountListItem
    */

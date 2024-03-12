@@ -10,13 +10,15 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
-  BlockaidReason,
   BlockaidResultType,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  BlockaidReason,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IF
 
+import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -121,6 +123,7 @@ const rateLimitTimeouts = {};
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
+ * @param {AppStateController} opts.appStateController
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
@@ -131,6 +134,7 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
+  appStateController,
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -212,6 +216,11 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+
+        if (req.securityAlertResponse?.description) {
+          eventProperties.security_alert_description =
+            req.securityAlertResponse.description;
+        }
         ///: END:ONLY_INCLUDE_IF
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
@@ -310,13 +319,39 @@ export default function createRPCMethodTrackingMiddleware({
         event = eventType.APPROVED;
       }
 
+      let blockaidMetricProps = {};
+
+      if (!isDisabledRPCMethod) {
+        if (SIGNING_METHODS.includes(method)) {
+          const securityAlertResponse =
+            appStateController.getSignatureSecurityAlertResponse(
+              req.securityAlertResponse?.securityAlertId,
+            );
+
+          blockaidMetricProps = getBlockaidMetricsProps({
+            securityAlertResponse,
+          });
+        }
+      }
+
+      const properties = {
+        ...eventProperties,
+        ...blockaidMetricProps,
+        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
+        security_alert_reason:
+          blockaidMetricProps.security_alert_response ===
+          BlockaidResultType.Benign
+            ? ''
+            : blockaidMetricProps.security_alert_reason,
+      };
+
       trackEvent({
         event,
         category: MetaMetricsEventCategory.InpageProvider,
         referrer: {
           url: origin,
         },
-        properties: eventProperties,
+        properties,
       });
 
       return callback();

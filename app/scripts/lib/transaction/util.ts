@@ -1,4 +1,4 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
 import {
   TransactionController,
   TransactionMeta,
@@ -119,7 +119,7 @@ const PPOM_EXCLUDED_TRANSACTION_TYPES = [
 export async function addTransaction(
   request: AddTransactionRequest,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  updateSecurityAlertResponseByTxId: (
+  updateSecurityAlertResponseByTxId?: (
     req: AddTransactionOptions | undefined,
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
@@ -160,28 +160,32 @@ export async function addTransaction(
 
       const securityAlertId = uuid();
 
-      ppomController.usePPOM(async (ppom) => {
-        try {
-          const securityAlertResponse = await ppom.validateJsonRpc(ppomRequest);
-          updateSecurityAlertResponseByTxId(
-            request.transactionOptions,
-            securityAlertResponse,
-          );
-        } catch (e) {
-          captureException(e);
-          console.error('Error validating JSON RPC using PPOM: ', e);
-          const securityAlertResponse = {
-            result_type: BlockaidResultType.Failed,
-            reason: BlockaidReason.failed,
-            description:
-              'Validating the confirmation failed by throwing error.',
-          };
-          updateSecurityAlertResponseByTxId(
-            request.transactionOptions,
-            securityAlertResponse,
-          );
-        }
-      });
+      ppomController
+        .usePPOM(async (ppom) => {
+          try {
+            const securityAlertResponse = await ppom.validateJsonRpc(
+              ppomRequest,
+            );
+            return securityAlertResponse;
+          } catch (e) {
+            captureException(e);
+            const errorObject = e as unknown as Error;
+            console.error('Error validating JSON RPC using PPOM: ', e);
+            const securityAlertResponse = {
+              securityAlertId,
+              result_type: BlockaidResultType.Errored,
+              reason: BlockaidReason.errored,
+              description: `${errorObject.name}: ${errorObject.message}`,
+            };
+            return securityAlertResponse;
+          }
+        })
+        .then((securityAlertResponse) => {
+          updateSecurityAlertResponseByTxId?.(request.transactionOptions, {
+            ...securityAlertResponse,
+            securityAlertId,
+          });
+        });
 
       request.transactionOptions.securityAlertResponse = {
         reason: BlockaidResultType.Loading,
@@ -189,6 +193,7 @@ export async function addTransaction(
         securityAlertId,
       };
     } catch (e) {
+      console.error('Error validating JSON RPC using PPOM: ', e);
       captureException(e);
     }
   }
@@ -221,7 +226,8 @@ async function addTransactionOrUserOperation(
 ) {
   const { selectedAccount } = request;
 
-  const isSmartContractAccount = selectedAccount.type === 'eip155:erc4337';
+  const isSmartContractAccount =
+    selectedAccount.type === EthAccountType.Erc4337;
 
   if (isSmartContractAccount) {
     return addUserOperationWithController(request);
@@ -233,13 +239,17 @@ async function addTransactionOrUserOperation(
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const { transactionController, transactionOptions, transactionParams } =
-    request;
+  const {
+    transactionController,
+    transactionOptions,
+    transactionParams,
+    networkClientId,
+  } = request;
   const { result, transactionMeta } =
-    await transactionController.addTransaction(
-      transactionParams,
-      transactionOptions,
-    );
+    await transactionController.addTransaction(transactionParams, {
+      ...transactionOptions,
+      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+    });
 
   return {
     transactionMeta,
@@ -279,7 +289,7 @@ async function addUserOperationWithController(
     requireApproval,
     swaps,
     type,
-  } as any;
+  };
 
   const result = await userOperationController.addUserOperationFromTransaction(
     normalisedTransaction,

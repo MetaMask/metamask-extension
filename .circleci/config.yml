@@ -28,14 +28,13 @@ executors:
     resource_class: small
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.41.1-jammy
+      - image: mcr.microsoft.com/playwright:v1.41.1-focal
     resource_class: medium
 
 orbs:
   gh: circleci/github-cli@2.0
   codecov: codecov/codecov@3.2.2
   slack: circleci/slack@4.12.5
-
 
 rc_branch_only: &rc_branch_only
   filters:
@@ -481,6 +480,8 @@ jobs:
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - store_artifacts:
+          path: builds
       - persist_to_workspace:
           root: .
           paths:
@@ -698,6 +699,8 @@ jobs:
       - run:
           name: Move test zips to 'builds-test' to avoid conflict with production build
           command: mv ./builds ./builds-test
+      - store_artifacts:
+          path: builds-test
       - persist_to_workspace:
           root: .
           paths:
