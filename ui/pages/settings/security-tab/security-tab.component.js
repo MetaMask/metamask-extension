@@ -86,6 +86,8 @@ export default class SecurityTab extends PureComponent {
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
+    disableExternalServices: PropTypes.bool,
+    setDisableExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -978,11 +980,68 @@ export default class SecurityTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  /**
+   * toggleTransactionSecurityCheck
+   *
+   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
+   */
+  toggleTransactionSecurityCheck(oldValue) {
+    const newValue = !oldValue;
+    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        opensea_alerts_enabled: newValue,
+      },
+    });
+    setTransactionSecurityCheckEnabled(newValue);
+    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
+      this.toggleSecurityAlert(true);
+    }
+  }
+
+  renderDisableExternalServices() {
+    const { t } = this.context;
+    const { disableExternalServices, setDisableExternalServices } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
+        <div className="settings-page__content-item">
+          <span>Basic Configuration</span>
+          <div className="settings-page__content-description">
+            Blah blah blah description blah blah blah
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={disableExternalServices}
+            onToggle={(value) => setDisableExternalServices(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
+        {this.renderDisableExternalServices()}
+
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
