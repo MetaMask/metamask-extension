@@ -849,7 +849,6 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodSetApprovalForAll,
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
-      TransactionType.smart,
       TransactionType.swap,
       TransactionType.swapApproval,
     ].includes(type);

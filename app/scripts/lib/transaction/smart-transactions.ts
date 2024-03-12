@@ -81,6 +81,7 @@ export async function submitSmartTransactionHook(
         txParams,
         // Patched into controller to skip unnecessary call to confirmExternalTransaction.
         skipConfirm: false,
+        transactionMeta,
       },
     );
     const uuid = response?.uuid;

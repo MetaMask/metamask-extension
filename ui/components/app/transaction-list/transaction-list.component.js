@@ -212,10 +212,7 @@ export default function TransactionList({
             {pendingTransactions.map((dateGroup) => {
               return dateGroup.transactionGroups.map(
                 (transactionGroup, index) => {
-                  if (
-                    transactionGroup.initialTransaction.transactionType ===
-                    TransactionType.smart
-                  ) {
+                  if (transactionGroup.initialTransaction?.isSmartTransaction) {
                     return (
                       <Fragment key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
@@ -261,7 +258,7 @@ export default function TransactionList({
                       >
                         {renderDateStamp(index, dateGroup)}
                         {transactionGroup.initialTransaction
-                          ?.transactionType === TransactionType.smart ? (
+                          ?.isSmartTransaction ? (
                           <SmartTransactionListItem
                             transactionGroup={transactionGroup}
                             smartTransaction={
