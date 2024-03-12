@@ -1037,8 +1037,8 @@ export default function PrepareSwapPage({
         </div>
         {showCrossChainSwapsLink && (
           <ButtonLink
-            variant={TextVariant.bodyMdMedium}
-            size={ButtonLinkSize.Md}
+            variant={TextVariant.bodySm}
+            marginTop={2}
             fontWeight={FontWeight.Normal}
             onClick={() => {
               const portfolioUrl = getPortfolioUrl(
