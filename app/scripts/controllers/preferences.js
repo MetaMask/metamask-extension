@@ -114,6 +114,8 @@ export default class PreferencesController {
       useExternalNameSources: true,
       useTransactionSimulations: true,
       enableMV3TimestampSave: true,
+      ///: END:ONLY_INCLUDE_IF
+      disableExternalServices: false,
       ...opts.initState,
     };
 
@@ -210,6 +212,10 @@ export default class PreferencesController {
    */
   setUseSafeChainsListValidation(val) {
     this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  setDisableExternalServices(disableExternalServices) {
+    this.store.updateState({ disableExternalServices });
   }
 
   /**

@@ -8,6 +8,7 @@ import {
   displayWarning,
   restoreUserData,
   setAutoLockTimeLimit,
+  setDisableExternalServices,
   setDisabledRpcMethodPreference,
   setDismissSeedBackUpReminder,
   setFeatureFlag,
@@ -30,6 +31,7 @@ export const mapStateToProps = (state) => {
     disabledRpcMethodPreferences,
     useNonceField,
     dismissSeedBackUpReminder,
+    disableExternalServices,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -50,6 +52,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     dismissSeedBackUpReminder,
     disabledRpcMethodPreferences,
+    disableExternalServices,
   };
 };
 
@@ -84,6 +87,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDisabledRpcMethodPreference: (methodName, isEnabled) => {
       return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
+    },
+    setDisableExternalServices: (value) => {
+      return dispatch(setDisableExternalServices(value));
     },
   };
 };
