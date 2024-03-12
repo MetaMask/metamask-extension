@@ -9,7 +9,6 @@ import { MMISignatureMismatchBanner } from '../components/confirm/mmi-signature-
 ///: END:ONLY_INCLUDE_IF
 import { Info } from '../components/confirm/info';
 import { Nav } from '../components/confirm/nav';
-import { SignatureMessage } from '../components/confirm/signature-message';
 import { Title } from '../components/confirm/title';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
@@ -30,7 +29,6 @@ const Confirm = () => {
       <Content backgroundColor={BackgroundColor.backgroundAlternative}>
         <Title />
         <Info />
-        <SignatureMessage />
       </Content>
       <Footer />
     </Page>

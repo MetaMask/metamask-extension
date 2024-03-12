@@ -1,14 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { unapprovedTypedSignMsg } from '../../../../../../../test/data/confirmations/typed_sign';
+import { unapprovedTypedSignMsgV4 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
 describe('ConfirmInfoRowTypedSignData', () => {
   it('should match snapshot', () => {
     const { container } = render(
       <ConfirmInfoRowTypedSignData
-        data={unapprovedTypedSignMsg.msgParams.data}
+        data={unapprovedTypedSignMsgV4.msgParams.data}
       />,
     );
     expect(container).toMatchSnapshot();
