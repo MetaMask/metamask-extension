@@ -55,8 +55,10 @@ import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedAddress } from '../../../store/actions';
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 
 const GK8_DISPLAY_NAME = 'gk8';
+const SATURN_DISPLAY_NAME = 'saturn custody';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -88,6 +90,7 @@ const CustodyPage = () => {
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [accounts, setAccounts] = useState();
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
   const address = useSelector(getSelectedAddress);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
   const isCheckBoxSelected =
@@ -148,7 +151,10 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          setIsConfirmConnectCustodianModalVisible(true);
+          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
+          SATURN_DISPLAY_NAME
+            ? setShowQRCodeModal(true)
+            : setIsConfirmConnectCustodianModalVisible(true);
         }
 
         trackEvent({
@@ -699,6 +705,15 @@ const CustodyPage = () => {
           custodianURL={
             matchedCustodian?.onboardingUrl || matchedCustodian?.website
           }
+        />
+      )}
+
+      {showQRCodeModal && (
+        <QRCodeModal
+          onClose={() => {
+            setShowQRCodeModal(false);
+          }}
+          custodianName={selectedCustodianDisplayName}
         />
       )}
     </Box>
