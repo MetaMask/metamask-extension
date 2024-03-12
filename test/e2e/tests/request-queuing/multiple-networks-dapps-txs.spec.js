@@ -126,7 +126,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for confirm tx after switch network confirmation.
-        await driver.delay(largeDelayMs);
+        // Instances where the confirmation will close/open a few times issue.
+        await driver.delay(3000);
 
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
