@@ -111,6 +111,8 @@ export default class PreferencesController {
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
       useTransactionSimulations: true,
+      ///: END:ONLY_INCLUDE_IF
+      disableExternalServices: false,
       ...opts.initState,
     };
 
@@ -208,6 +210,10 @@ export default class PreferencesController {
    */
   setUseSafeChainsListValidation(val) {
     this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  setDisableExternalServices(disableExternalServices) {
+    this.store.updateState({ disableExternalServices });
   }
 
   /**
