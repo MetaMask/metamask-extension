@@ -106,6 +106,7 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
               onClose();
             }}
             size={ButtonPrimarySize.Lg}
+            block
           >
             {t('confirm')}
           </ButtonPrimary>
