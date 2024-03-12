@@ -149,8 +149,8 @@ features:
   conf-redesign:
   notifications:
     env:
-      - AUTH_API: https://authentication.dev-api.cx.metamask.io
-      - OIDC_API: https://oidc.dev-api.cx.metamask.io
+      - AUTH_API: https://authentication.api.cx.metamask.io
+      - OIDC_API: https://oidc.api.cx.metamask.io
       - OIDC_CLIENT_ID: 8223d149-a75a-4fb1-8a5f-e19b19f558c6
       - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   ###
