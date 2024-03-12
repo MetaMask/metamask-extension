@@ -12,10 +12,7 @@ export function createSnapPublicKeyRequest(): SnapRPCRequest {
     origin: '',
     handler: HandlerType.OnRpcRequest,
     request: {
-      jsonrpc: '2.0',
       method: 'getPublicKey',
-      params: [],
-      id: 1,
     },
   };
 }
@@ -28,10 +25,8 @@ export function createSnapSignMessageRequest(
     origin: '',
     handler: HandlerType.OnRpcRequest,
     request: {
-      jsonrpc: '2.0',
       method: 'signMessage',
       params: { message },
-      id: 1,
     },
   };
 }

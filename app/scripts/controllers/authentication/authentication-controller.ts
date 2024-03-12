@@ -196,7 +196,11 @@ export default class AuthenticationController extends BaseController<
         accessToken,
       };
     } catch (e) {
-      throw new Error(`${controllerName}: Failed to authenticate - ${e}`);
+      const errorMessage =
+        e instanceof Error ? e.message : JSON.stringify(e ?? '');
+      throw new Error(
+        `${controllerName}: Failed to authenticate - ${errorMessage}`,
+      );
     }
   }
 
