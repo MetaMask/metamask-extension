@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
-import { ConnectAccountsList } from './connect-accounts-modal-list';
+import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
   const accounts = useSelector(getUnconnectedAccounts);
@@ -48,7 +48,7 @@ export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
     isIndeterminate = true;
   }
   return (
-    <ConnectAccountsList
+    <ConnectAccountsModalList
       accounts={accounts}
       selectedAccounts={selectedAccounts}
       allAreSelected={allAreSelected}

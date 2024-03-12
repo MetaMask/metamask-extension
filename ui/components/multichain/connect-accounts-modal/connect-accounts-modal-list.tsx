@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   ButtonPrimary,
+  ButtonPrimarySize,
   Checkbox,
   Icon,
   IconName,
@@ -28,7 +29,7 @@ import { getURLHost } from '../../../helpers/utils/util';
 import { addMorePermittedAccounts } from '../../../store/actions';
 import { ConnectAccountsListProps } from './connect-account-modal.types';
 
-export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
+export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   onClose,
   allAreSelected,
   deselectAll,
@@ -43,11 +44,16 @@ export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} data-testid="connect-more-accounts">
       <ModalOverlay />
       <ModalContent>
         {/* Todo: Replace this with i18 text */}
-        <ModalHeader onClose={onClose}>Connect more accounts</ModalHeader>
+        <ModalHeader
+          data-testid="connect-more-accounts-title"
+          onClose={onClose}
+        >
+          {t('connectMoreAccounts')}
+        </ModalHeader>
         <ModalBody>
           <Box
             padding={4}
@@ -92,13 +98,14 @@ export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
         </ModalBody>
         <ModalFooter>
           <ButtonPrimary
+            data-testid="connect-more-accounts-button"
             onClick={() => {
               dispatch(
                 addMorePermittedAccounts(activeTabOrigin, selectedAccounts),
               );
               onClose();
             }}
-            block
+            size={ButtonPrimarySize.Lg}
           >
             {t('confirm')}
           </ButtonPrimary>
