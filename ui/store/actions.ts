@@ -4279,7 +4279,7 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 export function currencyRateStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  return submitRequestToBackground(
+  return submitRequestToBackground<string>(
     'currencyRateStartPollingByNetworkClientId',
     [networkClientId],
   );
