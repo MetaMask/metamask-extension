@@ -1369,6 +1369,20 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
+  "disconnectAllAccountsText": {
+    "message": "accounts"
+  },
+  "disconnectAllSnapsText": {
+    "message": "Snaps"
+  },
+  "disconnectAllText": {
+    "message": "If you disconnect your $1 from $2, you'll need to reconnect to use them again.",
+    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
+  },
+  "disconnectAllTitle": {
+    "message": "Disconnect all $1",
+    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
+  },
   "disconnectPrompt": {
     "message": "Disconnect $1"
   },
@@ -3031,6 +3045,21 @@
   "notificationsPetnamesTitle": {
     "message": "Suggested nicknames are here!"
   },
+  "notificationsPortfolioV2ActionText": {
+    "message": "See Portfolio"
+  },
+  "notificationsPortfolioV2DescriptionOne": {
+    "message": "Still missing out on MetaMask Portfolio?"
+  },
+  "notificationsPortfolioV2DescriptionThree": {
+    "message": "Your Portfolio is waiting."
+  },
+  "notificationsPortfolioV2DescriptionTwo": {
+    "message": "Manage your web3 assets across different networks and accounts in one powerful dashboard. Swap, Buy, Sell, Bridge, and Stake in a secure, convenient, and easy to use dapp. Stay up to speed with the pulse of the cryptoverse, see your DeFi positions, manage your NFT collection, and more. All in one place."
+  },
+  "notificationsPortfolioV2Title": {
+    "message": "MetaMask Portfolio - join millions"
+  },
   "notificationsStakingPortfolioActionText": {
     "message": "Got it",
     "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
@@ -3601,6 +3630,9 @@
   },
   "primaryCurrencySettingDescription": {
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "primaryType": {
+    "message": "Primary type"
   },
   "priorityFee": {
     "message": "Priority fee"
