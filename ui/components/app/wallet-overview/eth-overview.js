@@ -36,13 +36,13 @@ import {
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
   getShowFiatInTestnets,
+  getSelectedNetworkClientId,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
-  getSelectedNetworkClientId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
