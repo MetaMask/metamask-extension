@@ -156,6 +156,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accounts": {
+    "message": "Accounts"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
@@ -1767,6 +1770,9 @@
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
+  },
+  "for": {
+    "message": "for"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"

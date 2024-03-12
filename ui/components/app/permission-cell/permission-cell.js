@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
   AlignItems,
+  BorderColor,
   Color,
   IconColor,
   JustifyContent,
   Size,
+  TextAlign,
   TextColor,
   TextVariant,
   Display,
@@ -22,10 +24,15 @@ import {
   IconSize,
   Text,
   Box,
+  AvatarTokenSize,
+  AvatarAccount,
+  AvatarAccountSize,
 } from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
+import { AvatarGroup } from '../../multichain';
+import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { PermissionCellOptions } from './permission-cell-options';
 
 const PermissionCell = ({
@@ -39,6 +46,7 @@ const PermissionCell = ({
   revoked,
   showOptions,
   hideStatus,
+  accounts,
 }) => {
   const t = useI18nContext();
 
@@ -114,12 +122,85 @@ const PermissionCell = ({
             className="permission-cell__status"
             variant={TextVariant.bodySm}
             color={TextColor.textAlternative}
+            display={Display.Flex}
           >
             {!revoked &&
               (dateApproved
                 ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
                 : t('permissionRequested'))}
             {revoked ? t('permissionRevoked') : ''}
+            {accounts && accounts.length && (
+              <Box as="span" display={Display.Flex}>
+                <Text
+                  as="span"
+                  variant={TextVariant.inherit}
+                  color={TextColor.inherit}
+                  marginLeft={1}
+                  marginRight={1}
+                >
+                  {' '}
+                  {t('for')}{' '}
+                </Text>
+                <Tooltip
+                  position="bottom"
+                  html={
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      justifyContent={JustifyContent.center}
+                      alignItems={AlignItems.center}
+                    >
+                      <Text
+                        variant={TextVariant.headingSm}
+                        color={TextColor.textAlternative}
+                        textAlign={TextAlign.Center}
+                      >
+                        {t('accounts')}
+                      </Text>
+                      <Box
+                        display={Display.Flex}
+                        flexDirection={FlexDirection.Column}
+                      >
+                        {accounts.map((account, index) => (
+                          <Box
+                            key={`${account.avatarValue}_${index}`}
+                            display={Display.Flex}
+                            justifyContent={JustifyContent.flexStart}
+                            alignItems={AlignItems.center}
+                            marginTop={2}
+                            paddingLeft={4}
+                            paddingRight={4}
+                          >
+                            <AvatarAccount
+                              address={account.avatarValue}
+                              size={AvatarAccountSize.Xs}
+                              borderColor={BorderColor.backgroundDefault}
+                            />
+                            <Text
+                              variant={TextVariant.bodyMdMedium}
+                              marginLeft={2}
+                            >
+                              {account.avatarName}
+                            </Text>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  }
+                >
+                  <AvatarGroup
+                    limit={3}
+                    members={accounts}
+                    avatarType={AvatarType.ACCOUNT}
+                    size={AvatarTokenSize.Xs}
+                    width={BlockSize.Min}
+                    borderColor={BorderColor.backgroundDefault}
+                    marginLeft={4}
+                    paddingLeft={4}
+                  />
+                </Tooltip>
+              </Box>
+            )}
           </Text>
         )}
       </Box>
@@ -131,19 +212,21 @@ const PermissionCell = ({
             description={description}
           />
         ) : (
-          <Tooltip
-            html={
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {description}
-              </Text>
-            }
-            position="bottom"
-          >
-            <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
-          </Tooltip>
+          description && (
+            <Tooltip
+              html={
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {description}
+                </Text>
+              }
+              position="bottom"
+            >
+              <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
+            </Tooltip>
+          )
         )}
       </Box>
     </Box>
@@ -165,6 +248,7 @@ PermissionCell.propTypes = {
   revoked: PropTypes.bool,
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
+  accounts: PropTypes.array,
 };
 
 export default PermissionCell;
