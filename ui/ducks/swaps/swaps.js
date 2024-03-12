@@ -334,9 +334,9 @@ export const getSmartTransactionsEnabled = (state) => {
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
     isAllowedNetwork &&
-      supportedAccount &&
-      smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
+    supportedAccount &&
+    smartTransactionsFeatureFlagEnabled &&
+    smartTransactionsLiveness,
   );
 };
 
@@ -670,7 +670,7 @@ export const fetchQuotesAndSetQuoteState = (
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
       fetchParams?.metaData?.sourceTokenInfo?.symbol ===
-      swapsDefaultToken.symbol
+        swapsDefaultToken.symbol
         ? swapsDefaultToken
         : fetchParams?.metaData?.sourceTokenInfo;
     const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
@@ -996,6 +996,7 @@ export const signAndSendSwapsSmartTransaction = ({
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
         )}`;
+        updatedApproveTxParams.chainId = chainId;
         approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
             unsignedTransaction: updatedApproveTxParams,
@@ -1006,6 +1007,7 @@ export const signAndSendSwapsSmartTransaction = ({
       unsignedTransaction.gas = `0x${decimalToHex(
         fees.tradeTxFees?.gasLimit || 0,
       )}`;
+      unsignedTransaction.chainId = chainId;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
