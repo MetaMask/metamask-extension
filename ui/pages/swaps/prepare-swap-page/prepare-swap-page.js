@@ -1037,6 +1037,10 @@ export default function PrepareSwapPage({
         </div>
         {showCrossChainSwapsLink && (
           <ButtonLink
+            endIconName={IconName.Export}
+            endIconProps={{
+              size: IconSize.Xs,
+            }}
             variant={TextVariant.bodySm}
             marginTop={2}
             fontWeight={FontWeight.Normal}
