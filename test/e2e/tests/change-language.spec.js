@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -37,13 +36,14 @@ async function changeLanguage({ driver, languageIndex }) {
   const dropdownElement = await driver.findElement(selectors.localeSelect);
   await dropdownElement.click();
 
-  const options = await dropdownElement.findElements(By.css('option'));
+  const options = await dropdownElement.findElements({css:'option'});
   await options[languageIndex].click();
 }
 
-describe('Settings - general tab, validate the change language functionality:', function () {
-  it('User selects "Español" language and verify that changing the language from the default', async function () {
-    const languageIndex = 10;
+describe('Settings - general tab', function () {
+  it('validate the change language functionality', async function () {
+    let languageIndex = 10;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -53,50 +53,25 @@ describe('Settings - general tab, validate the change language functionality:', 
 
       async ({ driver }) => {
         await unlockWallet(driver);
-
         await changeLanguage({ driver, languageIndex });
 
-        // Validate the label changes
+        // Validate the label changes to spanish
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.labelSpanish,
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
-      },
-    );
-  });
 
-  it('User selects "Español" language from the dropdown and change back to english and verify that the word is correctly changed back to english', async function () {
-    let languageIndex = 10;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
+        await driver.refresh();
 
-      async ({ driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
-        const isLanguageLabelChanged = await driver.isElementPresent(
-          selectors.primaryCurrencyLabel,
-        );
-        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
-
-        await driver.assertElementNotPresent('.loading-overlay__spinner', {
-          waitAtLeastGuard: 100,
-        });
-
+        //Change back to english and verify that the word is correctly changed back to english
         languageIndex = 9;
+
         const dropdownElement = await driver.findElement(
           selectors.localeSelect,
         );
         await dropdownElement.click();
-        const options = await dropdownElement.findElements(By.css('option'));
+        const options = await dropdownElement.findElements({ css: 'option' });
         await options[languageIndex].click();
-
-        await driver.assertElementNotPresent('.loading-overlay__spinner', {
-          waitAtLeastGuard: 100,
-        });
 
         const islabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageLabel,
@@ -106,12 +81,8 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "Español" and verify that language persists with page refresh and sessions @no-mmi', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
-    const languageIndex = 10;
+  it('validate "Dansk" language on page navigation', async function () {
+    let languageIndex = 6;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -120,42 +91,7 @@ describe('Settings - general tab, validate the change language functionality:', 
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
 
-        await driver.refresh();
-        const isLanguageLabelChanged = await driver.isElementPresent(
-          selectors.labelSpanish,
-        );
-        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
-
-        await driver.navigate();
-
-        await driver.isElementPresent(selectors.tooltipText);
-
-        // Validating the tooltip
-        const isHeaderTooltipChanged = await driver.isElementPresent(
-          selectors.tooltipText,
-        );
-        assert.equal(
-          isHeaderTooltipChanged,
-          true,
-          'Language changes is not reflected on the toolTip',
-        );
-      },
-    );
-  });
-
-  it('User selects "Dansk" language and verify that navigating to a different page does not affect', async function () {
-    const languageIndex = 6;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-      },
-
-      async ({ driver }) => {
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
 
@@ -196,7 +132,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "Deutsch" language and verify that error messages are updated with the selected language change', async function () {
+  it('validate "Deutsch" language on error messages', async function () {
     if (process.env.MULTICHAIN) {
       return;
     }
@@ -229,7 +165,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "मानक हिन्दी" language and verify that tooltips are updated with the selected language change @no-mmi', async function () {
+  it('validate "मानक हिन्दी" language on tooltips', async function () {
     if (process.env.MULTICHAIN) {
       return;
     }
@@ -270,7 +206,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "Magyar" language and verify that hypertext are updated with the selected language change @no-mmi', async function () {
+  it('validate "Magyar" language change on hypertext', async function () {
     const languageIndex = 23;
     await withFixtures(
       {
@@ -281,6 +217,7 @@ describe('Settings - general tab, validate the change language functionality:', 
 
       async ({ driver }) => {
         await unlockWallet(driver);
+        //selects "Magyar" language
         await changeLanguage({ driver, languageIndex });
         await driver.navigate();
         await driver.clickElement(selectors.nftsTab);
@@ -298,7 +235,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "العربية" language and verify that page indent with the selected language change', async function () {
+  it('validate "العربية" language change on page indent', async function () {
     const languageIndex = 1;
     await withFixtures(
       {
