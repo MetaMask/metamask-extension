@@ -1063,6 +1063,7 @@ export default function PrepareSwapPage({
               });
             }}
             target="_blank"
+            data-testid="prepare-swap-page-cross-chain-swaps-link"
           >
             {t('crossChainSwapsLink')}
           </ButtonLink>
