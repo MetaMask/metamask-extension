@@ -1,6 +1,8 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { getMemoizedMetadataContractName } from '../selectors';
+import { getNftContractsOnCurrentChain } from '../ducks/metamask/metamask';
 import { useName } from './useName';
 import { useFirstPartyContractName } from './useFirstPartyContractName';
 
@@ -20,16 +22,32 @@ export function useDisplayName(
   variation?: string,
 ): { name: string | null; hasPetname: boolean } {
   const nameEntry = useName(value, type, variation);
+
   const firstPartyContractName = useFirstPartyContractName(
     value,
     type,
     variation,
   );
+
   const contractName = useSelector((state) =>
     (getMemoizedMetadataContractName as any)(state, value),
   );
+
+  const watchedNftName = useSelector(getNftContractsOnCurrentChain)[
+    toChecksumAddress(value)
+  ]?.name;
+
+  const name =
+    nameEntry?.name ||
+    firstPartyContractName ||
+    contractName ||
+    watchedNftName ||
+    null;
+
+  const hasPetname = Boolean(nameEntry?.name);
+
   return {
-    name: nameEntry?.name || firstPartyContractName || contractName || null,
-    hasPetname: Boolean(nameEntry?.name),
+    name,
+    hasPetname,
   };
 }

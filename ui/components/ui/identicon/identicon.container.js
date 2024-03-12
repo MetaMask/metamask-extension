@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { getTokenList } from '../../../selectors';
+import { getNftContractsOnCurrentChain } from '../../../ducks/metamask/metamask';
 import Identicon from './identicon.component';
 
 const mapStateToProps = (state) => {
@@ -11,6 +12,7 @@ const mapStateToProps = (state) => {
     useBlockie,
     tokenList: getTokenList(state),
     ipfsGateway,
+    watchedNftContracts: getNftContractsOnCurrentChain(state),
   };
 };
 

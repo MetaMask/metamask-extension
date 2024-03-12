@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import { toChecksumAddress } from 'ethereumjs-util';
 import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -57,6 +58,7 @@ export default class Identicon extends Component {
      * User preferred IPFS gateway
      */
     ipfsGateway: PropTypes.string,
+    watchedNftContracts: PropTypes.object,
   };
 
   state = {
@@ -105,7 +107,9 @@ export default class Identicon extends Component {
   }
 
   renderJazzicon() {
-    const { address, className, diameter, alt, tokenList } = this.props;
+    const { address, className, diameter, alt } = this.props;
+    const tokenList = this.getTokenList();
+
     return (
       <Jazzicon
         address={address}
@@ -141,8 +145,33 @@ export default class Identicon extends Component {
     return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
+  getTokenImage() {
+    const { address, tokenList } = this.props;
+    return tokenList[address.toLowerCase()]?.iconUrl;
+  }
+
+  getNftImage() {
+    const { address, watchedNftContracts } = this.props;
+    return watchedNftContracts[toChecksumAddress(address)]?.logo;
+  }
+
+  getTokenList() {
+    const { address } = this.props;
+    const tokenImage = this.getTokenImage();
+    const nftImage = this.getNftImage();
+    const iconUrl = tokenImage || nftImage;
+
+    if (!iconUrl) {
+      return {};
+    }
+
+    return {
+      [address.toLowerCase()]: { iconUrl },
+    };
+  }
+
   render() {
-    const { address, image, addBorder, diameter, tokenList } = this.props;
+    const { address, image, addBorder, diameter } = this.props;
     const { imageLoadingError } = this.state;
     const size = diameter + 8;
 
@@ -155,7 +184,7 @@ export default class Identicon extends Component {
     }
 
     if (address) {
-      if (tokenList[address.toLowerCase()]?.iconUrl) {
+      if (this.getTokenImage() || this.getNftImage()) {
         return this.renderJazzicon();
       }
 
