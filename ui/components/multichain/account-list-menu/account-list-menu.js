@@ -48,8 +48,14 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getOnboardedInThisUISession,
   getShowAccountBanner,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
-import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+  hideAccountBanner,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -65,6 +71,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import usePolling from '../../../hooks/usePolling';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -123,6 +130,13 @@ export const AccountListMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);

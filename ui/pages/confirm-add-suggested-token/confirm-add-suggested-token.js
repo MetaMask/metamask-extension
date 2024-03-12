@@ -20,6 +20,8 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
 } from '../../store/actions';
 import {
   MetaMetricsEventCategory,
@@ -30,8 +32,12 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../shared/constants/transaction';
-import { getSuggestedTokens } from '../../selectors';
+import {
+  getSelectedNetworkClientId,
+  getSuggestedTokens,
+} from '../../selectors';
 import { Severity } from '../../helpers/constants/design-system';
+import usePolling from '../../hooks/usePolling';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -84,6 +90,13 @@ const ConfirmAddSuggestedToken = () => {
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
   const trackEvent = useContext(MetaMetricsContext);
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const knownTokenBannerAlert = useMemo(() => {
     return (

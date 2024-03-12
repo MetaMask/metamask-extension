@@ -2,13 +2,17 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getProviderConfig, getTokens } from '../../ducks/metamask/metamask';
-import { getTokenList } from '../../selectors';
+import { getSelectedNetworkClientId, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
-import { showModal } from '../../store/actions';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+  showModal,
+} from '../../store/actions';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
@@ -30,6 +34,7 @@ import {
   IconName,
   Text,
 } from '../../components/component-library';
+import usePolling from '../../hooks/usePolling';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();
@@ -40,6 +45,13 @@ export default function TokenDetailsPage() {
   const { address: tokenAddress } = useParams();
   const tokenMetadata = tokenList[tokenAddress.toLowerCase()];
   const aggregators = tokenMetadata?.aggregators?.join(', ');
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),

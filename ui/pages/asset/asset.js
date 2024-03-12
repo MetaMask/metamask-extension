@@ -10,14 +10,27 @@ import {
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
-import NativeAsset from './components/native-asset';
+import { getSelectedNetworkClientId } from '../../selectors';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../../store/actions';
+import usePolling from '../../hooks/usePolling';
 import TokenAsset from './components/token-asset';
+import NativeAsset from './components/native-asset';
 
 const Asset = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const tokens = useSelector(getTokens);
   const nfts = useSelector(getNfts);
   const { asset, id } = useParams();
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, asset),

@@ -15,12 +15,20 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../../ducks/send';
-import { isCustomPriceExcessive } from '../../../selectors';
+import {
+  getSelectedNetworkClientId,
+  isCustomPriceExcessive,
+} from '../../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../../ducks/metamask/metamask';
-import { showQrScanner } from '../../../store/actions';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+  showQrScanner,
+} from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
+import usePolling from '../../../hooks/usePolling';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
@@ -44,6 +52,13 @@ export default function SendTransactionScreen() {
   const draftTransactionExists = useSelector(getDraftTransactionExists);
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const dispatch = useDispatch();
 

@@ -11,6 +11,8 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
 } from '../../store/actions';
 import {
   MetaMetricsEventCategory,
@@ -36,6 +38,7 @@ import {
   getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
+  getSelectedNetworkClientId,
 } from '../../selectors';
 import NftDefaultImage from '../../components/app/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
@@ -59,6 +62,7 @@ import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
+import usePolling from '../../hooks/usePolling';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -94,6 +98,13 @@ const ConfirmAddSuggestedNFT = () => {
   });
 
   const originMetadata = useOriginMetadata(suggestedNfts[0]?.origin) || {};
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const handleAddNftsClick = useCallback(async () => {
     await Promise.all(

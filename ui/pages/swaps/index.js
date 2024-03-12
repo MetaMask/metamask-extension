@@ -25,6 +25,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
+  getSelectedNetworkClientId,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -84,6 +85,8 @@ import {
   ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
 } from '../../store/actions';
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
@@ -99,6 +102,7 @@ import {
   IconColor,
   FRACTIONS,
 } from '../../helpers/constants/design-system';
+import usePolling from '../../hooks/usePolling';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -165,6 +169,13 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   useEffect(() => {
     const leaveSwaps = async () => {

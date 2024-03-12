@@ -21,6 +21,7 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
   getSelectedAccount,
+  getSelectedNetworkClientId,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -43,6 +44,11 @@ import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
+import usePolling from '../../../../hooks/usePolling';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../../../../store/actions';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
@@ -58,6 +64,14 @@ export const Connections = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
+
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);

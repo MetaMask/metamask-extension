@@ -19,6 +19,7 @@ import {
   getSelectedAccount,
   getPreferences,
   getIsMainnet,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -58,6 +59,11 @@ import {
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
+import usePolling from '../../../hooks/usePolling';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../../../store/actions';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -81,6 +87,13 @@ const AssetList = ({ onClickAsset }) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 

@@ -44,6 +44,8 @@ import {
   setDefaultHomeActiveTabName,
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
 } from '../../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
@@ -63,6 +65,12 @@ const ConfirmTransaction = () => {
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
   const networkClientId = useSelector(getSelectedNetworkClientId);
+
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId,
+  });
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {

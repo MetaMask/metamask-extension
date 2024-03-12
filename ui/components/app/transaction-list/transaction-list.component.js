@@ -6,7 +6,11 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
-import { getCurrentChainId, getSelectedAccount } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getSelectedAccount,
+  getSelectedNetworkClientId,
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -20,6 +24,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import usePolling from '../../../hooks/usePolling';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../../../store/actions';
 
 const PAGE_INCREMENT = 10;
 
@@ -114,6 +123,14 @@ export default function TransactionList({
   );
   const chainId = useSelector(getCurrentChainId);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
+
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text

@@ -42,6 +42,7 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getSelectedNetworkClientId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -71,6 +72,11 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../../../store/actions';
+import usePolling from '../../../hooks/usePolling';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -98,6 +104,13 @@ const EthOverview = ({ className, showAddress }) => {
     ticker,
     type,
   );
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   // Total fiat balance
   const account = useSelector(getSelectedInternalAccount);

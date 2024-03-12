@@ -2,6 +2,7 @@ import React, { memo, useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../check-box';
 import Identicon from '../identicon';
@@ -10,6 +11,12 @@ import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+import usePolling from '../../../hooks/usePolling';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../../../store/actions';
+import { getSelectedNetworkClientId } from '../../../selectors';
 
 const AccountList = ({
   selectNewAccountViaModal,
@@ -27,6 +34,13 @@ const AccountList = ({
   useLayoutEffect(() => {
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [selectedAccounts]);
+
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId: selectedNetworkClientId,
+  });
 
   const Header = () => {
     let checked;

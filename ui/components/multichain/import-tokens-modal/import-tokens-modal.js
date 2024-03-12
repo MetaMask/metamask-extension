@@ -38,6 +38,8 @@ import {
   setNewTokensImportedError,
   hideImportTokensModal,
   setConfirmationExchangeRates,
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
 } from '../../../store/actions';
 import {
   BannerAlert,
@@ -95,6 +97,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
+import usePolling from '../../../hooks/usePolling';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 export const ImportTokensModal = ({ onClose }) => {
@@ -139,6 +142,13 @@ export const ImportTokensModal = ({ onClose }) => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const contractExchangeRates = useSelector(contractExchangeRateSelector);
 
+  const networkClientId = useSelector(getSelectedNetworkClientId);
+  usePolling({
+    startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
+    stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
+    networkClientId,
+  });
+
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
   const [nftAddressError, setNftAddressError] = useState(null);
@@ -176,7 +186,6 @@ export const ImportTokensModal = ({ onClose }) => {
   // CONFIRMATION MODE
   const trackEvent = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddTokens = useCallback(async () => {
     try {
