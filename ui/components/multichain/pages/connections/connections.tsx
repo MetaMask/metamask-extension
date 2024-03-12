@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
@@ -12,7 +12,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONNECT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -20,6 +23,7 @@ import {
   getInternalAccounts,
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getPermittedAccountsByOrigin,
   getSelectedAccount,
 } from '../../../../selectors';
 import {
@@ -46,9 +50,11 @@ import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
+import { requestAccountsPermissionWithId } from '../../../../store/actions';
 
 export const Connections = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
@@ -64,6 +70,22 @@ export const Connections = () => {
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+  const permittedAccountsByOrigin = useSelector(
+    getPermittedAccountsByOrigin,
+  ) as { [key: string]: any[] };
+
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[activeTabOrigin]?.length;
+  let tabToConnect;
+  if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
+    tabToConnect = {
+      origin: activeTabOrigin,
+    };
+  }
+  const requestAccountsPermission = async () => {
+    const id = await dispatch(requestAccountsPermissionWithId(origin));
+    history.push(`${CONNECT_ROUTE}/${id}`);
+  };
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -188,6 +210,7 @@ export const Connections = () => {
             size={ButtonPrimarySize.Lg}
             block
             data-test-id="no-connections-button"
+            onClick={() => dispatch(requestAccountsPermission())}
           >
             {t('connectAccounts')}
           </ButtonPrimary>
