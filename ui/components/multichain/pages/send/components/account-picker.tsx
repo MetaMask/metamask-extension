@@ -14,7 +14,7 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SendPageRow } from '.';
 
-export const SendPageAccountPicker = () => {
+export const SendPageAccountPicker = ({ disabled = false }) => {
   const t = useContext(I18nContext);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
@@ -26,6 +26,7 @@ export const SendPageAccountPicker = () => {
       <AccountPicker
         className="multichain-send-page__account-picker"
         address={internalAccount.address}
+        disabled={disabled}
         name={internalAccount.metadata.name}
         onClick={() => setShowAccountPicker(true)}
         showAddress

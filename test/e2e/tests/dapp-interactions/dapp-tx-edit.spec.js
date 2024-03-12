@@ -94,4 +94,44 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
       },
     );
   });
+
+  it('should show a disabled Account Picker on a simple ETH send edit initiated by a dapp', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        smartContract,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await openDapp(driver);
+        await driver.clickElement('#sendButton');
+        await driver.waitUntilXWindowHandles(3);
+        const windowHandles = await driver.getAllWindowHandles();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Dialog,
+          windowHandles,
+        );
+
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Sending ETH',
+        });
+        await driver.clickElement(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
+
+        const accountPicker = await driver.findElement(
+          '[data-testid="send-page-account-picker"]',
+        );
+        assert.equal(await accountPicker.isEnabled(), false);
+      },
+    );
+  });
 });

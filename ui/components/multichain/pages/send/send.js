@@ -35,6 +35,8 @@ import {
 } from '../../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
+import { getUnapprovedTransactions } from '../../../../selectors';
+import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import {
   SendPageAccountPicker,
   SendPageContent,
@@ -138,6 +140,18 @@ export const SendPage = () => {
 
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
+
+  // We should not allow the account picker to be editable if
+  // it was launched from a dapp
+  let isDappSuggestedEdit = false;
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  if (sendStage === SEND_STAGES.EDIT) {
+    const unapprovedTransaction = unapprovedTxs[draftTransactionID];
+    if (unapprovedTransaction?.origin !== ORIGIN_METAMASK) {
+      isDappSuggestedEdit = true;
+    }
+  }
+
   const submitDisabled =
     (isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR) ||
     requireContractAddressAcknowledgement;
@@ -157,7 +171,7 @@ export const SendPage = () => {
         {t('sendAToken')}
       </Header>
       <Content>
-        <SendPageAccountPicker />
+        <SendPageAccountPicker disabled={isDappSuggestedEdit} />
         <SendPageRecipientInput />
         {draftTransactionExists &&
         [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (

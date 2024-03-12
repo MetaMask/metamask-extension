@@ -292,6 +292,30 @@ describe('SendPage', () => {
       // Ensure we start a new draft transaction when its missing.
       expect(startNewDraftTransaction).toHaveBeenCalledTimes(1);
     });
+
+    it('should render with account picker disabled when dapp-suggested send', async () => {
+      const modifiedState = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
+        send: {
+          ...baseStore.send,
+          stage: SEND_STAGES.EDIT,
+        },
+      };
+
+      const {
+        result: { getByTestId },
+      } = await render(modifiedState);
+
+      expect(getByTestId('send-page-account-picker')).toBeDisabled();
+    });
   });
 
   describe('footer buttons', () => {
