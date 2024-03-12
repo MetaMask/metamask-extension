@@ -9,6 +9,9 @@ export enum ContainerMaxWidth {
   Lg = 'lg',
 }
 
+// This interface was created before this ESLint rule was added.
+// Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ContainerStyleUtilityProps extends StyleUtilityProps {
   /*
    * Additional classNames to be added to the Container component
