@@ -63,6 +63,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
           <BadgeWrapper
             badge={
               <AvatarNetwork
+                data-testid="connection-list-item__avatar-network-badge"
                 size={AvatarNetworkSize.Xs}
                 name={connection.networkName}
                 src={connection.networkIconUrl}

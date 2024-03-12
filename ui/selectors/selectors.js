@@ -1248,30 +1248,16 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
   getMetaMaskIdentities,
-  getAllDomains,
-  getAllNetworks,
   getAllConnectedAccounts,
-  (
-    connectedSubjectsForAllAddresses,
-    identities,
-    domains, // I think something is going on here (possibly with dapps connected before the change), devtools inspect
-    networks,
-    connectedAddresses,
-  ) => {
+  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
-        const connectedNetwork = networks.find(
-          (network) => network.id === domains[siteKey],
-        );
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
             identities[connectedAddress].name; // Map address to name
-          sitesList[siteKey].networkIconUrl =
-            connectedNetwork.rpcPrefs.imageUrl;
-          sitesList[siteKey].networkName = connectedNetwork.nickname;
         } else {
           sitesList[siteKey] = {
             ...app,
@@ -1279,13 +1265,26 @@ export const getConnectedSitesList = createDeepEqualSelector(
             addressToNameMap: {
               [connectedAddress]: identities[connectedAddress].name,
             },
-            networkIconUrl: connectedNetwork.rpcPrefs.imageUrl,
-            networkName: connectedNetwork.nickname,
           };
         }
       });
     });
+    return sitesList;
+  },
+);
 
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  (sitesList, domains, networks) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      sitesList[siteKey].networkName = connectedNetwork.nickname;
+    });
     return sitesList;
   },
 );
