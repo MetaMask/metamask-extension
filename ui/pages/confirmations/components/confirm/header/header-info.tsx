@@ -27,16 +27,9 @@ import { AddressCopyButton } from '../../../../../components/multichain';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import {
-  getCurrentNetwork,
-  getSelectedAccountCachedBalance,
-  getShouldHideZeroBalanceTokens,
-  getShowFiatInTestnets,
-  getUseBlockie,
-} from '../../../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../../../hooks/useAccountTotalFiatBalance';
-import { TEST_NETWORKS } from '../../../../../../shared/constants/network';
+import { getUseBlockie } from '../../../../../selectors';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
+import { useBalance } from '../../../../../hooks/useBalance';
 
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
@@ -46,28 +39,7 @@ const HeaderInfo = () => {
 
   const t = useI18nContext();
 
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-
-  const { totalWeiBalance } = useAccountTotalFiatBalance(
-    fromAddress,
-    shouldHideZeroBalanceTokens,
-  );
-
-  const currentNetwork = useSelector(getCurrentNetwork);
-
-  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
-
-  let balanceToUse = totalWeiBalance;
-
-  const balance = useSelector(getSelectedAccountCachedBalance);
-
-  if (showFiat) {
-    balanceToUse = balance;
-  }
+  const { balance: balanceToUse } = useBalance(fromAddress);
 
   return (
     <>
@@ -137,7 +109,7 @@ const HeaderInfo = () => {
               <AddressCopyButton address={fromAddress} shorten={true} />
             </ConfirmInfoRow>
             <ConfirmInfoRow label="Balance">
-              <ConfirmInfoRowCurrency value={balanceToUse} />
+              <ConfirmInfoRowCurrency value={balanceToUse ?? 0} />
             </ConfirmInfoRow>
           </ModalBody>
         </ModalContent>
