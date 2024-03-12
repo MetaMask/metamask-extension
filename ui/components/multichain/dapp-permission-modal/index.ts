@@ -1,1 +1,1 @@
-export { DappPermissionModal } from "./dapp-permission-modal"
+export { DappPermissionModal } from './dapp-permission-modal';

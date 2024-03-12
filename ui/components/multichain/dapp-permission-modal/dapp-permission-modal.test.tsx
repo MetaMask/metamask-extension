@@ -1,7 +1,7 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/jest/rendering';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import {
   getDappPermissionModal,
   getPermissionsForActiveTab,
@@ -9,11 +9,11 @@ import {
   getUseBlockie,
   getPermissionSubjects,
 } from '../../../selectors';
-import { DappPermissionModal } from '.';
 import {
   hideDappPermissionModal,
   removePermittedAccount,
 } from '../../../store/actions';
+import { DappPermissionModal } from '.';
 
 jest.mock('../../../store/actions', () => ({
   hideDappPermissionModal: jest
