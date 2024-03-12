@@ -1051,6 +1051,16 @@ export default function PrepareSwapPage({
                 url: `${portfolioUrl}&token=${fromTokenAddress}`,
               });
 
+              trackEvent({
+                category: MetaMetricsEventCategory.Swaps,
+                event: MetaMetricsEventName.BridgeLinkClicked,
+                properties: {
+                  location: 'Swaps',
+                  text: 'Swap across networks with MetaMask Portfolio',
+                  chain_id: chainId,
+                  token_symbol: fromTokenSymbol,
+                },
+              });
             }}
             target="_blank"
           >
