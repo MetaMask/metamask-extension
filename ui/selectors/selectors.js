@@ -96,6 +96,7 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1525,6 +1526,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
+    [NOTIFICATION_PORTFOLIO_V2]: true,
   };
 }
 
