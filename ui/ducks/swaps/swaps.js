@@ -334,9 +334,9 @@ export const getSmartTransactionsEnabled = (state) => {
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
     isAllowedNetwork &&
-    supportedAccount &&
-    smartTransactionsFeatureFlagEnabled &&
-    smartTransactionsLiveness,
+      supportedAccount &&
+      smartTransactionsFeatureFlagEnabled &&
+      smartTransactionsLiveness,
   );
 };
 
@@ -670,7 +670,7 @@ export const fetchQuotesAndSetQuoteState = (
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
       fetchParams?.metaData?.sourceTokenInfo?.symbol ===
-        swapsDefaultToken.symbol
+      swapsDefaultToken.symbol
         ? swapsDefaultToken
         : fetchParams?.metaData?.sourceTokenInfo;
     const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
