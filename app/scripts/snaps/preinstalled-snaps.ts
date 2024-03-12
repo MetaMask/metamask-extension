@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
 import type { PreinstalledSnap } from '@metamask/snaps-controllers';
 
 const TEMP_PREINSTALLED_SNAPS = [];
@@ -8,20 +8,20 @@ try {
   TEMP_PREINSTALLED_SNAPS.push(
     getPreinstalledSnap(
       '@metamask/message-signing-snap',
-      fs.readFileSync(
+      readFileSync(
         require.resolve('@metamask/message-signing-snap/snap.manifest.json'),
         'utf-8',
       ),
       [
         {
           path: 'images/icon.svg',
-          value: fs.readFileSync(
+          value: readFileSync(
             require.resolve('@metamask/message-signing-snap/images/icon.svg'),
           ),
         },
         {
           path: 'dist/bundle.js',
-          value: fs.readFileSync(
+          value: readFileSync(
             require.resolve('@metamask/message-signing-snap/dist/bundle.js'),
           ),
         },
