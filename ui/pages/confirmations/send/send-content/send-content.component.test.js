@@ -1,5 +1,5 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -13,10 +13,13 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalN
 import SendContent from '.';
 
 jest.mock('../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
   createTransactionEventFragment: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue('unknown'),
   getTokenSymbol: jest.fn().mockResolvedValue('ETH'),
@@ -28,31 +31,41 @@ jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
-describe('SendContent Component', () => {
-  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
-  describe('render', () => {
-    const mockStore = configureMockStore()({
-      ...mockSendState,
-      metamask: {
-        ...mockSendState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          type: NETWORK_TYPES.GOERLI,
-        },
+const render = async (props, overrideStoreState) => {
+  const mockStore = configureMockStore()({
+    ...mockSendState,
+    metamask: {
+      ...mockSendState.metamask,
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        type: NETWORK_TYPES.GOERLI,
       },
-    });
+    },
+    ...overrideStoreState,
+  });
 
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(<SendContent {...props} />, mockStore)),
+  );
+
+  return result;
+};
+
+describe('SendContent Component', () => {
+  beforeEach(() => {
+    useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+  });
+
+  describe('render', () => {
     it('should match snapshot', async () => {
-      const props = {
+      const { container } = await render({
         gasIsExcessive: false,
         showHexData: true,
-      };
-
-      const { container } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
-      );
+      });
 
       await waitFor(() => {
         expect(container).toMatchSnapshot();
@@ -61,60 +74,11 @@ describe('SendContent Component', () => {
   });
 
   describe('SendHexDataRow', () => {
-    const tokenAssetState = {
-      ...mockSendState,
-      send: {
-        ...mockSendState.send,
-        draftTransactions: {
-          '1-tx': {
-            ...mockSendState.send.draftTransactions['1-tx'],
-            asset: {
-              balance: '0x3635c9adc5dea00000',
-              details: {
-                address: '0xAddress',
-                decimals: 18,
-                symbol: 'TST',
-                balance: '1',
-                standard: 'ERC20',
-              },
-              error: null,
-              type: 'TOKEN',
-            },
-          },
-        },
-      },
-      metamask: {
-        ...mockSendState.metamask,
-        providerConfig: {
-          chainId: CHAIN_IDS.GOERLI,
-          nickname: GOERLI_DISPLAY_NAME,
-          type: NETWORK_TYPES.GOERLI,
-        },
-      },
-    };
-
     it('should not render the SendHexDataRow if props.showHexData is false', async () => {
-      const props = {
+      const { queryByText } = await render({
         gasIsExcessive: false,
         showHexData: false,
-      };
-
-      const mockStore = configureMockStore()({
-        ...mockSendState,
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
       });
-
-      const { queryByText } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
-      );
 
       await waitFor(() => {
         expect(queryByText('Hex data:')).not.toBeInTheDocument();
@@ -122,17 +86,35 @@ describe('SendContent Component', () => {
     });
 
     it('should not render the SendHexDataRow if the asset type is TOKEN (ERC-20)', async () => {
-      const props = {
-        gasIsExcessive: false,
-        showHexData: true,
+      const tokenAssetState = {
+        send: {
+          ...mockSendState.send,
+          draftTransactions: {
+            '1-tx': {
+              ...mockSendState.send.draftTransactions['1-tx'],
+              asset: {
+                balance: '0x3635c9adc5dea00000',
+                details: {
+                  address: '0xAddress',
+                  decimals: 18,
+                  symbol: 'TST',
+                  balance: '1',
+                  standard: 'ERC20',
+                },
+                error: null,
+                type: 'TOKEN',
+              },
+            },
+          },
+        },
       };
 
-      // Use token draft transaction asset
-      const mockState = configureMockStore()(tokenAssetState);
-
-      const { queryByText } = renderWithProvider(
-        <SendContent {...props} />,
-        mockState,
+      const { queryByText } = await render(
+        {
+          gasIsExcessive: false,
+          showHexData: true,
+        },
+        tokenAssetState,
       );
 
       await waitFor(() => {
@@ -143,27 +125,10 @@ describe('SendContent Component', () => {
 
   describe('Gas Error', () => {
     it('should show gas warning when gasIsExcessive prop is true.', async () => {
-      const props = {
+      const { queryByTestId } = await render({
         gasIsExcessive: true,
         showHexData: false,
-      };
-
-      const mockStore = configureMockStore()({
-        ...mockSendState,
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
       });
-
-      const { queryByTestId } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
-      );
 
       const gasWarning = queryByTestId('gas-warning-message');
 
@@ -173,13 +138,7 @@ describe('SendContent Component', () => {
     });
 
     it('should show gas warning for none gasEstimateType in state', async () => {
-      const props = {
-        gasIsExcessive: false,
-        showHexData: false,
-      };
-
       const noGasPriceState = {
-        ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
           gasEstimateType: 'none',
@@ -191,11 +150,12 @@ describe('SendContent Component', () => {
         },
       };
 
-      const mockStore = configureMockStore()(noGasPriceState);
-
-      const { queryByTestId } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
+      const { queryByTestId } = await render(
+        {
+          gasIsExcessive: false,
+          showHexData: false,
+        },
+        noGasPriceState,
       );
 
       const gasWarning = queryByTestId('gas-warning-message');
@@ -208,13 +168,7 @@ describe('SendContent Component', () => {
 
   describe('Recipient Warning', () => {
     it('should show recipient warning with knownAddressRecipient state in draft transaction state', async () => {
-      const props = {
-        gasIsExcessive: false,
-        showHexData: false,
-      };
-
       const knownRecipientWarningState = {
-        ...mockSendState,
         send: {
           ...mockSendState.send,
           draftTransactions: {
@@ -238,11 +192,12 @@ describe('SendContent Component', () => {
         },
       };
 
-      const mockStore = configureMockStore()(knownRecipientWarningState);
-
-      const { queryByTestId } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
+      const { queryByTestId } = await render(
+        {
+          gasIsExcessive: false,
+          showHexData: false,
+        },
+        knownRecipientWarningState,
       );
 
       const sendWarning = queryByTestId('send-warning');
@@ -255,13 +210,7 @@ describe('SendContent Component', () => {
 
   describe('Assert Error', () => {
     it('should render dialog error with asset error in draft transaction state', async () => {
-      const props = {
-        gasIsExcessive: false,
-        showHexData: false,
-      };
-
       const assertErrorState = {
-        ...mockSendState,
         send: {
           ...mockSendState.send,
           draftTransactions: {
@@ -285,11 +234,12 @@ describe('SendContent Component', () => {
         },
       };
 
-      const mockStore = configureMockStore()(assertErrorState);
-
-      const { queryByTestId } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
+      const { queryByTestId } = await render(
+        {
+          gasIsExcessive: false,
+          showHexData: false,
+        },
+        assertErrorState,
       );
 
       const dialogMessage = queryByTestId('dialog-message');
@@ -302,28 +252,11 @@ describe('SendContent Component', () => {
 
   describe('Warning', () => {
     it('should display warning dialog message from warning prop', async () => {
-      const props = {
+      const { queryByTestId } = await render({
         gasIsExcessive: false,
         showHexData: false,
         warning: 'warning',
-      };
-
-      const mockStore = configureMockStore()({
-        ...mockSendState,
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
       });
-
-      const { queryByTestId } = renderWithProvider(
-        <SendContent {...props} />,
-        mockStore,
-      );
 
       const dialogMessage = queryByTestId('dialog-message');
 
