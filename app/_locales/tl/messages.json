@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Dahil sa error, hindi na-verify ang kahilingang ito ng tagapagbigay ng seguridad. Magpatuloy nang may pag-iingat."
   },
   "blockaidDescriptionMaliciousDomain": {

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
@@ -12,44 +12,33 @@ import {
   Display,
   BlockSize,
   FontWeight,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  getSnapMetadata,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 
-import { Text, Box } from '../../../component-library';
+import { Text, Box, AvatarIcon, IconName } from '../../../component-library';
 import SnapAvatar from '../snap-avatar';
-import SnapVersion from '../snap-version/snap-version';
+import { SnapMetadataModal } from '../snap-metadata-modal';
 
 const SnapAuthorshipHeader = ({
   snapId,
   className,
   boxShadow = 'var(--shadow-size-lg) var(--color-shadow-default)',
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
   // like it is done with snap install
-  const snapPrefix = snapId && getSnapPrefix(snapId);
   const packageName = snapId && stripSnapPrefix(snapId);
-  const isNPM = snapPrefix === 'npm:';
-
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
-  );
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
-  const versionPath = subjectMetadata?.version
-    ? `/v/${subjectMetadata?.version}`
-    : '';
+  const openModal = () => setIsModalOpen(true);
 
-  const url = isNPM
-    ? `https://www.npmjs.com/package/${packageName}${versionPath}`
-    : packageName;
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <Box
@@ -63,6 +52,13 @@ const SnapAuthorshipHeader = ({
         boxShadow,
       }}
     >
+      {snapId && (
+        <SnapMetadataModal
+          snapId={snapId}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        />
+      )}
       <Box>
         <SnapAvatar snapId={snapId} />
       </Box>
@@ -85,7 +81,13 @@ const SnapAuthorshipHeader = ({
         </Text>
       </Box>
       <Box marginLeft="auto">
-        <SnapVersion version={subjectMetadata?.version} url={url} />
+        <AvatarIcon
+          className="snaps-authorship-header__button"
+          iconName={IconName.Info}
+          onClick={openModal}
+          color={IconColor.iconMuted}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+        />
       </Box>
     </Box>
   );

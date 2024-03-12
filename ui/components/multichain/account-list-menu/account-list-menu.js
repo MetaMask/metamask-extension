@@ -18,7 +18,12 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import { AccountListItem, CreateAccount, ImportAccount } from '..';
+import {
+  AccountListItem,
+  CreateAccount,
+  ImportAccount,
+  AccountListItemMenuTypes,
+} from '..';
 import {
   AlignItems,
   BackgroundColor,
@@ -32,16 +37,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getInternalAccounts,
   getOnboardedInThisUISession,
   getShowAccountBanner,
 } from '../../../selectors';
@@ -90,7 +94,6 @@ export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
       return {
         ...account,
         ...internalAccount,
-        name: internalAccount.metadata.name || account.name,
         keyring: internalAccount.metadata.keyring,
         label: getAccountLabel(
           internalAccount.metadata.keyring.type,
@@ -110,8 +113,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -138,12 +140,12 @@ export const AccountListMenu = ({
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address'],
+      keys: ['metadata.name', 'address'],
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, internalAccounts);
+  searchResults = mergeAccounts(searchResults, accounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
@@ -284,6 +286,14 @@ export const AccountListMenu = ({
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          location: 'Main Menu',
+                        },
+                      });
                       global.platform.openTab({
                         url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
                       });
@@ -419,9 +429,11 @@ export const AccountListMenu = ({
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptions
+                      menuType={AccountListItemMenuTypes.Account}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}
+                      currentTabOrigin={currentTabOrigin}
+                      isActive={Boolean(account.active)}
                       {...accountListItemProps}
                     />
                   </Box>

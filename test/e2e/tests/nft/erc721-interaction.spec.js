@@ -251,7 +251,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await openDapp(driver, contract);
         await driver.findClickableElement('#deployButton');
 
-        // Click Transer
+        // Click Transfer
         await driver.fill('#transferTokenInput', '1');
         await driver.clickElement('#transferFromButton');
         await driver.waitUntilXWindowHandles(3);

@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Si aprueba esta solicitud, alguien puede robar sus activos enlistados en Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Debido a un error, el proveedor de seguridad no verificó esta solicitud. Proceda con precaución."
   },
   "blockaidDescriptionMaliciousDomain": {

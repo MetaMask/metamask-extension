@@ -2,6 +2,13 @@
   "DNS": {
     "resolution": null
   },
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
+  },
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": {
@@ -43,6 +50,39 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "gasFeeEstimatesByChainId": {
+      "0x5": {
+        "gasEstimateType": "fee-market",
+        "gasFeeEstimates": {
+          "low": {
+            "minWaitTimeEstimate": 180000,
+            "maxWaitTimeEstimate": 300000,
+            "suggestedMaxPriorityFeePerGas": "3",
+            "suggestedMaxFeePerGas": "53"
+          },
+          "medium": {
+            "minWaitTimeEstimate": 15000,
+            "maxWaitTimeEstimate": 60000,
+            "suggestedMaxPriorityFeePerGas": "7",
+            "suggestedMaxFeePerGas": "70"
+          },
+          "high": {
+            "minWaitTimeEstimate": 0,
+            "maxWaitTimeEstimate": 15000,
+            "suggestedMaxPriorityFeePerGas": "10",
+            "suggestedMaxFeePerGas": "100"
+          },
+          "estimatedBaseFee": "50",
+          "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+          "baseFeeTrend": "up",
+          "latestPriorityFeeRange": ["1", "40"],
+          "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+          "priorityFeeTrend": "down",
+          "networkCongestion": 0.90625
+        }
+      }
+    },
+    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -247,18 +287,17 @@
           ],
           "type": "eip155:eoa"
         },
-        "a59e7df7-c6cb-4198-a6dd-36386a409551": {
+        "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3": {
           "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
-          "id": "a59e7df7-c6cb-4198-a6dd-36386a409551",
+          "id": "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3",
           "metadata": {
             "name": "Snap Account 1",
             "keyring": {
               "type": "Snap Keyring"
             },
             "snap": {
-              "id": "mock-id",
-              "name": "mock-snap",
-              "enabled": true
+              "id": "snap-id",
+              "name": "snap-name"
             }
           },
           "options": {},
@@ -406,6 +445,10 @@
       },
       "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
         "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+        "balance": "0x0"
+      },
+      "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+        "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
         "balance": "0x0"
       }
     },
@@ -1598,6 +1641,15 @@
             "6.0.0": {
               "checksum": "31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
             }
+          }
+        }
+      }
+    },
+    "permissionHistory": {
+      "https://metamask.github.io": {
+        "eth_accounts": {
+          "accounts": {
+            "0dcd5d886577d5081b0c52e242ef29e70be3e7bc": 1709225290848
           }
         }
       }
