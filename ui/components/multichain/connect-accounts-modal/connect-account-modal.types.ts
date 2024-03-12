@@ -1,15 +1,17 @@
+import { type InternalAccount } from '@metamask/keyring-api';
+
 export enum ConnectAccountsType {
   Account = 'disconnectAllAccountsText',
   Snap = 'disconnectAllSnapsText',
 }
 
-export interface AccountType {
+export type AccountType = InternalAccount & {
   name: string;
   address: string;
   balance: string;
   keyring: KeyringType;
   label?: string;
-}
+};
 
 export interface KeyringType {
   type: string;

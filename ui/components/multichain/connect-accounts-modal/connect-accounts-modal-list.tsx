@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   ButtonPrimary,
@@ -15,7 +16,6 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountListItem } from '..';
-import { ConnectAccountsListProps } from './connect-account-modal.types';
 import {
   Display,
   IconColor,
@@ -23,10 +23,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { useDispatch, useSelector } from 'react-redux';
 import { getOriginOfCurrentTab } from '../../../selectors/selectors';
 import { getURLHost } from '../../../helpers/utils/util';
 import { addMorePermittedAccounts } from '../../../store/actions';
+import { ConnectAccountsListProps } from './connect-account-modal.types';
 
 export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
   onClose,
@@ -91,7 +91,15 @@ export const ConnectAccountsList: React.FC<ConnectAccountsListProps> = ({
           })}
         </ModalBody>
         <ModalFooter>
-          <ButtonPrimary onClick={() => dispatch(addMorePermittedAccounts(activeTabOrigin, selectedAccounts))} block>
+          <ButtonPrimary
+            onClick={() => {
+              dispatch(
+                addMorePermittedAccounts(activeTabOrigin, selectedAccounts),
+              );
+              onClose();
+            }}
+            block
+          >
             {t('confirm')}
           </ButtonPrimary>
         </ModalFooter>

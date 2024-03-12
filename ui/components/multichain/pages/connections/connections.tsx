@@ -1,5 +1,5 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
@@ -43,14 +43,15 @@ import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
+import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
-import { showConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal-actions';
 
 export const Connections = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const dispatch = useDispatch();
+  const [showConnectAccountsModal, setShowConnectAccountsModal] =
+    useState(false);
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -145,6 +146,11 @@ export const Connections = () => {
         ) : (
           <NoConnectionContent />
         )}
+        {showConnectAccountsModal ? (
+          <ConnectAccountsModal
+            onClose={() => setShowConnectAccountsModal(false)}
+          />
+        ) : null}
       </Content>
       <Footer>
         {connectedSubjectsMetadata ? (
@@ -160,7 +166,7 @@ export const Connections = () => {
               block
               variant={ButtonVariant.Secondary}
               startIconName={IconName.Add}
-              onClick={() => dispatch(showConnectAccountsModal())}
+              onClick={() => setShowConnectAccountsModal(true)}
             >
               {t('connectMoreAccounts')}
             </Button>

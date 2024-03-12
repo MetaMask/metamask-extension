@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsList } from './connect-accounts-modal-list';
 
 export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
-  const t = useI18nContext();
   const accounts = useSelector(getUnconnectedAccounts);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
@@ -19,7 +17,7 @@ export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
     } else {
       // If address is already selected, remove it from the selectedAccounts array
       newSelectedAccounts = selectedAccounts.filter(
-        (item, idx) => idx !== index,
+        (_item, idx) => idx !== index,
       );
     }
 
