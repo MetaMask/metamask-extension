@@ -162,7 +162,7 @@ export default class AuthenticationController extends BaseController<
       const publicKey = await this.#snapGetPublicKey();
       const nonce = await getNonce(publicKey);
       if (!nonce) {
-        throw new Error(`${controllerName}: Unable to get nonce`);
+        throw new Error(`Unable to get nonce`);
       }
 
       // 2. Login
@@ -170,13 +170,13 @@ export default class AuthenticationController extends BaseController<
       const signature = await this.#snapSignMessage(rawMessage);
       const loginResponse = await login(rawMessage, signature);
       if (!loginResponse?.token) {
-        throw new Error(`${controllerName}: Unable to login`);
+        throw new Error(`Unable to login`);
       }
 
       // 3. Trade for Access Token
       const accessToken = await getAccessToken(loginResponse.token);
       if (!accessToken) {
-        throw new Error(`${controllerName}: Unable to get Access Token`);
+        throw new Error(`Unable to get Access Token`);
       }
 
       // Update Internal State
@@ -196,7 +196,7 @@ export default class AuthenticationController extends BaseController<
         accessToken,
       };
     } catch (e) {
-      throw new Error(`${controllerName}: Failed to authenticate`);
+      throw new Error(`${controllerName}: Failed to authenticate - ${e}`);
     }
   }
 
