@@ -68,11 +68,7 @@ export default function SnapUpdate({
   const isLoading = requestState.loading;
   const hasError = !isLoading && requestState.error;
 
-  const warnings = getSnapInstallWarnings(
-    newPermissions,
-    targetSubjectMetadata,
-    t,
-  );
+  const warnings = getSnapInstallWarnings(newPermissions, t, snapName);
 
   const shouldShowWarning = warnings.length > 0;
 

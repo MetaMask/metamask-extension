@@ -37,7 +37,6 @@ import {
   getSnaps,
   getSubjectsWithSnapPermission,
   getPermissions,
-  getTargetSubjectMetadata,
   getSnapLatestVersion,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMemoizedMetaMaskIdentities,
@@ -86,9 +85,6 @@ function SnapSettings({ snapId }) {
   );
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
-  );
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snap?.id),
   );
 
   const { name: snapName, description } = useSelector((state) =>
@@ -158,8 +154,8 @@ function SnapSettings({ snapId }) {
         <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
         <SnapPermissionsList
           snapId={snapId}
+          snapName={snapName}
           permissions={permissions ?? {}}
-          targetSubjectMetadata={targetSubjectMetadata}
           showOptions
         />
       </Box>

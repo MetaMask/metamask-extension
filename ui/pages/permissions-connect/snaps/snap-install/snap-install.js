@@ -67,8 +67,8 @@ export default function SnapInstall({
 
   const warnings = getSnapInstallWarnings(
     requestState?.permissions ?? {},
-    targetSubjectMetadata,
     t,
+    snapName,
   );
 
   const shouldShowWarning = warnings.length > 0;
@@ -181,7 +181,6 @@ export default function SnapInstall({
               snapId={targetSubjectMetadata.origin}
               snapName={snapName}
               permissions={requestState.permissions || {}}
-              targetSubjectMetadata={targetSubjectMetadata}
             />
             {isScrollable && !isScrolledToBottom ? (
               <AvatarIcon
