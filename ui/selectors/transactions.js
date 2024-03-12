@@ -102,14 +102,11 @@ export const smartTransactionsListSelector = (state) =>
     getCurrentChainId(state)
   ]
     ?.filter((stx) => {
-      const isSwapStx = !stx.skipConfirm;
-      // We only want to return unconfirmed Swaps smart transactions here.
-      // Non-Swaps transactions will be part of a regular transaction list.
-      return !stx.confirmed && isSwapStx;
+      return !stx.confirmed;
     })
     .map((stx) => ({
       ...stx,
-      transactionType: TransactionType.smart,
+      isSmartTransaction: true,
       status: stx.status?.startsWith('cancelled')
         ? SmartTransactionStatus.cancelled
         : stx.status,
