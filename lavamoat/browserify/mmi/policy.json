@@ -831,11 +831,12 @@
     },
     "@metamask/accounts-controller": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "ethereumjs-util": true,
         "uuid": true
       }
     },
@@ -1002,13 +1003,14 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true
+        "eth-ens-namehash": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -1094,68 +1096,6 @@
         "@metamask/utils": true,
         "pify": true,
         "sass-loader>klona": true
-      }
-    },
-    "@metamask/eth-keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/browser-passworder": true,
-        "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
-        "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/eth-keyring-controller>@metamask/obs-store": true,
-        "@metamask/message-manager>@metamask/eth-sig-util": true,
-        "@metamask/utils": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/message-manager>@metamask/eth-sig-util": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/message-manager>@metamask/eth-sig-util": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "mocha>serialize-javascript>randombytes": true
-      }
-    },
-    "@metamask/eth-keyring-controller>@metamask/obs-store": {
-      "packages": {
-        "@metamask/eth-keyring-controller>@metamask/obs-store>@metamask/safe-event-emitter": true,
-        "@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": true
-      }
-    },
-    "@metamask/eth-keyring-controller>@metamask/obs-store>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -1500,7 +1440,7 @@
         "@metamask/eth-query": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "ethereumjs-util": true,
+        "bn.js": true,
         "uuid": true
       }
     },
@@ -1562,51 +1502,38 @@
     },
     "@metamask/keyring-controller": {
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
-        "@metamask/keyring-controller>@metamask/eth-keyring-controller": true,
+        "@metamask/browser-passworder": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/name-controller>async-mutex": true,
-        "@metamask/utils": true,
-        "ethereumjs-util": true
+        "@metamask/utils": true
       }
     },
-    "@metamask/keyring-controller>@metamask/eth-keyring-controller": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
       "globals": {
-        "console.error": true
+        "TextEncoder": true
       },
       "packages": {
-        "@metamask/browser-passworder": true,
-        "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
-        "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/obs-store": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/obs-store": {
-      "packages": {
-        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/obs-store>@metamask/safe-event-emitter": true,
-        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/obs-store>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/obs-store>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "mocha>serialize-javascript>randombytes": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
@@ -1673,8 +1600,8 @@
         "@metamask/controller-utils": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "uuid": true,
         "webpack>events": true
       }
@@ -2033,8 +1960,8 @@
         "@metamask/logging-controller": true,
         "@metamask/message-manager": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "lodash": true,
         "webpack>events": true
       }
@@ -2406,7 +2333,7 @@
         "@metamask/transaction-controller": true,
         "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/utils": true,
-        "ethereumjs-util": true,
+        "bn.js": true,
         "lodash": true,
         "superstruct": true,
         "uuid": true,
