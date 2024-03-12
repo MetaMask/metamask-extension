@@ -306,41 +306,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderDisableExternalServices() {
-    const { t } = this.context;
-    const { disableExternalServices, setDisableExternalServices } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[3]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-        data-testid="advanced-setting-show-testnet-conversion"
-      >
-        <div className="settings-page__content-item">
-          <span>Basic Configuration</span>
-          <div className="settings-page__content-description">
-            Blah blah blah description blah blah blah
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={disableExternalServices}
-            onToggle={(value) =>
-              setDisableExternalServices(!value)
-            }
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   renderToggleTestNetworks() {
     const { t } = this.context;
     const { showTestNetworks, setShowTestNetworks } = this.props;
@@ -727,7 +692,6 @@ export default class AdvancedTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
-        {this.renderDisableExternalServices()}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
         {this.renderHexDataOptIn()}

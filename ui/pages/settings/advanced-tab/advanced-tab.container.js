@@ -30,7 +30,6 @@ export const mapStateToProps = (state) => {
     disabledRpcMethodPreferences,
     useNonceField,
     dismissSeedBackUpReminder,
-    disableExternalServices,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -49,7 +48,6 @@ export const mapStateToProps = (state) => {
     useNonceField,
     dismissSeedBackUpReminder,
     disabledRpcMethodPreferences,
-    disableExternalServices,
   };
 };
 
