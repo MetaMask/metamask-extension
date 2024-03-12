@@ -2,7 +2,7 @@ import React from 'react';
 import SignatureRequestHeader from './signature-request-header';
 
 export default {
-  title: 'Components/App/SignatureRequestHeader',
+  title: 'Confirmations/Components/SignatureRequestHeader',
   argTypes: {
     txData: { control: 'object' },
   },

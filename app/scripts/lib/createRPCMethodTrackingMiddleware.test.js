@@ -24,11 +24,30 @@ const securityProviderRequest = () => {
   };
 };
 
+const appStateController = {
+  store: {
+    getState: () => ({
+      signatureSecurityAlertResponses: {
+        1: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+        },
+      },
+    }),
+  },
+  getSignatureSecurityAlertResponse: (id) => {
+    return appStateController.store.getState().signatureSecurityAlertResponses[
+      id
+    ];
+  },
+};
+
 const handler = createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds: 1,
   securityProviderRequest,
+  appStateController,
 });
 
 function getNext(timeout = 500) {
@@ -60,11 +79,16 @@ function getNext(timeout = 500) {
 const waitForSeconds = async (seconds) =>
   await new Promise((resolve) => setTimeout(resolve, SECOND * seconds));
 
-jest.mock('@metamask/controller-utils', () => ({
-  detectSIWE: jest.fn().mockImplementation(() => {
-    return { isSIWEMessage: false };
-  }),
-}));
+jest.mock('@metamask/controller-utils', () => {
+  const actual = jest.requireActual('@metamask/controller-utils');
+
+  return {
+    ...actual,
+    detectSIWE: jest.fn().mockImplementation(() => {
+      return { isSIWEMessage: false };
+    }),
+  };
+});
 
 describe('createRPCMethodTrackingMiddleware', () => {
   afterEach(() => {
@@ -122,6 +146,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         securityAlertResponse: {
           result_type: BlockaidResultType.Malicious,
           reason: BlockaidReason.maliciousDomain,
+          securityAlertId: 1,
         },
       };
 
@@ -154,6 +179,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             eth_call: 5,
             eth_getCode: 3,
           },
+          securityAlertId: 1,
         },
       };
 

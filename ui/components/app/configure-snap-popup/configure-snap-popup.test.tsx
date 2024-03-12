@@ -11,7 +11,7 @@ import ConfigureSnapPopup, {
 const mockOnClose = jest.fn();
 const mockStore = configureMockStore([])(mockState);
 describe('ConfigureSnapPopup', () => {
-  global.platform = { openTab: jest.fn() };
+  global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
   it('should show configure popup title and description', async () => {
     const { getByText } = renderWithProvider(

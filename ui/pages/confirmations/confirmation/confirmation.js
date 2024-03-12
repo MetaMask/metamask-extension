@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useReducer,
   useState,
+  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +12,6 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
-
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -22,6 +22,7 @@ import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getTargetSubjectMetadata,
@@ -39,6 +40,7 @@ import Loading from '../../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../../helpers/utils/util';
+import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
@@ -195,6 +197,7 @@ export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const pendingConfirmations = useSelector(
@@ -247,6 +250,12 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
   ];
+
+  const SNAP_CUSTOM_UI_DIALOG = [
+    ApprovalType.SnapDialogAlert,
+    ApprovalType.SnapDialogConfirmation,
+    ApprovalType.SnapDialogPrompt,
+  ];
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -257,6 +266,11 @@ export default function ConfirmationPage({
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
+    pendingConfirmation?.type,
+  );
+  const isSnapPrompt =
+    pendingConfirmation?.type === ApprovalType.SnapDialogPrompt;
   let useSnapHeader = isSnapDialog;
 
   // When pendingConfirmation is undefined, this will also be undefined
@@ -297,8 +311,13 @@ export default function ConfirmationPage({
           t,
           dispatch,
           history,
-          setInputState,
-          { matchedChain, currencySymbolWarning },
+          {
+            matchedChain,
+            currencySymbolWarning,
+          },
+          // Passing `t` in the contexts object is a bit redundant but since it's a
+          // context too, it makes sense (for completeness)
+          { t, trackEvent },
         )
       : {};
   }, [
@@ -308,11 +327,18 @@ export default function ConfirmationPage({
     history,
     matchedChain,
     currencySymbolWarning,
+    trackEvent,
     ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
     ///: END:ONLY_INCLUDE_IF
   ]);
+
+  useEffect(() => {
+    if (templatedValues.onLoad) {
+      templatedValues.onLoad();
+    }
+  }, [templatedValues]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
@@ -412,6 +438,9 @@ export default function ConfirmationPage({
     return inputStates[type] ?? '';
   };
 
+  const onInputChange = (event) =>
+    setInputState(pendingConfirmation?.type, event.target.value ?? '');
+
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
       setLoadingText(templatedValues.submitText);
@@ -484,7 +513,35 @@ export default function ConfirmationPage({
           )
           ///: END:ONLY_INCLUDE_IF
         }
-        <MetaMaskTemplateRenderer sections={templatedValues.content} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          isSnapCustomUIDialog ? (
+            <Box
+              marginRight={4}
+              marginLeft={4}
+              marginTop={4}
+              key="snap-dialog-content-wrapper"
+            >
+              <SnapUIRenderer
+                snapId={pendingConfirmation?.origin}
+                interfaceId={pendingConfirmation?.requestData.id}
+                isPrompt={isSnapPrompt}
+                inputValue={
+                  isSnapPrompt && inputStates[pendingConfirmation?.type]
+                }
+                onInputChange={isSnapPrompt && onInputChange}
+                placeholder={
+                  isSnapPrompt && pendingConfirmation?.requestData.placeholder
+                }
+              />
+            </Box>
+          ) : (
+            ///: END:ONLY_INCLUDE_IF
+            <MetaMaskTemplateRenderer sections={templatedValues.content} />
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
         {showWarningModal && (
           <ConfirmationWarningModal
             onSubmit={async () => {
@@ -530,7 +587,7 @@ export default function ConfirmationPage({
             : {}
         }
         ///: END:ONLY_INCLUDE_IF
-        onSubmit={handleSubmit}
+        onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
         cancelText={templatedValues.cancelText}

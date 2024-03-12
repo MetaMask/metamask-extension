@@ -24,12 +24,15 @@ const selectors = {
   walletOverview: '.wallet-overview__balance',
 };
 
+// This function is to click on the three dots and select the "Settings" option from the dropdown menu.
+// Then, click on the "About" section from the left panel.
 async function switchToAboutView(driver: Driver) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsDiv);
   await driver.clickElement(selectors.aboutDiv);
 }
 
+// Test case to validate the view in the "About" - MetaMask.
 describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
   it('validate the view', async function () {
     await withFixtures(
@@ -44,7 +47,7 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
         // navigate to settings and click on about view
         await switchToAboutView(driver);
 
-        // Validating the heading text
+        // Validating the title
         const isTitlePresent = await driver.isElementPresent(
           selectors.titleText,
         );
@@ -64,7 +67,7 @@ describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
           'Meta Mask label is not present in the about view section',
         );
 
-        // verify the version number in the about view section to the fixture builder version as 11.7.3
+        // verify the version number of the MetaMask
         const metaMaskVersion = await driver.findElement(
           selectors.metaMaskVersion,
         );

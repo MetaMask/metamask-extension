@@ -2,7 +2,7 @@ import React from 'react';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default {
-  title: 'Components/App/SignatureRequestOriginalWarning',
+  title: 'Confirmations/Components/SignatureRequestOriginalWarning',
   component: SignatureRequestOriginalWarning,
   argTypes: {
     senderAddress: {

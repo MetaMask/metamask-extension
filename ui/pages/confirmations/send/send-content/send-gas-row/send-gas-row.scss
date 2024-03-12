@@ -1,5 +1,7 @@
+@use "design-system";
+
 .currency-display {
-  @include Paragraph;
+  @include design-system.Paragraph;
 
   height: 54px;
   border: 1px solid var(--color-border-default);
@@ -14,7 +16,7 @@
   }
 
   &__input {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-muted);
     border: none;
@@ -22,7 +24,7 @@
   }
 
   &__primary-currency {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-muted);
     font-weight: 400;
@@ -34,7 +36,7 @@
 
   &__converted-value,
   &__converted-currency {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-muted);
   }
