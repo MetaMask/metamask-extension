@@ -4107,7 +4107,7 @@
     "message": "Turn on NFT detection in Settings"
   },
   "selectPathHelp": {
-    "message": "If you don't see the accounts you expect, try switching the HD path."
+    "message": "If you don't see the accounts you expect, try switching the HD path or current selected network in the top left menu."
   },
   "selectType": {
     "message": "Select Type"
