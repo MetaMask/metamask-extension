@@ -24,6 +24,7 @@ export default class PreferencesController {
    *
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
+   * @property {object} messenger - The controller messenger
    * @property {object} store The stored object containing a users preferences, stored in local storage
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
@@ -131,6 +132,16 @@ export default class PreferencesController {
       }
     });
 
+    this.messagingSystem = opts.messenger;
+    this.messagingSystem.registerActionHandler(
+      `PreferencesController:getState`,
+      () => this.store.getState(),
+    );
+    this.messagingSystem.registerInitialEventPayload({
+      eventType: `PreferencesController:stateChange`,
+      getPayload: () => [this.store.getState(), []],
+    });
+
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
@@ -200,6 +211,10 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
+    this.messagingSystem.publish('PreferencesController:stateChange', [
+      this.store.getState(),
+      [],
+    ]);
     this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
     if (val) {
       this.tokenListController.start();
@@ -482,6 +497,10 @@ export default class PreferencesController {
 
     selectedIdentity.lastSelected = Date.now();
     this.store.updateState({ identities, selectedAddress: address });
+    this.messagingSystem.publish('PreferencesController:stateChange', [
+      this.store.getState(),
+      [],
+    ]);
   }
 
   /**

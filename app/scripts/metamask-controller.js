@@ -498,9 +498,16 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokenListController,
     });
 
+    const preferencesMessenger = this.controllerMessenger.getRestricted({
+      name: 'PreferencesController',
+      allowedActions: ['PreferencesController:getState'],
+      allowedEvents: ['PreferencesController:stateChange'],
+    });
+
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      messenger: preferencesMessenger,
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -510,18 +517,6 @@ export default class MetamaskController extends EventEmitter {
           listener,
         ),
     });
-    // TODO: Remove once `PreferencesController` is migrated to the core repo
-    this.controllerMessenger.registerActionHandler(
-      `PreferencesController:getState`,
-      () => this.preferencesController.store.getState(),
-    );
-    // TODO: Remove once `PreferencesController` is migrated to the core repo
-    this.controllerMessenger.registerInitialEventPayload({
-      eventType: `PreferencesController:stateChange`,
-      getPayload: () => [this.preferencesController.store.getState(), []],
-    });
-    // TODO: Remove once `PreferencesController` is migrated to the core repo
-    this.controllerMessenger.subscribe(`PreferencesController:stateChange`);
 
     this.assetsContractController = new AssetsContractController(
       {
