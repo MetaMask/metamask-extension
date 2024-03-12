@@ -9,8 +9,8 @@ export const MOCK_USER_STORAGE_NOTIFICATIONS_ENDPOINT = `${USER_STORAGE_ENDPOINT
 )}`;
 
 type MockReply = {
-  status: number;
-  body?: Record<string, unknown>;
+  status: nock.StatusCode;
+  body?: nock.Body;
 };
 
 const MOCK_GET_USER_STORAGE_RESPONSE: GetUserStorageResponse = {

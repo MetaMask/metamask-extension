@@ -149,7 +149,7 @@ features:
   conf-redesign:
   notifications:
     env:
-      - USER_STORAGE_API: https://user-storage.dev-api.cx.metamask.io
+      - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###

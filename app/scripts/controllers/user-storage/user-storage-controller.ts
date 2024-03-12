@@ -47,7 +47,7 @@ type AuthParams = {
  * These can be settings shared cross MetaMask clients, or data we want to persist when uninstalling/reinstalling.
  *
  * NOTE:
- * - data stored on UserStorage if FULLY encrypted, with the only keys stored/managed on the client.
+ * - data stored on UserStorage is FULLY encrypted, with the only keys stored/managed on the client.
  * - No one can access this data unless they are have the SRP and are able to run the signing snap.
  */
 export default class UserStorageController extends BaseController<
@@ -69,7 +69,7 @@ export default class UserStorageController extends BaseController<
   }
 
   /**
-   * Allows retrieval of stored data. Data stored is a string formatted data.
+   * Allows retrieval of stored data. Data stored is string formatted.
    * Developers can extend the entry path and entry name through the `schema.ts` file.
    *
    * @param entryKey
@@ -90,7 +90,7 @@ export default class UserStorageController extends BaseController<
   }
 
   /**
-   * Allows storage of user data. Data stored must be a string formatted.
+   * Allows storage of user data. Data stored must be string formatted.
    * Developers can extend the entry path and entry name through the `schema.ts` file.
    *
    * @param entryKey
