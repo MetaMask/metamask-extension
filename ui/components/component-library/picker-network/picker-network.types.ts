@@ -6,8 +6,7 @@ import { IconProps } from '../icon/icon.types';
 import { AvatarNetworkProps } from '../avatar-network/avatar-network.types';
 import { TextProps } from '../text';
 
-// This interface was created before this ESLint rule was added.
-// Convert to a `type` in a future major version.
+// TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
   /**

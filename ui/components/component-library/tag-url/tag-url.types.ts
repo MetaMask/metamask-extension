@@ -8,8 +8,7 @@ import { IconProps } from '../icon';
 import { TextProps } from '../text';
 import { ButtonLinkProps } from '../button-link';
 
-// This interface was created before this ESLint rule was added.
-// Convert to a `type` in a future major version.
+// TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface TagUrlStyleUtilityProps extends StyleUtilityProps {
   /**

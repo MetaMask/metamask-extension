@@ -12,8 +12,7 @@ export enum SelectButtonSize {
   Lg = 'lg',
 }
 
-// This interface was created before this ESLint rule was added.
-// Convert to a `type` in a future major version.
+// TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   /*
