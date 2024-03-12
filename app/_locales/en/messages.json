@@ -2867,9 +2867,6 @@
   "noAddressForName": {
     "message": "No address has been set for this name."
   },
-  "noChartData": {
-    "message": "No chart data"
-  },
   "noConnectedAccountDescription": {
     "message": "Select an account you want to use on this site to continue."
   },
@@ -5727,9 +5724,6 @@
   },
   "visitWebSite": {
     "message": "Visit our website"
-  },
-  "volume": {
-    "message": "Volume"
   },
   "wallet": {
     "message": "Wallet"
