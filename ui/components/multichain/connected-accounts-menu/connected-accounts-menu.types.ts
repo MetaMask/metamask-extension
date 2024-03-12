@@ -1,4 +1,6 @@
 export interface Identity {
   address: string;
-  label?: string;
+  metadata?: {
+    name?: string;
+  };
 }

@@ -40,7 +40,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapName,
   ///: END:ONLY_INCLUDE_IF
-  getDomainFromURL,
+  getURLHostName,
 } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -76,20 +76,23 @@ function getSnapNameComponent(snapName) {
 }
 
 function getPermissionSubjectComponent(targetSubjectMetadata) {
+  const subjectName = Object.values(targetSubjectMetadata)?.[0]?.origin;
+  const formattedName = getURLHostName(subjectName) || subjectName;
+
   return (
     <Text
       fontWeight={FontWeight.Medium}
       variant={TextVariant.inherit}
       color={TextColor.inherit}
     >
-      {getDomainFromURL(Object.values(targetSubjectMetadata)?.[0]?.origin)}
+      {formattedName}
     </Text>
   );
 }
 
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t, targetSubjectMetadata }) => ({
-    label: t('permission_ethereumAccounts', [
+    label: t('permission_can_ethereumAccounts', [
       getPermissionSubjectComponent(targetSubjectMetadata),
     ]),
     leftIcon: getLeftIcon(IconName.Eye),

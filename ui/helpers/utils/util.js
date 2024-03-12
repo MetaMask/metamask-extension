@@ -561,15 +561,6 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-export const getDomainFromURL = (input) => {
-  try {
-    const parsedUrl = new URL(input);
-    return parsedUrl.hostname;
-  } catch (error) {
-    return input;
-  }
-};
-
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapName = (snapsMetadata) => {
   return (snapId) => {

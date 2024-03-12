@@ -67,7 +67,11 @@ export const DappPermissionModal = () => {
   );
 
   return (
-    <Modal isOpen={open} onClose={closeModal}>
+    <Modal
+      isOpen={open}
+      onClose={closeModal}
+      data-test-id="dapp-permission-modal"
+    >
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
@@ -90,7 +94,7 @@ export const DappPermissionModal = () => {
             <AvatarAccount
               borderColor={BorderColor.transparent}
               size={AvatarAccountSize.Sm}
-              address={'0x00'}
+              address={account.address}
               variant={
                 useBlockie
                   ? AvatarAccountVariant.Blockies
@@ -99,11 +103,7 @@ export const DappPermissionModal = () => {
               marginInlineEnd={2}
             />
             <Text variant={TextVariant.headingSm}>
-              {account.label ? (
-                <Confusable input={account.label} />
-              ) : (
-                shortenAddress(account.address)
-              )}
+              {account.label ? account.label : shortenAddress(account.address)}
             </Text>
           </Box>
         </ModalHeader>
