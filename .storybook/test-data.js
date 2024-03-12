@@ -1588,6 +1588,13 @@ const state = {
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
+    dappPermissionModal: {
+      open: true,
+      account: {
+        label: "NFT Account",
+        address: "0x514910771af9ca656af840dff83e8264ecf986ca"
+      },
+    },
     accountDetail: {
       subview: 'transactions',
     },
