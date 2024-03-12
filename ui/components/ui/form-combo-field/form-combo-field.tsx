@@ -13,13 +13,13 @@ import { FormTextField } from '../../component-library/form-text-field/deprecate
 import { I18nContext } from '../../../contexts/i18n';
 import { Display, IconColor } from '../../../helpers/constants/design-system';
 
-export interface FormComboFieldOption {
+export type FormComboFieldOption = {
   value: string;
   primaryLabel?: string;
   secondaryLabel?: string;
-}
+};
 
-export interface FormComboFieldProps<Option extends FormComboFieldOption> {
+export type FormComboFieldProps<Option extends FormComboFieldOption> = {
   /** Whether to hide the 'no option' when there are no options to display. */
   hideDropdownIfNoOptions?: boolean;
 
@@ -45,7 +45,7 @@ export interface FormComboFieldProps<Option extends FormComboFieldOption> {
 
   /** The value to display in the field. */
   value: string;
-}
+};
 
 function Option({
   option,

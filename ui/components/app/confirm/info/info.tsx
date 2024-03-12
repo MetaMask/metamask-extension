@@ -73,9 +73,9 @@ export type ConfirmInfoRowConfig = {
   variant?: ConfirmInfoRowVariant;
 };
 
-interface ConfirmInfoProps {
+type ConfirmInfoProps = {
   rowConfigs: ConfirmInfoRowConfig[];
-}
+};
 
 /**
  * ConfirmInfo receives a custom config object and displays a list of ConfirmInfoRow components

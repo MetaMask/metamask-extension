@@ -6,10 +6,10 @@ import {
 } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
-interface RedirectUrlIconProps {
+type RedirectUrlIconProps = {
   url: string;
   onSubmit?: () => void;
-}
+};
 
 const RedirectUrlIcon = ({ url, onSubmit }: RedirectUrlIconProps) => {
   return (

@@ -14,7 +14,7 @@ import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
 
-export interface NameProps {
+export type NameProps = {
   /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
 
@@ -26,7 +26,7 @@ export interface NameProps {
 
   /** The raw value to display the name of. */
   value: string;
-}
+};
 
 function formatValue(value: string, type: NameType): string {
   switch (type) {

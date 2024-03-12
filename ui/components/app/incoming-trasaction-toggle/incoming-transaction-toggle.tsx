@@ -13,7 +13,7 @@ import { PolymorphicRef } from '../../component-library/box';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import NetworkToggle from './network-toggle';
 
-interface IncomingTransactionToggleProps {
+type IncomingTransactionToggleProps = {
   wrapperRef?: PolymorphicRef<any>;
   incomingTransactionsPreferences: Record<string, boolean>;
   allNetworks: Record<string, any>[];
@@ -21,7 +21,7 @@ interface IncomingTransactionToggleProps {
     chainId: string,
     isAllEnabledValue: boolean,
   ) => void;
-}
+};
 
 const IncomingTransactionToggle = ({
   wrapperRef,

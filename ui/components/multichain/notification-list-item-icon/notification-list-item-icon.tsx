@@ -26,16 +26,16 @@ export enum NotificationListItemIconType {
   Nft = 'nft',
 }
 
-export interface BadgeProps {
+export type BadgeProps = {
   icon: IconName;
   position?: BadgeWrapperPosition;
-}
+};
 
-export interface NotificationListItemIconProps {
+export type NotificationListItemIconProps = {
   type: NotificationListItemIconType;
   value: string;
   badge?: BadgeProps;
-}
+};
 
 const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken

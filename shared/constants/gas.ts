@@ -85,7 +85,7 @@ export enum NetworkCongestionThresholds {
   busy = 0.66,
 }
 
-export interface TxGasFees {
+export type TxGasFees = {
   /** Maxmimum number of units of gas to use for this transaction. */
   gasLimit: string;
   /** Price per gas for legacy txs */
@@ -111,4 +111,4 @@ export interface TxGasFees {
   userEditedGasLimit: string;
   /** Estimate level user selected. */
   userFeeLevel: string;
-}
+};

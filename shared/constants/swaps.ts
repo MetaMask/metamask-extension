@@ -26,7 +26,7 @@ export const MAX_ALLOWED_SLIPPAGE = 15;
 // in place of the token address that ERC-20 tokens have
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-export interface SwapsTokenObject {
+export type SwapsTokenObject = {
   /**
    * The symbol of token object
    */
@@ -47,7 +47,7 @@ export interface SwapsTokenObject {
    * URL for token icon
    */
   iconUrl: string;
-}
+};
 
 export const ETH_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.ETH,

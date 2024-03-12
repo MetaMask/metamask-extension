@@ -10,7 +10,7 @@ export enum QuizStage {
   rightAnswerQuestionTwo = 'right_answer_question_two',
 }
 
-export interface IQuizInformationProps {
+export type IQuizInformationProps = {
   /**
    * The icon to display in the modal should use <Icon /> component
    */
@@ -37,6 +37,6 @@ export interface IQuizInformationProps {
     size?: ButtonSize;
     'data-testid'?: string;
   }[];
-}
+};
 
 export type JSXDict = { [key: string]: () => JSX.Element };

@@ -23,14 +23,14 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-export interface NotificationDetailNetworkFeeProps {
+export type NotificationDetailNetworkFeeProps = {
   networkFee: string;
   gasLimit: string;
   gasUsed: string;
   baseFee: string;
   priorityFee: string;
   maxFee: string;
-}
+};
 
 const FeeDetail = ({ label, value }: { label: string; value: string }) => (
   <Box

@@ -3,10 +3,10 @@ import React, { FC } from 'react';
 import { Button, ButtonVariant, IconName } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 
-export interface NotificationListSnapButtonProps {
+export type NotificationListSnapButtonProps = {
   onClick: () => void;
   text: string;
-}
+};
 
 export const NotificationListSnapButton: FC<
   NotificationListSnapButtonProps

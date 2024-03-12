@@ -9,7 +9,7 @@ import AppStateController from '../../app/scripts/controllers/app-state';
 import AccountTracker from '../../app/scripts/lib/account-tracker';
 import MetaMetricsController from '../../app/scripts/controllers/metametrics';
 
-export interface MMIControllerOptions {
+export type MMIControllerOptions = {
   mmiConfigurationController: MmiConfigurationController;
   keyringController: any;
   preferencesController: PreferencesController;
@@ -36,36 +36,36 @@ export interface MMIControllerOptions {
   setTxStatusSubmitted: (txId: string) => void;
   setTxStatusFailed: (txId: string) => void;
   updateTransaction: (txMeta: any) => void;
-}
+};
 
-export interface ISignedEvent {
+export type ISignedEvent = {
   signature: Signature;
   messageId: string;
-}
+};
 
-export interface IInteractiveRefreshTokenChangeEvent {
+export type IInteractiveRefreshTokenChangeEvent = {
   url: string;
   oldRefreshToken: string;
-}
+};
 
-export interface IConnectCustodyAddresses {
+export type IConnectCustodyAddresses = {
   custodianType: string;
   custodianName: string;
   accounts: string[];
-}
+};
 
-export interface Label {
+export type Label = {
   key: string;
   value: string;
-}
+};
 
-export interface Signature {
+export type Signature = {
   custodian_transactionId?: string;
   from: string;
-}
+};
 
-export interface NetworkConfiguration {
+export type NetworkConfiguration = {
   id: string;
   chainId: string;
   setActiveNetwork: (chainId: string) => void;
-}
+};

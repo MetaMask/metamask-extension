@@ -23,11 +23,11 @@ import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 
-interface AddressListItemProps {
+type AddressListItemProps = {
   address: string;
   label: string;
   onClick: () => void;
-}
+};
 
 export const AddressListItem = ({
   address,

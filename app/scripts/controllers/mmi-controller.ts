@@ -42,7 +42,7 @@ import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import { PreferencesController } from './preferences';
 
-interface UpdateCustodianTransactionsParameters {
+type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
   type: string;
   txList: string[];
@@ -51,7 +51,7 @@ interface UpdateCustodianTransactionsParameters {
   txStateManager: any;
   getPendingNonce: (address: string) => Promise<number>;
   setTxHash: (txId: string, txHash: string) => void;
-}
+};
 
 export default class MMIController extends EventEmitter {
   public opts: MMIControllerOptions;

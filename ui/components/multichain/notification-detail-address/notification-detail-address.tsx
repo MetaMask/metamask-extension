@@ -10,10 +10,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-export interface NotificationDetailAddressProps {
+export type NotificationDetailAddressProps = {
   side: string;
   address: string;
-}
+};
 
 const SideText: FC<{ side: string }> = ({ side }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>

@@ -17,23 +17,23 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-interface BadgeProps {
+type BadgeProps = {
   src: string;
   position?: BadgeWrapperPosition;
-}
+};
 
-interface IconProps {
+type IconProps = {
   src: string;
   badge?: BadgeProps;
-}
+};
 
-export interface NotificationDetailAssetProps {
+export type NotificationDetailAssetProps = {
   icon: IconProps;
   label: string;
   detail: string;
   fiatValue?: string;
   value?: string;
-}
+};
 
 const createTextComponent = (
   variant: TextVariant,
