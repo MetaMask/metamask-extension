@@ -1,7 +1,11 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
+import {
+  CUSTODIAN_TYPES,
+  CustodyKeyring,
+  MmiConfigurationController,
+} from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
   custodianEventHandlerFactory,
@@ -11,24 +15,105 @@ import {
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
 import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+import { SignatureController } from '@metamask/signature-controller';
+import {
+  OriginalRequest,
+  PersonalMessageParams,
+} from '@metamask/message-manager';
+import { NetworkController } from '@metamask/network-controller';
+import { InternalAccount } from '@metamask/keyring-api';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
+import {
+  MMIControllerOptions,
+  ISignedEvent,
+  IInteractiveRefreshTokenChangeEvent,
+  Label,
+  Signature,
+} from '../../../shared/constants/mmi-controller';
+import AccountTracker from '../lib/account-tracker';
+import AppStateController from './app-state';
+import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
+import { PreferencesController } from './preferences';
+
+interface UpdateCustodianTransactionsParameters {
+  keyring: CustodyKeyring;
+  type: string;
+  txList: string[];
+  custodyController: CustodyController;
+  transactionUpdateController: TransactionUpdateController;
+  txStateManager: any;
+  getPendingNonce: (address: string) => Promise<number>;
+  setTxHash: (txId: string, txHash: string) => void;
+}
 
 export default class MMIController extends EventEmitter {
-  constructor(opts) {
+  public opts: MMIControllerOptions;
+
+  public mmiConfigurationController: MmiConfigurationController;
+
+  public keyringController: any;
+
+  public preferencesController: PreferencesController;
+
+  public appStateController: AppStateController;
+
+  public transactionUpdateController: TransactionUpdateController;
+
+  private custodyController: CustodyController;
+
+  private getState: () => any;
+
+  private getPendingNonce: (address: string) => Promise<any>;
+
+  private accountTracker: AccountTracker;
+
+  private metaMetricsController: MetaMetricsController;
+
+  private networkController: NetworkController;
+
+  private permissionController: any;
+
+  private signatureController: SignatureController;
+
+  private messenger: any;
+
+  private platform: any;
+
+  private extension: any;
+
+  private updateTransactionHash: (txId: string, txHash: string) => void;
+
+  public trackTransactionEvents: (
+    args: { transactionMeta: TransactionMeta },
+    event: any,
+  ) => void;
+
+  private txStateManager: {
+    getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
+    setTxStatusSigned: (txId: string) => void;
+    setTxStatusSubmitted: (txId: string) => void;
+    setTxStatusFailed: (txId: string) => void;
+    updateTransaction: (txMeta: any) => void;
+  };
+
+  constructor(opts: MMIControllerOptions) {
     super();
 
     this.opts = opts;
     this.messenger = opts.messenger;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.securityProviderRequest = opts.securityProviderRequest;
+    this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
-    this.institutionalFeaturesController = opts.institutionalFeaturesController;
     this.getState = opts.getState;
     this.getPendingNonce = opts.getPendingNonce;
     this.accountTracker = opts.accountTracker;
@@ -40,6 +125,7 @@ export default class MMIController extends EventEmitter {
     this.extension = opts.extension;
 
     this.updateTransactionHash = opts.updateTransactionHash;
+
     this.trackTransactionEvents = opts.trackTransactionEvents;
     this.txStateManager = {
       getTransactions: opts.getTransactions,
@@ -66,14 +152,14 @@ export default class MMIController extends EventEmitter {
 
     this.signatureController.hub.on(
       'personal_sign:signed',
-      async ({ signature, messageId }) => {
+      async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'personal');
       },
     );
 
     this.signatureController.hub.on(
       'eth_signTypedData:signed',
-      async ({ signature, messageId }) => {
+      async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
     );
@@ -83,7 +169,10 @@ export default class MMIController extends EventEmitter {
     this.keyringController.persistAllKeyrings();
   }
 
-  async trackTransactionEventFromCustodianEvent(txMeta, event) {
+  async trackTransactionEventFromCustodianEvent(
+    txMeta: TransactionMeta,
+    event: any,
+  ) {
     // transactionMetricsRequest parameter is already bound in the constructor
     this.trackTransactionEvents(
       {
@@ -93,7 +182,7 @@ export default class MMIController extends EventEmitter {
     );
   }
 
-  async addKeyringIfNotExists(type) {
+  async addKeyringIfNotExists(type: KeyringTypes) {
     let keyring = await this.keyringController.getKeyringsByType(type)[0];
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(type);
@@ -110,17 +199,20 @@ export default class MMIController extends EventEmitter {
       signatureController: this.signatureController,
       txStateManager: this.txStateManager,
       custodyController: this.custodyController,
+      // @ts-expect-error not relevant
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
       captureException,
     });
   }
 
-  async storeCustodianSupportedChains(address) {
+  async storeCustodianSupportedChains(address: string) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(
+      custodyType as KeyringTypes,
+    );
 
     const supportedChains = await keyring.getSupportedChains(address);
 
@@ -139,11 +231,12 @@ export default class MMIController extends EventEmitter {
 
   async onSubmitPassword() {
     // Create a keyring for each custodian type
-    let addresses = [];
+    let addresses: string[] = [];
     const custodyTypes = this.custodyController.getAllCustodyTypes();
+
     for (const type of custodyTypes) {
       try {
-        const keyring = await this.addKeyringIfNotExists(type);
+        const keyring = await this.addKeyringIfNotExists(type as KeyringTypes);
 
         keyring.on(REFRESH_TOKEN_CHANGE_EVENT, () => {
           log.info(`Refresh token change event for ${type}`);
@@ -151,12 +244,15 @@ export default class MMIController extends EventEmitter {
         });
 
         // Trigger this event, listen to sdk, sdk change the state and then Ui is listening for the state changed
-        keyring.on(INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT, (payload) => {
-          log.info(`Interactive refresh token change event for ${payload}`);
-          this.appStateController.showInteractiveReplacementTokenBanner(
-            payload,
-          );
-        });
+        keyring.on(
+          INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+          (payload: IInteractiveRefreshTokenChangeEvent) => {
+            log.info(`Interactive refresh token change event for ${payload}`);
+            this.appStateController.showInteractiveReplacementTokenBanner(
+              payload,
+            );
+          },
+        );
 
         // store the supported chains for this custodian type
         const accounts = await keyring.getAccounts();
@@ -183,7 +279,7 @@ export default class MMIController extends EventEmitter {
             txStateManager: this.txStateManager,
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
-          });
+          } as UpdateCustodianTransactionsParameters);
         } catch (error) {
           log.error('Error doing offline transaction updates', error);
           captureException(error);
@@ -214,15 +310,25 @@ export default class MMIController extends EventEmitter {
     const mmiConfigData =
       await this.mmiConfigurationController.store.getState();
 
-    if (
-      mmiConfigData &&
-      mmiConfigData.mmiConfiguration.features?.websocketApi
-    ) {
+    if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
     }
   }
 
-  async connectCustodyAddresses(custodianType, custodianName, accounts) {
+  async connectCustodyAddresses(
+    custodianType: string,
+    custodianName: string,
+    accounts: Record<
+      string,
+      {
+        name: string;
+        custodianDetails: any;
+        labels: Label[];
+        token: string;
+        chainId: number;
+      }
+    >,
+  ) {
     if (!custodianType) {
       throw new Error('No custodian');
     }
@@ -253,10 +359,13 @@ export default class MMIController extends EventEmitter {
     });
 
     // Trigger this event, listen to sdk, sdk change the state and then Ui is listening for the state changed
-    keyring.on(INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT, (payload) => {
-      log.info(`Interactive refresh token change event for ${payload}`);
-      this.appStateController.showInteractiveReplacementTokenBanner(payload);
-    });
+    keyring.on(
+      INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
+      (payload: IInteractiveRefreshTokenChangeEvent) => {
+        log.info(`Interactive refresh token change event for ${payload}`);
+        this.appStateController.showInteractiveReplacementTokenBanner(payload);
+      },
+    );
 
     if (!keyring) {
       throw new Error('Unable to get keyring');
@@ -275,42 +384,50 @@ export default class MMIController extends EventEmitter {
         chainId: accounts[item].chainId,
       })),
     );
+
     this.custodyController.setAccountDetails(
       newAccounts.map((item) => ({
         address: toChecksumHexAddress(item),
         name: accounts[item].name,
         custodianDetails: accounts[item].custodianDetails,
-        labels: accounts[item].labels,
+        labels: accounts[item].labels as unknown as string[],
         custodyType: custodian.keyringClass.type,
         custodianName,
         chainId: accounts[item].chainId,
       })),
     );
 
-    for (let i = 0; i < newAccounts.length; i++) {
+    // the underscore indicates that the variable is a placeholder and intentionally not used
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const _ of newAccounts) {
       await this.keyringController.addNewAccountForKeyring(keyring);
     }
 
     const allAccounts = await this.keyringController.getAccounts();
 
     const accountsToTrack = [
-      ...new Set(oldAccounts.concat(allAccounts.map((a) => a.toLowerCase()))),
+      ...new Set(
+        oldAccounts.concat(allAccounts.map((a: string) => a.toLowerCase())),
+      ),
     ];
 
     // Create a Set of lowercased addresses from oldAccounts for efficient existence checks
     const oldAccountsSet = new Set(
-      oldAccounts.map((address) => address.toLowerCase()),
+      oldAccounts.map((address: string) => address.toLowerCase()),
     );
 
     // Create a map of lowercased addresses to names from newAccounts for efficient lookups
-    const accountNameMap = newAccounts.reduce((acc, item) => {
-      // For each account in newAccounts, add an entry to the map with the lowercased address as the key and the name as the value
-      acc[item.toLowerCase()] = accounts[item].name;
-      return acc;
-    }, {});
+    const accountNameMap = newAccounts.reduce<Record<string, string>>(
+      (acc, item) => {
+        // For each account in newAccounts, add an entry to the map with the lowercased address as the key and the name as the value
+        acc[item.toLowerCase()] = accounts[item].name;
+        return acc;
+      },
+      {},
+    );
 
     // Iterate over all accounts
-    allAccounts.forEach((address) => {
+    allAccounts.forEach((address: string) => {
       // Convert the address to lowercase for consistent comparisons
       const lowercasedAddress = address.toLowerCase();
 
@@ -355,10 +472,7 @@ export default class MMIController extends EventEmitter {
     const mmiConfigData =
       await this.mmiConfigurationController.store.getState();
 
-    if (
-      mmiConfigData &&
-      mmiConfigData.mmiConfiguration.features?.websocketApi
-    ) {
+    if (mmiConfigData?.mmiConfiguration?.features?.websocketApi) {
       this.transactionUpdateController.getCustomerProofForAddresses(
         newAccounts,
       );
@@ -368,12 +482,12 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianAccounts(
-    token,
-    envName,
-    custodianType,
-    getNonImportedAccounts,
+    token: string,
+    envName: string,
+    custodianType: string,
+    getNonImportedAccounts: boolean,
   ) {
-    let currentCustodyType;
+    let currentCustodyType: string = '';
     if (!custodianType) {
       const { address } = this.messenger.call(
         'AccountsController:getSelectedAccount',
@@ -393,7 +507,9 @@ export default class MMIController extends EventEmitter {
 
       keyring = await this.addKeyringIfNotExists(custodian.keyringClass.type);
     } else if (currentCustodyType) {
-      keyring = await this.addKeyringIfNotExists(currentCustodyType);
+      keyring = await this.addKeyringIfNotExists(
+        currentCustodyType as KeyringTypes,
+      );
     } else {
       throw new Error('No custodian specified');
     }
@@ -407,7 +523,12 @@ export default class MMIController extends EventEmitter {
     return accounts;
   }
 
-  async getCustodianAccountsByAddress(token, envName, address, custodianType) {
+  async getCustodianAccountsByAddress(
+    token: string,
+    envName: string,
+    address: string,
+    custodianType: string,
+  ) {
     let keyring;
 
     if (custodianType) {
@@ -429,15 +550,17 @@ export default class MMIController extends EventEmitter {
     return accounts;
   }
 
-  async getCustodianTransactionDeepLink(address, txId) {
+  async getCustodianTransactionDeepLink(address: string, txId: string) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(
+      custodyType as KeyringTypes,
+    );
     return keyring.getTransactionDeepLink(address, txId);
   }
 
-  async getCustodianConfirmDeepLink(txId) {
+  async getCustodianConfirmDeepLink(txId: string) {
     const txMeta = this.txStateManager
       .getTransactions()
       .find((tx) => tx.id === txId);
@@ -446,7 +569,9 @@ export default class MMIController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(
+      custodyType as KeyringTypes,
+    );
     return {
       deepLink: await keyring.getTransactionDeepLink(
         txMeta.txParams.from,
@@ -456,22 +581,24 @@ export default class MMIController extends EventEmitter {
     };
   }
 
-  async getCustodianSignMessageDeepLink(from, custodyTxId) {
+  async getCustodianSignMessageDeepLink(from: string, custodyTxId: string) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(from),
     );
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(
+      custodyType as KeyringTypes,
+    );
     return keyring.getTransactionDeepLink(from, custodyTxId);
   }
 
-  async getCustodianToken(address) {
+  async getCustodianToken(address: string) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     const { authDetails } = keyring.getAccountDetails(address);
     return keyring ? authDetails.jwt || authDetails.refreshToken : '';
   }
 
   // Based on a custodian name, get all the tokens associated with that custodian
-  async getCustodianJWTList(custodianEnvName) {
+  async getCustodianJWTList(custodianEnvName: string) {
     const internalAccounts = this.messenger.call(
       'AccountsController:listAccounts',
     );
@@ -480,14 +607,14 @@ export default class MMIController extends EventEmitter {
       this.mmiConfigurationController.store.getState();
 
     const addresses = internalAccounts.map(
-      (internalAccount) => internalAccount.address,
+      (internalAccount: InternalAccount) => internalAccount.address,
     );
-    const tokenList = [];
+    const tokenList: string[] = [];
 
     const { custodians } = mmiConfiguration;
 
     const custodian = custodians.find(
-      (item) => item.envName === custodianEnvName,
+      (item: { envName: string }) => item.envName === custodianEnvName,
     );
 
     if (!custodian) {
@@ -539,24 +666,34 @@ export default class MMIController extends EventEmitter {
     return tokenList;
   }
 
-  async getAllCustodianAccountsWithToken(custodyType, token) {
+  async getAllCustodianAccountsWithToken(custodyType: string, token: string) {
     const keyring = await this.keyringController.getKeyringsByType(
       `Custody - ${custodyType}`,
     )[0];
     return keyring ? keyring.getAllAccountsWithToken(token) : [];
   }
 
-  async setCustodianNewRefreshToken({ address, refreshToken }) {
+  async setCustodianNewRefreshToken({
+    address,
+    refreshToken,
+  }: {
+    address: string;
+    refreshToken: string;
+  }) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
 
-    const keyring = await this.addKeyringIfNotExists(custodyType);
+    const keyring = await this.addKeyringIfNotExists(
+      custodyType as KeyringTypes,
+    );
 
     await keyring.replaceRefreshTokenAuthDetails(address, refreshToken);
   }
 
-  async handleMmiCheckIfTokenIsPresent(req) {
+  async handleMmiCheckIfTokenIsPresent(req: {
+    params: { token: string; envName: string; address: string };
+  }) {
     const { token, envName, address } = req.params;
 
     const currentAddress =
@@ -569,7 +706,9 @@ export default class MMIController extends EventEmitter {
     // This can only work if the extension is unlocked
     await this.appStateController.getUnlockPromise(true);
 
-    const keyring = await this.addKeyringIfNotExists(currentCustodyType);
+    const keyring = await this.addKeyringIfNotExists(
+      currentCustodyType as KeyringTypes,
+    );
 
     return await this.custodyController.handleMmiCheckIfTokenIsPresent({
       token,
@@ -586,14 +725,14 @@ export default class MMIController extends EventEmitter {
     // TODO: Convert handleMmiPortfolio to use internal accounts
     const internalAccounts = this.messenger
       .call('AccountsController:listAccounts')
-      .map((internalAccount) => {
+      .map((internalAccount: InternalAccount) => {
         return {
           address: internalAccount.address,
           name: internalAccount.metadata.name,
         };
       });
     const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const getAccountDetails = (address) =>
+    const getAccountDetails = (address: string) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
@@ -617,7 +756,11 @@ export default class MMIController extends EventEmitter {
     });
   }
 
-  async newUnsignedMessage(msgParams, req, version) {
+  async newUnsignedMessage(
+    msgParams: { from: string },
+    req: { method: string | string[] },
+    version: string,
+  ) {
     // The code path triggered by deferSetAsSigned: true is for custodial accounts
     const accountDetails = this.custodyController.getAccountDetails(
       msgParams.from,
@@ -627,23 +770,28 @@ export default class MMIController extends EventEmitter {
 
     if (req.method.includes('eth_signTypedData')) {
       return await this.signatureController.newUnsignedTypedMessage(
-        updatedMsgParams,
-        req,
+        updatedMsgParams as PersonalMessageParams,
+        req as OriginalRequest,
         version,
+        { parseJsonData: false },
       );
     } else if (req.method.includes('personal_sign')) {
       return await this.signatureController.newUnsignedPersonalMessage(
-        updatedMsgParams,
-        req,
+        updatedMsgParams as PersonalMessageParams,
+        req as OriginalRequest,
       );
     }
     return await this.signatureController.newUnsignedMessage(
-      updatedMsgParams,
-      req,
+      updatedMsgParams as PersonalMessageParams,
+      req as OriginalRequest,
     );
   }
 
-  async handleSigningEvents(signature, messageId, signOperation) {
+  async handleSigningEvents(
+    signature: Signature,
+    messageId: string,
+    signOperation: string,
+  ) {
     if (signature.custodian_transactionId) {
       this.transactionUpdateController.addTransactionToWatchList(
         signature.custodian_transactionId,
@@ -658,12 +806,13 @@ export default class MMIController extends EventEmitter {
       });
     }
 
+    // @ts-expect-error not relevant
     this.signatureController.setMessageMetadata(messageId, signature);
 
     return this.getState();
   }
 
-  async setAccountAndNetwork(origin, address, chainId) {
+  async setAccountAndNetwork(origin: string, address: string, chainId: number) {
     await this.appStateController.getUnlockPromise(true);
     const addressToLowerCase = address.toLowerCase();
     const { address: selectedAddress } = this.messenger.call(
@@ -687,14 +836,17 @@ export default class MMIController extends EventEmitter {
     if (selectedChainId !== chainId && chainId === 1) {
       await this.networkController.setProviderType('mainnet');
     } else if (selectedChainId !== chainId) {
+      const { networkConfigurations } = this.networkController.state;
+
       const foundNetworkConfiguration = Object.values(
-        this.networkController.state.networkConfigurations,
-      ).find((networkConfiguration) => {
-        return parseInt(networkConfiguration.chainId, 16) === chainId;
-      });
+        networkConfigurations,
+      ).find(
+        (networkConfiguration) =>
+          parseInt(networkConfiguration.chainId, 16) === chainId,
+      );
 
       if (foundNetworkConfiguration !== undefined) {
-        await this.networkConfiguration.setActiveNetwork(
+        await this.networkController.setActiveNetwork(
           foundNetworkConfiguration.id,
         );
       }
