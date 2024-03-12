@@ -806,7 +806,6 @@ export default class MMIController extends EventEmitter {
       });
     }
 
-    // @ts-expect-error not relevant
     this.signatureController.setMessageMetadata(messageId, signature);
 
     return this.getState();
