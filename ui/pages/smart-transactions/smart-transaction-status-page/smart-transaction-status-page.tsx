@@ -27,6 +27,7 @@ import {
   TextColor,
   FontWeight,
   IconColor,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -109,19 +110,30 @@ export const SmartTransactionStatusPage = ({
   let description;
   let iconName;
   let iconColor;
+  let countdown;
+
+  if (isSmartTransactionPending) {
+    countdown = (
+      <Text
+        display={Display.InlineBlock}
+        textAlign={TextAlign.Center}
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodySm}
+        className="smart-transaction-status-page__countdown"
+      >
+        {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
+      </Text>
+    );
+  }
 
   if (isSmartTransactionPending && isSmartTransactionTakingTooLong) {
     title = t('smartTransactionTakingTooLong');
-    description = t('smartTransactionTakingTooLongDescription', [
-      showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec),
-    ]);
+    description = t('smartTransactionTakingTooLongDescription', [countdown]);
     iconName = IconName.Clock;
     iconColor = IconColor.primaryDefault;
   } else if (isSmartTransactionPending) {
     title = t('smartTransactionPending');
-    description = t('stxEstimatedCompletion', [
-      showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec),
-    ]);
+    description = t('stxEstimatedCompletion', [countdown]);
     iconName = IconName.Clock;
     iconColor = IconColor.primaryDefault;
   } else if (isSmartTransactionSuccess) {
