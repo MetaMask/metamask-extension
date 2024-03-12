@@ -193,6 +193,11 @@ export default class Routes extends Component {
     switchedNetworkDetails: PropTypes.oneOfType([PropTypes.object, null]),
     setSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
+    networkToAutomaticallySwitchTo: PropTypes.object,
+    allNetworks: PropTypes.arrayOf(PropTypes.object),
+    neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
+    autoSwitchNetwork: PropTypes.func.isRequired,
+    unapprovedTransactions: PropTypes.number.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -242,14 +247,39 @@ export default class Routes extends Component {
   ///: END:ONLY_INCLUDE_IF
 
   componentDidUpdate(prevProps) {
-    const { theme, account } = this.props;
-
+    const {
+      theme,
+      account,
+      neverShowSwitchedNetworkMessage,
+      networkToAutomaticallySwitchTo,
+      activeTabOrigin,
+      unapprovedTransactions,
+      allNetworks,
+    } = this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
     }
 
     if (prevProps.account?.address !== account?.address) {
       this.setState({ hideConnectAccountToast: false });
+    }
+
+    // Automatically switch the network if the user
+    // no longer has unapprovedTransactions and they
+    // should be on a different network for the
+    // currently active tab's dapp
+    if (!neverShowSwitchedNetworkMessage) {
+      if (
+        networkToAutomaticallySwitchTo &&
+        prevProps.unapprovedTransactions > 0 &&
+        unapprovedTransactions === 0
+      ) {
+        this.props.autoSwitchNetwork(
+          networkToAutomaticallySwitchTo,
+          activeTabOrigin,
+          allNetworks,
+        );
+      }
     }
   }
 

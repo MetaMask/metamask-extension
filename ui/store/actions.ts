@@ -104,7 +104,11 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
+import {
+  NETWORK_TYPES,
+  NetworkType,
+  RPCDefinition,
+} from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
@@ -2170,6 +2174,31 @@ export async function getTokenSymbol(address: string): Promise<string | null> {
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
+  };
+}
+
+export function autoSwitchNetwork(
+  networkIdForThisDomain: NetworkType,
+  selectedTabOrigin: string,
+  allNetworks: object[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    if (Object.keys(NETWORK_TYPES).includes(networkIdForThisDomain)) {
+      await dispatch(setProviderType(networkIdForThisDomain));
+    } else {
+      await dispatch(setActiveNetwork(networkIdForThisDomain));
+    }
+    // Show toast notifying user of network change
+    if (!neverShowSwitchedNetworkMessage) {
+      // Get network for this id and update toast properties
+      const network = allNetworks.find(
+        ({ id }) => id === networkIdForThisDomain,
+      );
+      await setSwitchedNetworkDetails({
+        network,
+        siteName: selectedTabOrigin,
+      });
+    }
   };
 }
 

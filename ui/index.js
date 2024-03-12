@@ -13,19 +13,16 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
-import { NETWORK_TYPES } from '../shared/constants/network';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
+  getAllNetworks,
+  getNeverShowSwitchedNetworkMessage,
+  getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getOriginOfCurrentTab,
-  getAllDomains,
-  getUseRequestQueue,
-  getCurrentNetwork,
-  getNeverShowSwitchedNetworkMessage,
-  getAllNetworks,
+  getAutomaticSwitchNetwork,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -188,46 +185,17 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   // for a given dapp.  This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
   const state = store.getState();
-  const selectedTabOrigin = getOriginOfCurrentTab(state);
-  const useRequestQueue = getUseRequestQueue(state);
-
-  // selectedTabOrigin won't be populated if in fullscreen mode
-  // so we ensure that the user is in the popup
-  if (
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-    useRequestQueue &&
-    selectedTabOrigin &&
-    numberOfUnapprovedTx === 0 &&
-    process.env.MULTICHAIN
-  ) {
-    const domainNetworks = getAllDomains(state);
-    const networkForThisDomain = domainNetworks[selectedTabOrigin];
-    const currentNetwork = getCurrentNetwork(state);
-
-    // If we have a match, "silently" switch networks if the network differs
-    // from the current network
-    if (networkForThisDomain && currentNetwork.id !== networkForThisDomain) {
-      if (Object.keys(NETWORK_TYPES).includes(networkForThisDomain)) {
-        await store.dispatch(actions.setProviderType(networkForThisDomain));
-      } else {
-        await store.dispatch(actions.setActiveNetwork(networkForThisDomain));
-      }
-
-      // Show toast notifying user of network change
-      const neverShowSwitchedNetworkMessage =
-        getNeverShowSwitchedNetworkMessage(state);
-      if (!neverShowSwitchedNetworkMessage) {
-        // Get network for this id and update toast properties
-        const allNetworks = getAllNetworks(state);
-        const network = allNetworks.find(
-          ({ id }) => id === networkForThisDomain,
-        );
-        await actions.setSwitchedNetworkDetails({
-          network,
-          siteName: selectedTabOrigin,
-        });
-      }
-    }
+  const networkIdToSwitchTo = getAutomaticSwitchNetwork(state);
+  const neverShowSwitchedNetworkMessage =
+    getNeverShowSwitchedNetworkMessage(state);
+  if (networkIdToSwitchTo && !neverShowSwitchedNetworkMessage) {
+    await store.dispatch(
+      actions.autoSwitchNetwork(
+        networkIdToSwitchTo,
+        getOriginOfCurrentTab(state),
+        getAllNetworks(state),
+      ),
+    );
   }
 
   // global metamask api - used by tooling
