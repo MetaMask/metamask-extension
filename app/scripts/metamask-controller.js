@@ -304,6 +304,7 @@ import { PREINSTALLED_SNAPS } from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(notifications)
 import AuthenticationController from './controllers/authentication/authentication-controller';
+import UserStorageController from './controllers/user-storage/user-storage-controller';
 ///: END:ONLY_INCLUDE_IF
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1355,6 +1356,20 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [`${this.snapController.name}:handleRequest`],
       }),
     });
+    this.userStorageController = new UserStorageController(
+      this.controllerMessenger.getRestricted({
+        name: 'UserStorageController',
+        allowedActions: [`${this.snapController.name}:handleRequest`],
+      }),
+      {
+        getBearerToken: () => {
+          return this.authenticationController.getBearerToken();
+        },
+        getSessionIdentifier: () => {
+          return this.authenticationController.getIdentifierId();
+        },
+      },
+    );
     ///: END:ONLY_INCLUDE_IF
 
     // account tracker watches balances, nonces, and any code at their address
