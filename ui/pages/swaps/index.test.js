@@ -21,8 +21,13 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x1' }),
 });
 
 describe('Swap', () => {
@@ -47,6 +52,10 @@ describe('Swap', () => {
 
     nock(CONSTANTS.METASWAP_BASE_URL)
       .get('/networks/1/tokens')
+      .reply(200, MOCKS.TOKENS_GET_RESPONSE);
+
+    nock(CONSTANTS.METASWAP_BASE_URL)
+      .get('/networks/1/tokens?includeBlockedTokens=true')
       .reply(200, MOCKS.TOKENS_GET_RESPONSE);
 
     featureFlagsNock = nock(CONSTANTS.METASWAP_BASE_URL)
