@@ -13,7 +13,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   BUYABLE_CHAINS_MAP,
@@ -107,6 +107,7 @@ import {
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
+import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -477,6 +478,12 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+/**
+ * Selector to return an origin to network ID map
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed Snaps.
+ */
 export function getAllDomains(state) {
   return state.metamask.domains;
 }
@@ -619,6 +626,12 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
+/**
+ * Retrieves user preference to never see the "Switched Network" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
 export function getNeverShowSwitchedNetworkMessage(state) {
   return state.metamask.switchedNetworkNeverShowMessage;
 }
@@ -1627,6 +1640,65 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+/**
+ * Retrieves the number of unapproved transactions and messages
+ *
+ * @param state - Redux state object.
+ * @returns Number of unapproved transactions
+ */
+export function getNumberOfAllUnapprovedTransactions(state) {
+  const unapprovedTxs = getUnapprovedTransactions(state);
+  const allUnapprovedMessages = {
+    ...unapprovedTxs,
+    ...state.metamask.unapprovedMsgs,
+    ...state.metamask.unapprovedDecryptMsgs,
+    ...state.metamask.unapprovedPersonalMsgs,
+    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
+    ...state.metamask.unapprovedTypedMessages,
+  };
+  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
+  return numUnapprovedMessages;
+}
+
+/**
+ * Returns the network ID of the network that should be auto-switched to
+ * based on the current tab origin and its last network connected to
+ *
+ * @param state - Redux state object.
+ * @returns Network ID to switch to
+ */
+export function getAutomaticSwitchNetwork(state) {
+  const numberOfUnapprovedTx = getNumberOfAllUnapprovedTransactions(state);
+
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp.  This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
+  const selectedTabOrigin = getOriginOfCurrentTab(state);
+  const useRequestQueue = getUseRequestQueue(state);
+
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    useRequestQueue &&
+    selectedTabOrigin &&
+    numberOfUnapprovedTx === 0 &&
+    process.env.MULTICHAIN
+  ) {
+    const domainNetworks = getAllDomains(state);
+    const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
+    const currentNetwork = getCurrentNetwork(state);
+
+    // If we have a match, "silently" switch networks if the network differs
+    // from the current network
+    if (
+      networkIdForThisDomain &&
+      currentNetwork.id !== networkIdForThisDomain
+    ) {
+      return networkIdForThisDomain;
+    }
+  }
+  return null;
 }
 
 export function getShowTermsOfUse(state) {

@@ -1,6 +1,7 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -147,6 +148,59 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );
+    });
+  });
+
+  describe('#getNumberOfAllUnapprovedTransactions', () => {
+    it('returns no unapproved transactions and messages', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactions({
+          metamask: {
+            transactions: [],
+            unapprovedMsgs: {},
+          },
+        }),
+      ).toStrictEqual(0);
+    });
+
+    it('returns correct number of unapproved transactions and messages', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactions({
+          metamask: {
+            providerConfig: {
+              ...mockState.metamask.networkConfigurations
+                .testNetworkConfigurationId,
+              chainId: '0x1',
+              type: 'rpc',
+            },
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedMsgs: {
+              1: {
+                id: 1,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'eth_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(2);
     });
   });
 
