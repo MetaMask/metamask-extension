@@ -8,6 +8,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu, AvatarGroup } from '..';
+import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -67,6 +68,7 @@ export const AccountListItem = ({
   selected = false,
   onClick,
   closeMenu,
+  accountsCount,
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
@@ -91,7 +93,9 @@ export const AccountListItem = ({
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-
+  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
+    avatarValue: item.iconUrl,
+  }));
   let balanceToTranslate = totalWeiBalance;
   if (showFiat) {
     balanceToTranslate = identity.balance;
@@ -117,6 +121,7 @@ export const AccountListItem = ({
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
+  const isSingleAccount = accountsCount === 1;
 
   return (
     <Box
@@ -275,8 +280,8 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          {orderedTokenList.length > 1 ? (
-            <AvatarGroup members={orderedTokenList} limit={4} />
+          {mappedOrderedTokenList.length > 1 ? (
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
               display={Display.Flex}
@@ -358,6 +363,16 @@ export const AccountListItem = ({
           isConnected={isConnected}
         />
       )}
+      {menuType === AccountListItemMenuTypes.Connection && (
+        <ConnectedAccountsMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={closeMenu}
+          disableAccountSwitcher={isSingleAccount}
+          isOpen={accountOptionsMenuOpen}
+        />
+      )}
     </Box>
   );
 };
@@ -394,6 +409,10 @@ AccountListItem.propTypes = {
    * Function to execute when the item is clicked
    */
   onClick: PropTypes.func,
+  /**
+   * Represents how many accounts are being listed
+   */
+  accountsCount: PropTypes.number,
   /**
    * Function that closes the menu
    */

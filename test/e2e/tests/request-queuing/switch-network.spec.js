@@ -60,6 +60,9 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
           css: '[data-testid="page-container-footer-next"]',
         });
 
+        // Wait for Connecting notification to close.
+        await driver.waitUntilXWindowHandles(2);
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

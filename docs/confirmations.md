@@ -115,7 +115,7 @@ The `ConfirmationPage` component is already configured to display any approval r
 
 In order to configure how the resulting confirmation is rendered, an **Approval Template** is required.
 
-Create a new JavaScript file in `ui/pages/confirmation/templates` with the name matching the `type` used in the background approval request.
+Create a new JavaScript file in `ui/pages/confirmations/confirmation/templates` with the name matching the `type` used in the background approval request.
 
 ### 2. Update Approval Templates
 
