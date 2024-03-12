@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import { KeyringController } from '@metamask/keyring-controller';
 import {
   CUSTODIAN_TYPES,
