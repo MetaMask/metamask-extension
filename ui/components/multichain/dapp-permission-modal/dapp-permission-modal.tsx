@@ -38,7 +38,6 @@ import {
   hideDappPermissionModal,
   removePermittedAccount,
 } from '../../../store/actions';
-import Confusable from '../../ui/confusable';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 import PermissionCell from '../../app/permission-cell';
 
@@ -70,7 +69,7 @@ export const DappPermissionModal = () => {
     <Modal
       isOpen={open}
       onClose={closeModal}
-      data-test-id="dapp-permission-modal"
+      data-testid="dapp-permission-modal"
     >
       <ModalOverlay />
       <ModalContent
