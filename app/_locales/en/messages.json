@@ -2124,7 +2124,6 @@
   "insightWarnings": {
     "message": "warnings"
   },
-
   "insightsFromSnap": {
     "message": "Insights from $1",
     "description": "$1 represents the name of the snap"
