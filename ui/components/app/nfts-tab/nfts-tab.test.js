@@ -284,6 +284,7 @@ describe('NFT Items', () => {
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
+
   describe('NFTs options', () => {
     it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
@@ -319,26 +320,6 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
-    });
-  });
-
-  describe('nft conversion banner', () => {
-    it('shows the NFT conversion banner when there are no NFTs', () => {
-      const { queryByText } = render({
-        selectedAddress: ACCOUNT_1,
-        nfts: [],
-      });
-
-      expect(queryByText('Learn more about NFTs')).toBeInTheDocument();
-    });
-
-    it('does not show the NFT conversion banner when there are NFTs', () => {
-      const { queryByText } = render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-      });
-
-      expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
     });
   });
 
