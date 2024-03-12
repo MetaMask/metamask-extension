@@ -36,11 +36,11 @@ async function changeLanguage({ driver, languageIndex }) {
   const dropdownElement = await driver.findElement(selectors.localeSelect);
   await dropdownElement.click();
 
-  const options = await dropdownElement.findElements({css:'option'});
+  const options = await dropdownElement.findElements({ css: 'option' });
   await options[languageIndex].click();
 }
 
-describe('Settings - general tab', function () {
+describe('Settings - general tab @no-mmi', function () {
   it('validate the change language functionality', async function () {
     let languageIndex = 10;
 
@@ -63,7 +63,7 @@ describe('Settings - general tab', function () {
 
         await driver.refresh();
 
-        //Change back to english and verify that the word is correctly changed back to english
+        // Change back to english and verify that the word is correctly changed back to english
         languageIndex = 9;
 
         const dropdownElement = await driver.findElement(
@@ -82,7 +82,7 @@ describe('Settings - general tab', function () {
   });
 
   it('validate "Dansk" language on page navigation', async function () {
-    let languageIndex = 6;
+    const languageIndex = 6;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -91,7 +91,6 @@ describe('Settings - general tab', function () {
       },
 
       async ({ driver }) => {
-
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
 
@@ -217,7 +216,7 @@ describe('Settings - general tab', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        //selects "Magyar" language
+        // selects "Magyar" language
         await changeLanguage({ driver, languageIndex });
         await driver.navigate();
         await driver.clickElement(selectors.nftsTab);
