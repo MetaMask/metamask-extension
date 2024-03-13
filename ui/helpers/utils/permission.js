@@ -593,15 +593,20 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 });
 
 /**
+ * @typedef {object} Caveat
+ * @property {string} type - The type of the caveat.
+ * @property {string[]} value - An array of strings, representing the value of the caveat.
+ */
+
+/**
  * @typedef {object} PermissionLabelObject
  * @property {string} label - The text label.
- * @property {string} [description] - An optional description, shown when the
- * `rightIcon` is hovered.
+ * @property {string} [description] - An optional description, shown when the `rightIcon` is hovered.
  * @property {string} leftIcon - The left icon.
  * @property {string} rightIcon - The right icon.
  * @property {number} weight - The weight of the permission.
  * @property {string} permissionName - The name of the permission.
- * @property {string} permissionValue - The raw value of the permission.
+ * @property {(string|{caveats: Caveat[]})} permissionValue - The raw value of the permission, which can either be a string or an object with caveats.
  */
 
 /**

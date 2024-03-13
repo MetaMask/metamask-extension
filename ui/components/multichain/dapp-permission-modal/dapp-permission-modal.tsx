@@ -63,6 +63,16 @@ export const DappPermissionModal = () => {
         targetSubjectMetadata: permissionSubjects,
       }),
     ),
+  ).filter(
+    (permission) =>
+      // JSDoc checking for permissionValue being an object
+      typeof permission.permissionValue === 'object' &&
+      permission.permissionValue !== null &&
+      'caveats' in permission.permissionValue &&
+      // address should be in caveat
+      permission.permissionValue.caveats.some((caveat) =>
+        caveat.value.includes(account.address),
+      ),
   );
 
   return (
