@@ -528,7 +528,6 @@
     "jest": "^29.1.2",
     "jest-canvas-mock": "^2.3.1",
     "jest-environment-jsdom": "^29.1.2",
-    "js-yaml": "^4.1.0",
     "jsdom": "^16.7.0",
     "koa": "^2.7.0",
     "lavamoat": "^8.0.2",
@@ -588,6 +587,7 @@
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.75.0",
+    "yaml": "^2.4.1",
     "yargs": "^17.0.1"
   },
   "engines": {
