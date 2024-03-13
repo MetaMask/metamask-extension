@@ -17,6 +17,7 @@ exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 
           class="unit-input__input"
           data-testid="currency-input"
           dir="ltr"
+          min="0"
           placeholder="0"
           step="any"
           style="width: 1.5ch;"

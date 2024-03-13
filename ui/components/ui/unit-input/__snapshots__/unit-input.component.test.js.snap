@@ -16,6 +16,7 @@ exports[`UnitInput Component rendering should match snapshot of error class when
         <input
           class="unit-input__input"
           dir="ltr"
+          min="0"
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
@@ -44,6 +45,7 @@ exports[`UnitInput Component rendering should match snapshot with a child compon
         <input
           class="unit-input__input"
           dir="ltr"
+          min="0"
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
@@ -77,6 +79,7 @@ exports[`UnitInput Component rendering should match snapshot with a suffix 1`] =
         <input
           class="unit-input__input"
           dir="ltr"
+          min="0"
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
@@ -110,6 +113,7 @@ exports[`UnitInput Component rendering should match snapshot without a suffix 1`
         <input
           class="unit-input__input"
           dir="ltr"
+          min="0"
           placeholder="0"
           step="any"
           style="width: 1.5ch;"

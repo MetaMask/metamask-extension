@@ -117,6 +117,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     class="unit-input__input"
                     data-testid="currency-input"
                     dir="ltr"
+                    min="0"
                     placeholder="0"
                     step="any"
                     style="width: 1.5ch;"
