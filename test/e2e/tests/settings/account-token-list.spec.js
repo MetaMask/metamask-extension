@@ -23,6 +23,7 @@ describe('Settings', function () {
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
         );
+        await driver.waitForNonEmptyElement(tokenListAmount);
         assert.equal(await tokenListAmount.getText(), tokenValue);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
