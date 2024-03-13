@@ -85,19 +85,12 @@ export async function submitSmartTransactionHook(
       });
     const uuid = submitTransactionResponse?.uuid;
     const returnTxHashAsap = featureFlags?.smartTransactions?.returnTxHashAsap;
+    let approvalFlowEnded = false;
     const onApproveOrReject = async () => {
-      const hasRequest = await controllerMessenger.call(
-        'ApprovalController:hasRequest',
-        {
-          id: smartTransactionStatusApprovalId,
-        },
-      );
-      if (!hasRequest) {
-        return;
-      }
       controllerMessenger.call('ApprovalController:endFlow', {
         id: smartTransactionStatusApprovalId,
       });
+      approvalFlowEnded = true;
     };
     if (!uuid) {
       throw new Error('No smart transaction UUID');
@@ -142,13 +135,7 @@ export async function submitSmartTransactionHook(
         } else {
           transactionHash = null;
         }
-        const hasRequest = await controllerMessenger.call(
-          'ApprovalController:hasRequest',
-          {
-            id: smartTransactionStatusApprovalId,
-          },
-        );
-        if (!hasRequest) {
+        if (approvalFlowEnded) {
           return;
         }
         await controllerMessenger.call(
@@ -186,10 +173,6 @@ export async function submitSmartTransactionHook(
   } catch (error) {
     log.error(error);
     throw error;
-  } finally {
-    controllerMessenger.call('ApprovalController:endFlow', {
-      id: smartTransactionStatusApprovalId,
-    });
   }
 }
 
