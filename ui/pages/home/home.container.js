@@ -18,6 +18,7 @@ import { getInstitutionalConnectRequests } from '../../ducks/institutional/insti
 ///: END:ONLY_INCLUDE_IF
 import {
   activeTabHasPermissions,
+  getDisableExternalServices,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getFirstSnapInstallOrUpdateRequest,
@@ -69,6 +70,8 @@ import {
   setActiveNetwork,
   setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
+  setDisableExternalServices,
+  openBasicFunctionalityModal,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -144,6 +147,8 @@ const mapStateToProps = (state) => {
   ]);
 
   return {
+    disableExternalServices: getDisableExternalServices(state),
+    isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     hasWatchTokenPendingApprovals,
     hasWatchNftPendingApprovals,
@@ -275,6 +280,10 @@ const mapDispatchToProps = (dispatch) => {
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setDisableExternalServices: (disabled) =>
+      dispatch(setDisableExternalServices(disabled)),
+    setBasicFunctionalityModalOpen: () =>
+      dispatch(openBasicFunctionalityModal()),
   };
 };
 

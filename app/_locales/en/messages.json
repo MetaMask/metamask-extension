@@ -565,6 +565,15 @@
   "basic": {
     "message": "Basic"
   },
+  "basicConfigurationBannerCTA": {
+    "message": "Turn on basic functionality"
+  },
+  "basicConfigurationBannerDescription": {
+    "message": "To improve your time on MetaMask (see token details, optimal gas settings, and more), you'll need to turn on this setting."
+  },
+  "basicConfigurationBannerTitle": {
+    "message": "Basic functionality is off"
+  },
   "basicConfigurationDescription": {
     "message": "Includes token data and value, optimal gas settings, security updates, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
   },
