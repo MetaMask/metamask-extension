@@ -229,7 +229,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
+      if (
+        process.env.E2E_LEAVE_RUNNING !== 'true' &&
+        (driver.errors.length > 0 || driver.exceptions.length > 0)
+      ) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured

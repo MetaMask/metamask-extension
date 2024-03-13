@@ -139,6 +139,7 @@
     },
     "@ethereumjs/tx>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -884,6 +885,7 @@
       "globals": {
         "URL": true,
         "console.error": true,
+        "console.log": true,
         "fetch": true,
         "setTimeout": true
       },
@@ -2192,6 +2194,7 @@
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
+        "console.error": true,
         "document.getElementById": true,
         "fetch.bind": true,
         "setTimeout": true
@@ -2441,6 +2444,7 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "setTimeout": true
       },
       "packages": {
