@@ -11,8 +11,8 @@ const render = () => {
       confirm: {
         currentConfirmation: {
           type: TransactionType.personalSign,
-          isScrollToBottomNeeded: false,
         },
+        isScrollToBottomNeeded: false,
       },
     }),
   );

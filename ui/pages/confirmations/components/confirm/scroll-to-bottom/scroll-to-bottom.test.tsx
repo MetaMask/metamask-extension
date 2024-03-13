@@ -38,7 +38,7 @@ describe('ScrollToBottom', () => {
     });
 
     it('sets isScrollToBottomNeeded to false', () => {
-      const updateSpy = jest.spyOn(ConfirmDucks, 'updateCurrentConfirmation');
+      const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(),
@@ -72,7 +72,7 @@ describe('ScrollToBottom', () => {
     });
 
     it('sets isScrollToBottomNeeded to true', () => {
-      const updateSpy = jest.spyOn(ConfirmDucks, 'updateCurrentConfirmation');
+      const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
         configureMockStore([])(),
@@ -98,7 +98,7 @@ describe('ScrollToBottom', () => {
       });
 
       it('sets isScrollToBottomNeeded to false', () => {
-        const updateSpy = jest.spyOn(ConfirmDucks, 'updateCurrentConfirmation');
+        const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
         const { container } = renderWithProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
           configureMockStore([])(),

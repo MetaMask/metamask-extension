@@ -7,7 +7,6 @@ import { getPendingApprovals } from './approvals';
 type SignatureRequestType = {
   chainId?: string;
   id: string;
-  isScrollToBottomNeeded?: boolean;
   msgParams?: {
     from: string;
     origin: string;
@@ -21,6 +20,7 @@ type Confirmation = SignatureRequestType;
 export type ConfirmMetamaskState = {
   confirm: {
     currentConfirmation?: Confirmation;
+    isScrollToBottomNeeded?: boolean;
   };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
@@ -45,6 +45,9 @@ export function latestPendingConfirmationSelector(state: ConfirmMetamaskState) {
   const pendingConfirmations = pendingConfirmationsSelector(state);
   return pendingConfirmations.sort((a1, a2) => a2.time - a1.time)[0];
 }
+
+export const currentConfirmSelector = (state: ConfirmMetamaskState) =>
+  state.confirm;
 
 export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
   state.confirm.currentConfirmation;
