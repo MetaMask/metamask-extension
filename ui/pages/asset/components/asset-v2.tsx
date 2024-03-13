@@ -241,7 +241,7 @@ const AssetV2 = ({
                           color={TextColor.textAlternative}
                           variant={TextVariant.bodyMdMedium}
                         >
-                          {'Token list'} {/* TODO localize */}
+                          {t('tokenList')}
                         </Text>
                         <Text>{asset.aggregators?.join(', ')}</Text>
                       </Box>
