@@ -85,7 +85,16 @@ export async function submitSmartTransactionHook(
       });
     const uuid = submitTransactionResponse?.uuid;
     const returnTxHashAsap = featureFlags?.smartTransactions?.returnTxHashAsap;
-    const onApproveOrReject = () => {
+    const onApproveOrReject = async () => {
+      const hasRequest = await controllerMessenger.call(
+        'ApprovalController:hasRequest',
+        {
+          id: smartTransactionStatusApprovalId,
+        },
+      );
+      if (!hasRequest) {
+        return;
+      }
       controllerMessenger.call('ApprovalController:endFlow', {
         id: smartTransactionStatusApprovalId,
       });
@@ -132,6 +141,15 @@ export async function submitSmartTransactionHook(
           transactionHash = statusMetadata.minedHash;
         } else {
           transactionHash = null;
+        }
+        const hasRequest = await controllerMessenger.call(
+          'ApprovalController:hasRequest',
+          {
+            id: smartTransactionStatusApprovalId,
+          },
+        );
+        if (!hasRequest) {
+          return;
         }
         await controllerMessenger.call(
           'ApprovalController:updateRequestState',
