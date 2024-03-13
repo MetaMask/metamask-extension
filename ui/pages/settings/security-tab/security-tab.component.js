@@ -17,7 +17,6 @@ import {
   COINGECKO_LINK,
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
-  OPENSEA_TERMS_OF_USE,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
@@ -192,7 +191,6 @@ export default class SecurityTab extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled,
       ///: END:ONLY_INCLUDE_IF
-      transactionSecurityCheckEnabled,
     } = this.props;
 
     return (
@@ -263,47 +261,6 @@ export default class SecurityTab extends PureComponent {
               </>
               ///: END:ONLY_INCLUDE_IF
             }
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
-              gap={4}
-              marginTop={3}
-              marginBottom={3}
-            >
-              <div>
-                <Box display={Display.Flex}>
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textDefault}
-                  >
-                    {t('openSeaLabel')}
-                  </Text>
-                  <Tag marginLeft={2} label="Beta" />
-                </Box>
-                <div
-                  className="settings-page__content-description"
-                  data-testid="termsOfUse"
-                >
-                  {t('openSeaMessage', [
-                    <a
-                      key="opensea-terms-of-use"
-                      href={OPENSEA_TERMS_OF_USE}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {t('terms')}
-                    </a>,
-                  ])}
-                </div>
-              </div>
-              <div data-testid="transactionSecurityCheck">
-                <ToggleButton
-                  value={transactionSecurityCheckEnabled}
-                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
-                />
-              </div>
-            </Box>
           </div>
         </div>
       </>
