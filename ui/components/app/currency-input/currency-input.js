@@ -189,7 +189,7 @@ export default function CurrencyInput({
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
       suffix={isTokenPrimary ? primarySuffix : secondarySuffix}
-      onChange={handleChange ?? onChange}
+      onChange={handleChange}
       value={isTokenPrimary ? tokenDecimalValue : fiatDecimalValue}
       className={className}
       actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
