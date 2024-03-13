@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   AssetType,
   TokenStandard,
@@ -50,8 +49,6 @@ describe('Send Slice Helpers', () => {
         to: '0xToken',
         type: '0x0',
         value: '0x0',
-        gas: '0x0',
-        gasPrice: '0x0',
       });
     });
 
@@ -88,8 +85,6 @@ describe('Send Slice Helpers', () => {
         to: '0xToken',
         type: '0x0',
         value: '0x0',
-        gas: '0x0',
-        gasPrice: '0x0',
       });
     });
 
@@ -126,8 +121,6 @@ describe('Send Slice Helpers', () => {
         to: '0xToken',
         type: '0x0',
         value: '0x0',
-        gas: '0x0',
-        gasPrice: '0x0',
       });
     });
 
@@ -156,8 +149,6 @@ describe('Send Slice Helpers', () => {
         to: BURN_ADDRESS,
         type: '0x0',
         value: '0x1',
-        gas: '0x0',
-        gasPrice: '0x0',
       });
     });
 
@@ -178,11 +169,6 @@ describe('Send Slice Helpers', () => {
           recipient: {
             address: BURN_ADDRESS,
           },
-          gas: {
-            maxFeePerGas: '0x2',
-            maxPriorityFeePerGas: '0x1',
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
           transactionType: TransactionEnvelopeType.feeMarket,
         }),
         eip1559support: true,
@@ -193,9 +179,6 @@ describe('Send Slice Helpers', () => {
         to: BURN_ADDRESS,
         type: '0x2',
         value: '0x1',
-        gas: GAS_LIMITS.SIMPLE,
-        maxFeePerGas: '0x2',
-        maxPriorityFeePerGas: '0x1',
       });
     });
   });

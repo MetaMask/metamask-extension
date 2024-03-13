@@ -5,12 +5,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
-  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -18,7 +16,6 @@ import {
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import {
   AssetType,
@@ -52,18 +49,10 @@ import sendReducer, {
   SEND_STAGES,
   AMOUNT_MODES,
   RECIPIENT_SEARCH_MODES,
-  getGasLimit,
-  getGasPrice,
-  getGasTotal,
-  gasFeeIsInError,
-  getMinimumGasLimitForSend,
-  getGasInputMode,
-  GAS_INPUT_MODES,
   getSendAsset,
   getSendAssetAddress,
   getIsAssetSendable,
   getSendAmount,
-  getIsBalanceInsufficient,
   getSendMaxModeState,
   getDraftTransactionID,
   sendAmountIsInError,
@@ -76,7 +65,6 @@ import sendReducer, {
   isSendStateInitialized,
   isSendFormInvalid,
   getSendStage,
-  updateGasPrice,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
 
@@ -129,12 +117,6 @@ describe('Send Slice', () => {
       'addTransactionAndRouteToConfirmationPage',
     );
     jest
-      .spyOn(Actions, 'estimateGas')
-      .mockImplementation(() => Promise.resolve('0x0'));
-    jest
-      .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
-      .mockImplementation(() => Promise.resolve());
-    jest
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
     jest
@@ -143,9 +125,6 @@ describe('Send Slice', () => {
     jest.spyOn(Actions, 'updateEditableParams').mockImplementation(() => ({
       type: 'UPDATE_TRANSACTION_EDITABLE_PARAMS',
     }));
-    jest
-      .spyOn(Actions, 'updateTransactionGasFees')
-      .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_GAS_FEES' }));
   });
 
   describe('Reducers', () => {
@@ -182,78 +161,6 @@ describe('Send Slice', () => {
         expect(latestHistory.entry).toStrictEqual('test entry');
       });
     });
-    describe('calculateGasTotal', () => {
-      it('should set gasTotal to maxFeePerGax * gasLimit for FEE_MARKET transaction', () => {
-        const action = {
-          type: 'send/calculateGasTotal',
-        };
-        const result = sendReducer(
-          getInitialSendStateWithExistingTxState({
-            gas: {
-              gasPrice: '0x1',
-              maxFeePerGas: '0x2',
-              gasLimit: GAS_LIMITS.SIMPLE,
-            },
-            transactionType: TransactionEnvelopeType.feeMarket,
-          }),
-          action,
-        );
-        expect(result.currentTransactionUUID).toStrictEqual('test-uuid');
-        const draft = getTestUUIDTx(result);
-        expect(draft.gas.gasTotal).toStrictEqual(`0xa410`);
-      });
-
-      it('should set gasTotal to gasPrice * gasLimit for non FEE_MARKET transaction', () => {
-        const action = {
-          type: 'send/calculateGasTotal',
-        };
-        const result = sendReducer(
-          getInitialSendStateWithExistingTxState({
-            gas: {
-              gasPrice: '0x1',
-              maxFeePerGas: '0x2',
-              gasLimit: GAS_LIMITS.SIMPLE,
-            },
-          }),
-          action,
-        );
-        expect(result.currentTransactionUUID).toStrictEqual('test-uuid');
-        const draft = getTestUUIDTx(result);
-        expect(draft.gas.gasTotal).toStrictEqual(GAS_LIMITS.SIMPLE);
-      });
-
-      it('should call updateAmountToMax if amount mode is max', () => {
-        const action = {
-          type: 'send/calculateGasTotal',
-        };
-        const result = sendReducer(
-          {
-            ...getInitialSendStateWithExistingTxState({
-              asset: { balance: '0xffff' },
-              gas: {
-                gasPrice: '0x1',
-                gasLimit: GAS_LIMITS.SIMPLE,
-              },
-              recipient: {
-                address: '0x00',
-              },
-            }),
-            selectedAccount: {
-              balance: '0xffff',
-              address: '0x00',
-            },
-            gasEstimateIsLoading: false,
-            amountMode: AMOUNT_MODES.MAX,
-            stage: SEND_STAGES.DRAFT,
-          },
-          action,
-        );
-        expect(result.currentTransactionUUID).toStrictEqual('test-uuid');
-        const draft = getTestUUIDTx(result);
-        expect(draft.amount.value).toStrictEqual('0xadf7');
-        expect(draft.status).toStrictEqual(SEND_STATUSES.VALID);
-      });
-    });
     describe('resetSendState', () => {
       it('should set the state back to a blank slate matching the initialState object', () => {
         const action = {
@@ -277,18 +184,13 @@ describe('Send Slice', () => {
     });
 
     describe('updateAmountToMax', () => {
-      it('should calculate the max amount based off of the asset balance and gas total then updates send amount value', () => {
+      it('should set account balance', () => {
         const maxAmountState = {
           amount: {
             value: '',
           },
           asset: {
             balance: '0x56bc75e2d63100000', // 100000000000000000000
-          },
-          gas: {
-            gasLimit: GAS_LIMITS.SIMPLE, // 21000
-            gasTotal: '0x1319718a5000', // 21000000000000
-            minimumGasLimit: GAS_LIMITS.SIMPLE,
           },
         };
 
@@ -297,61 +199,7 @@ describe('Send Slice', () => {
         const result = sendReducer(state, action);
 
         expect(getTestUUIDTx(result).amount.value).toStrictEqual(
-          '0x56bc74b13f185b000',
-        ); // 99999979000000000000
-      });
-    });
-
-    describe('updateGasFees', () => {
-      it('should work with FEE_MARKET gas fees', () => {
-        const action = {
-          type: 'send/updateGasFees',
-          payload: {
-            transactionType: TransactionEnvelopeType.feeMarket,
-            maxFeePerGas: '0x2',
-            maxPriorityFeePerGas: '0x1',
-          },
-        };
-        const result = sendReducer(
-          INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          action,
-        );
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.maxFeePerGas).toStrictEqual(
-          action.payload.maxFeePerGas,
-        );
-
-        expect(draftTransaction.gas.maxPriorityFeePerGas).toStrictEqual(
-          action.payload.maxPriorityFeePerGas,
-        );
-
-        expect(draftTransaction.transactionType).toBe(
-          TransactionEnvelopeType.feeMarket,
-        );
-      });
-
-      it('should work with LEGACY gas fees', () => {
-        const action = {
-          type: 'send/updateGasFees',
-          payload: {
-            transactionType: TransactionEnvelopeType.legacy,
-            gasPrice: '0x1',
-          },
-        };
-        const result = sendReducer(
-          INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          action,
-        );
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.gasPrice).toStrictEqual(
-          action.payload.gasPrice,
-        );
-        expect(draftTransaction.transactionType).toBe(
-          TransactionEnvelopeType.legacy,
+          '0x56bc75e2d63100000',
         );
       });
     });
@@ -369,45 +217,6 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.userInputHexData).toStrictEqual(action.payload);
-      });
-    });
-
-    describe('updateGasLimit', () => {
-      const action = {
-        type: 'send/updateGasLimit',
-        payload: GAS_LIMITS.SIMPLE, // 21000
-      };
-
-      it('should', () => {
-        const result = sendReducer(
-          {
-            ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            stage: SEND_STAGES.DRAFT,
-            gasEstimateIsLoading: false,
-          },
-          action,
-        );
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.gasLimit).toStrictEqual(action.payload);
-      });
-
-      it('should recalculate gasTotal', () => {
-        const gasState = getInitialSendStateWithExistingTxState({
-          gas: {
-            gasLimit: '0x0',
-            gasPrice: '0x3b9aca00', // 1000000000
-          },
-        });
-
-        const result = sendReducer(gasState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.gasLimit).toStrictEqual(action.payload);
-        expect(draftTransaction.gas.gasPrice).toStrictEqual('0x3b9aca00');
-        expect(draftTransaction.gas.gasTotal).toStrictEqual('0x1319718a5000'); // 21000000000000
       });
     });
 
@@ -594,36 +403,6 @@ describe('Send Slice', () => {
       });
     });
 
-    describe('useDefaultGas', () => {
-      it('should', () => {
-        const action = {
-          type: 'send/useDefaultGas',
-        };
-
-        const result = sendReducer(
-          INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          action,
-        );
-
-        expect(result.gasIsSetInModal).toStrictEqual(false);
-      });
-    });
-
-    describe('useCustomGas', () => {
-      it('should', () => {
-        const action = {
-          type: 'send/useCustomGas',
-        };
-
-        const result = sendReducer(
-          INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          action,
-        );
-
-        expect(result.gasIsSetInModal).toStrictEqual(true);
-      });
-    });
-
     describe('updateRecipientUserInput', () => {
       it('should update recipient user input with payload', () => {
         const action = {
@@ -649,10 +428,6 @@ describe('Send Slice', () => {
               warning: 'someWarning',
             },
             amount: {},
-            gas: {
-              gasLimit: '0x0',
-              minimumGasLimit: '0x0',
-            },
             asset: {},
           }),
           recipientInput: '',
@@ -869,33 +644,6 @@ describe('Send Slice', () => {
     });
 
     describe('validateAmountField', () => {
-      it('should error with insufficient funds when amount asset value plust gas is higher than asset balance', () => {
-        const nativeAssetState = getInitialSendStateWithExistingTxState({
-          amount: {
-            value: '0x6fc23ac0', // 1875000000
-          },
-          asset: {
-            type: AssetType.native,
-            balance: '0x77359400', // 2000000000
-          },
-          gas: {
-            gasTotal: '0x8f0d180', // 150000000
-          },
-        });
-
-        const action = {
-          type: 'send/validateAmountField',
-        };
-
-        const result = sendReducer(nativeAssetState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
-        );
-      });
-
       it('should error with insufficient tokens when amount value of tokens is higher than asset balance of token', () => {
         const tokenAssetState = getInitialSendStateWithExistingTxState({
           amount: {
@@ -1045,31 +793,6 @@ describe('Send Slice', () => {
       });
     });
 
-    describe('validateGasField', () => {
-      it('should error when total amount of gas is higher than account balance', () => {
-        const gasFieldState = getInitialSendStateWithExistingTxState({
-          account: {
-            balance: '0x0',
-          },
-          gas: {
-            gasTotal: '0x1319718a5000', // 21000000000000
-          },
-        });
-
-        const action = {
-          type: 'send/validateGasField',
-        };
-
-        const result = sendReducer(gasFieldState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
-        );
-      });
-    });
-
     describe('validateSendState', () => {
       it('should set `INVALID` send state status when amount error is present', () => {
         const amountErrorState = getInitialSendStateWithExistingTxState({
@@ -1083,24 +806,6 @@ describe('Send Slice', () => {
         };
 
         const result = sendReducer(amountErrorState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.status).toStrictEqual(SEND_STATUSES.INVALID);
-      });
-
-      it('should set `INVALID` send state status when gas error is present', () => {
-        const gasErrorState = getInitialSendStateWithExistingTxState({
-          gas: {
-            error: 'Some Amount Error',
-          },
-        });
-
-        const action = {
-          type: 'send/validateSendState',
-        };
-
-        const result = sendReducer(gasErrorState, action);
 
         const draftTransaction = getTestUUIDTx(result);
 
@@ -1125,25 +830,6 @@ describe('Send Slice', () => {
         expect(draftTransaction.status).toStrictEqual(SEND_STATUSES.INVALID);
       });
 
-      it('should set `INVALID` send state status when gasLimit is under the minimumGasLimit', () => {
-        const gasLimitErroState = getInitialSendStateWithExistingTxState({
-          gas: {
-            gasLimit: '0x5207',
-            minimumGasLimit: GAS_LIMITS.SIMPLE,
-          },
-        });
-
-        const action = {
-          type: 'send/validateSendState',
-        };
-
-        const result = sendReducer(gasLimitErroState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.status).toStrictEqual(SEND_STATUSES.INVALID);
-      });
-
       it('should set `VALID` send state status when conditionals have not been met', () => {
         const validSendStatusState = {
           ...getInitialSendStateWithExistingTxState({
@@ -1153,13 +839,8 @@ describe('Send Slice', () => {
                 address: '0x000',
               },
             },
-            gas: {
-              gasLimit: GAS_LIMITS.SIMPLE,
-            },
           }),
           stage: SEND_STAGES.DRAFT,
-          gasEstimateIsLoading: false,
-          minimumGasLimit: GAS_LIMITS.SIMPLE,
         };
 
         const action = {
@@ -1430,8 +1111,6 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
-            gasEstimateType: GasEstimateTypes.none,
-            gasFeeEstimates: {},
             selectedNetworkClientId: NetworkType.goerli,
             networksMetadata: {
               [NetworkType.goerli]: {
@@ -1510,106 +1189,28 @@ describe('Send Slice', () => {
             },
           },
           send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          gas: {
-            basicEstimateStatus: 'LOADING',
-            basicEstimatesStatus: {
-              safeLow: null,
-              average: null,
-              fast: null,
-            },
-          },
         });
 
         const action = initializeSendState();
         await action(dispatchSpy, getState, undefined);
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(3);
+        expect(dispatchSpy).toHaveBeenCalledTimes(2);
 
         expect(dispatchSpy.mock.calls[0][0].type).toStrictEqual(
           'send/initializeSendState/pending',
         );
-        expect(dispatchSpy.mock.calls[2][0].type).toStrictEqual(
+        expect(dispatchSpy.mock.calls[1][0].type).toStrictEqual(
           'send/initializeSendState/fulfilled',
         );
-      });
-    });
-
-    describe('Set Basic Gas Estimate Data', () => {
-      it('should recalculate gas based off of average basic estimate data', () => {
-        const gasState = {
-          ...getInitialSendStateWithExistingTxState({
-            gas: {
-              gasPrice: '0x0',
-              gasLimit: GAS_LIMITS.SIMPLE,
-              gasTotal: '0x0',
-            },
-          }),
-          minimumGasLimit: GAS_LIMITS.SIMPLE,
-          gasPriceEstimate: '0x0',
-        };
-
-        const action = {
-          type: 'GAS_FEE_ESTIMATES_UPDATED',
-          payload: {
-            gasEstimateType: GasEstimateTypes.legacy,
-            gasFeeEstimates: {
-              medium: '1',
-            },
-          },
-        };
-
-        const result = sendReducer(gasState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.gas.gasPrice).toStrictEqual('0x3b9aca00'); // 1000000000
-        expect(draftTransaction.gas.gasLimit).toStrictEqual(GAS_LIMITS.SIMPLE);
-        expect(draftTransaction.gas.gasTotal).toStrictEqual('0x1319718a5000');
       });
     });
   });
 
   describe('Action Creators', () => {
-    describe('updateGasPrice', () => {
-      it('should update gas price and update draft transaction with validated state', async () => {
-        const store = mockStore({
-          send: getInitialSendStateWithExistingTxState({
-            gas: {
-              gasPrice: undefined,
-            },
-          }),
-        });
-
-        const newGasPrice = '0x0';
-
-        await store.dispatch(updateGasPrice(newGasPrice));
-
-        const actionResult = store.getActions();
-
-        const expectedActionResult = [
-          {
-            type: 'send/addHistoryEntry',
-            payload: 'sendFlow - user set legacy gasPrice to 0x0',
-          },
-          {
-            type: 'send/updateGasFees',
-            payload: {
-              gasPrice: '0x0',
-              manuallyEdited: true,
-              transactionType: TransactionEnvelopeType.legacy,
-            },
-          },
-        ];
-
-        expect(actionResult).toStrictEqual(expectedActionResult);
-      });
-    });
-
     describe('UpdateSendAmount', () => {
       it('should create an action to update send amount', async () => {
         const sendState = {
           metamask: {
-            blockGasLimit: '',
             selectedAddress: '',
             internalAccounts: {
               accounts: {
@@ -1637,9 +1238,6 @@ describe('Send Slice', () => {
           send: getInitialSendStateWithExistingTxState({
             asset: {
               details: {},
-            },
-            gas: {
-              gasPrice: '',
             },
             recipient: {
               address: '',
@@ -1670,21 +1268,11 @@ describe('Send Slice', () => {
 
         expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
         expect(actionResult[1]).toStrictEqual(expectedSecondActionResult);
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
       });
 
       it('should create an action to update send amount ERC1155', async () => {
         const sendState = {
           metamask: {
-            blockGasLimit: '',
             selectedAddress: '',
             internalAccounts: {
               accounts: {
@@ -1729,9 +1317,6 @@ describe('Send Slice', () => {
               error: null,
               type: 'NFT',
             },
-            gas: {
-              gasPrice: '',
-            },
             recipient: {
               address: '',
             },
@@ -1761,7 +1346,6 @@ describe('Send Slice', () => {
       it('should create an action to update send amount mode to `INPUT` when mode is `MAX`', async () => {
         const sendState = {
           metamask: {
-            blockGasLimit: '',
             selectedAddress: '',
             internalAccounts: {
               accounts: {
@@ -1790,9 +1374,7 @@ describe('Send Slice', () => {
             asset: {
               details: {},
             },
-            gas: {
-              gasPrice: '',
-            },
+
             recipient: {
               address: '',
             },
@@ -1821,88 +1403,12 @@ describe('Send Slice', () => {
 
         expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
         expect(actionResult[1]).toStrictEqual(expectedSecondActionResult);
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
-      });
-
-      it('should create an action computeEstimateGasLimit and change states from pending to fulfilled with token asset types', async () => {
-        const tokenAssetTypeSendState = {
-          metamask: {
-            blockGasLimit: '',
-            selectedAddress: '',
-            internalAccounts: {
-              accounts: {
-                'mock-id': {
-                  address: '0x0',
-                  id: 'mock-id',
-                  metadata: {
-                    name: 'Test Account',
-                    keyring: {
-                      type: 'HD Key Tree',
-                    },
-                  },
-                  options: {},
-                  methods: [...Object.values(EthMethod)],
-                  type: EthAccountType.Eoa,
-                },
-              },
-              selectedAccount: 'mock-id',
-            },
-            accounts: {},
-            providerConfig: {
-              chainId: '0x1',
-            },
-          },
-          send: getInitialSendStateWithExistingTxState({
-            asset: {
-              type: AssetType.token,
-              details: {},
-            },
-            gas: {
-              gasPrice: '',
-            },
-            recipient: {
-              address: '',
-            },
-            amount: {
-              value: '',
-            },
-            userInputHexData: '',
-          }),
-        };
-
-        const store = mockStore(tokenAssetTypeSendState);
-
-        await store.dispatch(updateSendAmount());
-
-        const actionResult = store.getActions();
-
-        expect(actionResult).toHaveLength(5);
-        expect(actionResult[0].type).toStrictEqual('send/addHistoryEntry');
-        expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
       });
     });
 
     describe('UpdateSendAsset', () => {
       const defaultSendAssetState = {
         metamask: {
-          blockGasLimit: '',
           selectedAddress: '',
           internalAccounts: {
             accounts: {
@@ -1945,9 +1451,7 @@ describe('Send Slice', () => {
               type: '',
               details: {},
             },
-            gas: {
-              gasPrice: '',
-            },
+
             recipient: {
               address: '',
             },
@@ -1973,7 +1477,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(2);
 
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
@@ -1989,16 +1493,6 @@ describe('Send Slice', () => {
           },
           initialAssetSet: false,
         });
-
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
       });
 
       it('should create actions for updateSendAsset with tokens', async () => {
@@ -2032,7 +1526,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(4);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2]).toMatchObject({
@@ -2054,16 +1548,6 @@ describe('Send Slice', () => {
           },
           initialAssetSet: false,
         });
-
-        expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[5].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[6].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
@@ -2247,7 +1731,7 @@ describe('Send Slice', () => {
         nickname: '',
       };
 
-      it('should create actions to update recipient and recalculate gas limit if the asset type is not set', async () => {
+      it('should create actions to update recipient', async () => {
         global.eth = {
           getCode: sinon.stub(),
         };
@@ -2271,9 +1755,7 @@ describe('Send Slice', () => {
             asset: {
               type: '',
             },
-            gas: {
-              gasPrice: '',
-            },
+
             recipient: {
               address: '',
             },
@@ -2290,14 +1772,8 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
+        expect(actionResult).toHaveLength(1);
         expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[1].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
-        );
       });
 
       it('should update recipient nickname if the passed address exists in the addressBook state but no nickname param is provided', async () => {
@@ -2330,9 +1806,7 @@ describe('Send Slice', () => {
             asset: {
               type: '',
             },
-            gas: {
-              gasPrice: '',
-            },
+
             recipient: {
               address: '',
             },
@@ -2353,7 +1827,7 @@ describe('Send Slice', () => {
         );
 
         const actionResult = store.getActions();
-        expect(actionResult).toHaveLength(3);
+        expect(actionResult).toHaveLength(1);
         expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
         expect(actionResult[0].payload.address).toStrictEqual(
           TEST_RECIPIENT_ADDRESS,
@@ -2363,7 +1837,7 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should create actions to reset recipient input and ens, calculate gas and then validate input', async () => {
+      it('should create actions to reset recipient input and ens', async () => {
         const tokenState = {
           metamask: {
             addressBook: {},
@@ -2372,7 +1846,7 @@ describe('Send Slice', () => {
               accounts: {},
               selectedAccount: '',
             },
-            blockGasLimit: '',
+
             selectedAddress: '',
             providerConfig: {
               chainId: '0x1',
@@ -2386,9 +1860,7 @@ describe('Send Slice', () => {
               type: AssetType.token,
               details: {},
             },
-            gas: {
-              gasPrice: '',
-            },
+
             recipient: {
               address: '',
             },
@@ -2405,14 +1877,8 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
+        expect(actionResult).toHaveLength(1);
         expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[1].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
-        );
       });
     });
 
@@ -2480,7 +1946,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(12);
+        expect(actionResult).toHaveLength(9);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2502,19 +1968,8 @@ describe('Send Slice', () => {
           'send/validateRecipientUserInput',
         );
         expect(actionResult[6].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[7].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
+        expect(actionResult[7].type).toStrictEqual('DNS/resetDomainResolution');
         expect(actionResult[8].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[9].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
-        expect(actionResult[10].type).toStrictEqual(
-          'DNS/resetDomainResolution',
-        );
-        expect(actionResult[11].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -2558,9 +2013,7 @@ describe('Send Slice', () => {
               type: AssetType.token,
               details: {},
             },
-            gas: {
-              gasPrice: '',
-            },
+
             recipient: {
               address: '',
             },
@@ -2583,19 +2036,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateAmountToMax');
         expect(actionResult[2]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user toggled max mode on',
         });
-        expect(actionResult[3].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[4].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/rejected',
-        );
       });
 
       it('should create actions to toggle off max mode when send amount mode is max', async () => {
@@ -2606,9 +2053,7 @@ describe('Send Slice', () => {
                 type: AssetType.token,
                 details: {},
               },
-              gas: {
-                gasPrice: '',
-              },
+
               recipient: {
                 address: '',
               },
@@ -2650,22 +2095,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user toggled max mode off',
         });
-        expect(actionResult[3].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[4].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[5].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
       });
     });
 
@@ -2676,9 +2112,6 @@ describe('Send Slice', () => {
           asset: {},
           recipient: {},
           amount: {},
-          gas: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
         }),
       };
 
@@ -2787,7 +2220,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
+        expect(actionResult).toHaveLength(2);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload:
@@ -2796,9 +2229,6 @@ describe('Send Slice', () => {
         expect(actionResult[1].type).toStrictEqual(
           'UPDATE_TRANSACTION_EDITABLE_PARAMS',
         );
-        expect(actionResult[2].type).toStrictEqual(
-          'UPDATE_TRANSACTION_GAS_FEES',
-        );
       });
     });
 
@@ -2806,8 +2236,6 @@ describe('Send Slice', () => {
       it('should set up the appropriate state for editing a native asset transaction', async () => {
         const editTransactionState = {
           metamask: {
-            gasEstimateType: GasEstimateTypes.none,
-            gasFeeEstimates: {},
             providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
@@ -2857,8 +2285,6 @@ describe('Send Slice', () => {
                   data: '',
                   from: mockAddress1,
                   to: '0xRecipientAddress',
-                  gas: GAS_LIMITS.SIMPLE,
-                  gasPrice: '0x3b9aca00', // 1000000000
                   value: '0xde0b6b3a7640000', // 1000000000000000000,
                 },
               },
@@ -2883,7 +2309,7 @@ describe('Send Slice', () => {
         await store.dispatch(editExistingTransaction(AssetType.native, 1));
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(6);
         expect(actionResult[0]).toMatchObject({
           type: 'send/clearPreviousDrafts',
         });
@@ -2914,15 +2340,6 @@ describe('Send Slice', () => {
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
-            gas: {
-              error: null,
-              gasLimit: GAS_LIMITS.SIMPLE,
-              gasPrice: '0x3b9aca00',
-              gasTotal: '0x0',
-              wasManuallyEdited: false,
-              maxFeePerGas: '0x0',
-              maxPriorityFeePerGas: '0x0',
-            },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
             recipient: {
@@ -2951,13 +2368,6 @@ describe('Send Slice', () => {
         const draftTransaction =
           result.draftTransactions[result.currentTransactionUUID];
 
-        expect(draftTransaction.gas.gasLimit).toStrictEqual(
-          action.payload.gas.gasLimit,
-        );
-        expect(draftTransaction.gas.gasPrice).toStrictEqual(
-          action.payload.gas.gasPrice,
-        );
-
         expect(draftTransaction.amount.value).toStrictEqual(
           action.payload.amount.value,
         );
@@ -2973,7 +2383,6 @@ describe('Send Slice', () => {
         );
         const editTransactionState = {
           metamask: {
-            blockGasLimit: '0x3a98',
             selectedAddress: '',
             providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
@@ -3028,8 +2437,6 @@ describe('Send Slice', () => {
                   }),
                   from: mockAddress1,
                   to: '0xNftAddress',
-                  gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
-                  gasPrice: '0x3b9aca00', // 1000000000
                   value: '0x0',
                 },
               },
@@ -3039,7 +2446,6 @@ describe('Send Slice', () => {
             ...getInitialSendStateWithExistingTxState({
               id: 1,
               test: 'wow',
-              gas: { gasLimit: GAS_LIMITS.SIMPLE },
             }),
             stage: SEND_STAGES.EDIT,
           },
@@ -3058,7 +2464,7 @@ describe('Send Slice', () => {
 
         await store.dispatch(editExistingTransaction(AssetType.NFT, 1));
         const actionResult = store.getActions();
-        expect(actionResult).toHaveLength(9);
+        expect(actionResult).toHaveLength(8);
         expect(actionResult[0]).toMatchObject({
           type: 'send/clearPreviousDrafts',
         });
@@ -3088,15 +2494,6 @@ describe('Send Slice', () => {
               methods: [...Object.values(EthMethod)],
               type: EthAccountType.Eoa,
               balance: '0x0',
-            },
-            gas: {
-              error: null,
-              gasLimit: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
-              gasPrice: '0x3b9aca00',
-              gasTotal: '0x0',
-              wasManuallyEdited: false,
-              maxFeePerGas: '0x0',
-              maxPriorityFeePerGas: '0x0',
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
@@ -3141,11 +2538,7 @@ describe('Send Slice', () => {
         expect(actionResult[6].type).toStrictEqual(
           'send/initializeSendState/pending',
         );
-        expect(actionResult[7]).toStrictEqual({
-          type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-          value: GAS_LIMITS.SIMPLE,
-        });
-        expect(actionResult[8].type).toStrictEqual(
+        expect(actionResult[7].type).toStrictEqual(
           'send/initializeSendState/fulfilled',
         );
 
@@ -3157,27 +2550,12 @@ describe('Send Slice', () => {
         );
 
         expect(result.currentTransactionUUID).not.toStrictEqual('test-uuid');
-
-        const draftTransaction =
-          result.draftTransactions[result.currentTransactionUUID];
-
-        expect(draftTransaction.gas.gasLimit).toStrictEqual(
-          action.payload.gas.gasLimit,
-        );
-        expect(draftTransaction.gas.gasPrice).toStrictEqual(
-          action.payload.gas.gasPrice,
-        );
-
-        expect(draftTransaction.amount.value).toStrictEqual(
-          action.payload.amount.value,
-        );
       });
     });
 
     it('should set up the appropriate state for editing a token asset transaction', async () => {
       const editTransactionState = {
         metamask: {
-          blockGasLimit: '0x3a98',
           selectedAddress: '',
           internalAccounts: {
             accounts: {
@@ -3246,8 +2624,6 @@ describe('Send Slice', () => {
                 }),
                 from: mockAddress1,
                 to: '0xTokenAddress',
-                gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
-                gasPrice: '0x3b9aca00', // 1000000000
                 value: '0x0',
               },
             },
@@ -3283,7 +2659,7 @@ describe('Send Slice', () => {
       await store.dispatch(editExistingTransaction(AssetType.token, 1));
       const actionResult = store.getActions();
 
-      expect(actionResult).toHaveLength(9);
+      expect(actionResult).toHaveLength(8);
       expect(actionResult[0].type).toStrictEqual('send/clearPreviousDrafts');
       expect(actionResult[1]).toStrictEqual({
         type: 'send/addNewDraft',
@@ -3311,15 +2687,6 @@ describe('Send Slice', () => {
             methods: [...Object.values(EthMethod)],
             type: EthAccountType.Eoa,
             balance: '0x0',
-          },
-          gas: {
-            error: null,
-            gasLimit: '0x186a0',
-            gasPrice: '0x3b9aca00',
-            wasManuallyEdited: false,
-            gasTotal: '0x0',
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
           },
           history: ['sendFlow - user clicked edit on transaction with id 1'],
           id: 1,
@@ -3366,9 +2733,6 @@ describe('Send Slice', () => {
         'send/initializeSendState/pending',
       );
       expect(actionResult[7].type).toStrictEqual(
-        'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-      );
-      expect(actionResult[8].type).toStrictEqual(
         'send/initializeSendState/fulfilled',
       );
 
@@ -3377,150 +2741,10 @@ describe('Send Slice', () => {
       const result = sendReducer(INITIAL_SEND_STATE_FOR_EXISTING_DRAFT, action);
 
       expect(result.currentTransactionUUID).not.toStrictEqual('test-uuid');
-
-      const draftTransaction =
-        result.draftTransactions[result.currentTransactionUUID];
-
-      expect(draftTransaction.gas.gasLimit).toStrictEqual(
-        action.payload.gas.gasLimit,
-      );
-      expect(draftTransaction.gas.gasPrice).toStrictEqual(
-        action.payload.gas.gasPrice,
-      );
-
-      expect(draftTransaction.amount.value).toStrictEqual(
-        action.payload.amount.value,
-      );
     });
   });
 
   describe('selectors', () => {
-    describe('gas selectors', () => {
-      it('has a selector that gets gasLimit', () => {
-        expect(
-          getGasLimit({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
-      });
-
-      it('has a selector that gets gasPrice', () => {
-        expect(
-          getGasPrice({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
-      });
-
-      it('has a selector that gets gasTotal', () => {
-        expect(
-          getGasTotal({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe('0x0');
-      });
-
-      it('has a selector to determine if gas fee is in error', () => {
-        expect(
-          gasFeeIsInError({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
-        ).toBe(false);
-        expect(
-          gasFeeIsInError({
-            send: getInitialSendStateWithExistingTxState({
-              gas: {
-                error: 'yes',
-              },
-            }),
-          }),
-        ).toBe(true);
-      });
-
-      it('has a selector that gets minimumGasLimit', () => {
-        expect(
-          getMinimumGasLimitForSend({
-            send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          }),
-        ).toBe(GAS_LIMITS.SIMPLE);
-      });
-
-      describe('getGasInputMode selector', () => {
-        it('returns BASIC when on mainnet and advanced inline gas is false', () => {
-          expect(
-            getGasInputMode({
-              metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
-                featureFlags: { advancedInlineGas: false },
-              },
-              send: initialState,
-            }),
-          ).toBe(GAS_INPUT_MODES.BASIC);
-        });
-
-        it('returns BASIC when on localhost and advanced inline gas is false and IN_TEST is set', () => {
-          process.env.IN_TEST = true;
-          expect(
-            getGasInputMode({
-              metamask: {
-                providerConfig: { chainId: '0x539' },
-                featureFlags: { advancedInlineGas: false },
-              },
-              send: initialState,
-            }),
-          ).toBe(GAS_INPUT_MODES.BASIC);
-          process.env.IN_TEST = false;
-        });
-
-        it('returns INLINE when on mainnet and advanced inline gas is true', () => {
-          expect(
-            getGasInputMode({
-              metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
-                featureFlags: { advancedInlineGas: true },
-              },
-              send: initialState,
-            }),
-          ).toBe(GAS_INPUT_MODES.INLINE);
-        });
-
-        it('returns INLINE when on mainnet and advanced inline gas is false but eth_gasPrice estimate is used', () => {
-          expect(
-            getGasInputMode({
-              metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
-                featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GasEstimateTypes.ethGasPrice,
-              },
-              send: initialState,
-            }),
-          ).toBe(GAS_INPUT_MODES.INLINE);
-        });
-
-        it('returns INLINE when on mainnet and advanced inline gas is false but eth_gasPrice estimate is used even IN_TEST', () => {
-          process.env.IN_TEST = true;
-          expect(
-            getGasInputMode({
-              metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
-                featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GasEstimateTypes.ethGasPrice,
-              },
-              send: initialState,
-            }),
-          ).toBe(GAS_INPUT_MODES.INLINE);
-          process.env.IN_TEST = false;
-        });
-
-        it('returns CUSTOM if gasIsSetInModal is true', () => {
-          expect(
-            getGasInputMode({
-              metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
-                featureFlags: { advancedInlineGas: true },
-              },
-              send: {
-                ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-                gasIsSetInModal: true,
-              },
-            }),
-          ).toBe(GAS_INPUT_MODES.CUSTOM);
-        });
-      });
-    });
-
     describe('asset selectors', () => {
       it('has a selector to get the asset', () => {
         expect(
@@ -3566,21 +2790,6 @@ describe('Send Slice', () => {
         expect(
           getSendAmount({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
         ).toBe('0x0');
-      });
-
-      it('has a selector to get if there is an insufficient funds error', () => {
-        expect(
-          getIsBalanceInsufficient({
-            send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-          }),
-        ).toBe(false);
-        expect(
-          getIsBalanceInsufficient({
-            send: getInitialSendStateWithExistingTxState({
-              gas: { error: INSUFFICIENT_FUNDS_ERROR },
-            }),
-          }),
-        ).toBe(true);
       });
 
       it('has a selector to get max mode state', () => {
@@ -3739,21 +2948,17 @@ describe('Send Slice', () => {
         expect(
           getSendErrors({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
         ).toMatchObject({
-          gasFee: null,
           amount: null,
         });
         expect(
           getSendErrors({
             send: getInitialSendStateWithExistingTxState({
-              gas: {
-                error: 'gasFeeTest',
-              },
               amount: {
                 error: 'amountTest',
               },
             }),
           }),
-        ).toMatchObject({ gasFee: 'gasFeeTest', amount: 'amountTest' });
+        ).toMatchObject({ amount: 'amountTest' });
       });
 
       it('has a selector to get send state initialization status', () => {

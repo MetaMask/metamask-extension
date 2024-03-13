@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,7 +10,6 @@ import {
   decimalToHex,
   getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
-import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
@@ -32,33 +30,22 @@ import {
   isTokenBalanceSufficient,
 } from '../../pages/confirmations/send/send.utils';
 import {
-  getAdvancedInlineGasShown,
   getCurrentChainId,
-  getGasPriceInHexWei,
-  getIsMainnet,
   getTargetAccount,
-  getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
-  getIsMultiLayerFeeNetwork,
   getEnsResolutionByAddress,
   getSelectedAccount,
   getSelectedInternalAccount,
-  getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
 } from '../../selectors';
 import {
-  disconnectGasFeeEstimatePoller,
   displayWarning,
-  getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
   showLoadingIndication,
   updateEditableParams,
-  updateTransactionGasFees,
-  addPollingTokenToAppState,
-  removePollingTokenFromAppState,
   isNftOwner,
   getTokenStandardAndDetails,
   showModal,
@@ -66,13 +53,11 @@ import {
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
 } from '../../store/actions';
-import { setCustomGasLimit } from '../gas/gas.duck';
 import {
   QR_CODE_DETECTED,
   SELECTED_ACCOUNT_CHANGED,
   ACCOUNT_CHANGED,
   ADDRESS_BOOK_UPDATED,
-  GAS_FEE_ESTIMATES_UPDATED,
 } from '../../store/actionConstants';
 import {
   getTokenAddressParam,
@@ -85,11 +70,7 @@ import {
   isOriginContractAddress,
   isValidDomainName,
 } from '../../helpers/utils/util';
-import {
-  getGasEstimateType,
-  getProviderConfig,
-  getTokens,
-} from '../metamask/metamask';
+import { getProviderConfig, getTokens } from '../metamask/metamask';
 
 import { resetDomainResolution } from '../domains';
 import {
@@ -98,7 +79,6 @@ import {
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
-import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import {
   AssetType,
@@ -108,18 +88,11 @@ import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
-import {
-  calcGasTotal,
-  calcTokenAmount,
-} from '../../../shared/lib/transactions-controller-utils';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
-import {
-  estimateGasLimitForSend,
-  generateTransactionParams,
-  getRoundedGasPrice,
-} from './helpers';
+import { generateTransactionParams } from './helpers';
 
 // typedef import statements
 /**
@@ -132,18 +105,6 @@ import {
  * @typedef {(
  *  import( '../../../shared/constants/tokens').TokenDetails
  * )} TokenDetails
- * @typedef {(
- *  import('@metamask/gas-fee-controller').LegacyGasPriceEstimate
- * )} LegacyGasPriceEstimate
- * @typedef {(
- *  import('@metamask/gas-fee-controller').GasFeeEstimates
- * )} GasFeeEstimates
- * @typedef {(
- *  import('@metamask/gas-fee-controller').EthGasPriceEstimate
- * )} EthGasPriceEstimate
- * @typedef {(
- *  import('@metamask/gas-fee-controller').GasEstimateType
- * )} GasEstimateType
  * @typedef {(
  *  import('redux').AnyAction
  * )} AnyAction
@@ -194,14 +155,6 @@ export const SEND_STAGES = {
  * @typedef {object} DraftTxStatus
  * @property {'INVALID'} INVALID - The transaction is invalid and cannot be
  *  submitted. There are a number of cases that would result in an invalid
- *  send state:
- *  1. The recipient is not yet defined
- *  2. The amount + gasTotal is greater than the user's balance when sending
- *     native currency
- *  3. The gasTotal is greater than the user's *native* balance
- *  4. The amount of sent asset is greater than the user's *asset* balance
- *  5. Gas price estimates failed to load entirely
- *  6. The gasLimit is less than 21000 (0x5208)
  * @property {'VALID'} VALID - The transaction is valid and can be submitted.
  */
 
@@ -216,33 +169,11 @@ export const SEND_STATUSES = {
 };
 
 /**
- * @typedef {object} SendStateGasModes
- * @property {'BASIC'} BASIC - Shows the basic estimate slow/avg/fast buttons
- *  when on mainnet and the metaswaps API request is successful.
- * @property {'CUSTOM'} CUSTOM - Shows GasFeeDisplay component that is a read
- *  only display of the values the user has set in the advanced gas modal
- *  (stored in the gas duck under the customData key).
- * @property {'INLINE'} INLINE - Shows inline gasLimit/gasPrice fields when on
- *  any other network or metaswaps API fails and we use eth_gasPrice.
- */
-
-/**
- * Controls what is displayed in the send-gas-row component.
- *
- * @type {SendStateGasModes}
- */
-export const GAS_INPUT_MODES = {
-  BASIC: 'BASIC',
-  CUSTOM: 'CUSTOM',
-  INLINE: 'INLINE',
-};
-
-/**
  * @typedef {object} SendStateAmountModes
  * @property {'INPUT'} INPUT - the user provides the amount by typing in the
  *  field.
  * @property {'MAX'} MAX - The user selects the MAX button and amount is
- *  calculated based on balance - (amount + gasTotal).
+ *  calculated based on balance - (amount).
  */
 
 /**
@@ -302,17 +233,6 @@ export const RECIPIENT_SEARCH_MODES = {
  */
 
 /**
- * @typedef {object} GasFees
- * @property {string} [error] - error to display for gas fields.
- * @property {string} gasLimit - maximum gas needed for tx.
- * @property {string} gasPrice - price in wei to pay per gas.
- * @property {string} gasTotal - maximum total price in wei to pay.
- * @property {string} maxFeePerGas - Maximum price in wei to pay per gas.
- * @property {string} maxPriorityFeePerGas - Maximum priority fee in wei to pay
- *  per gas.
- */
-
-/**
  * An object that describes the intended recipient of a transaction.
  *
  * @typedef {object} Recipient
@@ -339,7 +259,6 @@ export const RECIPIENT_SEARCH_MODES = {
  *  the currently selected account. When editing a transaction, however, the
  *  account may differ. In that case, the details of that account will be
  *  stored in this object within the draftTransaction.
- * @property {GasFees} gas - Details about the current gas settings
  * @property {Array<{event: string, timestamp: number}>} history - An array of
  *  entries that describe the user's journey through the send flow. This is
  *  sent to the controller for attaching to state logs for troubleshooting and
@@ -376,15 +295,6 @@ export const draftTransactionInitialState = {
     type: AssetType.native,
   },
   fromAccount: null,
-  gas: {
-    error: null,
-    gasLimit: '0x0',
-    gasPrice: '0x0',
-    gasTotal: '0x0',
-    maxFeePerGas: '0x0',
-    maxPriorityFeePerGas: '0x0',
-    wasManuallyEdited: false,
-  },
   history: [],
   id: null,
   recipient: {
@@ -417,18 +327,6 @@ export const draftTransactionInitialState = {
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
  *  supports EIP 1559 transactions.
- * @property {boolean} gasEstimateIsLoading - Indicates whether the gas
- *  estimate is loading.
- * @property {string} [gasEstimatePollToken] - String token identifying a
- *  listener for polling on the gasFeeController
- * @property {boolean} gasIsSetInModal - true if the user set custom gas in the
- *  custom gas modal
- * @property {string} gasLimitMinimum - minimum supported gasLimit.
- * @property {string} gasPriceEstimate - Expected price in wei necessary to
- *  pay per gas used for a transaction to be included in a reasonable timeframe.
- *  Comes from the GasFeeController.
- * @property {string} gasTotalForLayer1 -  Layer 1 gas fee total on multi-layer
- *  fee networks
  * @property {string} recipientInput - The user input of the recipient
  *  which is updated quickly to avoid delays in the UI reflecting manual entry
  *  of addresses.
@@ -455,12 +353,6 @@ export const initialState = {
   currentTransactionUUID: null,
   draftTransactions: {},
   eip1559support: false,
-  gasEstimateIsLoading: true,
-  gasEstimatePollToken: null,
-  gasIsSetInModal: false,
-  gasPriceEstimate: '0x0',
-  gasLimitMinimum: GAS_LIMITS.SIMPLE,
-  gasTotalForLayer1: '0x0',
   recipientMode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
   recipientInput: '',
   selectedAccount: {
@@ -482,82 +374,6 @@ export const initialState = {
  */
 
 const name = 'send';
-
-// After modification of specific fields in specific circumstances we must
-// recompute the gasLimit estimate to be as accurate as possible. the cases
-// that necessitate this logic are listed below:
-// 1. when the amount sent changes when sending a token due to the amount being
-//    part of the hex encoded data property of the transaction.
-// 2. when updating the data property while sending NATIVE currency (ex: ETH)
-//    because the data parameter defines function calls that the EVM will have
-//    to execute which is where a large chunk of gas is potentially consumed.
-// 3. when the recipient changes while sending a token due to the recipient's
-//    address being included in the hex encoded data property of the
-//    transaction
-// 4. when the asset being sent changes due to the contract address and details
-//    of the token being included in the hex encoded data property of the
-//    transaction. If switching to NATIVE currency (ex: ETH), the gasLimit will
-//    change due to hex data being removed (unless supplied by user).
-// This method computes the gasLimit estimate which is written to state in an
-// action handler in extraReducers.
-export const computeEstimatedGasLimit = createAsyncThunk(
-  'send/computeEstimatedGasLimit',
-  async (_, thunkApi) => {
-    const state = thunkApi.getState();
-    const { send, metamask } = state;
-    const draftTransaction =
-      send.draftTransactions[send.currentTransactionUUID];
-    const unapprovedTxs = getUnapprovedTransactions(state);
-    const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-    const transaction = unapprovedTxs[draftTransaction.id];
-    const isNonStandardEthChain = getIsNonStandardEthChain(state);
-    const chainId = getCurrentChainId(state);
-    const selectedAccount = getSelectedInternalAccountWithBalance(state);
-
-    let gasTotalForLayer1;
-    if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
-        txParams: {
-          gasPrice: draftTransaction.gas.gasPrice,
-          gas: draftTransaction.gas.gasLimit,
-          to: draftTransaction.recipient.address?.toLowerCase(),
-          value:
-            send.amountMode === AMOUNT_MODES.MAX
-              ? send.selectedAccount.balance
-              : draftTransaction.amount.value,
-          from: send.selectedAccount.address,
-          data: draftTransaction.userInputHexData,
-          type: '0x0',
-        },
-      });
-    }
-
-    if (
-      send.stage !== SEND_STAGES.EDIT ||
-      !transaction.dappSuggestedGasFees?.gas ||
-      !transaction.userEditedGasLimit
-    ) {
-      const gasLimit = await estimateGasLimitForSend({
-        gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress: selectedAccount.address,
-        sendToken: draftTransaction.asset.details,
-        to: draftTransaction.recipient.address?.toLowerCase(),
-        value: draftTransaction.amount.value,
-        data: draftTransaction.userInputHexData,
-        isNonStandardEthChain,
-        chainId,
-        gasLimit: draftTransaction.gas.gasLimit,
-      });
-      await thunkApi.dispatch(setCustomGasLimit(gasLimit));
-      return {
-        gasLimit,
-        gasTotalForLayer1,
-      };
-    }
-    return null;
-  },
-);
 
 /**
  * @typedef {object} Asset
@@ -598,14 +414,12 @@ export const initializeSendState = createAsyncThunk(
      * @type {ReduxState}
      */
     const state = thunkApi.getState();
-    const isNonStandardEthChain = getIsNonStandardEthChain(state);
-    const chainId = getCurrentChainId(state);
     let eip1559support = checkNetworkAndAccountSupports1559(state);
     if (eip1559support === undefined) {
       eip1559support = await getCurrentNetworkEIP1559Compatibility();
     }
     const account = getSelectedAccount(state);
-    const { send: sendState, metamask } = state;
+    const { send: sendState } = state;
     const draftTransaction =
       sendState.draftTransactions[sendState.currentTransactionUUID];
 
@@ -618,79 +432,6 @@ export const initializeSendState = createAsyncThunk(
         'draftTransaction not found, possibly not on send flow',
       );
     }
-
-    // Default gasPrice to 1 gwei if all estimation fails, this is only used
-    // for gasLimit estimation and won't be set directly in state. Instead, we
-    // will return the gasFeeEstimates and gasEstimateType so that the reducer
-    // can set the appropriate gas fees in state.
-    let gasPrice =
-      sendState.stage === SEND_STAGES.EDIT
-        ? draftTransaction.gas.gasPrice
-        : '0x1';
-    let gasEstimatePollToken = null;
-
-    // Instruct the background process that polling for gas prices should begin
-    gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
-
-    addPollingTokenToAppState(gasEstimatePollToken);
-
-    const {
-      metamask: { gasFeeEstimates, gasEstimateType },
-    } = thunkApi.getState();
-
-    if (sendState.stage !== SEND_STAGES.EDIT) {
-      // Because we are only interested in getting a gasLimit estimation we only
-      // need to worry about gasPrice. So we use maxFeePerGas as gasPrice if we
-      // have a fee market estimation.
-      if (gasEstimateType === GasEstimateTypes.legacy) {
-        gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
-        gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GasEstimateTypes.feeMarket) {
-        gasPrice = getGasPriceInHexWei(
-          gasFeeEstimates.medium.suggestedMaxFeePerGas,
-        );
-      } else {
-        gasPrice = gasFeeEstimates.gasPrice
-          ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
-          : '0x0';
-      }
-    }
-
-    // Set a basic gasLimit in the event that other estimation fails
-    let { gasLimit } = draftTransaction.gas;
-    if (
-      gasEstimateType !== GasEstimateTypes.none &&
-      sendState.stage !== SEND_STAGES.EDIT &&
-      draftTransaction.recipient.address
-    ) {
-      gasLimit =
-        draftTransaction.asset.type === AssetType.token ||
-        draftTransaction.asset.type === AssetType.NFT
-          ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
-          : GAS_LIMITS.SIMPLE;
-      // Run our estimateGasLimit logic to get a more accurate estimation of
-      // required gas. If this value isn't nullish, set it as the new gasLimit
-      const estimatedGasLimit = await estimateGasLimitForSend({
-        gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress:
-          draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address ??
-          account.address,
-        sendToken: draftTransaction.asset.details,
-        to: draftTransaction.recipient.address.toLowerCase(),
-        value: draftTransaction.amount.value,
-        data: draftTransaction.userInputHexData,
-        isNonStandardEthChain,
-        chainId,
-      });
-      gasLimit = estimatedGasLimit || gasLimit;
-    }
-
-    // We have to keep the gas slice in sync with the send slice state
-    // so that it'll be initialized correctly if the gas modal is opened.
-    await thunkApi.dispatch(setCustomGasLimit(gasLimit));
 
     // There may be a case where the send has been canceled by the user while
     // the gas estimate is being computed. So we check again to make sure that
@@ -710,11 +451,6 @@ export const initializeSendState = createAsyncThunk(
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
-      gasFeeEstimates,
-      gasEstimateType,
-      gasLimit,
-      gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
-      gasEstimatePollToken,
       eip1559support,
       useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
@@ -741,35 +477,6 @@ export const initializeSendState = createAsyncThunk(
  * @typedef {(
  *  import('@reduxjs/toolkit').PayloadAction<SendState['recipientMode']>
  * )} UpdateRecipientModePayload
- */
-
-/**
- * @typedef {object} GasFeeUpdateParams
- * @property {TransactionType} transactionType - The transaction type
- * @property {string} [maxFeePerGas] - The maximum amount in hex wei to pay
- *  per gas on a FEE_MARKET transaction.
- * @property {string} [maxPriorityFeePerGas] - The maximum amount in hex
- *  wei to pay per gas as an incentive to miners on a FEE_MARKET
- *  transaction.
- * @property {string} [gasPrice] - The amount in hex wei to pay per gas on
- *  a LEGACY transaction.
- * @property {boolean} [isAutomaticUpdate] - true if the update is the
- *  result of a gas estimate update from the controller.
- * @typedef {(
- *  import('@reduxjs/toolkit').PayloadAction<GasFeeUpdateParams>
- * )} GasFeeUpdatePayload
- */
-
-/**
- * @typedef {object} GasEstimateUpdateParams
- * @property {GasEstimateType} gasEstimateType - The type of gas estimation
- *  provided by the controller.
- * @property {(
- *  EthGasPriceEstimate | LegacyGasPriceEstimate | GasFeeEstimates
- * )} gasFeeEstimates - The gas fee estimates provided by the controller.
- * @typedef {(
- *  import('@reduxjs/toolkit').PayloadAction<GasEstimateUpdateParams>
- * )} GasEstimateUpdatePayload
  */
 
 /**
@@ -823,51 +530,6 @@ const slice = createSlice({
           timestamp: Date.now(),
         });
       }
-    },
-    /**
-     * gasTotal is computed based on gasPrice and gasLimit and set in state
-     * recomputes the maximum amount if the current amount mode is 'MAX' and
-     * sending the native token. ERC20 assets max amount is unaffected by
-     * gasTotal so does not need to be recomputed. Finally, validates the gas
-     * field and send state.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @returns {void}
-     */
-    calculateGasTotal: (state) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-
-      // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
-      // otherwise use gasPrice
-      if (
-        draftTransaction.transactionType === TransactionEnvelopeType.feeMarket
-      ) {
-        draftTransaction.gas.gasTotal = addHexPrefix(
-          calcGasTotal(
-            draftTransaction.gas.gasLimit,
-            draftTransaction.gas.maxFeePerGas,
-          ),
-        );
-      } else {
-        draftTransaction.gas.gasTotal = addHexPrefix(
-          calcGasTotal(
-            draftTransaction.gas.gasLimit,
-            draftTransaction.gas.gasPrice,
-          ),
-        );
-      }
-      if (
-        state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.asset.type === AssetType.native
-      ) {
-        slice.caseReducers.updateAmountToMax(state);
-      }
-      slice.caseReducers.validateAmountField(state);
-      slice.caseReducers.validateGasField(state);
-      // validate send state
-      slice.caseReducers.validateSendState(state);
     },
     /**
      * Clears all drafts from send state and drops the currentTransactionUUID.
@@ -925,14 +587,7 @@ const slice = createSlice({
           .times(multiplier, 10)
           .toString();
       } else {
-        const _gasTotal = new Numeric(
-          draftTransaction.gas.gasTotal || '0x0',
-          16,
-        ).add(new Numeric(state.gasTotalForLayer1 || '0x0', 16));
-
-        amount = new Numeric(draftTransaction.asset.balance, 16)
-          .minus(_gasTotal)
-          .toString();
+        amount = new Numeric(draftTransaction.asset.balance, 16).toString();
       }
       slice.caseReducers.updateSendAmount(state, {
         payload: amount,
@@ -980,138 +635,6 @@ const slice = createSlice({
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
-    },
-    /**
-     * Sets the appropriate gas fees in state after receiving new estimates.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @param {GasEstimateUpdatePayload)} action - The gas fee update payload
-     * @returns {void}
-     */
-    updateGasFeeEstimates: (state, action) => {
-      const { gasFeeEstimates, gasEstimateType } = action.payload;
-      let gasPriceEstimate = '0x0';
-      switch (gasEstimateType) {
-        case GasEstimateTypes.feeMarket:
-          slice.caseReducers.updateGasFees(state, {
-            payload: {
-              transactionType: TransactionEnvelopeType.feeMarket,
-              maxFeePerGas: getGasPriceInHexWei(
-                gasFeeEstimates.medium.suggestedMaxFeePerGas,
-              ),
-              maxPriorityFeePerGas: getGasPriceInHexWei(
-                gasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
-              ),
-            },
-          });
-          break;
-        case GasEstimateTypes.legacy:
-          gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.medium);
-          slice.caseReducers.updateGasFees(state, {
-            payload: {
-              gasPrice: gasPriceEstimate,
-              type: TransactionEnvelopeType.legacy,
-              isAutomaticUpdate: true,
-            },
-          });
-          break;
-        case GasEstimateTypes.ethGasPrice:
-          gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-          slice.caseReducers.updateGasFees(state, {
-            payload: {
-              gasPrice: getRoundedGasPrice(gasFeeEstimates.gasPrice),
-              type: TransactionEnvelopeType.legacy,
-              isAutomaticUpdate: true,
-            },
-          });
-          break;
-        case GasEstimateTypes.none:
-        default:
-          break;
-      }
-      // Record the latest gasPriceEstimate for future comparisons
-      state.gasPriceEstimate = addHexPrefix(gasPriceEstimate);
-    },
-    /**
-     * Sets the appropriate gas fees in state and determines and sets the
-     * appropriate transactionType based on gas fee fields received.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @param {GasFeeUpdatePayload} action - The gas fees to update with
-     * @returns {void}
-     */
-    updateGasFees: (state, action) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-      if (draftTransaction) {
-        if (
-          action.payload.transactionType === TransactionEnvelopeType.feeMarket
-        ) {
-          draftTransaction.gas.maxFeePerGas = addHexPrefix(
-            action.payload.maxFeePerGas,
-          );
-          draftTransaction.gas.maxPriorityFeePerGas = addHexPrefix(
-            action.payload.maxPriorityFeePerGas,
-          );
-          draftTransaction.transactionType = TransactionEnvelopeType.feeMarket;
-        } else {
-          if (action.payload.manuallyEdited) {
-            draftTransaction.gas.wasManuallyEdited = true;
-          }
-
-          // Update the gas price if it has not been manually edited,
-          // or if this current action is a manual edit.
-          if (
-            !draftTransaction.gas.wasManuallyEdited ||
-            action.payload.manuallyEdited
-          ) {
-            draftTransaction.gas.gasPrice = addHexPrefix(
-              action.payload.gasPrice,
-            );
-          }
-          draftTransaction.transactionType = TransactionEnvelopeType.legacy;
-        }
-        slice.caseReducers.calculateGasTotal(state);
-      }
-    },
-    /**
-     * sets the provided gasLimit in state and then recomputes the gasTotal.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @param {SimpleStringPayload} action - The
-     *  gasLimit in hex to set in state.
-     * @returns {void}
-     */
-    updateGasLimit: (state, action) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-      if (draftTransaction) {
-        draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
-        slice.caseReducers.calculateGasTotal(state);
-      }
-    },
-    /**
-     * sets the layer 1 fees total (for a multi-layer fee network)
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @param {SimpleStringPayload} action - the
-     *  gasTotalForLayer1 to set in hex wei.
-     * @returns {void}
-     */
-    updateLayer1Fees: (state, action) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-      state.gasTotalForLayer1 = action.payload;
-      if (
-        state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.asset.type === AssetType.native
-      ) {
-        slice.caseReducers.updateAmountToMax(state);
-      }
     },
     /**
      * Updates the recipient of the draftTransaction
@@ -1217,13 +740,6 @@ const slice = createSlice({
       draftTransaction.amount.value = addHexPrefix(action.payload);
       // Once amount has changed, validate the field
       slice.caseReducers.validateAmountField(state);
-      if (draftTransaction.asset.type === AssetType.native) {
-        // if sending the native asset the amount being sent will impact the
-        // gas field as well because the gas validation takes into
-        // consideration the available balance minus amount sent before
-        // checking if there is enough left to cover the gas fee.
-        slice.caseReducers.validateGasField(state);
-      }
       // validate send state
       slice.caseReducers.validateSendState(state);
     },
@@ -1242,28 +758,6 @@ const slice = createSlice({
       draftTransaction.userInputHexData = action.payload;
     },
     /**
-     * Updates the gasIsSetInModal property to true which results in showing
-     * the gas fees from the custom gas modal in the send page.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @returns {void}
-     */
-    useCustomGas: (state) => {
-      state.gasIsSetInModal = true;
-    },
-    /**
-     * Updates the gasIsSetInModal property to false which results in showing
-     * the default gas price/limit fields in the send page.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @returns {void}
-     */
-    useDefaultGas: (state) => {
-      state.gasIsSetInModal = false;
-    },
-    /**
      * Checks for the validity of the draftTransactions selected amount to send
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
@@ -1277,13 +771,11 @@ const slice = createSlice({
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
-        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
-        // than the total price of the transaction inclusive of gas fees.
+        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower than the balance
         case draftTransaction.asset.type === AssetType.native &&
           !isBalanceSufficient({
             amount: draftTransaction.amount.value,
             balance: draftTransaction.asset.balance,
-            gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
           break;
@@ -1329,34 +821,6 @@ const slice = createSlice({
         default:
           draftTransaction.amount.error = null;
       }
-    },
-    /**
-     * Checks if the user has enough funds to cover the cost of gas, always
-     * uses the native currency and does not take into account the amount
-     * being sent. If the user has enough to cover cost of gas but not gas
-     * + amount then the error will be displayed on the amount field.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @returns {void}
-     */
-    validateGasField: (state) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-      const insufficientFunds = !isBalanceSufficient({
-        amount:
-          draftTransaction.asset.type === AssetType.native
-            ? draftTransaction.amount.value
-            : '0x0',
-        balance:
-          draftTransaction.fromAccount?.balance ??
-          state.selectedAccount.balance,
-        gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-      });
-
-      draftTransaction.gas.error = insufficientFunds
-        ? INSUFFICIENT_FUNDS_ERROR
-        : null;
     },
     validateRecipientUserInput: (state, action) => {
       const draftTransaction =
@@ -1421,14 +885,11 @@ const slice = createSlice({
      * transaction is invalid. Please keep this comment updated.
      *
      * case 1: State is invalid when amount field has an error.
-     * case 2: State is invalid when gas field has an error.
-     * case 3: State is invalid when asset field has an error.
-     * case 4: State is invalid if asset type is a token and the token details
+     * case 2: State is invalid when asset field has an error.
+     * case 3: State is invalid if asset type is a token and the token details
      *  are unknown.
-     * case 5: State is invalid if no recipient has been added.
-     * case 6: State is invalid if the send state is uninitialized.
-     * case 7: State is invalid if gas estimates are loading.
-     * case 8: State is invalid if gasLimit is less than the gasLimitMinimum.
+     * case 4: State is invalid if no recipient has been added.
+     * case 5: State is invalid if the send state is uninitialized.
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
@@ -1445,12 +906,6 @@ const slice = createSlice({
           case Boolean(draftTransaction.amount.error):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Amount is in error ${draftTransaction.amount.error}`,
-            });
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
-          case Boolean(draftTransaction.gas.error):
-            slice.caseReducers.addHistoryEntry(state, {
-              payload: `Gas is in error ${draftTransaction.gas.error}`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
@@ -1477,21 +932,6 @@ const slice = createSlice({
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Form is invalid because stage is INACTIVE`,
             });
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
-          case state.gasEstimateIsLoading:
-            slice.caseReducers.addHistoryEntry(state, {
-              payload: `Form is invalid because gasEstimateIsLoading`,
-            });
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
-          case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
-            new BigNumber(state.gasLimitMinimum),
-          ):
-            slice.caseReducers.addHistoryEntry(state, {
-              payload: `Form is invalid because ${draftTransaction.gas.gasLimit} is lessThan ${state.gasLimitMinimum}`,
-            });
-
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           case draftTransaction.recipient.warning === 'loading':
@@ -1541,7 +981,6 @@ const slice = createSlice({
               draftTransaction.asset.balance = action.payload.account.balance;
             }
             slice.caseReducers.validateAmountField(state);
-            slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
           }
         }
@@ -1561,47 +1000,6 @@ const slice = createSlice({
             addressBook[draftTransaction.recipient.address].name;
         }
       })
-      .addCase(computeEstimatedGasLimit.pending, (state) => {
-        // When we begin to fetch gasLimit we should indicate we are loading
-        // a gas estimate.
-        state.gasEstimateIsLoading = true;
-      })
-      .addCase(computeEstimatedGasLimit.fulfilled, (state, action) => {
-        // When we receive a new gasLimit from the computeEstimatedGasLimit
-        // thunk we need to update our gasLimit in the slice. We call into the
-        // caseReducer updateGasLimit to tap into the appropriate follow up
-        // checks and gasTotal calculation. First set gasEstimateIsLoading to
-        // false.
-        state.gasEstimateIsLoading = false;
-        if (action.payload?.gasLimit) {
-          slice.caseReducers.updateGasLimit(state, {
-            payload: action.payload.gasLimit,
-          });
-        }
-        if (action.payload?.gasTotalForLayer1) {
-          slice.caseReducers.updateLayer1Fees(state, {
-            payload: action.payload.gasTotalForLayer1,
-          });
-        }
-      })
-      .addCase(computeEstimatedGasLimit.rejected, (state) => {
-        // If gas estimation fails, we should set the loading state to false,
-        // because it is no longer loading
-        state.gasEstimateIsLoading = false;
-      })
-      .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
-        // When the gasFeeController updates its gas fee estimates we need to
-        // update and validate state based on those new values
-        slice.caseReducers.updateGasFeeEstimates(state, {
-          payload: action.payload,
-        });
-      })
-      .addCase(initializeSendState.pending, (state) => {
-        // when we begin initializing state, which can happen when switching
-        // chains even after loading the send flow, we set gasEstimateIsLoading
-        // as initialization will trigger a fetch for gasPrice estimates.
-        state.gasEstimateIsLoading = true;
-      })
       .addCase(initializeSendState.fulfilled, (state, action) => {
         // writes the computed initialized state values into the slice and then
         // calculates slice validity using the caseReducers.
@@ -1611,8 +1009,6 @@ const slice = createSlice({
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
         if (draftTransaction) {
-          draftTransaction.gas.gasLimit = action.payload.gasLimit;
-          draftTransaction.gas.gasTotal = action.payload.gasTotal;
           if (action.payload.chainHasChanged) {
             // If the state was reinitialized as a result of the user changing
             // the network from the network dropdown, then the selected asset is
@@ -1624,16 +1020,6 @@ const slice = createSlice({
               state.selectedAccount.balance;
             draftTransaction.asset.details = null;
           }
-        }
-        slice.caseReducers.updateGasFeeEstimates(state, {
-          payload: {
-            gasFeeEstimates: action.payload.gasFeeEstimates,
-            gasEstimateType: action.payload.gasEstimateType,
-          },
-        });
-        state.gasEstimatePollToken = action.payload.gasEstimatePollToken;
-        if (action.payload.gasEstimatePollToken) {
-          state.gasEstimateIsLoading = false;
         }
         if (state.stage !== SEND_STAGES.INACTIVE) {
           slice.caseReducers.validateRecipientUserInput(state, {
@@ -1649,7 +1035,6 @@ const slice = createSlice({
           slice.caseReducers.updateAmountToMax(state);
         }
         slice.caseReducers.validateAmountField(state);
-        slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
       .addCase(SELECTED_ACCOUNT_CHANGED, (state, action) => {
@@ -1686,7 +1071,6 @@ const slice = createSlice({
             }
 
             slice.caseReducers.validateAmountField(state);
-            slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
           }
         }
@@ -1724,22 +1108,13 @@ const { actions, reducer } = slice;
 export default reducer;
 
 const {
-  useDefaultGas,
-  useCustomGas,
-  updateGasLimit,
   validateRecipientUserInput,
   updateRecipientSearchMode,
   addHistoryEntry,
   acknowledgeRecipientWarning,
 } = actions;
 
-export {
-  useDefaultGas,
-  useCustomGas,
-  updateGasLimit,
-  addHistoryEntry,
-  acknowledgeRecipientWarning,
-};
+export { addHistoryEntry, acknowledgeRecipientWarning };
 
 // Action Creators
 
@@ -1790,11 +1165,6 @@ export function editExistingTransaction(assetType, transactionId) {
           ...draftTransactionInitialState,
           id: transactionId,
           fromAccount: account,
-          gas: {
-            ...draftTransactionInitialState.gas,
-            gasLimit: transaction.txParams.gas,
-            gasPrice: transaction.txParams.gasPrice,
-          },
           userInputHexData: transaction.txParams.data,
           recipient: {
             ...draftTransactionInitialState.recipient,
@@ -1832,11 +1202,6 @@ export function editExistingTransaction(assetType, transactionId) {
           ...draftTransactionInitialState,
           id: transactionId,
           fromAccount: account,
-          gas: {
-            ...draftTransactionInitialState.gas,
-            gasLimit: transaction.txParams.gas,
-            gasPrice: transaction.txParams.gasPrice,
-          },
           userInputHexData: transaction.txParams.data,
           recipient: {
             ...draftTransactionInitialState.recipient,
@@ -1878,35 +1243,7 @@ export function editExistingTransaction(assetType, transactionId) {
 }
 
 /**
- * This method is a temporary placeholder to support the old UI in both the
- * gas modal and the send flow. Soon we won't need to modify gasPrice from the
- * send flow based on user input, it'll just be a shallow copy of the current
- * estimate. This method is necessary because the internal structure of this
- * slice has been changed such that it is agnostic to transaction envelope
- * type, and this method calls into the new structure in the appropriate way.
- *
- * @deprecated - don't extend the usage of this temporary method
- * @param {string} gasPrice - new gas price in hex wei
- * @returns {ThunkAction<void>}
- */
-export function updateGasPrice(gasPrice) {
-  return (dispatch) => {
-    dispatch(
-      addHistoryEntry(`sendFlow - user set legacy gasPrice to ${gasPrice}`),
-    );
-    dispatch(
-      actions.updateGasFees({
-        gasPrice,
-        transactionType: TransactionEnvelopeType.legacy,
-        manuallyEdited: true,
-      }),
-    );
-  };
-}
-
-/**
- * Updates the recipient in state based on the input provided, and then will
- * recompute gas limit when sending a TOKEN asset type. Changing the recipient
+ * Updates the recipient in state based on the input provided. Changing the recipient
  * address results in hex data changing because the recipient address is
  * encoded in the data instead of being in the 'to' field. The to field in a
  * token send will always be the token contract address.
@@ -1934,7 +1271,6 @@ export function updateRecipient({ address, nickname }) {
         nickname: nickname || nicknameFromAddressBookEntryOrAccountName,
       }),
     );
-    await dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -2008,8 +1344,6 @@ export function updateRecipientUserInput(userInput) {
 
 /**
  * Updates the amount the user intends to send and performs side effects.
- * 1. If the current mode is MAX change to INPUT
- * 2. If sending a token, recompute the gasLimit estimate
  *
  * @param {string} amount - hex string representing value
  * @returns {ThunkAction<void>}
@@ -2051,7 +1385,6 @@ export function updateSendAmount(amount) {
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    await dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -2064,11 +1397,10 @@ export function updateSendAmount(amount) {
  * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
- * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
 export function updateSendAsset(
-  { type, details: providedDetails, skipComputeEstimatedGasLimit },
+  { type, details: providedDetails },
   { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
@@ -2195,17 +1527,13 @@ export function updateSendAsset(
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
-      await dispatch(computeEstimatedGasLimit());
-    }
   };
 }
 
 /**
  * When a user has enabled hex data field in advanced settings they will be
  * able to supply hex data on a transaction. This method updates the user
- * supplied data. Note, when sending native assets this will result in
- * recomputing estimated gasLimit. When sending a ERC20 asset this is not done
+ * supplied data. When sending a ERC20 asset this is not done
  * because the data sent in the transaction will be determined by the asset,
  * recipient and value, NOT what the user has supplied.
  *
@@ -2213,18 +1541,12 @@ export function updateSendAsset(
  * @returns {ThunkAction<void>}
  */
 export function updateSendHexData(hexData) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     await dispatch(
       addHistoryEntry(`sendFlow - user added custom hexData ${hexData}`),
     );
 
     await dispatch(actions.updateUserInputHexData(hexData));
-    const state = getState();
-    const draftTransaction =
-      state[name].draftTransactions[state[name].currentTransactionUUID];
-    if (draftTransaction.asset.type === AssetType.native) {
-      await dispatch(computeEstimatedGasLimit());
-    }
   };
 }
 
@@ -2279,20 +1601,13 @@ export function resetRecipientInput() {
 }
 
 /**
- * Resets the entire send state tree to the initial state. It also disconnects
- * polling from the gas controller if the token is present in state.
+ * Resets the entire send state tree to the initial state.
  *
  * @returns {ThunkAction<void>}
  */
 export function resetSendState() {
-  return async (dispatch, getState) => {
-    const state = getState();
+  return async (dispatch) => {
     dispatch(actions.resetSendState());
-
-    if (state[name].gasEstimatePollToken) {
-      await disconnectGasFeeEstimatePoller(state[name].gasEstimatePollToken);
-      removePollingTokenFromAppState(state[name].gasEstimatePollToken);
-    }
   };
 }
 
@@ -2328,11 +1643,7 @@ export function signTransaction() {
         from: txParams.from,
         to: txParams.to,
         value: txParams.value,
-        gas: unapprovedTx.userEditedGasLimit
-          ? unapprovedTx.txParams.gas
-          : txParams.gas,
       };
-      unapprovedTx.originalGasEstimate = eip1559OnlyTxParamsToUpdate.gas;
       const editingTx = {
         ...unapprovedTx,
         txParams: Object.assign(
@@ -2355,9 +1666,6 @@ export function signTransaction() {
       );
       await dispatch(
         updateEditableParams(draftTransaction.id, editingTx.txParams),
-      );
-      await dispatch(
-        updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
       let transactionType =
@@ -2422,7 +1730,6 @@ export function toggleSendMaxMode() {
       await dispatch(actions.updateAmountToMax());
       await dispatch(addHistoryEntry(`sendFlow - user toggled max mode on`));
     }
-    await dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -2453,7 +1760,6 @@ export function startNewDraftTransaction(asset) {
       updateSendAsset({
         type: asset.type ?? AssetType.native,
         details: asset.details,
-        skipComputeEstimatedGasLimit: true,
       }),
     );
 
@@ -2499,81 +1805,6 @@ export function getDraftTransactionExists(state) {
     return false;
   }
   return true;
-}
-
-// Gas selectors
-
-/**
- * Selector that returns the current draft transaction's gasLimit.
- *
- * @type {Selector<?string>}
- */
-export function getGasLimit(state) {
-  return getCurrentDraftTransaction(state).gas?.gasLimit;
-}
-
-/**
- * Selector that returns the current draft transaction's gasPrice.
- *
- * @type {Selector<?string>}
- */
-export function getGasPrice(state) {
-  return getCurrentDraftTransaction(state).gas?.gasPrice;
-}
-
-/**
- * Selector that returns the current draft transaction's gasTotal.
- *
- * @type {Selector<?string>}
- */
-export function getGasTotal(state) {
-  return getCurrentDraftTransaction(state).gas?.gasTotal;
-}
-
-/**
- * Selector that returns the error, if present, for the gas fields.
- *
- * @type {Selector<?string>}
- */
-export function gasFeeIsInError(state) {
-  return Boolean(getCurrentDraftTransaction(state).gas?.error);
-}
-
-/**
- * Selector that returns the minimum gasLimit for the current network.
- *
- * @type {Selector<string>}
- */
-export function getMinimumGasLimitForSend(state) {
-  return state[name].gasLimitMinimum;
-}
-
-/**
- * Selector that returns the current draft transaction's gasLimit.
- *
- * @type {Selector<MapValuesToUnion<SendStateGasModes>>}
- */
-export function getGasInputMode(state) {
-  const isMainnet = getIsMainnet(state);
-  const gasEstimateType = getGasEstimateType(state);
-  const showAdvancedGasFields = getAdvancedInlineGasShown(state);
-  if (state[name].gasIsSetInModal) {
-    return GAS_INPUT_MODES.CUSTOM;
-  }
-  if ((!isMainnet && !process.env.IN_TEST) || showAdvancedGasFields) {
-    return GAS_INPUT_MODES.INLINE;
-  }
-
-  // We get eth_gasPrice estimation if the legacy API fails but we need to
-  // instruct the UI to render the INLINE inputs in this case, only on
-  // mainnet or IN_TEST.
-  if (
-    (isMainnet || process.env.IN_TEST) &&
-    gasEstimateType === GasEstimateTypes.ethGasPrice
-  ) {
-    return GAS_INPUT_MODES.INLINE;
-  }
-  return GAS_INPUT_MODES.BASIC;
 }
 
 // Asset Selectors
@@ -2626,18 +1857,6 @@ export function getAssetError(state) {
  */
 export function getSendAmount(state) {
   return getCurrentDraftTransaction(state).amount?.value;
-}
-
-/**
- * Selector that returns true if the user has enough native asset balance to
- * cover the cost of the transaction.
- *
- * @type {Selector<boolean>}
- */
-export function getIsBalanceInsufficient(state) {
-  return (
-    getCurrentDraftTransaction(state).gas?.error === INSUFFICIENT_FUNDS_ERROR
-  );
 }
 
 /**
@@ -2743,13 +1962,12 @@ export function getRecipientWarningAcknowledgement(state) {
 // Overall validity and stage selectors
 
 /**
- * Selector that returns the gasFee and amount errors, if they exist.
+ * Selector that returns the amount error, if they exist.
  *
- * @type {Selector<{ gasFee?: string, amount?: string}>}
+ * @type {Selector<{amount?: string}>}
  */
 export function getSendErrors(state) {
   return {
-    gasFee: getCurrentDraftTransaction(state).gas?.error,
     amount: getCurrentDraftTransaction(state).amount?.error,
   };
 }

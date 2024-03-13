@@ -1,5 +1,5 @@
 import { deepClone } from '@metamask/snaps-utils';
-import { ApprovalType, NetworkType } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -616,51 +616,6 @@ describe('Selectors', () => {
         '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.00039345803819379796,
         '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
       });
-    });
-  });
-
-  describe('#checkNetworkOrAccountNotSupports1559', () => {
-    it('returns false if network and account supports EIP-1559', () => {
-      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          keyrings: [
-            {
-              type: KeyringType.ledger,
-              accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-            },
-          ],
-        },
-      });
-      expect(not1559Network).toStrictEqual(false);
-    });
-
-    it('returns true if network does not support EIP-1559', () => {
-      let not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: { 1559: false },
-            },
-          },
-        },
-      });
-      expect(not1559Network).toStrictEqual(true);
-      not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          networksMetadata: {
-            [NetworkType.goerli]: {
-              EIPS: { 1559: false },
-            },
-          },
-        },
-      });
-      expect(not1559Network).toStrictEqual(true);
     });
   });
 

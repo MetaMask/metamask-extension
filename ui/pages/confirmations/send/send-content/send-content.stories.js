@@ -53,22 +53,6 @@ export default {
     contact: {
       control: 'object',
     },
-    noGasPrice: {
-      control: 'boolean',
-    },
-    isEthGasPrice: {
-      control: 'boolean',
-    },
-
-    gasIsExcessive: {
-      control: 'boolean',
-    },
-    networkOrAccountNotSupports1559: {
-      control: 'boolean',
-    },
-    getIsBalanceInsufficient: {
-      control: 'boolean',
-    },
     error: {
       control: 'text',
     },
@@ -102,9 +86,6 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   showHexData: false,
   isOwnedAccount: true,
-  noGasPrice: false,
-  isEthGasPrice: false,
-  gasIsExcessive: false,
   error: 'connecting',
   warning: 'connecting',
   asset: {
@@ -119,8 +100,6 @@ DefaultStory.args = {
     warning: null,
   },
   contact: { name: 'testName' },
-  networkOrAccountNotSupports1559: false,
-  getIsBalanceInsufficient: false,
   to: 'string to',
   assetError: null,
 };
@@ -138,9 +117,6 @@ NftStory.decorators = [(story) => <Provider store={store}>{story()}</Provider>];
 NftStory.args = {
   showHexData: false,
   isOwnedAccount: true,
-  noGasPrice: false,
-  isEthGasPrice: false,
-  gasIsExcessive: false,
   error: 'connecting',
   warning: 'connecting',
   asset: {
@@ -171,8 +147,6 @@ NftStory.args = {
     type: 'NFT',
   },
   contact: { name: 'testName' },
-  networkOrAccountNotSupports1559: false,
-  getIsBalanceInsufficient: false,
   to: 'string to',
   assetError: null,
 };

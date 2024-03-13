@@ -15,7 +15,6 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../../ducks/send';
-import { isCustomPriceExcessive } from '../../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../../ducks/metamask/metamask';
 import { showQrScanner } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -27,14 +26,10 @@ import SendContent from './send-content';
 import SendFooter from './send-footer';
 import DomainInput from './send-content/add-recipient/domain-input';
 
-const sendSliceIsCustomPriceExcessive = (state) =>
-  isCustomPriceExcessive(state, true);
-
 export default function SendTransactionScreen() {
   const history = useHistory();
   const startedNewDraftTransaction = useRef(false);
   const stage = useSelector(getSendStage);
-  const gasIsExcessive = useSelector(sendSliceIsCustomPriceExcessive);
   const isUsingMyAccountsForRecipientSearch = useSelector(
     getIsUsingMyAccountForRecipientSearch,
   );
@@ -98,10 +93,7 @@ export default function SendTransactionScreen() {
   ) {
     content = (
       <>
-        <SendContent
-          showHexData={showHexData}
-          gasIsExcessive={gasIsExcessive}
-        />
+        <SendContent showHexData={showHexData} />
         <SendFooter key="send-footer" history={history} />
       </>
     );

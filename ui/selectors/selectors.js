@@ -71,7 +71,6 @@ import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
   getProviderConfig,
   getConversionRate,
-  isNotEIP1559Network,
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
@@ -189,17 +188,6 @@ export function getCurrentKeyring(state) {
 export function checkNetworkAndAccountSupports1559(state, networkClientId) {
   const networkSupports1559 = isEIP1559Network(state, networkClientId);
   return networkSupports1559;
-}
-
-/**
- * The function returns true if network and account details are fetched and
- * either of them do not support EIP-1559.
- *
- * @param state
- */
-export function checkNetworkOrAccountNotSupports1559(state) {
-  const networkNotSupports1559 = isNotEIP1559Network(state);
-  return networkNotSupports1559;
 }
 
 /**
