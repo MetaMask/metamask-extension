@@ -50,7 +50,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     getTargetSubjectMetadata(state, snapId),
   );
 
-  const { name: snapName } = useSelector((state) =>
+  const { name: snapName, description } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
@@ -228,7 +228,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             boxProps={{ marginTop: 4 }}
           >
             <ShowMore>
-              <Text>{snap?.manifest.description}</Text>
+              <Text>{description}</Text>
             </ShowMore>
           </SnapDelineator>
         </Box>

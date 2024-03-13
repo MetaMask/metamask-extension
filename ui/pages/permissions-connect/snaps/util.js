@@ -7,7 +7,7 @@ export function getSnapInstallWarnings(permissions, t, snapName) {
         t,
         permissionName,
         permissionValue,
-        snapName,
+        subjectName: snapName,
       });
 
       return filteredWarnings.concat(

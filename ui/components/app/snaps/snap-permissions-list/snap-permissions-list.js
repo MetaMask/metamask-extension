@@ -15,9 +15,8 @@ export default function SnapPermissionsList({
 
   return (
     <Box paddingTop={2} paddingBottom={2} className="snap-permissions-list">
-      {getWeightedPermissions({ t, permissions, snapName })
-        .map()
-        .map((permission, index) => {
+      {getWeightedPermissions({ t, permissions, subjectName: snapName }).map(
+        (permission, index) => {
           return (
             <PermissionCell
               snapId={snapId}
@@ -32,7 +31,8 @@ export default function SnapPermissionsList({
               showOptions={showOptions}
             />
           );
-        })}
+        },
+      )}
     </Box>
   );
 }

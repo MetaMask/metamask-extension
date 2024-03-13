@@ -37,9 +37,11 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
   return (
     <div className="permissions-connect-permission-list">
-      {getWeightedPermissions({ t, permissions, getSnapName }).map(
-        getDescriptionNode,
-      )}
+      {getWeightedPermissions({
+        t,
+        permissions,
+        getSubjectName: getSnapName,
+      }).map(getDescriptionNode)}
     </div>
   );
 }

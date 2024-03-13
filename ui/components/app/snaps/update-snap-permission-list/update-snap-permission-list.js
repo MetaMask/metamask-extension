@@ -21,23 +21,25 @@ export default function UpdateSnapPermissionList({
 
   return (
     <Box paddingTop={1}>
-      {getWeightedPermissions({ t, permissions: newPermissions, snapName }).map(
-        (permission, index) => (
-          <PermissionCell
-            permissionName={permission.permissionName}
-            title={permission.label}
-            description={permission.description}
-            weight={permission.weight}
-            avatarIcon={permission.leftIcon}
-            dateApproved={permission?.permissionValue?.date}
-            key={`${permission.permissionName}-${index}`}
-          />
-        ),
-      )}
+      {getWeightedPermissions({
+        t,
+        permissions: newPermissions,
+        subjectName: snapName,
+      }).map((permission, index) => (
+        <PermissionCell
+          permissionName={permission.permissionName}
+          title={permission.label}
+          description={permission.description}
+          weight={permission.weight}
+          avatarIcon={permission.leftIcon}
+          dateApproved={permission?.permissionValue?.date}
+          key={`${permission.permissionName}-${index}`}
+        />
+      ))}
       {getWeightedPermissions({
         t,
         permissions: revokedPermissions,
-        snapName,
+        subjectName: snapName,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}
@@ -53,7 +55,7 @@ export default function UpdateSnapPermissionList({
       {getWeightedPermissions({
         t,
         permissions: approvedPermissions,
-        snapName,
+        subjectName: snapName,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}
