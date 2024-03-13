@@ -1,6 +1,6 @@
 type ActionType = {
   type: string;
-  propsToUpdate?: Record<string, unknown> | undefined;
+  currentConfirmation?: Record<string, unknown> | undefined;
 };
 
 const createActionType = (action: string): string =>
@@ -16,29 +16,23 @@ const initState = {
 
 export default function confirmReducer(
   state = initState,
-  action: ActionType = { type: '', propsToUpdate: {} },
+  action: ActionType = { type: '' },
 ) {
   switch (action.type) {
-    case UPDATE_CURRENT_CONFIRMATION: {
-      const currentConfirmation = state.currentConfirmation || {};
-
+    case UPDATE_CURRENT_CONFIRMATION:
       return {
-        currentConfirmation: {
-          ...currentConfirmation,
-          ...action.propsToUpdate,
-        },
+        currentConfirmation: action.currentConfirmation,
       };
-    }
     default:
       return state;
   }
 }
 
 export function updateCurrentConfirmation(
-  propsToUpdate: Record<string, unknown> | undefined,
+  currentConfirmation: Record<string, unknown> | undefined,
 ) {
   return {
     type: UPDATE_CURRENT_CONFIRMATION,
-    propsToUpdate,
+    currentConfirmation,
   };
 }

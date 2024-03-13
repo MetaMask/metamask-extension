@@ -18,7 +18,8 @@ import {
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
-import { updateCurrentConfirmation } from '../../../../../ducks/confirm/confirm';
+// todo
+// import { updateCurrentConfirmation } from '../../../../../ducks/confirm/confirm';
 
 interface ContentProps extends StyleUtilityProps {
   /**
@@ -29,7 +30,8 @@ interface ContentProps extends StyleUtilityProps {
 
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
+  // todo
+  // const dispatch = useDispatch();
 
   const {
     hasScrolledToBottom,
@@ -41,11 +43,12 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   } = useScrollRequired([]);
 
   useEffect(() => {
-    dispatch(
-      updateCurrentConfirmation({
-        isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
-      }),
-    );
+    // todo: create new action to store prop on confirm
+    // dispatch(
+    //   updateCurrentConfirmation({
+    //     isScrollToBottomNeeded: isScrollable && !hasScrolledToBottom,
+    //   }),
+    // );
   }, [isScrollable, hasScrolledToBottom]);
 
   return (
