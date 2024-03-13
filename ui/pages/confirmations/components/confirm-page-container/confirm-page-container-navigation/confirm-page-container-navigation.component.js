@@ -23,9 +23,8 @@ const ConfirmPageContainerNavigation = () => {
   const unapprovedEncryptionPublicKeyMsgs = useSelector(
     unapprovedEncryptionPublicKeyMsgsSelector,
   );
-  const unconfirmedTransactions = useSelector(
-    unconfirmedTransactionsListSelector,
-  );
+  const unconfirmedTransactions =
+    useSelector(unconfirmedTransactionsListSelector) ?? [];
 
   const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs || {});
   const enumUnapprovedEncryptMsgsKey = Object.keys(
