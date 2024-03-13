@@ -41,6 +41,9 @@
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
+  "localeMessages": {
+    "currentLocale": "en"
+  },
   "metamask": {
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -50,6 +53,38 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "gasFeeEstimatesByChainId": {
+      "0x5": {
+        "gasEstimateType": "fee-market",
+        "gasFeeEstimates": {
+          "low": {
+            "minWaitTimeEstimate": 180000,
+            "maxWaitTimeEstimate": 300000,
+            "suggestedMaxPriorityFeePerGas": "3",
+            "suggestedMaxFeePerGas": "53"
+          },
+          "medium": {
+            "minWaitTimeEstimate": 15000,
+            "maxWaitTimeEstimate": 60000,
+            "suggestedMaxPriorityFeePerGas": "7",
+            "suggestedMaxFeePerGas": "70"
+          },
+          "high": {
+            "minWaitTimeEstimate": 0,
+            "maxWaitTimeEstimate": 15000,
+            "suggestedMaxPriorityFeePerGas": "10",
+            "suggestedMaxFeePerGas": "100"
+          },
+          "estimatedBaseFee": "50",
+          "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+          "baseFeeTrend": "up",
+          "latestPriorityFeeRange": ["1", "40"],
+          "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+          "priorityFeeTrend": "down",
+          "networkCongestion": 0.90625
+        }
+      }
+    },
     "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
