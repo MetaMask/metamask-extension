@@ -1,3 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck `redux-thunk` and `@reduxjs/toolkit` are not compatible with
+// TypeScript 5.3.3. We can't update them because we rely on an old version of
+// @reduxjs/toolkit to be patched by our patch files. The patch is 6000+ lines.
+// I don't want to try to figure that one out.
 import { ReactFragment } from 'react';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
@@ -27,6 +32,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
+import { InterfaceState } from '@metamask/snaps-sdk';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -51,6 +57,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
+  getSelectedNetworkClientId,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -2661,6 +2668,16 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+/**
+ * An action creator for display a warning to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @deprecated This way of displaying a warning is confusing for users and
+ * should no longer be used.
+ * @param payload - The warning to show.
+ * @returns The action to display the warning.
+ */
 export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
     return {
@@ -3222,7 +3239,7 @@ export function detectNfts(): ThunkAction<
 }
 
 export function setAdvancedGasFee(
-  val: { chainId: Hex; maxBaseFee?: Hex; priorityFee?: Hex } | null,
+  val: { chainId: Hex; maxBaseFee?: string; priorityFee?: string } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -4071,10 +4088,12 @@ export function getNextNonce(): ThunkAction<
 > {
   return async (dispatch, getState) => {
     const { address } = getSelectedInternalAccount(getState());
+    const networkClientId = getSelectedNetworkClientId(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
         address,
+        networkClientId,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -4555,6 +4574,10 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
+export function hidePermissionsTour() {
+  return submitRequestToBackground('setShowPermissionsTour', [false]);
+}
+
 export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
@@ -4777,6 +4800,38 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       [shown],
     );
   };
+}
+
+/**
+ * Update the state of a given Snap interface.
+ *
+ * @param id - The Snap interface ID.
+ * @param state - The interface state.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function updateInterfaceState(
+  id: string,
+  state: InterfaceState,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('updateInterfaceState', [id, state]);
+    await forceUpdateMetamaskState(dispatch);
+  }) as any;
+}
+
+/**
+ * Delete the Snap interface from state.
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function deleteInterface(
+  id: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('deleteInterface', [id]);
+    await forceUpdateMetamaskState(dispatch);
+  }) as any;
 }
 ///: END:ONLY_INCLUDE_IF
 

@@ -27,6 +27,9 @@ import {
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { useSignatureInsights } from '../../../hooks/snaps/useSignatureInsights';
+///: END:ONLY_INCLUDE_IF
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getSendTo } from '../../../ducks/send';
 
@@ -200,6 +203,10 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedTypedMessages,
   ]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const { warnings } = useSignatureInsights({ txData });
+  ///: END:ONLY_INCLUDE_IF
+
   const resolvedSecurityAlertResponse =
     signatureSecurityAlertResponses?.[
       txData.securityAlertResponse?.securityAlertId
@@ -229,6 +236,9 @@ const ConfirmTxScreen = ({ match }) => {
       blockGasLimit={blockGasLimit}
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       selectedAccount={selectedAccount}
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      warnings={warnings}
       ///: END:ONLY_INCLUDE_IF
     />
   );

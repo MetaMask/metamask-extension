@@ -218,20 +218,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
-  const initialTxData = getFullTxData(
+  const fullTxData = getFullTxData(
     state,
     txId,
     TransactionStatus.unapproved,
     customTxParamsData,
+    hexTransactionAmount,
   );
-
-  const fullTxData = {
-    ...initialTxData,
-    txParams: {
-      ...txData.txParams,
-      value: hexTransactionAmount,
-    },
-  };
 
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
@@ -268,6 +261,8 @@ const mapStateToProps = (state, ownProps) => {
     getApprovedAndSignedTransactions(state).length,
   );
 
+  const isUserOpContractDeployError =
+    fullTxData.isUserOperation && type === TransactionType.deployContract;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isSigningOrSubmitting = false;
   ///: END:ONLY_INCLUDE_IF
@@ -325,6 +320,7 @@ const mapStateToProps = (state, ownProps) => {
     keyringForAccount: keyring,
     isUsingPaymaster,
     isSigningOrSubmitting,
+    isUserOpContractDeployError,
     useMaxValue,
     maxValue,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

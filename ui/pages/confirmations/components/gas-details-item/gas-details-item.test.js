@@ -32,7 +32,8 @@ const render = ({ contextProps } = {}) => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      gasFeeEstimates:
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
       ...contextProps,
     },
   });
@@ -42,8 +43,6 @@ const render = ({ contextProps } = {}) => {
       transaction={{
         txParams: {
           gas: '0x5208',
-          maxFeePerGas: '0x59682f10',
-          maxPriorityFeePerGas: '0x59682f00',
         },
         userFeeLevel: 'medium',
       }}
@@ -134,7 +133,7 @@ describe('GasDetailsItem', () => {
   it('should render gas fee details', async () => {
     render();
     await waitFor(() => {
-      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByTitle('0.00147 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
@@ -154,7 +153,7 @@ describe('GasDetailsItem', () => {
       },
     });
     await waitFor(() => {
-      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByTitle('0.001113 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
@@ -173,7 +172,7 @@ describe('GasDetailsItem', () => {
       },
     });
     await waitFor(() => {
-      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByTitle('0.001113 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });

@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "如果您批准此请求，则有人可以窃取您列于Blur上的资产。"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "由于出现错误，安全提供程序无法验证此请求。请谨慎操作。"
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "替换托管代币"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "在 $1 应用程序中批准交易。一旦执行了所有所需的托管批准，交易即完成。在您的 $1 应用程序中查看状态。"
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "通知"
   },
-  "notifications10ActionText": {
-    "message": "在设置中访问",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "以太坊主网、Polygon、BSC 和 Avalanche 网络目前提供经改进的代币检测。 即将推出更多！"
-  },
-  "notifications10DescriptionThree": {
-    "message": "代币检测功能目前默认关闭。您可从设置中启用它。"
-  },
-  "notifications10DescriptionTwo": {
-    "message": "我们从第三方代币列表中获取代币。将自动检测在两个以上代币列表中列出的代币。"
-  },
-  "notifications10Title": {
-    "message": "经改进的代币检测现已推出"
-  },
-  "notifications11Description": {
-    "message": "代币可由任何人创建，而且名称可以重复。如您看到一个您不信任或未与之交互的代币出现——那么，不信任它会更安全。"
-  },
-  "notifications11Title": {
-    "message": "欺诈和安全风险"
-  },
-  "notifications12ActionText": {
-    "message": "启用黑暗模式"
-  },
-  "notifications12Description": {
-    "message": "扩展程序的深色模式终于来了！若要开启，请前往“设置 -> 实验项”，然后选择一个显示选项：浅色、深色、系统。"
-  },
-  "notifications12Title": {
-    "message": "何时启用黑暗模式？现在启用黑暗模式！ 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "显示自定义网络列表"
-  },
-  "notifications13Description": {
-    "message": "您现在可以轻松添加以下热门自定义网络：Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、Optimism、Palm和Polygon！如需启用此功能，请转到“设置 -> 实验项”，然后打开“显示自定义网络列表”！",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "添加热门网络"
-  },
-  "notifications14ActionText": {
-    "message": "显示备份设置"
-  },
-  "notifications14Description": {
-    "message": "我们将在10月初弃用3Box数据功能。要手动备份和恢复您的钱包，请使用高级设置中的“立即备份”按钮。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "弃用3Box"
-  },
-  "notifications15Description": {
-    "message": "您无需采取任何行动，请如常地使用您的钱包。请提防可能藉由合并进行欺诈。",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "以太坊合并来了！"
-  },
-  "notifications18ActionText": {
-    "message": "启用安全提醒"
-  },
-  "notifications18DescriptionOne": {
-    "message": "当您收到可能是恶意的请求时，第三方会向您发出提醒。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "在批准任何请求之前，均必须自行作出审慎调查。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea是这项功能的第一家提供商。即将有更多提供商加入！",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "使用安全提醒以确保安全"
-  },
-  "notifications19ActionText": {
-    "message": "启用NFT自动检测"
-  },
-  "notifications19DescriptionOne": {
-    "message": "有两种开始方式：",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "我们目前只支持ERC-721。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "手动添加NFT，或在“设置” > “实验”中开启“NFT自动检测”。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "以前所未有的方式查看您的NFT"
-  },
-  "notifications1Description": {
-    "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "可以在移动设备上交换了！",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "了解更多",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Ledger 和 Firefox 用户遇到连接问题",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "试试看"
-  },
-  "notifications21Description": {
-    "message": "我们已更新 MetaMask 扩展程序中的 Swaps，使其使用起来更加轻松快捷。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "全新推出已更新的 Swaps！"
-  },
-  "notifications22ActionText": {
-    "message": "明白了"
-  },
-  "notifications22Description": {
-    "message": "💡 只需点击全局菜单或账户菜单即可找到！"
-  },
-  "notifications22Title": {
-    "message": "正在查找您的账户详细信息或区块资源管理器URL吗？"
-  },
-  "notifications23ActionText": {
-    "message": "启用安全提醒"
-  },
-  "notifications23DescriptionOne": {
-    "message": "以太坊主网上 Blockaid 提供的安全提醒可以帮助您避开已知的欺诈，同时仍能保护自己的隐私。"
-  },
-  "notifications23DescriptionTwo": {
-    "message": "在批准请求之前，请务必自行作出审慎调查。"
-  },
-  "notifications23Title": {
-    "message": "使用安全提醒以确保安全"
-  },
   "notifications24ActionText": {
     "message": "知道了"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "各网络的高级燃料费"
-  },
-  "notifications3ActionText": {
-    "message": "了解更多",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "及时了解 MetaMask 安全最佳实践，并从 MetaMask 官方支持部门获取最新的安全提示。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "保持安全",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "开始交换",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "在您的钱包内获取最优惠的代币交换价格。MetaMask 现在将您连接到 Binance 智能链上的多个去中心化交易所聚合器和专业做市商。",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "在 Binance 智能链上交换",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "您的“Seed Phrase”现在被称为“账户私钥助记词”(Secret Recovery Phrase)。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "从 Chrome 版本91开始，启用我们的 Ledger 支持 (U2F 通用第二因素) 的 API 不再支持硬件钱包。MetaMask 实施了新的 Ledger Live 支持，允许您继续通过 Ledger Live 桌面应用程序连接到您的 Ledger 设备。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "在 Metamask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "您可以通过点击“设置 > 高级> 使用 Ledger Live”来启用 Ledger Live 支持。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Chrome 用户的 Ledger 支持更新",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 包括使用 Ledger 设备时对 EIP-1559 交易的新支持。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "要在以太坊主网上完成交易，请确保您的 Ledger 设备拥有最新的固件。",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger 固件更新",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "转到“设置 > 高级”",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Ledger 连接改进",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "当确认智能合约交易时，我们现在为您提供更多关于“数据”选项卡的见解。"
-  },
-  "notifications9DescriptionTwo": {
-    "message": "您现在可以在确认之前更好地了解您的交易详情，并且可以更轻松地添加交易地址到您的地址簿，帮助您做出安全和知情的决定。"
-  },
-  "notifications9Title": {
-    "message": "👓 我们正在使交易更容易阅读。"
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox 不再支持 U2F，因此在 Firefox 上，MetaMask 无法使用 Ledger。请尝试在 Google Chrome 上使用 MetaMask。",
