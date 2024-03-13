@@ -16,7 +16,6 @@ export default class SendContent extends Component {
 
   static propTypes = {
     showHexData: PropTypes.bool,
-    warning: PropTypes.string,
     error: PropTypes.string,
     asset: PropTypes.object,
     assetError: PropTypes.string,
