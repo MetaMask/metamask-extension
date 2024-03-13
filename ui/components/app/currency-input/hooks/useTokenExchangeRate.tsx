@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getTokenExchangeRates } from '../../../../selectors';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 
@@ -27,13 +27,8 @@ export default function useTokenExchangeRate(
       return nativeConversionRate;
     }
 
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, tokenAddress),
-    );
-
     const contractExchangeRate =
-      contractExchangeTokenKey &&
-      contractExchangeRates[contractExchangeTokenKey];
+      contractExchangeRates[toChecksumHexAddress(tokenAddress)];
 
     if (!contractExchangeRate) {
       return undefined;
