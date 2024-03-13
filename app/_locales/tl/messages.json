@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Dahil sa error, hindi na-verify ang kahilingang ito ng tagapagbigay ng seguridad. Magpatuloy nang may pag-iingat."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Palitan ang custodian token"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "Aprubahan ang transaksyon sa $1 app. Kapag naisagawa na ang lahat ng kailangang pahintulot sa kustodiya ang transaksyon ay makukumpleto. Tingnan ang iyong $1 app para sa katayuan."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "Mga Abiso"
   },
-  "notifications10ActionText": {
-    "message": "Bisitahin sa Mga Setting",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Ang pinahusay na pagtukoy ng token ay kasalukuyang magagamit sa Mainnet ng Ethereum, Polygon, BSC, at mga Avalanche network. Marami pang darating!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "NAKA-OFF bilang default ang feature na pagtukoy ng token. Maaari mo itong paganahin mula sa Mga Setting."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Kumukuha kami ng mga token mula sa mga listahan ng mga token ng third party. Ang mga token na nakalista sa higit sa dalawang listahan ay awtomatikong matutukoy."
-  },
-  "notifications10Title": {
-    "message": "Narito ang pinahusay na pagtukoy ng token"
-  },
-  "notifications11Description": {
-    "message": "Ang mga token ay maaaring gawin ng sinuman at maaaring magkaroon ng mga kaparehong pangalan. Kung makakita ka ng token na lumalabas na hindi mo pinagkakatiwalaan o hindi ka nakikipag-ugnayan - mas ligtas na huwag magtiwala dito."
-  },
-  "notifications11Title": {
-    "message": "Mga panganib sa panloloko at seguridad"
-  },
-  "notifications12ActionText": {
-    "message": "Paganahin ang dark mode"
-  },
-  "notifications12Description": {
-    "message": "Nandito na sa wakas ang dark mode sa Extension! Upang i-on ito, pumunta sa Mga Setting -> Eksperimental at pumili ng isa sa mga opsyon sa pagpapakita: Light, Dark, System."
-  },
-  "notifications12Title": {
-    "message": "Wen dark mode? Ngayon dark mode! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Ipakita ang listahan ng custom na network"
-  },
-  "notifications13Description": {
-    "message": "Madali mo na ngayong maidadagdag ang mga sumusunod na sikat na custom na network: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm at Polygon! Para paganahin ang feature na ito, pumunta sa Mga Setting -> Eksperimental at i-on ang \"Ipakita ang listahan ng custom na network\"!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Magdagdag ng mga Sikat na Network"
-  },
-  "notifications14ActionText": {
-    "message": "Ipakita ang mga backup na setting"
-  },
-  "notifications14Description": {
-    "message": "Inaalis na namin ang aming feature na 3Box data sa unang bahagi ng Oktubre. Upang i-backup at ibalik nang manu-mano ang iyong wallet, gamitin ang button na \"I-backup ngayon\" sa Mga Advanced na Setting.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Pagtutol sa 3Box"
-  },
-  "notifications15Description": {
-    "message": "Walang kinakailangang aksyon mula sa iyo, kaya patuloy na gamitin ang iyong wallet gaya ng dati. Magkaroon ng kamalayan sa mga potensyal na panloloko sa paligid ng Merge.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Narito na ang Ethereum Merge!"
-  },
-  "notifications18ActionText": {
-    "message": "Paganahin ang mga alerto sa seguridad"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Makakuha ng mga alerto mula sa mga third party kapag maaaring nakatanggap ka ng mapaminsalang kahilingan.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Laging siguraduhin na gawin ang iyong sariling makatwirang pagsusuri bago aprubahan ang anumang mga kahilingan.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "Ang OpenSea ay ang unang provider para sa feature na ito. Marami pang mga provider ang paparating!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Manatiling ligtas sa mga alerto sa seguridad"
-  },
-  "notifications19ActionText": {
-    "message": "Paganahin ang awtomatikong pagtuklas ng NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Dalawang paraan upang makapagsimula:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Sinusuportahan lang namin ang ERC-721 sa ngayon.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Manu-manong idagdag ang iyong mga NFT, o i-on ang awtomatikong pagtuklas ng NFT sa Mga Setting > Eksperimental.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Tingnan ang iyong mga NFT nang hindi tulad ng dati"
-  },
-  "notifications1Description": {
-    "message": "Ang mga user ng MetaMask Mobile ay maaari na ngayong mag-swap ng mga token sa loob ng kanilang mobile wallet. I-scan ang QR code para makuha ang mobile app at magsimulang mag-swap.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Narito na ang pag-swap sa mobile!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Matuto pa",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Ang mga User ng Ledger at Firefox ay Nakakaranas ng Isyu sa Koneksyon",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Subukan ito"
-  },
-  "notifications21Description": {
-    "message": "In-update namin ang mga Swap sa extension ng MetaMask para maging mas madali at mas mabilis na gamitin.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Ipinapakilala ang bago at ni-refresh na mga Swap!"
-  },
-  "notifications22ActionText": {
-    "message": "Nakuha ko"
-  },
-  "notifications22Description": {
-    "message": "💡 I-click lang ang pandaigdigang menu o account menu para mahanap ang mga iyon!"
-  },
-  "notifications22Title": {
-    "message": "Naghahanap ka ba ng mga detalye ng account o ng URL ng block explorer?"
-  },
-  "notifications23ActionText": {
-    "message": "Pinagagana ang mga alerto sa seguridad"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Iwasan ang mga kilalang scam habang pinapanatili pa rin ang iyong pagkapribado gamit ang mga alerto sa seguridad na pinatatakbo ng Blockaid sa Ethereum Mainnet."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang mga kahilingan."
-  },
-  "notifications23Title": {
-    "message": "Manatiling ligtas gamit ang mga alerto sa seguridad"
-  },
   "notifications24ActionText": {
     "message": "Nakuha ko"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Paunang gas fee ayon sa network"
-  },
-  "notifications3ActionText": {
-    "message": "Magbasa pa",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Manatiling may alam sa pinakamagagandang kasanayan sa seguridad ng MetaMask at kunin ang mga pinakabagong tip ng seguridad mula sa opisyal na suporta sa MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Manatiling ligtas",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Simulan ang pag-swap",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Makuha ang pinakamagagandang presyo sa pag-swap ng token sa loob ng iyong wallet. Ikinokonekta ka na ngayon ng MetaMask sa maraming decentralized exchange aggregator at mga propesyonal na market maker sa Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Mag-swap sa Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Ang iyong \"Pariralang Binhi\" ay tinatawag na ngayon na iyong \"Lihim na Parirala sa Pagbawi.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Simula sa Chrome version 91, ang API na nagpapagana ng aming Ledger support (U2F) ay hindi na sumusuporta sa mga hardware wallet. Ang MetaMask ay nagpatupad ng bagong Ledger Live support na nagpapahintulot sa iyo na magpatuloy na kumonekta sa iyong Ledger device sa pamamagitan ng Ledger Live desktop app.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Kapag ginagamit ang iyong Ledger account sa MetaMask, ang bagong tab ay magbubukas at hihilingin sa iyo ng buksan ang Ledger Live app.  Kapag nabuksan na ang app, hihilingin sa iyo na payagan ang koneksyon ng WebSocket sa iyong MetaMask account.  Ganun lang!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Maaari mong paganahin ang Ledger Live support sa pamamagitan ng pag-click sa Mga Setting > Advanced > Gamitin ang Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Update ng Ledger Support para sa mga User ng Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "Isinama ng MetaMask v10.1.0 ang bagong support para sa mga transaksyong EIP-1559 kapag gumagamit ng mga Ledger device.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Para makumpleto ang mga transaksyon sa Mainnet ng Ethereum, siguruhin na ang iyong Ledger device ay may pinakabagong firmware.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Update ng Ledger firmware",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Magpunta sa Mga Advanced Setting",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Pagpapabuti ng koneksyon ng ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Binibigyan namin kayo ngayon ng mas maraming kaalaman sa tab na 'Data' kapag kinukumpirma ang mga transaksyon ng smart na kontrata."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Mas maiintindihan mo na ngayon ang mga detalye ng transaksyon bago kumpirmahin, at mas madaling makakapagdagdag ng mga address ng transaksyon sa iyong address book, na nakakatulong sa iyo na maging ligtas at gumawa ng matalinong mga desisyon."
-  },
-  "notifications9Title": {
-    "message": "👓 Pinadadali naming mabasa ang mga transaksyon."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Hindi na sinusuportahan ng Firefox ang U2F, kaya ang Ledger ay hindi gagana sa MetaMask sa Firefox. Subukan ang MetaMask sa Google Chrome.",

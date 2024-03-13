@@ -34,6 +34,7 @@
     "showTestnetMessageInDropdown": true,
     "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
+    "showPermissionsTour": true,
     "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -70,7 +71,10 @@
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
-  "EnsController": { "ensResolutionsByAddress": "object" },
+  "EnsController": {
+    "ensEntries": "object",
+    "ensResolutionsByAddress": "object"
+  },
   "GasFeeController": {
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
@@ -129,7 +133,6 @@
   },
   "PPOMController": {
     "storageMetadata": {},
-    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
@@ -182,8 +185,7 @@
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean"
+    "domains": "object"
   },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -205,6 +207,7 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
+  "SnapInterfaceController": "object",
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
@@ -257,5 +260,7 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": { "userOperations": "object" }
+  "UserOperationController": {
+    "userOperations": "object"
+  }
 }

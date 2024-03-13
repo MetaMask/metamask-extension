@@ -45,7 +45,10 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../contract-details-modal';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
+import {
+  BlockaidResultType,
+  SECURITY_PROVIDER_MESSAGE_SEVERITY,
+} from '../../../../../shared/constants/security-provider';
 
 import {
   TextAlign,
@@ -79,10 +82,18 @@ import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMes
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
+///: END:ONLY_INCLUDE_IF
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
-const SignatureRequest = ({ txData }) => {
+const SignatureRequest = ({
+  txData,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  warnings,
+  ///: END:ONLY_INCLUDE_IF
+}) => {
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -121,6 +132,11 @@ const SignatureRequest = ({ txData }) => {
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
+    useState(false);
+  ///: END:ONLY_INCLUDE_IF
+
   useEffect(() => {
     setMessageIsScrollable(
       messageRootRef?.scrollHeight > messageRootRef?.clientHeight,
@@ -139,6 +155,11 @@ const SignatureRequest = ({ txData }) => {
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
   });
+
+  const submitButtonType =
+    txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious
+      ? 'danger-primary'
+      : 'primary';
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -188,160 +209,191 @@ const SignatureRequest = ({ txData }) => {
   } = parseMessage(data);
 
   return (
-    <div className="signature-request">
-      <ConfirmPageContainerNavigation />
-      <div
-        className="request-signature__account"
-        data-testid="request-signature-account"
-      >
-        <SignatureRequestHeader txData={txData} />
-      </div>
-      <div className="signature-request-content">
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            marginLeft={4}
-            marginRight={4}
-            marginBottom={4}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
-          <SecurityProviderBannerMessage
-            securityProviderResponse={txData.securityProviderResponse}
-          />
-        ) : null}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          selectedAccount.address === address ? null : (
-            <Box
-              className="request-signature__mismatch-info"
-              display={Display.Flex}
-              width={BlockSize.Full}
-              padding={4}
-              marginBottom={4}
-              backgroundColor={BackgroundColor.primaryMuted}
-            >
-              <Icon
-                name={IconName.Info}
-                color={IconColor.infoDefault}
-                marginRight={2}
-              />
-              <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textDefault}
-                as="h6"
-              >
-                {t('mismatchAccount', [
-                  shortenAddress(selectedAccount.address),
-                  shortenAddress(address),
-                ])}
-              </Text>
-            </Box>
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
-        <div className="signature-request__origin">
-          <TagUrl
-            label={origin}
-            labelProps={{
-              color: TextColor.textAlternative,
-            }}
-            src={targetSubjectMetadata?.iconUrl}
-          />
+    <>
+      <div className="signature-request">
+        <ConfirmPageContainerNavigation />
+        <div
+          className="request-signature__account"
+          data-testid="request-signature-account"
+        >
+          <SignatureRequestHeader txData={txData} />
         </div>
-        <Text
-          className="signature-request__content__title"
-          variant={TextVariant.headingLg}
-          marginTop={4}
-        >
-          {t('sigRequest')}
-        </Text>
-        <Text
-          className="request-signature__content__subtitle"
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Center}
-          marginLeft={12}
-          marginRight={12}
-          marginTop={4}
-          as="h6"
-        >
-          {t('signatureRequestGuidance')}
-        </Text>
-        {verifyingContract ? (
-          <div>
-            <Button
-              variant={ButtonVariant.Link}
-              onClick={() => setShowContractDetails(true)}
-              className="signature-request-content__verify-contract-details"
-              data-testid="verify-contract-details"
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
-                as="h6"
+        <div className="signature-request-content">
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+            <BlockaidBannerAlert
+              txData={txData}
+              marginLeft={4}
+              marginRight={4}
+              marginBottom={4}
+            />
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+            txData?.securityProviderResponse?.flagAsDangerous !==
+              SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
+          (txData?.securityProviderResponse &&
+            Object.keys(txData.securityProviderResponse).length === 0) ? (
+            <SecurityProviderBannerMessage
+              securityProviderResponse={txData.securityProviderResponse}
+            />
+          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            selectedAccount.address === address ? null : (
+              <Box
+                className="request-signature__mismatch-info"
+                display={Display.Flex}
+                width={BlockSize.Full}
+                padding={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.primaryMuted}
               >
-                {t('verifyContractDetails')}
-              </Text>
-            </Button>
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.infoDefault}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textDefault}
+                  as="h6"
+                >
+                  {t('mismatchAccount', [
+                    shortenAddress(selectedAccount.address),
+                    shortenAddress(address),
+                  ])}
+                </Text>
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
+          <div className="signature-request__origin">
+            <TagUrl
+              label={origin}
+              labelProps={{
+                color: TextColor.textAlternative,
+              }}
+              src={targetSubjectMetadata?.iconUrl}
+            />
+          </div>
+          <Text
+            className="signature-request__content__title"
+            variant={TextVariant.headingLg}
+            marginTop={4}
+          >
+            {t('sigRequest')}
+          </Text>
+          <Text
+            className="request-signature__content__subtitle"
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Center}
+            marginLeft={12}
+            marginRight={12}
+            marginTop={4}
+            as="h6"
+          >
+            {t('signatureRequestGuidance')}
+          </Text>
+          {verifyingContract ? (
+            <div>
+              <Button
+                variant={ButtonVariant.Link}
+                onClick={() => setShowContractDetails(true)}
+                className="signature-request-content__verify-contract-details"
+                data-testid="verify-contract-details"
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.primaryDefault}
+                  as="h6"
+                >
+                  {t('verifyContractDetails')}
+                </Text>
+              </Button>
+            </div>
+          ) : null}
+        </div>
+        {isLedgerWallet ? (
+          <div className="confirm-approve-content__ledger-instruction-wrapper">
+            <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
+        <Message
+          data={sanitizedMessage}
+          onMessageScrolled={() => setHasScrolledMessage(true)}
+          setMessageRootRef={setMessageRootRef}
+          messageRootRef={messageRootRef}
+          messageIsScrollable={messageIsScrollable}
+          primaryType={primaryType}
+        />
+        <Footer
+          cancelAction={onCancel}
+          signAction={() => {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            if (warnings?.length >= 1) {
+              return setIsShowingSigInsightWarnings(true);
+            }
+            ///: END:ONLY_INCLUDE_IF
+            return onSign();
+          }}
+          disabled={
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            Boolean(txData?.custodyId) ||
+            ///: END:ONLY_INCLUDE_IF
+            hardwareWalletRequiresConnection ||
+            (messageIsScrollable && !hasScrolledMessage)
+          }
+          submitButtonType={submitButtonType}
+        />
+        {showContractDetails && (
+          <ContractDetailsModal
+            toAddress={verifyingContract}
+            chainId={chainId}
+            rpcPrefs={rpcPrefs}
+            onClose={() => setShowContractDetails(false)}
+            isContractRequestingSignature
+          />
+        )}
+        {unapprovedMessagesCount > 1 ? (
+          <ButtonLink
+            size={Size.inherit}
+            className="signature-request__reject-all-button"
+            data-testid="signature-request-reject-all"
+            onClick={handleCancelAll}
+          >
+            {t('rejectRequestsN', [unapprovedMessagesCount])}
+          </ButtonLink>
+        ) : null}
       </div>
-      {isLedgerWallet ? (
-        <div className="confirm-approve-content__ledger-instruction-wrapper">
-          <LedgerInstructionField showDataInstruction />
-        </div>
-      ) : null}
-      <Message
-        data={sanitizedMessage}
-        onMessageScrolled={() => setHasScrolledMessage(true)}
-        setMessageRootRef={setMessageRootRef}
-        messageRootRef={messageRootRef}
-        messageIsScrollable={messageIsScrollable}
-        primaryType={primaryType}
-      />
-      <Footer
-        cancelAction={onCancel}
-        signAction={onSign}
-        disabled={
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          Boolean(txData?.custodyId) ||
-          ///: END:ONLY_INCLUDE_IF
-          hardwareWalletRequiresConnection ||
-          (messageIsScrollable && !hasScrolledMessage)
-        }
-      />
-      {showContractDetails && (
-        <ContractDetailsModal
-          toAddress={verifyingContract}
-          chainId={chainId}
-          rpcPrefs={rpcPrefs}
-          onClose={() => setShowContractDetails(false)}
-          isContractRequestingSignature
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      }
+      {isShowingSigInsightWarnings && (
+        <InsightWarnings
+          warnings={warnings}
+          action="signing"
+          origin={origin}
+          onCancel={() => setIsShowingSigInsightWarnings(false)}
+          onSubmit={() => {
+            onSign();
+            setIsShowingSigInsightWarnings(false);
+          }}
         />
       )}
-      {unapprovedMessagesCount > 1 ? (
-        <ButtonLink
-          size={Size.inherit}
-          className="signature-request__reject-all-button"
-          data-testid="signature-request-reject-all"
-          onClick={handleCancelAll}
-        >
-          {t('rejectRequestsN', [unapprovedMessagesCount])}
-        </ButtonLink>
-      ) : null}
-    </div>
+      {
+        ///: END:ONLY_INCLUDE_IF
+      }
+    </>
   );
 };
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  warnings: PropTypes.array,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default SignatureRequest;

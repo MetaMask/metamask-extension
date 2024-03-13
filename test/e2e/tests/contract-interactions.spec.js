@@ -1,17 +1,19 @@
+const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
-  locateAccountBalanceDOM,
   unlockWallet,
   largeDelayMs,
   WINDOW_TITLES,
 } = require('../helpers');
+
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
+
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
@@ -23,7 +25,7 @@ describe('Deploy contract and call contract methods', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry, ganacheServer }) => {
+      async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
@@ -85,7 +87,10 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        const balance = await driver.findElement(
+          '[data-testid="eth-overview__primary-currency"]',
+        );
+        assert.equal(await balance.getText(), '$37,399.05\nUSD');
       },
     );
   });

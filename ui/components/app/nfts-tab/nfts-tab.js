@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -12,10 +12,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { getIsMainnet, getUseNftDetection } from '../../../selectors';
+import {
+  getCurrentNetwork,
+  getIsMainnet,
+  getUseNftDetection,
+} from '../../../selectors';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
@@ -24,8 +27,18 @@ import {
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftsItems from '../nfts-items';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { AssetListConversionButton } from '../../multichain';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+///: END:ONLY_INCLUDE_IF
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -33,6 +46,7 @@ export default function NftsTab() {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
@@ -50,6 +64,23 @@ export default function NftsTab() {
 
   const hasAnyNfts = Object.keys(collections).length > 0;
   const showNftBanner = hasAnyNfts === false;
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentLocale = useSelector(getCurrentLocale);
+  useEffect(() => {
+    if (!showNftBanner) {
+      return;
+    }
+    trackEvent({
+      event: MetaMetricsEventName.EmptyNftsBannerDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        chain_id: currentNetwork.chainId,
+        locale: currentLocale,
+        network: currentNetwork.nickname,
+        referrer: ORIGIN_METAMASK,
+      },
+    });
+  }, [showNftBanner, trackEvent, currentNetwork, currentLocale]);
 
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
@@ -69,21 +100,34 @@ export default function NftsTab() {
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           ) : null}
-          {showNftBanner ? (
-            <Box
-              paddingInlineStart={4}
-              paddingInlineEnd={4}
-              display={Display.Flex}
-              paddingTop={4}
-            >
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
-                onClick={() =>
-                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS })
-                }
-              />
-            </Box>
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            showNftBanner ? (
+              <Box
+                paddingInlineStart={4}
+                paddingInlineEnd={4}
+                display={Display.Flex}
+                paddingTop={4}
+              >
+                <AssetListConversionButton
+                  variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
+                  onClick={() => {
+                    global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
+                    trackEvent({
+                      event: MetaMetricsEventName.EmptyNftsBannerClicked,
+                      properties: {
+                        chain_id: currentNetwork.chainId,
+                        locale: currentLocale,
+                        network: currentNetwork.nickname,
+                        referrer: ORIGIN_METAMASK,
+                      },
+                    });
+                  }}
+                />
+              </Box>
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Box
             padding={12}
             display={Display.Flex}
@@ -111,13 +155,17 @@ export default function NftsTab() {
               >
                 {t('noNFTs')}
               </Text>
-              <ButtonLink
-                size={Size.MD}
-                href={ZENDESK_URLS.NFT_TOKENS}
-                externalLink
-              >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                <ButtonLink
+                  size={Size.MD}
+                  href={ZENDESK_URLS.NFT_TOKENS}
+                  externalLink
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+                ///: END:ONLY_INCLUDE_IF
+              }
             </Box>
           </Box>
         </>

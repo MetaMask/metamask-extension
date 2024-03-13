@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, κάποιος μπορεί να κλέψει τα περιουσιακά σας στοιχεία που είναι καταχωρημένα στο Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Λόγω κάποιου σφάλματος, αυτό το αίτημα δεν επαληθεύτηκε από τον πάροχο ασφαλείας. Προχωρήστε με προσοχή."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Αντικατάσταση token θεματοφύλακα"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "Εγκρίνετε τη συναλλαγή στην εφαρμογή $1. Μόλις πραγματοποιηθούν όλες οι απαιτούμενες εγκρίσεις σχετικά με τον θεματοφύλακα, η συναλλαγή θα ολοκληρωθεί. Ελέγξτε την κατάσταση στην εφαρμογή $1."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "Ειδοποιήσεις"
   },
-  "notifications10ActionText": {
-    "message": "Μετάβαση στις Ρυθμίσεις",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Ο βελτιωμένος εντοπισμός των tokens είναι προς το παρόν διαθέσιμος στα δίκτυα Ethereum Mainnet, Polygon, BSC και Avalanche. Περισσότερα προσεχώς!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Η λειτουργία εντοπισμού των tokens είναι προς το παρόν ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΗ από προεπιλογή. Μπορείτε να την ενεργοποιήσετε από τις Ρυθμίσεις."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Σας βρίσκουμε tokens από λίστες tokens τρίτων. Τα tokens που περιλαμβάνονται σε περισσότερες από δύο λίστες tokens θα εντοπίζονται αυτόματα."
-  },
-  "notifications10Title": {
-    "message": "Ο βελτιωμένος εντοπισμός των tokens είναι εδώ"
-  },
-  "notifications11Description": {
-    "message": "Τα tokens μπορούν να δημιουργηθούν από οποιονδήποτε και ενδέχεται να έχουν διπλά ονόματα. Αν δείτε να εμφανίζεται ένα token που δεν εμπιστεύεστε ή με το οποίο δεν έχετε αλληλεπιδράσει, η ασφαλέστερη επιλογή είναι να μην το εμπιστευτείτε."
-  },
-  "notifications11Title": {
-    "message": "Κίνδυνοι εξαπάτησης και ασφάλειας"
-  },
-  "notifications12ActionText": {
-    "message": "Ενεργοποίηση της σκοτεινής λειτουργίας"
-  },
-  "notifications12Description": {
-    "message": "Η \"σκοτεινή λειτουργία\" στην Επέκταση είναι επιτέλους εδώ! Για να την ενεργοποιήσετε, μεταβείτε στις Ρυθμίσεις > Πειραματικά και επιλέξτε μία από τις επιλογές εμφάνισης: Ανοιχτόχρωμη, Σκούρα, Σύστημα."
-  },
-  "notifications12Title": {
-    "message": "Θέλετε \"σκοτεινή λειτουργία\"; Τώρα έχετε την \"σκοτεινή λειτουργία\"! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Προβολή λίστας προσαρμοσμένων δικτύων"
-  },
-  "notifications13Description": {
-    "message": "Τώρα μπορείτε να προσθέσετε εύκολα τα ακόλουθα δημοφιλή προσαρμοσμένα δίκτυα: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm και Polygon! Για να ενεργοποιήσετε αυτή τη λειτουργία, μεταβείτε στις Ρυθμίσεις -> Πειραματικά και ενεργοποιήστε την επιλογή «Προβολή λίστας προσαρμοσμένων δικτύων»!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Προσθήκη Δημοφιλών Δικτύων"
-  },
-  "notifications14ActionText": {
-    "message": "Εμφάνιση ρυθμίσεων αντιγράφων ασφαλείας"
-  },
-  "notifications14Description": {
-    "message": "Θα καταργήσουμε τη λειτουργία δεδομένων στο 3Box στις αρχές Οκτωβρίου. Για να δημιουργήσετε αντίγραφα ασφαλείας και να επαναφέρετε το πορτοφόλι σας χειροκίνητα, χρησιμοποιήστε το κουμπί «Δημιουργία Αντιγράφων Ασφαλείας τώρα» στις Ρυθμίσεις για Προχωρημένους.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Κατάργηση του 3Box"
-  },
-  "notifications15Description": {
-    "message": "Δεν απαιτείται καμία ενέργεια εκ μέρους σας, οπότε συνεχίστε να χρησιμοποιείτε το πορτοφόλι σας ως συνήθως. Να προσέχετε για πιθανές απάτες κατά την Συγχώνευση.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
-  },
-  "notifications18ActionText": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Λάβετε ειδοποιήσεις από τρίτους όταν μπορεί να έχετε λάβει ένα κακόβουλο αίτημα.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Φροντίστε πάντα να κάνετε τη δική σας επιμελή έρευνα προτού εγκρίνετε οποιαδήποτε αιτήματα.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "Το OpenSea είναι ο πρώτος πάροχος με αυτή τη λειτουργία. Σύντομα θα προστεθούν και άλλοι πάροχοι!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Μείνετε ασφαλείς με ειδοποιήσεις ασφαλείας"
-  },
-  "notifications19ActionText": {
-    "message": "Ενεργοποίηση αυτόματης ανίχνευσης NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Δύο τρόποι για να ξεκινήσετε:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Προς το παρόν υποστηρίζουμε μόνο το ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Προσθέστε χειροκίνητα τα NFT σας ή ενεργοποιήστε την αυτόματη ανίχνευση NFT στις Ρυθμίσεις > Πειραματικά.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "Δείτε τα NFT σας όπως ποτέ άλλοτε"
-  },
-  "notifications1Description": {
-    "message": "Οι χρήστες του MetaMask Mobile μπορούν τώρα να ανταλλάσσουν tokens μέσα στο κινητό τους πορτοφόλι. Σαρώστε τον κωδικό QR για να κατεβάσετε την εφαρμογή για κινητά και να ξεκινήσετε τις ανταλλαγές.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Η ανταλλαγή στο κινητό είναι εδώ!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Μάθετε περισσότερα",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Οι χρήστες του Ledger και του Firefox αντιμετωπίζουν προβλήματα σύνδεσης",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Δοκιμάστε το"
-  },
-  "notifications21Description": {
-    "message": "Ενημερώσαμε τις Ανταλλαγές στην επέκταση του MetaMask ώστε να είναι ευκολότερη και ταχύτερη η χρήση τους.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Παρουσιάζουμε τις νέες και ανανεωμένες Ανταλλαγές!"
-  },
-  "notifications22ActionText": {
-    "message": "Εντάξει"
-  },
-  "notifications22Description": {
-    "message": "💡 Απλά κάντε κλικ στο γενικό μενού ή στο μενού λογαριασμού για να τα βρείτε!"
-  },
-  "notifications22Title": {
-    "message": "Ψάχνετε τα στοιχεία του λογαριασμού σας ή τη διεύθυνση URL στο Block Explorer;"
-  },
-  "notifications23ActionText": {
-    "message": "Ενεργοποίηση ειδοποιήσεων ασφαλείας"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Αποφύγετε τις γνωστές απάτες, διατηρώντας παράλληλα το απόρρητό σας με τις ειδοποιήσεις ασφαλείας της Blockaid στο Κύριο Δίκτυο του Ethereum."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Κάνετε πάντα τον δικό σας επιμελή έλεγχο προτού εγκρίνετε τα αιτήματα."
-  },
-  "notifications23Title": {
-    "message": "Μείνετε ασφαλείς με ειδοποιήσεις ασφαλείας"
-  },
   "notifications24ActionText": {
     "message": "Κατάλαβα"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Προηγμένα τέλη συναλλαγών ανά δίκτυο"
-  },
-  "notifications3ActionText": {
-    "message": "Διαβάστε περισσότερα",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Μείνετε ενημερωμένοι σχετικά με τις βέλτιστες πρακτικές ασφάλειας του MetaMask και λάβετε τις πιο πρόσφατες συμβουλές ασφάλειας από την επίσημη υποστήριξη του MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Μείνετε ασφαλείς",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Ξεκινήστε τις ανταλλαγές",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Λάβετε τις καλύτερες τιμές για ανταλλαγές tokens μέσα στο πορτοφόλι σας. Το MetaMask σας συνδέει τώρα με πολλαπλά αποκεντρωμένα ανταλλακτήρια συναλλάγματος και επαγγελματίες ειδικούς διαπραγματευτές στο Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Εναλλαγή στο Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Η φράση \"Seed Phrase\" ονομάζεται τώρα \"Μυστική Φράση Ανάκτησης\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Από την έκδοση 91 του Chrome, το API που επέτρεψε την υποστήριξη του Ledger (U2F) δεν υποστηρίζει πλέον πορτοφόλια υλικού. Το MetaMask έχει υλοποιήσει μια νέα υποστήριξη του Ledger Live που σας επιτρέπει να συνεχίσετε να συνδέεστε με τη συσκευή Ledger μέσω της εφαρμογής Ledger Live στην επιφάνεια εργασίας.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Κατά την αλληλεπίδραση με τον λογαριασμό σας Ledger στο MetaMask, θα ανοίξει μια νέα καρτέλα και θα σας ζητηθεί να ανοίξετε την εφαρμογή Ledger Live.  Μόλις ανοίξει η εφαρμογή, θα σας ζητηθεί να επιτρέψετε μια σύνδεση WebSocket με τον λογαριασμό σας MetaMask.  Αυτό είναι όλο!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Μπορείτε να ενεργοποιήσετε την υποστήριξη του Ledger Live κάνοντας κλικ στις Ρυθμίσεις > Για προχωρημένους > Χρήση του Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Ενημέρωση υποστήριξης του Ledger για χρήστες του Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "Το MetaMask v10.1.0 περιελάμβανε νέα υποστήριξη για συναλλαγές EIP-1559 κατά τη χρήση συσκευών Ledger.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Για να ολοκληρώσετε τις συναλλαγές στο Ethereum Mainnet, βεβαιωθείτε ότι η συσκευή σας Ledger διαθέτει το πιο πρόσφατο υλικολογισμικό.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ενημέρωση υλικολογισμικού του Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Μεταβείτε στις Ρυθμίσεις > Για Προχωρημένους",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Βελτίωση της σύνδεσης στο Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Τώρα σας παρέχουμε περισσότερες πληροφορίες στην καρτέλα \"Δεδομένα\" κατά την επιβεβαίωση των συναλλαγών έξυπνων συμβολαίων."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Μπορείτε πλέον να κατανοήσετε καλύτερα τις λεπτομέρειες της συναλλαγής σας πριν την επιβεβαίωση και να προσθέσετε ευκολότερα διευθύνσεις συναλλαγών στο βιβλίο διευθύνσεών σας, βοηθώντας σας να λαμβάνετε ασφαλείς και τεκμηριωμένες αποφάσεις."
-  },
-  "notifications9Title": {
-    "message": "👓 Κάνουμε τις συναλλαγές πιο κατανοητές."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Ο Firefox δεν υποστηρίζει πλέον το U2F, οπότε το Ledger δεν θα λειτουργεί με το MetaMask στον Firefox. Δοκιμάστε αντ' αυτού το MetaMask στο Google Chrome.",

@@ -27,7 +27,7 @@ describe('Custom RPC history', function () {
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -63,7 +63,7 @@ describe('Custom RPC history', function () {
           '.networks-tab__add-network-form-footer .btn-primary',
         );
 
-        await driver.findElement({ text: networkName, tag: 'span' });
+        await driver.findElement({ text: networkName, tag: 'h6' });
       },
     );
   });
@@ -81,7 +81,7 @@ describe('Custom RPC history', function () {
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -122,7 +122,7 @@ describe('Custom RPC history', function () {
         const newRpcUrl = 'http://localhost:8544';
         const duplicateChainId = '1';
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -176,7 +176,7 @@ describe('Custom RPC history', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
@@ -215,7 +215,7 @@ describe('Custom RPC history', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement('.toggle-button');
@@ -265,7 +265,7 @@ describe('Custom RPC history', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
         // Click add network from network options
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({ text: 'Add network', tag: 'button' });
@@ -299,12 +299,12 @@ describe('Custom RPC history', function () {
           '[data-testid="confirm-delete-network-modal"]',
         );
         await driver.clickElement({ text: 'Delete', tag: 'button' });
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="confirm-delete-network-modal"]',
         );
         // There's a short slot to process deleting the network,
         // hence there's a need to wait for the element to be removed to guarantee the action is executed completely
-        await driver.waitForElementNotPresent({
+        await driver.assertElementNotPresent({
           tag: 'div',
           text: customNetworkName,
         });

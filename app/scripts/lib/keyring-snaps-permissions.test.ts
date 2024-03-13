@@ -15,7 +15,6 @@ describe('keyringSnapPermissionsBuilder', () => {
       registerActionHandler: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
-      registerInitialEventPayload: jest.fn(),
     } as any,
     state: {},
   });
@@ -58,6 +57,7 @@ describe('keyringSnapPermissionsBuilder', () => {
       KeyringRpcMethod.GetRequest,
       KeyringRpcMethod.ApproveRequest,
       KeyringRpcMethod.RejectRequest,
+      KeyringRpcMethod.SubmitRequest,
     ]);
   });
 

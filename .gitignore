@@ -30,7 +30,7 @@ storybook-build/
 coverage/
 jest-coverage/
 dist
-builds/
+builds*/
 builds.zip
 development/ts-migration-dashboard/build
 
@@ -48,9 +48,6 @@ notes.txt
 # MetaMask configuration
 .metamaskrc
 .metamaskprodrc
-
-# TypeScript
-tsout/
 
 # Test results
 test-results/

@@ -11,10 +11,8 @@ import {
   Display,
   AlignItems,
   BorderRadius,
-  BlockSize,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import Popover from '../../../ui/popover';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -22,8 +20,11 @@ import {
   Box,
   IconName,
   Text,
-  Button,
-  ButtonSize,
+  Modal,
+  ModalFooter,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
 } from '../../../component-library';
 import PermissionCell from '../../permission-cell';
 
@@ -35,27 +36,12 @@ export default function SnapInstallWarning({
 }) {
   const t = useI18nContext();
   const [userAgree, setUserAgree] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
-  const SnapInstallWarningFooter = () => {
-    return (
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-      >
-        <Button
-          type="primary"
-          disabled={!userAgree}
-          onClick={onSubmit}
-          width={BlockSize.Full}
-          size={ButtonSize.Lg}
-        >
-          {t('confirm')}
-        </Button>
-      </Box>
-    );
-  };
+  function onConfirm() {
+    setIsOpen(false);
+    onSubmit();
+  }
 
   function constructWarningElementComponentArray(permissionWarnings) {
     if (permissionWarnings.length === 1) {
@@ -171,6 +157,7 @@ export default function SnapInstallWarning({
           avatarIcon={IconName.Key}
           key={`snapInstallWarningPermissionCellKeyEntropy_${permission.permissionName}`}
           hideStatus
+          margin={0}
         />
       </Box>
     );
@@ -200,87 +187,86 @@ export default function SnapInstallWarning({
   );
 
   return (
-    <Popover
-      className="snap-install-warning"
-      footer={<SnapInstallWarningFooter />}
-      headerProps={{ padding: [4, 4, 0] }}
-      contentProps={{
-        paddingLeft: [4, 4],
-        paddingRight: [4, 4],
-        paddingTop: 0,
-        paddingBottom: [4, 4],
-      }}
-      footerProps={{ padding: [4, 4] }}
-      onClose={onCancel}
-    >
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        marginBottom={4}
-      >
-        <AvatarIcon
-          iconName={IconName.Danger}
-          backgroundColor={BackgroundColor.warningMuted}
-          color={IconColor.warningDefault}
-          size={AvatarIconSize.Xl}
-        />
-      </Box>
-      <Text
-        paddingBottom={4}
-        textAlign={TextAlign.Center}
-        variant={TextVariant.headingMd}
-        as="h2"
-      >
-        {t('snapInstallWarningHeading')}
-      </Text>
-      <Text paddingBottom={4} textAlign={TextAlign.Left}>
-        {t('snapInstallWarningCheck', [
-          <Text
-            key="snapNameInWarningDescription"
-            fontWeight={FontWeight.Medium}
-            as="span"
+    <Modal onClose={onCancel} isOpen={isOpen} className="snap-install-warning">
+      <ModalContent>
+        <ModalHeader onClose={onCancel}>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+            marginBottom={4}
           >
-            {snapName}
-          </Text>,
-        ])}
-      </Text>
-      {bip32bip44EntropyPermissionWarnings.length > 0 &&
-        constructWarningPermissionCell(
-          bip32bip44EntropyPermissionWarnings,
-          criticalPermissions.entropy,
-        )}
-      {bip32PublicKeyPermissionWarnings.length > 0 &&
-        constructWarningPermissionCell(
-          bip32PublicKeyPermissionWarnings,
-          criticalPermissions.publicKey,
-        )}
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexStart}
-        alignItems={AlignItems.center}
-        padding={4}
-        borderRadius={BorderRadius.SM}
-        backgroundColor={
-          userAgree
-            ? BackgroundColor.infoMuted
-            : BackgroundColor.backgroundAlternative
-        }
-      >
-        <Checkbox
-          isRequired
-          onChange={() => setUserAgree((state) => !state)}
-          isChecked={userAgree}
-          label={
-            <Text as="span">
-              Install{' '}
-              <Text as="span" fontWeight={FontWeight.Medium}>
+            <AvatarIcon
+              iconName={IconName.Danger}
+              backgroundColor={BackgroundColor.warningMuted}
+              color={IconColor.warningDefault}
+              size={AvatarIconSize.Xl}
+            />
+          </Box>
+        </ModalHeader>
+        <ModalBody>
+          <Text
+            paddingBottom={4}
+            textAlign={TextAlign.Center}
+            variant={TextVariant.headingMd}
+            as="h2"
+          >
+            {t('snapInstallWarningHeading')}
+          </Text>
+          <Text paddingBottom={4} textAlign={TextAlign.Left}>
+            {t('snapInstallWarningCheck', [
+              <Text
+                key="snapNameInWarningDescription"
+                fontWeight={FontWeight.Medium}
+                as="span"
+              >
                 {snapName}
-              </Text>
-            </Text>
-          }
+              </Text>,
+            ])}
+          </Text>
+          {bip32bip44EntropyPermissionWarnings.length > 0 &&
+            constructWarningPermissionCell(
+              bip32bip44EntropyPermissionWarnings,
+              criticalPermissions.entropy,
+            )}
+          {bip32PublicKeyPermissionWarnings.length > 0 &&
+            constructWarningPermissionCell(
+              bip32PublicKeyPermissionWarnings,
+              criticalPermissions.publicKey,
+            )}
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexStart}
+            alignItems={AlignItems.center}
+            marginTop={4}
+            padding={4}
+            borderRadius={BorderRadius.SM}
+            backgroundColor={
+              userAgree
+                ? BackgroundColor.infoMuted
+                : BackgroundColor.backgroundAlternative
+            }
+          >
+            <Checkbox
+              isRequired
+              onChange={() => setUserAgree((state) => !state)}
+              isChecked={userAgree}
+              label={
+                <Text as="span">
+                  Install{' '}
+                  <Text as="span" fontWeight={FontWeight.Medium}>
+                    {snapName}
+                  </Text>
+                </Text>
+              }
+            />
+          </Box>
+        </ModalBody>
+        <ModalFooter
+          onSubmit={onConfirm}
+          submitButtonProps={{ children: t('confirm'), disabled: !userAgree }}
         />
-      </Box>
-    </Popover>
+      </ModalContent>
+    </Modal>
   );
 }
 

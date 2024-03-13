@@ -7,6 +7,7 @@ import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
+import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 const sendTransaction = async (
   page: Page,
@@ -42,13 +43,13 @@ const sendTransaction = async (
   // Check network
   const networkPage = new MMINetworkPage(page);
   await networkPage.open();
-  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK || 'Goerli');
+  await networkPage.selectNetwork(
+    process.env.MMI_E2E_TEST_NETWORK || SEPOLIA_DISPLAY_NAME,
+  );
 
   // Get account from and to name
   const accountFrom = await client.getAccountFrom();
   const accounTo = await client.getAccountTo();
-
-  await mainMenuPage.closeDeprecatedNetworksBanner();
 
   const accountsPopup = new MMIAccountMenuPage(page);
   await accountsPopup.accountsMenu();
@@ -90,7 +91,7 @@ test.describe('MMI send', () => {
     await mainPage.checkLastTransactionStatus(statusName);
   });
 
-  test.skip('Send a transaction from one account to another and abort it from custody', async ({
+  test('Send a transaction from one account to another and abort it from custody', async ({
     page,
     context,
   }) => {

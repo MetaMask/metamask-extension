@@ -29,7 +29,7 @@ describe('Terms of use', function () {
         await driver.clickElement(acceptTerms);
 
         // check modal is no longer shown
-        await driver.waitForElementNotPresent(acceptTerms);
+        await driver.assertElementNotPresent(acceptTerms);
         const termsExists = await driver.isElementPresent(acceptTerms);
         assert.equal(termsExists, false, 'terms of use should not be shown');
       },
