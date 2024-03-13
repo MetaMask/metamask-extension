@@ -1,5 +1,6 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 
 import {
   Button,
@@ -7,20 +8,45 @@ import {
   ButtonVariant,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import {
+  rejectPendingApproval,
+  resolvePendingApproval,
+} from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { currentConfirmSelector } from '../../../../../selectors/confirm';
+import { confirmSelector } from '../../../../../selectors/confirm';
 
 const Footer = () => {
   const t = useI18nContext();
-  const currentConfirm = useSelector(currentConfirmSelector);
+  const confirm = useSelector(confirmSelector);
+  const { currentConfirmation } = confirm;
+  const dispatch = useDispatch();
+
+  const onCancel = useCallback(() => {
+    if (!currentConfirmation) {
+      return;
+    }
+    dispatch(
+      rejectPendingApproval(
+        currentConfirmation.id,
+        serializeError(ethErrors.provider.userRejectedRequest()),
+      ),
+    );
+  }, [currentConfirmation]);
+
+  const onSubmit = useCallback(() => {
+    if (!currentConfirmation) {
+      return;
+    }
+    dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+  }, [currentConfirmation]);
 
   return (
     <PageFooter>
       <Button
         block
-        data-testid="confirm-footer-cancel-button"
-        variant={ButtonVariant.Secondary}
+        onClick={onCancel}
         size={ButtonSize.Lg}
+        variant={ButtonVariant.Secondary}
       >
         {t('cancel')}
       </Button>
@@ -28,7 +54,8 @@ const Footer = () => {
         size={ButtonSize.Lg}
         block
         data-testid="confirm-footer-confirm-button"
-        disabled={currentConfirm?.isScrollToBottomNeeded}
+        disabled={confirm?.isScrollToBottomNeeded}
+        onClick={onSubmit}
       >
         {t('confirm')}
       </Button>

@@ -1,16 +1,28 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import { TransactionType } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../../../test/jest';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import * as Actions from '../../../../../store/actions';
+import configureStore from '../../../../../store/store';
+
 import { Footer } from '.';
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => jest.fn(),
+}));
 
 const render = () => {
   return renderWithProvider(
     <Footer />,
-    configureMockStore([])({
+    configureStore({
+      metamask: {
+        ...mockState.metamask,
+      },
       confirm: {
         currentConfirmation: {
-          type: TransactionType.personalSign,
+          msgParams: {
+            from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          },
         },
         isScrollToBottomNeeded: false,
       },
@@ -31,5 +43,25 @@ describe('ConfirmFooter', () => {
     expect(buttons[1]).toBeInTheDocument();
     expect(getByText('Confirm')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
+  });
+
+  it('invoke action rejectPendingApproval when cancel button is clicked', () => {
+    const { getAllByRole } = render();
+    const cancelButton = getAllByRole('button')[0];
+    const rejectSpy = jest
+      .spyOn(Actions, 'rejectPendingApproval')
+      .mockImplementation(() => ({} as any));
+    fireEvent.click(cancelButton);
+    expect(rejectSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('invoke action resolvePendingApproval when submit button is clicked', () => {
+    const { getAllByRole } = render();
+    const cancelButton = getAllByRole('button')[1];
+    const resolveSpy = jest
+      .spyOn(Actions, 'resolvePendingApproval')
+      .mockImplementation(() => ({} as any));
+    fireEvent.click(cancelButton);
+    expect(resolveSpy).toHaveBeenCalledTimes(1);
   });
 });
