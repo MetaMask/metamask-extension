@@ -1017,9 +1017,9 @@ export default class SecurityTab extends PureComponent {
         data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
-          <span>Basic Configuration</span>
+          <span>{t('basicConfigurationLabel')}</span>
           <div className="settings-page__content-description">
-            Basic Configuration Description
+            {t('basicConfigurationDescription')}
           </div>
         </div>
 
