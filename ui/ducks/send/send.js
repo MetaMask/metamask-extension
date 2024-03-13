@@ -1160,6 +1160,16 @@ export function editExistingTransaction(assetType, transactionId) {
     const account = getTargetAccount(state, transaction.txParams.from);
 
     if (assetType === AssetType.native) {
+      const isMaxModeActivated =
+        state.confirmTransaction.maxValueMode[transaction.id];
+
+      let transactionValue = transaction.txParams.value;
+
+      if (isMaxModeActivated) {
+        transactionValue = account.balance;
+        await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
+      }
+
       await dispatch(
         actions.addNewDraft({
           ...draftTransactionInitialState,
@@ -1177,7 +1187,7 @@ export function editExistingTransaction(assetType, transactionId) {
           },
           amount: {
             ...draftTransactionInitialState.amount,
-            value: transaction.txParams.value,
+            value: transactionValue,
           },
           history: [
             `sendFlow - user clicked edit on transaction with id ${transactionId}`,
@@ -1666,6 +1676,13 @@ export function signTransaction() {
       );
       await dispatch(
         updateEditableParams(draftTransaction.id, editingTx.txParams),
+      );
+      await dispatch(
+        setMaxValueMode(
+          unapprovedTx.id,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.asset.type === AssetType.native,
+        ),
       );
     } else {
       let transactionType =

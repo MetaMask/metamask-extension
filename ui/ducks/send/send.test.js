@@ -2220,7 +2220,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(2);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload:
@@ -2301,6 +2301,9 @@ describe('Send Slice', () => {
                 address: mockAddress1,
               },
             }),
+          },
+          confirmTransaction: {
+            maxValueMode: {},
           },
         };
 
