@@ -184,7 +184,7 @@ const AssetV2 = ({
                     <TokenListItem
                       title={symbol}
                       tokenSymbol={symbol}
-                      primary={balance.display}
+                      primary={`${balance.display} ${symbol}`}
                       secondary={balance.fiat}
                       tokenImage={image}
                       isOriginalTokenSymbol={asset.isOriginalNativeSymbol}
