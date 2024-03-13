@@ -214,6 +214,9 @@ export default class PreferencesController {
 
   setDisableExternalServices(disableExternalServices) {
     this.store.updateState({ disableExternalServices });
+    this.setUseTokenDetection(!disableExternalServices);
+    this.setUseCurrencyRateCheck(!disableExternalServices);
+    this.setUsePhishDetect(!disableExternalServices);
   }
 
   /**
