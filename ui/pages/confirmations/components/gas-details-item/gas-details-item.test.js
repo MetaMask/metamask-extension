@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
@@ -11,15 +11,17 @@ import configureStore from '../../../../store/store';
 import GasDetailsItem from './gas-details-item';
 
 jest.mock('../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = ({ contextProps } = {}) => {
+const render = async ({ contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -34,29 +36,44 @@ const render = ({ contextProps } = {}) => {
       },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
       ...contextProps,
     },
   });
 
-  return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        txParams: {
-          gas: '0x5208',
-        },
-        userFeeLevel: 'medium',
-      }}
-      {...contextProps}
-    >
-      <GasDetailsItem userAcknowledgedGasMissing={false} />
-    </GasFeeContextProvider>,
-    store,
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            txParams: {
+              gas: '0x5208',
+            },
+            userFeeLevel: 'medium',
+          }}
+          {...contextProps}
+        >
+          <GasDetailsItem userAcknowledgedGasMissing={false} />
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
+
+  return result;
 };
 
 describe('GasDetailsItem', () => {
   it('should render label', async () => {
-    render();
+    await render();
     await waitFor(() => {
       expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
@@ -65,7 +82,7 @@ describe('GasDetailsItem', () => {
   });
 
   it('should show warning icon if estimates are high', async () => {
-    render({
+    await render({
       contextProps: { transaction: { txParams: {}, userFeeLevel: 'high' } },
     });
     await waitFor(() => {
@@ -74,11 +91,21 @@ describe('GasDetailsItem', () => {
   });
 
   it('should show warning icon if dapp estimates are high', async () => {
-    render({
+    await render({
       contextProps: {
         gasFeeEstimates: {
           high: {
             suggestedMaxPriorityFeePerGas: '1',
+          },
+        },
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            gasFeeEstimates: {
+              high: {
+                suggestedMaxPriorityFeePerGas: '1',
+              },
+            },
           },
         },
         transaction: {
@@ -100,7 +127,7 @@ describe('GasDetailsItem', () => {
   });
 
   it('should not show warning icon if estimates are not high', async () => {
-    render({
+    await render({
       contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },
     });
     await waitFor(() => {
@@ -108,8 +135,8 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it('should return null if there is simulationError and user has not acknowledged gasMissing warning', () => {
-    const { container } = render({
+  it('should return null if there is simulationError and user has not acknowledged gasMissing warning', async () => {
+    const { container } = await render({
       contextProps: {
         transaction: {
           txParams: {},
@@ -122,7 +149,7 @@ describe('GasDetailsItem', () => {
   });
 
   it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
-    render();
+    await render();
     await waitFor(() => {
       expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
@@ -131,7 +158,7 @@ describe('GasDetailsItem', () => {
   });
 
   it('should render gas fee details', async () => {
-    render();
+    await render();
     await waitFor(() => {
       expect(screen.queryAllByTitle('0.00147 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
@@ -139,7 +166,7 @@ describe('GasDetailsItem', () => {
   });
 
   it('should render gas fee details if maxPriorityFeePerGas is 0', async () => {
-    render({
+    await render({
       contextProps: {
         transaction: {
           txParams: {
@@ -159,7 +186,7 @@ describe('GasDetailsItem', () => {
   });
 
   it('should render gas fee details if maxPriorityFeePerGas is undefined', async () => {
-    render({
+    await render({
       contextProps: {
         transaction: {
           txParams: {

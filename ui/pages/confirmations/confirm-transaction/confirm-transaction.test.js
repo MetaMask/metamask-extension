@@ -135,6 +135,11 @@ jest.mock('../confirm-transaction-switch', () => {
 });
 
 describe('Confirmation Transaction Page', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
+      .mockResolvedValue(null);
+  });
   it('should display the Loading component when the transaction is invalid', () => {
     const mockStore = configureMockStore(middleware)({
       ...mockState,
@@ -216,10 +221,9 @@ describe('Confirmation Transaction Page', () => {
   describe('initialization', () => {
     it('should poll for gas estimates', () => {
       const mockStore = configureMockStore(middleware)(mockState);
-      const gasEstimationPollingSpy = jest.spyOn(
-        Actions,
-        'getGasFeeEstimatesAndStartPolling',
-      );
+      const gasEstimationPollingSpy = jest
+        .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
+        .mockResolvedValue(null);
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
 

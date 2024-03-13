@@ -96,6 +96,7 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -183,9 +184,10 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
+ * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
  */
-export function checkNetworkAndAccountSupports1559(state) {
-  const networkSupports1559 = isEIP1559Network(state);
+export function checkNetworkAndAccountSupports1559(state, networkClientId) {
+  const networkSupports1559 = isEIP1559Network(state, networkClientId);
   return networkSupports1559;
 }
 
@@ -1437,6 +1439,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
+    [NOTIFICATION_PORTFOLIO_V2]: true,
   };
 }
 
