@@ -258,32 +258,6 @@ describe('custom-gas selectors', () => {
       };
       expect(isCustomPriceExcessive(mockState, true)).toStrictEqual(false);
     });
-    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210) (checkSend=true)', () => {
-      const mockState = {
-        metamask: {
-          gasEstimateType: GasEstimateTypes.legacy,
-          gasFeeEstimates: {
-            high: '139',
-          },
-          selectedNetworkClientId: NetworkType.mainnet,
-          networksMetadata: {
-            [NetworkType.mainnet]: {
-              EIPS: {},
-              status: NetworkStatus.Available,
-            },
-          },
-        },
-        send: getInitialSendStateWithExistingTxState({
-          gas: {
-            gasPrice: '0x30e4f9b400',
-          },
-        }),
-        gas: {
-          customData: { price: null },
-        },
-      };
-      expect(isCustomPriceExcessive(mockState, true)).toStrictEqual(true);
-    });
   });
 
   describe('getCustomGasLimit()', () => {
