@@ -1,4 +1,7 @@
-import { ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS } from '../constants/smartTransactions';
+import {
+  ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
+  SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
+} from '../constants/smartTransactions';
 import { ENVIRONMENT } from '../../development/build/constants';
 import {
   getCurrentChainId,
@@ -19,11 +22,13 @@ export const getIsAllowedStxChainId = (state: Record<string, any>): boolean => {
 };
 
 const getIsAllowedRpcUrlForStx = (state: Record<string, any>) => {
+  const chainId = getCurrentChainId(state);
   const isNotDevelopment =
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.TESTING;
-  if (!isNotDevelopment) {
-    return true; // Allow any STX RPC URL in development and testing environments.
+  if (!isNotDevelopment || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
+    // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
+    return true;
   }
   const currentNetwork = getCurrentNetwork(state);
   if (!currentNetwork?.rpcUrl) {
