@@ -1,9 +1,10 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
 import { useSelector } from 'react-redux';
 
 import { isEqual } from 'lodash';
+import { useHistory } from 'react-router-dom';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
@@ -13,12 +14,16 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import {
   getMemoizedInterfaceContent,
   getMemoizedTargetSubjectMetadata,
+  hasPendingApprovals,
+  getApprovalFlows,
 } from '../../../../selectors';
 import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
+import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import { mapToTemplate } from './utils';
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -40,6 +45,44 @@ const SnapUIRendererComponent = ({
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getMemoizedTargetSubjectMetadata(state, snapId),
+  );
+
+  // const pendingApprovals = useSelector((state) =>
+  //   hasPendingApprovals(state, [
+  //     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+  //     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+  //   ]),
+  // );
+  // const approvalFLows = getApprovalFlows(state);
+
+  // const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
+  //   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  //   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+  //   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+  //   ///: END:ONLY_INCLUDE_IF
+  // ]);
+  const appState = useSelector((state) => state);
+
+  const { pendingApprovals } = appState.metamask;
+
+  const history = useHistory();
+
+  useEffect(() => {
+    console.log('SNAPS/ SnapUIRendererComponent: useEffect');
+    if (Object.values(pendingApprovals).length > 0) {
+      console.log(
+        'SNAPS/ SnapUIRendererComponent: pendingApprovals.length > 0',
+      );
+      // global.platform.closeCurrentWindow();
+      history.push(CONFIRMATION_V_NEXT_ROUTE);
+    }
+  }, [pendingApprovals]);
+
+  console.log(
+    'SNAPS/ SnapUIRendererComponent',
+    // pendingApprovals,
+    // approvalFLows,
+    pendingApprovals,
   );
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
