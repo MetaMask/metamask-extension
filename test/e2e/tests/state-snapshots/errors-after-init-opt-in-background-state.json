@@ -205,7 +205,7 @@
   "SnapInterfaceController": "object",
   "SnapsRegistry": {
     "database": "object",
-    "lastUpdated": "object",
+    "lastUpdated": "number",
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
