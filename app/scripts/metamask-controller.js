@@ -3422,6 +3422,17 @@ export default class MetamaskController extends EventEmitter {
         announcementController,
       ),
 
+      // CurrencyRateController
+      currencyRateStartPollingByNetworkClientId:
+        currencyRateController.startPollingByNetworkClientId.bind(
+          currencyRateController,
+        ),
+
+      currencyRateStopPollingByPollingToken:
+        currencyRateController.stopPollingByPollingToken.bind(
+          currencyRateController,
+        ),
+
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
         gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
