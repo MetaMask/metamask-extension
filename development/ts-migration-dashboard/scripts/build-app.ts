@@ -220,4 +220,8 @@ async function main() {
   }
 
   await rebuild({ isInitial: true });
+
+  console.log(
+    `\nApp built! Now open: file://${FINAL_BUILD_DIRECTORY_PATH}/index.html`,
+  );
 }
