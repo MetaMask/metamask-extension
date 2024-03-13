@@ -881,12 +881,8 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.startPollingByNetworkClientId(
-            this.networkController.state.selectedNetworkClientId,
-          );
           this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
@@ -1564,25 +1560,6 @@ export default class MetamaskController extends EventEmitter {
 
     this._addTransactionControllerListeners();
 
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        try {
-          if (
-            this.preferencesController.store.getState().useCurrencyRateCheck
-          ) {
-            await this.currencyRateController.stopAllPolling();
-            this.currencyRateController.startPollingByNetworkClientId(
-              this.networkController.state.selectedNetworkClientId,
-            );
-          }
-        } catch (error) {
-          // TODO: Handle failure to get conversion rate more gracefully
-          console.error(error);
-        }
-      },
-    );
-
     this.networkController.lookupNetwork();
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
@@ -2147,11 +2124,6 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
-    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
@@ -2160,9 +2132,6 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.stopAllPolling();
-    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
