@@ -1,18 +1,20 @@
-import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { getUseCurrencyRateCheck } from '../selectors';
-import { currencyRateStartPollingByNetworkClientId, currencyRateStopPollingByPollingToken } from '../store/actions';
+import {
+  currencyRateStartPollingByNetworkClientId,
+  currencyRateStopPollingByPollingToken,
+} from '../store/actions';
 import usePolling from './usePolling';
 
 const useCurrencyRatePolling = (networkClientId: string) => {
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck)
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   usePolling({
     startPollingByNetworkClientId: currencyRateStartPollingByNetworkClientId,
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     networkClientId,
-    enabled: useCurrencyRateCheck
-  })
+    enabled: useCurrencyRateCheck,
+  });
 };
 
 export default useCurrencyRatePolling;

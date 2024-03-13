@@ -9,7 +9,7 @@ type UsePollingOptions = {
   stopPollingByPollingToken: (pollingToken: string) => void;
   networkClientId: string;
   options?: any;
-  enabled?: boolean
+  enabled?: boolean;
 };
 
 const usePolling = (usePollingOptions: UsePollingOptions) => {
@@ -18,7 +18,9 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
   let isMounted = false;
   useEffect(() => {
     if (usePollingOptions.enabled === false) {
-      return
+      return () => {
+        // noop
+      };
     }
 
     isMounted = true;
@@ -56,7 +58,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         usePollingOptions.options,
         Object.keys(usePollingOptions.options).sort(),
       ),
-    usePollingOptions.enabled
+    usePollingOptions.enabled,
   ]);
 };
 
