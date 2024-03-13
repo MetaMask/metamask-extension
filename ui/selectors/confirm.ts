@@ -11,6 +11,7 @@ type SignatureRequestType = {
   msgParams?: {
     from: string;
     origin: string;
+    data: string;
   };
   type: TransactionType;
 };
