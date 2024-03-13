@@ -13,16 +13,16 @@ export const NOTIFICATION_STAKING_PORTFOLIO = 30;
 export const NOTIFICATION_PETNAMES = 31;
 export const NOTIFICATION_PORTFOLIO_V2 = 32;
 
-interface NotificationImage {
+type NotificationImage = {
   src: string;
   width: string;
-}
+};
 
-interface UINotification {
+type UINotification = {
   id: number;
   date: string | null;
   image?: NotificationImage;
-}
+};
 
 // Assuming all keys in UI_NOTIFICATIONS are of the same structure
 interface UINotifications {
@@ -101,23 +101,18 @@ export const UI_NOTIFICATIONS: UINotifications = {
 
 type TranslationFunction = (key: string) => string;
 
-interface NotificationImage {
-  src: string;
-  width: string;
-}
-
-interface TranslatedUINotification {
+type TranslatedUINotification = {
   id: number;
   date: string | null;
   image?: NotificationImage;
   title: string;
   description: string[] | string;
   actionText?: string;
-}
+};
 
-interface TranslatedUINotifications {
+type TranslatedUINotifications = {
   [key: number | string]: TranslatedUINotification;
-}
+};
 
 const formatDate = (
   date: string | null,
