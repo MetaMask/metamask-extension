@@ -12,7 +12,7 @@ const dappsTest = async (
   // Connect to Saturn API
   const client = new CustodianTestClient();
   await client.setup();
-  const dummyDApp = await callTestDappBtn(page, context, client, buttonId);
+  const { dummyDApp } = await callTestDappBtn(page, context, client, buttonId);
   const mainPage = new MMIMainPage(page);
   // Rest of the test dapp buttons
   await mainPage.bringToFront();

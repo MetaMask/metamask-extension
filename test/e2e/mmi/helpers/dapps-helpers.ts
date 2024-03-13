@@ -70,5 +70,8 @@ export async function callTestDappBtn(
     isSign,
     signedTransactionTime,
   );
-  return dummyDApp;
+  return {
+    dummyDApp,
+    signedTransactionTime
+  }
 }
