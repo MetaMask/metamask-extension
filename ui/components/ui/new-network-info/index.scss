@@ -26,17 +26,9 @@
     border-bottom: 1px solid var(--color-border-default);
   }
 
-  &__token-show-up {
-    display: inline;
-  }
-
   &__button {
-    display: initial;
+    display: contents;
     padding: 0;
-  }
-
-  &__manually-add-tokens {
-    display: inline;
   }
 }
 

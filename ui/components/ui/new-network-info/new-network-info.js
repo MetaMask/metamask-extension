@@ -17,8 +17,13 @@ import {
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentNetwork, getUseTokenDetection } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
-import { PickerNetwork, Text, Box } from '../../component-library';
-import Button from '../button';
+import {
+  PickerNetwork,
+  Text,
+  Box,
+  Button,
+  ButtonLinkSize,
+} from '../../component-library';
 import Popover from '../popover';
 
 export default function NewNetworkInfo() {
@@ -66,7 +71,7 @@ export default function NewNetworkInfo() {
         onClose={onCloseClick}
         className="new-network-info__wrapper"
         footer={
-          <Button type="primary" onClick={onCloseClick}>
+          <Button variant="primary" onClick={onCloseClick}>
             {t('recoveryPhraseReminderConfirm')}
           </Button>
         }
@@ -186,30 +191,27 @@ export default function NewNetworkInfo() {
                 <Box marginRight={4} color={Color.textDefault}>
                   &bull;
                 </Box>
-                <Box>
-                  <Text
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                    color={Color.textDefault}
-                    className="new-network-info__token-show-up"
-                  >
-                    {t('tokenShowUp')}{' '}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={Color.textDefault}
+                  display={Display.InlineBlock}
+                >
+                  {t('tokenShowUp', [
                     <Button
-                      type="link"
+                      variant="link"
                       onClick={addTokenManually}
                       className="new-network-info__button"
+                      key="manually-add-tokens-button"
+                      size={ButtonLinkSize.Inherit}
+                      textProps={{
+                        color: Color.infoDefault,
+                      }}
                     >
-                      <Text
-                        variant={TextVariant.bodySm}
-                        as="h6"
-                        color={Color.infoDefault}
-                        className="new-network-info__manually-add-tokens"
-                      >
-                        {t('clickToManuallyAdd')}
-                      </Text>
-                    </Button>
-                  </Text>
-                </Box>
+                      {t('clickToManuallyAdd')}
+                    </Button>,
+                  ])}
+                </Text>
               </Box>
             ) : null}
           </Box>

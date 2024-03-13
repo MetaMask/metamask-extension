@@ -5449,7 +5449,7 @@
     "message": "token scams and security risks"
   },
   "tokenShowUp": {
-    "message": "Your tokens may not automatically show up in your wallet."
+    "message": "Your tokens may not automatically show up in your wallet. $1"
   },
   "tokenSymbol": {
     "message": "Token symbol"
