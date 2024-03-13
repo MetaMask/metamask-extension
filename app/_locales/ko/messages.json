@@ -2836,6 +2836,10 @@
     "message": "인터넷에 액세스합니다.",
     "description": "The description of the `endowment:network-access` permission."
   },
+  "permission_accessSnap": {
+    "message": "$1 스냅에 연결",
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+  },
   "permission_accessSnapDescription": {
     "message": "웹사이트나 스냅이 $1 스냅과 인터렉션하는 것을 허용합니다.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."

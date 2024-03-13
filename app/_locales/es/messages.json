@@ -2836,6 +2836,10 @@
     "message": "Acceso a internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
+  "permission_accessSnap": {
+    "message": "Conéctese al snap de $1.",
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+  },
   "permission_accessSnapDescription": {
     "message": "Permita que el sitio web o el snap interactúen con $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."

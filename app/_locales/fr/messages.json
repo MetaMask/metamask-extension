@@ -2839,6 +2839,10 @@
     "message": "Accéder à internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
+  "permission_accessSnap": {
+    "message": "Connexion au Snap $1.",
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+  },
   "permission_accessSnapDescription": {
     "message": "Autoriser le site Web ou le snap à interagir avec $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."

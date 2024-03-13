@@ -2836,6 +2836,10 @@
     "message": "Πρόσβαση στο διαδίκτυο.",
     "description": "The description of the `endowment:network-access` permission."
   },
+  "permission_accessSnap": {
+    "message": "Συνδεθείτε στο snap $1.",
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+  },
   "permission_accessSnapDescription": {
     "message": "Επιτρέψτε στον ιστότοπο ή στο snap να αλληλεπιδράσει με το $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
