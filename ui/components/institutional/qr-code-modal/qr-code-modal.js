@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
-import { useHistory } from 'react-router-dom';
-
 import { Modal, ModalOverlay, Text, Box } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/modal-content';
 import { ModalHeader } from '../../component-library/modal-header/modal-header';
@@ -11,19 +9,16 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { CONFIRM_ADD_CUSTODIAN_TOKEN } from '../../../helpers/constants/routes';
 import Spinner from '../../ui/spinner';
 
 export default function QRCodeModal({ onClose, custodianName }) {
-  const history = useHistory();
   const t = useContext(I18nContext);
   const [publicKeyData, setPublicKeyData] = useState(null);
   const [error, setError] = useState('');
-  const pollingIntervalRef = useRef(null);
 
   async function generatePublicKey() {
     try {
-      const keyPair = await window.crypto.subtle.generateKey(
+      const { publicKey } = await window.crypto.subtle.generateKey(
         {
           name: 'RSA-OAEP',
           modulusLength: 2048,
@@ -36,8 +31,9 @@ export default function QRCodeModal({ onClose, custodianName }) {
 
       const exportedPublicKey = await window.crypto.subtle.exportKey(
         'spki',
-        keyPair.publicKey,
+        publicKey,
       );
+
       const publicKeyBase64 = Buffer.from(exportedPublicKey)
         .toString('base64')
         .replace(/\+/gu, '-')
@@ -54,37 +50,6 @@ export default function QRCodeModal({ onClose, custodianName }) {
   useEffect(() => {
     generatePublicKey();
   }, []);
-
-  useEffect(() => {
-    async function checkForConnectRequests() {
-      try {
-        const response = await fetch(
-          'https://mmi-qr-server.adaptable.app/connect-requests/latest',
-        );
-        const data = await response.json();
-
-        if (data) {
-          await fetch(
-            'https://mmi-qr-server.adaptable.app/connect-requests/latest',
-            { method: 'DELETE' },
-          );
-
-          data.custodian = data.environment;
-          // eslint-disable-next-line no-undef
-          localStorage.setItem('tempConnectRequest', JSON.stringify(data));
-
-          history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
-          onClose();
-        }
-      } catch (e) {
-        console.log('No data from QR Code API at this time', e);
-      }
-    }
-
-    pollingIntervalRef.current = setInterval(checkForConnectRequests, 5000);
-
-    return () => clearInterval(pollingIntervalRef.current);
-  }, [history, onClose]);
 
   const qrCodeValue = JSON.stringify({
     custodianName,
