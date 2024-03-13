@@ -2457,6 +2457,7 @@ export default class MetamaskController extends EventEmitter {
         this.txController.stopIncomingTransactionPolling();
       }
 
+      // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
       this.controllerMessenger.publish(
         `${this.preferencesController.name}:stateChange`,
         [state, []],
