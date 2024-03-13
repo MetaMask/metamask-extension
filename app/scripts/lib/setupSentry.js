@@ -271,6 +271,7 @@ export const SENTRY_BACKGROUND_STATE = {
   SnapsRegistry: {
     database: false,
     lastUpdated: false,
+    databaseUnavailable: false,
   },
   SubjectMetadataController: {
     subjectMetadata: false,
