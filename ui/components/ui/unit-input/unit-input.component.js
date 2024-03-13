@@ -163,6 +163,14 @@ export default class UnitInput extends PureComponent {
                 !this.props.keyPressRegex.test(e.key) &&
                 e.preventDefault()
               }
+              onPaste={(e) =>
+                this.props.keyPressRegex &&
+                !this.props.keyPressRegex.test(
+                  e.clipboardData.getData('Text'),
+                ) &&
+                e.preventDefault()
+              }
+              min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
