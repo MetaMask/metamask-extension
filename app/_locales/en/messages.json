@@ -1021,6 +1021,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "crossChainSwapsLink": {
+    "message": "Swap across networks with MetaMask Portfolio"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
