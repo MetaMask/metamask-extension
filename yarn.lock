@@ -4299,6 +4299,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-provider@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "@metamask/eth-json-rpc-provider@npm:3.0.1"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: 1c5fdbf7ff90520a961f970edbffb3f6999e0b80ba64a374f5c18eddf4df1fa27dfc463903a237e1b17ee1d55e8d07d2e44306c6e9c36050f63749efd10238ee
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-keyring-controller@npm:^16.0.0":
   version: 16.0.0
   resolution: "@metamask/eth-keyring-controller@npm:16.0.0"
@@ -4614,6 +4625,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/json-rpc-engine@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/json-rpc-engine@npm:8.0.0"
+  dependencies:
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: a1fe17c1443b14b777a4b31d61fad61530675252b21fc3bec5626625428f6e4796fdb1ce82540414e3569df9fb8884cd872e90aa3adf2d8efb4f7632766f9ce3
+  languageName: node
+  linkType: hard
+
+"@metamask/json-rpc-engine@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@metamask/json-rpc-engine@npm:8.0.1"
+  dependencies:
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.3.0"
+  checksum: 340ea9be62f65b69ae552571f0176af23097e874bae276aa2349f13086dbd018ce58a4b9bbd902eff81ab959b143fb2821930564a5739353312968210308cff7
+  languageName: node
+  linkType: hard
+
 "@metamask/json-rpc-middleware-stream@npm:^6.0.2":
   version: 6.0.2
   resolution: "@metamask/json-rpc-middleware-stream@npm:6.0.2"
@@ -4623,17 +4656,6 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     readable-stream: "npm:^3.6.2"
   checksum: eb6fc179959206abeba8b12118757d55cc0028681566008a4005b570d21a9369795452e1bdb672fc9858f46a4e9ed5c996cfff0e85b47cef8bf39a6edfee8f1e
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/json-rpc-engine@npm:8.0.0"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: a1fe17c1443b14b777a4b31d61fad61530675252b21fc3bec5626625428f6e4796fdb1ce82540414e3569df9fb8884cd872e90aa3adf2d8efb4f7632766f9ce3
   languageName: node
   linkType: hard
 
