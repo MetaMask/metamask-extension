@@ -215,7 +215,6 @@ export function AssetPickerModal({
         updateSendAsset({
           type: token.type ?? AssetType.native,
           details: token,
-          skipComputeEstimatedGasLimit: true,
         }),
       );
       history.push(SEND_ROUTE);
@@ -225,7 +224,6 @@ export function AssetPickerModal({
       updateSendAsset({
         type: token.type ?? AssetType.token,
         details: { ...token, standard: TokenStandard.ERC20 },
-        skipComputeEstimatedGasLimit: true,
       }),
     );
     history.push(SEND_ROUTE);
