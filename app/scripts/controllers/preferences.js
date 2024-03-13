@@ -133,11 +133,11 @@ export default class PreferencesController {
     });
 
     this.messagingSystem = opts.messenger;
-    this.messagingSystem.registerActionHandler(
+    this.messagingSystem?.registerActionHandler(
       `PreferencesController:getState`,
       () => this.store.getState(),
     );
-    this.messagingSystem.registerInitialEventPayload({
+    this.messagingSystem?.registerInitialEventPayload({
       eventType: `PreferencesController:stateChange`,
       getPayload: () => [this.store.getState(), []],
     });
@@ -211,10 +211,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-    this.messagingSystem.publish('PreferencesController:stateChange', [
-      this.store.getState(),
-      [],
-    ]);
     this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
     if (val) {
       this.tokenListController.start();
@@ -497,10 +493,6 @@ export default class PreferencesController {
 
     selectedIdentity.lastSelected = Date.now();
     this.store.updateState({ identities, selectedAddress: address });
-    this.messagingSystem.publish('PreferencesController:stateChange', [
-      this.store.getState(),
-      [],
-    ]);
   }
 
   /**

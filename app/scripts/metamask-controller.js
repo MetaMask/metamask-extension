@@ -2456,6 +2456,11 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.txController.stopIncomingTransactionPolling();
       }
+
+      this.controllerMessenger.publish(
+        `${this.preferencesController.name}:stateChange`,
+        [state, []],
+      );
     });
 
     this.controllerMessenger.subscribe(
