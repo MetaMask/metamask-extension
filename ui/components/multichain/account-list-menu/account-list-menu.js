@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  BannerBase,
   Box,
   ButtonLink,
   ButtonSecondary,
@@ -26,11 +25,9 @@ import {
 } from '..';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
-  JustifyContent,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -46,10 +43,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getOnboardedInThisUISession,
-  getShowAccountBanner,
 } from '../../../selectors';
-import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
+import { setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -64,7 +59,6 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -126,11 +120,6 @@ export const AccountListMenu = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
-  const showAccountBanner = useSelector(getShowAccountBanner);
-  const showBanner =
-    completedOnboarding && !onboardedInThisUISession && showAccountBanner;
 
   let searchResults = updatedAccountsList;
   if (searchQuery) {
