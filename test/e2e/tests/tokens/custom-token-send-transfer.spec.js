@@ -36,6 +36,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: '10 TST',
         });
 
+        // TODO: Simplify once MMI has the new asset page
         try {
           await driver.clickElement('[data-testid="eth-overview-send"]');
         } catch {

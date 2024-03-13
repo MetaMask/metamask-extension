@@ -131,6 +131,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
+        // TODO: Simplify once MMI has the new asset page
         try {
           await driver.clickElement('[data-testid="eth-overview-send"]');
         } catch {
@@ -204,6 +205,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
+        // TODO: Simplify once MMI has the new asset page
         try {
           await driver.clickElement('[data-testid="eth-overview-send"]');
         } catch {
