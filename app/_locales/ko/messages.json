@@ -1105,9 +1105,6 @@
     "message": "$1 네트워크를 삭제하시겠습니까?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "예치"
-  },
   "description": {
     "message": "설명"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "가스 가격(GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "가스비가 불필요하게 높게 설정되었습니다. 가격을 낮추는 것을 고려해 보세요."
-  },
   "gasPriceExcessiveInput": {
     "message": "가스 가격 초과"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "$2 네트워크의 트랜잭션 수수료를 지불할 계정에 $1(이)가 부족합니다. $3 또는 다른 계정에서 입금하세요.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "$2 네트워크의 트랜잭션 수수료를 지불할 계정에 $1(이)가 부족합니다. 다른 계정에서 $3 또는 $4 하세요.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "$2 네트워크의 트랜잭션 수수료를 지불할 계정에 $1(이)가 부족합니다. 다른 계좌에서 $1(을)를 입금하세요.",

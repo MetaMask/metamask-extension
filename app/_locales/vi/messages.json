@@ -1105,9 +1105,6 @@
     "message": "Xóa mạng $1?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Nạp"
-  },
   "description": {
     "message": "Mô tả"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Giá gas (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Bạn đã đặt phí gas cao một cách không cần thiết. Hãy cân nhắc giảm mức phí này."
-  },
   "gasPriceExcessiveInput": {
     "message": "Giá gas quá cao"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí giao dịch trên mạng $2. $3 hoặc nạp từ một tài khoản khác.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí giao dịch trên mạng $2. $3 hoặc $4 từ một tài khoản khác.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Bạn không có đủ $1 trong tài khoản để thanh toán phí giao dịch trên mạng $2. Nạp $1 từ một tài khoản khác.",

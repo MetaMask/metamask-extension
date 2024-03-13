@@ -1105,9 +1105,6 @@
     "message": "Tanggalin ang $1 network?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Deposito"
-  },
   "description": {
     "message": "Deskripsyon"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Presyo ng gas (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Masyadong mataas ang iyong itinakdang bayad sa gas. Pag-isipang ibaba ang halaga."
-  },
   "gasPriceExcessiveInput": {
     "message": "Masyadong mataas presyo ng gas"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga transaksyon sa $2 network. $3 o magdeposito mula sa ibang account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Wala kang sapat na $1 sa iyong account para mabayaran ang mga bayarin sa transaksyon sa $2 network. $3 o $4 mula sa ibang account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Wala kang sapat na $1 sa iyong account para bayaran ang mga transaksyon sa $2 network. Magdeposito ng $1 mula sa ibang account.",

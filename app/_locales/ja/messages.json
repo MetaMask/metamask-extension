@@ -1105,9 +1105,6 @@
     "message": "$1ネットワークを削除しますか？",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "入金"
-  },
   "description": {
     "message": "説明"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "ガス価格 (gwei)"
   },
-  "gasPriceExcessive": {
-    "message": "ガス代が不要に高く設定されています。金額を下げることを検討してください。"
-  },
   "gasPriceExcessiveInput": {
     "message": "ガス価格が高すぎます"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "アカウントに、$2ネットワークでトランザクション手数料を支払うのに十分な$1がありません。$3するか、別のアカウントからデポジットしてください。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "アカウントに、$2ネットワークでトランザクション手数料を支払うのに十分な$1がありません。$3するか、別のアカウントから$4してください。",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "アカウントに、$2ネットワークでトランザクション手数料を支払うのに十分な$1がありません。別のアカウントから$1を入金してください。",

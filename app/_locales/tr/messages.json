@@ -1105,9 +1105,6 @@
     "message": "$1 ağını sil?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Para Yatır"
-  },
   "description": {
     "message": "Açıklama"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Gaz fiyatı (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Gaz ücretiniz gereksiz bir şekilde yüksek. Tutarı azaltmayı göz önünde bulundurun."
-  },
   "gasPriceExcessiveInput": {
     "message": "Gaz Fiyatı aşırı yüksek"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Hesabında $2 ağındaki işlem ücretlerini ödemek için yeterli $1 bulunmuyor. $3 veya başka bir hesaptan para yatır.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Hesabınızda $2 ağındaki işlemleri ödemek için yeterli $1 yok. Başka bir hesaptan $3 veya $4.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Hesabında $2 ağındaki işlem ücretlerini ödemek için yeterli $1 bulunmuyor. Başka bir hesaptan $1 yatır.",

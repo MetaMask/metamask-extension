@@ -596,9 +596,6 @@
   "gasPrice": {
     "message": "Gas 價格 (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "您的 gas 費用設定得太高了。考慮降低一些。"
-  },
   "gasPriceExcessiveInput": {
     "message": "Gas 價格極高"
   },

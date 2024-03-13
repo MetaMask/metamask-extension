@@ -905,9 +905,6 @@
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Sua taxa de gás está desnecessariamente alta. Considere reduzir o valor."
-  },
   "gasPriceExcessiveInput": {
     "message": "O preço do gás está excessivo"
   },

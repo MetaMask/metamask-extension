@@ -1105,9 +1105,6 @@
     "message": "Удалить сеть $1?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Депозит"
-  },
   "description": {
     "message": "Описание"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Цена газа (Гвей)"
   },
-  "gasPriceExcessive": {
-    "message": "Установлена неоправданно высокая плата за газ. Рекомендуем снизить ее."
-  },
   "gasPriceExcessiveInput": {
     "message": "Цена газа очень высокая"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "У вас недостаточно $1 для оплаты комиссий за транзакцию в сети $2. $3 или внесите депозит с другого счета.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "У вас недостаточно $1 на счету для оплаты комиссий за транзакцию в сети $2. $3 или $4 с другого счета.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "У вас недостаточно $1 для оплаты комиссий за транзакцию в сети $2. Внесите депозит $1 с другого счета.",

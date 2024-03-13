@@ -1105,9 +1105,6 @@
     "message": "$1 नेटवर्क को हटाएं?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "डिपॉज़िट करें"
-  },
   "description": {
     "message": "जानकारी"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "गैस प्राइस (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "आपका गैस फ़ीस अनावश्यक रूप से अधिक निर्धारित किया गया है। अमाउंट को कम करने पर विचार करें।"
-  },
   "gasPriceExcessiveInput": {
     "message": "गैस प्राइस अधिक है"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "$2 नेटवर्क पर ट्रांसेक्शन फ़ीस का पेमेंट करने के लिए आपके अकाउंट में $1 कम है। $3 या किसी अन्य अकाउंट से जमा करें।",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "आपके अकाउंट में $2 नेटवर्क पर ट्रांसेक्शन फ़ीस का पेमेंट करने के लिए $1 कम है। दूसरे अकाउंट से $3 या $4।",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "$2 नेटवर्क पर ट्रांसेक्शन फ़ीस का पेमेंट करने के लिए आपके अकाउंट में $1 कम हैं। अन्य अकाउंट से $1 जमा करें।",

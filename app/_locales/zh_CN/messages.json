@@ -1105,9 +1105,6 @@
     "message": "要删除$1网络吗？",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "保证金"
-  },
   "description": {
     "message": "描述"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
   },
-  "gasPriceExcessive": {
-    "message": "您的燃料费设置得过高。请考虑降低金额。"
-  },
   "gasPriceExcessiveInput": {
     "message": "燃料价格过高"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。$3或从另一个账户存入保证金。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "您的账户中没有足够的 $1 可以用来支付 $2 网络的交易费用。请使用另一个账户的 $3 或 $4。",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "您的账户中没有足够的$1可以支付$2网络上的交易费用。请从另一个账户存入保证金 $1。",

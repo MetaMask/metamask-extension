@@ -591,9 +591,6 @@
   "gasPrice": {
     "message": "Presyo ng Gas (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Hindi makatuwirang naitakda nang mataas ang iyong bayarin sa gas. Subukang babaan ang halaga."
-  },
   "gasPriceExcessiveInput": {
     "message": "Labis-labis ang Presyo ng Gas"
   },

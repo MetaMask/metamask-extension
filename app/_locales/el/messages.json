@@ -1105,9 +1105,6 @@
     "message": "Διαγραφή του δικτύου $1;",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Κατάθεση"
-  },
   "description": {
     "message": "Περιγραφή"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Τιμή τέλους συναλλαγής (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Το ποσό του τέλους συναλλαγής σας έχει οριστεί αδικαιολόγητα υψηλό. Εξετάστε το ενδεχόμενο μείωσης του ποσού."
-  },
   "gasPriceExcessiveInput": {
     "message": "Η τιμή του τέλους συναλλαγής είναι υπερβολική"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη της συναλλαγής στο δίκτυο $2. $3 ή πραγματοποιήστε κατάθεση από άλλον λογαριασμό.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη της συναλλαγής στο δίκτυο $2. $3 ή $4 από άλλον λογαριασμό.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Δεν έχετε αρκετά $1 στον λογαριασμό σας για να πληρώσετε τα τέλη της συναλλαγής στο δίκτυο $2. Καταθέστε $1 από άλλον λογαριασμό.",

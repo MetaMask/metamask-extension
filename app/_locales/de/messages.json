@@ -1105,9 +1105,6 @@
     "message": "$1-Netzwerk löschen?",
     "description": "$1 represents the name of the network"
   },
-  "deposit": {
-    "message": "Einzahlung"
-  },
   "description": {
     "message": "Beschreibung"
   },
@@ -1617,9 +1614,6 @@
   "gasPrice": {
     "message": "Gas-Preis (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Ihre Gas-Gebühr ist unnötig hoch. Denken Sie darüber nach, den Betrag zu senken."
-  },
   "gasPriceExcessiveInput": {
     "message": "Gas-Preis ist übermäßig hoch"
   },
@@ -1896,10 +1890,6 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Sie haben nicht genügend $1 auf Ihrem Konto, um die Transaktionsgebühren im $2-Netzwerk zu zahlen. $3 oder von einem anderen Konto einzahlen.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
-  },
-  "insufficientCurrencyBuyOrReceive": {
-    "message": "Sie haben nicht genügend $1 auf Ihrem Konto, um die Transaktionsgebühren im Netzwerk $2 zu zahlen. $3 oder $4 von einem anderen Konto.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Sie haben nicht genügend $1 auf Ihrem Konto, um die Transaktionsgebühren im $2-Netzwerk zu zahlen. $1 von einem anderen Konto einzahlen.",
