@@ -81,7 +81,7 @@ describe('Multiple ERC20 Watch Asset', function () {
           tag: 'button',
         });
 
-        // Switch to watchAsset notificaiton
+        // Switch to watchAsset notification
         await switchToNotificationWindow(driver);
         const multipleSuggestedtokens = await driver.findElements(
           '.confirm-add-suggested-token__token-list-item',

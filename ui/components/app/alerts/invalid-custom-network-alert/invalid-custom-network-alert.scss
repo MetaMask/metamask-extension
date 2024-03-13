@@ -1,10 +1,12 @@
+@use "design-system";
+
 .invalid-custom-network-alert {
   &__content {
     border-radius: 0;
     padding: 0 24px 16px 24px;
 
     > p {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       font-size: 14px;
       padding-bottom: 12px;
