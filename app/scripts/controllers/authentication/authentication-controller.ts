@@ -154,7 +154,7 @@ export default class AuthenticationController extends BaseController<
     return profile;
   }
 
-  #assertLoggedIn() {
+  #assertLoggedIn(): void {
     if (!this.state.isSignedIn) {
       throw new Error(
         `${controllerName}: Unable to call method, user is not authenticated`,
@@ -162,7 +162,10 @@ export default class AuthenticationController extends BaseController<
     }
   }
 
-  async #performAuthenticationFlow() {
+  async #performAuthenticationFlow(): Promise<{
+    profile: SessionProfile;
+    accessToken: string;
+  }> {
     try {
       // 1. Nonce
       const publicKey = await this.#snapGetPublicKey();

@@ -14,14 +14,18 @@ export async function getNonce(publicKey: string): Promise<string | null> {
   const nonceUrl = new URL(AUTH_NONCE_ENDPOINT);
   nonceUrl.searchParams.set('identifier', publicKey);
 
-  const nonce = await fetch(nonceUrl.toString())
-    .then((r) => {
-      return r.ok ? r.json() : null;
-    })
-    .then((r: NonceResponse | null) => r?.nonce)
-    .catch(() => null);
+  try {
+    const nonceResponse = await fetch(nonceUrl.toString());
+    if (!nonceResponse.ok) {
+      return null;
+    }
 
-  return nonce ?? null;
+    const nonceJson: NonceResponse = await nonceResponse.json();
+    return nonceJson?.nonce ?? null;
+  } catch (e) {
+    console.error('authentication-controller/services: unable to get nonce', e);
+    return null;
+  }
 }
 
 export type LoginResponse = {
@@ -44,23 +48,28 @@ export async function login(
   rawMessage: string,
   signature: string,
 ): Promise<LoginResponse | null> {
-  const response = await fetch(AUTH_LOGIN_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      signature,
-      raw_message: rawMessage,
-    }),
-  })
-    .then((r) => {
-      return r.ok ? r.json() : null;
-    })
-    .then((r: LoginResponse | null) => r)
-    .catch(() => null);
+  try {
+    const response = await fetch(AUTH_LOGIN_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        signature,
+        raw_message: rawMessage,
+      }),
+    });
 
-  return response;
+    if (!response.ok) {
+      return null;
+    }
+
+    const loginResponse: LoginResponse = await response.json();
+    return loginResponse ?? null;
+  } catch (e) {
+    console.error('authentication-controller/services: unable to login', e);
+    return null;
+  }
 }
 
 export type OAuthTokenResponse = {
@@ -77,20 +86,31 @@ export async function getAccessToken(jwtToken: string): Promise<string | null> {
   urlEncodedBody.append('client_id', OIDC_CLIENT_ID);
   urlEncodedBody.append('assertion', jwtToken);
 
-  const accessToken = await fetch(OIDC_TOKENS_ENDPOINT, {
-    method: 'POST',
-    headers,
-    body: urlEncodedBody.toString(),
-  })
-    .then((r) => {
-      return r.ok ? r.json() : null;
-    })
-    .then((r: OAuthTokenResponse | null) => r?.access_token)
-    .catch(() => null);
+  try {
+    const response = await fetch(OIDC_TOKENS_ENDPOINT, {
+      method: 'POST',
+      headers,
+      body: urlEncodedBody.toString(),
+    });
 
-  return accessToken ?? null;
+    if (!response.ok) {
+      return null;
+    }
+
+    const accessTokenResponse: OAuthTokenResponse = await response.json();
+    return accessTokenResponse?.access_token ?? null;
+  } catch (e) {
+    console.error(
+      'authentication-controller/services: unable to get access token',
+      e,
+    );
+    return null;
+  }
 }
 
-export function createLoginRawMessage(nonce: string, publicKey: string) {
+export function createLoginRawMessage(
+  nonce: string,
+  publicKey: string,
+): `metamask:${string}:${string}` {
   return `metamask:${nonce}:${publicKey}` as const;
 }
