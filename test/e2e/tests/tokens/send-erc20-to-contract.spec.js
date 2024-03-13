@@ -34,11 +34,15 @@ describe('Send ERC20 token to contract address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
-        const sendButton = await driver.findElement(
-          '[data-testid="asset-send-button"]',
-        );
-        await driver.scrollToElement(sendButton);
-        sendButton.click();
+        try {
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+        } catch {
+          const sendButton = await driver.findElement(
+            '[data-testid="asset-send-button"]',
+          );
+          await driver.scrollToElement(sendButton);
+          sendButton.click();
+        }
 
         // Type contract address
         await driver.fill(

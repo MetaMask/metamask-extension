@@ -36,11 +36,15 @@ describe('Transfer custom tokens @no-mmi', function () {
           text: '10 TST',
         });
 
-        const sendButton = await driver.findElement(
-          '[data-testid="asset-send-button"]',
-        );
-        await driver.scrollToElement(sendButton);
-        sendButton.click();
+        try {
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+        } catch {
+          const sendButton = await driver.findElement(
+            '[data-testid="asset-send-button"]',
+          );
+          await driver.scrollToElement(sendButton);
+          sendButton.click();
+        }
 
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
