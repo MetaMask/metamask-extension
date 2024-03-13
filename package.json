@@ -285,7 +285,7 @@
     "@metamask/polling-controller": "^4.0.0",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.27.0",
-    "@metamask/providers": "^14.0.2",
+    "@metamask/providers": "^16.0.0",
     "@metamask/queued-request-controller": "^0.3.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
