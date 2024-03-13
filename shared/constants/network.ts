@@ -119,7 +119,8 @@ export const CHAIN_IDS = {
   BSC: '0x38',
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
-  OPTIMISM_TESTNET: '0x1a4',
+  OPTIMISM_TESTNET: '0xaa37dc',
+  OPTIMISM_GOERLI: '0x1a4',
   BASE: '0x2105',
   BASE_TESTNET: '0x14a33',
   OPBNB: '0xcc',
@@ -146,6 +147,7 @@ export const CHAIN_IDS = {
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
+  BLAST: '0x13e31',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -208,7 +210,7 @@ export const DEPRECATED_NETWORKS = [
   CHAIN_IDS.AURORA,
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
-  CHAIN_IDS.OPTIMISM_TESTNET,
+  CHAIN_IDS.OPTIMISM_GOERLI,
 ];
 
 /**
@@ -768,7 +770,7 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
   [CHAIN_IDS.OPTIMISM_TESTNET]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-goerli-optimistic`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-sepolia-optimistic`,
   },
   [CHAIN_IDS.POLYGON]: {
     domain: 'polygonscan.com',
@@ -838,6 +840,7 @@ export const BUYABLE_CHAINS_MAP: {
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CHAIN_IDS.OPTIMISM_GOERLI
     | typeof CHAIN_IDS.BASE_TESTNET
     | typeof CHAIN_IDS.BASE
     | typeof CHAIN_IDS.OPBNB_TESTNET
@@ -853,6 +856,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
+    | typeof CHAIN_IDS.BLAST
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

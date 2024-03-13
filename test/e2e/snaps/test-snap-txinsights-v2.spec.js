@@ -99,6 +99,12 @@ describe('Test Snap TxInsights-v2', function () {
           WINDOW_TITLES.Dialog,
           windowHandles,
         );
+
+        await driver.findClickableElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
         await driver.waitForSelector({
           text: 'Insights Example Snap',
           tag: 'button',

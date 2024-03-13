@@ -6,7 +6,6 @@ import {
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import {
-  checkNetworkAndAccountSupports1559,
   getCurrentCurrency,
   getShouldShowFiat,
   getPreferences,
@@ -132,7 +131,7 @@ export const generateUseSelectorRouter =
     if (selector === getCustomMaxPriorityFeePerGas) {
       return '0x5208';
     }
-    if (selector === checkNetworkAndAccountSupports1559) {
+    if (selector.toString().includes('checkNetworkAndAccountSupports1559')) {
       return checkNetworkAndAccountSupports1559Response;
     }
     if (selector === getCurrentKeyring) {

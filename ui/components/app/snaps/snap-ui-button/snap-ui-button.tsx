@@ -17,15 +17,13 @@ export const SnapUIButton: FunctionComponent<
       event.preventDefault();
     }
 
-    handleEvent(UserInputEventType.ButtonClickEvent, name);
+    handleEvent({ event: UserInputEventType.ButtonClickEvent, name });
   };
 
   return (
     <Button
       className="snap-ui-renderer__button"
       id={name}
-      marginTop={1}
-      marginBottom={1}
       type={type}
       onClick={handleClick}
       block
