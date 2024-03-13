@@ -53,13 +53,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apocentre/alias-sampling@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "@apocentre/alias-sampling@npm:0.5.3"
-  checksum: b1050c19a4391875d042d573eb24d2a885612b98e903b47f0a90e18c98c2b8c82b796f1e622bd9fe61a01ed2a420a47a8acf8af578654634776cefd9b7a32dcd
-  languageName: node
-  linkType: hard
-
 "@aw-web-design/x-default-browser@npm:1.4.126":
   version: 1.4.126
   resolution: "@aw-web-design/x-default-browser@npm:1.4.126"
@@ -4570,7 +4563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.3.3":
+"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0, @metamask/json-rpc-engine@npm:^7.3.1, @metamask/json-rpc-engine@npm:^7.3.2, @metamask/json-rpc-engine@npm:^7.3.3":
   version: 7.3.3
   resolution: "@metamask/json-rpc-engine@npm:7.3.3"
   dependencies:
@@ -4578,17 +4571,6 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.3.0"
   checksum: 116664c974c522d280335d9a02cba731e4f08562c2980415f7535513cd308c7e612e52618086996e5ac2b67db7f1e6ac1bd8201aba7825163db17a25f2874cc9
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0, @metamask/json-rpc-engine@npm:^7.3.1, @metamask/json-rpc-engine@npm:^7.3.2":
-  version: 7.3.2
-  resolution: "@metamask/json-rpc-engine@npm:7.3.2"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-  checksum: d90e5fdf88461aa90af41ba0304729200afa8226ab8b73db348704a1f545e416c49281a1dfd58591dde769e1ab263080b26d5a0ab1be8362398639dc2d6354de
   languageName: node
   linkType: hard
 
@@ -5603,7 +5585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.1.12":
+"@ngraveio/bc-ur@npm:^1.1.12, @ngraveio/bc-ur@npm:^1.1.5":
   version: 1.1.12
   resolution: "@ngraveio/bc-ur@npm:1.1.12"
   dependencies:
@@ -5615,21 +5597,6 @@ __metadata:
     jsbi: "npm:^3.1.5"
     sha.js: "npm:^2.4.11"
   checksum: 43f030019afc3074546acd61041827c0d6a81a523239f336a25e1540f5353bc69af8a83c9f0989a0bafdb72ebbd32de79965f001f092227caef8e96ee472e21e
-  languageName: node
-  linkType: hard
-
-"@ngraveio/bc-ur@npm:^1.1.5":
-  version: 1.1.6
-  resolution: "@ngraveio/bc-ur@npm:1.1.6"
-  dependencies:
-    "@apocentre/alias-sampling": "npm:^0.5.3"
-    assert: "npm:^2.0.0"
-    bignumber.js: "npm:^9.0.1"
-    cbor-sync: "npm:^1.0.4"
-    crc: "npm:^3.8.0"
-    jsbi: "npm:^3.1.5"
-    sha.js: "npm:^2.4.11"
-  checksum: 2fc883aca227b90e1e4a760ed7f85c439e84d358e0cd8db350746f538112ff8cbde20a79c0755cd8857b26c8ad5fe6fdef4bfd4a3f8fad26f53eba0692e7fa30
   languageName: node
   linkType: hard
 
