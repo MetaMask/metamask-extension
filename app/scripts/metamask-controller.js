@@ -2970,9 +2970,6 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getNetworkConfigurationByNetworkClientId.bind(
           this.networkController,
         ),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
       // PreferencesController
       setSelectedAddress: (address) => {
         const account = this.accountsController.getAccountByAddress(address);
