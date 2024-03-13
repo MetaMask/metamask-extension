@@ -571,6 +571,15 @@
   "basicConfigurationLabel": {
     "message": "Basic functionality"
   },
+  "basicConfigurationModalCheckbox": {
+    "message": "I understand and want to continue"
+  },
+  "basicConfigurationModalDisclaimer": {
+    "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalHeading": {
+    "message": "Turn off basic functionality"
+  },
   "beCareful": {
     "message": "Be careful"
   },
@@ -5758,6 +5767,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "turnOff": {
+    "message": "Turn off"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

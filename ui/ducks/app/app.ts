@@ -75,6 +75,7 @@ type AppState = {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
+  showBasicFunctionalityModal: boolean;
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
@@ -116,6 +117,7 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  showBasicFunctionalityModal: false,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -200,6 +202,12 @@ export default function reduceApp(
           ...action.payload,
         },
       };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN:
+      return { ...appState, showBasicFunctionalityModal: true };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE:
+      return { ...appState, showBasicFunctionalityModal: false };
 
     case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
       return {
