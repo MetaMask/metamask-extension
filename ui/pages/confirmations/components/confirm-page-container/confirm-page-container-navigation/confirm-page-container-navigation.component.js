@@ -37,10 +37,6 @@ const ConfirmPageContainerNavigation = () => {
 
   const enumUnapprovedTxs = unconfirmedTransactions
     .map((tx) => tx.id)
-    .sort(
-      (a1, a2) =>
-        unconfirmedTransactions[a1].time - unconfirmedTransactions[a2].time,
-    )
     .filter((key) => enumDecryptAndEncryptMsgs.includes(key) === false);
 
   const currentPosition = enumUnapprovedTxs.indexOf(id);
