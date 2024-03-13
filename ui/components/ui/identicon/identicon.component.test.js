@@ -1,9 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { getNftContractsOnCurrentChain } from '../../../ducks/metamask/metamask';
 import { getTokenList } from '../../../selectors';
+import { getNftContractsByAddressOnCurrentChain } from '../../../selectors/nft';
 import Identicon from '.';
 
 jest.mock('../../../selectors', () => ({
@@ -11,18 +10,12 @@ jest.mock('../../../selectors', () => ({
   getTokenList: jest.fn(),
 }));
 
-jest.mock('../../../ducks/metamask/metamask', () => ({
-  ...jest.requireActual('../../../ducks/metamask/metamask'),
-  getNftContractsOnCurrentChain: jest.fn(),
-}));
-
-jest.mock('ethereumjs-util', () => ({
-  ...jest.requireActual('ethereumjs-util'),
-  toChecksumAddress: jest.fn(),
+jest.mock('../../../selectors/nft', () => ({
+  ...jest.requireActual('../../../selectors/nft'),
+  getNftContractsByAddressOnCurrentChain: jest.fn(),
 }));
 
 const ADDRESS_MOCK = '0x0000000000000000000000000000000000000000';
-const ADDRESS_NORMALIZED_MOCK = '0x0000000000000000000000000000000000000001';
 
 const mockState = {
   metamask: {
@@ -37,15 +30,13 @@ const mockStore = configureMockStore()(mockState);
 
 describe('Identicon', () => {
   const getTokenListMock = jest.mocked(getTokenList);
-  const getNftContractsOnCurrentChainMock = jest.mocked(
-    getNftContractsOnCurrentChain,
+  const getNftContractsByAddressOnCurrentChainMock = jest.mocked(
+    getNftContractsByAddressOnCurrentChain,
   );
-  const toChecksumAddressMock = jest.mocked(toChecksumAddress);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    getNftContractsOnCurrentChainMock.mockReturnValue({});
-    toChecksumAddressMock.mockReturnValue(ADDRESS_NORMALIZED_MOCK);
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue({});
   });
 
   it('should match snapshot with default props', () => {
@@ -108,8 +99,8 @@ describe('Identicon', () => {
       address: ADDRESS_MOCK,
     };
 
-    getNftContractsOnCurrentChainMock.mockReturnValue({
-      [ADDRESS_NORMALIZED_MOCK]: {
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue({
+      [ADDRESS_MOCK]: {
         logo: 'https://test.com/testNftLogo.jpg',
       },
     });

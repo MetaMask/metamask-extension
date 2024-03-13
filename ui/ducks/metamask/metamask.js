@@ -17,7 +17,6 @@ import {
   getAddressBook,
   getSelectedNetworkClientId,
   getSelectedInternalAccount,
-  getMemoizedCurrentChainId,
 } from '../../selectors';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -312,42 +311,6 @@ export const getNftContracts = (state) => {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
-};
-
-export const getNftContractsByChain = (state) => {
-  const {
-    metamask: { allNftContracts },
-  } = state;
-
-  const userAccounts = Object.keys(allNftContracts);
-
-  return userAccounts.reduce((acc, account) => {
-    const accountChainIds = Object.keys(allNftContracts[account]);
-
-    for (const chainId of accountChainIds) {
-      const chainIdContracts = acc[chainId] ?? {};
-      acc[chainId] = chainIdContracts;
-
-      const accountChainNftContracts = allNftContracts[account][chainId];
-
-      for (const contract of accountChainNftContracts) {
-        if (chainIdContracts[contract.address]) {
-          continue;
-        }
-
-        chainIdContracts[contract.address] = contract;
-      }
-    }
-
-    return acc;
-  }, {});
-};
-
-export const getNftContractsOnCurrentChain = (state) => {
-  const currentChainId = getMemoizedCurrentChainId(state);
-  const nftContractsByChain = getNftContractsByChain(state);
-
-  return nftContractsByChain[currentChainId] ?? {};
 };
 
 export function getBlockGasLimit(state) {

@@ -1,8 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { getMemoizedMetadataContractName } from '../selectors';
-import { getNftContractsOnCurrentChain } from '../ducks/metamask/metamask';
+import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useName } from './useName';
 import { useFirstPartyContractName } from './useFirstPartyContractName';
 
@@ -33,8 +32,8 @@ export function useDisplayName(
     (getMemoizedMetadataContractName as any)(state, value),
   );
 
-  const watchedNftName = useSelector(getNftContractsOnCurrentChain)[
-    toChecksumAddress(value)
+  const watchedNftName = useSelector(getNftContractsByAddressOnCurrentChain)[
+    value.toLowerCase()
   ]?.name;
 
   const name =

@@ -1,7 +1,7 @@
 import { NameEntry, NameType } from '@metamask/name-controller';
-import { toChecksumAddress } from 'ethereumjs-util';
+import { NftContract } from '@metamask/assets-controllers';
 import { getMemoizedMetadataContractName } from '../selectors';
-import { getNftContractsOnCurrentChain } from '../ducks/metamask/metamask';
+import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useDisplayName } from './useDisplayName';
 import { useName } from './useName';
 import { useFirstPartyContractName } from './useFirstPartyContractName';
@@ -23,16 +23,11 @@ jest.mock('../selectors', () => ({
   getCurrentChainId: jest.fn(),
 }));
 
-jest.mock('../ducks/metamask/metamask', () => ({
-  getNftContractsOnCurrentChain: jest.fn(),
-}));
-
-jest.mock('ethereumjs-util', () => ({
-  toChecksumAddress: jest.fn(),
+jest.mock('../selectors/nft', () => ({
+  getNftContractsByAddressOnCurrentChain: jest.fn(),
 }));
 
 const VALUE_MOCK = '0xabc123';
-const VALUE_NORMALIZED_MOCK = '0xaBc123';
 const TYPE_MOCK = NameType.ETHEREUM_ADDRESS;
 const NAME_MOCK = 'TestName';
 const CONTRACT_NAME_MOCK = 'TestContractName';
@@ -51,9 +46,9 @@ const PETNAME_FOUND_RETURN_VALUE = {
 } as NameEntry;
 
 const WATCHED_NFT_FOUND_RETURN_VALUE = {
-  [VALUE_NORMALIZED_MOCK]: {
+  [VALUE_MOCK]: {
     name: WATCHED_NFT_NAME_MOCK,
-  },
+  } as NftContract,
 };
 
 describe('useDisplayName', () => {
@@ -62,10 +57,9 @@ describe('useDisplayName', () => {
     getMemoizedMetadataContractName,
   );
   const useFirstPartyContractNameMock = jest.mocked(useFirstPartyContractName);
-  const getNftContractsOnCurrentChainMock = jest.mocked(
-    getNftContractsOnCurrentChain,
+  const getNftContractsByAddressOnCurrentChainMock = jest.mocked(
+    getNftContractsByAddressOnCurrentChain,
   );
-  const toChecksumAddressMock = jest.mocked(toChecksumAddress);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -77,10 +71,9 @@ describe('useDisplayName', () => {
     getMemoizedMetadataContractNameMock.mockReturnValue(
       NO_CONTRACT_NAME_FOUND_RETURN_VALUE,
     );
-    getNftContractsOnCurrentChainMock.mockReturnValue(
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       NO_WATCHED_NFT_NAME_FOUND_RETURN_VALUE,
     );
-    toChecksumAddressMock.mockReturnValue(VALUE_NORMALIZED_MOCK);
   });
 
   it('handles no name found', () => {
@@ -96,7 +89,7 @@ describe('useDisplayName', () => {
       FIRST_PARTY_CONTRACT_NAME_MOCK,
     );
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
-    getNftContractsOnCurrentChainMock.mockReturnValue(
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
@@ -111,7 +104,7 @@ describe('useDisplayName', () => {
       FIRST_PARTY_CONTRACT_NAME_MOCK,
     );
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
-    getNftContractsOnCurrentChainMock.mockReturnValue(
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
@@ -123,7 +116,7 @@ describe('useDisplayName', () => {
 
   it('prioritizes a contract name over a watched NFT name', () => {
     getMemoizedMetadataContractNameMock.mockReturnValue(CONTRACT_NAME_MOCK);
-    getNftContractsOnCurrentChainMock.mockReturnValue(
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 
@@ -134,7 +127,7 @@ describe('useDisplayName', () => {
   });
 
   it('returns a watched NFT name if no other name is found', () => {
-    getNftContractsOnCurrentChainMock.mockReturnValue(
+    getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       WATCHED_NFT_FOUND_RETURN_VALUE,
     );
 

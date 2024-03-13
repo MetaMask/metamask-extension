@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
-import { toChecksumAddress } from 'ethereumjs-util';
 import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -147,12 +146,12 @@ export default class Identicon extends Component {
 
   getTokenImage() {
     const { address, tokenList } = this.props;
-    return tokenList[address.toLowerCase()]?.iconUrl;
+    return tokenList[address?.toLowerCase()]?.iconUrl;
   }
 
   getNftImage() {
     const { address, watchedNftContracts } = this.props;
-    return watchedNftContracts[toChecksumAddress(address)]?.logo;
+    return watchedNftContracts[address?.toLowerCase()]?.logo;
   }
 
   getTokenList() {

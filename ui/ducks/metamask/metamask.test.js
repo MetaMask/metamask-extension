@@ -14,8 +14,6 @@ import reduceMetamask, {
   getGasFeeEstimates,
   getIsNetworkBusy,
   getNativeCurrency,
-  getNftContractsByChain,
-  getNftContractsOnCurrentChain,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
   getTransactionGasFeeEstimates,
@@ -55,14 +53,6 @@ const TRANSACTION_ESTIMATES_MOCK = {
     maxPriorityFeePerGas: '0x2',
   },
 };
-
-function buildNftContractMock(index) {
-  return {
-    address: `0x${index}`,
-    name: `Contract ${index}`,
-    logo: `test${index}.jpg`,
-  };
-}
 
 describe('MetaMask Reducers', () => {
   const mergeGasFeeEstimatesMock = jest.mocked(mergeGasFeeEstimates);
@@ -668,85 +658,6 @@ describe('MetaMask Reducers', () => {
         gasFeeControllerEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
-      });
-    });
-  });
-
-  describe('getNftContractsByChain', () => {
-    it('returns all contracts keyed by chain ID', () => {
-      const contractMock1 = buildNftContractMock(1);
-      const contractMock2 = buildNftContractMock(2);
-      const contractMock3 = buildNftContractMock(3);
-      const contractMock4 = buildNftContractMock(4);
-      const contractMock5 = buildNftContractMock(5);
-      const chainIdMock1 = '0x1';
-      const chainIdMock2 = '0x2';
-      const userAccountMock1 = '0x3';
-      const userAccountMock2 = '0x4';
-
-      const state = {
-        metamask: {
-          allNftContracts: {
-            [userAccountMock1]: {
-              [chainIdMock1]: [contractMock1, contractMock2],
-              [chainIdMock2]: [contractMock4],
-            },
-            [userAccountMock2]: {
-              [chainIdMock1]: [contractMock2, contractMock3],
-              [chainIdMock2]: [contractMock5],
-            },
-          },
-        },
-      };
-
-      expect(getNftContractsByChain(state)).toStrictEqual({
-        [chainIdMock1]: {
-          [contractMock1.address]: contractMock1,
-          [contractMock2.address]: contractMock2,
-          [contractMock3.address]: contractMock3,
-        },
-        [chainIdMock2]: {
-          [contractMock4.address]: contractMock4,
-          [contractMock5.address]: contractMock5,
-        },
-      });
-    });
-  });
-
-  describe('getNftContractsOnCurrentChain', () => {
-    it('returns all contracts keyed by chain ID', () => {
-      const contractMock1 = buildNftContractMock(1);
-      const contractMock2 = buildNftContractMock(2);
-      const contractMock3 = buildNftContractMock(3);
-      const contractMock4 = buildNftContractMock(4);
-      const contractMock5 = buildNftContractMock(5);
-      const chainIdMock1 = '0x1';
-      const chainIdMock2 = '0x2';
-      const userAccountMock1 = '0x3';
-      const userAccountMock2 = '0x4';
-
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: chainIdMock1,
-          },
-          allNftContracts: {
-            [userAccountMock1]: {
-              [chainIdMock1]: [contractMock1, contractMock2],
-              [chainIdMock2]: [contractMock4],
-            },
-            [userAccountMock2]: {
-              [chainIdMock1]: [contractMock2, contractMock3],
-              [chainIdMock2]: [contractMock5],
-            },
-          },
-        },
-      };
-
-      expect(getNftContractsOnCurrentChain(state)).toStrictEqual({
-        [contractMock1.address]: contractMock1,
-        [contractMock2.address]: contractMock2,
-        [contractMock3.address]: contractMock3,
       });
     });
   });
