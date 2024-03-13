@@ -76,6 +76,76 @@ const PermissionCell = ({
     permissionIcon = avatarIcon.props.iconName;
   }
 
+  const renderAccountsGroup = () => (
+    <Box
+      as="span"
+      className="permission-cell__accounts-group-box"
+      display={Display.InlineFlex}
+    >
+      <Tooltip
+        position="bottom"
+        html={
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
+            <Text
+              variant={TextVariant.headingSm}
+              color={TextColor.textAlternative}
+              textAlign={TextAlign.Center}
+            >
+              {t('accounts')}
+            </Text>
+            <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+              {accounts.map((account, index) => (
+                <Box
+                  key={`${account.avatarValue}_${index}`}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.flexStart}
+                  alignItems={AlignItems.center}
+                  marginTop={2}
+                >
+                  <AvatarAccount
+                    address={account.avatarValue}
+                    size={AvatarAccountSize.Xs}
+                    borderColor={BorderColor.backgroundDefault}
+                  />
+                  <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                    {account.avatarName}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        }
+      >
+        <AvatarGroup
+          limit={3}
+          members={accounts}
+          avatarType={AvatarType.ACCOUNT}
+          size={AvatarTokenSize.Xs}
+          width={BlockSize.Min}
+          borderColor={BorderColor.backgroundDefault}
+          marginLeft={4}
+          paddingLeft={4}
+        />
+      </Tooltip>
+    </Box>
+  );
+
+  let accountGroup = '';
+  let statusRequestedTranslation = 'permissionRequested';
+  let statusApprovedTranslation = 'approvedOn';
+  let statusRevokedTranslation = 'permissionRevoked';
+  if (accounts && accounts.length) {
+    accountGroup = renderAccountsGroup();
+    statusRequestedTranslation = 'permissionRequestedForAccounts';
+    statusApprovedTranslation = 'approvedOnForAccounts';
+    statusRevokedTranslation = 'permissionRevokedForAccounts';
+  }
+
   return (
     <Box
       className="permission-cell"
@@ -126,77 +196,12 @@ const PermissionCell = ({
           >
             {!revoked &&
               (dateApproved
-                ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
-                : t('permissionRequested'))}
-            {revoked ? t('permissionRevoked') : ''}
-            {accounts && accounts.length && (
-              <Box as="span" display={Display.Flex}>
-                <Text
-                  as="span"
-                  variant={TextVariant.inherit}
-                  color={TextColor.inherit}
-                >
-                  {' '}
-                  {t('for')}{' '}
-                </Text>
-                <Tooltip
-                  position="bottom"
-                  html={
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      justifyContent={JustifyContent.center}
-                      alignItems={AlignItems.center}
-                    >
-                      <Text
-                        variant={TextVariant.headingSm}
-                        color={TextColor.textAlternative}
-                        textAlign={TextAlign.Center}
-                      >
-                        {t('accounts')}
-                      </Text>
-                      <Box
-                        display={Display.Flex}
-                        flexDirection={FlexDirection.Column}
-                      >
-                        {accounts.map((account, index) => (
-                          <Box
-                            key={`${account.avatarValue}_${index}`}
-                            display={Display.Flex}
-                            justifyContent={JustifyContent.flexStart}
-                            alignItems={AlignItems.center}
-                            marginTop={2}
-                          >
-                            <AvatarAccount
-                              address={account.avatarValue}
-                              size={AvatarAccountSize.Xs}
-                              borderColor={BorderColor.backgroundDefault}
-                            />
-                            <Text
-                              variant={TextVariant.bodyMdMedium}
-                              marginLeft={2}
-                            >
-                              {account.avatarName}
-                            </Text>
-                          </Box>
-                        ))}
-                      </Box>
-                    </Box>
-                  }
-                >
-                  <AvatarGroup
-                    limit={3}
-                    members={accounts}
-                    avatarType={AvatarType.ACCOUNT}
-                    size={AvatarTokenSize.Xs}
-                    width={BlockSize.Min}
-                    borderColor={BorderColor.backgroundDefault}
-                    marginLeft={4}
-                    paddingLeft={4}
-                  />
-                </Tooltip>
-              </Box>
-            )}
+                ? t(statusApprovedTranslation, [
+                    formatDate(dateApproved, 'yyyy-MM-dd'),
+                    accountGroup,
+                  ])
+                : t(statusRequestedTranslation, [accountGroup]))}
+            {revoked ? t(statusRevokedTranslation, [accountGroup]) : ''}
           </Text>
         )}
       </Box>
