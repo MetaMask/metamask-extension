@@ -6,21 +6,20 @@ type flowTypes = 'create' | 'import';
  * The state of the OnboardingController
  */
 export type OnboardingControllerState = {
-  seedPhraseBackedUp: boolean;
+  seedPhraseBackedUp: boolean | null;
   firstTimeFlowType: flowTypes | null;
   completedOnboarding: boolean;
-  onboardingTabs: Record<string, string>;
+  onboardingTabs?: Record<string, string>;
 };
 
 const defaultTransientState: Record<string, Record<string, string>> = {
   onboardingTabs: {},
 };
 
-const defaultState: OnboardingControllerState = {
-  seedPhraseBackedUp: false,
+const defaultState: Partial<OnboardingControllerState> = {
+  seedPhraseBackedUp: null,
   firstTimeFlowType: null,
   completedOnboarding: false,
-  onboardingTabs: {},
 };
 
 /**
@@ -52,7 +51,7 @@ export default class OnboardingController {
    *
    * @param newSeedPhraseBackUpState - Indicates if the seedphrase is backup by the user or not
    */
-  setSeedPhraseBackedUp(newSeedPhraseBackUpState: boolean) {
+  setSeedPhraseBackedUp(newSeedPhraseBackUpState: boolean): void {
     this.store.updateState({
       seedPhraseBackedUp: newSeedPhraseBackUpState,
     });
@@ -74,7 +73,7 @@ export default class OnboardingController {
    *
    * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
    */
-  setFirstTimeFlowType(type: flowTypes) {
+  setFirstTimeFlowType(type: flowTypes): void {
     this.store.updateState({ firstTimeFlowType: type });
   }
 
@@ -84,7 +83,10 @@ export default class OnboardingController {
    * @param location - The location of the site registering
    * @param tabId - The id of the tab registering
    */
-  registerOnboarding = async (location: string, tabId: string) => {
+  registerOnboarding = async (
+    location: string,
+    tabId: string,
+  ): Promise<void> => {
     if (this.store.getState().completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
