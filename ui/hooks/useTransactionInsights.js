@@ -15,7 +15,7 @@ import { SnapInsight } from '../components/app/snaps/snap-insight/snap-insight';
 import {
   getInsightSnapIds,
   getInsightSnaps,
-  getInsightSnapsMetadata,
+  getSnapsMetadata,
 } from '../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { deleteInterface } from '../store/actions';
@@ -40,7 +40,7 @@ const useTransactionInsights = ({ txData }) => {
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
   const insightSnapIds = useSelector(getInsightSnapIds);
-  const insightSnapsMetadata = useSelector(getInsightSnapsMetadata);
+  const snapsMetadata = useSelector(getSnapsMetadata);
 
   /**
    * Get the snap name from the snap ID.
@@ -52,7 +52,7 @@ const useTransactionInsights = ({ txData }) => {
    * @returns {string | undefined} The snap name if it exists, or `undefined`.
    */
   const getSnapName = (id) => {
-    const snap = insightSnapsMetadata[id];
+    const snap = snapsMetadata[id];
     return snap?.name;
   };
 
