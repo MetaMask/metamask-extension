@@ -22,6 +22,7 @@ export default {
     imageBorder: { control: 'boolean' },
     useTokenDetection: { control: 'boolean' },
     tokenList: { control: 'object' },
+    watchedNftContracts: { control: 'object' },
   },
 };
 

@@ -57,6 +57,9 @@ export default class Identicon extends Component {
      * User preferred IPFS gateway
      */
     ipfsGateway: PropTypes.string,
+    /**
+     * Watched NFT contract data keyed by address
+     */
     watchedNftContracts: PropTypes.object,
   };
 
@@ -73,6 +76,7 @@ export default class Identicon extends Component {
     useBlockie: false,
     alt: '',
     tokenList: {},
+    watchedNftContracts: {},
   };
 
   renderImage() {
