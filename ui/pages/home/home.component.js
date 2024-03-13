@@ -40,6 +40,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   IconColor,
   BackgroundColor,
+  Severity,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -53,6 +54,7 @@ import {
   Text,
   BannerBase,
   Icon,
+  BannerAlert,
 } from '../../components/component-library';
 
 import {
@@ -195,6 +197,8 @@ export default class Home extends PureComponent {
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     showSurveyToast: PropTypes.bool.isRequired,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
+    disableExternalServices: PropTypes.bool,
+    setBasicFunctionalityModalOpen: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -783,6 +787,8 @@ export default class Home extends PureComponent {
     const {
       defaultHomeActiveTabName,
       onTabClick,
+      disableExternalServices,
+      setBasicFunctionalityModalOpen,
       forgottenPassword,
       history,
       setSurveyLinkLastClickedOrClosed,
@@ -873,6 +879,24 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
+            {disableExternalServices ? (
+              <BannerAlert
+                margin={4}
+                marginBottom={0}
+                severity={Severity.Danger}
+                actionButtonLabel={t('basicConfigurationBannerCTA')}
+                actionButtonOnClick={() => {
+                  setBasicFunctionalityModalOpen();
+                  // TODO:
+                  // 1) make this modal text dynamic for "turn on/off" in the title and modal CTA button
+                  // 2) add toggle to onboarding, defaulted to true
+                  // 3) disable ENS setting & any others that are not "basic functionality"
+                }}
+                title={t('basicConfigurationBannerTitle')}
+              >
+                {t('basicConfigurationBannerDescription')}
+              </BannerAlert>
+            ) : null}
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

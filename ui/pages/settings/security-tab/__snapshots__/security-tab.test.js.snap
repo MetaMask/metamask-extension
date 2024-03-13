@@ -6,6 +6,72 @@ exports[`Security Tab should match snapshot 1`] = `
     class="settings-page__body"
   >
     <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-show-testnet-conversion"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Basic functionality
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Includes token data and value, optimal gas settings, security updates, and more. Using these services shares your IP address with MetaMask, just like when you visit a website.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
       class="settings-tab__error"
     >
       warning
