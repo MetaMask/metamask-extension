@@ -1,25 +1,20 @@
 import pify from 'pify';
+import type EthQuery from '@metamask/eth-query';
 
 export type Contract = {
   contractCode: string | null;
   isContractAddress: boolean;
 };
 
-// Note(@dbrans): This is a simplified version of the 'EthQuery' interface specific to this file.
-type EthQueryWithGetCode = {
-  getCode: (
-    address: string,
-    cb: (err: Error, contractCode: string) => void,
-  ) => void;
-};
-
 export const readAddressAsContract = async (
-  ethQuery: EthQueryWithGetCode,
+  ethQuery: EthQuery,
   address: string,
 ): Promise<Contract> => {
-  let contractCode: string | null;
+  let contractCode: string | null = null;
   try {
-    contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
+    if (ethQuery && 'getCode' in ethQuery) {
+      contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
+    }
   } catch (err) {
     // TODO(@dbrans): Dangerous to swallow errors here.
     contractCode = null;
