@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act, fireEvent } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
 import { SEND_STAGES } from '../../ducks/send';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
