@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
+import { useSelector } from 'react-redux';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE } from '../../../shared/constants/time';
+import { getShouldShowFiat } from '../../selectors';
 import { chainSupportsPricing } from './util';
 
 /** Time range units supported by the price API */
@@ -19,7 +21,9 @@ export const useHistoricalPrices = ({
   currency: string;
   timeRange: TimeRange;
 }) => {
-  const chainSupported = chainSupportsPricing(chainId);
+  const showFiat = useSelector(getShouldShowFiat);
+  const chainSupported = showFiat && chainSupportsPricing(chainId);
+
   const [loading, setLoading] = useState<boolean>(chainSupported);
   const [data, setData] = useState<{
     prices?: Point[];
