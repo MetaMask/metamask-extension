@@ -159,9 +159,6 @@
   "accountsConnected": {
     "message": "Accounts connected"
   },
-  "accountsPinningBannerDescription": {
-    "message": "Keep tabs on what matters by pinning or hiding accounts"
-  },
   "active": {
     "message": "Active"
   },
