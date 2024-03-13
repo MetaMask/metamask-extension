@@ -33,28 +33,3 @@ jobs:
           # then saved to a file called "diff".
           git diff "$(git merge-base "origin/$BASE_REF" HEAD)" HEAD -- . > ./diff
           npm run fitness-functions -- "ci" "./diff"
-
-  update-codespaces-badge:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-
-      # This use of an ENV variable is neccessary to avoid an injection attack, see:
-      # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
-      BODY: ${{ github.event.pull_request.body }}
-
-    steps:
-      - name: Replace the text in the Codespaces badge with the PR number
-        run: |
-          #!/bin/bash
-
-          # Bash replace syntax
-          NEW_BODY="${BODY/PR?quickstart=1/$PR_NUMBER?quickstart=1}"
-
-          # If the body has changed as a result of the replace, use the GitHub API to update the PR
-          if [ "$NEW_BODY" != "$BODY" ]; then
-            gh api /repos/MetaMask/metamask-extension/pulls/${{github.event.pull_request.number}} -f body="$NEW_BODY"
-          fi
