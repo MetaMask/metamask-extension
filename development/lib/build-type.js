@@ -147,7 +147,7 @@ function loadBuildTypesConfig() {
     });
   }
   cachedBuildTypes = result;
-  return buildsData;
+  return cachedBuildTypes;
 }
 
 /**
