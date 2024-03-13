@@ -253,12 +253,7 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(
-          driver,
-          GANACHE_ACCOUNT,
-          convertETHToHexGwei(1),
-          true,
-        );
+        await sendTransaction(driver, GANACHE_ACCOUNT, 1, true);
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
