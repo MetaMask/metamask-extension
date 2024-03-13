@@ -9,6 +9,7 @@ type UsePollingOptions = {
   stopPollingByPollingToken: (pollingToken: string) => void;
   networkClientId: string;
   options?: any;
+  enabled?: boolean
 };
 
 const usePolling = (usePollingOptions: UsePollingOptions) => {
@@ -16,6 +17,10 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   let isMounted = false;
   useEffect(() => {
+    if (usePollingOptions.enabled === false) {
+      return
+    }
+
     isMounted = true;
 
     const cleanup = () => {
@@ -24,6 +29,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         cleanupRef.current?.(pollTokenRef.current);
       }
     };
+
     // Start polling when the component mounts
     usePollingOptions
       .startPollingByNetworkClientId(
@@ -50,6 +56,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
         usePollingOptions.options,
         Object.keys(usePollingOptions.options).sort(),
       ),
+    usePollingOptions.enabled
   ]);
 };
 
