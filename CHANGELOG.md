@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [11.12.0]
 ### Added
 - Introduced deprecation warnings for Arbitrum Goerli and OP Goerli test networks ([#23071](https://github.com/MetaMask/metamask-extension/pull/23071))
-- Added an error message for contract deployment attempts via user operations ([#23027](https://github.com/MetaMask/metamask-extension/pull/23027))
 - Added origin details to personal sign page ([#22763](https://github.com/MetaMask/metamask-extension/pull/22763))
 - Enhanced snap functionality with dynamic interfaces, customizable timeouts, and faster installations ([#22828](https://github.com/MetaMask/metamask-extension/pull/22828))
 - Added a 'Connect Account' button in the account list menu for easier account connections ([#22941](https://github.com/MetaMask/metamask-extension/pull/22941))
