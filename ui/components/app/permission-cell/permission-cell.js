@@ -135,8 +135,6 @@ const PermissionCell = ({
                   as="span"
                   variant={TextVariant.inherit}
                   color={TextColor.inherit}
-                  marginLeft={1}
-                  marginRight={1}
                 >
                   {' '}
                   {t('for')}{' '}
@@ -168,8 +166,6 @@ const PermissionCell = ({
                             justifyContent={JustifyContent.flexStart}
                             alignItems={AlignItems.center}
                             marginTop={2}
-                            paddingLeft={4}
-                            paddingRight={4}
                           >
                             <AvatarAccount
                               address={account.avatarValue}
