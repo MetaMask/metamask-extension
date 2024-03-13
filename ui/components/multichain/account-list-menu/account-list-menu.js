@@ -358,27 +358,6 @@ export const AccountListMenu = ({
                 />
               </Box>
             ) : null}
-            {/* Accounts Pinning Update Banner */}
-            {showBanner ? (
-              <BannerBase
-                className="network-list-menu__banner"
-                marginLeft={4}
-                marginRight={4}
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                startAccessory={
-                  <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                  >
-                    <img src="./images/pinning-animation.svg" alt="pinning" />
-                  </Box>
-                }
-                onClose={() => hideAccountBanner()}
-                description={t('accountsPinningBannerDescription')}
-                marginBottom={4}
-              />
-            ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
               {searchResults.length === 0 && searchQuery !== '' ? (
