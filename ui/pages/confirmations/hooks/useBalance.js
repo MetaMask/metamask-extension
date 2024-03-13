@@ -4,9 +4,9 @@ import {
   getSelectedAccountCachedBalance,
   getShouldHideZeroBalanceTokens,
   getShowFiatInTestnets,
-} from '../selectors';
-import { TEST_NETWORKS } from '../../shared/constants/network';
-import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';
+} from '../../../selectors';
+import { TEST_NETWORKS } from '../../../../shared/constants/network';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 export const useBalance = (fromAddress) => {
   const shouldHideZeroBalanceTokens = useSelector(

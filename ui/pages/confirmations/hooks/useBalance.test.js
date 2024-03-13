@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
-import configureStore from '../store/store';
+import configureStore from '../../../store/store';
 import { useBalance } from './useBalance';
 
 const renderUseBalance = (fromAddress, stateVariables = {}) => {

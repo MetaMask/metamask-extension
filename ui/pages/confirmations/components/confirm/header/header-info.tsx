@@ -29,7 +29,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { getUseBlockie } from '../../../../../selectors';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
-import { useBalance } from '../../../../../hooks/useBalance';
+import { useBalance } from '../../../hooks/useBalance';
 
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
