@@ -48,6 +48,15 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16);
 
 jest.mock('../../../store/actions', () => ({
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      chainId: '0x5',
+    }),
+  ),
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   getGasFeeEstimatesAndStartPolling: jest
@@ -85,6 +94,14 @@ const render = (
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 

@@ -11,7 +11,21 @@ export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
-    identity: PropTypes.object.isRequired,
+    identity: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      address: PropTypes.string.isRequired,
+      metadata: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        snap: PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          enabled: PropTypes.bool,
+        }),
+        keyring: PropTypes.shape({
+          type: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    }).isRequired,
     chainId: PropTypes.string.isRequired,
     rpcPrefs: PropTypes.object.isRequired,
   };
@@ -43,7 +57,7 @@ export default class ConfirmRemoveAccount extends Component {
           <span className="confirm-remove-account__account__label">
             {t('name')}
           </span>
-          <span className="account_value">{identity.name}</span>
+          <span className="account_value">{identity.metadata.name}</span>
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">
