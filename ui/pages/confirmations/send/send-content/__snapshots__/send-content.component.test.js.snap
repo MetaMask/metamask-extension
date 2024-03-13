@@ -239,7 +239,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                         data-testid="gas-timing-time"
                       >
                         ~
-                        
+
                       </span>
                     </p>
                   </div>
@@ -287,5 +287,3 @@ exports[`SendContent Component render should match snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`SendContent Component render should match snapshot 2`] = `<div />`;
