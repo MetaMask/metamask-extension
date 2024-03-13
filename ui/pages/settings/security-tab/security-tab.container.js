@@ -13,6 +13,7 @@ import {
   setDisableExternalServices,
   setTransactionSecurityCheckEnabled,
   setUseAddressBarEnsResolution,
+  openBasicFunctionalityModal,
   setOpenSeaEnabled,
   setUseNftDetection,
   setUse4ByteResolution,
@@ -101,6 +102,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseAddressBarEnsResolution(val)),
     setUseSafeChainsListValidation: (val) =>
       dispatch(setUseSafeChainsListValidation(val)),
+    setBasicFunctionalityModalOpen: () =>
+      dispatch(openBasicFunctionalityModal()),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {

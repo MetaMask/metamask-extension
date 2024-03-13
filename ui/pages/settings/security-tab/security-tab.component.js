@@ -81,6 +81,8 @@ export default class SecurityTab extends PureComponent {
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
+    setBasicFunctionalityModalOpen: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: PropTypes.func.isRequired,
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
@@ -994,7 +996,11 @@ export default class SecurityTab extends PureComponent {
 
   renderDisableExternalServices() {
     const { t } = this.context;
-    const { disableExternalServices, setDisableExternalServices } = this.props;
+    const {
+      disableExternalServices,
+      setDisableExternalServices,
+      setBasicFunctionalityModalOpen,
+    } = this.props;
 
     return (
       <Box
@@ -1016,7 +1022,13 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={disableExternalServices}
-            onToggle={(value) => setDisableExternalServices(!value)}
+            onToggle={(value) => {
+              if (value) {
+                setBasicFunctionalityModalOpen();
+              } else {
+                setDisableExternalServices(!value);
+              }
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />

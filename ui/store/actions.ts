@@ -2588,6 +2588,18 @@ export function showImportNftsModal(payload: {
   };
 }
 
+export function openBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
+  };
+}
+
+export function hideBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE,
+  };
+}
+
 export function hideImportNftsModal(): Action {
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
@@ -3368,7 +3380,7 @@ export function setIpfsGateway(
 }
 
 export function setDisableExternalServices(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setDisableExternalServices`);
