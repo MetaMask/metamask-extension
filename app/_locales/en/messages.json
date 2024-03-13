@@ -1983,8 +1983,8 @@
   "highLowercase": {
     "message": "high"
   },
-  "historicalPricesCouldNotBeFetched": {
-    "message": "Historical prices could not be fetched"
+  "historicalPricesWereNotFound": {
+    "message": "Historical prices were not found"
   },
   "history": {
     "message": "History"
@@ -3670,8 +3670,8 @@
   "prev": {
     "message": "Prev"
   },
-  "pricesCouldNotBeFetched": {
-    "message": "Prices could not be fetched"
+  "pricingIsNotSupportedOnThisNetwork": {
+    "message": "Pricing is not supported on this network"
   },
   "primaryCurrencySetting": {
     "message": "Primary currency"

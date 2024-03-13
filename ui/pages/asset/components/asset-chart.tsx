@@ -15,6 +15,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
+import { useSelector } from 'react-redux';
 import { useTheme } from '../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -24,6 +25,7 @@ import {
   TextVariant,
   BorderRadius,
   TextAlign,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -33,6 +35,8 @@ import {
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TimeRange, useHistoricalPrices } from '../useHistoricalPrices';
+import { getShouldShowFiat } from '../../../selectors';
+import { chainSupportsPricing } from '../util';
 import AssetPrice from './asset-price';
 import ChartTooltip from './chart-tooltip';
 
@@ -105,7 +109,7 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
     point: { pointStyle: false },
   },
   plugins: {
-    // Downsample to maximum number of points
+    // Downsample to a maximum number of points
     decimation: {
       algorithm: 'lttb',
       samples: 150,
@@ -129,6 +133,10 @@ const AssetChart = ({
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
+
+  const showFiat = useSelector(getShouldShowFiat);
+  const chainSupported = showFiat && chainSupportsPricing(chainId);
+
   const [timeRange, setTimeRange] = useState<TimeRange>('1D');
 
   const chartRef = useRef<Chart<'line', Point[]>>();
@@ -156,23 +164,16 @@ const AssetChart = ({
     },
   } as const;
 
-  const noData = !loading && !prices;
+  const noPriceHistory = !loading && !prices;
+  const noPrices = noPriceHistory && !currentPrice;
 
   return (
     <Box
-      className={classnames({
-        'asset__chart--no-data': noData && !currentPrice,
-        'asset__chart--no-data-dark':
-          noData && !currentPrice && theme === 'dark',
-      })}
+      className={classnames({ [`asset__chart--no-data-${theme}`]: noPrices })}
+      marginTop={noPrices ? 6 : 0}
       marginLeft={4}
       marginRight={4}
       borderRadius={BorderRadius.LG}
-      backgroundColor={
-        loading || prices
-          ? BackgroundColor.backgroundDefault
-          : BackgroundColor.transparent
-      }
     >
       <AssetPrice
         ref={priceRef}
@@ -184,10 +185,9 @@ const AssetChart = ({
       />
       <Box
         className={classnames({
-          'asset__chart--no-data': noData,
-          'asset__chart--no-data-dark': noData && theme === 'dark',
+          [`asset__chart--no-data-${theme}`]: noPriceHistory,
         })}
-        {...(noData ? { paddingTop: 4 } : { marginTop: 4 })}
+        {...(noPriceHistory ? { paddingTop: 4 } : { marginTop: 4 })}
         borderRadius={BorderRadius.LG}
         backgroundColor={
           loading && !prices
@@ -197,8 +197,28 @@ const AssetChart = ({
       >
         <Box style={{ opacity: loading && prices ? 0.2 : 1 }}>
           <ChartTooltip point={yMax} {...edges} currency={currency} />
-          <Box style={{ aspectRatio: `${options.aspectRatio}` }}>
-            {loading || prices ? (
+          <Box
+            style={{ aspectRatio: `${options.aspectRatio}` }}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={
+              currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
+            }
+          >
+            {noPriceHistory ? (
+              <Box textAlign={TextAlign.Center}>
+                <img width="33%" src="./images/chart.webp"></img>
+                <Text
+                  variant={TextVariant.bodySmMedium}
+                  color={TextColor.textAlternative}
+                  paddingTop={2}
+                >
+                  {chainSupported
+                    ? t('historicalPricesWereNotFound')
+                    : t('pricingIsNotSupportedOnThisNetwork')}
+                </Text>
+              </Box>
+            ) : (
               <Line
                 ref={chartRef}
                 data={{ datasets: [{ data: prices }] }}
@@ -236,19 +256,6 @@ const AssetChart = ({
                   });
                 }}
               />
-            ) : (
-              <Box textAlign={TextAlign.Center}>
-                <img width="35%" src="./images/chart.webp"></img>
-                <Text
-                  variant={TextVariant.bodySmMedium}
-                  color={TextColor.textAlternative}
-                  margin={4}
-                >
-                  {currentPrice
-                    ? t('historicalPricesCouldNotBeFetched')
-                    : t('pricesCouldNotBeFetched')}
-                </Text>
-              </Box>
             )}
           </Box>
           <ChartTooltip point={yMin} {...edges} currency={currency} />
@@ -261,6 +268,7 @@ const AssetChart = ({
           marginTop={4}
         >
           {((buttons: [string, TimeRange][]) =>
+            !noPrices &&
             buttons.map(([label, range]) => (
               <ButtonBase
                 key={range}
