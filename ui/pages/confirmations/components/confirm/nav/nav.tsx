@@ -33,7 +33,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   currentConfirmationSelector,
-  pendingConfirmationsSelector,
+  pendingConfirmationsSortedSelector,
 } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
 
@@ -47,14 +47,14 @@ const Nav = () => {
   const history = useHistory();
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
-  const pendingConfirmations = useSelector(pendingConfirmationsSelector);
+  const pendingConfirmations = useSelector(pendingConfirmationsSortedSelector);
   const dispatch = useDispatch();
 
   const currentConfirmationPosition = useMemo(() => {
     if (pendingConfirmations?.length <= 0 || !currentConfirmation) {
       return 0;
     }
-    return pendingConfirmations.sort((a1, a2) => a1.time - a2.time).findIndex(
+    return pendingConfirmations.findIndex(
       ({ id }) => id === currentConfirmation.id,
     );
   }, [currentConfirmation, pendingConfirmations]);

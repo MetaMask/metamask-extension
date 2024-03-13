@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  unconfirmedTransactionsHashSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
+  unconfirmedTransactionsListSelector,
 } from '../../../../../selectors';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
@@ -24,7 +24,7 @@ const ConfirmPageContainerNavigation = () => {
     unapprovedEncryptionPublicKeyMsgsSelector,
   );
   const unconfirmedTransactions = useSelector(
-    unconfirmedTransactionsHashSelector,
+    unconfirmedTransactionsListSelector,
   );
 
   const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs || {});
@@ -36,7 +36,8 @@ const ConfirmPageContainerNavigation = () => {
     ...enumUnapprovedEncryptMsgsKey,
   ];
 
-  const enumUnapprovedTxs = Object.keys(unconfirmedTransactions)
+  const enumUnapprovedTxs = unconfirmedTransactions
+    .map((tx) => tx.id)
     .sort(
       (a1, a2) =>
         unconfirmedTransactions[a1].time - unconfirmedTransactions[a2].time,

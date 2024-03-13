@@ -35,12 +35,12 @@ const useCurrentConfirmation = () => {
         ({ id: confirmId }) => confirmId === paramsTransactionId,
       );
     }
-    if (!pendingConfirmation && latestPendingConfirmation) {
-      pendingConfirmation = latestPendingConfirmation;
-    }
     if (!pendingConfirmation) {
-      setCurrentConfirmation(undefined);
-      return;
+      if (!latestPendingConfirmation) {
+        setCurrentConfirmation(undefined);
+        return;
+      }
+      pendingConfirmation = latestPendingConfirmation;
     }
     if (pendingConfirmation.id !== currentConfirmation?.id) {
       // currently re-design is enabled only for personal signatures
