@@ -1683,10 +1683,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@blockaid/ppom_release@npm:1.4.1"
-  checksum: 6fff1d24cdfe5a1457b7f64b169f225e67ccbed48c3f5d61b4d24514b7b60cf67bbf130808d7b9cd88d490a86d689afd4b90820929d140526fcd8759b3a4bc6b
+"@blockaid/ppom_release@npm:^1.4.4":
+  version: 1.4.4
+  resolution: "@blockaid/ppom_release@npm:1.4.4"
+  checksum: 71f6276b21a59bc3b16d3335a266d199071e98009bb789ce26ab066da650b72068dff7743c3fbe86fef6dcbcef1eccef0e90362686283865b34514a956a5f4cd
   languageName: node
   linkType: hard
 
@@ -5237,14 +5237,14 @@ __metadata:
   linkType: hard
 
 "@metamask/snaps-registry@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/snaps-registry@npm:3.0.0"
+  version: 3.0.1
+  resolution: "@metamask/snaps-registry@npm:3.0.1"
   dependencies:
-    "@metamask/utils": "npm:^8.1.0"
+    "@metamask/utils": "npm:^8.3.0"
     "@noble/curves": "npm:^1.2.0"
     "@noble/hashes": "npm:^1.3.2"
     superstruct: "npm:^1.0.3"
-  checksum: 3c6066807f214cf2cad1dc084b928dcd5b2c98cb09e3e38111ef56ed199f643abb2f035d1a57b7452de197643f6d0b4749541d05764723eb0c6a6f27ae314b06
+  checksum: fa981560e13b4ecb077123d7123d7afe9327c06a7f29b71ca760a5e87138738b9e8075f3b9a983231ba5f5df70537eea08e3d2496b7275d649f9337f5a263154
   languageName: node
   linkType: hard
 
@@ -24607,7 +24607,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
-    "@blockaid/ppom_release": "npm:^1.4.1"
+    "@blockaid/ppom_release": "npm:^1.4.4"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
