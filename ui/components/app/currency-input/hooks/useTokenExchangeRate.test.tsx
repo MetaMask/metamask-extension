@@ -16,7 +16,7 @@ const renderUseTokenExchangeRate = (tokenAddress?: string) => {
         },
       },
       contractExchangeRates: {
-        'existing token address': 0.5,
+        '0xdAC17F958D2ee523a2206206994597C13D831ec7': 0.5,
         '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
       },
       providerConfig: {
@@ -40,7 +40,9 @@ describe('useProcessNewDecimalValue', () => {
   it('ERC-20: price is available', () => {
     const {
       result: { current: exchangeRate },
-    } = renderUseTokenExchangeRate('existing token address');
+    } = renderUseTokenExchangeRate(
+      '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    );
 
     expect(String(exchangeRate?.value)).toEqual('5.55');
   });
