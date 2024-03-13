@@ -90,7 +90,7 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.4,
+  aspectRatio: 2.27,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
