@@ -149,6 +149,7 @@ export const CHAIN_IDS = {
   ANCIENT8_TESTNET: '0x1ad1ba8',
   ANCIENT8_MAINNET: '0x34fb5e38',
   ARBITRUM_GOERLI: '0x66eed',
+  BLAST: '0x13e31',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -859,6 +860,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.ANCIENT8_MAINNET
     | typeof CHAIN_IDS.ANCIENT8_TESTNET
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
+    | typeof CHAIN_IDS.BLAST
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

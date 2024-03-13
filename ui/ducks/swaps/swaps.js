@@ -996,6 +996,7 @@ export const signAndSendSwapsSmartTransaction = ({
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
         )}`;
+        updatedApproveTxParams.chainId = chainId;
         approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
             unsignedTransaction: updatedApproveTxParams,
@@ -1006,6 +1007,7 @@ export const signAndSendSwapsSmartTransaction = ({
       unsignedTransaction.gas = `0x${decimalToHex(
         fees.tradeTxFees?.gasLimit || 0,
       )}`;
+      unsignedTransaction.chainId = chainId;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
