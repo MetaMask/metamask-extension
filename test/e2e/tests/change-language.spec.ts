@@ -1,23 +1,22 @@
 const { strict: assert } = require('assert');
+import { Suite } from 'mocha';
 const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+import { Driver } from '../webdriver/driver';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
   settingsOption: { text: 'Settings', tag: 'div' },
   localeSelect: '[data-testid="locale-select"]',
-  appHeaderLogo: '[data-testid="app-header-logo"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
   nftsTab: '[data-testid="home__nfts-tab"]',
   labelSpanish: { tag: 'span', text: 'Idioma actual' },
-  primaryCurrencyLabel: { tag: 'span', text: 'Moneda principal' },
   currentLanguageLabel: { tag: 'span', text: 'Current language' },
-  tooltipText: '[data-original-title="Copiar al Portapapeles"]',
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
@@ -29,7 +28,7 @@ const selectors = {
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
-async function changeLanguage({ driver, languageIndex }) {
+async function changeLanguage(driver: Driver , languageIndex: number) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsOption);
 
@@ -40,7 +39,7 @@ async function changeLanguage({ driver, languageIndex }) {
   await options[languageIndex].click();
 }
 
-describe('Settings - general tab @no-mmi', function () {
+describe('Settings - general tab @no-mmi', function (this: Suite) {
   it('validate the change language functionality', async function () {
     let languageIndex = 10;
 
@@ -48,12 +47,12 @@ describe('Settings - general tab @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
+        await changeLanguage(driver, languageIndex);
 
         // Validate the label changes to spanish
         const isLanguageLabelChanged = await driver.isElementPresent(
@@ -87,12 +86,12 @@ describe('Settings - general tab @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
+        await changeLanguage(driver, languageIndex );
 
         await driver.assertElementNotPresent('.loading-overlay__spinner');
 
@@ -141,12 +140,12 @@ describe('Settings - general tab @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
+        await changeLanguage( driver, languageIndex );
         await driver.navigate();
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.fill(selectors.ensInput, 'test');
@@ -174,12 +173,12 @@ describe('Settings - general tab @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
+        await changeLanguage( driver, languageIndex );
         await driver.navigate();
 
         // Validate the account tooltip
@@ -211,13 +210,13 @@ describe('Settings - general tab @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
 
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         // selects "Magyar" language
-        await changeLanguage({ driver, languageIndex });
+        await changeLanguage( driver, languageIndex );
         await driver.navigate();
         await driver.clickElement(selectors.nftsTab);
 
@@ -240,11 +239,11 @@ describe('Settings - general tab @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage({ driver, languageIndex });
+        await changeLanguage( driver, languageIndex );
 
         // Validate the header text
         const isHeaderTextChanged = await driver.isElementPresent(
