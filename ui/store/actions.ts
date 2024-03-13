@@ -64,7 +64,6 @@ import {
   getSelectedNetworkClientId,
 } from '../selectors';
 import {
-  computeEstimatedGasLimit,
   initializeSendState,
   resetSendState,
   // NOTE: Until the send duck is typescript that this is importing a typedef
@@ -2660,11 +2659,6 @@ export function qrCodeDetected(
       type: actionConstants.QR_CODE_DETECTED,
       value: qrCodeData,
     });
-
-    // If on the send page, the send slice will listen for the QR_CODE_DETECTED
-    // action and update its state. Address changes need to recompute gasLimit
-    // so we fire this method so that the send page gasLimit can be recomputed
-    dispatch(computeEstimatedGasLimit());
   };
 }
 
