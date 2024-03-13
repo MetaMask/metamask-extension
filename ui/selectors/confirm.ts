@@ -46,8 +46,7 @@ export function latestPendingConfirmationSelector(state: ConfirmMetamaskState) {
   return pendingConfirmations.sort((a1, a2) => a2.time - a1.time)[0];
 }
 
-export const currentConfirmSelector = (state: ConfirmMetamaskState) =>
-  state.confirm;
+export const confirmSelector = (state: ConfirmMetamaskState) => state.confirm;
 
 export const currentConfirmationSelector = (state: ConfirmMetamaskState) =>
   state.confirm.currentConfirmation;
