@@ -2092,6 +2092,7 @@
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "@metamask/utils": true,
@@ -2106,6 +2107,28 @@
       "packages": {
         "browserify>browser-resolve": true,
         "luxon": true
+      }
+    },
+    "@metamask/snaps-utils>marked": {
+      "globals": {
+        "Hooks": true,
+        "Lexer": true,
+        "Parser": true,
+        "Renderer": true,
+        "TextRenderer": true,
+        "Tokenizer": true,
+        "console.error": true,
+        "console.warn": true,
+        "defaults": true,
+        "define": true,
+        "inlineQueue": true,
+        "passThroughHooks": true,
+        "renderer": true,
+        "rules": true,
+        "state": true,
+        "textRenderer": true,
+        "tokenizer": true,
+        "tokens": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
