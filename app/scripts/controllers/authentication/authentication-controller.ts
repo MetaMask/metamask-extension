@@ -20,6 +20,12 @@ const THIRTY_MIN_MS = 1000 * 60 * 30;
 const controllerName = 'AuthenticationController';
 
 // State
+type SessionProfile = {
+  identifierId: string;
+  profileId: string;
+  metametricsId: string;
+};
+
 export type AuthenticationControllerState = {
   /**
    * Global isSignedIn state.
@@ -35,7 +41,7 @@ export type AuthenticationControllerState = {
    * @property expiresIn - string date to determine if new access token is required
    */
   sessionData?: {
-    profile: { identifierId: string };
+    profile: SessionProfile;
     accessToken: string;
     expiresIn: string;
   };
@@ -60,7 +66,7 @@ type CreateActionsObj<T extends keyof AuthenticationController> = {
   };
 };
 type ActionsObj = CreateActionsObj<
-  'performSignIn' | 'performSignOut' | 'getBearerToken' | 'getIdentifierId'
+  'performSignIn' | 'performSignOut' | 'getBearerToken' | 'getSessionProfile'
 >;
 export type Actions = ActionsObj[keyof ActionsObj];
 export type AuthenticationControllerPerformSignIn = ActionsObj['performSignIn'];
@@ -68,8 +74,8 @@ export type AuthenticationControllerPerformSignOut =
   ActionsObj['performSignOut'];
 export type AuthenticationControllerGetBearerToken =
   ActionsObj['getBearerToken'];
-export type AuthenticationControllerGetIdentifierId =
-  ActionsObj['getIdentifierId'];
+export type AuthenticationControllerGetSessionProfile =
+  ActionsObj['getSessionProfile'];
 
 // Allowed Actions
 type AllowedActions = HandleSnapRequest;
@@ -137,15 +143,15 @@ export default class AuthenticationController extends BaseController<
    *
    * @returns the identifier id
    */
-  public async getIdentifierId(): Promise<string> {
+  public async getSessionProfile(): Promise<SessionProfile> {
     this.#assertLoggedIn();
 
     if (this.#hasValidAuthTokens(this.state.sessionData)) {
-      return this.state.sessionData?.profile?.identifierId;
+      return this.state.sessionData.profile;
     }
 
-    const { identifierId } = await this.#performAuthenticationFlow();
-    return identifierId;
+    const { profile } = await this.#performAuthenticationFlow();
+    return profile;
   }
 
   #assertLoggedIn() {
@@ -173,6 +179,12 @@ export default class AuthenticationController extends BaseController<
         throw new Error(`Unable to login`);
       }
 
+      const profile: SessionProfile = {
+        identifierId: loginResponse.profile.identifier_id,
+        profileId: loginResponse.profile.profile_id,
+        metametricsId: loginResponse.profile.metametrics_id,
+      };
+
       // 3. Trade for Access Token
       const accessToken = await getAccessToken(loginResponse.token);
       if (!accessToken) {
@@ -185,14 +197,14 @@ export default class AuthenticationController extends BaseController<
         const expiresIn = new Date();
         expiresIn.setTime(expiresIn.getTime() + THIRTY_MIN_MS);
         state.sessionData = {
-          profile: { identifierId: loginResponse.profile.identifier_id },
+          profile,
           accessToken,
           expiresIn: expiresIn.toString(),
         };
       });
 
       return {
-        identifierId: loginResponse.profile.identifier_id,
+        profile,
         accessToken,
       };
     } catch (e) {

@@ -31,17 +31,20 @@ export type LoginResponse = {
    * Contains anonymous information about the logged in profile.
    *
    * @property identifier_id - a deterministic unique identifier on the method used to sign in
-   * @property profile_id - a unique id for a given profile, available in a future task
+   * @property profile_id - a unique id for a given profile
+   * @property metametrics_id - an anonymous server id
    */
   profile: {
     identifier_id: string;
+    profile_id: string;
+    metametrics_id: string;
   };
 };
 export async function login(
   rawMessage: string,
   signature: string,
 ): Promise<LoginResponse | null> {
-  const token = await fetch(AUTH_LOGIN_ENDPOINT, {
+  const response = await fetch(AUTH_LOGIN_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -57,7 +60,7 @@ export async function login(
     .then((r: LoginResponse | null) => r)
     .catch(() => null);
 
-  return token;
+  return response;
 }
 
 export type OAuthTokenResponse = {

@@ -17,7 +17,9 @@ const mockSignedInState = (): AuthenticationControllerState => ({
     accessToken: 'MOCK_ACCESS_TOKEN',
     expiresIn: new Date().toString(),
     profile: {
-      identifierId: 'MOCK_IDENTIFIER_ID',
+      identifierId: MOCK_LOGIN_RESPONSE.profile.identifier_id,
+      profileId: MOCK_LOGIN_RESPONSE.profile.profile_id,
+      metametricsId: MOCK_LOGIN_RESPONSE.profile.metametrics_id,
     },
   },
 });
@@ -178,7 +180,7 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
   });
 });
 
-describe('authentication/authentication-controller - getIdentifierId() tests', () => {
+describe('authentication/authentication-controller - getSessionProfile() tests', () => {
   test('Should throw error if not logged in', async () => {
     const { messenger } = createMockAuthenticationMessenger();
     const controller = new AuthenticationController({
@@ -186,7 +188,7 @@ describe('authentication/authentication-controller - getIdentifierId() tests', (
       state: { isSignedIn: false },
     });
 
-    await expect(controller.getIdentifierId()).rejects.toThrow();
+    await expect(controller.getSessionProfile()).rejects.toThrow();
   });
 
   test('Should return original access token in state', async () => {
@@ -197,9 +199,9 @@ describe('authentication/authentication-controller - getIdentifierId() tests', (
       state: originalState,
     });
 
-    const result = await controller.getIdentifierId();
+    const result = await controller.getSessionProfile();
     expect(result).toBeDefined();
-    expect(result).toBe(originalState.sessionData?.profile.identifierId);
+    expect(result).toEqual(originalState.sessionData?.profile);
   });
 
   test('Should return new access token if state is invalid', async () => {
@@ -219,9 +221,13 @@ describe('authentication/authentication-controller - getIdentifierId() tests', (
       state: originalState,
     });
 
-    const result = await controller.getIdentifierId();
+    const result = await controller.getSessionProfile();
     expect(result).toBeDefined();
-    expect(result).toBe(MOCK_LOGIN_RESPONSE.profile.identifier_id);
+    expect(result.identifierId).toBe(MOCK_LOGIN_RESPONSE.profile.identifier_id);
+    expect(result.profileId).toBe(MOCK_LOGIN_RESPONSE.profile.profile_id);
+    expect(result.metametricsId).toBe(
+      MOCK_LOGIN_RESPONSE.profile.metametrics_id,
+    );
   });
 });
 
