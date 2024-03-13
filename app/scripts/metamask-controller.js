@@ -25,8 +25,8 @@ import {
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { KeyringController } from '@metamask/keyring-controller';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
+import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
+import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -1672,12 +1672,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
-      institutionalFeaturesController: this.institutionalFeaturesController,
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTracker: this.accountTracker,
@@ -2941,6 +2939,10 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
         ),
+      getNetworkConfigurationByNetworkClientId:
+        this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+          this.networkController,
+        ),
       // PreferencesController
       setSelectedAddress: (address) => {
         const account = this.accountsController.getAccountByAddress(address);
@@ -3421,6 +3423,12 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // GasFeeController
+      gasFeeStartPollingByNetworkClientId:
+        gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
+
+      gasFeeStopPollingByPollingToken:
+        gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
+
       getGasFeeEstimatesAndStartPolling:
         gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
           gasFeeController,
@@ -4750,8 +4758,6 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    const { blockTracker, provider } = this;
-
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
@@ -4789,10 +4795,7 @@ export default class MetamaskController extends EventEmitter {
     const filterMiddleware = createFilterMiddleware(proxyClient);
 
     // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
-    });
+    const subscriptionManager = createSubscriptionManager(proxyClient);
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );

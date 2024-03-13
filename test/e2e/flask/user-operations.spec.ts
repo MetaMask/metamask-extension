@@ -38,6 +38,7 @@ async function installExampleSnap(driver: Driver) {
     text: 'Connect',
     tag: 'button',
   });
+  await driver.findElement({ text: 'Installation request', tag: 'h2' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
   await driver.clickElement({
     text: 'Install',
