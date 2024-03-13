@@ -1019,7 +1019,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>Basic Configuration</span>
           <div className="settings-page__content-description">
-            Blah blah blah description blah blah blah
+            Basic Configuration Description
           </div>
         </div>
 
