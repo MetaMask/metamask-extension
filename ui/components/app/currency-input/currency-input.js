@@ -81,7 +81,7 @@ export default function CurrencyInput({
 
   const processNewDecimalValue = useProcessNewDecimalValue(
     assetDecimals,
-    !isTokenPrimary,
+    isTokenPrimary,
     tokenToFiatConversionRate,
   );
 

@@ -7,13 +7,13 @@ const MAX_DECIMALS_TOKEN_SECONDARY = 6;
  * A hook that creates a function which processes a new decimal value and returns the new fiat and token decimal values
  *
  * @param assetDecimals - The number of decimals that asset supports
- * @param isFiatPrimary - If the fiat currency is the input currency
+ * @param isTokenPrimary - If the token is the input currency
  * @param tokenToFiatConversionRate - The conversion rate from the asset to the user's fiat currency
  * @returns A function that processes a new decimal value and returns the new fiat and token decimal values
  */
 export default function useProcessNewDecimalValue(
   assetDecimals: number,
-  isFiatPrimary: boolean,
+  isTokenPrimary: boolean,
   tokenToFiatConversionRate: Numeric | undefined,
 ) {
   return useCallback(
@@ -36,7 +36,12 @@ export default function useProcessNewDecimalValue(
 
       const numericDecimalValue = new Numeric(newDecimalValue, 10);
 
-      if (isFiatPrimary) {
+      if (isTokenPrimary) {
+        newFiatDecimalValue = tokenToFiatConversionRate
+          ? numericDecimalValue.times(tokenToFiatConversionRate).toFixed(2)
+          : undefined;
+        newTokenDecimalValue = truncateToDecimals(numericDecimalValue);
+      } else {
         newFiatDecimalValue = numericDecimalValue.toFixed(2);
         newTokenDecimalValue = tokenToFiatConversionRate
           ? truncateToDecimals(
@@ -44,15 +49,10 @@ export default function useProcessNewDecimalValue(
               MAX_DECIMALS_TOKEN_SECONDARY,
             )
           : undefined;
-      } else {
-        newFiatDecimalValue = tokenToFiatConversionRate
-          ? numericDecimalValue.times(tokenToFiatConversionRate).toFixed(2)
-          : undefined;
-        newTokenDecimalValue = truncateToDecimals(numericDecimalValue);
       }
 
       return { newFiatDecimalValue, newTokenDecimalValue };
     },
-    [tokenToFiatConversionRate, isFiatPrimary, assetDecimals],
+    [tokenToFiatConversionRate, isTokenPrimary, assetDecimals],
   );
 }
