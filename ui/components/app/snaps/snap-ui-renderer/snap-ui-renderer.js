@@ -8,7 +8,10 @@ import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getSnapMetadata, getMemoizedInterfaceContent } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getMemoizedInterfaceContent,
+} from '../../../../selectors';
 import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -37,7 +40,6 @@ const SnapUIRendererComponent = ({
     getSnapMetadata(state, snapId),
   );
 
-  if (isLoading) {
   const content = useSelector((state) =>
     getMemoizedInterfaceContent(state, interfaceId),
   );
