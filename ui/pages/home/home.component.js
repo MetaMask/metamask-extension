@@ -310,13 +310,6 @@ export default class Home extends PureComponent {
     this.shouldCloseCurrentWindow();
     ///: END:ONLY_INCLUDE_IF
 
-    console.log(
-      'SNAPS/ home component checkStatusAndNavigate',
-      pendingConfirmations,
-      hasApprovalFlows,
-      stayOnHomePage,
-    );
-
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);

@@ -25,8 +25,6 @@ export const SnapHomeRenderer = ({ snapId }) => {
 
   const interfaceId = !loading && !error ? data?.id : undefined;
 
-  console.log('SNAPS/ SnapHomeRenderer', loading, interfaceId);
-
   useEffect(() => {
     return () => interfaceId && dispatch(deleteInterface(interfaceId));
   }, [interfaceId]);

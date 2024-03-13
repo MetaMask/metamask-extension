@@ -138,15 +138,8 @@ const mapStateToProps = (state) => {
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     ///: END:ONLY_INCLUDE_IF
   ]);
-
-  console.log(
-    'SNAPS/ hasAllowedPopupRedirectApprovals called from home.container.js',
-    hasAllowedPopupRedirectApprovals,
-    state,
-  );
 
   return {
     forgottenPassword,
