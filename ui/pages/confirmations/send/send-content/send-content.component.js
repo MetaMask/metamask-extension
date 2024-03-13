@@ -26,7 +26,6 @@ export default class SendContent extends Component {
 
   render() {
     const {
-      warning,
       error,
       asset,
       assetError,

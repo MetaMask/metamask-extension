@@ -156,9 +156,6 @@ describe('SendContent Component', () => {
 
   describe('Assert Error', () => {
     it('should render dialog error with asset error in draft transaction state', async () => {
-      const props = {
-        showHexData: false,
-      };
       const assertErrorState = {
         send: {
           ...mockSendState.send,

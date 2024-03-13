@@ -3,7 +3,6 @@ import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';
 
-import { getGasPrice } from '../ducks/send';
 import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getGasEstimateType,
@@ -116,8 +115,8 @@ export function isCustomPriceSafeForCustomNetwork(state) {
   return customPriceSafe;
 }
 
-export function isCustomPriceExcessive(state, checkSend = false) {
-  const customPrice = checkSend ? getGasPrice(state) : getCustomGasPrice(state);
+export function isCustomPriceExcessive(state) {
+  const customPrice = getCustomGasPrice(state);
   const fastPrice = getFastPriceEstimate(state);
 
   if (!customPrice || !fastPrice) {
