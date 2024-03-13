@@ -204,7 +204,15 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
-        await clickSend(driver);
+        try {
+          await driver.clickElement('[data-testid="eth-overview-send"]');
+        } catch {
+          const sendButton = await driver.findElement(
+            '[data-testid="asset-send-button"]',
+          );
+          await driver.scrollToElement(sendButton);
+          sendButton.click();
+        }
 
         // Type address without hex prefix
         await driver.fill(
