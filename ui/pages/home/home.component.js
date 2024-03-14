@@ -78,6 +78,7 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
@@ -815,7 +816,8 @@ export default class Home extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const showWhatsNew =
       completedOnboarding &&
-      (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
+      (!onboardedInThisUISession ||
+        firstTimeFlowType === FirstTimeFlowType.import) &&
       announcementsToShow &&
       showWhatsNewPopup &&
       !process.env.IN_TEST &&
