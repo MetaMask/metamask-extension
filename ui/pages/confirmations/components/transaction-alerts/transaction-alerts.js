@@ -63,7 +63,9 @@ const TransactionAlerts = ({
     <div className="transaction-alerts">
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert txData={txData} />
+        <BlockaidBannerAlert txData={txData}
+          marginLeft={4}
+          marginRight={4} />
         ///: END:ONLY_INCLUDE_IF
       }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
@@ -85,8 +87,8 @@ const TransactionAlerts = ({
               {pendingTransactions?.length === 1
                 ? t('pendingTransactionSingle', [pendingTransactions?.length])
                 : t('pendingTransactionMultiple', [
-                    pendingTransactions?.length,
-                  ])}
+                  pendingTransactions?.length,
+                ])}
             </strong>{' '}
             {t('pendingTransactionInfo')}
             {t('learnCancelSpeeedup', [

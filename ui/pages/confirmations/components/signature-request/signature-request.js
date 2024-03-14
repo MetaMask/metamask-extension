@@ -225,7 +225,6 @@ const SignatureRequest = ({
               txData={txData}
               marginLeft={4}
               marginRight={4}
-              marginBottom={4}
             />
             ///: END:ONLY_INCLUDE_IF
           }
