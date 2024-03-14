@@ -114,9 +114,9 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
   });
 
-  it('disables the "Add Network" button when MetaMask is locked', () => {
+  it('enables the "Add Network" button when MetaMask is locked', () => {
     const { queryByText } = render(false, '0x5', 'chain5', false);
-    expect(queryByText('Add network')).toBeDisabled();
+    expect(queryByText('Add network')).toBeEnabled();
   });
 
   it('enables the "Add Network" button when MetaMask is true', () => {

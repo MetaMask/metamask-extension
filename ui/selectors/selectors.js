@@ -96,6 +96,7 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1438,6 +1439,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
+    [NOTIFICATION_PORTFOLIO_V2]: true,
   };
 }
 
@@ -2064,6 +2066,17 @@ export function getShouldShowSeedPhraseReminder(state) {
 
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
+}
+
+export function getUnconnectedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const unConnectedAccounts = accounts.filter((account) => {
+    return !connectedAccounts.some(
+      (connectedAccount) => connectedAccount.address === account.address,
+    );
+  });
+  return unConnectedAccounts;
 }
 
 export function getUpdatedAndSortedAccounts(state) {

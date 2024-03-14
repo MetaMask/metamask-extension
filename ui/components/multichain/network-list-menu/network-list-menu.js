@@ -414,7 +414,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork || !isUnlocked}
+              disabled={currentlyOnTestNetwork}
               onToggle={handleToggle}
             />
           </Box>
@@ -426,7 +426,6 @@ export const NetworkListMenu = ({ onClose }) => {
           <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
-              disabled={!isUnlocked}
               startIconName={IconName.Add}
               block
               onClick={() => {
