@@ -26,9 +26,11 @@ export default function useProcessNewDecimalValue(
       ) => {
         const digitsAfterDecimal = numeric.toString().split('.')[1] || '';
 
+        const maxPossibleDecimals = Math.min(maxDecimals, assetDecimals);
+
         const digitsCutoff = Math.min(
           digitsAfterDecimal.length,
-          Math.min(maxDecimals, assetDecimals),
+          maxPossibleDecimals,
         );
 
         return numeric.toFixed(digitsCutoff);
