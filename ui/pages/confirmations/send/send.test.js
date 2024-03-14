@@ -161,10 +161,7 @@ const baseStore = {
   },
 };
 
-const placeholderText =
-  process.env.METAMASK_BUILD_TYPE === 'flask'
-    ? 'Enter public address (0x) or domain name'
-    : 'Enter public address (0x) or ENS name';
+const placeholderText = 'Enter public address (0x) or ENS name';
 
 describe('Send Page', () => {
   describe('Send Flow Initialization', () => {
