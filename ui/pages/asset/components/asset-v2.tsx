@@ -132,21 +132,20 @@ const AssetV2 = ({
         balance={balance}
         optionsButton={optionsButton}
       />
-      <Box className="main-container asset__container">
+      <Box
+        className="main-container asset__container"
+        // Fade balance in/out of header.
+        onScroll={(e: React.UIEvent) =>
+          headerRef?.current?.setBalanceOpacity(
+            Math.max(
+              0,
+              Math.min(1, ((e.target as HTMLElement).scrollTop - 394) / 55),
+            ),
+          )
+        }
+      >
         <Box marginLeft="auto" marginRight="auto" className="asset__content">
-          <Box
-            // Fade balance in/out of header.
-            onScroll={(e: React.UIEvent) =>
-              headerRef?.current?.setBalanceOpacity(
-                Math.max(
-                  0,
-                  Math.min(1, ((e.target as HTMLElement).scrollTop - 394) / 55),
-                ),
-              )
-            }
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-          >
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Box paddingLeft={4} paddingBottom={1}>
               <Text color={TextColor.textAlternative}>
                 {name && symbol && name !== symbol
