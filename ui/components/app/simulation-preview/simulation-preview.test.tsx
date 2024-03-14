@@ -1,23 +1,22 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { SimulationPreview } from './simulation-preview';
 import { SimulationData } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
-const DUMMY_BALANCE_CHANGE = {
-  previousBalance: '0xIGNORED' as Hex,
-  newBalance: '0xIGNORED' as Hex,
-}
-
 import mockState from '../../../../test/data/mock-state.json';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { SimulationPreview } from './simulation-preview';
 
-const ONE_ETH = Numeric.from('0xde0b6b3a7640000', 16, EtherDenomination.ETH)
+const DUMMY_BALANCE_CHANGE = {
+  previousBalance: '0xIGNORED' as Hex,
+  newBalance: '0xIGNORED' as Hex,
+};
+
+const ONE_ETH = Numeric.from('0xde0b6b3a7640000', 16, EtherDenomination.ETH);
 const HALF_ETH = ONE_ETH.divide(2, 16);
-
 
 describe('SimulationPreview', () => {
   const store = configureStore()(mockState);
@@ -32,7 +31,10 @@ describe('SimulationPreview', () => {
       tokenBalanceChanges: [],
     };
 
-    renderWithProvider(<SimulationPreview simulationData={simulationData} />, store);
+    renderWithProvider(
+      <SimulationPreview simulationData={simulationData} />,
+      store,
+    );
 
     expect(screen.getByText('You send')).toBeInTheDocument();
     expect(screen.getByText('- 1')).toBeInTheDocument();
@@ -48,9 +50,12 @@ describe('SimulationPreview', () => {
       tokenBalanceChanges: [],
     };
 
-    renderWithProvider(<SimulationPreview simulationData={simulationData} />, store);
+    renderWithProvider(
+      <SimulationPreview simulationData={simulationData} />,
+      store,
+    );
 
-    expect(screen.getByText(/No changes predicted/)).toBeInTheDocument();
+    expect(screen.getByText(/No changes predicted/u)).toBeInTheDocument();
     expect(screen.queryByText('You send')).not.toBeInTheDocument();
     expect(screen.queryByText('You receive')).not.toBeInTheDocument();
   });
@@ -65,7 +70,10 @@ describe('SimulationPreview', () => {
       tokenBalanceChanges: [],
     };
 
-    renderWithProvider(<SimulationPreview simulationData={simulationData} />, store);
+    renderWithProvider(
+      <SimulationPreview simulationData={simulationData} />,
+      store,
+    );
 
     expect(screen.getByText('You receive')).toBeInTheDocument();
     expect(screen.getByText('+ 0.5')).toBeInTheDocument();
@@ -75,6 +83,6 @@ describe('SimulationPreview', () => {
   it('renders the error message when simulationData is undefined', () => {
     renderWithProvider(<SimulationPreview simulationData={undefined} />, store);
 
-    expect(screen.getByText(/There was an error/)).toBeInTheDocument();
+    expect(screen.getByText(/There was an error/u)).toBeInTheDocument();
   });
 });
