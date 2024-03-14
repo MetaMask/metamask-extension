@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest';
+import configureStore from '../../../../store/store';
 import SnapPermissionsList from './snap-permissions-list';
 
 describe('Snap Permission List', () => {
@@ -21,7 +22,7 @@ describe('Snap Permission List', () => {
     subjectType: 'snap',
     version: '0.2.2',
   };
-  const mockStore = {
+  const mockState = {
     metamask: {
       subjectMetadata: {
         'npm:@metamask/notifications-example-snap': {
@@ -43,13 +44,15 @@ describe('Snap Permission List', () => {
     },
   };
 
+  const store = configureStore(mockState);
+
   it('renders permissions list for snaps', () => {
     renderWithProvider(
       <SnapPermissionsList
         permissions={mockPermissionData}
         targetSubjectMetadata={mockTargetSubjectMetadata}
       />,
-      mockStore,
+      store,
     );
     expect(
       screen.getByText('Display dialog windows in MetaMask.'),
