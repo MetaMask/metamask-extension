@@ -40,7 +40,7 @@
       // primary field elements (e.g., input field, symbols)
       & > .currency-input__conversion-component > span {
         color: var(--color-text-alternative);
-        font-size: small;
+        font-size: design-system.$font-size-h6;
       }
 
       // converted (secondary) value
@@ -53,7 +53,7 @@
       // secondary field elements (e.g., value, symbols)
       & > div.unit-input__input-container > * {
         color: var(--color-text-default);
-        font-size: small;
+        font-size: design-system.$font-size-h6;
       }
     }
 
