@@ -101,29 +101,29 @@ export default function InsightWarnings({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalBody>
-          <ModalHeader
-            justifyContent={JustifyContent.center}
-            childrenWrapperProps={{
-              alignItems: AlignItems.center,
-              display: Display.Flex,
-              flexDirection: FlexDirection.Column,
-            }}
+        <ModalHeader
+          justifyContent={JustifyContent.center}
+          childrenWrapperProps={{
+            alignItems: AlignItems.center,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+          }}
+        >
+          <AvatarIcon
+            iconName={IconName.Warning}
+            size={AvatarIconSize.Lg}
+            color={IconColor.errorDefault}
+            backgroundColor={BackgroundColor.errorMuted}
+          />
+          <Text
+            variant={TextVariant.headingMd}
+            paddingTop={4}
+            paddingBottom={4}
           >
-            <AvatarIcon
-              iconName={IconName.Warning}
-              size={AvatarIconSize.Lg}
-              color={IconColor.errorDefault}
-              backgroundColor={BackgroundColor.errorMuted}
-            />
-            <Text
-              variant={TextVariant.headingMd}
-              paddingTop={4}
-              paddingBottom={4}
-            >
-              {t('insightWarningHeader')}
-            </Text>
-          </ModalHeader>
+            {t('insightWarningHeader')}
+          </Text>
+        </ModalHeader>
+        <ModalBody>
           <Text variant={TextVariant.bodyMd} paddingBottom={4}>
             {warnings.length === 1
               ? t('insightWarningContentSingular', [
