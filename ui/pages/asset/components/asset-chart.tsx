@@ -262,7 +262,7 @@ const AssetChart = ({
         </Box>
 
         <Box
-          style={prices ? null : { visibility: `hidden` }}
+          style={prices ? undefined : { visibility: `hidden` }}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           marginTop={4}

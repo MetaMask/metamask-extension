@@ -62,7 +62,7 @@ const NativeAssetV2 = () => {
           display: balanceDisplay,
           fiat: showFiat && isOriginalNativeSymbol ? fiatDisplay : undefined,
         },
-        isOriginalNativeSymbol,
+        isOriginalNativeSymbol: isOriginalNativeSymbol === true,
         currentPrice: showFiat && conversionRate,
       }}
       optionsButton={
