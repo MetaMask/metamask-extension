@@ -14,5 +14,5 @@ Steps,Test Steps,Preconditions,Test Data,Expected Result,Notes
 13,Click Connect.,,,"The MetaMask popup is opened with the Connect with MetaMask screen displayed. Your imported hardware wallet account is selected.",
 14,Click Next and Connect with the hardware wallet account.,,,"The MetaMask popup is closed. You are connected to the test dapp.",
 15,"Click Sign in the ""Eth Sign"" section",,,"The info modal instructions for signing with hardware wallet is displayed. The signature message is in Hex formatting.",
-16,"Click Sign in the displayed modal Then the ""Your funds may be at risk"" modal is shown click Sign",,,The signature hash is displayed on the test dapp.,
+16,"Click Sign in the displayed modal Then the ""Your funds may be at risk"" modal is shown click Sign",,,,
 14,Accept the Signature in the hardware wallet device.,,,The signature hash is displayed on the test dapp.,
