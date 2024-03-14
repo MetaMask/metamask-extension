@@ -117,6 +117,7 @@ export default class ExtensionPlatform {
     try {
       const platformInfo = browser.runtime.getPlatformInfo();
       cb(platformInfo);
+      // eslint-disable-next-line no-useless-return
       return;
     } catch (e) {
       cb(e);
