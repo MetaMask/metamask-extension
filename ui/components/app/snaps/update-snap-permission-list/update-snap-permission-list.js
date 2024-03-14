@@ -5,7 +5,7 @@ import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
 import { Box } from '../../../component-library';
-import { getSnapMetadata } from '../../../../selectors';
+import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -19,12 +19,19 @@ export default function UpdateSnapPermissionList({
     getSnapMetadata(state, targetSubjectMetadata.origin),
   );
 
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const getSnapName = (id) => {
+    return snapsMetadata[id].name;
+  };
+
   return (
     <Box paddingTop={1}>
       {getWeightedPermissions({
         t,
         permissions: newPermissions,
         subjectName: snapName,
+        getSubjectName: getSnapName,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}
@@ -40,6 +47,7 @@ export default function UpdateSnapPermissionList({
         t,
         permissions: revokedPermissions,
         subjectName: snapName,
+        getSubjectName: getSnapName,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}
@@ -56,6 +64,7 @@ export default function UpdateSnapPermissionList({
         t,
         permissions: approvedPermissions,
         subjectName: snapName,
+        getSubjectName: getSnapName,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}

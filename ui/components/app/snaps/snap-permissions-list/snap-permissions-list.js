@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
 import { Box } from '../../../component-library';
+import { getSnapsMetadata } from '../../../../selectors';
 
 export default function SnapPermissionsList({
   snapId,
@@ -12,26 +14,34 @@ export default function SnapPermissionsList({
   showOptions,
 }) {
   const t = useI18nContext();
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const getSnapName = (id) => {
+    return snapsMetadata[id].name;
+  };
 
   return (
     <Box paddingTop={2} paddingBottom={2} className="snap-permissions-list">
-      {getWeightedPermissions({ t, permissions, subjectName: snapName }).map(
-        (permission, index) => {
-          return (
-            <PermissionCell
-              snapId={snapId}
-              permissionName={permission.permissionName}
-              title={permission.label}
-              description={permission.description}
-              weight={permission.weight}
-              avatarIcon={permission.leftIcon}
-              dateApproved={permission?.permissionValue?.date}
-              key={`${permission.permissionName}-${index}`}
-              showOptions={showOptions}
-            />
-          );
-        },
-      )}
+      {getWeightedPermissions({
+        t,
+        permissions,
+        subjectName: snapName,
+        getSubjectName: getSnapName,
+      }).map((permission, index) => {
+        return (
+          <PermissionCell
+            snapId={snapId}
+            permissionName={permission.permissionName}
+            title={permission.label}
+            description={permission.description}
+            weight={permission.weight}
+            avatarIcon={permission.leftIcon}
+            dateApproved={permission?.permissionValue?.date}
+            key={`${permission.permissionName}-${index}`}
+            showOptions={showOptions}
+          />
+        );
+      })}
     </Box>
   );
 }
