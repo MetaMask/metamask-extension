@@ -266,7 +266,7 @@ export default function SimulationDetails({
 }: SimulationDetailsProps) {
   const { isLoading, tokens } = useTokens(fromAddress, simulationData);
 
-  if (isLoading) {
+  if (isLoading || !simulationData) {
     return (
       <div
         style={{ display: 'flex', padding: '20px', justifyContent: 'center' }}
@@ -276,8 +276,8 @@ export default function SimulationDetails({
     );
   }
 
-  if (!simulationData) {
-    return 'Simulation failed';
+  if (simulationData.error) {
+    return simulationData.error.message;
   }
 
   const rows = getRows(tokens, simulationData);
