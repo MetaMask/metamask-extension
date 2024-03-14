@@ -31,6 +31,7 @@ import {
   useSafeChainsListValidationSelector,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapMetadata,
+  getSnapsMetadata,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
@@ -240,9 +241,8 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const { name } = useSelector((state) =>
-    getSnapMetadata(state, pendingConfirmation?.origin),
-  );
+  const snapsMetadata = useSelector(getSnapsMetadata);
+  const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
   const SNAP_DIALOG_TYPE = [
     ApprovalType.SnapDialogAlert,
