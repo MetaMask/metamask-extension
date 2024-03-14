@@ -25,10 +25,12 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
+  getStateCorruptionErrorHtml,
   ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   registerDesktopErrorActions,
   ///: END:ONLY_INCLUDE_IF
 } from '../../shared/lib/error-utils';
+import { Storage } from '../../shared/modules/Storage/Storage.types';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -227,9 +229,22 @@ async function start() {
           );
           return;
         }
+        const state = store.getState();
+
+        // If we have restored the user's vault from backup we need to indicate
+        // this to the user. The user's settings have all been reverted to
+        // default which includes any privacy preferences they may have set. So
+        // we want to ensure that they are aware before interacting with their
+        // accounts further.
+        if (state.metamask.initializationFlags?.corruptionDetected === true) {
+          displayStateCorruptionError(
+            new Error('MetaMask State Corruption Detected'),
+            state,
+          );
+          return;
+        }
         isUIInitialised = true;
 
-        const state = store.getState();
         const { metamask: { completedOnboarding } = {} } = state;
 
         if (
@@ -308,6 +323,20 @@ function initializeUi(activeTab, connectionStream, cb) {
       cb,
     );
   });
+}
+
+async function displayStateCorruptionError(err, metamaskState) {
+  const html = await getStateCorruptionErrorHtml(SUPPORT_LINK, metamaskState);
+  container.innerHTML = html;
+
+  const button = document.getElementById('critical-error-button');
+
+  button?.addEventListener('click', (_) => {
+    Storage.optIntoRestoreOnRestart();
+    browser.runtime.reload();
+  });
+  log.error(err.stack);
+  throw err;
 }
 
 async function displayCriticalError(

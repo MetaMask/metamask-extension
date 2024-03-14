@@ -1103,6 +1103,23 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    /**
+     * This listener will look for changes to KeyringController State and
+     * save the vault to local storage when it changes. Storing the vault in
+     * local storage allows MetaMask to recover from an uncommon situation
+     * where chrome fails to load the vault from disk. This seems to occur in
+     * edge case scenarios that are not easy to reproduce. Upon loading the
+     * initial state in background.js if the state is corrupted the vault will
+     * be restored from localStorage.
+     */
+    this.controllerMessenger.subscribe(
+      'KeyringController:stateChange',
+      (vault) => {
+        window.localStorage.setItem('metaMaskVault', JSON.stringify(vault));
+      },
+      (state) => state.vault,
+    );
+
     this.permissionController = new PermissionController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PermissionController',
@@ -5317,6 +5334,13 @@ export default class MetamaskController extends EventEmitter {
       (acc, { accounts }) => acc.concat(accounts),
       [],
     );
+
+    // If the vault has not yet been backed up to localStorage, do so at this
+    // point. Any changes to the actual vault will be handled by a specific
+    // listener that will only fire when the vault changes.
+    if (window.localStorage.getItem('metaMaskVault') === null) {
+      window.localStorage.setItem('metaMaskVault', JSON.stringify(state.vault));
+    }
 
     if (!addresses.length) {
       return;

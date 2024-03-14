@@ -60,7 +60,7 @@ export default class ReadOnlyNetworkStore extends Storage {
 
   async isFirstTimeInstall(): Promise<boolean> {
     const result = this.#state;
-    if (result === null) {
+    if (result === null && this.hasStateExisted === false) {
       return true;
     }
     return false;
