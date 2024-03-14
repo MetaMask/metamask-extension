@@ -41,6 +41,9 @@
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
+  "localeMessages": {
+    "currentLocale": "en"
+  },
   "metamask": {
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",

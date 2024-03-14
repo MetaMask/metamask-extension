@@ -159,9 +159,6 @@
   "accountsConnected": {
     "message": "Accounts connected"
   },
-  "accountsPinningBannerDescription": {
-    "message": "Keep tabs on what matters by pinning or hiding accounts"
-  },
   "active": {
     "message": "Active"
   },
@@ -620,7 +617,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -1020,6 +1017,9 @@
   },
   "createSnapAccountTitle": {
     "message": "Create account"
+  },
+  "crossChainSwapsLink": {
+    "message": "Swap across networks with MetaMask Portfolio"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2980,7 +2980,7 @@
     "message": "Got it"
   },
   "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -4107,7 +4107,7 @@
     "message": "Turn on NFT detection in Settings"
   },
   "selectPathHelp": {
-    "message": "If you don't see the accounts you expect, try switching the HD path."
+    "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
   "selectType": {
     "message": "Select Type"
