@@ -113,6 +113,7 @@ export const PermissionCellStatus = ({ revoked, dateApproved, accounts }) => {
 
   return (
     <Text
+      as="div"
       className="permission-cell__status"
       variant={TextVariant.bodySm}
       color={TextColor.textAlternative}
