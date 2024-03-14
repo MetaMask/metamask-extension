@@ -912,9 +912,9 @@ export function setupController(
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
   if (
-    Object.values(controller.snapController.state.snaps).filter(
+    Object.values(controller.snapController.state.snaps).some(
       (snap) => !snap.preinstalled,
-    ).length > 0
+    )
   ) {
     controller.snapController.updateBlockedSnaps();
   }
