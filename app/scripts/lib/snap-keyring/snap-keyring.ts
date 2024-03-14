@@ -11,7 +11,6 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
-import { getSnapName } from './utils/getSnapName';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showSuccess, showError } from './utils/showResult';
 import { SnapKeyringBuilderMessenger } from './types';
@@ -40,6 +39,8 @@ export const getAccountsBySnapId = async (
  * @param setSelectedAccountHelper - A function to update current selected account.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @param trackEvent - A function to track MetaMetrics events.
+ * @param getSnapName - A function to get a snap's localized
+ * (or non-localized if there are no localization files) name from its manifest.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
  * - `addAccount`: Initiates the process of adding an account with user confirmation and handling the user input.
@@ -55,6 +56,7 @@ export const snapKeyringBuilder = (
     payload: Record<string, any>,
     options?: Record<string, any>,
   ) => void,
+  getSnapName: (snapId: string) => string,
 ) => {
   const builder = (() => {
     return new SnapKeyring(getSnapController() as any, {
@@ -111,7 +113,7 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
-        const snapName = getSnapName(controllerMessenger, snapId);
+        const snapName = getSnapName(snapId);
         const { id: addAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
         );
@@ -237,7 +239,7 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
-        const snapName = getSnapName(controllerMessenger, snapId);
+        const snapName = getSnapName(snapId);
         const { id: removeAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
         );
