@@ -51,6 +51,7 @@ import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accou
 import { requestAccountsPermissionWithId } from '../../../../store/actions';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
+import { DisconnectAllModal } from '../../disconnect-all-modal/disconnect-all-modal';
 
 export const Connections = () => {
   const t = useI18nContext();
@@ -58,6 +59,7 @@ export const Connections = () => {
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
+  const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -182,6 +184,7 @@ export const Connections = () => {
             onClose={() => setShowConnectAccountsModal(false)}
           />
         ) : null}
+        {showDisconnectAllModal ? <DisconnectAllModal onClose={() => setShowDisconnectAllModal(false)} /> : null}
       </Content>
       <Footer>
         {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
