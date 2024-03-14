@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -47,7 +48,7 @@ export default function SnapInstall({
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const getSnapName = (id) => {
-    return snapsMetadata[id].name;
+    return snapsMetadata[id]?.name ?? stripSnapPrefix(id);
   };
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =

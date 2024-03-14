@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import {
   getRightIcon,
   getWeightedPermissions,
@@ -32,7 +33,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const getSnapName = (id) => {
-    return snapsMetadata[id].name;
+    return snapsMetadata[id]?.name ?? stripSnapPrefix(id);
   };
 
   return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
@@ -22,7 +23,7 @@ export default function UpdateSnapPermissionList({
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   const getSnapName = (id) => {
-    return snapsMetadata[id].name;
+    return snapsMetadata[id]?.name ?? stripSnapPrefix(id);
   };
 
   return (
