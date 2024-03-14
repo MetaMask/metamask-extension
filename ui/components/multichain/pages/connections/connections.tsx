@@ -48,9 +48,9 @@ import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
+import { requestAccountsPermissionWithId } from '../../../../store/actions';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
-import { requestAccountsPermissionWithId } from '../../../../store/actions';
 
 export const Connections = () => {
   const t = useI18nContext();
@@ -85,10 +85,10 @@ export const Connections = () => {
     };
   }
   const requestAccountsPermission = async () => {
-    const id = await dispatch(
+    const requestId = await dispatch(
       requestAccountsPermissionWithId(tabToConnect.origin),
     );
-    history.push(`${CONNECT_ROUTE}/${id}`);
+    history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
