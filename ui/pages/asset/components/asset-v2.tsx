@@ -42,7 +42,7 @@ import AssetSwapButton from './buttons/asset-swap-button';
 export type Asset = (
   | {
       type: AssetType.native;
-      /** */
+      /** Whether the symbol has been verified to match the chain */
       isOriginalNativeSymbol: boolean;
     }
   | {
