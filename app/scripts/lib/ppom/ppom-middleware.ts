@@ -70,27 +70,30 @@ export function createPPOMMiddleware(
       ) {
         // eslint-disable-next-line require-atomic-updates
         const securityAlertId = uuid();
+        let securityAlertResponse: SecurityAlertResponse = {
+          reason: BlockaidResultType.Loading,
+          result_type: BlockaidReason.inProgress,
+          securityAlertId,
+        };
 
         ppomController
           .usePPOM(async (ppom: PPOM) => {
-            try {
-              const securityAlertResponse = await ppom.validateJsonRpc(req);
-              securityAlertResponse.securityAlertId = securityAlertId;
-              return securityAlertResponse;
-            } catch (error: any) {
-              sentry?.captureException(error);
-              const errorObject = error as unknown as Error;
-              console.error('Error validating JSON RPC using PPOM: ', error);
-              const securityAlertResponse = {
-                result_type: BlockaidResultType.Errored,
-                reason: BlockaidReason.errored,
-                description: `${errorObject.name}: ${errorObject.message}`,
-              };
-
-              return securityAlertResponse;
-            }
+            securityAlertResponse = await ppom.validateJsonRpc(req);
+            securityAlertResponse.securityAlertId = securityAlertId;
           })
-          .then((securityAlertResponse) => {
+          .catch((error: any) => {
+            const errorObject = error as unknown as Error;
+
+            sentry?.captureException(error);
+            console.error('Error validating JSON RPC using PPOM: ', error);
+
+            securityAlertResponse = {
+              result_type: BlockaidResultType.Errored,
+              reason: BlockaidReason.errored,
+              description: `${errorObject.name}: ${errorObject.message}`,
+            };
+          })
+          .finally(() => {
             updateSecurityAlertResponseByTxId(req, {
               ...securityAlertResponse,
               securityAlertId,
@@ -98,28 +101,21 @@ export function createPPOMMiddleware(
           });
 
         if (SIGNING_METHODS.includes(req.method)) {
-          req.securityAlertResponse = {
-            reason: BlockaidResultType.Loading,
-            result_type: BlockaidReason.inProgress,
-            securityAlertId,
-          };
           appStateController.addSignatureSecurityAlertResponse({
             reason: BlockaidResultType.Loading,
             result_type: BlockaidReason.inProgress,
             securityAlertId,
           });
-        } else {
-          req.securityAlertResponse = {
-            reason: BlockaidResultType.Loading,
-            result_type: BlockaidReason.inProgress,
-            securityAlertId,
-          };
         }
+
+        req.securityAlertResponse = { ...securityAlertResponse };
       }
     } catch (error: any) {
       const errorObject = error as unknown as Error;
+
       sentry?.captureException(error);
       console.error('Error validating JSON RPC using PPOM: ', error);
+
       req.securityAlertResponse = {
         result_type: BlockaidResultType.Errored,
         reason: BlockaidReason.errored,
