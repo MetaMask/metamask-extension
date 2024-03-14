@@ -63,7 +63,7 @@ const AssetHeader = forwardRef(
           >
             <MetafoxLogo
               unsetIconHeight
-              onClick={async () => history.push(DEFAULT_ROUTE)}
+              onClick={() => history.push(DEFAULT_ROUTE)}
             />
           </Box>
         ) : null}
