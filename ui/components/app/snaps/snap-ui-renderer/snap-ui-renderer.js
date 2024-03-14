@@ -14,15 +14,13 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import {
   getMemoizedInterfaceContent,
   getMemoizedTargetSubjectMetadata,
-  hasPendingApprovals,
-  getApprovalFlows,
+  getUnapprovedConfirmations,
 } from '../../../../selectors';
 import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import { mapToTemplate } from './utils';
 
@@ -47,43 +45,15 @@ const SnapUIRendererComponent = ({
     getMemoizedTargetSubjectMetadata(state, snapId),
   );
 
-  // const pendingApprovals = useSelector((state) =>
-  //   hasPendingApprovals(state, [
-  //     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-  //     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-  //   ]),
-  // );
-  // const approvalFLows = getApprovalFlows(state);
-
-  // const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
-  //   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  //   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-  //   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-  //   ///: END:ONLY_INCLUDE_IF
-  // ]);
-  const appState = useSelector((state) => state);
-
-  const { pendingApprovals } = appState.metamask;
-
+  const pendingApprovals = useSelector(getUnapprovedConfirmations);
   const history = useHistory();
 
   useEffect(() => {
-    console.log('SNAPS/ SnapUIRendererComponent: useEffect');
-    if (Object.values(pendingApprovals).length > 0) {
-      console.log(
-        'SNAPS/ SnapUIRendererComponent: pendingApprovals.length > 0',
-      );
-      // global.platform.closeCurrentWindow();
+    if (pendingApprovals.length > 0) {
+      // Close current snap UI and go to the confirmation view
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
-  }, [pendingApprovals]);
-
-  console.log(
-    'SNAPS/ SnapUIRendererComponent',
-    // pendingApprovals,
-    // approvalFLows,
-    pendingApprovals,
-  );
+  }, [history, pendingApprovals]);
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
