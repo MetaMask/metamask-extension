@@ -125,8 +125,10 @@ const ConfirmAddCustodianToken = () => {
   const custodianLabel =
     connectRequest.labels?.find((label) => label.key === 'service')?.value ||
     t('custodian');
+
+  // Some custodians dont sent the "environment" inthe connect request
   const custodian = findCustodianByEnvName(
-    connectRequest.environment,
+    connectRequest.environment || custodianLabel,
     custodians,
   );
 
