@@ -5,7 +5,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 
-import Header from './header';
+import HeaderInfo from './header-info';
 
 const render = () => {
   const store = configureStore({
@@ -21,7 +21,7 @@ const render = () => {
     },
   });
 
-  return renderWithProvider(<Header />, store);
+  return renderWithProvider(<HeaderInfo />, store);
 };
 
 describe('Header', () => {
@@ -29,12 +29,7 @@ describe('Header', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
-  it('contains network name and account name', () => {
-    const { getByText } = render();
-    expect(getByText('Test Account')).toBeInTheDocument();
-    expect(getByText('Chain 5')).toBeInTheDocument();
-  });
-  it('contains account info icon', async () => {
+  it('shows account info icon', async () => {
     const { getByLabelText } = render();
     expect(getByLabelText('Account details')).toBeInTheDocument();
   });
@@ -45,6 +40,15 @@ describe('Header', () => {
     fireEvent.click(accountInfoIcon);
     await waitFor(() => {
       expect(queryByTestId('account-details-modal')).toBeInTheDocument();
+    });
+  });
+  it('shows account info modal with address', async () => {
+    const { getByLabelText, getByText, queryByTestId } = render();
+    const accountInfoIcon = getByLabelText('Account details');
+    fireEvent.click(accountInfoIcon);
+    await waitFor(() => {
+      expect(queryByTestId('account-details-modal')).toBeInTheDocument();
+      expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
     });
   });
 });

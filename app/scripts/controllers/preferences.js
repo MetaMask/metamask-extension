@@ -1,5 +1,5 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from 'eth-sig-util';
+import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
