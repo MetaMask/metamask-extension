@@ -2362,17 +2362,6 @@
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
       }
     },
-    "depcheck>cosmiconfig>yaml": {
-      "globals": {
-        "Buffer": true,
-        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
-        "YAML_SILENCE_WARNINGS": true,
-        "atob": true,
-        "btoa": true,
-        "console.warn": true,
-        "process": true
-      }
-    },
     "depcheck>is-core-module": {
       "globals": {
         "process.versions": true
@@ -3749,8 +3738,8 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "depcheck>cosmiconfig>yaml": true,
         "gulp-postcss>postcss-load-config>lilconfig": true,
+        "gulp-postcss>postcss-load-config>yaml": true,
         "ts-node": true
       }
     },
@@ -3769,6 +3758,17 @@
       },
       "globals": {
         "process.cwd": true
+      }
+    },
+    "gulp-postcss>postcss-load-config>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "gulp-sass": {
@@ -7896,9 +7896,20 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json": true,
-        "depcheck>cosmiconfig>yaml": true,
         "eslint>import-fresh": true,
-        "globby>dir-glob>path-type": true
+        "globby>dir-glob>path-type": true,
+        "stylelint>cosmiconfig>yaml": true
+      }
+    },
+    "stylelint>cosmiconfig>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "stylelint>execall": {
@@ -8865,6 +8876,17 @@
     "webpack>json-parse-even-better-errors": {
       "globals": {
         "Buffer.isBuffer": true
+      }
+    },
+    "yaml": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.dir": true,
+        "console.log": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "yargs": {
