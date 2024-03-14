@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getPricePrecision, shortDateFormatter } from '../util';
+import { getPricePrecision, loadingOpacity, shortDateFormatter } from '../util';
 
 const chartUp = (
   <svg
@@ -97,7 +97,7 @@ const AssetPrice = forwardRef(
         </Text>
         <Box>
           {priceDelta !== undefined && comparePrice !== undefined ? (
-            <Box style={{ opacity: loading ? 0.2 : 1 }}>
+            <Box style={{ opacity: loading ? loadingOpacity : 1 }}>
               {priceDelta >= 0 ? chartUp : chartDown}
               <Text
                 display={Display.InlineBlock}

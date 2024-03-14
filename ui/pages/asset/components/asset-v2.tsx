@@ -133,11 +133,7 @@ const AssetV2 = ({
         optionsButton={optionsButton}
       />
       <Box className="main-container asset__container">
-        <Box
-          marginLeft={'auto'}
-          marginRight={'auto'}
-          className="asset__content"
-        >
+        <Box marginLeft="auto" marginRight="auto" className="asset__content">
           <Box
             // Fade balance in/out of header.
             onScroll={(e: React.UIEvent) =>
@@ -330,8 +326,8 @@ const AssetV2 = ({
           backgroundColor={BackgroundColor.backgroundDefault}
         >
           <Box
-            marginLeft={'auto'}
-            marginRight={'auto'}
+            marginLeft="auto"
+            marginRight="auto"
             gap={4}
             padding={4}
             display={Display.Flex}

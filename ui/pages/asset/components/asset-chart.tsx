@@ -36,7 +36,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TimeRange, useHistoricalPrices } from '../useHistoricalPrices';
 import { getShouldShowFiat } from '../../../selectors';
-import { chainSupportsPricing } from '../util';
+import { chainSupportsPricing, loadingOpacity } from '../util';
 import AssetPrice from './asset-price';
 import ChartTooltip from './chart-tooltip';
 
@@ -195,7 +195,7 @@ const AssetChart = ({
             : BackgroundColor.transparent
         }
       >
-        <Box style={{ opacity: loading && prices ? 0.2 : 1 }}>
+        <Box style={{ opacity: loading && prices ? loadingOpacity : 1 }}>
           <ChartTooltip point={yMax} {...edges} currency={currency} />
           <Box
             style={{ aspectRatio: `${options.aspectRatio}` }}
@@ -262,7 +262,7 @@ const AssetChart = ({
         </Box>
 
         <Box
-          style={{ ...(!prices && { visibility: 'hidden' }) }}
+          style={prices ? null : { visibility: `hidden` }}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
           marginTop={4}

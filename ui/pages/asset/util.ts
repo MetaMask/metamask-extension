@@ -51,3 +51,6 @@ export const getPricePrecision = (price: number) => {
  */
 export const chainSupportsPricing = (chainId: `0x${string}`) =>
   (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);
+
+/** The opacity components should set during transition */
+export const loadingOpacity = 0.2;
