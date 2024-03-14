@@ -36,6 +36,8 @@ describe('SimulationPreview', () => {
 
     expect(screen.getByText('You send')).toBeInTheDocument();
     expect(screen.getByText('- 1')).toBeInTheDocument();
+    expect(screen.getByText('$556.12')).toBeInTheDocument();
+
     expect(screen.getByAltText('ETH logo')).toBeInTheDocument();
     expect(screen.getByText('ETH')).toBeInTheDocument();
   });
@@ -67,6 +69,7 @@ describe('SimulationPreview', () => {
 
     expect(screen.getByText('You receive')).toBeInTheDocument();
     expect(screen.getByText('+ 0.5')).toBeInTheDocument();
+    expect(screen.getByText('$278.06')).toBeInTheDocument();
   });
 
   it('renders the error message when simulationData is undefined', () => {

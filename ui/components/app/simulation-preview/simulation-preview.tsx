@@ -24,6 +24,14 @@ export interface SimulationPreviewProps {
   simulationData?: SimulationData;
 }
 
+/**
+ * Converts a SimulationBalanceChange to a BalanceChange for the native asset.
+ *
+ * @param balanceChange
+ * @param balanceChange.isDecrease
+ * @param balanceChange.difference
+ * @returns The converted BalanceChange object.
+ */
 function getNativeAssetBalanceChange({
   isDecrease,
   difference,
@@ -35,6 +43,12 @@ function getNativeAssetBalanceChange({
   };
 }
 
+/**
+ * Retrieves the asset balance changes from the simulation data.
+ *
+ * @param simulationData - The simulation data.
+ * @returns An array of BalanceChange objects.
+ */
 function getAssetBalanceChanges(simulationData: SimulationData) {
   if (!simulationData) {
     return [];
@@ -48,6 +62,9 @@ function getAssetBalanceChanges(simulationData: SimulationData) {
   return balanceChanges;
 }
 
+/**
+ * Content when simulation has failed.
+ */
 const SimulationFailedContent: React.FC = () => {
   const t = useI18nContext();
   return (
@@ -63,6 +80,9 @@ const SimulationFailedContent: React.FC = () => {
   );
 };
 
+/**
+ * Content when there are no balance changes.
+ */
 const NoBalanceChangesContent: React.FC = () => {
   const t = useI18nContext();
   return (
@@ -77,6 +97,9 @@ const NoBalanceChangesContent: React.FC = () => {
   );
 };
 
+/**
+ * Header at the top of the simulation preview.
+ */
 const SimulationPreviewHeader: React.FC = () => {
   const t = useI18nContext();
   return (
@@ -99,6 +122,12 @@ const SimulationPreviewHeader: React.FC = () => {
   );
 };
 
+/**
+ * Layout component for the simulation preview.
+ *
+ * @param options0
+ * @param options0.children
+ */
 const SimulationPreviewLayout: React.FC = ({ children }) => (
   <Box
     display={Display.Flex}
@@ -112,6 +141,12 @@ const SimulationPreviewLayout: React.FC = ({ children }) => (
   </Box>
 );
 
+/**
+ * Preview of a transaction's effects using simulation data.
+ *
+ * @param props
+ * @param props.simulationData - The simulation data to display.
+ */
 export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   simulationData,
 }: SimulationPreviewProps) => {
@@ -126,6 +161,7 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
       </SimulationPreviewLayout>
     );
   }
+
   const balanceChanges = getAssetBalanceChanges(simulationData);
   if (balanceChanges.length === 0) {
     return (
@@ -138,6 +174,7 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
 
   const outgoing = balanceChanges.filter((change) => change.isDecrease);
   const incoming = balanceChanges.filter((change) => !change.isDecrease);
+
   return (
     <SimulationPreviewLayout>
       <SimulationPreviewHeader />

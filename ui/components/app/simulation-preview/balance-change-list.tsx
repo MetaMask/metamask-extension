@@ -8,7 +8,8 @@ import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 
 /**
- * Displays a list of incoming or outgoing balance changes, along with a heading and a total.
+ * Displays a list of incoming or outgoing balance changes, along with a heading and a
+ * total fiat amount.
  *
  * @param props
  * @param props.heading

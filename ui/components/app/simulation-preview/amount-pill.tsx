@@ -11,6 +11,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Numeric } from '../../../../shared/modules/Numeric';
 
+/**
+ * Displays a pill with an amount and a background color indicating whether the amount is an increase or decrease.
+ *
+ * @param props
+ * @param props.isDecrease
+ * @param props.absChange
+ */
 export const AmountPill: React.FC<{
   isDecrease: boolean;
   absChange: Numeric;
