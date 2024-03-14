@@ -91,6 +91,15 @@ export abstract class BaseStore {
   abstract isSupported: boolean;
 
   /**
+   * stateCorruptionDetected is a boolean that is set to true if the storage
+   * system attempts to retrieve state and it is missing, but the localStorage
+   * key 'MMStateExisted' is present. This is an indication that the state was
+   * successfully retrieved at some point in the past and thus likely
+   * some form of corruption has occurred.
+   */
+  abstract stateCorruptionDetected: boolean;
+
+  /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only
    * used as a way of deduplicating error reports sent to sentry as it is
@@ -129,6 +138,12 @@ export abstract class BaseStore {
    * storage implementation (e.g. chrome.storage.local).
    */
   set metadata(metadata: { version: number }) {
+    // In an effort to track irregularities in migration and data storage, we
+    // store the last good migration that ran without crashing the app at this
+    // point. We can then compare this number to the current migration version
+    // higher up in this file to determine if something happened during loading
+    // state from storage that caused the migration number to be out of sync.
+    this.lastGoodMigrationVersion = metadata.version;
     this.#metadata = metadata;
   }
 
@@ -139,6 +154,93 @@ export abstract class BaseStore {
    */
   get metadata(): { version: number } | undefined {
     return this.#metadata;
+  }
+
+  /**
+   * In exactly one instance the UI needs to be able to modify the state of one
+   * of our localStorage keys "USER_OPTED_IN_TO_RESTORE". This is a helper that
+   * does not require instantiation of the class to set that value.
+   */
+  static optIntoRestoreOnRestart() {
+    global.localStorage.setItem('USER_OPTED_IN_TO_RESTORE', 'true');
+  }
+
+  /**
+   * Return whether the user has acknowledged a state corruption issue and
+   * has opted into restoring either their vault, or the extension to its
+   * default state if the vault was not backed up.
+   */
+  get hasUserOptedIntoRestart(): boolean  {
+    return global.localStorage.getItem('USER_OPTED_IN_TO_RESTORE') === 'true';
+  }
+
+  /**
+   * Set whether the user has acknowledged a state corruption issue and opted
+   * into restoring their state tree to the best possible outcome. This will
+   * remove the presence of the key if 'value' is false. Otherwise if 'value'
+   * is true, then the key will be set to 'true'.
+   */
+  set hasUserOptedIntoRestart(value: boolean) {
+    if (value === true) {
+      global.localStorage.setItem('USER_OPTED_IN_TO_RESTORE', 'true');
+    } else {
+      global.localStorage.removeItem('USER_OPTED_IN_TO_RESTORE');
+    }
+  }
+
+  /**
+   * After successfully migrating the state tree this method is called to
+   * persist the last known successfully ran migration number to localStorage.
+   * This is useful in detecting
+   */
+  set lastGoodMigrationVersion(version: number) {
+    global.localStorage.setItem('lastGoodMigrationVersion', version.toString());
+  }
+
+  get lastGoodMigrationVersion() {
+    return parseInt(
+      global.localStorage.getItem('lastGoodMigrationVersion') ?? '0',
+      10,
+    );
+  }
+
+  /**
+   * Compares a version number to the last known good migration number stored
+   * in localStorage. This method is used to determine if the state tree has
+   * been corrupted in some way that caused the migration number to be out of
+   * sync with the last known good migration number.
+   *
+   * @param currentMigrationNumber - The current migration number that is being
+   * compared against. This number is typically the version number of the state
+   * after initially loading from storage.
+   * @returns whether the last good migration number is different from the
+   * current one.
+   */
+  doesMigrationNumberHaveMismatch(currentMigrationNumber: number) {
+    if (global.localStorage.getItem('lastGoodMigrationVersion') === null) {
+      return false;
+    }
+    return this.lastGoodMigrationVersion !== currentMigrationNumber;
+  }
+
+  /**
+   * Records a timestamp in localStorage for the last time the state was read
+   * from extension memory successfully. This is used to determine if the state
+   * has ever existed in extension memory, which is useful for determining if
+   * corruption has occurred.
+   */
+  recordStateExistence() {
+    global.localStorage.setItem('MMStateExisted', Date.now().toString());
+  }
+
+  /**
+   * Checks if a timestamp exists in localStorage for the last time the state
+   * was read from extension memory successfully. This is used to determine if
+   * the state has ever existed in extension memory, which is useful for
+   * determining if corruption has occurred.
+   */
+  get hasStateExisted() {
+    return global.localStorage.getItem('MMStateExisted') !== null;
   }
 
   /**

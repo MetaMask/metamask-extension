@@ -26,8 +26,12 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import {
+  getErrorHtml,
+  getStateCorruptionErrorHtml,
+} from '../../shared/lib/error-utils';
+import { BaseStore } from './lib/Stores/BaseStore';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -249,6 +253,20 @@ async function initializeUiWithTab(
     }
 
     const state = store.getState();
+
+    // If we have restored the user's vault from backup we need to indicate
+    // this to the user. The user's settings have all been reverted to
+    // default which includes any privacy preferences they may have set. So
+    // we want to ensure that they are aware before interacting with their
+    // accounts further.
+    if (state.metamask.initializationFlags?.corruptionDetected === true) {
+      displayStateCorruptionError(
+        new Error('MetaMask State Corruption Detected'),
+        state,
+      );
+      return;
+    }
+
     const { metamask: { completedOnboarding } = {} } = state;
 
     if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
@@ -329,6 +347,20 @@ async function displayCriticalError(errorKey, err, metamaskState) {
     browser.runtime.reload();
   });
 
+  log.error(err.stack);
+  throw err;
+}
+
+async function displayStateCorruptionError(err, metamaskState) {
+  const html = await getStateCorruptionErrorHtml(SUPPORT_LINK, metamaskState);
+  container.innerHTML = html;
+
+  const button = document.getElementById('critical-error-button');
+
+  button?.addEventListener('click', (_) => {
+    BaseStore.optIntoRestoreOnRestart();
+    browser.runtime.reload();
+  });
   log.error(err.stack);
   throw err;
 }

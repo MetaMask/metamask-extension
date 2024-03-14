@@ -98,6 +98,8 @@ global.fetch = fetch;
 
 // localStorage
 window.localStorage = {
+  setItem: () => null,
+  getItem: () => null,
   removeItem: () => null,
 };
 

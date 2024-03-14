@@ -9,6 +9,7 @@ import {
   MetaMaskStorageStructure,
   EmptyState,
 } from './BaseStore';
+import { getPreferencesControllerErrorState } from './utils';
 
 /**
  * Returns whether or not the given object contains no keys
@@ -67,6 +68,13 @@ export class ExtensionStore extends BaseStore {
    * 3. The metadata property is not set on the class which is required before
    * setting state. This ensures the 'meta' key of the storage is set.
    *
+   * In the following case state will **NOT** be persisted but without an error
+   * 1. The stateCorruptionDetected flag is true and the user has not opted into
+   * restoring from backup. This is to avoid persisting corrupted state which
+   * can potentially overwrite a user's state file in the extension filesystem
+   * that has been lost by the browser's internal pointer to the file being
+   * broken.
+   *
    * @param state - The state to persist to the data key of the local store
    * @returns void
    */
@@ -114,21 +122,41 @@ export class ExtensionStore extends BaseStore {
      *
      */
     if (!this.isSupported) {
-      return this.generateFirstTimeState();
+      return await this.generateFirstTimeState();
     }
+    // State can become corrupted on firefox which seems to be most commonly
+    // caused by a broken link between the sqlite entry for the extension and
+    // the name of the file that stores the data. Some users have been able to
+    // restore the functionality by finding and fixing the reference but until
+    // then the extension presents as an infinite spinner loader. To avoid this
+    // we can return undefined if we get an error loading state. This will make
+    // Firefox behave the same way that Chrome does when state is missing which
+    // is to load the default state and drop into the onboarding flow.
     try {
       const result = await this.#get();
       // extension.storage.local always returns an obj
       // if the object is empty, treat it as undefined
       if (!result?.data) {
         this.mostRecentRetrievedState = null;
+        // If the data is missing, and we have no record of it ever existing,
+        // then return undefined so that it can be treated as a fresh install
+        // clear state tree.
+        if (this.hasStateExisted === false) {
+          return await this.generateFirstTimeState();
+        }
         this.stateCorruptionDetected = true;
 
         global.sentry?.captureMessage('Empty/corrupted vault found');
 
         // If the data is missing, but we have a record of it existing at some
         // point return an empty object, return the fallback state tree from
-        return this.generateFirstTimeState();
+        return await this.#generateCorruptedStateTreeFallback();
+      }
+      // If the data isn't missing, set a key in localStorage to let us know
+      // that at some point we had a persisted state tree for this user and
+      // install.
+      if (this.hasStateExisted === false) {
+        this.recordStateExistence();
       }
       if (!this.isExtensionInitialized) {
         this.mostRecentRetrievedState = result;
@@ -140,13 +168,81 @@ export class ExtensionStore extends BaseStore {
       // If we get an error trying to read the state, this indicated some kind
       // of corruption or fault of the storage mechanism and we should fallback
       // to the process for handling corrupted state.
-      return this.generateFirstTimeState();
+      return await this.#generateCorruptedStateTreeFallback();
     }
+  }
+
+  /**
+   * This method is called when a state corruption is detected and will return
+   * a state tree that achieves one of two possible outcomes:
+   * 1. If the user has opted into restoring from backup, the vault will be
+   * added to the KeyringController state from localStorage. We also set the
+   * firstTimeFlowType to 'restore' so that the user is redirected to the
+   * correct screen of the Onboarding experience, skipping the Welcome screen.
+   * If the user's vault was not backed up in localStorage, we set state to the
+   * default shape for a new user.
+   * 2. If the user has not opted into restoring from backup, we set a flag in
+   * the PreferencesController state to show an error screen in the UI. This
+   * error screen displays a button that, when clicked, sets a flag in
+   * localStorage that will result in the first option above being taken.
+   *
+   * @returns
+   */
+  async #generateCorruptedStateTreeFallback(): Promise<
+    Required<MetaMaskStorageStructure>
+  > {
+    // We persist the vault to localStorage as a failsafe in the event state
+    // corruption occurs.
+    const _keyringVault = global.localStorage.getItem('metaMaskVault');
+    const keyringVault = _keyringVault ? JSON.parse(_keyringVault) : null;
+    // unable to recover, clear state
+    const versionedData = await this.generateFirstTimeState();
+    if (this.hasUserOptedIntoRestart) {
+      //  When we get to this point we pull it out of
+      // localStorage and use it to at least allow the user to recover their
+      // accounts and backup their seed phrase. The rest of their settings will
+      // be wiped and returned to default. For the sake of transparency we will
+      // show an error screen to the user informing them what happened and that
+      // their settings are defaulted. The 'restoredFromBackup' flag is used to
+      // show this error screen in ui.js. Once they restart the app the flag is
+      // reverted to bypass the error screen.
+      if (keyringVault) {
+        versionedData.data.KeyringController = {
+          // Restore the vault from localstorage
+          vault: keyringVault,
+          // Set a flag to indicate that the vault was restored from backup
+          restoredFromBackup: true,
+        };
+        // We have to set the completedOnboarding flag to true to avoid an
+        // Infinite routing loop where after unlocking they are redirected back
+        // to an unlock screen on the onboarding flow.
+        versionedData.data.OnboardingController = {
+          completedOnboarding: true, // Will change this to firstTimeFlowType: FirstTimeFlowType.restore soon
+        };
+      }
+      // Remove the OPTED_IN flag so that if the corruption were to happen
+      // again the user would not be automatically restored from the backup
+      // but would rather be presented with the options again.
+      this.hasUserOptedIntoRestart = false;
+      // We set the stateCorruptionDetected flag to false so that the new state
+      // tree can be persisted. The set method throws an error if this flag is
+      // true.
+      this.stateCorruptionDetected = false;
+    } else {
+      // We set some initializationFlags in the preferences controller here so
+      // that ui.js may interpret them and display an error.
+      versionedData.data.PreferencesController =
+        getPreferencesControllerErrorState(keyringVault);
+      sentry?.captureMessage(
+        'MetaMask - Empty vault found - unable to recover',
+      );
+    }
+    return versionedData;
   }
 
   async isFirstTimeInstall(): Promise<boolean> {
     const result = await this.#get();
-    return Boolean(isEmpty(result));
+    return isEmpty(result) && this.hasStateExisted === false;
   }
 
   cleanUpMostRecentRetrievedState() {
