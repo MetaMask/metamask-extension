@@ -28,7 +28,7 @@
 
   // input for tokens
   &__input {
-    & > div {
+    .unit-input__inputs {
       // primary (i.e., input) and secondary (i.e., subtext) input sections
       & > div {
         max-width: 150px;
