@@ -229,6 +229,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [Developing on MetaMask](./development/README.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 - [How to add new confirmations](./docs/confirmations.md)
+- [Browser support guidelines](./docs/browser-support.md)
 
 ## Dapp Developer Resources
 
