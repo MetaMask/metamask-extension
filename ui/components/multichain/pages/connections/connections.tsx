@@ -63,7 +63,9 @@ export const Connections = () => {
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
-  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+  const { id } = useSelector((state: any) => state.activeTab);
+
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
@@ -76,16 +78,20 @@ export const Connections = () => {
 
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
-  let tabToConnect;
+  let tabToConnect: { origin: any } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
       origin: activeTabOrigin,
     };
   }
   const requestAccountsPermission = async () => {
-    const id = await dispatch(requestAccountsPermissionWithId(origin));
+    const id = await dispatch(
+      requestAccountsPermissionWithId(tabToConnect.origin),
+    );
     history.push(`${CONNECT_ROUTE}/${id}`);
   };
+  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -132,7 +138,7 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata ? (
+        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
           <Tabs defaultActiveTabKey="connections">
             {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -178,7 +184,7 @@ export const Connections = () => {
         ) : null}
       </Content>
       <Footer>
-        {connectedSubjectsMetadata ? (
+        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
           <Box
             display={Display.Flex}
             gap={2}
