@@ -36,10 +36,10 @@ import {
   hideDeprecatedNetworkModal,
   addPermittedAccount,
   autoSwitchNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  hideKeyringRemovalResultModal,
   setSwitchedNetworkDetails,
   neverShowSwitchedNetworkMessage,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
