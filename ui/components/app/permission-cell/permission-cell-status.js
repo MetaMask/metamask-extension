@@ -27,10 +27,10 @@ import { formatDate } from '../../../helpers/utils/util';
 /**
  * Renders status of the given permission. Used by PermissionCell component.
  *
- * @param options0
- * @param options0.revoked - Boolean value to identify if permission is being revoked.
- * @param options0.dateApproved - Timestamp when permission is approved.
- * @param options0.accounts - List of accounts for which permission is requested, approved or revoked.
+ * @param props - The props.
+ * @param props.revoked - Boolean value to identify if permission is being revoked.
+ * @param props.dateApproved - Timestamp when permission is approved.
+ * @param props.accounts - List of accounts for which permission is requested, approved or revoked.
  * @returns React element rendering permission status with or without account icons displayed as AvatarGroup.
  */
 export const PermissionCellStatus = ({ revoked, dateApproved, accounts }) => {
