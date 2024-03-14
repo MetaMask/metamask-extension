@@ -47,7 +47,7 @@ export default function confirmReducer(
 export function updateConfirm(payload: Record<string, unknown> | undefined) {
   return {
     type: UPDATE_CONFIRM,
-    payload: payload || {},
+    payload: payload || initState,
   };
 }
 
