@@ -30,7 +30,7 @@ import {
   Text,
 } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { getSnapMetadata } from '../../../../selectors';
+import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 
 export default function SnapUpdate({
   request,
@@ -45,6 +45,11 @@ export default function SnapUpdate({
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const getSnapName = (id) => {
+    return snapsMetadata[id].name;
+  };
 
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
@@ -68,7 +73,12 @@ export default function SnapUpdate({
   const isLoading = requestState.loading;
   const hasError = !isLoading && requestState.error;
 
-  const warnings = getSnapInstallWarnings(newPermissions, t, snapName);
+  const warnings = getSnapInstallWarnings(
+    newPermissions,
+    t,
+    snapName,
+    getSnapName,
+  );
 
   const shouldShowWarning = warnings.length > 0;
 

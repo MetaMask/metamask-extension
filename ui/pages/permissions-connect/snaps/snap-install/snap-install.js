@@ -31,7 +31,7 @@ import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { getSnapMetadata } from '../../../../selectors';
+import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 
 export default function SnapInstall({
   request,
@@ -44,6 +44,11 @@ export default function SnapInstall({
   const siteMetadata = useOriginMetadata(request?.metadata?.dappOrigin) || {};
   const { origin, iconUrl, name } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const getSnapName = (id) => {
+    return snapsMetadata[id].name;
+  };
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
@@ -69,6 +74,7 @@ export default function SnapInstall({
     requestState?.permissions ?? {},
     t,
     snapName,
+    getSnapName,
   );
 
   const shouldShowWarning = warnings.length > 0;
