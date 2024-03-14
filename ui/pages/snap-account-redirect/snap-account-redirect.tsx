@@ -10,14 +10,14 @@ import {
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { SnapAccountRedirectContent } from './components';
 
-export interface SnapAccountRedirectProps {
+export type SnapAccountRedirectProps = {
   url: string;
   snapId: string;
   snapName: string;
   isBlockedUrl: boolean;
   message: string;
   onSubmit?: () => void;
-}
+};
 
 const SnapAccountRedirect = ({
   url,
