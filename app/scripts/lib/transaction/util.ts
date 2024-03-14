@@ -33,6 +33,7 @@ export type SecurityAlertResponse = {
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
+  description?: string;
 };
 
 export type AddTransactionOptions = NonNullable<
