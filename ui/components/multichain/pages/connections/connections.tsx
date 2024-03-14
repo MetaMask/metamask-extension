@@ -51,7 +51,11 @@ import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accou
 import { requestAccountsPermissionWithId } from '../../../../store/actions';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
-import { DisconnectAllModal } from '../../disconnect-all-modal/disconnect-all-modal';
+import {
+  DisconnectAllModal,
+  DisconnectType,
+} from '../../disconnect-all-modal/disconnect-all-modal';
+import { removePermissionsFor } from '../../../../store/actions';
 
 export const Connections = () => {
   const t = useI18nContext();
@@ -94,6 +98,19 @@ export const Connections = () => {
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
+  const disconnectAllAccounts = () => {
+    console.log("nidhi")
+    const permissionMethodNames = mergedAccounts.map(
+      (account) => account.address,
+    );
+
+    dispatch(
+      removePermissionsFor({
+        [activeTabOrigin]: permissionMethodNames,
+      }),
+    );
+    setShowDisconnectAllModal(false);
+  };
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -184,7 +201,14 @@ export const Connections = () => {
             onClose={() => setShowConnectAccountsModal(false)}
           />
         ) : null}
-        {showDisconnectAllModal ? <DisconnectAllModal onClose={() => setShowDisconnectAllModal(false)} /> : null}
+        {showDisconnectAllModal ? (
+          <DisconnectAllModal
+            type={DisconnectType.Account}
+            hostname={activeTabOrigin}
+            onClose={() => setShowDisconnectAllModal(false)}
+            onClick={()=>dispatch(disconnectAllAccounts())}
+          />
+        ) : null}
       </Content>
       <Footer>
         {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
@@ -210,6 +234,7 @@ export const Connections = () => {
               variant={ButtonVariant.Secondary}
               startIconName={IconName.Logout}
               danger
+              onClick={() => setShowDisconnectAllModal(true)}
             >
               {t('disconnectAllAccounts')}
             </Button>
