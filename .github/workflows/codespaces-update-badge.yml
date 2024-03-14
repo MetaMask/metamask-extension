@@ -2,9 +2,15 @@ name: Codespaces
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types:
+      - edited
+      - opened
+      - reopened
   pull_request_target:
-    types: [opened, reopened]
+    types:
+      - edited
+      - opened
+      - reopened
 
 jobs:
   codespaces-update-badge:
