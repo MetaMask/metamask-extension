@@ -126,7 +126,7 @@ export const Connections = () => {
                   const connectedSite = connectedSites[account.address]?.find(
                     ({ origin }) => origin === activeTabOrigin,
                   );
-                  //Since this list renders only connected accounts, selected account will be the active account
+                  // Since this list renders only connected accounts, selected account will be the active account
                   const isSelectedAccount =
                     selectedAccount.address === account.address;
                   return (
