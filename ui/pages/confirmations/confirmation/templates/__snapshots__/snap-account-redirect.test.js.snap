@@ -105,7 +105,7 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
                       />
                     </div>
                     <p
-                      class="mm-box mm-text snap-delineator__header__text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--margin-bottom-0 mm-box--margin-left-1 mm-box--display-block mm-box--color-text-alternative"
+                      class="mm-box mm-text snap-delineator__header__text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--margin-bottom-0 mm-box--margin-left-1 mm-box--display-block mm-box--color-text-default"
                     >
                       Content from Test Snap Account Name
                     </p>
