@@ -8,7 +8,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { getPetnamesEnabled } from '../../../../../selectors';
+import { getPetnamesEnabled, getSnaps } from '../../../../../selectors';
 import {
   AvatarAccount,
   AvatarAccountSize,
@@ -30,13 +30,21 @@ export const ConfirmInfoRowAddress = ({
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
 
+  // PetNames on this component are disabled for snaps until the `<Name />`
+  // component can support variations. See this comment for context:
+  // https://github.com/MetaMask/metamask-extension/pull/23487#discussion_r1525055546
+  let isSnapInstalled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  isSnapInstalled = Object.values(useSelector(getSnaps)).length > 0;
+  ///: END:ONLY_INCLUDE_IF
+
   return (
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
     >
-      {isPetNamesEnabled ? (
+      {isPetNamesEnabled && !isSnapInstalled ? (
         <Name value={hexAddress} type={NameType.ETHEREUM_ADDRESS} />
       ) : (
         <>
