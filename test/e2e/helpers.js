@@ -773,7 +773,8 @@ const sendTransaction = async (
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('[placeholder="0"]', quantity);
+  await driver.fill('.unit-input__input', quantity);
+
   await driver.clickElement({
     text: 'Continue',
     tag: 'button',
