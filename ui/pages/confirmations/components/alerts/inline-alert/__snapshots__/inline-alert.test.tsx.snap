@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Inline Alert renders alert with danger severity 1`] = `
+<div>
+  <div>
+    <div
+      class="error-muted inline-alert inline-alert__critical"
+    >
+      <span
+        class="mm-box inline-alert__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/danger.svg');"
+      />
+      <p
+        class="mm-box mm-text inline-alert__text mm-text--body-sm mm-box--color-text-default"
+      >
+        Alert
+      </p>
+      <span
+        class="mm-box inline-alert__icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Inline Alert renders alert with informative severity 1`] = `
+<div>
+  <div>
+    <div
+      class="primary-muted inline-alert inline-alert__informative"
+    >
+      <span
+        class="mm-box inline-alert__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/info.svg');"
+      />
+      <p
+        class="mm-box mm-text inline-alert__text mm-text--body-sm mm-box--color-text-default"
+      >
+        Alert
+      </p>
+      <span
+        class="mm-box inline-alert__icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Inline Alert renders alert with warning severity 1`] = `
+<div>
+  <div>
+    <div
+      class="warning-muted inline-alert inline-alert__non_critical"
+    >
+      <span
+        class="mm-box inline-alert__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/danger.svg');"
+      />
+      <p
+        class="mm-box mm-text inline-alert__text mm-text--body-sm mm-box--color-text-default"
+      >
+        Alert
+      </p>
+      <span
+        class="mm-box inline-alert__icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;
