@@ -8,10 +8,10 @@
   max-width: 100%;
 
   &__missing {
-    background-color: var(--color-error-muted);
+    background-color: var(--color-background-alternative);
 
     .name__value {
-      color: var(--color-error-default);
+      color: var(--color-text-default);
     }
   }
 
@@ -32,7 +32,7 @@
   }
 
   &__missing &__icon {
-    color: var(--color-error-default);
+    color: var(--color-text-default);
   }
 
   &__saved &__icon {
