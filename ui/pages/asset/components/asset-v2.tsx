@@ -150,7 +150,6 @@ const AssetV2 = ({
             }
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            // className="main-container asset__container"
           >
             <Box paddingLeft={4} paddingBottom={1}>
               <Text color={TextColor.textAlternative}>
