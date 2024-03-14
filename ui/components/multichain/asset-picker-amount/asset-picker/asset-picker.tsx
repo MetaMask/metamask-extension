@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
-  Icon,
   IconName,
-  IconSize,
   AvatarToken,
   Text,
   Box,
+  Button,
 } from '../../../component-library';
 import { Asset } from '../../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
-  BorderRadius,
   Display,
   JustifyContent,
   TextColor,
@@ -76,9 +74,7 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         asset={asset}
         onAssetChange={onAssetChange}
       />
-
-      {/* TOKEN PICKER */}
-      <Box
+      <Button
         className="asset-picker"
         display={Display.Flex}
         alignItems={AlignItems.center}
@@ -88,8 +84,8 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
           asset.type === AssetType.NFT ? JustifyContent.spaceBetween : undefined
         }
         backgroundColor={BackgroundColor.transparent}
-        borderRadius={BorderRadius.pill}
         onClick={() => setShowAssetPickerModal(true)}
+        endIconName={IconName.ArrowDown}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
@@ -105,8 +101,7 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
             )}
           </Tooltip>
         </Box>
-        <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
-      </Box>
+      </Button>
     </>
   );
 }
