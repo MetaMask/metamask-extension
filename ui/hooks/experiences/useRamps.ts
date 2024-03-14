@@ -4,10 +4,10 @@ import type { Hex } from '@metamask/utils';
 import { ChainId } from '../../../shared/constants/network';
 import { getCurrentChainId, getMetaMetricsId } from '../../selectors';
 
-interface IUseRamps {
+type IUseRamps = {
   openBuyCryptoInPdapp: VoidFunction;
   getBuyURI: (chainId: ChainId) => string;
-}
+};
 
 const portfolioUrl = process.env.PORTFOLIO_URL;
 

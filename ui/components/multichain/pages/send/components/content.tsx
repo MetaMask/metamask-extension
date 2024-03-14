@@ -14,7 +14,6 @@ import {
   updateSendAmount,
   updateSendAsset,
 } from '../../../../../ducks/send';
-import { ConfirmGasDisplay } from '../../../../../pages/confirmations/components/confirm-gas-display';
 import {
   AssetType,
   TokenStandard,
@@ -113,9 +112,6 @@ export const SendPageContent = ({
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
-      <SendPageRow>
-        <ConfirmGasDisplay />
-      </SendPageRow>
     </Box>
   );
 };
