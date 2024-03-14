@@ -198,7 +198,7 @@ exports[`All Connections render renders correctly 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
                 style="border-width: 0px;"
               >
-                T
+                m
               </div>
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
@@ -249,7 +249,7 @@ exports[`All Connections render renders correctly 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
                 style="border-width: 0px;"
               >
-                T
+                m
               </div>
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
@@ -300,7 +300,7 @@ exports[`All Connections render renders correctly 1`] = `
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
                 style="border-width: 0px;"
               >
-                T
+                m
               </div>
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
