@@ -112,7 +112,7 @@ const AssetV2 = ({
 
       fetchWithCache({
         url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
-        cacheOptions: { cacheRefreshTime: MINUTE },
+        cacheOptions: { cacheRefreshTime: 10 * MINUTE },
         functionName: 'GetAssetMarketData',
       })
         .catch(() => null)
