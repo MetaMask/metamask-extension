@@ -126,17 +126,19 @@ export const Connections = () => {
                   const connectedSite = connectedSites[account.address]?.find(
                     ({ origin }) => origin === activeTabOrigin,
                   );
+                  const isSelectedAccountActive =
+                    selectedAccount.address === account.address;
                   return (
                     <AccountListItem
                       identity={account}
                       key={account.address}
                       accountsCount={mergedAccounts.length}
-                      selected={selectedAccount.address === account.address}
+                      selected={isSelectedAccountActive}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
                       menuType={AccountListItemMenuTypes.Connection}
                       currentTabOrigin={activeTabOrigin}
-                      isActive={index === 0 ? t('active') : null}
+                      isActive={isSelectedAccountActive ? t('active') : null}
                     />
                   );
                 })}
