@@ -352,9 +352,6 @@
   "alertSettingsWeb3ShimUsageDescription": {
     "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
-  "inlineAlert": {
-    "message": "Alert"
-  },
   "alerts": {
     "message": "Alerts"
   },
@@ -2112,6 +2109,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
+  "inlineAlert": {
+    "message": "Alert"
   },
   "inputLogicEmptyState": {
     "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."

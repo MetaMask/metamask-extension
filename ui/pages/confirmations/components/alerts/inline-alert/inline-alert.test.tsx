@@ -1,8 +1,8 @@
 import * as React from 'react';
 import configureStore from 'redux-mock-store';
-import InlineAlert from './inline-alert';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import InlineAlert from './inline-alert';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -32,9 +32,9 @@ describe('Inline Alert', () => {
   it('renders alert with danger severity', () => {
     const { container } = renderWithProvider(
       <InlineAlert
-      value={ADDRESS_NO_SAVED_NAME_MOCK}
-      label={ADDRESS_LABEL}
-      severity={Severity.Danger}
+        value={ADDRESS_NO_SAVED_NAME_MOCK}
+        label={ADDRESS_LABEL}
+        severity={Severity.Danger}
       />,
       store,
     );
@@ -45,9 +45,10 @@ describe('Inline Alert', () => {
   it('renders alert with warning severity', () => {
     const { container } = renderWithProvider(
       <InlineAlert
-      value={ADDRESS_SAVED_NAME_MOCK}
-      label={ADDRESS_LABEL}
-      severity={Severity.Warning}/>,
+        value={ADDRESS_SAVED_NAME_MOCK}
+        label={ADDRESS_LABEL}
+        severity={Severity.Warning}
+      />,
       store,
     );
 
@@ -56,7 +57,7 @@ describe('Inline Alert', () => {
 
   it('renders alert with informative severity', () => {
     const { container } = renderWithProvider(
-      <InlineAlert value={ADDRESS_SAVED_NAME_MOCK} label={ADDRESS_LABEL}/>,
+      <InlineAlert value={ADDRESS_SAVED_NAME_MOCK} label={ADDRESS_LABEL} />,
       store,
     );
 
