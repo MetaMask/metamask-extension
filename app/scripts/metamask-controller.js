@@ -143,6 +143,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+import {
+  getLocalizedSnapManifest,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IF
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -299,10 +306,6 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
-import {
-  getLocalizedSnapManifest,
-  stripSnapPrefix,
-} from '@metamask/snaps-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
