@@ -5461,7 +5461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^23.0.0, @metamask/transaction-controller@npm:^23.1.0":
+"@metamask/transaction-controller@npm:23.1.0":
   version: 23.1.0
   resolution: "@metamask/transaction-controller@npm:23.1.0"
   dependencies:
@@ -5491,6 +5491,39 @@ __metadata:
     "@metamask/gas-fee-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
   checksum: 5e6d38be2430d1e98ad1aded3171535168dff5b54d96084a6cf7b91f08b311347727280110987c89df7e153b99eac914501da45d14e6bd87390f3d5157634c9f
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A23.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-23.1.0-3c6190463f.patch":
+  version: 23.1.0
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A23.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-23.1.0-3c6190463f.patch::version=23.1.0&hash=87acd5"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@metamask/approval-controller": "npm:^5.1.2"
+    "@metamask/base-controller": "npm:^4.1.1"
+    "@metamask/controller-utils": "npm:^8.0.3"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/gas-fee-controller": "npm:^13.0.1"
+    "@metamask/metamask-eth-abis": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^17.2.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    nonce-tracker: "npm:^3.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.23.9
+    "@metamask/approval-controller": ^5.1.2
+    "@metamask/gas-fee-controller": ^13.0.0
+    "@metamask/network-controller": ^17.2.0
+  checksum: bcfdaf046131934120abf6cbb51b933012718e67735574dc72545eb630f3c931a2c1a9ecef61e16fcc3abc9180867ee2e859b40772426ff1762c727404a28a54
   languageName: node
   linkType: hard
 
@@ -24893,7 +24926,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.2.0"
-    "@metamask/transaction-controller": "npm:^23.1.0"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A23.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-23.1.0-3c6190463f.patch"
     "@metamask/user-operation-controller": "npm:^4.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"

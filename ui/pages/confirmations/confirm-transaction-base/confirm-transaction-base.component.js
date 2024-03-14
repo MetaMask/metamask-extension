@@ -62,6 +62,7 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
+import { SimulatedTransactionPreview } from '../../../components/app/simulation-preview';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -381,6 +382,7 @@ export default class ConfirmTransactionBase extends Component {
       useCurrencyRateCheck,
       tokenSymbol,
       isUsingPaymaster,
+      fromAddress,
     } = this.props;
 
     const { t } = this.context;
@@ -507,6 +509,11 @@ export default class ConfirmTransactionBase extends Component {
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
+        />
+
+        <SimulatedTransactionPreview
+          fromAddress={fromAddress}
+          simulationData={txData.simulationData}
         />
         <TransactionDetail
           disableEditGasFeeButton
