@@ -3,7 +3,9 @@
     text-decoration: line-through;
   }
 
-  &__accounts-group-box {
-    vertical-align: top;
+  &__status {
+    &__accounts-group-box {
+      vertical-align: top;
+    }
   }
 }
