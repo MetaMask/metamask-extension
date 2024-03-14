@@ -1,9 +1,8 @@
 import { By } from "selenium-webdriver";
-import FixtureBuilder from "../../fixture-builder";
-import { unlockWallet, withFixtures } from "../../helpers";
-import { Driver } from '../../webdriver/driver';
+import FixtureBuilder from "../fixture-builder";
+import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow } from "../helpers";
+import { Driver } from '../webdriver/driver';
 import { MOCK_RECIPIENT_ADDRESS } from "./simulation-preview.mocks";
-const { openActionMenuAndStartSendFlow } = require('../../helpers');
 
 const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress: string, quantity: string) => {
   await openActionMenuAndStartSendFlow(driver);
@@ -17,7 +16,7 @@ const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress
 };
 
 async function withFixturesForSimulationPreview(
-  { title, paymaster }: { title?: string; paymaster?: string },
+  { title }: { title?: string; },
   test: (driver: Driver) => Promise<void>
 ) {
   await withFixtures(

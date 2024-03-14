@@ -1483,6 +1483,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController = new TransactionController(
       {
+        isSimulationEnabled: () => {
+          let enabled = false;
+          ///: BEGIN:ONLY_INCLUDE_IF(simulation-preview)
+          enabled = true;
+          ///: END:ONLY_INCLUDE_IF
+          return enabled;
+        },
         blockTracker: this.blockTracker,
         cancelMultiplier: 1.1,
         getCurrentNetworkEIP1559Compatibility:
