@@ -2117,20 +2117,26 @@
   "inputLogicHigherNumber": {
     "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
+  "insightWarning": {
+    "message": "warning"
+  },
   "insightWarningCheckboxMessage": {
     "message": "$1 the request by $2",
     "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
   },
   "insightWarningContentPlural": {
-    "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
-    "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
+    "message": "Review $1 before $2. Once made, the $3 is irreversible.",
+    "description": "$1 the 'insightWarnings' message (2 warnings) representing warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
   },
   "insightWarningContentSingular": {
-    "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
-    "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
+    "message": "Review $1 before $2. Once made, the $3 is irreversible.",
+    "description": "$1 is the 'insightWarning' message (1 warning), $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
   },
   "insightWarningHeader": {
     "message": "This request may be risky"
+  },
+  "insightWarnings": {
+    "message": "warnings"
   },
   "insightsFromSnap": {
     "message": "Insights from $1",
@@ -3704,6 +3710,9 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
+  },
+  "recipientAddressPlaceholderFlask": {
+    "message": "Enter public address (0x) or domain name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
