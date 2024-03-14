@@ -3256,8 +3256,8 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// DetectTokenController
-export function detectNewTokens(): ThunkAction<
+// TokenDetectionController
+export function detectTokens(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -3265,8 +3265,8 @@ export function detectNewTokens(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectNewTokens`);
-    await submitRequestToBackground('detectNewTokens');
+    log.debug(`background.detectTokens`);
+    await submitRequestToBackground('detectTokens');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
