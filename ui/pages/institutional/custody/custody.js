@@ -658,25 +658,28 @@ const CustodyPage = () => {
               {t('selectAnAccountHelp')}
             </Text>
           </Box>
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-          >
-            <TextFieldSearch
-              size={Size.SM}
-              width={BlockSize.Full}
-              placeholder={t('searchAccounts')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              clearButtonOnClick={() => setSearchQuery('')}
-              clearButtonProps={{
-                size: Size.SM,
-              }}
-              inputProps={{ autoFocus: true }}
-            />
-          </Box>
+          {/* Search box */}
+          {accounts.length > 1 ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+            >
+              <TextFieldSearch
+                size={Size.SM}
+                width={BlockSize.Full}
+                placeholder={t('searchAccounts')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                clearButtonOnClick={() => setSearchQuery('')}
+                clearButtonProps={{
+                  size: Size.SM,
+                }}
+                inputProps={{ autoFocus: true }}
+              />
+            </Box>
+          ) : null}
           <Box
             paddingBottom={4}
             display={Display.Flex}

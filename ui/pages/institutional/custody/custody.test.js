@@ -418,8 +418,16 @@ describe('CustodyPage', function () {
   it('filters accounts based on search query', async () => {
     const accounts = [
       {
-        name: 'Saturn Test Name',
+        name: 'Saturn Test A',
         address: '0x123',
+        balance: '0x1',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'testLabels' }],
+        chanId: 'chanId',
+      },
+      {
+        name: 'Saturn Test B',
+        address: '0x1234',
         balance: '0x1',
         custodianDetails: 'custodianDetails',
         labels: [{ key: 'key', value: 'testLabels' }],
@@ -435,7 +443,7 @@ describe('CustodyPage', function () {
     Fuse.mockImplementation(() => ({
       search: jest.fn().mockReturnValue([
         {
-          name: 'Saturn Test Name',
+          name: 'Saturn Test A',
           address: '0x123',
         },
       ]),
@@ -470,7 +478,7 @@ describe('CustodyPage', function () {
     });
 
     fireEvent.change(screen.getByPlaceholderText('Search accounts'), {
-      target: { value: 'Saturn Test Name' },
+      target: { value: 'Saturn Test A' },
     });
 
     expect(Fuse).toHaveBeenCalledWith(
@@ -483,6 +491,6 @@ describe('CustodyPage', function () {
       }),
     );
 
-    expect(screen.getByText('Saturn Test Name')).toBeDefined();
+    expect(screen.getByText('Saturn Test A')).toBeDefined();
   });
 });
