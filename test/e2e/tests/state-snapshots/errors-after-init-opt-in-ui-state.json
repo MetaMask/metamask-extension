@@ -82,6 +82,8 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
+    "switchedNetworkDetails": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
