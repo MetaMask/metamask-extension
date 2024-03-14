@@ -38,9 +38,9 @@ import {
   getSubjectsWithSnapPermission,
   getPermissions,
   getSnapLatestVersion,
+  getSnapMetadata,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMemoizedMetaMaskIdentities,
-  getSnapMetadata,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {

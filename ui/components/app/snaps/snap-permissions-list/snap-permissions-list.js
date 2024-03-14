@@ -20,7 +20,6 @@ export default function SnapPermissionsList({
           return (
             <PermissionCell
               snapId={snapId}
-              snapName={snapName}
               permissionName={permission.permissionName}
               title={permission.label}
               description={permission.description}

@@ -277,7 +277,7 @@ export function lookupDomainName(domainName) {
         }
       }
 
-      const snapId = fetchResolutions?.[0].snapId;
+      const snapId = fetchedResolutions?.[0].snapId;
       const snapName = getSnapMetadata(state, snapId)?.name;
 
       await dispatch(

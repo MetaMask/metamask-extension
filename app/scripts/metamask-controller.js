@@ -997,7 +997,8 @@ export default class MetamaskController extends EventEmitter {
         return null;
       }
 
-      const { currentLocale, snaps } = this.store.getState();
+      const currentLocale = this.getLocale();
+      const { snaps } = this.snapController.state;
       const snap = snaps[id];
 
       if (!snap) {
@@ -1010,10 +1011,10 @@ export default class MetamaskController extends EventEmitter {
           currentLocale,
           snap.localizationFiles,
         );
-        return localizedManifest.name;
+        return localizedManifest.proposedName;
       }
 
-      return snap.manifest.name;
+      return snap.manifest.proposedName;
     };
 
     additionalKeyrings.push(
