@@ -1,11 +1,6 @@
 name: Codespaces
 
 on:
-  pull_request:
-    types:
-      - edited
-      - opened
-      - reopened
   pull_request_target:
     types:
       - edited
