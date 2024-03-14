@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getTokenExchangeRates } from '../../../../selectors';
 import { Numeric } from '../../../../../shared/modules/Numeric';
@@ -28,7 +28,7 @@ export default function useTokenExchangeRate(
     }
 
     const contractExchangeRate =
-      contractExchangeRates[toChecksumHexAddress(tokenAddress)];
+      contractExchangeRates[toChecksumAddress(tokenAddress)];
 
     if (!contractExchangeRate) {
       return undefined;

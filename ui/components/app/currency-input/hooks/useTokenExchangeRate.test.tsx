@@ -50,7 +50,9 @@ describe('useProcessNewDecimalValue', () => {
   it('ERC-20: price is unavailable', () => {
     const {
       result: { current: exchangeRate },
-    } = renderUseTokenExchangeRate('non-existing token address');
+    } = renderUseTokenExchangeRate(
+      '0x0000000000000000000000000000000000000001',
+    );
 
     expect(exchangeRate?.value).toBe(undefined);
   });
