@@ -21,6 +21,27 @@ describe('Snap Permission List', () => {
     subjectType: 'snap',
     version: '0.2.2',
   };
+  const mockStore = {
+    metamask: {
+      subjectMetadata: {
+        'npm:@metamask/notifications-example-snap': {
+          name: 'Notifications Example Snap',
+          version: '1.2.3',
+          subjectType: 'snap',
+        },
+      },
+      snaps: {
+        'npm:@metamask/notifications-example-snap': {
+          id: 'npm:@metamask/notifications-example-snap',
+          version: '1.2.3',
+          manifest: {
+            proposedName: 'Notifications Example Snap',
+            description: 'A snap',
+          },
+        },
+      },
+    },
+  };
 
   it('renders permissions list for snaps', () => {
     renderWithProvider(
@@ -28,6 +49,7 @@ describe('Snap Permission List', () => {
         permissions={mockPermissionData}
         targetSubjectMetadata={mockTargetSubjectMetadata}
       />,
+      mockStore,
     );
     expect(
       screen.getByText('Display dialog windows in MetaMask.'),
