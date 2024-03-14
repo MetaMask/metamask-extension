@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.12.1]
+### Changed
+- Updated styling for missing petnames to prevent misinterpretation as malicious ([#23458](https://github.com/MetaMask/metamask-extension/pull/23458))
+
 ## [11.12.0]
 ### Added
 - Introduced deprecation warnings for Arbitrum Goerli and OP Goerli test networks ([#23071](https://github.com/MetaMask/metamask-extension/pull/23071))
@@ -4492,7 +4496,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.12.1...HEAD
+[11.12.1]: https://github.com/MetaMask/metamask-extension/compare/v11.12.0...v11.12.1
 [11.12.0]: https://github.com/MetaMask/metamask-extension/compare/v11.11.4...v11.12.0
 [11.11.4]: https://github.com/MetaMask/metamask-extension/compare/v11.11.3...v11.11.4
 [11.11.3]: https://github.com/MetaMask/metamask-extension/compare/v11.11.2...v11.11.3
