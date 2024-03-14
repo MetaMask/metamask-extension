@@ -30,10 +30,10 @@ import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { getAssetImageURL } from '../../../../helpers/utils/util';
 
-export interface AssetPickerProps {
+export type AssetPickerProps = {
   asset: Asset;
   onAssetChange: (newAsset: Asset) => void;
-}
+};
 
 // A component that lets the user pick from a list of assets.
 export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {

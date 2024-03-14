@@ -9,10 +9,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Asset } from '../../../../ducks/send';
 import { AssetBalanceText } from './asset-balance-text';
 
-interface AssetBalanceProps {
+type AssetBalanceProps = {
   error?: string;
   asset: Asset;
-}
+};
 
 export function AssetBalance({ asset, error }: AssetBalanceProps) {
   const t = useI18nContext();

@@ -24,12 +24,15 @@ import { SwappableCurrencyInput } from './swappable-currency-input/swappable-cur
 import { AssetBalance } from './asset-balance/asset-balance';
 import { getIsFiatPrimary } from './utils';
 
-interface AssetPickerAmountProps extends AssetPickerProps {
-  // all of these props should be explicitly received
-  asset: Asset;
-  amount: Amount;
-  onAmountChange: (newAmount: string) => void;
-}
+type AssetPickerAmountProps = OverridingUnion<
+  AssetPickerProps,
+  {
+    // all of these props should be explicitly received
+    asset: Asset;
+    amount: Amount;
+    onAmountChange: (newAmount: string) => void;
+  }
+>;
 
 // A component that combines an asset picker with an input for the amount to send.
 export const AssetPickerAmount = ({

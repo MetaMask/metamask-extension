@@ -23,10 +23,10 @@ import { getIsFiatPrimary } from '../utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
-export interface AssetBalanceTextProps {
+export type AssetBalanceTextProps = {
   asset: Asset;
   balanceColor: TextColor;
-}
+};
 
 export function AssetBalanceText({
   asset,

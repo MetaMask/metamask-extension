@@ -2,11 +2,11 @@ import React from 'react';
 import UnitInput from '../../../ui/unit-input';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 
-interface NFTInputProps {
+type NFTInputProps = {
   integerValue: number;
   onChange: (newHexValue: string) => void;
   className?: string;
-}
+};
 
 const NUMBERS_REGEX = /[0-9]/u;
 

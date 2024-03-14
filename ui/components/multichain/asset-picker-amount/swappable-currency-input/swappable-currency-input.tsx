@@ -17,34 +17,46 @@ import { getIsFiatPrimary } from '../utils';
 import { NFTInput } from '../nft-input/nft-input';
 import SwapIcon from './swap-icon';
 
-interface BaseProps {
+type BaseProps = {
   assetType: AssetType;
   onAmountChange: (newAmount: string) => void;
   asset?: Asset;
   amount: Amount;
-}
+};
 
-interface ERC20Props extends BaseProps {
-  assetType: AssetType.token;
-  asset: Asset;
-}
+type ERC20Props = OverridingUnion<
+  BaseProps,
+  {
+    assetType: AssetType.token;
+    asset: Asset;
+  }
+>;
 
-interface NFTProps extends BaseProps {
-  assetType: AssetType.NFT;
-  asset: Asset;
-}
+type NFTProps = OverridingUnion<
+  BaseProps,
+  {
+    assetType: AssetType.NFT;
+    asset: Asset;
+  }
+>;
 
-interface NativeTokenProps extends BaseProps {
-  assetType: AssetType.native;
-}
+type NativeTokenProps = OverridingUnion<
+  BaseProps,
+  {
+    assetType: AssetType.native;
+  }
+>;
 
-interface UnsupportedTokenProps extends Omit<BaseProps, 'assetType'> {
-  assetType: Exclude<
-    AssetType,
-    AssetType.NFT | AssetType.native | AssetType.token
-  >;
-  asset?: Asset;
-}
+type UnsupportedTokenProps = OverridingUnion<
+  Omit<BaseProps, 'assetType'>,
+  {
+    assetType: Exclude<
+      AssetType,
+      AssetType.NFT | AssetType.native | AssetType.token
+    >;
+    asset?: Asset;
+  }
+>;
 
 type SwappableCurrencyInputProps =
   | ERC20Props

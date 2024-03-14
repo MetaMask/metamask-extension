@@ -75,7 +75,7 @@ type NFT = {
   tokenURI?: string;
 };
 
-interface Token {
+type Token = {
   address: string | null;
   symbol: string;
   decimals: number;
@@ -84,7 +84,7 @@ interface Token {
   string: string;
   type: AssetType;
   isSelected: boolean;
-}
+};
 
 type Collection = {
   collectionName: string;

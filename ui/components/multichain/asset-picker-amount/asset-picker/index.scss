@@ -4,7 +4,8 @@
   flex-grow: 1;
   text-align: left;
 
-  &:hover:not(&--disabled), &:active {
+  &:hover:not(&--disabled),
+  &:active {
     box-shadow: none;
     background-color: transparent;
   }
