@@ -867,6 +867,10 @@
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button."
   },
+  "connectedAccountsListTooltip": {
+    "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
+    "description": "$1 is the origin name"
+  },
   "connectedSites": {
     "message": "Connected sites"
   },
