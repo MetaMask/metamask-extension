@@ -607,6 +607,8 @@ export const getDedupedSnaps = (request, permissions) => {
 
 ///: END:ONLY_INCLUDE_IF
 
+export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
+
 /**
  * The method escape RTL character in string
  *
