@@ -1,5 +1,5 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from 'eth-sig-util';
+import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
@@ -118,6 +118,18 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
+
+    opts.onKeyringStateChange((state) => {
+      const accounts = new Set();
+      for (const keyring of state.keyrings) {
+        for (const address of keyring.accounts) {
+          accounts.add(address);
+        }
+      }
+      if (accounts.size > 0) {
+        this.syncAddresses(Array.from(accounts));
+      }
+    });
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);

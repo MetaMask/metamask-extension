@@ -1,3 +1,5 @@
+@use "design-system";
+
 .prepare-swap-page {
   display: flex;
   flex-flow: column;
@@ -11,7 +13,7 @@
     margin-left: 16px;
     margin-right: 16px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-left: 24px;
       margin-right: 24px;
     }
@@ -87,7 +89,7 @@
   }
 
   &__max-balance {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -95,7 +97,7 @@
   }
 
   &__balance-message {
-    @include H7;
+    @include design-system.H7;
 
     width: 100%;
     color: var(--color-text-alternative);
@@ -326,7 +328,7 @@
     width: 100%;
     flex: 1;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       overflow-y: auto;
       max-height: 420px;
     }
@@ -345,7 +347,7 @@
   &__thin-swaps-footer {
     max-height: 82px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       height: 72px;
     }
   }

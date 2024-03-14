@@ -9,7 +9,7 @@ import { setAccountLabel } from '../../../store/actions';
 import {
   getCurrentChainId,
   getHardwareWalletType,
-  getMetaMaskKeyrings,
+  getInternalAccountByAddress,
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
@@ -41,8 +41,9 @@ export const AccountDetailsDisplay = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
-  const keyrings = useSelector(getMetaMaskKeyrings);
-  const keyring = keyrings.find((kr) => kr.accounts.includes(address));
+  const {
+    metadata: { keyring },
+  } = useSelector((state) => getInternalAccountByAddress(state, address));
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
   const chainId = useSelector(getCurrentChainId);

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .home {
   &__container {
     display: flex;
@@ -27,7 +29,7 @@
   }
 
   &__main-view &__tab {
-    @include H6;
+    @include design-system.H6;
 
     flex-grow: 1;
     color: var(--color-icon-default);
@@ -46,7 +48,7 @@
     display: flex;
     flex-direction: column;
 
-    @include H6;
+    @include design-system.H6;
 
     padding-left: 24px;
     padding-right: 24px;
@@ -83,7 +85,7 @@
     }
 
     .popover-footer {
-      @include H6;
+      @include design-system.H6;
 
       border-top: 0;
       justify-content: space-between;
@@ -181,13 +183,13 @@
     padding: 8px;
     bottom: 16px !important; //Adding important here else it will take bottom:8px in home-notification-wrapper--show-first> div
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-bottom: 50px;
       margin-inline-end: 8px;
       margin-right: 40%;
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       left: 5%;
       right: 5% !important; // Adding important else it will take right:8px defined in .home-notification-wrapper--show-first> div
     }
@@ -198,7 +200,7 @@
     }
 
     &-icon {
-      @include H3;
+      @include design-system.H3;
 
       margin-inline-end: 12px;
       color: var(--color-success-default);

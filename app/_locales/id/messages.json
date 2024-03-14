@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Jika Anda menyetujui permintaan ini, seseorang dapat mencuri aset Anda yang terdaftar di Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Karena terjadi kesalahan, permintaan ini tidak diverifikasi oleh penyedia keamanan. Lanjutkan dengan hati-hati."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Ganti token kustodian"
-  },
-  "custodyApiUrl": {
-    "message": "URL API $1"
   },
   "custodyDeeplinkDescription": {
     "message": "Setujui transaksi di aplikasi $1. Setelah semua persetujuan kustodian yang diperlukan telah dilakukan, transaksi akan selesai. Periksa status aplikasi $1 Anda."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "Notifikasi"
   },
-  "notifications10ActionText": {
-    "message": "Lihat di Pengaturan",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Deteksi token yang ditingkatkan saat ini tersedia di jaringan Ethereum Mainnet, Polygon, BSC, dan Avalanche. Nantikan selengkapnya!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Fitur deteksi token sudah AKTIF sejak awal. Tetapi Anda dapat menonaktifkannya melalui Pengaturan."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "Kami mengumpulkan token dari daftar token pihak ketiga. Token yang terdaftar di lebih dari dua daftar token akan terdeteksi secara otomatis."
-  },
-  "notifications10Title": {
-    "message": "Deteksi token yang ditingkatkan telah hadir"
-  },
-  "notifications11Description": {
-    "message": "Token dapat dibuat oleh siapa saja dan boleh memiliki nama yang sama. Jika Anda melihat token yang tidak aman atau belum pernah berinteraksi dengan Anda, sebaiknya dihindari saja."
-  },
-  "notifications11Title": {
-    "message": "Penipuan dan risiko keamanan"
-  },
-  "notifications12ActionText": {
-    "message": "Aktifkan mode gelap"
-  },
-  "notifications12Description": {
-    "message": "Mode gelap pada Ekstensi akhirnya hadir! Untuk mengaktifkannya, buka Pengaturan > Eksperimental dan pilih salah satu opsi tampilan: Terang, Gelap, Sistem."
-  },
-  "notifications12Title": {
-    "message": "Kapan mode gelap? Ini saatnya mode gelap! ️🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Tampilkan daftar jaringan khusus"
-  },
-  "notifications13Description": {
-    "message": "Kini Anda dapat menambahkan jaringan khusus populer berikut dengan mudah: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm, dan Polygon! Untuk mengaktifkan fitur ini, buka Pengaturan > Eksperimental dan aktifkan \"Tampilkan daftar jaringan khusus\"!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Tambahkan Jaringan Populer"
-  },
-  "notifications14ActionText": {
-    "message": "Tampilkan pengaturan cadangan"
-  },
-  "notifications14Description": {
-    "message": "Kami menghentikan fitur data 3Box kami pada awal Oktober. Untuk mencadangkan dan memulihkan dompet Anda secara manual, gunakan tombol \"Cadangkan sekarang\" di Pengaturan Lanjutan.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "Penghentian 3Box"
-  },
-  "notifications15Description": {
-    "message": "Anda tidak perlu melakukan tindakan apa pun, jadi tetap gunakan dompet Anda seperti biasa. Waspadai potensi penipuan selama Merge.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "Merge Ethereum telah tiba!"
-  },
-  "notifications18ActionText": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Dapatkan peringatan dari pihak ketiga saat Anda menerima permintaan yang dapat membahayakan.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Selalu pastikan untuk melakukan uji tuntas sendiri sebelum menyetujui permintaan apa pun.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea merupakan penyedia pertama untuk fitur ini. Penyedia lainnya akan segera hadir!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Tetap aman bersama peringatan keamanan"
-  },
-  "notifications19ActionText": {
-    "message": "Aktifkan deteksi otomatis NFT"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Dua cara untuk memulai:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "Saat ini kami hanya mendukung ERC-721.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Tambahkan NFT secara manual, atau aktifkan deteksi otomatis NFT di Pengaturan > Eksperimental.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "NFT Anda berbeda dari sebelumnya"
-  },
-  "notifications1Description": {
-    "message": "Pengguna MetaMask Mobile kini bisa menukar token di dalam dompet seluler mereka. Pindai kode QR untuk mendapatkan aplikasi seluler dan mulai menukar.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Penukaran pada perangkat seluler telah hadir!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Pelajari selengkapnya",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Pengguna Ledger dan Firefox Mengalami Masalah Koneksi",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Cobalah"
-  },
-  "notifications21Description": {
-    "message": "Kami telah memperbarui Swap di ekstensi MetaMask agar lebih mudah dan lebih cepat digunakan.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Memperkenalkan Swap baru dan segar!"
-  },
-  "notifications22ActionText": {
-    "message": "Mengerti"
-  },
-  "notifications22Description": {
-    "message": "💡 Cukup klik menu global atau menu akun untuk menemukannya!"
-  },
-  "notifications22Title": {
-    "message": "Mencari detail akun Anda atau URL block explorer?"
-  },
-  "notifications23ActionText": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Hindari penipuan yang diketahui sekaligus tetap menjaga privasi dengan peringatan keamanan yang didukung oleh Blockaid di Mainnet Ethereum."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan."
-  },
-  "notifications23Title": {
-    "message": "Tetap aman bersama peringatan keamanan"
-  },
   "notifications24ActionText": {
     "message": "Mengerti"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "Biaya gas lanjutan berdasarkan jaringan"
-  },
-  "notifications3ActionText": {
-    "message": "Baca selengkapnya",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Dapatkan informasi terbaru seputar praktik terbaik keamanan MetaMask dan dapatkan kiat-kiat keamanan terkini dari dukungan MetaMask resmi.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Tetap aman",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Mulai menukar",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Dapatkan harga penukaran token terbaik langsung di dompet Anda. MetaMask kini menghubungkan Anda ke berbagai agregator penukaran terdesentralisasi dan pembuat pasar profesional di Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Tukar di Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "\"Frasa Benih\" Anda kini disebut \"Frasa Pemulihan Rahasia.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Pada Chrome versi 91, API yang memungkinkan dukungan Ledger (U2F) kami tidak lagi mendukung dompet perangkat keras. MetaMask telah menerapkan dukungan Ledger Live baru yang memungkinkan Anda untuk terus terhubung ke perangkat Ledger Anda melalui aplikasi desktop Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Saat berinteraksi dengan akun Ledger Anda di MetaMask, tab baru akan terbuka dan Anda akan diminta untuk membuka aplikasi Ledger Live.  Setelah aplikasi tersebut terbuka, Anda akan diminta untuk mengizinkan koneksi WebSocket ke akun MetaMask Anda. Tidak diperlukan tindakan lebih lanjut!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Anda dapat mengaktifkan dukungan Ledger Live dengan mengeklik Pengaturan > Lanjutan > Gunakan Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Pembaruan dukungan Ledger untuk pengguna Chrome",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 menyertakan dukungan baru untuk transaksi EIP-1559 saat menggunakan perangkat Ledger.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "Untuk menyelesaikan transaksi di Ethereum Mainnet, pastikan perangkat Ledger Anda memiliki firmware terbaru.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Pembaruan firmware Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Buka Pengaturan > Lanjutan",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Peningkatan koneksi Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "Kini kami memberi Anda lebih banyak wawasan seputar tab 'Data' saat mengonfirmasi transaksi kontrak cerdas."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "Sekarang Anda bisa mendapatkan pemahaman yang lebih baik seputar detail transaksi Anda sebelum mengonfirmasikan, dan lebih mudah menambahkan alamat transaksi ke buku alamat Anda, membantu Anda membuat keputusan yang aman dan terinformasi."
-  },
-  "notifications9Title": {
-    "message": ".👓 Kami membuat transaksi lebih mudah untuk dibaca."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox tidak lagi mendukung U2F, sehingga Ledger tidak akan berfungsi dengan MetaMask di Firefox. Cobalah MetaMask di Google Chrome sebagai gantinya.",

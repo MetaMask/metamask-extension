@@ -31,7 +31,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
+import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -74,27 +74,12 @@ const ConfirmAddCustodianToken = () => {
 
             await dispatch(setProviderType(networkType));
           }
-
-          let custodianName = connectRequest.service.toLowerCase();
-
-          if (connectRequest.service === 'JSONRPC') {
-            custodianName = connectRequest.environment;
-          }
-
-          await dispatch(
-            mmiActions.setCustodianConnectRequest({
-              token: connectRequest.token,
-              apiUrl: connectRequest.apiUrl,
-              custodianName,
-              custodianType: connectRequest.service,
-            }),
-          );
         }
 
         await dispatch(
           mmiActions.removeAddTokenConnectRequest({
             origin: connectRequest.origin,
-            apiUrl: connectRequest.apiUrl,
+            environment: connectRequest.environment,
             token: connectRequest.token,
           }),
         );
@@ -107,7 +92,7 @@ const ConfirmAddCustodianToken = () => {
               ? 'Custodian RPC confirm'
               : 'Custodian RPC cancel',
             custodian: connectRequest.custodian,
-            apiUrl: connectRequest.apiUrl,
+            envName: connectRequest.environment,
           },
         });
 
@@ -133,14 +118,17 @@ const ConfirmAddCustodianToken = () => {
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
-      apiUrl: connectRequest.apiUrl,
+      envName: connectRequest.environment,
     },
   });
 
   const custodianLabel =
     connectRequest.labels?.find((label) => label.key === 'service')?.value ||
     t('custodian');
-  const custodian = findCustodianByDisplayName(custodianLabel, custodians);
+  const custodian = findCustodianByEnvName(
+    connectRequest.environment,
+    custodians,
+  );
 
   return (
     <Box className="page-container">

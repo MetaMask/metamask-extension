@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { NetworkType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { act } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   renderWithProvider,
@@ -12,7 +13,6 @@ import {
 import { domainInitialState } from '../../../../ducks/domains';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { KeyringType } from '../../../../../shared/constants/keyring';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -22,6 +22,7 @@ import {
 } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { KeyringType } from '../../../../../shared/constants/keyring';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -45,12 +46,13 @@ jest.mock('../../../../store/actions.ts', () => {
   const originalModule = jest.requireActual('../../../../store/actions.ts');
   return {
     ...originalModule,
-    disconnectGasFeeEstimatePoller: jest.fn(),
-    getGasFeeEstimatesAndStartPolling: jest
+    gasFeeStartPollingByNetworkClientId: jest
       .fn()
-      .mockImplementation(() => Promise.resolve()),
-    addPollingTokenToAppState: jest.fn(),
-    removePollingTokenFromAppState: jest.fn(),
+      .mockResolvedValue('pollingToken'),
+    gasFeeStopPollingByPollingToken: jest.fn(),
+    getNetworkConfigurationByNetworkClientId: jest
+      .fn()
+      .mockResolvedValue({ chainId: '0x5' }),
     getTokenSymbol: jest.fn().mockResolvedValue('ETH'),
     getGasFeeTimeEstimate: jest
       .fn()
@@ -75,121 +77,179 @@ jest.mock('../../../../ducks/send/send', () => {
   };
 });
 
-describe('SendPage', () => {
-  describe('render and initialization', () => {
-    const middleware = [thunk];
-
-    const baseStore = {
-      send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-      DNS: domainInitialState,
-      gas: {
-        customData: { limit: null, price: null },
+const baseStore = {
+  send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  DNS: domainInitialState,
+  gas: {
+    customData: { limit: null, price: null },
+  },
+  history: { mostRecentOverviewPage: 'activity' },
+  confirmTransaction: {
+    txData: {
+      id: 1,
+      txParams: {
+        value: 'oldTxValue',
       },
-      history: { mostRecentOverviewPage: 'activity' },
-      metamask: {
-        transactions: [
-          {
-            id: 1,
-            txParams: {
-              value: 'oldTxValue',
-            },
-          },
-        ],
-        currencyRates: {
-          ETH: {
-            conversionDate: 1620710825.03,
-            conversionRate: 3910.28,
-            usdConversionRate: 3910.28,
-          },
+    },
+  },
+  metamask: {
+    permissionHistory: {},
+    transactions: [
+      {
+        id: 1,
+        txParams: {
+          value: 'oldTxValue',
         },
-        gasEstimateType: GasEstimateTypes.legacy,
+      },
+    ],
+
+    currencyRates: {
+      ETH: {
+        conversionDate: 1620710825.03,
+        conversionRate: 3910.28,
+        usdConversionRate: 3910.28,
+      },
+    },
+    gasEstimateType: GasEstimateTypes.legacy,
+    gasFeeEstimates: {
+      low: '0',
+      medium: '1',
+      fast: '2',
+    },
+    gasFeeEstimatesByChainId: {
+      '0x5': {
         gasFeeEstimates: {
           low: '0',
           medium: '1',
           fast: '2',
         },
-        selectedAddress: '0x0',
-        internalAccounts: {
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Test Account',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthMethod)],
-              type: EthAccountType.Eoa,
+        gasEstimateType: GasEstimateTypes.legacy,
+      },
+    },
+    selectedAddress: '0x0',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x0',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
             },
           },
-          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
         },
-        keyrings: [
-          {
-            type: KeyringType.hdKeyTree,
-            accounts: ['0x0'],
-          },
-        ],
-        selectedNetworkClientId: NetworkType.mainnet,
-        networksMetadata: {
-          [NetworkType.mainnet]: {
-            EIPS: {},
-            status: 'available',
+        permissionHistory: {
+          'https://uniswap.org/': {
+            eth_accounts: {
+              accounts: {
+                '0x0': 1709225290848,
+              },
+            },
           },
         },
-        tokens: [],
-        preferences: {
-          useNativeCurrencyAsPrimaryCurrency: false,
-        },
-        currentCurrency: 'USD',
-        providerConfig: {
-          chainId: CHAIN_IDS.GOERLI,
-        },
-        nativeCurrency: 'ETH',
-        featureFlags: {
-          sendHexData: false,
-        },
-        addressBook: {
-          [CHAIN_IDS.GOERLI]: [],
-        },
-        cachedBalances: {
-          [CHAIN_IDS.GOERLI]: {},
-        },
-        accounts: {
-          '0x0': { balance: '0x0', address: '0x0', name: 'Account 1' },
-        },
-        identities: { '0x0': { address: '0x0' } },
-        tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
-        tokenList: {
-          '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
-            name: 'BitBase',
-            symbol: 'BTBS',
-            decimals: 18,
-            address: '0x32E6C34Cd57087aBBD59B5A4AECC4cB495924356',
-            iconUrl: 'BTBS.svg',
-            occurrences: null,
-          },
-          '0x3fa400483487a489ec9b1db29c4129063eec4654': {
-            name: 'Cryptokek.com',
-            symbol: 'KEK',
-            decimals: 18,
-            address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
-            iconUrl: 'cryptokek.svg',
-            occurrences: null,
-          },
-        },
+      },
+      activeTab: {
+        origin: 'https://uniswap.org/',
       },
       appState: {
         sendInputCurrencySwitched: false,
       },
-    };
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
+    keyrings: [
+      {
+        type: KeyringType.hdKeyTree,
+        accounts: ['0x0'],
+      },
+    ],
+    selectedNetworkClientId: NetworkType.goerli,
+    networksMetadata: {
+      [NetworkType.goerli]: {
+        EIPS: {},
+        status: 'available',
+      },
+    },
+    tokens: [],
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: false,
+    },
+    currentCurrency: 'USD',
+    providerConfig: {
+      chainId: CHAIN_IDS.GOERLI,
+      nickname: GOERLI_DISPLAY_NAME,
+    },
+    nativeCurrency: 'ETH',
+    featureFlags: {
+      sendHexData: false,
+    },
+    addressBook: {
+      [CHAIN_IDS.GOERLI]: [],
+    },
+    cachedBalances: {
+      [CHAIN_IDS.GOERLI]: {},
+    },
+    accounts: {
+      '0x0': { balance: '0x0', address: '0x0', name: 'Account 1' },
+    },
+    identities: { '0x0': { address: '0x0' } },
+    tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
+    tokenList: {
+      '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
+        name: 'BitBase',
+        symbol: 'BTBS',
+        decimals: 18,
+        address: '0x32E6C34Cd57087aBBD59B5A4AECC4cB495924356',
+        iconUrl: 'BTBS.svg',
+        occurrences: null,
+      },
+      '0x3fa400483487a489ec9b1db29c4129063eec4654': {
+        name: 'Cryptokek.com',
+        symbol: 'KEK',
+        decimals: 18,
+        address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
+        iconUrl: 'cryptokek.svg',
+        occurrences: null,
+      },
+    },
+  },
+  activeTab: {
+    origin: 'https://uniswap.org/',
+  },
+  appState: {
+    sendInputCurrencySwitched: false,
+  },
+};
 
-    it('should initialize the ENS slice on render', () => {
-      const store = configureMockStore(middleware)(baseStore);
-      renderWithProvider(<SendPage />, store);
+const render = async (state) => {
+  const middleware = [thunk];
+
+  const store = configureMockStore(middleware)(state);
+
+  let result;
+
+  await act(async () => (result = renderWithProvider(<SendPage />, store)));
+
+  return { store, result };
+};
+
+describe('SendPage', () => {
+  describe('render and initialization', () => {
+    it('should initialize the ENS slice on render', async () => {
+      const { store } = await render({
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
+      });
       const actions = store.getActions();
       expect(actions).toStrictEqual(
         expect.arrayContaining([
@@ -200,17 +260,25 @@ describe('SendPage', () => {
       );
     });
 
-    it('should render correctly even when a draftTransaction does not exist', () => {
-      const modifiedStore = {
+    it('should render correctly even when a draftTransaction does not exist', async () => {
+      const modifiedState = {
         ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
         send: {
           ...baseStore.send,
           currentTransactionUUID: null,
         },
       };
-      const store = configureMockStore(middleware)(modifiedStore);
-      const { container, getByTestId, getByPlaceholderText } =
-        renderWithProvider(<SendPage />, store);
+      const {
+        result: { container, getByTestId, getByPlaceholderText },
+      } = await render(modifiedState);
 
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
@@ -228,20 +296,22 @@ describe('SendPage', () => {
   });
 
   describe('footer buttons', () => {
-    const mockStore = configureMockStore([thunk])(mockState);
-
     describe('onCancel', () => {
-      it('should call reset send state and route to recent page without cancelling tx', () => {
-        const { queryByText } = renderWithProvider(<SendPage />, mockStore);
+      it('should call reset send state and route to recent page without cancelling tx', async () => {
+        const {
+          result: { queryByText },
+        } = await render(mockState);
 
         const cancelText = queryByText('Cancel');
-        fireEvent.click(cancelText);
+        await act(async () => {
+          fireEvent.click(cancelText);
+        });
 
         expect(mockResetSendState).toHaveBeenCalled();
         expect(mockCancelTx).not.toHaveBeenCalled();
       });
 
-      it('should reject/cancel tx when coming from tx editing and route to index', () => {
+      it('should reject/cancel tx when coming from tx editing and route to index', async () => {
         const sendDataState = {
           ...mockState,
           send: {
@@ -263,15 +333,14 @@ describe('SendPage', () => {
           },
         };
 
-        const sendStateStore = configureMockStore([thunk])(sendDataState);
-
-        const { queryByText } = renderWithProvider(
-          <SendPage />,
-          sendStateStore,
-        );
+        const {
+          result: { queryByText },
+        } = await render(sendDataState);
 
         const rejectText = queryByText('Reject');
-        fireEvent.click(rejectText);
+        await act(async () => {
+          fireEvent.click(rejectText);
+        });
 
         expect(mockResetSendState).toHaveBeenCalled();
         expect(mockCancelTx).toHaveBeenCalled();
@@ -309,14 +378,9 @@ describe('SendPage', () => {
         },
       };
 
-      const sendStateStore = configureMockStore([thunk])(
-        knownRecipientWarningState,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <SendPage />,
-        sendStateStore,
-      );
+      const {
+        result: { queryByTestId },
+      } = await render(knownRecipientWarningState);
 
       const sendWarning = queryByTestId('send-warning');
       await waitFor(() => {

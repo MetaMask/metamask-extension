@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "이 요청을 승인하면, Blur에 있는 자산을 타인이 갈취할 수 있습니다."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "오류로 인해 보안업체에서 이 요청을 확인하지 못했습니다. 주의하여 진행하세요."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -969,9 +969,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "수탁 토큰 대체"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "$1 앱에서 트랜잭션을 승인하세요. 필요한 수탁자 승인이 모두 완료되면 트랜잭션이 완료됩니다. $1 앱 상태를 확인하세요."
@@ -2507,108 +2504,6 @@
   "notifications": {
     "message": "알림"
   },
-  "notifications10ActionText": {
-    "message": "설정으로 이동하기",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "향상된 토큰 감지 기능을 현재 이더리움 메인넷과 Polygon, BSC, Avalanche 네트워크에서 이용할 수 있습니다. 더 많은 기능이 준비 중입니다!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "토큰 감지 기능이 기본적으로 켜져 있습니다. 이는 설정에서 끌 수 있습니다."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "토큰은 타사 토큰 목록에서 가져옵니다. 2군데 이상의 목록에 등재된 토큰은 자동으로 감지됩니다."
-  },
-  "notifications10Title": {
-    "message": "개선된 토큰 감지 기능은 여기서 확인하세요"
-  },
-  "notifications11Description": {
-    "message": "토큰은 누구나 만들 수 있기에 이름이 중복될 수도 있습니다. 신뢰하지 않거나 취급하지 않은 토큰이 표시될 경우 신뢰하지 않는 것이 안전합니다."
-  },
-  "notifications11Title": {
-    "message": "사기 및 보안 위험"
-  },
-  "notifications12ActionText": {
-    "message": "다크모드 활성화"
-  },
-  "notifications12Description": {
-    "message": "이제 확장 프로그램에서 다크 모드를 사용할 수 있습니다! 설정 -> 시험 기능으로 이동하여 라이트, 다크, 시스템 중 원하는 옵션을 선택하세요."
-  },
-  "notifications12Title": {
-    "message": "다크모드를 원하세요? 이제 다크모드를 사용하세요! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "사용자 정의 네트워크 목록 보기"
-  },
-  "notifications13Description": {
-    "message": "이제 Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm 및 Polygon과 같은 인기 맞춤 네트워크를 쉽게 추가할 수 있습니다! 이 기능을 활성화하려면 설정 -> 실험으로 이동하여 \"맞춤 네트워크 목록 표시\"를 활성화하세요!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "인기 네트워크 추가"
-  },
-  "notifications14ActionText": {
-    "message": "백업 설정 표시"
-  },
-  "notifications14Description": {
-    "message": "10월 초에 3Box 데이터 기능의 지원이 중단됩니다. 사용자 지갑을 직접 백업하고 복구하려면 고급 설정에서 \"지금 백업\" 버튼을 사용하세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Box 지원 중단"
-  },
-  "notifications15Description": {
-    "message": "사용자가 진행해야 할 작업은 없습니다. 지갑은 원래대로 계속 사용할 수 있습니다. 머지 관련 사기를 주의하세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "이더리움 머지가 완료되었습니다!"
-  },
-  "notifications18ActionText": {
-    "message": "보안 경고 활성화"
-  },
-  "notifications18DescriptionOne": {
-    "message": "악성 요청을 받을 때마다 타사로부터 경고 알림을 받으세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "모든 요청을 승인하기 전에 주의 깊게 직접 확인하세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea는 이러한 기능을 제공하는 최초 업체입니다. 다른 업체도 곧 지원될 예정입니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "경고 알림을 통해 보안을 유지하세요"
-  },
-  "notifications19ActionText": {
-    "message": "NFT 자동 감지 활성화"
-  },
-  "notifications19DescriptionOne": {
-    "message": "두 가지 방법으로 시작할 수 있습니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "현재 ERC-721만 지원됩니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "NFT를 직접 추가하거나 설정> 실험 기능에서 NFT 자동 감지 기능을 켜세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "NFT를 전보다 더욱 쉽게 찾아 보세요"
-  },
-  "notifications1Description": {
-    "message": "MetaMask 모바일 사용자는 이제 모바일 지갑에서 토큰을 스왑할 수 있습니다. QR 코드를 스캔하여 모바일 앱을 설치하고 스왑을 시작하세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "모바일 스왑은 여기서 진행됩니다!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "자세히 알아보기",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2621,37 +2516,6 @@
     "message": "Ledger 및 Firefox 사용자의 연결 문제점 경험",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "체험해 보세요"
-  },
-  "notifications21Description": {
-    "message": "더욱 쉽고 빠르게 사용하도록 MetaMask 확장의 스왑을 업데이트했습니다",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "새롭게 업데이트한 스왑을 소개합니다"
-  },
-  "notifications22ActionText": {
-    "message": "확인"
-  },
-  "notifications22Description": {
-    "message": "💡 글로벌 메뉴나 계정 메뉴를 클릭하여 찾으세요!"
-  },
-  "notifications22Title": {
-    "message": "계정 상세 정보나 블록 탐색기 URL을 찾고 계신가요?"
-  },
-  "notifications23ActionText": {
-    "message": "보안 경고 활성화"
-  },
-  "notifications23DescriptionOne": {
-    "message": "이더리움 메인넷에서 Blockaid가 제공하는 보안 경고를 통해 개인정보를 보호하면서 사기를 피하세요."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "요청을 승인하기 전에 항상 직접 확인하세요."
-  },
-  "notifications23Title": {
-    "message": "경고를 통해 보안을 유지하세요"
-  },
   "notifications24ActionText": {
     "message": "확인"
   },
@@ -2660,62 +2524,6 @@
   },
   "notifications24Title": {
     "message": "네트워크별 고급 가스비"
-  },
-  "notifications3ActionText": {
-    "message": "더 읽어보기",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "MetaMask 보안 관련 최신 모범 사례를 알아보고 공식 MetaMask 지원에서 최신 보안 팁을 확인하세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "보안 유지",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "스왑 시작",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "토큰 스왑 최고가를 지갑에서 바로 이용하세요. MetaMask는 이제 바이낸스 스마트 체인의 여러 분산형 교환 애그리게이터 및 투자전문기관과 연결됩니다.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "바이낸스 스마트 체인에서 스왑",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "\"시드 구문\"은 이제 \"비밀복구구문\"이라고 합니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Chrome 버전 91부터 Ledger 지원이 활성화된 API(U2F)는 더 이상 하드웨어 지갑을 지원하지 않습니다. MetaMask는 Ledger Live 지원을 새롭게 구축하여 Ledger Live 데스크톱 앱을 통해 Ledger 장치에 계속해서 연결할 수 있도록 보완했습니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "MetaMask에서 Ledger 계정을 이용하려면 새 탭이 열리고 Ledger Live 앱을 열라는 메시지가 표시됩니다.  앱이 열리면 MetaMask 계정에 대한 WebSocket 연결을 허용하라는 메시지가 표시됩니다. 그러면 성공입니다!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Ledger Live 지원은 설정 > 고급 > Ledger Live 사용을 클릭하여 활성화할 수 있습니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Chrome 사용자용 Ledger 지원 업데이트",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0에는 Ledger 장치를 사용에서 EIP-1559 트랜잭션이 새롭게 지원되도록 했습니다.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "이더리움 메인넷에서 트랜잭션을 완료하려면 Ledger 장치에 최신 펌웨어가 있는지 확인하세요.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger 폄웨어 업데이트",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "설정 > 고급으로 이동",
@@ -2732,15 +2540,6 @@
   "notifications8Title": {
     "message": "Ledger 연결 개선 사항",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notifications9DescriptionOne": {
-    "message": "이제 스마트 계약 트랜잭션을 컨펌할 때 '데이터' 탭을 통해 더 많은 통찰력을 얻을 수 있습니다."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "이제 컨펌하기 전에 트랜잭션 세부 정보를 더 잘 이해할 수 있고 주소록에 트랜잭션 주소를 더 쉽게 추가할 수 있어 안전하며 정보에 입각한 결정을 내리는 데 도움이 됩니다."
-  },
-  "notifications9Title": {
-    "message": "👓 사용자가 트랜잭션을 이해하기 쉽게 도와드립니다."
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox에서 더 이상 U2F를 지원하지 않아 Firefox를 이용한 MetaMask에서 Ledger를 이용할 수 없습니다. 대신 Google Chrome에서 MetaMask를 이용해 보세요.",

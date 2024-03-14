@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
@@ -12,12 +12,13 @@ import {
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
   getIsBuyableChain,
-  getCurrentChainId,
+  getCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
+  getIsMainnet,
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -55,17 +56,21 @@ import {
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const chainId = useSelector(getCurrentChainId);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentLocale = useSelector(getCurrentLocale);
+  const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    chainId,
+    currentNetwork.chainId,
     ticker,
     type,
   );
@@ -88,13 +93,11 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
+  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
-    },
-  );
+    });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
     useCurrencyDisplay(selectedAccountBalance, {
@@ -121,6 +124,45 @@ const AssetList = ({ onClickAsset }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IF
+
+  useEffect(() => {
+    if (shouldShowBuy) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
+    }
+    if (shouldShowReceive) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
+    }
+  }, [
+    shouldShowBuy,
+    shouldShowReceive,
+    trackEvent,
+    currentNetwork,
+    currentLocale,
+  ]);
+
+  let isStakeable = isMainnet;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -152,7 +194,7 @@ const AssetList = ({ onClickAsset }) => {
                     properties: {
                       location: 'Home',
                       text: 'Buy',
-                      chain_id: chainId,
+                      chain_id: currentNetwork.chainId,
                       token_symbol: defaultSwapsToken,
                     },
                   });
@@ -182,25 +224,9 @@ const AssetList = ({ onClickAsset }) => {
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
+        // The primary and secondary currencies are subject to change based on the user's settings
+        // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
         primary={
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyProperties.value ??
-              secondaryCurrencyProperties.value
-            : null
-        }
-        tokenSymbol={
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyProperties.suffix
-            : null
-        }
-        secondary={
-          showFiat &&
           showSecondaryCurrency(
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
@@ -208,9 +234,24 @@ const AssetList = ({ onClickAsset }) => {
             ? secondaryCurrencyDisplay
             : undefined
         }
+        tokenSymbol={
+          useNativeCurrencyAsPrimaryCurrency
+            ? primaryCurrencyProperties.suffix
+            : secondaryCurrencyProperties.suffix
+        }
+        secondary={
+          showFiat &&
+          showPrimaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? primaryCurrencyDisplay
+            : undefined
+        }
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
+        isStakeable={isStakeable}
       />
       <TokenList
         tokens={tokensWithBalances}

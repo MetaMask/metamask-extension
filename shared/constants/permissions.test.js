@@ -1,5 +1,7 @@
-import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
-import { restrictedMethodPermissionBuilders } from '@metamask/snaps-rpc-methods';
+import {
+  restrictedMethodPermissionBuilders,
+  endowmentPermissionBuilders,
+} from '@metamask/snaps-rpc-methods';
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
@@ -13,7 +15,7 @@ describe('EndowmentPermissions', () => {
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
       [
         'endowment:name-lookup',
-        'endowment:page-home',
+        'endowment:signature-insight',
         ...Object.keys(endowmentPermissionBuilders).filter(
           (targetName) =>
             !Object.keys(ExcludedSnapEndowments).includes(targetName),

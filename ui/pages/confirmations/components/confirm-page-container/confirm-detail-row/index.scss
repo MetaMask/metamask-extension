@@ -1,0 +1,64 @@
+@use "design-system";
+
+.confirm-detail-row {
+  padding: 14px 0;
+  margin: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  &__label {
+    @include design-system.H7;
+
+    font-weight: 500;
+    color: var(--color-text-alternative);
+    text-transform: uppercase;
+  }
+
+  &__details {
+    flex: 1;
+    text-align: end;
+    min-width: 0;
+  }
+
+  &__primary {
+    @include design-system.H3;
+
+    justify-content: flex-end;
+  }
+
+  &__secondary {
+    color: var(--color-text-alternative);
+    justify-content: flex-end;
+  }
+
+  &__header-text {
+    @include design-system.H7;
+
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--color-text-default);
+
+    &--edit {
+      color: var(--color-primary-default);
+      cursor: pointer;
+    }
+
+    &--total {
+      @include design-system.H8;
+    }
+  }
+
+  .advanced-gas-inputs__gas-edit-rows {
+    margin-bottom: 16px;
+  }
+
+  .custom-nonce-input {
+    input {
+      @include design-system.Paragraph;
+
+      width: 90px;
+    }
+  }
+}

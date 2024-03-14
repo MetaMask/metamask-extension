@@ -136,6 +136,9 @@
   "accountIdenticon": {
     "message": "Account identicon"
   },
+  "accountIsntConnectedToastText": {
+    "message": "$1 isn't connected to $2"
+  },
   "accountName": {
     "message": "Account name"
   },
@@ -155,9 +158,6 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
-  },
-  "accountsPinningBannerDescription": {
-    "message": "Keep tabs on what matters by pinning or hiding accounts"
   },
   "active": {
     "message": "Active"
@@ -352,9 +352,6 @@
   "alerts": {
     "message": "Alerts"
   },
-  "allConnections": {
-    "message": "All Connections"
-  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -364,6 +361,9 @@
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
+  "allPermissions": {
+    "message": "All Permissions"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -601,7 +601,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -617,7 +617,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -800,8 +800,14 @@
   "connect": {
     "message": "Connect"
   },
+  "connectAccount": {
+    "message": "Connect account"
+  },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
+  },
+  "connectAccounts": {
+    "message": "Connect accounts"
   },
   "connectCustodialAccountMenu": {
     "message": "Connect Custodial Account"
@@ -817,6 +823,9 @@
   },
   "connectManually": {
     "message": "Manually connect to current site"
+  },
+  "connectMoreAccounts": {
+    "message": "Connect more accounts"
   },
   "connectSnap": {
     "message": "Connect $1",
@@ -845,6 +854,9 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
+  "connectedAccounts": {
+    "message": "Connected accounts"
+  },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
     "description": "$1 is the number of accounts"
@@ -869,11 +881,11 @@
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
   },
-  "connectedaccount": {
-    "message": "account"
+  "connectedWith": {
+    "message": "Connected with"
   },
-  "connectedaccounts": {
-    "message": "accounts"
+  "connectedaccountsTabKey": {
+    "message": "Connected accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1006,6 +1018,9 @@
   "createSnapAccountTitle": {
     "message": "Create account"
   },
+  "crossChainSwapsLink": {
+    "message": "Swap across networks with MetaMask Portfolio"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -1075,9 +1090,6 @@
   },
   "custodianReplaceRefreshTokenTitle": {
     "message": "Replace custodian token"
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
@@ -1223,6 +1235,15 @@
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
+  "deprecatedNetwork": {
+    "message": "This network is deprecated"
+  },
+  "deprecatedNetworkButtonMsg": {
+    "message": "Got it"
+  },
+  "deprecatedNetworkDescription": {
+    "message": "The network you're trying to connect to is no longer supported by Metamask. $1"
+  },
   "description": {
     "message": "Description"
   },
@@ -1347,6 +1368,20 @@
   },
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
+  },
+  "disconnectAllAccountsText": {
+    "message": "accounts"
+  },
+  "disconnectAllSnapsText": {
+    "message": "Snaps"
+  },
+  "disconnectAllText": {
+    "message": "If you disconnect your $1 from $2, you'll need to reconnect to use them again.",
+    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`, $2 represents the website hostname"
+  },
+  "disconnectAllTitle": {
+    "message": "Disconnect all $1",
+    "description": "$1 will map to `disconnectAllAccountsText` or `disconnectAllSnapsText`"
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -1854,7 +1889,7 @@
     "message": "Goerli test network"
   },
   "gotIt": {
-    "message": "Got it!"
+    "message": "Got it"
   },
   "grantedToWithColon": {
     "message": "Granted to:"
@@ -2082,6 +2117,21 @@
   "inputLogicHigherNumber": {
     "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
+  "insightWarningCheckboxMessage": {
+    "message": "$1 the request by $2",
+    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
+  },
+  "insightWarningContentPlural": {
+    "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
+    "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
+  },
+  "insightWarningContentSingular": {
+    "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
+    "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
+  },
+  "insightWarningHeader": {
+    "message": "This request may be risky"
+  },
   "insightsFromSnap": {
     "message": "Insights from $1",
     "description": "$1 represents the name of the snap"
@@ -2252,6 +2302,9 @@
   },
   "lastSold": {
     "message": "Last sold"
+  },
+  "lavaDomeCopyWarning": {
+    "message": "For your safety, selecting this text is not available right now."
   },
   "layer1Fees": {
     "message": "Layer 1 fees"
@@ -2446,6 +2499,10 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metadataModalSourceTooltip": {
+    "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
+    "description": "$1 is the snap name and $2 is the snap NPM id."
+  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
@@ -2454,6 +2511,9 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "methodNotSupported": {
+    "message": "Not supported with this account."
   },
   "metrics": {
     "message": "Metrics"
@@ -2712,7 +2772,7 @@
     "message": "Settings > Security and privacy"
   },
   "newNFTDetectedInImportNFTsMsg": {
-    "message": "To use Opensea see your NFT, turn on 'Display NFT Media' in $1.",
+    "message": "To use Opensea to see your NFTs, turn on 'Display NFT Media' in $1.",
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
@@ -2755,7 +2815,7 @@
     "message": "NFT has already been added."
   },
   "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
   "nftLearnMore": {
     "message": "Learn more about NFTs"
@@ -2791,6 +2851,12 @@
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
+  },
+  "noConnectedAccountDescription": {
+    "message": "Select an account you want to use on this site to continue."
+  },
+  "noConnectedAccountTitle": {
+    "message": "MetaMask isn’t connected to this site"
   },
   "noConversionDateAvailable": {
     "message": "No currency conversion date available"
@@ -2873,108 +2939,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notifications10ActionText": {
-    "message": "Visit in Settings",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
-  },
-  "notifications10DescriptionOne": {
-    "message": "Improved token detection is currently available on Ethereum Mainnet, Polygon, BSC, and Avalanche networks. More to come!"
-  },
-  "notifications10DescriptionThree": {
-    "message": "Token detection feature is currently OFF by default. You can enable it from Settings."
-  },
-  "notifications10DescriptionTwo": {
-    "message": "We source tokens from third party tokens lists. Tokens listed on more than two token lists will be automatically detected."
-  },
-  "notifications10Title": {
-    "message": "Improved token detection is here"
-  },
-  "notifications11Description": {
-    "message": "Tokens can be created by anyone and can have duplicate names. If you see a token appear that you don’t trust or haven’t interacted with - it’s safer to not trust it."
-  },
-  "notifications11Title": {
-    "message": "Scam and security risks"
-  },
-  "notifications12ActionText": {
-    "message": "Enable dark mode"
-  },
-  "notifications12Description": {
-    "message": "Dark mode on Extension is finally here! To turn it on, go to Settings > Experimental and select one of the display options: Light, Dark, System."
-  },
-  "notifications12Title": {
-    "message": "Wen dark mode? Now dark mode! 🕶️🦊"
-  },
-  "notifications13ActionText": {
-    "message": "Show custom network list"
-  },
-  "notifications13Description": {
-    "message": "You can now add the following popular custom networks easily: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon! To enable this feature, go to Settings > Experimental and turn \"Show custom network list\" on!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
-  },
-  "notifications13Title": {
-    "message": "Add Popular Networks"
-  },
-  "notifications14ActionText": {
-    "message": "Show backup settings"
-  },
-  "notifications14Description": {
-    "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
-  },
-  "notifications14Title": {
-    "message": "3Box Deprecation"
-  },
-  "notifications15Description": {
-    "message": "There's no action required from you, so keep using your wallet as usual. Be aware of potential scams around the Merge.",
-    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
-  },
-  "notifications15Title": {
-    "message": "The Ethereum Merge is here!"
-  },
-  "notifications18ActionText": {
-    "message": "Enable security alerts"
-  },
-  "notifications18DescriptionOne": {
-    "message": "Get alerts from third parties when you may have received a malicious request.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionThree": {
-    "message": "Always be sure to do your own due diligence before approving any requests.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18DescriptionTwo": {
-    "message": "OpenSea is the first provider for this feature. More providers coming soon!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
-  },
-  "notifications18Title": {
-    "message": "Stay safe with security alerts"
-  },
-  "notifications19ActionText": {
-    "message": "Enable NFT autodetection"
-  },
-  "notifications19DescriptionOne": {
-    "message": "Two ways you can get started:",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionThree": {
-    "message": "We only support ERC-721 at the moment.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19DescriptionTwo": {
-    "message": "Manually add your NFTs, or turn on NFT autodetection in Settings > Experimental.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications19Title": {
-    "message": "See your NFTs like never before"
-  },
-  "notifications1Description": {
-    "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Swapping on mobile is here!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
   "notifications20ActionText": {
     "message": "Learn more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -2987,37 +2951,6 @@
     "message": "Ledger and Firefox Users Experiencing Connection Issues",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
   },
-  "notifications21ActionText": {
-    "message": "Try it out"
-  },
-  "notifications21Description": {
-    "message": "We've updated Swaps in the MetaMask extension to be easier and faster to use.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
-  },
-  "notifications21Title": {
-    "message": "Introducing new and refreshed Swaps!"
-  },
-  "notifications22ActionText": {
-    "message": "Got it"
-  },
-  "notifications22Description": {
-    "message": "💡 Just click the global menu or account menu to find them!"
-  },
-  "notifications22Title": {
-    "message": "Looking for your account details or the block explorer URL?"
-  },
-  "notifications23ActionText": {
-    "message": "Enable security alerts"
-  },
-  "notifications23DescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid on Ethereum Mainnet."
-  },
-  "notifications23DescriptionTwo": {
-    "message": "Always do your own due diligence before approving requests."
-  },
-  "notifications23Title": {
-    "message": "Stay safe with security alerts"
-  },
   "notifications24ActionText": {
     "message": "Got it"
   },
@@ -3026,62 +2959,6 @@
   },
   "notifications24Title": {
     "message": "Advanced gas fees by network"
-  },
-  "notifications3ActionText": {
-    "message": "Read more",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Stay up to date on MetaMask security best practices and get the latest security tips from official MetaMask support.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Stay secure",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Start swapping",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Get the best prices on token swaps right inside your wallet. MetaMask now connects you to multiple decentralized exchange aggregators and professional market makers on Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Swap on Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Your \"Seed Phrase\" is now called your \"Secret Recovery Phrase.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "As of Chrome version 91, the API that enabled our Ledger support (U2F) no longer supports hardware wallets. MetaMask has implemented a new Ledger Live support that allows you to continue to connect to your Ledger device via the Ledger Live desktop app.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "When interacting with your Ledger account in MetaMask, a new tab will open and you will be asked to open the Ledger Live app.  Once the app opens, you'll be asked to allow a WebSocket connection to your MetaMask account.  That's all!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "You can enable Ledger Live support by clicking Settings > Advanced > Use Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Ledger support update for Chrome users",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
-  "notifications7DescriptionOne": {
-    "message": "MetaMask v10.1.0 included new support for EIP-1559 transactions when using Ledger devices.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
-  },
-  "notifications7DescriptionTwo": {
-    "message": "To complete transactions on Ethereum Mainnet, make sure your Ledger device has the latest firmware.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
-  },
-  "notifications7Title": {
-    "message": "Ledger firmware update",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
     "message": "Go to Settings > Advanced",
@@ -3099,20 +2976,11 @@
     "message": "Ledger connection improvement",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
   },
-  "notifications9DescriptionOne": {
-    "message": "We now provide you with more insights on the 'Data' tab when confirming smart contract transactions."
-  },
-  "notifications9DescriptionTwo": {
-    "message": "You can now get a better understanding of your transaction’s details before confirming, and more easily add transaction addresses to your address book, helping you make safe and informed decisions."
-  },
-  "notifications9Title": {
-    "message": "👓 We are making transactions easier to read."
-  },
   "notificationsBlockaidDefaultDescriptionActionText": {
     "message": "Got it"
   },
   "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -3176,6 +3044,33 @@
   },
   "notificationsPetnamesTitle": {
     "message": "Suggested nicknames are here!"
+  },
+  "notificationsPortfolioV2ActionText": {
+    "message": "See Portfolio"
+  },
+  "notificationsPortfolioV2DescriptionOne": {
+    "message": "Still missing out on MetaMask Portfolio?"
+  },
+  "notificationsPortfolioV2DescriptionThree": {
+    "message": "Your Portfolio is waiting."
+  },
+  "notificationsPortfolioV2DescriptionTwo": {
+    "message": "Manage your web3 assets across different networks and accounts in one powerful dashboard. Swap, Buy, Sell, Bridge, and Stake in a secure, convenient, and easy to use dapp. Stay up to speed with the pulse of the cryptoverse, see your DeFi positions, manage your NFT collection, and more. All in one place."
+  },
+  "notificationsPortfolioV2Title": {
+    "message": "MetaMask Portfolio - join millions"
+  },
+  "notificationsStakingPortfolioActionText": {
+    "message": "Got it",
+    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioDescription": {
+    "message": "Now you can stake ETH and manage your rewards all in one place.",
+    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioTitle": {
+    "message": "Stake smarter in Portfolio",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3447,6 +3342,9 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
+  "permissionDetails": {
+    "message": "Permission details"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3603,6 +3501,22 @@
     "message": "$1 and $2",
     "description": "A list of allowed origins where $2 is the last origin of the list and $1 is the rest of the list separated by ','."
   },
+  "permission_signatureInsight": {
+    "message": "Display signature insights modal.",
+    "description": "The description for the `endowment:signature-insight` permission"
+  },
+  "permission_signatureInsightDescription": {
+    "message": "Allow $1 to display a modal with insights on any signature request before approval. This can be used for anti-phishing and security solutions.",
+    "description": "An extended description for the `endowment:signature-insight` permission. $1 is the snap name."
+  },
+  "permission_signatureInsightOrigin": {
+    "message": "See the origins of websites that initiate a signature request",
+    "description": "The description for the `signatureOrigin` caveat, to be used with the `endowment:signature-insight` permission"
+  },
+  "permission_signatureInsightOriginDescription": {
+    "message": "Allow $1 to see the origin (URI) of websites that initiate signature requests. This can be used for anti-phishing and security solutions.",
+    "description": "An extended description for the `signatureOrigin` caveat, to be used with the `endowment:signature-insight` permission. $1 is the snap name."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
@@ -3646,6 +3560,18 @@
   "permissions": {
     "message": "Permissions"
   },
+  "permissionsPageEmptyContent": {
+    "message": "Nothing to see here"
+  },
+  "permissionsPageEmptySubContent": {
+    "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
+  },
+  "permissionsPageTourDescription": {
+    "message": "This is your control panel for managing permissions given to connected sites and installed Snaps."
+  },
+  "permissionsPageTourTitle": {
+    "message": "Connected sites are now permissions"
+  },
   "permissionsTitle": {
     "message": "Permissions"
   },
@@ -3672,6 +3598,10 @@
   },
   "pleaseConfirm": {
     "message": "Please confirm"
+  },
+  "plusMore": {
+    "message": "+ $1 more",
+    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 more",
@@ -3701,6 +3631,9 @@
   "primaryCurrencySettingDescription": {
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
+  "primaryType": {
+    "message": "Primary type"
+  },
   "priorityFee": {
     "message": "Priority fee"
   },
@@ -3720,6 +3653,18 @@
   "privateKeyCopyWarning": {
     "message": "Private key for $1",
     "description": "$1 represents the account name"
+  },
+  "privateKeyHidden": {
+    "message": "The private key is hidden",
+    "description": "Explains that the private key input is hidden"
+  },
+  "privateKeyShow": {
+    "message": "Show/Hide the private key input",
+    "description": "Describes a toggle that is used to show or hide the private key input"
+  },
+  "privateKeyShown": {
+    "message": "This private key is being shown",
+    "description": "Explains that the private key input is being shown"
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
@@ -3871,6 +3816,12 @@
   },
   "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
     "message": "Request flagged as malicious"
+  },
+  "requestFrom": {
+    "message": "Request from"
+  },
+  "requestFromInfo": {
+    "message": "This is the site asking for your signature."
   },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
@@ -4159,7 +4110,7 @@
     "message": "Turn on NFT detection in Settings"
   },
   "selectPathHelp": {
-    "message": "If you don't see the accounts you expect, try switching the HD path."
+    "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
   "selectType": {
     "message": "Select Type"
@@ -4528,6 +4479,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed up"
@@ -5408,6 +5362,9 @@
   "tooltipSatusConnected": {
     "message": "connected"
   },
+  "tooltipSatusConnectedUpperCase": {
+    "message": "Connected"
+  },
   "tooltipSatusNotConnected": {
     "message": "not connected"
   },
@@ -5494,21 +5451,6 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
-  },
-  "transactionInsightWarningCheckboxMessage": {
-    "message": "$1 the request by $2",
-    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
-  },
-  "transactionInsightWarningContentPlural": {
-    "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
-    "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
-  },
-  "transactionInsightWarningContentSingular": {
-    "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
-    "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
-  },
-  "transactionInsightWarningHeader": {
-    "message": "This request may be risky"
   },
   "transactionNote": {
     "message": "Transaction note"
@@ -5687,6 +5629,9 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "userOpContractDeployError": {
+    "message": "Contract deployment from a smart contract account is not supported"
   },
   "verifyContractDetails": {
     "message": "Verify third-party details"
@@ -5871,6 +5816,12 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"
+  },
+  "yourTransactionConfirmed": {
+    "message": "Transaction already confirmed"
+  },
+  "yourTransactionJustConfirmed": {
+    "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
+import { getRpcCaveatOrigins } from '@metamask/snaps-rpc-methods';
 import {
   SnapCaveatType,
   getSlip44ProtocolName,
@@ -546,6 +546,44 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: getLeftIcon(IconName.Search),
     weight: 4,
   }),
+  [EndowmentPermissions['endowment:signature-insight']]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) => {
+    const baseDescription = {
+      leftIcon: IconName.Warning,
+      weight: 3,
+    };
+
+    const result = [
+      {
+        ...baseDescription,
+        label: t('permission_signatureInsight'),
+        description: t('permission_signatureInsightDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
+      },
+    ];
+
+    if (
+      isNonEmptyArray(permissionValue.caveats) &&
+      permissionValue.caveats.find((caveat) => {
+        return caveat.type === SnapCaveatType.SignatureOrigin && caveat.value;
+      })
+    ) {
+      result.push({
+        ...baseDescription,
+        label: t('permission_signatureInsightOrigin'),
+        description: t('permission_signatureInsightOriginDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
+        leftIcon: IconName.Explore,
+      });
+    }
+
+    return result;
+  },
   ///: END:ONLY_INCLUDE_IF
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),

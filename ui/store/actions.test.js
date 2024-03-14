@@ -10,6 +10,7 @@ import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import * as actions from './actions';
+import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 
 const middleware = [thunk];
@@ -424,7 +425,7 @@ describe('Actions', () => {
   describe('#addNewAccount', () => {
     it('adds a new account', async () => {
       const store = mockStore({
-        metamask: { identities: {}, ...defaultState.metamask },
+        metamask: { ...defaultState.metamask },
       });
 
       const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
@@ -889,15 +890,20 @@ describe('Actions', () => {
       const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb());
+      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         setSelectedInternalAccount: setSelectedInternalAccountSpy,
+        setSelectedAddress: setSelectedAddressSpy,
       });
 
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setSelectedAccount('0x123'));
       expect(setSelectedInternalAccountSpy.callCount).toStrictEqual(1);
+      expect(setSelectedInternalAccountSpy.calledWith('mock-id')).toBe(true);
+      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
+      expect(setSelectedAddressSpy.calledWith('0x123')).toBe(true);
     });
 
     it('displays warning if setSelectedAccount throws', async () => {
@@ -936,9 +942,11 @@ describe('Actions', () => {
       const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
+      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         setSelectedInternalAccount: setSelectedInternalAccountSpy,
+        setSelectedAddress: setSelectedAddressSpy,
       });
 
       setBackgroundConnection(background.getApi());
@@ -2149,6 +2157,38 @@ describe('Actions', () => {
 
         expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
       });
+    });
+  });
+
+  describe('#createCancelTransaction', () => {
+    it('shows TRANSACTION_ALREADY_CONFIRMED modal if createCancelTransaction throws with an error', async () => {
+      const store = mockStore();
+
+      const createCancelTransactionStub = sinon
+        .stub()
+        .callsFake((_1, _2, _3, cb) =>
+          cb(new Error('Previous transaction is already confirmed')),
+        );
+      setBackgroundConnection({
+        createCancelTransaction: createCancelTransactionStub,
+      });
+
+      const txId = '123-456';
+
+      try {
+        await store.dispatch(actions.createCancelTransaction(txId));
+      } catch (error) {
+        /* eslint-disable-next-line jest/no-conditional-expect */
+        expect(error.message).toBe('Previous transaction is already confirmed');
+      }
+
+      const resultantActions = store.getActions();
+      const expectedAction = resultantActions.find(
+        (action) => action.type === actionConstants.MODAL_OPEN,
+      );
+
+      expect(expectedAction.payload.name).toBe('TRANSACTION_ALREADY_CONFIRMED');
+      expect(expectedAction.payload.originalTransactionId).toBe(txId);
     });
   });
 });

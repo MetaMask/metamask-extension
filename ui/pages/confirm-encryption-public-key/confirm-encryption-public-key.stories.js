@@ -65,7 +65,7 @@ export default {
     },
   },
   args: {
-    fromAccount: metamask.accountArray[0],
+    fromAccount: Object.values(metamask.internalAccounts.accounts)[0],
     history: {
       push: action('history.push()'),
     },

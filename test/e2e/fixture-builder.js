@@ -8,8 +8,9 @@ const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
+const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 
-function defaultFixture() {
+function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
     data: {
       AccountsController: {
@@ -50,140 +51,11 @@ function defaultFixture() {
       },
       AnnouncementController: {
         announcements: {
-          1: {
-            date: '2021-03-17',
-            id: 1,
-            image: {
-              height: '230px',
-              placeImageBelowDescription: true,
-              src: 'images/mobile-link-qr.svg',
-              width: '230px',
-            },
-            isShown: false,
-          },
-          3: {
-            date: '2021-03-08',
-            id: 3,
-            isShown: false,
-          },
-          4: {
-            date: '2021-05-11',
-            id: 4,
-            image: {
-              src: 'images/source-logos-bsc.svg',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          5: {
-            date: '2021-06-09',
-            id: 5,
-            isShown: false,
-          },
-          6: {
-            date: '2021-05-26',
-            id: 6,
-            isShown: false,
-          },
-          7: {
-            date: '2021-09-17',
-            id: 7,
-            isShown: false,
-          },
           8: {
             date: '2021-11-01',
             id: 8,
             isShown: false,
           },
-          9: {
-            date: '2021-12-07',
-            id: 9,
-            image: {
-              src: 'images/txinsights.png',
-              width: '80%',
-            },
-            isShown: false,
-          },
-          10: {
-            date: '2022-09-15',
-            id: 10,
-            image: {
-              src: 'images/token-detection.svg',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          11: {
-            date: '2022-09-15',
-            id: 11,
-            isShown: false,
-          },
-          12: {
-            date: '2022-05-18',
-            id: 12,
-            image: {
-              src: 'images/darkmode-banner.png',
-              width: '100%',
-            },
-            isShown: false,
-          },
-          13: {
-            date: '2022-09-15',
-            id: 13,
-            isShown: false,
-          },
-          14: {
-            date: '2022-09-15',
-            id: 14,
-            isShown: false,
-          },
-          15: {
-            date: '2022-09-15',
-            id: 15,
-            isShown: false,
-          },
-          16: {
-            date: null,
-            id: 16,
-            isShown: false,
-          },
-          17: {
-            date: null,
-            id: 17,
-            isShown: false,
-          },
-          18: {
-            date: null,
-            id: 18,
-            isShown: true,
-          },
-          19: {
-            date: null,
-            id: 19,
-            isShown: true,
-          },
-          21: {
-            date: null,
-            id: 21,
-            isShown: true,
-          },
-          22: {
-            date: null,
-            id: 22,
-            isShown: true,
-          },
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          23: {
-            date: null,
-            id: 23,
-            isShown: true,
-          },
-          30: {
-            date: null,
-            id: 30,
-            isShown: false,
-          },
-          ///: END:ONLY_INCLUDE_IF
         },
       },
       NetworkOrderController: {
@@ -252,7 +124,7 @@ function defaultFixture() {
           },
         },
         providerConfig: {
-          chainId: CHAIN_IDS.LOCALHOST,
+          chainId: inputChainId,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
@@ -262,7 +134,7 @@ function defaultFixture() {
         },
         networkConfigurations: {
           networkConfigurationId: {
-            chainId: CHAIN_IDS.LOCALHOST,
+            chainId: inputChainId,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -316,6 +188,9 @@ function defaultFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
+      },
+      SelectedNetworkController: {
+        domains: {},
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -439,6 +314,9 @@ function onboardingFixture() {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
       },
+      SelectedNetworkController: {
+        domains: {},
+      },
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
@@ -466,8 +344,9 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
-  constructor({ onboarding = false } = {}) {
-    this.fixture = onboarding === true ? onboardingFixture() : defaultFixture();
+  constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
+    this.fixture =
+      onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
   withAddressBookController(data) {
@@ -573,6 +452,7 @@ class FixtureBuilder {
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
         },
         '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
           id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
@@ -686,8 +566,9 @@ class FixtureBuilder {
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                    ERC_4337_ACCOUNT.toLowerCase(),
                   ],
                 },
               ],
@@ -971,6 +852,29 @@ class FixtureBuilder {
     return this.withPreferencesController({
       openSeaEnabled: true,
       useNftDetection: true,
+    });
+  }
+
+  withSelectedNetworkController(data) {
+    merge(this.fixture.data.SelectedNetworkController, data);
+    return this;
+  }
+
+  withSelectedNetworkControllerPerDomain() {
+    return merge(
+      this.withSelectedNetworkController({
+        domains: {
+          [DAPP_URL]: 'networkConfigurationId',
+          [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        },
+      }),
+      this.withPreferencesControllerUseRequestQueueEnabled(),
+    );
+  }
+
+  withPreferencesControllerUseRequestQueueEnabled() {
+    return this.withPreferencesController({
+      useRequestQueue: true,
     });
   }
 
@@ -1684,6 +1588,137 @@ class FixtureBuilder {
       transactions: {
         ...completedTransaction,
         ...incomingTransaction,
+      },
+    });
+  }
+
+  /*   Steps to create fixture:
+   1. Reinstall clean metamask & Onboard
+   2. Create 4 more accounts in the wallet
+   3. Connected to ENS dapp on Account 1 and 3
+   4. Connected to Uniswap dapp on Accounts 1 and 4
+   5. Connected to Dextools dapp on Accounts 1, 2, and 3
+   6. Connected to Coinmarketcap dapp on Account 1 (didnt log in)
+   7. opened devtools and ran stateHooks.getCleanAppState() in console
+  */
+  withConnectionsToManyDapps() {
+    return this.withPermissionController({
+      subjects: {
+        'https://app.ens.domains': {
+          origin: 'https://app.ens.domains',
+          permissions: {
+            eth_accounts: {
+              id: 'oKXoF_MNlffiR2u1Y3mDE',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://app.ens.domains',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xb9504634e5788208933b51ae7440b478bfadf865',
+                  ],
+                },
+              ],
+              date: 1708029792962,
+            },
+          },
+        },
+        'https://app.uniswap.org': {
+          origin: 'https://app.uniswap.org',
+          permissions: {
+            eth_accounts: {
+              id: 'vaa88u5Iv3VmsJwG3bDKW',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://app.uniswap.org',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xd1ca923697a701cba1364d803d72b4740fc39bc9',
+                  ],
+                },
+              ],
+              date: 1708029870079,
+            },
+          },
+        },
+        'https://www.dextools.io': {
+          origin: 'https://www.dextools.io',
+          permissions: {
+            eth_accounts: {
+              id: 'bvvPcFtIhkFyHyW0Tmwi4',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://www.dextools.io',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0xbee150bdc171c7d4190891e78234f791a3ac7b24',
+                    '0xa5c5293e124d04e2f85e8553851001fd2f192647',
+                    '0xb9504634e5788208933b51ae7440b478bfadf865',
+                  ],
+                },
+              ],
+              date: 1708029948170,
+            },
+          },
+        },
+        'https://coinmarketcap.com': {
+          origin: 'https://coinmarketcap.com',
+          permissions: {
+            eth_accounts: {
+              id: 'AiblK84K1Cic-Y0FDSzMD',
+              parentCapability: 'eth_accounts',
+              invoker: 'https://coinmarketcap.com',
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0xbee150bdc171c7d4190891e78234f791a3ac7b24'],
+                },
+              ],
+              date: 1708030049641,
+            },
+          },
+        },
+      },
+      subjectMetadata: {
+        'https://ens.domains': {
+          iconUrl: null,
+          name: 'ens.domains',
+          subjectType: 'website',
+          origin: 'https://ens.domains',
+          extensionId: null,
+        },
+        'https://app.ens.domains': {
+          iconUrl: 'https://app.ens.domains/favicon-32x32.png',
+          name: 'ENS',
+          subjectType: 'website',
+          origin: 'https://app.ens.domains',
+          extensionId: null,
+        },
+        'https://app.uniswap.org': {
+          iconUrl: 'https://app.uniswap.org/favicon.png',
+          name: 'Uniswap Interface',
+          subjectType: 'website',
+          origin: 'https://app.uniswap.org',
+          extensionId: null,
+        },
+        'https://www.dextools.io': {
+          iconUrl: 'https://www.dextools.io/app/favicon.ico',
+          name: 'DEXTools.io',
+          subjectType: 'website',
+          origin: 'https://www.dextools.io',
+          extensionId: null,
+        },
+        'https://coinmarketcap.com': {
+          iconUrl: 'https://coinmarketcap.com/favicon.ico',
+          name: 'CoinMarketCap',
+          subjectType: 'website',
+          origin: 'https://coinmarketcap.com',
+          extensionId: null,
+        },
       },
     });
   }
