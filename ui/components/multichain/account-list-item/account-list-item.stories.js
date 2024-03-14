@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { AccountListItem, AccountListItemMenuTypes } from '.';
 import { Checkbox } from '../../component-library';
+import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
 
@@ -185,7 +185,7 @@ export const ChaosStartAccessoryDataItem = (args) => (
   </div>
 );
 ChaosStartAccessoryDataItem.args = {
-  identity: CHAOS_IDENTITY,
+  identity: CHAOS_ACCOUNT,
   startAccessory: <Checkbox />,
 };
 

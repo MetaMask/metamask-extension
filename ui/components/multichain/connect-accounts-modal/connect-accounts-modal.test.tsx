@@ -1,8 +1,8 @@
 import React from 'react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
 const render = () => {
   const props = {

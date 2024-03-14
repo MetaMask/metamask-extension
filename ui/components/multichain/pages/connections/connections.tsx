@@ -120,25 +120,26 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
-                {mergedAccounts.map((account: AccountType, index: number) => {
+                {mergedAccounts.map((account: AccountType) => {
                   const connectedSites: ConnectedSites = {};
 
                   const connectedSite = connectedSites[account.address]?.find(
                     ({ origin }) => origin === activeTabOrigin,
                   );
-                  const isSelectedAccountActive =
+                  //Since this list renders only connected accounts, selected account will be the active account
+                  const isSelectedAccount =
                     selectedAccount.address === account.address;
                   return (
                     <AccountListItem
                       identity={account}
                       key={account.address}
                       accountsCount={mergedAccounts.length}
-                      selected={isSelectedAccountActive}
+                      selected={isSelectedAccount}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
                       menuType={AccountListItemMenuTypes.Connection}
                       currentTabOrigin={activeTabOrigin}
-                      isActive={isSelectedAccountActive ? t('active') : null}
+                      isActive={isSelectedAccount ? t('active') : null}
                     />
                   );
                 })}
