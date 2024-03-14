@@ -13,6 +13,7 @@ import {
   AlignItems,
   BackgroundColor,
   Display,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -80,12 +81,15 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         alignItems={AlignItems.center}
         gap={3}
         padding={2}
+        paddingLeft={2}
+        paddingRight={2}
         justifyContent={
           asset.type === AssetType.NFT ? JustifyContent.spaceBetween : undefined
         }
         backgroundColor={BackgroundColor.transparent}
         onClick={() => setShowAssetPickerModal(true)}
         endIconName={IconName.ArrowDown}
+        endIconProps={{ color: IconColor.iconDefault }}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
