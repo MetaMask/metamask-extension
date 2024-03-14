@@ -8,9 +8,8 @@ type ActionType =
       currentConfirmation?: Record<string, unknown> | undefined;
     };
 
-const createActionType = <T extends string>(
-  action: T,
-): `metamask/confirm/${T}` => `metamask/confirm/${action}`;
+const createActionType = (action: string): string =>
+  `metamask/confirm/${action}`;
 
 export const UPDATE_CONFIRM = createActionType('UPDATE_CONFIRM');
 export const UPDATE_CURRENT_CONFIRMATION = createActionType(
