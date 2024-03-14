@@ -1538,7 +1538,6 @@ export default class MetamaskController extends EventEmitter {
         ],
       getSelectedAddress: () =>
         this.accountsController.getSelectedAccount().address,
-      isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
       incomingTransactions: {
         includeTokenTransfers: false,
         isEnabled: () =>
@@ -1551,6 +1550,8 @@ export default class MetamaskController extends EventEmitter {
         queryEntireHistory: false,
         updateTransactions: false,
       },
+      isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
+      isSimulationEnabled: () => false,
       messenger: transactionControllerMessenger,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
