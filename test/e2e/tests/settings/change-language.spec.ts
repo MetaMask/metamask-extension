@@ -4,14 +4,9 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-<<<<<<<< HEAD:test/e2e/tests/change-language.spec.ts
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-import { Driver } from '../webdriver/driver';
-========
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
->>>>>>>> 9671603afe294e65b364e1ca2233820c9150aee9:test/e2e/tests/settings/change-language.spec.js
+import { Driver } from '../../webdriver/driver';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
