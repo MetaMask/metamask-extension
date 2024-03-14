@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+    style="align-self: flex-end;"
+  >
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-1"
+        class=""
+        data-original-title="Account details"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <button
+          aria-label="Account details"
+          class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/info.svg');"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

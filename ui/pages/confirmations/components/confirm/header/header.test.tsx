@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { fireEvent, waitFor } from '@testing-library/react';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
@@ -32,5 +33,18 @@ describe('Header', () => {
     const { getByText } = render();
     expect(getByText('Test Account')).toBeInTheDocument();
     expect(getByText('Chain 5')).toBeInTheDocument();
+  });
+  it('contains account info icon', async () => {
+    const { getByLabelText } = render();
+    expect(getByLabelText('Account details')).toBeInTheDocument();
+  });
+  it('shows modal when account info icon is clicked', async () => {
+    const { getByLabelText, queryByTestId } = render();
+    expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();
+    const accountInfoIcon = getByLabelText('Account details');
+    fireEvent.click(accountInfoIcon);
+    await waitFor(() => {
+      expect(queryByTestId('account-details-modal')).toBeInTheDocument();
+    });
   });
 });
