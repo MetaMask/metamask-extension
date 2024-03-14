@@ -1,6 +1,5 @@
 import React from 'react';
 import type { FC } from 'react';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { NotificationDetail } from '../notification-detail';
 import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
 import { AvatarAccount, Text } from '../../component-library';
@@ -9,11 +8,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
-export interface NotificationDetailAddressProps {
+export type NotificationDetailAddressProps = {
   side: string;
   address: string;
-}
+};
 
 const SideText: FC<{ side: string }> = ({ side }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>

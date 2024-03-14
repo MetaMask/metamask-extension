@@ -49,11 +49,11 @@ const USD_CURRENCY_CODE = 'usd';
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
-interface Validator {
+type Validator = {
   property: string;
   type: string;
   validator: (a: string) => boolean;
-}
+};
 
 const TOKEN_VALIDATORS: Validator[] = [
   {
