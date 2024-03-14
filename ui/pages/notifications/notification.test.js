@@ -101,6 +101,16 @@ describe('NotificationItem', () => {
             subjectType: 'snap',
           },
         },
+        snaps: {
+          'npm:@metamask/notifications-example-snap': {
+            id: 'npm:@metamask/notifications-example-snap',
+            version: '1.2.3',
+            manifest: {
+              proposedName: 'Notifications Example Snap',
+              description: 'A snap',
+            },
+          },
+        },
       },
     };
     const props = {
