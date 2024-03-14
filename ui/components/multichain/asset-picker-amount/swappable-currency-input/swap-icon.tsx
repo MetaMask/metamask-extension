@@ -25,6 +25,7 @@ export default function SwapIcon({
       color={IconColor.primaryDefault}
       onClick={onClick}
       ariaLabel={t('switchInputCurrency')}
+      className="asset-picker-amount__input__swap"
     />
   );
 }
