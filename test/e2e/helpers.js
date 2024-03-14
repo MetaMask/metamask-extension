@@ -786,6 +786,10 @@ const sendTransaction = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
+
+  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
+  await driver.findElement({ text: '0.000', tag: 'span' });
+
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
@@ -871,7 +875,7 @@ async function unlockWallet(
   await driver.press('#password', driver.Key.ENTER);
 
   if (options.waitLoginSuccess !== false) {
-    // No guard is neccessary here, because it goes from present to absent
+    // No guard is necessary here, because it goes from present to absent
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }

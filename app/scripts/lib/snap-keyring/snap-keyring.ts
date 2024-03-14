@@ -2,6 +2,11 @@ import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../shared/constants/metametrics';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
@@ -34,6 +39,7 @@ export const getAccountsBySnapId = async (
  * @param persistKeyringHelper - A function that persists all keyrings in the vault.
  * @param setSelectedAccountHelper - A function to update current selected account.
  * @param removeAccountHelper - A function to help remove an account based on its address.
+ * @param trackEvent - A function to track MetaMetrics events.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
  * - `addAccount`: Initiates the process of adding an account with user confirmation and handling the user input.
@@ -45,6 +51,10 @@ export const snapKeyringBuilder = (
   persistKeyringHelper: () => Promise<void>,
   setSelectedAccountHelper: (address: string) => void,
   removeAccountHelper: (address: string) => Promise<any>,
+  trackEvent: (
+    payload: Record<string, any>,
+    options?: Record<string, any>,
+  ) => void,
 ) => {
   const builder = (() => {
     return new SnapKeyring(getSnapController() as any, {
@@ -101,15 +111,30 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
+        const snapName = getSnapName(controllerMessenger, snapId);
         const { id: addAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
         );
 
+        const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
+          trackEvent({
+            event,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Snap,
+              snap_id: snapId,
+              snap_name: snapName,
+            },
+          });
+        };
+
         const learnMoreLink =
           'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet';
 
+        // Since we use this in the finally, better to give it a default value if the controller call fails
+        let confirmationResult = false;
         try {
-          const confirmationResult = Boolean(
+          confirmationResult = Boolean(
             await controllerMessenger.call(
               'ApprovalController:addRequest',
               {
@@ -139,6 +164,12 @@ export const snapKeyringBuilder = (
                 internalAccount.id,
               );
 
+              // TODO: Add events tracking to the dialog itself, so that events are more
+              // "linked" to UI actions
+              // User should now see the "Successfuly added account" page
+              trackSnapAccountEvent(
+                MetaMetricsEventName.AddSnapAccountSuccessViewed,
+              );
               await showSuccess(
                 controllerMessenger,
                 snapId,
@@ -152,10 +183,14 @@ export const snapKeyringBuilder = (
                   learnMoreLink,
                 },
               );
+
+              // User has clicked on "OK"
+              trackSnapAccountEvent(
+                MetaMetricsEventName.AddSnapAccountSuccessClicked,
+              );
             } catch (e) {
               const error = (e as Error).message;
 
-              const snapName = getSnapName(controllerMessenger, snapId);
               await showError(
                 controllerMessenger,
                 snapId,
@@ -173,15 +208,25 @@ export const snapKeyringBuilder = (
                 },
               );
 
+              trackSnapAccountEvent(MetaMetricsEventName.AccountAddFailed);
+
               throw new Error(
                 `Error occurred while creating snap account: ${error}`,
               );
             }
           } else {
+            // User has cancelled account creation
             await handleUserInput(confirmationResult);
+
             throw new Error('User denied account creation');
           }
         } finally {
+          // We do not have a `else` clause here, as it's used if the request was
+          // canceled by the user, thus it's not a "fail" (not an error).
+          if (confirmationResult) {
+            trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
+          }
+
           controllerMessenger.call('ApprovalController:endFlow', {
             id: addAccountApprovalId,
           });
@@ -192,6 +237,7 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
+        const snapName = getSnapName(controllerMessenger, snapId);
         const { id: removeAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
         );
@@ -199,8 +245,22 @@ export const snapKeyringBuilder = (
         const learnMoreLink =
           'https://support.metamask.io/hc/en-us/articles/360057435092-How-to-remove-an-account-from-your-MetaMask-wallet';
 
+        const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
+          trackEvent({
+            event,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Snap,
+              snap_id: snapId,
+              snap_name: snapName,
+            },
+          });
+        };
+
+        // Since we use this in the finally, better to give it a default value if the controller call fails
+        let confirmationResult = false;
         try {
-          const confirmationResult = Boolean(
+          confirmationResult = Boolean(
             await controllerMessenger.call(
               'ApprovalController:addRequest',
               {
@@ -218,6 +278,12 @@ export const snapKeyringBuilder = (
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
 
+              // TODO: Add events tracking to the dialog itself, so that events are more
+              // "linked" to UI actions
+              // User should now see the "Successfuly removed account" page
+              trackSnapAccountEvent(
+                MetaMetricsEventName.RemoveSnapAccountSuccessViewed,
+              );
               // This isn't actually an error, but we show it as one for styling reasons
               await showError(
                 controllerMessenger,
@@ -231,10 +297,14 @@ export const snapKeyringBuilder = (
                   learnMoreLink,
                 },
               );
+
+              // User has clicked on "OK"
+              trackSnapAccountEvent(
+                MetaMetricsEventName.RemoveSnapAccountSuccessClicked,
+              );
             } catch (e) {
               const error = (e as Error).message;
 
-              const snapName = getSnapName(controllerMessenger, snapId);
               await showError(
                 controllerMessenger,
                 snapId,
@@ -252,15 +322,24 @@ export const snapKeyringBuilder = (
                 },
               );
 
+              trackSnapAccountEvent(MetaMetricsEventName.AccountRemoveFailed);
+
               throw new Error(
                 `Error occurred while removing snap account: ${error}`,
               );
             }
           } else {
             await handleUserInput(confirmationResult);
+
             throw new Error('User denied account removal');
           }
         } finally {
+          // We do not have a `else` clause here, as it's used if the request was
+          // canceled by the user, thus it's not a "fail" (not an error).
+          if (confirmationResult) {
+            trackSnapAccountEvent(MetaMetricsEventName.AccountRemoved);
+          }
+
           controllerMessenger.call('ApprovalController:endFlow', {
             id: removeAccountApprovalId,
           });

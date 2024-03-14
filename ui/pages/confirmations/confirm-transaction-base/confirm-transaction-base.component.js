@@ -58,6 +58,7 @@ import { ConfirmGasDisplay } from '../components/confirm-gas-display';
 import updateTxData from '../../../../shared/modules/updateTxData';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../../shared/constants/keyring';
+import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-loading-screen/snap-account-transaction-loading-screen';
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
@@ -102,6 +103,9 @@ export default class ConfirmTransactionBase extends Component {
     unapprovedTxCount: PropTypes.number,
     customGas: PropTypes.object,
     addToAddressBookIfNew: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    fromInternalAccount: PropTypes.object,
+    ///: END:ONLY_INCLUDE_IF
     keyringForAccount: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
@@ -671,6 +675,9 @@ export default class ConfirmTransactionBase extends Component {
       toAccounts,
       toAddress,
       keyringForAccount,
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      fromInternalAccount,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     let loadingIndicatorMessage;
@@ -678,7 +685,11 @@ export default class ConfirmTransactionBase extends Component {
     switch (keyringForAccount?.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       case KeyringType.snap:
-        loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
+        loadingIndicatorMessage = (
+          <SnapAccountTransactionLoadingScreen
+            internalAccount={fromInternalAccount}
+          ></SnapAccountTransactionLoadingScreen>
+        );
         break;
       ///: END:ONLY_INCLUDE_IF
       default:

@@ -618,10 +618,16 @@ export default class Routes extends Component {
         ? this.getConnectingLabel(loadingMessage)
         : null;
 
+    // Conditions for displaying the Send route
+    const isSendRoute = matchPath(location.pathname, {
+      path: SEND_ROUTE,
+      exact: false,
+    });
     const shouldShowNetworkInfo =
       isUnlocked &&
       currentChainId &&
       !isTestNet &&
+      !isSendRoute &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
       completedOnboarding &&

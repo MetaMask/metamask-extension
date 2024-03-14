@@ -5,6 +5,7 @@ import {
   CurrencyRateController,
   NftController,
   NftDetectionController,
+  TokenDetectionController,
   TokenListController,
   TokenRatesController,
   TokensController,
@@ -25,8 +26,8 @@ import {
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { KeyringController } from '@metamask/keyring-controller';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
+import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
+import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -264,7 +265,6 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
-import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
@@ -498,9 +498,16 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokenListController,
     });
 
+    const preferencesMessenger = this.controllerMessenger.getRestricted({
+      name: 'PreferencesController',
+      allowedActions: ['PreferencesController:getState'],
+      allowedEvents: ['PreferencesController:stateChange'],
+    });
+
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      messenger: preferencesMessenger,
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -536,10 +543,15 @@ export default class MetamaskController extends EventEmitter {
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
-      allowedActions: ['ApprovalController:addRequest'],
+      allowedActions: [
+        'ApprovalController:addRequest',
+        'NetworkController:getNetworkClientById',
+      ],
       allowedEvents: [
-        'NetworkController:stateChange',
+        'NetworkController:networkDidChange',
         'AccountsController:selectedAccountChange',
+        'PreferencesController:stateChange',
+        'TokenListController:stateChange',
       ],
     });
     this.tokensController = new TokensController({
@@ -578,6 +590,11 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
+    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
+    this.controllerMessenger.registerActionHandler(
+      'TokensController:getState',
+      () => this.tokensController.state,
+    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -993,6 +1010,7 @@ export default class MetamaskController extends EventEmitter {
         persistAndUpdateAccounts,
         (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
+        this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
       ),
     );
 
@@ -1390,34 +1408,38 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IF
 
-    const detectTokensControllerMessenger =
+    const tokenDetectionControllerMessenger =
       this.controllerMessenger.getRestricted({
-        name: 'DetectTokensController',
-        allowedActions: ['KeyringController:getState'],
+        name: 'TokenDetectionController',
+        allowedActions: [
+          'AccountsController:getSelectedAccount',
+          'KeyringController:getState',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getNetworkConfigurationByNetworkClientId',
+          'NetworkController:getState',
+          'PreferencesController:getState',
+          'TokenListController:getState',
+          'TokensController:getState',
+          'TokensController:addDetectedTokens',
+        ],
         allowedEvents: [
-          'NetworkController:stateChange',
+          'AccountsController:selectedAccountChange',
           'KeyringController:lock',
           'KeyringController:unlock',
-          'AccountsController:selectedAccountChange',
+          'NetworkController:networkDidChange',
+          'PreferencesController:stateChange',
           'TokenListController:stateChange',
         ],
       });
-    this.detectTokensController = new DetectTokensController({
-      messenger: detectTokensControllerMessenger,
-      preferences: this.preferencesController,
-      tokensController: this.tokensController,
-      getCurrentSelectedAccount:
-        this.accountsController.getSelectedAccount.bind(
-          this.accountsController,
+
+    this.tokenDetectionController = new TokenDetectionController({
+      messenger: tokenDetectionControllerMessenger,
+      getBalancesInSingleCall:
+        this.assetsContractController.getBalancesInSingleCall.bind(
+          this.assetsContractController,
         ),
-      assetsContractController: this.assetsContractController,
-      network: this.networkController,
-      tokenList: this.tokenListController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
-      ),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
       ),
     });
 
@@ -1668,12 +1690,10 @@ export default class MetamaskController extends EventEmitter {
       messenger: mmiControllerMessenger,
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
       appStateController: this.appStateController,
       transactionUpdateController: this.transactionUpdateController,
       custodyController: this.custodyController,
-      institutionalFeaturesController: this.institutionalFeaturesController,
       getState: this.getState.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       accountTracker: this.accountTracker,
@@ -2433,6 +2453,12 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.txController.stopIncomingTransactionPolling();
       }
+
+      // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
+      this.controllerMessenger.publish(
+        `${this.preferencesController.name}:stateChange`,
+        [state, []],
+      );
     });
 
     this.controllerMessenger.subscribe(
@@ -2771,7 +2797,7 @@ export default class MetamaskController extends EventEmitter {
       nftController,
       nftDetectionController,
       currencyRateController,
-      detectTokensController,
+      tokenDetectionController,
       ensController,
       gasFeeController,
       metaMetricsController,
@@ -2935,6 +2961,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
+          this.networkController,
+        ),
+      getNetworkConfigurationByNetworkClientId:
+        this.networkController.getNetworkConfigurationByNetworkClientId.bind(
           this.networkController,
         ),
       // PreferencesController
@@ -3417,6 +3447,12 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // GasFeeController
+      gasFeeStartPollingByNetworkClientId:
+        gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
+
+      gasFeeStopPollingByPollingToken:
+        gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
+
       getGasFeeEstimatesAndStartPolling:
         gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
           gasFeeController,
@@ -3438,9 +3474,9 @@ export default class MetamaskController extends EventEmitter {
       backupUserData: backup.backupUserData.bind(backup),
       restoreUserData: backup.restoreUserData.bind(backup),
 
-      // DetectTokenController
-      detectNewTokens: detectTokensController.detectNewTokens.bind(
-        detectTokensController,
+      // TokenDetectionController
+      detectTokens: tokenDetectionController.detectTokens.bind(
+        tokenDetectionController,
       ),
 
       // DetectCollectibleController
@@ -3669,7 +3705,7 @@ export default class MetamaskController extends EventEmitter {
 
         if (balance === '0x0') {
           // This account has no balance, so check for tokens
-          await this.detectTokensController.detectNewTokens({
+          await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
           });
 
@@ -4746,8 +4782,6 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    const { blockTracker, provider } = this;
-
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
@@ -4785,10 +4819,7 @@ export default class MetamaskController extends EventEmitter {
     const filterMiddleware = createFilterMiddleware(proxyClient);
 
     // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
-    });
+    const subscriptionManager = createSubscriptionManager(proxyClient);
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
@@ -5575,7 +5606,11 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
-    this.detectTokensController.isOpen = open;
+    if (open) {
+      this.tokenDetectionController.enable();
+    } else {
+      this.tokenDetectionController.disable();
+    }
   }
   /* eslint-enable accessor-pairs */
 

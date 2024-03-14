@@ -18,11 +18,11 @@ const authorTeams = {
     'Daniel Rocha',
     'Howard Braham',
     'Kate Johnson',
-    'Brian Bergeron',
   ],
   'Extension UX': ['David Walsh', 'vthomas13', 'Nidhi Kumari', 'Victor Thomas'],
   'Extension Platform': [
     'chloeYue',
+    'Chloe Gao',
     'Pedro Figueiredo',
     'danjm',
     'Danica Shen',
