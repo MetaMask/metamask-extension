@@ -62,6 +62,10 @@ ignores:
   - 'jest-environment-jsdom'
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
+  # used in image optimization script
+  - 'sharp'
+  - 'imagemin'
+  - 'imagemin-gifsicle'
 
 # files depcheck should not parse
 ignorePatterns:

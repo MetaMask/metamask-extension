@@ -116,7 +116,8 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
-    "master-sync": "node development/master-sync.js"
+    "master-sync": "node development/master-sync.js",
+    "optimize-media": "node development/optimize-media.mjs"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
@@ -442,6 +443,8 @@
     "@types/gulp-autoprefixer": "^0.0.33",
     "@types/gulp-sass": "^5.0.0",
     "@types/gulp-sourcemaps": "^0.0.35",
+    "@types/imagemin": "^8",
+    "@types/imagemin-gifsicle": "^7",
     "@types/jest": "^29.1.2",
     "@types/madge": "^5.0.0",
     "@types/mocha": "^10.0.3",
@@ -520,6 +523,8 @@
     "gulp-zip": "^5.1.0",
     "history": "^5.0.0",
     "husky": "^8.0.3",
+    "imagemin": "^8.0.1",
+    "imagemin-gifsicle": "^7.0.0",
     "ini": "^3.0.0",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-report": "^3.0.0",
@@ -561,6 +566,7 @@
     "selenium-webdriver": "^4.15.0",
     "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
+    "sharp": "^0.33.2",
     "sinon": "^9.0.0",
     "source-map": "^0.7.4",
     "source-map-explorer": "^2.4.2",
@@ -656,7 +662,9 @@
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@storybook/test-runner>@swc/core": false,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
-      "tsx>esbuild": false
+      "tsx>esbuild": false,
+      "sharp": true,
+      "imagemin-gifsicle>gifsicle": true
     }
   },
   "packageManager": "yarn@4.0.2"
