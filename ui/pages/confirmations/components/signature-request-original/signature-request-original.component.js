@@ -154,9 +154,7 @@ export default class SignatureRequestOriginal extends Component {
       <div className="request-signature__body">
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData}
-            marginLeft={4}
-            marginRight={4} />
+          <BlockaidBannerAlert txData={txData} marginLeft={4} marginRight={4} />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
@@ -167,7 +165,7 @@ export default class SignatureRequestOriginal extends Component {
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===
-            this.props.fromAccount.address ? null : (
+          this.props.fromAccount.address ? null : (
             <Box
               className="request-signature__mismatch-info"
               Display={Display.Flex}

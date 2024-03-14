@@ -153,9 +153,7 @@ export default function SignatureRequestSIWE({
         <SignatureRequestHeader txData={txData} />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData}
-            marginLeft={4}
-            marginRight={4} />
+          <BlockaidBannerAlert txData={txData} marginLeft={4} marginRight={4} />
           ///: END:ONLY_INCLUDE_IF
         }
         {showSecurityProviderBanner && (

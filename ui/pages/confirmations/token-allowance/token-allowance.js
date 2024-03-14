@@ -179,9 +179,9 @@ export default function TokenAllowance({
 
   const customTxParamsData = customPermissionAmount
     ? getCustomTxParamsData(data, {
-      customPermissionAmount,
-      decimals,
-    })
+        customPermissionAmount,
+        decimals,
+      })
     : null;
 
   let fullTxData = { ...txData };
@@ -212,9 +212,9 @@ export default function TokenAllowance({
   const customNonceMerge = (transactionData) =>
     customNonceValue
       ? {
-        ...transactionData,
-        customNonceValue,
-      }
+          ...transactionData,
+          customNonceValue,
+        }
       : transactionData;
 
   const handleReject = () => {
@@ -384,9 +384,7 @@ export default function TokenAllowance({
       />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert txData={txData}
-          marginLeft={4}
-          marginRight={4} />
+        <BlockaidBannerAlert txData={txData} marginLeft={4} marginRight={4} />
         ///: END:ONLY_INCLUDE_IF
       }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
