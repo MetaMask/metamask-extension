@@ -1812,12 +1812,33 @@ export function setSelectedAccount(
 
 export function addPermittedAccount(
   origin: string,
-  address: string,
+  address: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'addPermittedAccount',
+        [origin, address],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+export function addMorePermittedAccounts(
+  origin: string,
+  address: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'addMorePermittedAccounts',
         [origin, address],
         (error) => {
           if (error) {
@@ -3235,8 +3256,8 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// DetectTokenController
-export function detectNewTokens(): ThunkAction<
+// TokenDetectionController
+export function detectTokens(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -3244,8 +3265,8 @@ export function detectNewTokens(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectNewTokens`);
-    await submitRequestToBackground('detectNewTokens');
+    log.debug(`background.detectTokens`);
+    await submitRequestToBackground('detectTokens');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };

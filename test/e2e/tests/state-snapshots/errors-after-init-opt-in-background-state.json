@@ -32,7 +32,6 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
-    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showPermissionsTour": true,
     "showProductTour": true,
@@ -45,7 +44,8 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "surveyLinkLastClickedOrClosed": "object"
+    "surveyLinkLastClickedOrClosed": "object",
+    "signatureSecurityAlertResponses": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -131,10 +131,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": {
-    "storageMetadata": {},
-    "versionFileETag": "string"
-  },
+  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -183,9 +180,7 @@
     "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
-  "SelectedNetworkController": {
-    "domains": "object"
-  },
+  "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -207,7 +202,11 @@
     "unencryptedSnapStates": "object"
   },
   "SnapInterfaceController": "object",
-  "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
+  "SnapsRegistry": {
+    "database": "object",
+    "lastUpdated": "object",
+    "databaseUnavailable": "boolean"
+  },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
     "swapsState": {
@@ -259,7 +258,5 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": {
-    "userOperations": "object"
-  }
+  "UserOperationController": { "userOperations": "object" }
 }
