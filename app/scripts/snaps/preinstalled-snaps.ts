@@ -12,33 +12,29 @@ const fs = require('fs');
 const TEMP_PREINSTALLED_SNAPS = [];
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-try {
-  TEMP_PREINSTALLED_SNAPS.push(
-    getPreinstalledSnap(
-      '@metamask/message-signing-snap',
-      fs.readFileSync(
-        require.resolve('@metamask/message-signing-snap/snap.manifest.json'),
-        'utf-8',
-      ),
-      [
-        {
-          path: 'images/icon.svg',
-          value: fs.readFileSync(
-            require.resolve('@metamask/message-signing-snap/images/icon.svg'),
-          ),
-        },
-        {
-          path: 'dist/bundle.js',
-          value: fs.readFileSync(
-            require.resolve('@metamask/message-signing-snap/dist/bundle.js'),
-          ),
-        },
-      ],
+TEMP_PREINSTALLED_SNAPS.push(
+  getPreinstalledSnap(
+    '@metamask/message-signing-snap',
+    fs.readFileSync(
+      require.resolve('@metamask/message-signing-snap/snap.manifest.json'),
+      'utf-8',
     ),
-  );
-} catch (e) {
-  console.error('Failed to add pre-installed snap', e);
-}
+    [
+      {
+        path: 'images/icon.svg',
+        value: fs.readFileSync(
+          require.resolve('@metamask/message-signing-snap/images/icon.svg'),
+        ),
+      },
+      {
+        path: 'dist/bundle.js',
+        value: fs.readFileSync(
+          require.resolve('@metamask/message-signing-snap/dist/bundle.js'),
+        ),
+      },
+    ],
+  ),
+);
 
 function getPreinstalledSnap(
   npmPackage: string,
