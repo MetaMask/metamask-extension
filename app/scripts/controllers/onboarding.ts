@@ -1,10 +1,7 @@
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
-enum FirstTimeFlowType {
-  import = 'import',
-  create = 'create',
-}
 /**
  * The state of the OnboardingController
  */
