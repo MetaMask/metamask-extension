@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,6 +24,7 @@ import {
   getInternalAccounts,
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
 } from '../../../../selectors';
@@ -48,14 +50,20 @@ import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
-import { requestAccountsPermissionWithId } from '../../../../store/actions';
-import { AccountType, ConnectedSites } from './components/connections.types';
-import { NoConnectionContent } from './components/no-connection';
+import {
+  requestAccountsPermissionWithId,
+  removePermissionsFor,
+} from '../../../../store/actions';
 import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../disconnect-all-modal/disconnect-all-modal';
-import { removePermissionsFor } from '../../../../store/actions';
+import {
+  AccountType,
+  ConnectedSites,
+  SubjectsType,
+} from './components/connections.types';
+import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
   const t = useI18nContext();
@@ -65,7 +73,7 @@ export const Connections = () => {
     useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
@@ -81,7 +89,7 @@ export const Connections = () => {
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
   ) as { [key: string]: any[] };
-
+  const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
   let tabToConnect: { origin: any } = { origin: null };
@@ -99,18 +107,30 @@ export const Connections = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
   const disconnectAllAccounts = () => {
-    console.log("nidhi")
-    const permissionMethodNames = mergedAccounts.map(
-      (account) => account.address,
-    );
+    const subject = (subjects as SubjectsType)[activeTabOrigin];
 
-    dispatch(
-      removePermissionsFor({
-        [activeTabOrigin]: permissionMethodNames,
-      }),
-    );
-    setShowDisconnectAllModal(false);
+    if (subject) {
+      const permissions = subject.permissions || [];
+      const permissionMethodNames = permissions
+        .map(({ parentCapability }) => parentCapability.trim())
+        .filter(Boolean) as string[];
+
+      if (permissionMethodNames.length > 0) {
+        const permissionsRecord: Record<string, string[]> = {
+          [activeTabOrigin]: permissionMethodNames,
+        };
+
+        dispatch(
+          removePermissionsFor(
+            permissionsRecord as Record<string, NonEmptyArray<string>>,
+          ),
+        );
+      }
+
+      setShowDisconnectAllModal(false);
+    }
   };
+
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -206,7 +226,7 @@ export const Connections = () => {
             type={DisconnectType.Account}
             hostname={activeTabOrigin}
             onClose={() => setShowDisconnectAllModal(false)}
-            onClick={()=>dispatch(disconnectAllAccounts())}
+            onClick={disconnectAllAccounts}
           />
         ) : null}
       </Content>
