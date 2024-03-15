@@ -58,7 +58,7 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { MenuOptionTypes } from './account-list-item.types';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -72,7 +72,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  menuType = MenuOptionTypes.None,
+  menuType = AccountListItemMenuTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -334,7 +334,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
 
-      {menuType === MenuOptionTypes.None ? null : (
+      {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -356,7 +356,7 @@ export const AccountListItem = ({
           data-testid="account-list-item-menu-button"
         />
       )}
-      {menuType === MenuOptionTypes.AccountMenu && (
+      {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -369,7 +369,7 @@ export const AccountListItem = ({
           isConnected={isConnected}
         />
       )}
-      {menuType === MenuOptionTypes.Connection && (
+      {menuType === AccountListItemMenuTypes.Connection && (
         <ConnectedAccountsMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}

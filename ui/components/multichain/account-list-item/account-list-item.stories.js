@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 import { Checkbox } from '../../component-library';
-import { AccountListItem, MenuOptionTypes } from '.';
+import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
 
@@ -113,7 +113,7 @@ export default {
   args: {
     identity: SIMPLE_ACCOUNT,
     onClick,
-    menuType: MenuOptionTypes.Account,
+    menuType: AccountListItemMenuTypes.Account,
   },
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

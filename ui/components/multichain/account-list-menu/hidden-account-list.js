@@ -35,7 +35,7 @@ import {
   Text,
 } from '../../component-library';
 import { AccountListItem } from '../account-list-item';
-import { MenuOptionTypes } from '..';
+import { AccountListItemMenuTypes } from '..';
 import { mergeAccounts } from './account-list-menu';
 
 export const HiddenAccountList = ({ onClose }) => {
@@ -131,7 +131,7 @@ export const HiddenAccountList = ({ onClose }) => {
                   closeMenu={onClose}
                   connectedAvatar={connectedSite?.iconUrl}
                   connectedAvatarName={connectedSite?.name}
-                  menuType={MenuOptionTypes.AccountMenu}
+                  menuType={AccountListItemMenuTypes.AccountMenu}
                   isPinned={Boolean(account.pinned)}
                   isHidden={Boolean(account.hidden)}
                 />
