@@ -1,26 +1,26 @@
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 
-type flowTypes = 'create' | 'import';
+type firstTimeFlowTypes = 'create' | 'import';
 /**
  * The state of the OnboardingController
  */
 export type OnboardingControllerState = {
   seedPhraseBackedUp: boolean | null;
-  firstTimeFlowType: flowTypes | null;
+  firstTimeFlowType: firstTimeFlowTypes | null;
   completedOnboarding: boolean;
   onboardingTabs?: Record<string, string>;
 };
 
-const defaultTransientState: Record<string, Record<string, string>> = {
+const defaultTransientState = {
   onboardingTabs: {},
-};
+} satisfies Pick<OnboardingControllerState, 'onboardingTabs'>;
 
-const defaultState: Partial<OnboardingControllerState> = {
+const defaultState = {
   seedPhraseBackedUp: null,
   firstTimeFlowType: null,
   completedOnboarding: false,
-};
+} satisfies OnboardingControllerState;
 
 /**
  * Controller responsible for maintaining
@@ -73,7 +73,7 @@ export default class OnboardingController {
    *
    * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
    */
-  setFirstTimeFlowType(type: flowTypes): void {
+  setFirstTimeFlowType(type: firstTimeFlowTypes): void {
     this.store.updateState({ firstTimeFlowType: type });
   }
 
@@ -91,7 +91,12 @@ export default class OnboardingController {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }
-    const onboardingTabs = { ...this.store.getState().onboardingTabs };
+    const { onboardingTabs } = { ...(this.store.getState() ?? {}) };
+
+    if (!onboardingTabs) {
+      return;
+    }
+
     if (!onboardingTabs[location] || onboardingTabs[location] !== tabId) {
       log.debug(
         `Registering onboarding tab at location '${location}' with tabId '${tabId}'`,
