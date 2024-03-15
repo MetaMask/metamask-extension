@@ -102,6 +102,8 @@ export const SENTRY_BACKGROUND_STATE = {
     showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
+    switchedNetworkDetails: null,
+    switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -380,6 +382,8 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
+    switchedNetworkDetails: null,
+    switchedNetworkNeverShowMessage: false,
   },
   unconnectedAccount: true,
 };
