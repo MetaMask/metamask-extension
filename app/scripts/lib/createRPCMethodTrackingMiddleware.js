@@ -333,8 +333,8 @@ export default function createRPCMethodTrackingMiddleware({
             securityAlertResponse,
           });
         }
-        ///: END:ONLY_INCLUDE_IF
       }
+      ///: END:ONLY_INCLUDE_IF
 
       const properties = {
         ...eventProperties,
