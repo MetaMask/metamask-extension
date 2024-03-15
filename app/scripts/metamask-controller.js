@@ -13,7 +13,7 @@ import {
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
@@ -4776,11 +4776,7 @@ export default class MetamaskController extends EventEmitter {
 
     pump(outStream, providerStream, outStream, (err) => {
       // handle any middleware cleanup
-      engine._middleware.forEach((mid) => {
-        if (mid.destroy && typeof mid.destroy === 'function') {
-          mid.destroy();
-        }
-      });
+      engine.destroy();
       connectionId && this.removeConnection(origin, connectionId);
       if (err) {
         log.error(err);

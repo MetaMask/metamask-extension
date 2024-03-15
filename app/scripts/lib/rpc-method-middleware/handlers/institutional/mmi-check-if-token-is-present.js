@@ -23,8 +23,8 @@ export default mmiAuthenticate;
  */
 
 /**
- * @param {import('json-rpc-engine').JsonRpcRequest<MmiCheckIfTokenIsPresentParam>} req - The JSON-RPC request object.
- * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
+ * @param {import('@metamask/json-rpc-engine').JsonRpcRequest<MmiCheckIfTokenIsPresentParam>} req - The JSON-RPC request object.
+ * @param {import('@metamask/json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param options0
