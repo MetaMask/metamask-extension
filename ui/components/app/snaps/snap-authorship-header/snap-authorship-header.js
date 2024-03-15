@@ -14,10 +14,9 @@ import {
   FontWeight,
   IconColor,
 } from '../../../../helpers/constants/design-system';
-import { getSnapName } from '../../../../helpers/utils/util';
+import { getSnapMetadata } from '../../../../selectors';
 
 import { Text, Box, AvatarIcon, IconName } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import { SnapMetadataModal } from '../snap-metadata-modal';
 
@@ -33,11 +32,9 @@ const SnapAuthorshipHeader = ({
   // like it is done with snap install
   const packageName = snapId && stripSnapPrefix(snapId);
 
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   const openModal = () => setIsModalOpen(true);
 
@@ -73,7 +70,7 @@ const SnapAuthorshipHeader = ({
         style={{ overflow: 'hidden' }}
       >
         <Text ellipsis fontWeight={FontWeight.Medium}>
-          {friendlyName}
+          {snapName}
         </Text>
         <Text
           ellipsis

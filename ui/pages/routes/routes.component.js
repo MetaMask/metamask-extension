@@ -526,6 +526,14 @@ export default class Routes extends Component {
       return true;
     }
 
+    if (matchPath(location.pathname, { path: ASSET_ROUTE, exact: false })) {
+      let hideAppHeader = true;
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      hideAppHeader = false;
+      ///: END:ONLY_INCLUDE_IF
+      return hideAppHeader;
+    }
+
     const isHandlingPermissionsRequest = Boolean(
       matchPath(location.pathname, {
         path: CONNECT_ROUTE,

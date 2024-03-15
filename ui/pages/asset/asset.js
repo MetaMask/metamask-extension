@@ -10,8 +10,15 @@ import {
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import NativeAssetV2 from './components/native-asset-v2';
+import TokenAssetV2 from './components/token-asset-v2';
+///: END:ONLY_INCLUDE_IF
 
 const Asset = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -37,9 +44,19 @@ const Asset = () => {
   if (nft) {
     content = <NftDetails nft={nft} />;
   } else if (token) {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     content = <TokenAsset token={token} />;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    return <TokenAssetV2 token={token} />;
+    ///: END:ONLY_INCLUDE_IF
   } else if (asset === nativeCurrency) {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     content = <NativeAsset nativeCurrency={nativeCurrency} />;
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    return <NativeAssetV2 />;
+    ///: END:ONLY_INCLUDE_IF
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }

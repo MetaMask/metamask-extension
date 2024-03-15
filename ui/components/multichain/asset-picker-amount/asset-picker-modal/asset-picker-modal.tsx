@@ -58,13 +58,13 @@ import { TokenListItem } from '../../token-list-item';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
-interface AssetPickerModalProps {
+type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   asset: Asset;
-}
+};
 
-interface NFT {
+type NFT = {
   address: string;
   description: string | null;
   favorite: boolean;
@@ -74,13 +74,13 @@ interface NFT {
   standard: TokenStandard;
   tokenId: string;
   tokenURI?: string;
-}
+};
 
-interface Collection {
+type Collection = {
   collectionName: string;
   collectionImage: string | null;
   nfts: NFT[];
-}
+};
 
 export function AssetPickerModal({
   isOpen,

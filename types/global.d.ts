@@ -38,12 +38,12 @@ declare class MessageSender {
   url?: string;
 }
 
-export interface LedgerIframeMissingResponse {
+export type LedgerIframeMissingResponse = {
   success: false;
   payload: {
     error: Error;
   };
-}
+};
 
 type ResponseType =
   | Unsuccessful
@@ -60,7 +60,7 @@ type ResponseType =
  * input values so that the correct type can be inferred in the callback
  * method
  */
-interface sendMessage {
+type sendMessage = {
   (
     extensionId: string,
     message: Record<string, unknown>,
@@ -196,7 +196,7 @@ interface sendMessage {
     message: Record<string, unknown>,
     callback?: (response: ResponseType) => void,
   ): void;
-}
+};
 
 declare class Runtime {
   onMessage: {
@@ -237,6 +237,8 @@ export declare global {
   var chrome: Chrome;
 
   namespace jest {
+    // The interface is being used for declaration merging, which is an acceptable exception to this rule.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
