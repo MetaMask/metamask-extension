@@ -3,7 +3,10 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { stripSnapPrefix } from '@metamask/snaps-utils';
+import {
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+} from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -59,9 +62,6 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getSnapName,
-  ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
@@ -1307,6 +1307,70 @@ export const getSnap = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get a selector that returns the snap manifest for a given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the manifest for.
+ * @returns {object | undefined} The snap manifest.
+ */
+export const getSnapManifest = createDeepEqualSelector(
+  (state) => state.metamask.currentLocale,
+  (state, snapId) => getSnap(state, snapId),
+  (locale, snap) => {
+    if (!snap?.localizationFiles) {
+      return snap?.manifest;
+    }
+
+    return getLocalizedSnapManifest(
+      snap.manifest,
+      locale,
+      snap.localizationFiles,
+    );
+  },
+);
+
+/**
+ * Get a selector that returns the snap metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the metadata for.
+ * @returns {object} An object containing the snap name and description.
+ */
+export const getSnapMetadata = createDeepEqualSelector(
+  (state, snapId) => getSnapManifest(state, snapId),
+  (_, snapId) => snapId,
+  (manifest, snapId) => {
+    return {
+      // The snap manifest may not be available if the Snap is not installed, so
+      // we use the snap ID as the name in that case.
+      name: manifest?.proposedName ?? (snapId ? stripSnapPrefix(snapId) : null),
+      description: manifest?.description,
+    };
+  },
+);
+
+/**
+ * Get a selector that returns all snaps metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ */
+export const getSnapsMetadata = createDeepEqualSelector(
+  (state) => state,
+  (state) => {
+    return Object.keys(getSnaps(state));
+  },
+  (state, snapIds) => {
+    return snapIds.reduce((snapsMetadata, snapId) => {
+      snapsMetadata[snapId] = getSnapMetadata(state, snapId);
+      return snapsMetadata;
+    }, {});
+  },
+);
+
 export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
@@ -2068,6 +2132,17 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getUnconnectedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const unConnectedAccounts = accounts.filter((account) => {
+    return !connectedAccounts.some(
+      (connectedAccount) => connectedAccount.address === account.address,
+    );
+  });
+  return unConnectedAccounts;
+}
+
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
@@ -2184,7 +2259,7 @@ export function getSnapsList(state) {
         iconUrl: targetSubjectMetadata?.iconUrl,
         subjectType: targetSubjectMetadata?.subjectType,
         packageName: stripSnapPrefix(snap.id),
-        name: getSnapName(snap.id, targetSubjectMetadata),
+        name: getSnapMetadata(state, snap.id).name,
       };
     });
 }
