@@ -13,11 +13,11 @@ export type AccountType = InternalAccount & {
   label?: string;
 };
 
-export interface KeyringType {
+export type KeyringType = {
   type: string;
-}
+};
 
-export interface ConnectAccountsListProps {
+export type ConnectAccountsListProps = {
   onClose: () => void;
   allAreSelected: () => boolean;
   deselectAll: () => void;
@@ -27,4 +27,4 @@ export interface ConnectAccountsListProps {
   accounts: AccountType[];
   checked: boolean;
   isIndeterminate: boolean;
-}
+};

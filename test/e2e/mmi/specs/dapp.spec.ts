@@ -12,7 +12,7 @@ const dappsTest = async (
   // Connect to Saturn API
   const client = new CustodianTestClient();
   await client.setup();
-  await callTestDappBtn(page, context, client, buttonId);
+  const { dummyDApp } = await callTestDappBtn(page, context, client, buttonId);
   const mainPage = new MMIMainPage(page);
   // Rest of the test dapp buttons
   await mainPage.bringToFront();
@@ -24,6 +24,16 @@ const dappsTest = async (
   const statusName = await client.submitTransactionById(custodianTxId);
   await mainPage.checkLastTransactionStatus(statusName);
   // Mined status not check as it makes tests flaky and it is blockchain performance dependent
+
+  // check contract status in test dapp
+  await dummyDApp.bringToFront();
+
+  if (
+    buttonId === 'showMeTheMoneyButton_sepolia' ||
+    buttonId === 'useSuperPowers_sepolia'
+  ) {
+    await dummyDApp.checkContractStatus(/Called contract/iu);
+  }
 };
 
 // Important note:

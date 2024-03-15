@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.10.0",
+  "version": "11.11.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -282,7 +282,7 @@
     "@metamask/permission-log-controller": "^1.0.0",
     "@metamask/phishing-controller": "^8.0.0",
     "@metamask/post-message-stream": "^8.0.0",
-    "@metamask/ppom-validator": "^0.27.0",
+    "@metamask/ppom-validator": "^0.28.0",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^0.3.0",
     "@metamask/rate-limit-controller": "^3.0.0",
@@ -318,6 +318,7 @@
     "blo": "1.1.1",
     "bn.js": "^5.2.1",
     "bowser": "^2.11.0",
+    "chart.js": "^4.4.1",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.3",
     "currency-formatter": "^1.4.2",
@@ -355,6 +356,7 @@
     "qrcode.react": "^1.0.1",
     "react": "^16.12.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^16.12.0",
     "react-focus-lock": "^2.9.4",
     "react-idle-timer": "^4.2.5",

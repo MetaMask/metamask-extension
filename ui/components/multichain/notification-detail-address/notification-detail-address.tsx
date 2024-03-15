@@ -10,10 +10,10 @@ import {
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
-export interface NotificationDetailAddressProps {
+export type NotificationDetailAddressProps = {
   side: string;
   address: string;
-}
+};
 
 const SideText: FC<{ side: string }> = ({ side }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>
