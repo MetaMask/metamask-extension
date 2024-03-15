@@ -6,6 +6,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.11.4]
+### Changed
+- Enable Snaps home pages ([#23383](https://github.com/MetaMask/metamask-extension/pull/23383))
+
+### Fixed
+- Fix intermittent Snaps installation issues due to faulty validation ([#23380](https://github.com/MetaMask/metamask-extension/pull/23380))
+
+## [11.11.3]
+
+## [11.11.2]
+### Changed
+- Update the image in the Staking button What's New popup ([#23330](https://github.com/MetaMask/metamask-extension/pull/23330))
+
+### Fixed
+- [MMI] Fixed bug that prevents MMI users from submitting multiple Txs ([#23342](https://github.com/MetaMask/metamask-extension/pull/23342))
+- Fix the display of the native currency token symbol in the asset list
+    - ([#23355](https://github.com/MetaMask/metamask-extension/pull/23355))
+    - ([#23327](https://github.com/MetaMask/metamask-extension/pull/23327))
+
+## [11.11.1]
+### Added
+- Adds a staking button to the mainnet Ethereum token list item  ([#22347](https://github.com/MetaMask/metamask-extension/pull/22347))
+
+## [11.11.0]
+### Added
+- Added 'Pet Names' feature, allowing users to see preferred or suggested nicknames in the places of addesses
+    - Added 'What's New' popup for Petnames feature ([#22780](https://github.com/MetaMask/metamask-extension/pull/22780))
+    - Introduced toggle for Petnames in experimental settings ([#22456](https://github.com/MetaMask/metamask-extension/pull/22456))
+    - UI enhancements for initial petnames release, including new "Recognized" category and visual refinements ([#22772](https://github.com/MetaMask/metamask-extension/pull/22772))
+    - Enhanced token name display with pet names ([#22734](https://github.com/MetaMask/metamask-extension/pull/22734))
+- Added title to Personal Sign component in confirmation design ([#22749](https://github.com/MetaMask/metamask-extension/pull/22749))
+- Added progress indicator for scanning QR codes with hardware wallets ([#20947](https://github.com/MetaMask/metamask-extension/pull/20947))
+
+### Changed
+- Moved security alerts from Experimental to Security & Privacy settings ([#22813](https://github.com/MetaMask/metamask-extension/pull/22813))
+- Updated BlockaidBannerAlert to support false positive reporting for failed types ([#22742](https://github.com/MetaMask/metamask-extension/pull/22742))
+- Enhanced BlockaidBannerAlert functionality and display ([#22625](https://github.com/MetaMask/metamask-extension/pull/22625))
+- Disabled smart swaps for Snap accounts ([#22731](https://github.com/MetaMask/metamask-extension/pull/22731))
+- Disabled MetaMask on Battle.net to fix a 2FA login issue ([#20396](https://github.com/MetaMask/metamask-extension/pull/20396))
+- Revised warning copy for mismatched chainID and currency symbol when adding custom networks ([#22648](https://github.com/MetaMask/metamask-extension/pull/22648))
+- Improved UX to display multiple custom networks with the same ID but different RPC URLs in network selection ([#22693](https://github.com/MetaMask/metamask-extension/pull/22693))
+- Updated the connections icon to display the connected dapp icon ([#22634](https://github.com/MetaMask/metamask-extension/pull/22634))
+- Added title to Personal Sign page ([#22749](https://github.com/MetaMask/metamask-extension/pull/22749))
+- Update padding in accounts details modal ([#22775](https://github.com/MetaMask/metamask-extension/pull/22775))
+- [MMI] Refactored display of custodian deep link to improve efficiency and fix potential race conditions ([#22825](https://github.com/MetaMask/metamask-extension/pull/22825))
+- [MMI] Hid the new buy & receive button under MMI build for a cleaner interface ([#22384](https://github.com/MetaMask/metamask-extension/pull/22384))
+
+### Fixed
+- Fixed cancel transaction signing from activity list ([#22676](https://github.com/MetaMask/metamask-extension/pull/22676))
+- Fixed incorrect account name display in account details and receive list ([#22844](https://github.com/MetaMask/metamask-extension/pull/22844))
+- Fixed IPFS NFTs fetching issue for manually imported NFTs ([#22627](https://github.com/MetaMask/metamask-extension/pull/22627))
+- Fixed "send max" ETH calculation issue to adjust for gas changes ([#22694](https://github.com/MetaMask/metamask-extension/pull/22694))
+- Fixed sign button color and updated deprecated components in SignatureRequestOriginalWarning for visual consistency ([#22741](https://github.com/MetaMask/metamask-extension/pull/22741))
+
+## [11.10.1]
+### Fixed
+- Fix custom network editing, via Settings, for some networks ([#23140](https://github.com/MetaMask/metamask-extension/pull/23140))
+
 ## [11.10.0]
 ### Added
 - Added preset network image avatars in the 'Select a network' pop-up ([#22643](https://github.com/MetaMask/metamask-extension/pull/22643))
@@ -4389,7 +4447,13 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.4...HEAD
+[11.11.4]: https://github.com/MetaMask/metamask-extension/compare/v11.11.3...v11.11.4
+[11.11.3]: https://github.com/MetaMask/metamask-extension/compare/v11.11.2...v11.11.3
+[11.11.2]: https://github.com/MetaMask/metamask-extension/compare/v11.11.1...v11.11.2
+[11.11.1]: https://github.com/MetaMask/metamask-extension/compare/v11.11.0...v11.11.1
+[11.11.0]: https://github.com/MetaMask/metamask-extension/compare/v11.10.1...v11.11.0
+[11.10.1]: https://github.com/MetaMask/metamask-extension/compare/v11.10.0...v11.10.1
 [11.10.0]: https://github.com/MetaMask/metamask-extension/compare/v11.9.5...v11.10.0
 [11.9.5]: https://github.com/MetaMask/metamask-extension/compare/v11.9.4...v11.9.5
 [11.9.4]: https://github.com/MetaMask/metamask-extension/compare/v11.9.3...v11.9.4
