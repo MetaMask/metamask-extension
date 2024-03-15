@@ -1,31 +1,19 @@
-const ERC20_TOKEN_MOCK = '0x2234567890123456789012345678901234567890';
-const ERC721_TOKEN_MOCK = '0x3234567890123456789012345678901234567890';
-const ERC1155_TOKEN_MOCK = '0x4234567890123456789012345678901234567890';
+const ERC20_TOKEN_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+
+const mockTokenDetails = {
+  [ERC20_TOKEN_MOCK]: {
+    address: ERC20_TOKEN_MOCK,
+    standard: 'ERC20',
+    decimals: 8,
+    name: 'Wrapped Bitcoin',
+  },
+};
 
 module.exports = {
   getTokenStandardAndDetails: (address) => {
-    if (address === ERC20_TOKEN_MOCK) {
-      return Promise.resolve({
-        standard: 'ERC20',
-        symbol: 'USDC',
-        decimals: '16',
-      });
+    if (!mockTokenDetails[address]) {
+      return Promise.reject(new Error('Token not found'));
     }
-
-    if (address === ERC721_TOKEN_MOCK) {
-      return Promise.resolve({
-        standard: 'ERC721',
-        name: 'CryptoKitties',
-      });
-    }
-
-    if (address === ERC1155_TOKEN_MOCK) {
-      return Promise.resolve({
-        standard: 'ERC1155',
-        name: 'Bored Ape',
-      });
-    }
-
-    return undefined;
+    return Promise.resolve(mockTokenDetails[address]);
   },
 };

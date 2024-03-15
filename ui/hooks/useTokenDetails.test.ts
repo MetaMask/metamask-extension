@@ -1,7 +1,6 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import { getTokenStandardAndDetails } from '../store/actions';
 import { useTokenDetails } from './useTokenDetails';
-import { waitFor } from '@testing-library/react';
 
 jest.mock('../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),
@@ -85,10 +84,10 @@ describe('useTokenDetails', () => {
     });
   });
 
-  it.only('should set isLoading to false when tokenAddresses is empty', async () => {
+  it('should set isLoading to false when tokenAddresses is empty', async () => {
     const { result } = renderHook(() => useTokenDetails([]));
 
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.isLoading).toBe(false);
 
     expect(mockGetTokenStandardAndDetails).not.toHaveBeenCalled();
   });

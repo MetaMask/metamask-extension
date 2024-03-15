@@ -1,4 +1,5 @@
 import React from 'react';
+import { NameType } from '@metamask/name-controller';
 import { Text } from '../../component-library';
 import {
   AlignItems,
@@ -8,6 +9,7 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import Name from '../name';
 import { AssetInfo } from './types';
 
 const EthAssetPill: React.FC = () => (
@@ -29,7 +31,7 @@ const EthAssetPill: React.FC = () => (
 );
 
 /**
- * Displays a pill with an asset's symbol and name.
+ * Displays a pill with an asset's icon and name.
  *
  * @param props
  * @param props.assetInfo
@@ -40,5 +42,7 @@ export const AssetPill: React.FC<{ assetInfo: AssetInfo }> = ({
   if (assetInfo.isNative) {
     return <EthAssetPill />;
   }
-  return <Text variant={TextVariant.bodyMd}>Token</Text>;
+  return (
+    <Name type={NameType.ETHEREUM_ADDRESS} value={assetInfo.contractAddress} />
+  );
 };

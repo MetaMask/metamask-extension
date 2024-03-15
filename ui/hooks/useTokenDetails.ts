@@ -11,7 +11,7 @@ export type TokenDetails = Awaited<
  * @param tokenAddresses
  */
 export function useTokenDetails(tokenAddresses: string[]) {
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(tokenAddresses.length > 0);
   const [addressToTokenDetails, setAddressToTokenDetails] = useState<
     Record<string, TokenDetails>
   >({});

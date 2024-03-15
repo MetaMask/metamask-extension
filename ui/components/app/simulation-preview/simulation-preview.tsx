@@ -14,6 +14,8 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
+import LoadingIndicator from '../../ui/loading-indicator';
+import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
 export interface SimulationPreviewProps {
   simulationData?: SimulationData;
@@ -56,8 +58,13 @@ const NoBalanceChangesContent: React.FC = () => {
 
 /**
  * Header at the top of the simulation preview.
+ *
+ * @param props
+ * @param props.loading
  */
-const SimulationPreviewHeader: React.FC<{ showLoading?: boolean }> = () => {
+const SimulationPreviewHeader: React.FC<{ loading?: boolean }> = ({
+  loading,
+}) => {
   const t = useI18nContext();
   return (
     <Box
@@ -75,6 +82,7 @@ const SimulationPreviewHeader: React.FC<{ showLoading?: boolean }> = () => {
         iconFillColor="var(--color-icon-muted)"
         contentText={t('simulationPreviewTitleTooltip')}
       />
+      {loading && <Preloader size={20} />}
     </Box>
   );
 };
@@ -111,6 +119,8 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   const { isLoading: isBalanceChangesLoading, balanceChanges } =
     useBalanceChanges(simulationData);
 
+  const isLoading = isBalanceChangesLoading;
+
   const simulationFailed = !simulationData;
   if (simulationFailed) {
     return (
@@ -132,7 +142,7 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   if (balanceChanges.length === 0) {
     return (
       <SimulationPreviewLayout>
-        <SimulationPreviewHeader />
+        <SimulationPreviewHeader loading={isLoading} />
         <NoBalanceChangesContent />
       </SimulationPreviewLayout>
     );

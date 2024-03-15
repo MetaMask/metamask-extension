@@ -7,7 +7,7 @@ import {
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useTokenDetails } from '../../../hooks/useTokenDetails';
-import { BalanceChange } from './types';
+import { AssetInfo, BalanceChange } from './types';
 
 /**
  * Converts a SimulationBalanceChange to a BalanceChange for the native asset.
@@ -53,12 +53,15 @@ function getTokenAssetBalanceChange(
     }
   })();
 
+  const assetInfo = {
+    isNative: false,
+    standard,
+    contractAddress: address,
+    tokenId,
+  } as AssetInfo;
+
   return {
-    assetInfo: {
-      isNative: false,
-      contractAddress: address,
-      tokenId,
-    },
+    assetInfo,
     isDecrease,
     absChange,
   };
