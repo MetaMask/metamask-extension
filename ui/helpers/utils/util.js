@@ -12,6 +12,7 @@ import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
@@ -34,7 +35,6 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
