@@ -18,7 +18,7 @@ import { confirmSelector } from '../../../../../selectors/confirm';
 const Footer = () => {
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
-  const { currentConfirmation } = confirm;
+  const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   const dispatch = useDispatch();
 
   const onCancel = useCallback(() => {
@@ -54,7 +54,7 @@ const Footer = () => {
         size={ButtonSize.Lg}
         block
         data-testid="confirm-footer-confirm-button"
-        disabled={confirm?.isScrollToBottomNeeded}
+        disabled={isScrollToBottomNeeded}
         onClick={onSubmit}
       >
         {t('confirm')}
