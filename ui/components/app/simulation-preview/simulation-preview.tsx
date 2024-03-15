@@ -17,9 +17,9 @@ import { useBalanceChanges } from './useBalanceChanges';
 import LoadingIndicator from '../../ui/loading-indicator';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
-export interface SimulationPreviewProps {
+export type SimulationPreviewProps = {
   simulationData?: SimulationData;
-}
+};
 
 /**
  * Content when simulation has failed.
