@@ -4919,9 +4919,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@npm:^0.27.0":
-  version: 0.27.0
-  resolution: "@metamask/ppom-validator@npm:0.27.0"
+"@metamask/ppom-validator@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "@metamask/ppom-validator@npm:0.28.0"
   dependencies:
     "@metamask/base-controller": "npm:^3.0.0"
     "@metamask/controller-utils": "npm:^8.0.1"
@@ -4932,7 +4932,7 @@ __metadata:
     elliptic: "npm:^6.5.4"
     eslint-plugin-n: "npm:^16.6.2"
     json-rpc-random-id: "npm:^1.0.1"
-  checksum: c2e5b06999d430a6643973cd8c6ad3bb5f086ea70606794cb475a2ba330668fc6fe72c394c64d3a95c154c12fa9dc9782db277b4a43ecab71118952d8256d7dd
+  checksum: c4c157d5218e7bd5a0d622605c706b665c92a9d9dc90a09c24b7de384b51d2210d288bbd294d4db5d57473d0d451c826a3ea2011fe0e5c7bf30767f45da5234e
   languageName: node
   linkType: hard
 
@@ -24728,7 +24728,7 @@ __metadata:
     "@metamask/phishing-controller": "npm:^8.0.0"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
-    "@metamask/ppom-validator": "npm:^0.27.0"
+    "@metamask/ppom-validator": "npm:^0.28.0"
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^0.3.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
