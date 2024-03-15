@@ -21,15 +21,13 @@ export function getCustomTxParamsData(
   if (spender.startsWith('0x')) {
     spender = spender.substring(2);
   }
-  const [signature, tokenValue] = data.split(spender);
-
-  if (!signature || !tokenValue) {
+  const [signature, rest] = data.split(spender);
+  if (!signature || !rest) {
     throw new Error('Invalid data');
-  } else if (tokenValue.length !== 64) {
-    throw new Error(
-      'Invalid token value; should be exactly 64 hex digits long (u256)',
-    );
   }
+
+  const tokenValue = rest.substring(0, 64);
+  const extraCalldata = rest.substring(64);
 
   let customPermissionValue = decimalToHex(
     calcTokenValue(customPermissionAmount, decimals),
@@ -42,6 +40,6 @@ export function getCustomTxParamsData(
     tokenValue.length,
     '0',
   );
-  const customTxParamsData = `${signature}${spender}${customPermissionValue}`;
+  const customTxParamsData = `${signature}${spender}${customPermissionValue}${extraCalldata}`;
   return customTxParamsData;
 }
