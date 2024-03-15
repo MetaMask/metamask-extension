@@ -19,7 +19,7 @@ import { NotificationListItemIcon } from '../notification-list-item-icon';
 import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
 
-export interface NotificationListItemProps {
+export type NotificationListItemProps = {
   id: string;
   isRead: boolean;
   icon: NotificationListItemIconProps;
@@ -27,7 +27,7 @@ export interface NotificationListItemProps {
   description: NotificationListItemTextProps;
   createdAt: Date;
   amount?: string;
-}
+};
 
 /**
  * `NotificationListItem` is a component that displays a single notification item.

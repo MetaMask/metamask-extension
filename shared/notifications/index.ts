@@ -25,9 +25,9 @@ type UINotification = {
 };
 
 // Assuming all keys in UI_NOTIFICATIONS are of the same structure
-interface UINotifications {
+type UINotifications = {
   [key: number]: UINotification;
-}
+};
 
 export const UI_NOTIFICATIONS: UINotifications = {
   8: {
