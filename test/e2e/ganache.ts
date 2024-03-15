@@ -55,7 +55,7 @@ export class Ganache {
 
   async getFiatBalance(): Promise<number> {
     const balance = await this.getBalance();
-    const currencyConversionRate = 1300.0;
+    const currencyConversionRate = 1700.0;
     const fiatBalance = (balance * currencyConversionRate).toFixed(2);
 
     return Number(fiatBalance);
