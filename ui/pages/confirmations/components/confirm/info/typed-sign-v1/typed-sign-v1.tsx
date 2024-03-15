@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowAddress,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -13,9 +12,10 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
+import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
+import { TypedSignDataV1Type } from '../../../../types/confirm';
 
-const TypedSignInfo: React.FC = () => {
+const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
@@ -23,8 +23,11 @@ const TypedSignInfo: React.FC = () => {
     return null;
   }
 
-  const { domain = {} } = JSON.parse(
-    currentConfirmation?.msgParams?.data as string,
+  const data = (
+    currentConfirmation.msgParams?.data as TypedSignDataV1Type
+  ).reduce(
+    (val, { name, value, type }) => ({ ...val, [name]: { type, value } }),
+    {},
   );
 
   return (
@@ -38,9 +41,6 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
           <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
         </ConfirmInfoRow>
-        <ConfirmInfoRow label={t('interactingWith')}>
-          <ConfirmInfoRowAddress address={domain.verifyingContract} />
-        </ConfirmInfoRow>
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -49,13 +49,11 @@ const TypedSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('message')}>
-          <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data as string}
-          />
+          <ConfirmInfoRowTypedSignDataV1 data={data} />
         </ConfirmInfoRow>
       </Box>
     </>
   );
 };
 
-export default TypedSignInfo;
+export default TypedSignV1Info;
