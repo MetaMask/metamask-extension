@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  SimulationBalanceChange,
-  SimulationData,
-} from '@metamask/transaction-controller';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { SimulationData } from '@metamask/transaction-controller';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
@@ -14,52 +10,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BalanceChange } from './types';
 import { BalanceChangeList } from './balance-change-list';
+import { useBalanceChanges } from './useBalanceChanges';
 
 export interface SimulationPreviewProps {
   simulationData?: SimulationData;
-}
-
-/**
- * Converts a SimulationBalanceChange to a BalanceChange for the native asset.
- *
- * @param balanceChange
- * @param balanceChange.isDecrease
- * @param balanceChange.difference
- * @returns The converted BalanceChange object.
- */
-function getNativeAssetBalanceChange({
-  isDecrease,
-  difference,
-}: SimulationBalanceChange): BalanceChange {
-  return {
-    assetInfo: { isNative: true },
-    isDecrease,
-    absChange: new Numeric(difference, 16, EtherDenomination.WEI),
-  };
-}
-
-/**
- * Retrieves the asset balance changes from the simulation data.
- *
- * @param simulationData - The simulation data.
- * @returns An array of BalanceChange objects.
- */
-function getAssetBalanceChanges(simulationData: SimulationData) {
-  if (!simulationData) {
-    return [];
-  }
-  const { nativeBalanceChange } = simulationData;
-  const balanceChanges = [];
-
-  if (nativeBalanceChange) {
-    balanceChanges.push(getNativeAssetBalanceChange(nativeBalanceChange));
-  }
-  return balanceChanges;
 }
 
 /**
@@ -100,7 +57,7 @@ const NoBalanceChangesContent: React.FC = () => {
 /**
  * Header at the top of the simulation preview.
  */
-const SimulationPreviewHeader: React.FC = () => {
+const SimulationPreviewHeader: React.FC<{ showLoading?: boolean }> = () => {
   const t = useI18nContext();
   return (
     <Box
@@ -151,6 +108,8 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   simulationData,
 }: SimulationPreviewProps) => {
   const t = useI18nContext();
+  const { isLoading: isBalanceChangesLoading, balanceChanges } =
+    useBalanceChanges(simulationData);
 
   const simulationFailed = !simulationData;
   if (simulationFailed) {
@@ -162,7 +121,14 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
     );
   }
 
-  const balanceChanges = getAssetBalanceChanges(simulationData);
+  if (isBalanceChangesLoading) {
+    return (
+      <SimulationPreviewLayout>
+        <SimulationPreviewHeader />
+      </SimulationPreviewLayout>
+    );
+  }
+
   if (balanceChanges.length === 0) {
     return (
       <SimulationPreviewLayout>
