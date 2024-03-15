@@ -106,7 +106,7 @@ export default function FeeDetailsComponent({
         justifyContent={JustifyContent.center}
         flexDirection={FlexDirection.Column}
       >
-        {!hideGasDetails && !isMultiLayerFeeNetwork && (
+        {!hideGasDetails && isMultiLayerFeeNetwork && (
           <Box
             padding={4}
             display={Display.Flex}
