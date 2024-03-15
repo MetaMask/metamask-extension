@@ -1778,6 +1778,11 @@ export default class MetamaskController extends EventEmitter {
         getTokenRatesState: () => this.tokenRatesController.state,
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
+        getLayer1GasFee: this.txController.getLayer1GasFee.bind(
+          this.txController,
+        ),
+        getNetworkClientId: () =>
+          this.networkController.state.selectedNetworkClientId,
         getEIP1559GasFeeEstimates:
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
@@ -3209,6 +3214,7 @@ export default class MetamaskController extends EventEmitter {
         txController.updatePreviousGasParams.bind(txController),
       abortTransactionSigning:
         txController.abortTransactionSigning.bind(txController),
+      getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
@@ -5494,14 +5500,16 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionNewSwap',
-      ({ transactionMeta }) =>
-        this.swapsController.setTradeTxId(transactionMeta.id),
+      ({ transactionMeta }) => {
+        this.swapsController.setTradeTxId(transactionMeta.id);
+      },
     );
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionNewSwapApproval',
-      ({ transactionMeta }) =>
-        this.swapsController.setApproveTxId(transactionMeta.id),
+      ({ transactionMeta }) => {
+        this.swapsController.setApproveTxId(transactionMeta.id);
+      },
     );
 
     this.controllerMessenger.subscribe(

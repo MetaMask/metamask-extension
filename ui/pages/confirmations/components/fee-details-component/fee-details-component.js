@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -27,7 +27,6 @@ import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { addHexes } from '../../../../../shared/modules/conversion.utils';
-import fetchEstimatedL1Fee from '../../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 export default function FeeDetailsComponent({
@@ -35,34 +34,26 @@ export default function FeeDetailsComponent({
   useCurrencyRateCheck,
   hideGasDetails = false,
 }) {
+  const { layer1GasFee } = txData;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
-  const [estimatedL1Fees, setEstimatedL1Fees] = useState(null);
 
   const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const t = useI18nContext();
 
-  const { minimumCostInHexWei: hexMinimumTransactionFee } = useGasFeeContext();
-  useEffect(() => {
-    if (isMultiLayerFeeNetwork) {
-      fetchEstimatedL1Fee(txData?.chainId, txData)
-        .then((result) => {
-          setEstimatedL1Fees(result);
-        })
-        .catch((_err) => {
-          setEstimatedL1Fees(null);
-        });
-    }
-  }, [isMultiLayerFeeNetwork, txData]);
+  const {
+    maximumCostInHexWei: hexMaximumTransactionFee,
+    minimumCostInHexWei: hexMinimumTransactionFee,
+  } = useGasFeeContext();
 
   const getTransactionFeeTotal = useMemo(() => {
     if (isMultiLayerFeeNetwork) {
-      return addHexes(hexMinimumTransactionFee, estimatedL1Fees || 0);
+      return addHexes(hexMaximumTransactionFee, layer1GasFee || 0);
     }
 
-    return hexMinimumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, estimatedL1Fees]);
+    return hexMaximumTransactionFee;
+  }, [isMultiLayerFeeNetwork, hexMaximumTransactionFee, layer1GasFee]);
 
   const renderTotalDetailText = useCallback(
     (value) => {
@@ -148,13 +139,13 @@ export default function FeeDetailsComponent({
               boldHeadings={false}
             />
           )}
-          {isMultiLayerFeeNetwork && estimatedL1Fees && (
+          {isMultiLayerFeeNetwork && layer1GasFee && (
             <TransactionDetailItem
               detailTitle={t('layer1Fees')}
               detailText={
-                useCurrencyRateCheck && renderTotalDetailText(estimatedL1Fees)
+                useCurrencyRateCheck && renderTotalDetailText(layer1GasFee)
               }
-              detailTotal={renderTotalDetailValue(estimatedL1Fees)}
+              detailTotal={renderTotalDetailValue(layer1GasFee)}
               boldHeadings={false}
             />
           )}

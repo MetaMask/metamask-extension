@@ -5,11 +5,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import MultilayerFeeMessage from './multi-layer-fee-message';
 
-jest.mock(
-  '../../../../helpers/utils/optimism/fetchEstimatedL1Fee',
-  () => '0x5',
-);
-
 describe('Multi layer fee message', () => {
   describe('when balance and token price checker is enabled', () => {
     let store;

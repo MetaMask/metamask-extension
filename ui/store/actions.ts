@@ -2186,6 +2186,19 @@ export function abortTransactionSigning(
   };
 }
 
+export function getLayer1GasFee(
+  chainId: Hex,
+  networkClientId: NetworkClientId,
+  transactionParams: TransactionParams,
+): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  return async () =>
+    await submitRequestToBackground('getLayer1GasFee', [
+      chainId,
+      networkClientId,
+      transactionParams,
+    ]);
+}
+
 export function createCancelTransaction(
   txId: string,
   customGasSettings: CustomGasSettings,
