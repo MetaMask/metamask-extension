@@ -43,6 +43,10 @@ export const AssetPill: React.FC<{ assetInfo: AssetInfo }> = ({
     return <EthAssetPill />;
   }
   return (
-    <Name type={NameType.ETHEREUM_ADDRESS} value={assetInfo.contractAddress} />
+    <Name
+      type={NameType.ETHEREUM_ADDRESS}
+      value={assetInfo.contractAddress}
+      preferContractSymbol
+    />
   );
 };

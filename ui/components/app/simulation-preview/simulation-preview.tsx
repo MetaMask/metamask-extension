@@ -12,10 +12,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
-import LoadingIndicator from '../../ui/loading-indicator';
-import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
 export type SimulationPreviewProps = {
   simulationData?: SimulationData;
@@ -63,7 +62,7 @@ const NoBalanceChangesContent: React.FC = () => {
  * @param props.loading
  */
 const SimulationPreviewHeader: React.FC<{ loading?: boolean }> = ({
-  loading,
+  loading = false,
 }) => {
   const t = useI18nContext();
   return (
@@ -131,10 +130,10 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
     );
   }
 
-  if (isBalanceChangesLoading) {
+  if (isLoading) {
     return (
       <SimulationPreviewLayout>
-        <SimulationPreviewHeader />
+        <SimulationPreviewHeader loading />
       </SimulationPreviewLayout>
     );
   }
@@ -142,7 +141,7 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   if (balanceChanges.length === 0) {
     return (
       <SimulationPreviewLayout>
-        <SimulationPreviewHeader loading={isLoading} />
+        <SimulationPreviewHeader />
         <NoBalanceChangesContent />
       </SimulationPreviewLayout>
     );

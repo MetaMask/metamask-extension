@@ -1,6 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { getMemoizedMetadataContractName } from '../selectors';
+import { getMemoizedMetadataContract } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useName } from './useName';
 import { useFirstPartyContractName } from './useFirstPartyContractName';
@@ -10,6 +10,8 @@ import { useFirstPartyContractName } from './useFirstPartyContractName';
  *
  * @param value
  * @param type
+ * @param preferContractSymbol - Applies to recognized contracts with no petname saved:
+ * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
  * @returns An object with two properties:
  * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
  * - `hasPetname` {boolean} - True if there is a petname for the given address.
@@ -17,14 +19,20 @@ import { useFirstPartyContractName } from './useFirstPartyContractName';
 export function useDisplayName(
   value: string,
   type: NameType,
+  preferContractSymbol: boolean = false,
 ): { name: string | null; hasPetname: boolean } {
   const nameEntry = useName(value, type);
 
   const firstPartyContractName = useFirstPartyContractName(value, type);
 
-  const contractName = useSelector((state) =>
-    (getMemoizedMetadataContractName as any)(state, value),
+  const contractInfo = useSelector((state) =>
+    (getMemoizedMetadataContract as any)(state, value),
   );
+
+  const contractDisplayName =
+    preferContractSymbol && contractInfo?.symbol
+      ? contractInfo.symbol
+      : contractInfo?.name;
 
   const watchedNftName = useSelector(getNftContractsByAddressOnCurrentChain)[
     value.toLowerCase()
@@ -33,7 +41,7 @@ export function useDisplayName(
   const name =
     nameEntry?.name ||
     firstPartyContractName ||
-    contractName ||
+    contractDisplayName ||
     watchedNftName ||
     null;
 

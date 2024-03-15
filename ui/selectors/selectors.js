@@ -1151,7 +1151,8 @@ export const getMemoizedMetadataContract = createDeepEqualSelector(
 );
 
 export const getMemoizedMetadataContractName = createDeepEqualSelector(
-  (address) => getMemoizedMetadataContract(address)?.name ?? '',
+  getMemoizedMetadataContract,
+  (entry) => entry?.name ?? '',
 );
 
 export const getTxData = (state) => state.confirmTransaction.txData;

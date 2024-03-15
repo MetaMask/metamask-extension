@@ -1,5 +1,6 @@
-const ERC20_TOKEN_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+const actions = require('../store/actions');
 
+const ERC20_TOKEN_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
 const mockTokenDetails = {
   [ERC20_TOKEN_MOCK]: {
     address: ERC20_TOKEN_MOCK,
@@ -10,10 +11,13 @@ const mockTokenDetails = {
 };
 
 module.exports = {
+  ...actions,
   getTokenStandardAndDetails: (address) => {
     if (!mockTokenDetails[address]) {
       return Promise.reject(new Error('Token not found'));
     }
     return Promise.resolve(mockTokenDetails[address]);
   },
+  // eslint-disable-next-line no-empty-function
+  trackMetaMetricsEvent: () => {},
 };

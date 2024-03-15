@@ -12,7 +12,8 @@ const DUMMY_BALANCE_CHANGE = {
   newBalance: '0xIGNORED' as Hex,
 }
 
-const ERC20_TOKEN_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WETH
+const ERC20_TOKEN_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
+const CHAIN_ID_MOCK = '0x1';
 
 const storeMock = configureStore({
   metamask: {
@@ -20,6 +21,20 @@ const storeMock = configureStore({
     preferences: {
       ...mockState.metamask.preferences,
       useNativeCurrencyAsPrimaryCurrency: false,
+    },
+    providerConfig: {
+      ...mockState.metamask.providerConfig,
+      chainId: CHAIN_ID_MOCK,
+    },
+    useTokenDetection: true,
+    tokenList: {
+      [ERC20_TOKEN_MOCK]: {
+        address: ERC20_TOKEN_MOCK,
+        symbol: 'WBTC',
+        name: 'Wrapped Bitcoin',
+        iconUrl:
+          `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_MOCK}.png`,
+      },
     },
   },
 });

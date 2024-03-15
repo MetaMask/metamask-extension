@@ -4,6 +4,7 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { useMemo } from 'react';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useTokenDetails } from '../../../hooks/useTokenDetails';
@@ -31,7 +32,7 @@ function getNativeAssetBalanceChange({
 function getTokenAssetBalanceChange(
   {
     standard,
-    address,
+    address: contractAddress,
     id: tokenId,
     isDecrease,
     difference,
@@ -52,11 +53,10 @@ function getTokenAssetBalanceChange(
         throw new Error(`Unknown token standard: ${standard}`);
     }
   })();
-
   const assetInfo = {
     isNative: false,
     standard,
-    contractAddress: address,
+    contractAddress,
     tokenId,
   } as AssetInfo;
 
@@ -76,25 +76,23 @@ export function useBalanceChanges(simulationData?: SimulationData) {
   if (!simulationData) {
     return { isLoading: false, balanceChanges: [] };
   }
-  const tokenAddresses = [
-    ...new Set(
-      simulationData.tokenBalanceChanges?.map((change) => change.address),
-    ),
-  ];
+  const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
+
+  const tokenAddresses = useMemo(
+    () => [...new Set(tokenBalanceChanges?.map((change) => change.address))],
+    [simulationData],
+  );
   const { isLoading, addressToTokenDetails } = useTokenDetails(tokenAddresses);
 
   if (isLoading) {
     return { isLoading: true, balanceChanges: [] };
   }
-
-  const { nativeBalanceChange } = simulationData;
   const balanceChanges = [];
 
   if (nativeBalanceChange) {
     balanceChanges.push(getNativeAssetBalanceChange(nativeBalanceChange));
   }
-
-  for (const tokenBalanceChange of simulationData.tokenBalanceChanges) {
+  for (const tokenBalanceChange of tokenBalanceChanges) {
     const { decimals } = addressToTokenDetails[tokenBalanceChange.address];
     balanceChanges.push(
       getTokenAssetBalanceChange(tokenBalanceChange, decimals),
