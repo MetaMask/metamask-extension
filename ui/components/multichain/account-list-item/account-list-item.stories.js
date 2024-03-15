@@ -113,7 +113,7 @@ export default {
   args: {
     identity: SIMPLE_ACCOUNT,
     onClick,
-    menuType: AccountListItemMenuTypes.Account,
+    menuType: MenuOptionTypes.Account,
   },
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

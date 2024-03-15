@@ -165,7 +165,7 @@ export const Connections = () => {
                       selected={isSelectedAccount}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptionTypes={MenuOptionTypes.ConnectionMenu}
+                      menuType={MenuOptionTypes.ConnectionMenu}
                       currentTabOrigin={activeTabOrigin}
                       isActive={isSelectedAccount ? t('active') : null}
                     />

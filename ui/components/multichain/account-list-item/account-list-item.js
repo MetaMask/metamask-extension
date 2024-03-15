@@ -72,7 +72,7 @@ export const AccountListItem = ({
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptionTypes = MenuOptionTypes.None,
+  menuType = MenuOptionTypes.None,
   isHidden = false,
   currentTabOrigin,
   isActive = false,
@@ -334,7 +334,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
 
-      {showOptionTypes === MenuOptionTypes.None ? null : (
+      {menuType === MenuOptionTypes.None ? null : (
         <ButtonIcon
           ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
@@ -356,7 +356,7 @@ export const AccountListItem = ({
           data-testid="account-list-item-menu-button"
         />
       )}
-      {showOptionTypes === MenuOptionTypes.AccountMenu && (
+      {menuType === MenuOptionTypes.AccountMenu && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -369,7 +369,7 @@ export const AccountListItem = ({
           isConnected={isConnected}
         />
       )}
-      {menuType === AccountListItemMenuTypes.Connection && (
+      {menuType === MenuOptionTypes.Connection && (
         <ConnectedAccountsMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -434,7 +434,7 @@ AccountListItem.propTypes = {
   /**
    * Represents the type of menu to be rendered
    */
-  showOptionTypes: PropTypes.string,
+  menuType: PropTypes.string,
   /**
    * Represents pinned accounts
    */

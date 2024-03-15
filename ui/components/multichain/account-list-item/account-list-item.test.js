@@ -76,7 +76,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders the three-dot menu to launch the details menu', () => {
-    render({ menuType: AccountListItemMenuTypes.Account });
+    render({ menuType: MenuOptionTypes.Account });
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
     );
@@ -97,7 +97,7 @@ describe('AccountListItem', () => {
 
   it('clicking the three-dot menu opens up options', () => {
     const onClick = jest.fn();
-    render({ onClick, menuType: AccountListItemMenuTypes.Account });
+    render({ onClick, menuType: MenuOptionTypes.Account });
     const item = document.querySelector(
       '[data-testid="account-list-item-menu-button"]',
     );
