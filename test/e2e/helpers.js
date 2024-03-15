@@ -830,7 +830,7 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
 
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `$ ${balance} ETH`,
+    text: `${balance} ETH`,
   });
 };
 
