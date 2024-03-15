@@ -54,7 +54,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         await unlockWallet(driver);
         await changeLanguage(driver, languageIndex);
 
-        // Validate the label changes to spanish
+        // Validate the label changes to Spanish
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.labelSpanish,
         );
@@ -62,7 +62,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
         await driver.refresh();
 
-        // Change back to english and verify that the word is correctly changed back to english
+        // Change back to English and verify that the word is correctly changed back to English
         languageIndex = 9;
 
         const dropdownElement = await driver.findElement(
@@ -72,10 +72,10 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
         const options = await dropdownElement.findElements({ css: 'option' });
         await options[languageIndex].click();
 
-        const islabelTextChanged = await driver.isElementPresent(
+        const isLabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageLabel,
         );
-        assert.equal(islabelTextChanged, true, 'Language did not change');
+        assert.equal(isLabelTextChanged, true, 'Language did not change');
       },
     );
   });
