@@ -1,13 +1,16 @@
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 
-type firstTimeFlowTypes = 'create' | 'import';
+enum FirstTimeFlowType {
+  import = 'import',
+  create = 'create',
+}
 /**
  * The state of the OnboardingController
  */
 export type OnboardingControllerState = {
   seedPhraseBackedUp: boolean | null;
-  firstTimeFlowType: firstTimeFlowTypes | null;
+  firstTimeFlowType: FirstTimeFlowType | null;
   completedOnboarding: boolean;
   onboardingTabs?: Record<string, string>;
 };
@@ -73,7 +76,7 @@ export default class OnboardingController {
    *
    * @param type - Indicates the type of first time flow - create or import - the user wishes to follow
    */
-  setFirstTimeFlowType(type: firstTimeFlowTypes): void {
+  setFirstTimeFlowType(type: FirstTimeFlowType): void {
     this.store.updateState({ firstTimeFlowType: type });
   }
 
