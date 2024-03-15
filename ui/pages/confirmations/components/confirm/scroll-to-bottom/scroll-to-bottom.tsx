@@ -7,7 +7,6 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../../../components/component-library';
-import type { StyleUtilityProps } from '../../../../../components/component-library/box';
 
 import {
   BackgroundColor,
@@ -20,12 +19,12 @@ import {
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 
-interface ContentProps extends StyleUtilityProps {
+type ContentProps = {
   /**
    * Elements that go in the page content section
    */
   children: React.ReactNode | React.ReactNode[];
-}
+};
 
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
