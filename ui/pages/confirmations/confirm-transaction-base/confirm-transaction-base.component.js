@@ -438,8 +438,11 @@ export default class ConfirmTransactionBase extends Component {
       }
 
       // Token send
-      return useNativeCurrencyAsPrimaryCurrency
+      const primaryTotal = useMaxFee
         ? primaryTotalTextOverrideMaxAmount
+        : primaryTotalTextOverride;
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotal
         : secondaryTotalTextOverride;
     };
 
