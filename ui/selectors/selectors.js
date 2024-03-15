@@ -49,7 +49,6 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import sharedSelectors from '../../shared/modules/selectors';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -791,26 +790,6 @@ export function getShowExtensionInFullSizeView(state) {
   return Boolean(showExtensionInFullSizeView);
 }
 
-export function getSmartTransactionsOptInStatus(state) {
-  return sharedSelectors.getSmartTransactionsOptInStatus(state);
-}
-
-export function getIsAllowedStxChainId(state) {
-  return sharedSelectors.getIsAllowedStxChainId(state);
-}
-
-export function getSmartTransactionsEnabled(state) {
-  return sharedSelectors.getSmartTransactionsEnabled(state);
-}
-
-export function getIsSmartTransaction(state) {
-  return sharedSelectors.getIsSmartTransaction(state);
-}
-
-export function getFeatureFlagsByChainId(state) {
-  return sharedSelectors.getFeatureFlagsByChainId(state);
-}
-
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {
@@ -851,8 +830,7 @@ export function getAdvancedInlineGasShown(state) {
 }
 
 export function getUseNonceField(state) {
-  const isSmartTransaction = getIsSmartTransaction(state);
-  return Boolean(!isSmartTransaction && state.metamask.useNonceField);
+  return Boolean(state.metamask.useNonceField);
 }
 
 export function getCustomNonceValue(state) {
@@ -1626,7 +1604,6 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
     [NOTIFICATION_STAKING_PORTFOLIO]: true,
-    [NOTIFICATION_SMART_TRANSACTIONS]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
