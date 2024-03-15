@@ -2642,13 +2642,13 @@ export function hideDeprecatedNetworkModal(): Action {
 /**
  * TODO: this should be moved somewhere else when it makese sense to do so
  */
-interface NftDropDownState {
+type NftDropDownState = {
   [address: string]: {
     [chainId: string]: {
       [nftAddress: string]: boolean;
     };
   };
-}
+};
 
 export function updateNftDropDownState(
   value: NftDropDownState,
@@ -2659,12 +2659,12 @@ export function updateNftDropDownState(
   };
 }
 
-interface QrCodeData {
+type QrCodeData = {
   // Address when a Ethereum Address has been detected
   type?: 'address' | string;
   // contains an address key when Ethereum Address detected
   values?: { address?: string } & Json;
-}
+};
 
 /**
  * This action will receive two types of values via qrCodeData
@@ -2882,12 +2882,12 @@ export function showSendTokenPage(): Action {
 }
 
 // TODO: Lift to shared folder when it makes sense
-interface TemporaryFeatureFlagDef {
+type TemporaryFeatureFlagDef = {
   [feature: string]: boolean;
-}
-interface TemporaryPreferenceFlagDef {
+};
+type TemporaryPreferenceFlagDef = {
   [preference: string]: boolean | object;
-}
+};
 
 export function setFeatureFlag(
   feature: string,
@@ -3256,8 +3256,8 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// DetectTokenController
-export function detectNewTokens(): ThunkAction<
+// TokenDetectionController
+export function detectTokens(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -3265,8 +3265,8 @@ export function detectNewTokens(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectNewTokens`);
-    await submitRequestToBackground('detectNewTokens');
+    log.debug(`background.detectTokens`);
+    await submitRequestToBackground('detectTokens');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -4482,12 +4482,12 @@ export function fetchSmartTransactionFees(
   };
 }
 
-interface TemporarySmartTransactionGasFees {
+type TemporarySmartTransactionGasFees = {
   maxFeePerGas: string;
   maxPriorityFeePerGas: string;
   gas: string;
   value: string;
-}
+};
 
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
@@ -12,7 +12,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONNECT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -20,6 +23,7 @@ import {
   getInternalAccounts,
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getPermittedAccountsByOrigin,
   getSelectedAccount,
 } from '../../../../selectors';
 import {
@@ -44,11 +48,13 @@ import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
+import { requestAccountsPermissionWithId } from '../../../../store/actions';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
@@ -57,13 +63,35 @@ export const Connections = () => {
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
-  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+  const { id } = useSelector((state: any) => state.activeTab);
+
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+  const permittedAccountsByOrigin = useSelector(
+    getPermittedAccountsByOrigin,
+  ) as { [key: string]: any[] };
+
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[activeTabOrigin]?.length;
+  let tabToConnect: { origin: any } = { origin: null };
+  if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
+    tabToConnect = {
+      origin: activeTabOrigin,
+    };
+  }
+  const requestAccountsPermission = async () => {
+    const requestId = await dispatch(
+      requestAccountsPermissionWithId(tabToConnect.origin),
+    );
+    history.push(`${CONNECT_ROUTE}/${requestId}`);
+  };
+  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -110,7 +138,7 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata ? (
+        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
           <Tabs defaultActiveTabKey="connections">
             {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -156,7 +184,7 @@ export const Connections = () => {
         ) : null}
       </Content>
       <Footer>
-        {connectedSubjectsMetadata ? (
+        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
           <Box
             display={Display.Flex}
             gap={2}
@@ -188,6 +216,7 @@ export const Connections = () => {
             size={ButtonPrimarySize.Lg}
             block
             data-test-id="no-connections-button"
+            onClick={() => dispatch(requestAccountsPermission())}
           >
             {t('connectAccounts')}
           </ButtonPrimary>

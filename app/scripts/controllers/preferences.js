@@ -24,6 +24,7 @@ export default class PreferencesController {
    *
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
+   * @property {object} messenger - The controller messenger
    * @property {object} store The stored object containing a users preferences, stored in local storage
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
@@ -129,6 +130,16 @@ export default class PreferencesController {
       if (accounts.size > 0) {
         this.syncAddresses(Array.from(accounts));
       }
+    });
+
+    this.messagingSystem = opts.messenger;
+    this.messagingSystem?.registerActionHandler(
+      `PreferencesController:getState`,
+      () => this.store.getState(),
+    );
+    this.messagingSystem?.registerInitialEventPayload({
+      eventType: `PreferencesController:stateChange`,
+      getPayload: () => [this.store.getState(), []],
     });
 
     global.setPreference = (key, value) => {
