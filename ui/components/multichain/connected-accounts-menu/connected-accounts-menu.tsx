@@ -23,6 +23,8 @@ import {
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { Identity } from './connected-accounts-menu.types';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({

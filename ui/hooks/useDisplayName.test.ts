@@ -7,6 +7,8 @@ import { useName } from './useName';
 import { useFirstPartyContractName } from './useFirstPartyContractName';
 
 jest.mock('react-redux', () => ({
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useSelector: (selector: any) => selector(),
 }));
 

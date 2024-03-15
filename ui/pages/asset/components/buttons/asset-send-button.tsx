@@ -66,6 +66,8 @@ const AssetSendButton = ({
             }),
           );
           history.push(SEND_ROUTE);
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
           if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
             throw err;

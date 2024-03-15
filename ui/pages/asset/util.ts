@@ -16,6 +16,8 @@ export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
  * @param number - The number to format.
  * @returns A localized string of the formatted number + unit.
  */
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const localizeLargeNumber = (t: any, number: number) => {
   if (number >= 1000000000000) {
     return `${(number / 1000000000000).toFixed(2)}${t('trillionAbbreviation')}`;

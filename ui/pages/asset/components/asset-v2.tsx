@@ -96,6 +96,8 @@ const AssetV2 = ({
   const isBuyableChain = useSelector(getIsBuyableChain);
   const isBridgeChain = useSelector(getIsBridgeChain);
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [marketData, setMarketData] = useState<any>();
   const headerRef = useRef<{ setBalanceOpacity: (o: number) => void }>(null);
 

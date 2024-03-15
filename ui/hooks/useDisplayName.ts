@@ -23,6 +23,8 @@ export function useDisplayName(
   const firstPartyContractName = useFirstPartyContractName(value, type);
 
   const contractName = useSelector((state) =>
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (getMemoizedMetadataContractName as any)(state, value),
   );
 

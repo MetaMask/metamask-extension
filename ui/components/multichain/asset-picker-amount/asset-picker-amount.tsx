@@ -180,6 +180,8 @@ export const AssetPickerAmount = () => {
     } else if (asset.details?.standard === TokenStandard.ERC1155) {
       const {
         details: { balance },
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } = asset as any;
       return (
         <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>

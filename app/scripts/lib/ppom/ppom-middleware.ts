@@ -12,6 +12,8 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { sentry } = global as any;
 
 const CONFIRMATION_METHODS = Object.freeze([
@@ -52,12 +54,18 @@ export function createPPOMMiddleware(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appStateController: any,
   updateSecurityAlertResponseByTxId: (
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     req: any,
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
 ) {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (req: any, _res: any, next: () => void) => {
     try {
       const securityAlertsEnabled =
@@ -77,6 +85,8 @@ export function createPPOMMiddleware(
               const securityAlertResponse = await ppom.validateJsonRpc(req);
               securityAlertResponse.securityAlertId = securityAlertId;
               return securityAlertResponse;
+              // TODO: Replace `any` with type
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
               sentry?.captureException(error);
               const errorObject = error as unknown as Error;
@@ -116,6 +126,8 @@ export function createPPOMMiddleware(
           };
         }
       }
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const errorObject = error as unknown as Error;
       sentry?.captureException(error);

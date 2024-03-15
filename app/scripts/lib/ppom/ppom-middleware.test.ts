@@ -16,6 +16,8 @@ Object.defineProperty(globalThis, 'performance', {
 });
 
 const createMiddleWare = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   usePPOM?: any,
   securityAlertsEnabled?: boolean,
   chainId?: string,
@@ -40,9 +42,17 @@ const createMiddleWare = (
   };
 
   return createPPOMMiddleware(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ppomController as any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     networkController as any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
     () => undefined,
   );
@@ -103,9 +113,13 @@ describe('PPOMMiddleware', () => {
       securityAlertResponse: undefined,
     };
     await middlewareFunction(req, undefined, () => undefined);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((req.securityAlertResponse as any)?.result_type).toBe(
       BlockaidResultType.Errored,
     );
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((req.securityAlertResponse as any)?.reason).toBe(
       BlockaidReason.errored,
     );
@@ -115,6 +129,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: () => undefined,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
@@ -129,6 +145,8 @@ describe('PPOMMiddleware', () => {
   });
 
   it('should call next method when ppomController.usePPOM throws error', async () => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (_callback: any) => {
       throw Error('Some error');
     };
@@ -147,6 +165,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
@@ -164,6 +184,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
