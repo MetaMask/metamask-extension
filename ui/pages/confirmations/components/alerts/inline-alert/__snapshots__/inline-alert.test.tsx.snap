@@ -5,6 +5,7 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
   <div>
     <div
       class="error-muted inline-alert inline-alert__critical"
+      data-testid="inlineAlert"
     >
       <span
         class="mm-box inline-alert__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -13,7 +14,7 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
       <p
         class="mm-box mm-text inline-alert__text mm-text--body-sm mm-box--color-text-default"
       >
-        Alert
+        [inlineAlert]
       </p>
       <span
         class="mm-box inline-alert__icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -29,6 +30,7 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
   <div>
     <div
       class="primary-muted inline-alert inline-alert__informative"
+      data-testid="inlineAlert"
     >
       <span
         class="mm-box inline-alert__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -37,7 +39,7 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
       <p
         class="mm-box mm-text inline-alert__text mm-text--body-sm mm-box--color-text-default"
       >
-        Alert
+        [inlineAlert]
       </p>
       <span
         class="mm-box inline-alert__icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -53,6 +55,7 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
   <div>
     <div
       class="warning-muted inline-alert inline-alert__non_critical"
+      data-testid="inlineAlert"
     >
       <span
         class="mm-box inline-alert__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -61,7 +64,7 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
       <p
         class="mm-box mm-text inline-alert__text mm-text--body-sm mm-box--color-text-default"
       >
-        Alert
+        [inlineAlert]
       </p>
       <span
         class="mm-box inline-alert__icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"

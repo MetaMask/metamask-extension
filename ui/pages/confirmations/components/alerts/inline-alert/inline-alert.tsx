@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import {
   Icon,
@@ -14,10 +14,8 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export interface InlineAlertProps {
-  /** The value displayed */
-  value: string;
-  /** The label displayed */
-  label: string;
+  /** Handle click to open alert modal */
+  onClick: () => void;
   /** The severity of the alert, e.g. Severity.Warning */
   severity?: Severity;
 }
@@ -35,29 +33,24 @@ function getSeverityBackground(severity: Severity): BackgroundColor {
 }
 
 export default function InlineAlert({
-  value,
-  label,
+  onClick,
   severity = Severity.Info,
 }: InlineAlertProps) {
-  const [modalOpen, setModalOpen] = useState(false);
   const t = useI18nContext();
-
-  const handleClick = useCallback(() => {
-    setModalOpen(true);
-  }, [setModalOpen]);
 
   const severityBackground = getSeverityBackground(severity);
 
   return (
     <div>
       <div
+        data-testid="inlineAlert"
         className={classnames(severityBackground, {
           'inline-alert': true,
           'inline-alert__informative': severity === Severity.Info,
           'inline-alert__non_critical': severity === Severity.Warning,
           'inline-alert__critical': severity === Severity.Danger,
         })}
-        onClick={handleClick}
+        onClick={onClick}
       >
         <Icon
           name={severity === Severity.Info ? IconName.Info : IconName.Danger}
