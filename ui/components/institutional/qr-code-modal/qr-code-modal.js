@@ -34,11 +34,7 @@ export default function QRCodeModal({ onClose, custodianName }) {
         publicKey,
       );
 
-      const publicKeyBase64 = Buffer.from(exportedPublicKey)
-        .toString('base64')
-        .replace(/\+/gu, '-')
-        .replace(/\//gu, '_')
-        .replace(/[=]+$/u, '');
+      const publicKeyBase64 = Buffer.from(exportedPublicKey).toString('base64');
 
       setPublicKeyData(publicKeyBase64);
     } catch (e) {
@@ -52,8 +48,9 @@ export default function QRCodeModal({ onClose, custodianName }) {
   }, []);
 
   const qrCodeValue = JSON.stringify({
-    custodianName,
     publicKey: publicKeyData,
+    additionalInfo: {},
+    wsClientId: 12345,
   });
 
   return (

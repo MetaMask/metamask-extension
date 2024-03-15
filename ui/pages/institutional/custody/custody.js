@@ -57,9 +57,6 @@ import { findCustodianByEnvName } from '../../../helpers/utils/institutional/fin
 import { setSelectedAddress } from '../../../store/actions';
 import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 
-const GK8_DISPLAY_NAME = 'gk8';
-const SATURN_DISPLAY_NAME = 'saturn custody';
-
 const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
@@ -143,16 +140,11 @@ const CustodyPage = () => {
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
-        // open confirm Connect Custodian modal except for gk8
-        if (
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
-          GK8_DISPLAY_NAME
-        ) {
+        if (custodianByDisplayName.isManualTokenInputSupported) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
-          SATURN_DISPLAY_NAME
+          custodianByDisplayName.isQRCodeSupported
             ? setShowQRCodeModal(true)
             : setIsConfirmConnectCustodianModalVisible(true);
         }
