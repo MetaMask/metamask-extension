@@ -278,8 +278,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     };
 
     return Object.keys(snaps).map((snapId) => {
-      const friendlyName = getSubjectName(snapId);
-      if (friendlyName) {
+      const snapName = getSubjectName(snapId);
+      if (snapName) {
         return {
           ...baseDescription,
           label: t('permission_accessNamedSnap', [
@@ -289,10 +289,10 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
               fontWeight={FontWeight.Medium}
               key={snapId}
             >
-              {friendlyName}
+              {snapName}
             </Text>,
           ]),
-          description: t('permission_accessSnapDescription', [friendlyName]),
+          description: t('permission_accessSnapDescription', [snapName]),
         };
       }
 

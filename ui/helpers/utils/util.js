@@ -34,6 +34,7 @@ import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -561,6 +562,12 @@ export function isNullish(value) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+export const getSnapName = (snapsMetadata) => {
+  return (snapId) => {
+    return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
+  };
+};
+
 export const getSnapRoute = (snapId) => {
   return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
 };

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
 import { Box } from '../../../component-library';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -21,10 +21,7 @@ export default function UpdateSnapPermissionList({
   );
 
   const snapsMetadata = useSelector(getSnapsMetadata);
-
-  const getSnapName = (id) => {
-    return snapsMetadata[id]?.name ?? stripSnapPrefix(id);
-  };
+  const snapsNameGetter = getSnapName(snapsMetadata);
 
   return (
     <Box paddingTop={1}>
@@ -32,7 +29,7 @@ export default function UpdateSnapPermissionList({
         t,
         permissions: newPermissions,
         subjectName: snapName,
-        getSubjectName: getSnapName,
+        getSubjectName: snapsNameGetter,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}
@@ -48,7 +45,7 @@ export default function UpdateSnapPermissionList({
         t,
         permissions: revokedPermissions,
         subjectName: snapName,
-        getSubjectName: getSnapName,
+        getSubjectName: snapsNameGetter,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}
@@ -65,7 +62,7 @@ export default function UpdateSnapPermissionList({
         t,
         permissions: approvedPermissions,
         subjectName: snapName,
-        getSubjectName: getSnapName,
+        getSubjectName: snapsNameGetter,
       }).map((permission, index) => (
         <PermissionCell
           permissionName={permission.permissionName}

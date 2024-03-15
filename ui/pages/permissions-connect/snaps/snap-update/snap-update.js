@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -32,6 +31,7 @@ import {
 } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapUpdate({
   request,
@@ -47,10 +47,6 @@ export default function SnapUpdate({
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
   const snapsMetadata = useSelector(getSnapsMetadata);
-
-  const getSnapName = (id) => {
-    return snapsMetadata[id]?.name ?? stripSnapPrefix(id);
-  };
 
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
@@ -78,7 +74,7 @@ export default function SnapUpdate({
     newPermissions,
     t,
     snapName,
-    getSnapName,
+    getSnapName(snapsMetadata),
   );
 
   const shouldShowWarning = warnings.length > 0;

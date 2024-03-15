@@ -27,7 +27,7 @@ const SnapLegacyAuthorshipHeader = ({
   marginRight,
 }) => {
   const packageName = snapId && stripSnapPrefix(snapId);
-  const { name: friendlyName } = useSelector((state) =>
+  const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
@@ -55,7 +55,7 @@ const SnapLegacyAuthorshipHeader = ({
         style={{ overflow: 'hidden' }}
       >
         <Text ellipsis fontWeight={FontWeight.Medium}>
-          {friendlyName}
+          {snapName}
         </Text>
         <Text
           ellipsis

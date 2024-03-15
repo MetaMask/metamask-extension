@@ -52,7 +52,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
     getSnapRegistryData(state, snapId),
   );
 
-  const { name: friendlyName } = useSelector((state) =>
+  const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
@@ -102,7 +102,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           style={{ overflow: 'hidden' }}
         >
           <Text ellipsis fontWeight={FontWeight.Medium}>
-            {friendlyName}
+            {snapName}
           </Text>
           <Text
             ellipsis

@@ -20,6 +20,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { deleteInterface } from '../store/actions';
 ///: END:ONLY_INCLUDE_IF
+import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -42,19 +43,7 @@ const useTransactionInsights = ({ txData }) => {
   const insightSnapIds = useSelector(getInsightSnapIds);
   const snapsMetadata = useSelector(getSnapsMetadata);
 
-  /**
-   * Get the snap name from the snap ID.
-   *
-   * This is used to get the names for permissions which include snap IDs as
-   * caveat.
-   *
-   * @param id - The snap ID.
-   * @returns {string | undefined} The snap name if it exists, or `undefined`.
-   */
-  const getSnapName = (id) => {
-    const snap = snapsMetadata[id];
-    return snap?.name;
-  };
+  const snapsNameGetter = getSnapName(snapsMetadata);
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -110,7 +99,7 @@ const useTransactionInsights = ({ txData }) => {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={getSnapName(selectedSnap?.id)}
+        name={snapsNameGetter(selectedSnap.id)}
       >
         <SnapInsight
           snapId={selectedInsightSnapId}
@@ -126,7 +115,7 @@ const useTransactionInsights = ({ txData }) => {
     );
   } else if (insightSnaps.length > 1) {
     const dropdownOptions = insightSnaps?.map(({ id }) => {
-      const name = getSnapName(id);
+      const name = snapsNameGetter(id);
       return {
         value: id,
         name,

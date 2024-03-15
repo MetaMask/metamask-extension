@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
 import { Box } from '../../../component-library';
 import { getSnapsMetadata } from '../../../../selectors';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapPermissionsList({
   snapId,
@@ -17,17 +17,13 @@ export default function SnapPermissionsList({
   const t = useI18nContext();
   const snapsMetadata = useSelector(getSnapsMetadata);
 
-  const getSnapName = (id) => {
-    return snapsMetadata[id]?.name ?? stripSnapPrefix(id);
-  };
-
   return (
     <Box paddingTop={2} paddingBottom={2} className="snap-permissions-list">
       {getWeightedPermissions({
         t,
         permissions,
         subjectName: snapName,
-        getSubjectName: getSnapName,
+        getSubjectName: getSnapName(snapsMetadata),
       }).map((permission, index) => {
         return (
           <PermissionCell
