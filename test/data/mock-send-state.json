@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "dappPermissionModal": { "open": false },
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
