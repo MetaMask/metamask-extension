@@ -654,18 +654,11 @@ const CustodyPage = () => {
         >
           <Box paddingTop={4} paddingBottom={4} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
-            <Text marginTop={2} marginBottom={2}>
-              {t('selectAnAccountHelp')}
-            </Text>
+            <Text marginTop={2}>{t('selectAnAccountHelp')}</Text>
           </Box>
           {/* Search box */}
           {accounts.length > 1 ? (
-            <Box
-              paddingLeft={4}
-              paddingRight={4}
-              paddingBottom={4}
-              paddingTop={0}
-            >
+            <Box paddingBottom={4} paddingTop={0}>
               <TextFieldSearch
                 size={Size.SM}
                 width={BlockSize.Full}
