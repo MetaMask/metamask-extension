@@ -90,12 +90,10 @@ function transformState(state: Record<string, unknown>) {
 
         // Adding the snap name to the wallet_snap permission's caveat value
         const snapId = permissionName.slice(snapPrefix.length);
-        const caveat = // TODO: Replace `any` with type
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (
-            (updatedPermissions.wallet_snap as Record<string, any>)
-              .caveats as unknown[]
-          )[0];
+        const caveat = (
+          (updatedPermissions.wallet_snap as Record<string, unknown>)
+            .caveats as unknown[]
+        )[0];
 
         if (!isObject(caveat)) {
           return state;
