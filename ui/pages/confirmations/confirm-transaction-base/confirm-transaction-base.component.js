@@ -172,7 +172,6 @@ export default class ConfirmTransactionBase extends Component {
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
     isAllowedStxChainId: PropTypes.bool,
   };
@@ -709,11 +708,9 @@ export default class ConfirmTransactionBase extends Component {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       fromInternalAccount,
       ///: END:ONLY_INCLUDE_IF
-      isSmartTransaction,
     } = this.props;
 
-    const hideLoadingIndicator = isSmartTransaction;
-
+    const hideLoadingIndicator = false;
     let loadingIndicatorMessage;
 
     switch (keyringForAccount?.type) {

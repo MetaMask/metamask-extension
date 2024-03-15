@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import {
   SmartTransactionStatuses,
@@ -35,6 +35,7 @@ import {
   getFeatureFlagsByChainId,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { hideLoadingIndication } from '../../../store/actions';
 
 type RequestState = {
   smartTransaction?: SmartTransaction;
@@ -64,6 +65,7 @@ export const SmartTransactionStatusPage = ({
   onViewActivity,
 }: SmartTransactionStatusPageProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const { smartTransaction, isDapp } = requestState;
   const isSmartTransactionPending =
     !smartTransaction ||
@@ -161,6 +163,10 @@ export const SmartTransactionStatusPage = ({
     }
     return () => clearInterval(intervalId);
   }, [isSmartTransactionPending, isSmartTransactionTakingTooLong]);
+
+  useEffect(() => {
+    dispatch(hideLoadingIndication());
+  }, []);
 
   return (
     <Box
