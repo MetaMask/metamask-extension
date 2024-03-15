@@ -13,8 +13,8 @@ export type AssetInfo = {
 /**
  * A balance change for an asset.
  */
-export interface BalanceChange {
+export type BalanceChange = {
   assetInfo: AssetInfo;
   isDecrease: boolean;
   absChange: Numeric;
-}
+};

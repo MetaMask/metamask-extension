@@ -20,9 +20,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BalanceChange } from './types';
 import { BalanceChangeList } from './balance-change-list';
 
-export interface SimulationPreviewProps {
+export type SimulationPreviewProps = {
   simulationData?: SimulationData;
-}
+};
 
 /**
  * Converts a SimulationBalanceChange to a BalanceChange for the native asset.
