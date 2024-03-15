@@ -13,6 +13,8 @@ export enum FormTextFieldSize {
   Lg = 'lg',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface FormTextFieldStyleUtilityProps
   extends Omit<TextFieldStyleUtilityProps, 'size' | 'type'> {
   /*
@@ -37,6 +39,8 @@ export interface FormTextFieldStyleUtilityProps
   helpTextProps?: HelpTextProps<'div'>;
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface FormTextFieldWithLabelProps
   extends FormTextFieldStyleUtilityProps {
   /*
@@ -51,6 +55,8 @@ export interface FormTextFieldWithLabelProps
   id: string; // id is required when label is provided
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface FormTextFieldWithoutLabelProps
   extends FormTextFieldStyleUtilityProps {
   /*
