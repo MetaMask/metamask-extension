@@ -431,7 +431,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       return {
         statusCode: 200,
         json: {
-          USD: '1700',
+          USD: '1300',
         },
       };
     });
