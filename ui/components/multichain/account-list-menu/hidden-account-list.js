@@ -131,7 +131,7 @@ export const HiddenAccountList = ({ onClose }) => {
                   closeMenu={onClose}
                   connectedAvatar={connectedSite?.iconUrl}
                   connectedAvatarName={connectedSite?.name}
-                  menuType={AccountListItemMenuTypes.AccountMenu}
+                  menuType={AccountListItemMenuTypes.Account}
                   isPinned={Boolean(account.pinned)}
                   isHidden={Boolean(account.hidden)}
                 />
