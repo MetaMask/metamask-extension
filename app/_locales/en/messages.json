@@ -3163,21 +3163,6 @@
     "message": "Stake smarter in Portfolio",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
-  "notificationsStxActionText": {
-    "message": "Continue"
-  },
-  "notificationsStxDescription1": {
-    "message": "Smart transactions enhance the reliability, privacy, and cost-effectiveness of MetaMask."
-  },
-  "notificationsStxDescription2": {
-    "message": "Right now, smart transactions are only available on ETH Mainnet. You can turn them off at any time in settings."
-  },
-  "notificationsStxManageInSettings": {
-    "message": "Manage in settings"
-  },
-  "notificationsStxTitle": {
-    "message": "Introducing smart transactions"
-  },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
