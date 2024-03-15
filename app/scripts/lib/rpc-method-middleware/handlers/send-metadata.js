@@ -25,7 +25,7 @@ export default sendMetadata;
  */
 
 /**
- * @param {import('@metamask/json-rpc-engine').JsonRpcRequest<unknown>} req - The JSON-RPC request object.
+ * @param {import('@metamask/json-rpc-engine').JsonRpcRequest<import('@metamask/utils').JsonRpcParams>} req - The JSON-RPC request object.
  * @param {import('@metamask/json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
