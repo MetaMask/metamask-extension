@@ -74,7 +74,7 @@ describe('MetaMask Responsive UI', function () {
         // assert balance
         await driver.findElement({
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: `$ 0.00 USD`,
+          text: `0 ETH`,
         });
       },
     );
