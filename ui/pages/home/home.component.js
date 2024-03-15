@@ -874,7 +874,7 @@ export default class Home extends PureComponent {
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
+                <EthOverview showAddress fiatOverride={false} />
                 ///: END:ONLY_INCLUDE_IF
               }
               {

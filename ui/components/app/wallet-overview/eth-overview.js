@@ -73,7 +73,7 @@ import { showPrimaryCurrency } from '../../../../shared/modules/currency-display
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
 
-const EthOverview = ({ className, showAddress }) => {
+const EthOverview = ({ className, showAddress, fiatOverride }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
@@ -109,9 +109,16 @@ const EthOverview = ({ className, showAddress }) => {
     selectedAddress,
     shouldHideZeroBalanceTokens,
   );
+
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
+
+  const showFiatOverride =
+    // eslint-disable-next-line no-negated-condition
+    fiatOverride !== undefined
+      ? fiatOverride
+      : !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname);
 
   let balanceToUse = totalWeiBalance;
 
@@ -242,10 +249,7 @@ const EthOverview = ({ className, showAddress }) => {
                       ? PRIMARY
                       : SECONDARY
                   }
-                  showFiat={
-                    !showFiat ||
-                    !TEST_NETWORKS.includes(currentNetwork?.nickname)
-                  }
+                  showFiat={showFiatOverride}
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
@@ -461,6 +465,7 @@ const EthOverview = ({ className, showAddress }) => {
 EthOverview.propTypes = {
   className: PropTypes.string,
   showAddress: PropTypes.bool,
+  fiatOverride: PropTypes.bool,
 };
 
 export default EthOverview;
