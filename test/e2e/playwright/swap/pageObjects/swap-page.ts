@@ -115,6 +115,7 @@ export class SwapPage {
   }
 
   async importTokens() {
+    await this.page.waitForSelector('text=/new tokens found/');
     await this.importTokensButton.click();
     await this.page.waitForTimeout(500);
     await this.importButton.click();
