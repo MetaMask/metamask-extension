@@ -29,5 +29,9 @@ export const ERC_4337_ACCOUNT_SALT = '0x1';
 export const SIMPLE_ACCOUNT_FACTORY =
   '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
 
+/* URL of the Snap Simple Keyring site. */
+export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
+  'https://metamask.github.io/snap-simple-keyring/1.1.1/';
+
 /* Address of the VerifyingPaymaster smart contract deployed to Ganache. */
 export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';

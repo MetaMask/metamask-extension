@@ -38,6 +38,7 @@ async function installExampleSnap(driver: Driver) {
     text: 'Connect',
     tag: 'button',
   });
+  await driver.findElement({ text: 'Installation request', tag: 'h2' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
   await driver.clickElement({
     text: 'Install',
@@ -253,12 +254,7 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(
-          driver,
-          GANACHE_ACCOUNT,
-          convertETHToHexGwei(1),
-          true,
-        );
+        await sendTransaction(driver, GANACHE_ACCOUNT, 1, true);
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);

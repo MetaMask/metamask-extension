@@ -170,7 +170,7 @@ async function getQuoteAndSwapTokens(driver) {
 async function assertReqsNumAndFilterMetrics(driver, mockedEndpoints) {
   const events = await getEventPayloads(driver, mockedEndpoints);
 
-  const numberOfMetaswapRequests = 8;
+  const numberOfMetaswapRequests = 7;
   assert.equal(
     events.length,
     numberOfSegmentRequests + numberOfMetaswapRequests,
