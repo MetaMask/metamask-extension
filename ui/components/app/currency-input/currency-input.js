@@ -60,10 +60,12 @@ export default function CurrencyInput({
   const secondarySuffix = secondaryCurrency.toUpperCase();
   const isLongSymbol = (primarySuffix?.length || 0) > LARGE_SYMBOL_LENGTH;
 
-  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
-  const showFiat = useSelector(getShouldShowFiat);
-  const hideSecondary = !showFiat;
-  const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
+  const [shouldDisplayFiatIfAvailable, setShouldDisplayFiatIfAvailable] =
+    useState(featureSecondary);
+  const isFiatAvailable = useSelector(getShouldShowFiat);
+
+  const shouldUseFiat =
+    isFiatAvailable && Boolean(shouldDisplayFiatIfAvailable);
   const isTokenPrimary = !shouldUseFiat;
 
   const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
@@ -87,7 +89,7 @@ export default function CurrencyInput({
 
   const swap = async () => {
     await onPreferenceToggle();
-    setShouldDisplayFiat(!shouldDisplayFiat);
+    setShouldDisplayFiatIfAvailable(!shouldDisplayFiatIfAvailable);
   };
 
   // if the conversion rate is undefined, do not allow a fiat input
@@ -98,7 +100,7 @@ export default function CurrencyInput({
 
     if (!tokenToFiatConversionRate) {
       onPreferenceToggle();
-      setShouldDisplayFiat(false);
+      setShouldDisplayFiatIfAvailable(false);
     }
   }, [tokenToFiatConversionRate, isTokenPrimary, onPreferenceToggle]);
 
@@ -150,7 +152,7 @@ export default function CurrencyInput({
   const renderConversionComponent = () => {
     let suffix, displayValue;
 
-    if (hideSecondary || !tokenToFiatConversionRate) {
+    if (!isFiatAvailable || !tokenToFiatConversionRate) {
       return (
         <div className="currency-input__conversion-component">
           {t('noConversionRateAvailable')}
