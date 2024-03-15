@@ -1514,7 +1514,6 @@ export default class MetamaskController extends EventEmitter {
       });
     this.txController = new TransactionController({
       blockTracker: this.blockTracker,
-      cancelMultiplier: 1.1,
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
