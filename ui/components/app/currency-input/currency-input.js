@@ -117,6 +117,12 @@ export default function CurrencyInput({
     );
   };
 
+  // reset form when token is changed
+  useEffect(() => {
+    setTokenDecimalValue('0');
+    setFiatDecimalValue('0');
+  }, [asset?.address]);
+
   useEffect(() => {
     // do not override the input when it is using fiat, since it is imprecise
     if (!isTokenPrimary) {
