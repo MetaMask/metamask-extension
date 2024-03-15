@@ -882,6 +882,7 @@ export default class Home extends PureComponent {
                 <EthOverview
                   showAddress
                   mmiPortfolioEnabled={mmiPortfolioEnabled}
+                  fiatOverride={false}
                 />
                 ///: END:ONLY_INCLUDE_IF
               }
