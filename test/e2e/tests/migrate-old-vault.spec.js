@@ -32,7 +32,7 @@ describe('Migrate vault with old encryption', function () {
         const walletBalance = await driver.findElement(
           '.eth-overview__primary-balance',
         );
-        assert.equal(await walletBalance.getText(), '$42,500.00\nUSD');
+        assert.equal(await walletBalance.getText(), '25\nETH');
       },
     );
   });
