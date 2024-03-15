@@ -90,7 +90,7 @@ describe('Deploy contract and call contract methods', function () {
         const balance = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );
-        assert.equal(await balance.getText(), '$37,399.05\nUSD');
+        assert.equal(await balance.getText(), '21.9994\nETH');
       },
     );
   });
