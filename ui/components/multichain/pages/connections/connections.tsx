@@ -110,11 +110,10 @@ export const Connections = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
     if (subject) {
-      const permissions = subject.permissions || [];
-      const permissionMethodNames = permissions
-        .map(({ parentCapability }) => parentCapability.trim())
-        .filter(Boolean) as string[];
-
+      const permissionMethodNames = Object.values(subject.permissions).map(
+        ({ parentCapability }: { parentCapability: string }) =>
+          parentCapability,
+      ) as string[];
       if (permissionMethodNames.length > 0) {
         const permissionsRecord: Record<string, string[]> = {
           [activeTabOrigin]: permissionMethodNames,
@@ -226,7 +225,7 @@ export const Connections = () => {
             type={DisconnectType.Account}
             hostname={activeTabOrigin}
             onClose={() => setShowDisconnectAllModal(false)}
-            onClick={disconnectAllAccounts}
+            onClick={() => disconnectAllAccounts()}
           />
         ) : null}
       </Content>
