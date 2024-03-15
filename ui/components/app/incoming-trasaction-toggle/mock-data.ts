@@ -83,4 +83,5 @@ export const INCOMING_DATA = {
   '0x5': false,
   '0xaa36a7': true,
   '0xe704': true,
+  '0xe705': true,
 };
