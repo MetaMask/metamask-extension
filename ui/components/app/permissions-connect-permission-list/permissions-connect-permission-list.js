@@ -28,7 +28,10 @@ function getDescriptionNode(permission, index) {
   );
 }
 
-export default function PermissionsConnectPermissionList({ permissions }) {
+export default function PermissionsConnectPermissionList({
+  permissions,
+  subjectName,
+}) {
   const t = useI18nContext();
   const snapsMetadata = useSelector(getSnapsMetadata);
 
@@ -38,6 +41,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
         t,
         permissions,
         getSubjectName: getSnapName(snapsMetadata),
+        subjectName,
       }).map(getDescriptionNode)}
     </div>
   );
@@ -45,4 +49,5 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
 PermissionsConnectPermissionList.propTypes = {
   permissions: PropTypes.object.isRequired,
+  subjectName: PropTypes.string.isRequired,
 };

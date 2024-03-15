@@ -6,6 +6,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+import { subjectMetadata } from '../../../../../.storybook/initial-states/approval-screens/token-approval';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -35,7 +36,10 @@ export default class PermissionPageContainerContent extends PureComponent {
 
     return (
       <div className="permission-approval-container__content__requested">
-        <PermissionsConnectPermissionList permissions={selectedPermissions} />
+        <PermissionsConnectPermissionList
+          permissions={selectedPermissions}
+          subjectName={subjectMetadata.origin}
+        />
       </div>
     );
   }
