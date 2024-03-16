@@ -3,7 +3,6 @@ import {
   AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
