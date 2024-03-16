@@ -24,14 +24,14 @@ import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getTargetSubjectMetadata,
-  ///: END:ONLY_INCLUDE_IF
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  getSnapsMetadata,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
@@ -39,7 +39,6 @@ import { Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import { getSnapName } from '../../../helpers/utils/util';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -241,9 +240,9 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, pendingConfirmation?.origin),
-  );
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
   const SNAP_DIALOG_TYPE = [
     ApprovalType.SnapDialogAlert,
@@ -274,10 +273,7 @@ export default function ConfirmationPage({
   let useSnapHeader = isSnapDialog;
 
   // When pendingConfirmation is undefined, this will also be undefined
-  const snapName =
-    isSnapDialog &&
-    targetSubjectMetadata &&
-    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
+  const snapName = isSnapDialog && name;
   ///: END:ONLY_INCLUDE_IF
 
   const INPUT_STATE_CONFIRMATIONS = [
