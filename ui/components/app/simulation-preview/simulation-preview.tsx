@@ -21,9 +21,18 @@ export type SimulationPreviewProps = {
 };
 
 /**
+ * Displayed while loading the simulation preview.
+ *
+ * @returns
+ */
+const LoadingIndicator: React.FC = () => {
+  return <Preloader size={20} />;
+};
+
+/**
  * Content when simulation has failed.
  */
-const SimulationFailedContent: React.FC = () => {
+const ErrorContent: React.FC = () => {
   const t = useI18nContext();
   return (
     <Text
@@ -41,7 +50,7 @@ const SimulationFailedContent: React.FC = () => {
 /**
  * Content when there are no balance changes.
  */
-const NoBalanceChangesContent: React.FC = () => {
+const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
     <Text
@@ -59,11 +68,9 @@ const NoBalanceChangesContent: React.FC = () => {
  * Header at the top of the simulation preview.
  *
  * @param props
- * @param props.loading
+ * @param props.children
  */
-const SimulationPreviewHeader: React.FC<{ loading?: boolean }> = ({
-  loading = false,
-}) => {
+const HeaderLayout: React.FC = ({ children }) => {
   const t = useI18nContext();
   return (
     <Box
@@ -81,18 +88,21 @@ const SimulationPreviewHeader: React.FC<{ loading?: boolean }> = ({
         iconFillColor="var(--color-icon-muted)"
         contentText={t('simulationPreviewTitleTooltip')}
       />
-      {loading && <Preloader size={20} />}
+      {children}
     </Box>
   );
 };
 
 /**
- * Layout component for the simulation preview.
+ * Top-level layout for the simulation preview.
  *
- * @param options0
- * @param options0.children
+ * @param props
+ * @param props.inHeader
+ * @param props.children
  */
-const SimulationPreviewLayout: React.FC = ({ children }) => (
+const SimulationPreviewLayout: React.FC<{
+  inHeader?: React.ReactNode;
+}> = ({ inHeader, children }) => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
@@ -101,6 +111,7 @@ const SimulationPreviewLayout: React.FC = ({ children }) => (
     padding={3}
     margin={4}
   >
+    <HeaderLayout>{inHeader}</HeaderLayout>
     {children}
   </Box>
 );
@@ -118,48 +129,42 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   const { isLoading: isBalanceChangesLoading, balanceChanges } =
     useBalanceChanges(simulationData);
 
-  const isLoading = isBalanceChangesLoading;
-
-  const simulationFailed = !simulationData;
-  if (simulationFailed) {
+  const loading = isBalanceChangesLoading;
+  if (loading) {
+    return (
+      <SimulationPreviewLayout
+        inHeader={<LoadingIndicator />}
+      ></SimulationPreviewLayout>
+    );
+  }
+  const error = !simulationData;
+  if (error) {
     return (
       <SimulationPreviewLayout>
-        <SimulationPreviewHeader />
-        <SimulationFailedContent />
+        <ErrorContent />
       </SimulationPreviewLayout>
     );
   }
-
-  if (isLoading) {
+  const empty = balanceChanges.length === 0;
+  if (empty) {
     return (
       <SimulationPreviewLayout>
-        <SimulationPreviewHeader loading />
-      </SimulationPreviewLayout>
-    );
-  }
-
-  if (balanceChanges.length === 0) {
-    return (
-      <SimulationPreviewLayout>
-        <SimulationPreviewHeader />
-        <NoBalanceChangesContent />
+        <EmptyContent />
       </SimulationPreviewLayout>
     );
   }
 
   const outgoing = balanceChanges.filter((change) => change.isDecrease);
   const incoming = balanceChanges.filter((change) => !change.isDecrease);
-
   return (
     <SimulationPreviewLayout>
-      <SimulationPreviewHeader />
       <BalanceChangeList
-        balanceChanges={outgoing}
         heading={t('simulationPreviewOutgoingHeading')}
+        balanceChanges={outgoing}
       />
       <BalanceChangeList
-        balanceChanges={incoming}
         heading={t('simulationPreviewIncomingHeading')}
+        balanceChanges={incoming}
       />
     </SimulationPreviewLayout>
   );
