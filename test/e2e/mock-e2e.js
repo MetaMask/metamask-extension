@@ -10,7 +10,9 @@ const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 
-const { mockTxSentinelServer } = require('./flask/simulation-preview.mocks');
+const {
+  mockTxSentinelServer,
+} = require('./tests/transaction/simulation-preview.mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">

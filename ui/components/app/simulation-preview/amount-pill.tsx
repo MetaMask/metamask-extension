@@ -12,11 +12,13 @@ import {
 import { Numeric } from '../../../../shared/modules/Numeric';
 
 /**
- * Displays a pill with an amount and a background color indicating whether the amount is an increase or decrease.
+ * Displays a pill with an amount and a background color indicating whether the amount
+ * is an increase or decrease.
  *
  * @param props
  * @param props.isDecrease
- * @param props.absChange
+ * @param props.absChange - The absolute value of the change with the correct decimals
+ * for the asset this amount will be displayed next to.
  */
 export const AmountPill: React.FC<{
   isDecrease: boolean;

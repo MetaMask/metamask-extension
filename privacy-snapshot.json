@@ -41,7 +41,7 @@
   "test.metamask-phishing.io",
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
-  "tx-sentinel-local-e2e-mock.api.cx.metamask.io",
+  "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
   "unresponsive-rpc.url",
   "www.4byte.directory"
 ]

@@ -40,5 +40,5 @@ export const AssetPill: React.FC<{ assetInfo: AssetInfo }> = ({
   if (assetInfo.isNative) {
     return <EthAssetPill />;
   }
-  return <Text variant={TextVariant.bodyMd}>Token</Text>;
+  return null;
 };

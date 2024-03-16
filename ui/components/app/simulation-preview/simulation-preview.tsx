@@ -174,7 +174,6 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
 
   const outgoing = balanceChanges.filter((change) => change.isDecrease);
   const incoming = balanceChanges.filter((change) => !change.isDecrease);
-
   return (
     <SimulationPreviewLayout>
       <SimulationPreviewHeader />

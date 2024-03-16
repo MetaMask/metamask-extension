@@ -1,17 +1,17 @@
 import type { Mockttp } from "mockttp";
 
-const MOCK_SENDER_ADDRESS = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-export const MOCK_RECIPIENT_ADDRESS = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
+const SENDER_ADDRESS_MOCK = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+export const RECIPIENT_ADDRESS_MOCK = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 
-const nativeSend = {
+const SIMULATION_REQUEST_NATIVE_CHANGE_MOCK = {
   request: {
     "method": "infura_simulateTransactions",
     "params": [
       {
         "transactions": [
           {
-            "from": MOCK_SENDER_ADDRESS,
-            "to": MOCK_RECIPIENT_ADDRESS,
+            "from": SENDER_ADDRESS_MOCK,
+            "to": RECIPIENT_ADDRESS_MOCK,
             "value": "0x38d7ea4c68000" // 0.001 ETH
           }
         ],
@@ -42,27 +42,27 @@ const nativeSend = {
           ],
           "stateDiff": {
             "post": {
-              [MOCK_SENDER_ADDRESS]: {
+              [SENDER_ADDRESS_MOCK]: {
                 "balance": "0x238364f11c398000",
                 "nonce": "0x1"
               },
-              [MOCK_RECIPIENT_ADDRESS]: {
+              [RECIPIENT_ADDRESS_MOCK]: {
                 "balance": "0x38d7ea4c68000"
               }
             },
             "pre": {
-              [MOCK_SENDER_ADDRESS]: {
+              [SENDER_ADDRESS_MOCK]: {
                 "balance": "0x2386f26fc1000000"
               },
-              [MOCK_RECIPIENT_ADDRESS]: {
+              [RECIPIENT_ADDRESS_MOCK]: {
                 "balance": "0x0",
                 "nonce": "0x24"
               }
             }
           },
           "callTrace": {
-            "from": MOCK_SENDER_ADDRESS,
-            "to": MOCK_RECIPIENT_ADDRESS,
+            "from": SENDER_ADDRESS_MOCK,
+            "to": RECIPIENT_ADDRESS_MOCK,
             "type": "CALL",
             "gas": "0x1dcd6500",
             "gasUsed": "0x5208",
@@ -84,7 +84,7 @@ const nativeSend = {
 };
 
 export async function mockTxSentinelServer(server: Mockttp) {
-  await server.forPost('https://tx-sentinel-local-e2e-mock.api.cx.metamask.io/')
-  .withJsonBody(nativeSend.request)
-  .thenJson(200, nativeSend.response);
+  await server.forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/')
+  .withJsonBody(SIMULATION_REQUEST_NATIVE_CHANGE_MOCK.request)
+  .thenJson(200, SIMULATION_REQUEST_NATIVE_CHANGE_MOCK.response);
 }

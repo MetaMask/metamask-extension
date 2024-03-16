@@ -34,14 +34,14 @@ export const BalanceChangeRow: React.FC<{
       data-testid="simulation-preview-balance-change-row"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
     >
-      <Text variant={TextVariant.bodyMd}>{label}</Text>
+      {label && <Text variant={TextVariant.bodyMd}>{label}</Text>}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexEnd}
+        marginLeft={'auto'}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
           <AmountPill isDecrease={isDecrease} absChange={absChangeDisplay} />
