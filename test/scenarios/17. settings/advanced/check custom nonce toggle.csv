@@ -5,15 +5,17 @@ Step,Test steps,Test data,Expected result,Notes
 4,Click on three-dot menu located in the upper right corner.,,,
 5,"Go to ""Settings"".",,,
 6,"Choose ""Advanced"".",,"The ""Customize transaction nonce"" feature is set to be off by default.",
-7,Navigate back to the main wallet screen to continue.,,,
-8,"Create the transaction by clicking ""Send"" button.",,,
+7,Navigate back to the main wallet screen to continue.,,,Click on the MetaMask logo or return to the MetaMask tab if the extension is in the expanded view mode.
+8,"Create the transaction by clicking ""Send"" button.",,,You can use this address as a recipient's address : 0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb
 9,Choose the recipient's address.,,"MetaMask popup with the recipient's address, amount to be sent, gas fee estimates is displayed.",
 10,"Click ""Next"".",,"Metamask popup with the recipient's address, amount, gas and total fees is displayed.",
-11,"Make sure that ""Custom nonce"" field is not shown on the confirmation screen.",,Transaction can be confirmed or rejected.,
-12,"Go back to ""Settings"".",,,
-13,"Proceed to ""Advanced"".",,"Turn on the ""Customize transaction nonce"" toggle.",
-14,Navigate back to the main wallet screen to continue.,,,
-15,"Create the transaction by clicking ""Send"" button.",,,
-16,Choose the recipient's address.,,"MetaMask popup with the recipient's address, amount to be sent, gas fee estimates is displayed.",
-17,"Click ""Next"".",,"Metamask popup with the recipient's address, amount, gas and total fees is displayed.",
-18,"Make sure that ""Custom nonce"" field is present under ""Total"" field.",,Wallet suggested custom nonce number is displayed in light grey. Transaction can be confirmed or rejected.,
+11,"Make sure that ""Custom nonce"" field is not shown on the confirmation screen.",,,
+12,Reject or confirm transaction.,,,
+13,"Go back to ""Settings"".",,,
+14,"Proceed to ""Advanced"".",,"Turn on the ""Customize transaction nonce"" toggle.",
+15,Navigate back to the main wallet screen to continue.,,,Click on the MetaMask logo or return to the MetaMask tab if the extension is in the expanded view mode.
+16,"Create the transaction by clicking ""Send"" button.",,,You can use this address as a recipient's address : 0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb
+17,Choose the recipient's address.,,"MetaMask popup with the recipient's address, amount to be sent, gas fee estimates is displayed.",
+18,"Click ""Next"".",,"Metamask popup with the recipient's address, amount, gas and total fees is displayed.",
+19,"Make sure that ""Custom nonce"" field is present under ""Total"" field.",,Wallet suggested custom nonce number is displayed in light grey. ,
+20,Reject or confirm transaction.,,,
