@@ -80,7 +80,7 @@ describe('SimulationPreview', () => {
     expect(screen.getByText('$278.06')).toBeInTheDocument();
   });
 
-  it('renders the error message when simulationData is undefined', () => {
+  it('renders the error message when simulation fails', () => {
     renderWithProvider(<SimulationPreview simulationData={undefined} />, store);
 
     expect(screen.getByText(/There was an error/u)).toBeInTheDocument();
