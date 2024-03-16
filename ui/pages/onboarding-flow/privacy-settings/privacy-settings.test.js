@@ -85,7 +85,7 @@ describe('Privacy Settings Onboarding View', () => {
 
     fireEvent.click(submitButton);
 
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(1);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
@@ -105,7 +105,7 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
-    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
+    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
