@@ -272,7 +272,7 @@
     padding: 10px 0 20px;
 
     ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       flex-wrap: wrap;
     }
     ///: END:ONLY_INCLUDE_IF
