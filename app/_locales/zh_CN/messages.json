@@ -1001,7 +1001,7 @@
     "message": "搜索以前添加的网络"
   },
   "customGasSettingToolTipMessage": {
-    "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
+    "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自负。",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customSpendLimit": {
@@ -2006,7 +2006,7 @@
     "message": "已知合约地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有可能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
   "lastConnected": {
     "message": "最后连接"
