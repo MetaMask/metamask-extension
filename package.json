@@ -268,7 +268,7 @@
     "@metamask/ethjs-query": "^0.7.1",
     "@metamask/gas-fee-controller": "^13.0.0",
     "@metamask/jazzicon": "^2.0.0",
-    "@metamask/json-rpc-engine": "^8.0.1",
+    "@metamask/json-rpc-engine": "7.3.3",
     "@metamask/keyring-api": "^3.0.0",
     "@metamask/keyring-controller": "^13.0.0",
     "@metamask/logging-controller": "^2.0.2",
