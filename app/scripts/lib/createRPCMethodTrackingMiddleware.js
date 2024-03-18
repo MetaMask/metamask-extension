@@ -156,7 +156,7 @@ export default function createRPCMethodTrackingMiddleware({
     const rateLimitType =
       RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RANDOM_SAMPLE;
 
-    let isRateLimited = true;
+    let isRateLimited;
     switch (rateLimitType) {
       case RATE_LIMIT_TYPES.TIMEOUT:
         isRateLimited =
@@ -165,6 +165,9 @@ export default function createRPCMethodTrackingMiddleware({
       case RATE_LIMIT_TYPES.NON_RATE_LIMITED:
         isRateLimited = false;
         break;
+      case RATE_LIMIT_TYPES.BLOCKED:
+        isRateLimited = true;
+        break
       default:
       case RATE_LIMIT_TYPES.RANDOM_SAMPLE:
         isRateLimited = Math.random() >= rateLimitSamplePercent;
