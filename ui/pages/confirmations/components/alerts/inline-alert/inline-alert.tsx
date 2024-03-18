@@ -18,12 +18,12 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export interface InlineAlertProps {
+export type InlineAlertProps = {
   /** The onClick handler for the inline alerts */
   onClick?: () => void;
   /** The severity of the alert, e.g. Severity.Warning */
   severity?: Severity;
-}
+};
 
 function getSeverityBackground(severity: Severity): BackgroundColor {
   switch (severity) {
