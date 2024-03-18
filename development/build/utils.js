@@ -284,8 +284,8 @@ function getBuildIcon({ buildType }) {
   const svgLogoPath =
     BUILD_TYPES_TO_SVG_LOGO_PATH[buildType] ||
     BUILD_TYPES_TO_SVG_LOGO_PATH.main;
-  const svg = readFileSync(svgLogoPath, 'utf8');
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  // encode as base64 as its more space-efficient for most SVGs than a data uri
+  return `data:image/svg+xml;base64,${readFileSync(svgLogoPath, 'base64')}`;
 }
 /**
  * Takes the given JavaScript file at `filePath` and replaces its contents with

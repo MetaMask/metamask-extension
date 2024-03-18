@@ -30,7 +30,6 @@ const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
 
-const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig } = require('./config');
@@ -189,7 +188,10 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   if (phishingWarningPageUrl === null) {
     phishingWarningPageUrl = testing
       ? 'http://localhost:9999/'
-      : `https://metamask.github.io/phishing-warning/v${phishingWarningManifest.version}/`;
+      : `https://metamask.github.io/phishing-warning/v${
+          // eslint-disable-next-line node/global-require
+          require('@metamask/phishing-warning/package.json').version
+        }/`;
   }
 
   // We add a hash/fragment to the URL dynamically, so we need to ensure it
@@ -635,12 +637,16 @@ function createFactoredBuild({
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
     const { variables, activeBuild } = config;
-    await setEnvironmentVariables({
-      buildTarget,
+    setEnvironmentVariables({
+      isDevBuild: reloadOnChange,
+      isTestBuild: isTestBuild(buildTarget),
+      buildName: getBuildName({
+        environment,
+        buildType,
+      }),
       buildType,
       environment,
       variables,
-      activeBuild,
       version,
     });
     const features = {
@@ -900,12 +906,16 @@ function createNormalBundle({
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
     const { activeBuild, variables } = config;
-    await setEnvironmentVariables({
-      buildTarget,
+    setEnvironmentVariables({
+      buildName: getBuildName({
+        environment,
+        buildType,
+      }),
+      isDevBuild: devMode,
+      isTestBuild: isTestBuild(buildTarget),
       buildType,
       variables,
       environment,
-      activeBuild,
       version,
     });
     Object.entries(extraEnvironmentVariables ?? {}).forEach(([key, value]) =>
@@ -1202,43 +1212,38 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  * Sets environment variables to inject in the current build.
  *
  * @param {object} options - Build options.
- * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+ * @param {string} options.buildName - The name of the build.
+ * @param {boolean} options.isDevBuild - Whether the build is a development build.
+ * @param {boolean} options.isTestBuild - Whether the build is a test build.
  * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string} options.version - The current version of the extension.
- * @param options.activeBuild
- * @param options.variables
- * @param options.environment
+ * @param {import('../lib/variables').Variables} options.variables
+ * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  */
-async function setEnvironmentVariables({
-  buildTarget,
+function setEnvironmentVariables({
+  buildName,
+  isDevBuild,
+  isTestBuild,
   buildType,
-  activeBuild,
   environment,
   variables,
   version,
 }) {
-  const devMode = isDevBuild(buildTarget);
-  const testing = isTestBuild(buildTarget);
-
   variables.set({
-    DEBUG: devMode || testing ? variables.getMaybe('DEBUG') : undefined,
+    DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT:
       variables.getMaybe('EIP_4337_ENTRYPOINT') ||
-      (testing ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b' : undefined),
-    IN_TEST: testing,
+      (isTestBuild ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b' : undefined),
+    IN_TEST: isTestBuild,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
-      activeBuild,
       variables,
       environment,
-      testing,
+      testing: isTestBuild,
     }),
-    METAMASK_DEBUG: devMode || variables.getMaybe('METAMASK_DEBUG') === true,
-    METAMASK_BUILD_NAME: getBuildName({
-      environment,
-      buildType,
-    }),
+    METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
     }),
@@ -1248,14 +1253,13 @@ async function setEnvironmentVariables({
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
-    NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
+    NODE_ENV: isDevBuild ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({
       variables,
-      testing,
+      testing: isTestBuild,
     }),
     SEGMENT_WRITE_KEY: getSegmentWriteKey({
       buildType,
-      activeBuild,
       variables,
       environment,
     }),
