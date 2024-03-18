@@ -77,6 +77,7 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
+  getIsUnlocked,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -1680,6 +1681,7 @@ export function getAutomaticSwitchNetwork(state) {
 
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    getIsUnlocked(state) &&
     useRequestQueue &&
     selectedTabOrigin &&
     numberOfUnapprovedTx === 0 &&
