@@ -344,7 +344,7 @@ export default class MetamaskController extends EventEmitter {
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
-    this.activeControllerConnections = 0;
+    this.activeControllerConnectionIds = [];
 
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
@@ -1414,7 +1414,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // start and stop polling for balances based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+    this.on('controllerConnectionChanged', (activeControllerConnectionIds) => {
       const { completedOnboarding } =
         this.onboardingController.store.getState();
       if (activeControllerConnections > 0 && completedOnboarding) {
@@ -2822,7 +2822,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {object} Object containing API functions.
    */
-  getApi() {
+  getApi(tabId) {
     const {
       accountsController,
       addressBookController,
@@ -3499,11 +3499,15 @@ export default class MetamaskController extends EventEmitter {
       getGasFeeTimeEstimate:
         gasFeeController.getTimeEstimate.bind(gasFeeController),
 
-      addPollingTokenToAppState:
-        appStateController.addPollingToken.bind(appStateController),
+      addPollingTokenToAppState: (...args) => {
+        console.log('addPollingTokenToAppState', {tabId})
+        return appStateController.addPollingToken(...args)
+      },
 
-      removePollingTokenFromAppState:
-        appStateController.removePollingToken.bind(appStateController),
+      removePollingTokenFromAppState: (...args) => {
+        console.log('removingPollingTokenFromAppState', {tabId})
+        return appStateController.removePollingToken.bind(appStateController)
+      },
 
       // Backup
       backupUserData: backup.backupUserData.bind(backup),
@@ -4613,7 +4617,7 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     // connect features
-    this.setupControllerConnection(mux.createStream('controller'));
+    this.setupControllerConnection(mux.createStream('controller'), sender?.tab?.id || 'idk');
     this.setupProviderConnection(
       mux.createStream('provider'),
       sender,
@@ -4672,11 +4676,11 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide our API over.
    */
-  setupControllerConnection(outStream) {
-    const api = this.getApi();
+  setupControllerConnection(outStream, connectionId) {
+    const api = this.getApi(connectionId);
 
     // report new active controller connection
-    this.activeControllerConnections += 1;
+    this.activeControllerConnectionIds.push(connectionId)
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
@@ -4720,6 +4724,7 @@ export default class MetamaskController extends EventEmitter {
 
     outStream.on('end', () => {
       this.activeControllerConnections -= 1;
+      console.log('connection ended', {tabId})
       this.emit(
         'controllerConnectionChanged',
         this.activeControllerConnections,
@@ -5636,14 +5641,14 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {boolean} open
    */
-  set isClientOpen(open) {
-    this._isClientOpen = open;
-    if (open) {
-      this.tokenDetectionController.enable();
-    } else {
-      this.tokenDetectionController.disable();
-    }
-  }
+  // set isClientOpen(open) {
+  //   this._isClientOpen = open;
+    // if (open) {
+    //   this.tokenDetectionController.enable();
+    // } else {
+    //   this.tokenDetectionController.disable();
+    // }
+  // }
   /* eslint-enable accessor-pairs */
 
   /**

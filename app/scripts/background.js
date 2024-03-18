@@ -97,8 +97,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 
-let popupIsOpen = false;
-let notificationIsOpen = false;
+let numPopupsOpen = 0;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
@@ -569,32 +568,6 @@ export function setupController(
 
   setupSentryGetStateGlobal(controller);
 
-  const isClientOpenStatus = () => {
-    return (
-      popupIsOpen ||
-      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
-    );
-  };
-
-  const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
-    // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
-    if (isClientOpen === false) {
-      controller.onClientClosed();
-      // otherwise we want to only remove the polling tokens for the environment type that has closed
-    } else {
-      // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
-      // its corresponding polling tokens unless all tabs are closed.
-      if (
-        environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
-        Boolean(Object.keys(openMetamaskTabsIDs).length)
-      ) {
-        return;
-      }
-      controller.onEnvironmentTypeClosed(environmentType);
-    }
-  };
-
   /**
    * A runtime.Port object, as provided by the browser:
    *
@@ -653,45 +626,20 @@ export function setupController(
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       // communication with popup
-      controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
-        popupIsOpen = true;
-        endOfStream(portStream, () => {
-          popupIsOpen = false;
-          const isClientOpen = isClientOpenStatus();
-          controller.isClientOpen = isClientOpen;
-          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
-        });
-      }
-
-      if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
-        notificationIsOpen = true;
+        numPopupsOpen += 1;
 
         endOfStream(portStream, () => {
-          notificationIsOpen = false;
-          const isClientOpen = isClientOpenStatus();
-          controller.isClientOpen = isClientOpen;
-          onCloseEnvironmentInstances(
-            isClientOpen,
-            ENVIRONMENT_TYPE_NOTIFICATION,
-          );
+          numPopupsOpen -= 1;
         });
-      }
-
-      if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+      } else if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
-          const isClientOpen = isClientOpenStatus();
-          controller.isClientOpen = isClientOpen;
-          onCloseEnvironmentInstances(
-            isClientOpen,
-            ENVIRONMENT_TYPE_FULLSCREEN,
-          );
         });
       }
     } else if (
@@ -941,7 +889,7 @@ async function triggerUi() {
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
   if (
     !uiIsTriggering &&
-    (isVivaldi || !popupIsOpen) &&
+    (isVivaldi || numPopupsOpen.length === 0) &&
     !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;
