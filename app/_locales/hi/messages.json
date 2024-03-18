@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "इस रिक्वेस्ट के साथ एक फ़ीस जुड़ी हुई है।"
   },
-  "fiat": {
-    "message": "फिएट",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फाइल इम्पोर्ट काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"

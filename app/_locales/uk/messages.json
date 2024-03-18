@@ -253,10 +253,6 @@
   "fast": {
     "message": "Швидка"
   },
-  "fiat": {
-    "message": "Вказівка",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Не працює імпорт файлу? Натисніть тут!",
     "description": "Helps user import their account from a JSON file"

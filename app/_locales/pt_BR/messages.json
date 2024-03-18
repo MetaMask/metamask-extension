@@ -823,10 +823,6 @@
   "feeAssociatedRequest": {
     "message": "Há uma taxa associada a essa solicitação."
   },
-  "fiat": {
-    "message": "Fiduciária",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"

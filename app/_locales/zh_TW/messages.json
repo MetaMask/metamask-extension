@@ -553,10 +553,6 @@
   "feeAssociatedRequest": {
     "message": "這個請求會附帶一筆手續費。"
   },
-  "fiat": {
-    "message": "法定貨幣",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "檔案匯入失敗？點擊這裡！",
     "description": "Helps user import their account from a JSON file"

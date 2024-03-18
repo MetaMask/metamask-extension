@@ -9,6 +9,7 @@ import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
   getIsMultiLayerFeeNetwork,
+  getIsTestnet,
   getPreferences,
   getTxData,
   getUseCurrencyRateCheck,
@@ -60,6 +61,8 @@ const GasDetailsItem = ({
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,
   } = useSelector((state) => transactionFeeSelector(state, transactionData));
+
+  const isTestnet = useSelector(getIsTestnet);
 
   const {
     estimateUsed,
@@ -134,6 +137,14 @@ const GasDetailsItem = ({
             value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
+          <br />
+          {isTestnet ? null : (
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          )}
         </div>
       }
       subText={
@@ -167,8 +178,18 @@ const GasDetailsItem = ({
                 value={
                   getMaxTransactionFeeTotal || draftHexMaximumTransactionFee
                 }
-                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                hideLabel={false}
               />
+              <br />
+              {isTestnet ? null : (
+                <UserPreferencedCurrencyDisplay
+                  type={SECONDARY}
+                  value={
+                    getTransactionFeeTotal || draftHexMinimumTransactionFee
+                  }
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                />
+              )}
             </div>
           </Box>
         </>

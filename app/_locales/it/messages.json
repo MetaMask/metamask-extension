@@ -865,10 +865,6 @@
   "feeAssociatedRequest": {
     "message": "Una tassa è associata a questa richiesta."
   },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Importazione file non funziona? Clicca qui!",
     "description": "Helps user import their account from a JSON file"

@@ -244,10 +244,6 @@
   "fast": {
     "message": "ፈጣን"
   },
-  "fiat": {
-    "message": "ፊያት",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ፋይል ማስመጣት እየሰራ አይደለም? እዚህ ላይ ጠቅ ያድርጉ!",
     "description": "Helps user import their account from a JSON file"

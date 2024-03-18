@@ -253,10 +253,6 @@
   "fast": {
     "message": "ವೇಗ"
   },
-  "fiat": {
-    "message": "ಫಿಯೆಟ್",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ಫೈಲ್ ಆಮದು ಮಾಡುವಿಕೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲವೇ? ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ!",
     "description": "Helps user import their account from a JSON file"

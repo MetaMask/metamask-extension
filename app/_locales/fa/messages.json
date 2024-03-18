@@ -253,10 +253,6 @@
   "fast": {
     "message": "سریع"
   },
-  "fiat": {
-    "message": "حکم قانونی",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "وارد کردن فایل کار نمیکند؟ اینجا کلیک نمایید!",
     "description": "Helps user import their account from a JSON file"

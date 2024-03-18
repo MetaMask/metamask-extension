@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "このリクエストには手数料がかかります。"
   },
-  "fiat": {
-    "message": "法定通貨",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"

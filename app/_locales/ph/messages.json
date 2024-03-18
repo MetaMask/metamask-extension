@@ -548,10 +548,6 @@
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
   },
-  "fiat": {
-    "message": "Fiat",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"

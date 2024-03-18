@@ -68,7 +68,10 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IF
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getProviderConfig,
+} from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import WalletOverview from './wallet-overview';
@@ -109,6 +112,7 @@ const EthOverview = ({ className, showAddress }) => {
     selectedAddress,
     shouldHideZeroBalanceTokens,
   );
+  const conversionRate = useSelector(getConversionRate);
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
@@ -246,6 +250,7 @@ const EthOverview = ({ className, showAddress }) => {
                     !showFiat ||
                     !TEST_NETWORKS.includes(currentNetwork?.nickname)
                   }
+                  showNative={!isOriginalNativeSymbol || !conversionRate}
                   ethNumberOfDecimals={4}
                   hideTitle
                 />

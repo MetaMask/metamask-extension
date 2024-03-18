@@ -846,6 +846,17 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   });
 };
 
+const locateAccountCryptoBalanceDOM = async (driver, ganacheServer) => {
+  const balance = (await ganacheServer.getBalance()).toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+  });
+
+  await driver.findElement({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `${balance} ETH`,
+  });
+};
+
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 async function waitForAccountRendered(driver) {
@@ -1115,6 +1126,7 @@ module.exports = {
   unlockWallet,
   logInWithBalanceValidation,
   locateAccountBalanceDOM,
+  locateAccountCryptoBalanceDOM,
   waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,

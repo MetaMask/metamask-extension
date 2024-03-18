@@ -253,10 +253,6 @@
   "fast": {
     "message": "Greitas"
   },
-  "fiat": {
-    "message": "Standartinė valiuta",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Failo importavimas neveikia? Spustelėkite čia!",
     "description": "Helps user import their account from a JSON file"

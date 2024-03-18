@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "此请求需要支付一定的费用。"
   },
-  "fiat": {
-    "message": "法币",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"

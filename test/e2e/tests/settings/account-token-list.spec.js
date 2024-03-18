@@ -54,7 +54,6 @@ describe('Settings', function () {
           text: 'General',
           tag: 'div',
         });
-        await driver.clickElement({ text: 'Fiat', tag: 'label' });
 
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',

@@ -9,7 +9,7 @@ const {
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
-  locateAccountBalanceDOM,
+  locateAccountCryptoBalanceDOM,
   defaultGanacheOptions,
   WALLET_PASSWORD,
 } = require('../../helpers');
@@ -297,7 +297,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           text: networkName,
         });
 
-        await locateAccountBalanceDOM(driver, secondaryGanacheServer);
+        await locateAccountCryptoBalanceDOM(driver, secondaryGanacheServer);
       },
     );
   });

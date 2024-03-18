@@ -250,10 +250,6 @@
   "fast": {
     "message": "Брзо"
   },
-  "fiat": {
-    "message": "Dekret",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Uvoz datoteke ne radi? Kliknite ovde!",
     "description": "Helps user import their account from a JSON file"

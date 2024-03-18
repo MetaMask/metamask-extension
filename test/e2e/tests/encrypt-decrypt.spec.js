@@ -231,7 +231,7 @@ describe('Encrypt Decrypt', function () {
         const accountBalanceLabel = await driver.findElement(
           '.request-encryption-public-key__balance-value',
         );
-        assert.equal(await accountBalanceLabel.getText(), '$42,500.00 USD');
+        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
       },
     );
   });

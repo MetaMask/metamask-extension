@@ -6,7 +6,6 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
   getSelectedAccountCachedBalance,
-  getShouldShowFiat,
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
@@ -17,7 +16,6 @@ import {
   getSwapsDefaultToken,
   ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
-  getPreferences,
   getIsMainnet,
 } from '../../../selectors';
 import {
@@ -51,10 +49,6 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 ///: END:ONLY_INCLUDE_IF
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import {
-  showPrimaryCurrency,
-  showSecondaryCurrency,
-} from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
@@ -63,11 +57,9 @@ const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const showFiat = useSelector(getShouldShowFiat);
   const currentNetwork = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
   const isMainnet = useSelector(getIsMainnet);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     currentNetwork.chainId,
@@ -99,11 +91,13 @@ const AssetList = ({ onClickAsset }) => {
       currency: primaryCurrency,
     });
 
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(selectedAccountBalance, {
+  const [secondaryCurrencyDisplay] = useCurrencyDisplay(
+    selectedAccountBalance,
+    {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
-    });
+    },
+  );
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
@@ -226,28 +220,9 @@ const AssetList = ({ onClickAsset }) => {
         title={nativeCurrency}
         // The primary and secondary currencies are subject to change based on the user's settings
         // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
-        primary={
-          showSecondaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? secondaryCurrencyDisplay
-            : undefined
-        }
-        tokenSymbol={
-          useNativeCurrencyAsPrimaryCurrency
-            ? primaryCurrencyProperties.suffix
-            : secondaryCurrencyProperties.suffix
-        }
-        secondary={
-          showFiat &&
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyDisplay
-            : undefined
-        }
+        primary={primaryCurrencyDisplay}
+        tokenSymbol={primaryCurrencyProperties.suffix}
+        secondary={secondaryCurrencyDisplay}
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency

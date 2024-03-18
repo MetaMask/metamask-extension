@@ -15,10 +15,7 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 import {
   getNumberOfSettingRoutesInTab,
@@ -60,9 +57,6 @@ export default class SettingsTab extends PureComponent {
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
     currentCurrency: PropTypes.string,
-    nativeCurrency: PropTypes.string,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
-    setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
     hideZeroBalanceTokens: PropTypes.bool,
     setHideZeroBalanceTokens: PropTypes.func,
     lastFetchedConversionDate: PropTypes.number,
@@ -300,81 +294,6 @@ export default class SettingsTab extends PureComponent {
     );
   }
 
-  renderUsePrimaryCurrencyOptions() {
-    const { t } = this.context;
-    const getPrimaryCurrencySettingForMetrics = (newCurrency) => {
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.UseNativeCurrencyAsPrimaryCurrency,
-        properties: {
-          use_native_currency_as_primary_currency: newCurrency,
-        },
-      });
-    };
-    const {
-      nativeCurrency,
-      setUseNativeCurrencyAsPrimaryCurrencyPreference,
-      useNativeCurrencyAsPrimaryCurrency,
-    } = this.props;
-    return (
-      <Box
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('primaryCurrencySetting')}</span>
-          <div className="settings-page__content-description">
-            {t('primaryCurrencySettingDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <div className="settings-tab__radio-buttons">
-              <div className="settings-tab__radio-button">
-                <input
-                  type="radio"
-                  data-testid="toggle-native-currency"
-                  id="native-primary-currency"
-                  onChange={() => {
-                    setUseNativeCurrencyAsPrimaryCurrencyPreference(true);
-                    getPrimaryCurrencySettingForMetrics(true);
-                  }}
-                  checked={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                />
-                <label
-                  htmlFor="native-primary-currency"
-                  className="settings-tab__radio-label"
-                >
-                  {nativeCurrency}
-                </label>
-              </div>
-              <div className="settings-tab__radio-button">
-                <input
-                  type="radio"
-                  data-testid="toggle-fiat-currency"
-                  id="fiat-primary-currency"
-                  onChange={() => {
-                    setUseNativeCurrencyAsPrimaryCurrencyPreference(false);
-                    getPrimaryCurrencySettingForMetrics(false);
-                  }}
-                  checked={!useNativeCurrencyAsPrimaryCurrency}
-                />
-                <label
-                  htmlFor="fiat-primary-currency"
-                  className="settings-tab__radio-label"
-                >
-                  {t('fiat')}
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Box>
-    );
-  }
-
   renderTheme() {
     const { t } = this.context;
     const { theme, setTheme } = this.props;
@@ -439,7 +358,6 @@ export default class SettingsTab extends PureComponent {
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderCurrentConversion()}
-        {this.renderUsePrimaryCurrencyOptions()}
         {this.renderCurrentLocale()}
         {this.renderTheme()}
         {this.renderBlockieOptIn()}

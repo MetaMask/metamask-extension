@@ -216,6 +216,22 @@ exports[`SendContent Component render should match snapshot 1`] = `
                           ETH
                         </span>
                       </div>
+                      <br />
+                      <div
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        title="0.0000315 ETH"
+                      >
+                        <span
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                        >
+                          0.0000315
+                        </span>
+                        <span
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                        >
+                          ETH
+                        </span>
+                      </div>
                     </div>
                   </h6>
                 </div>
@@ -275,6 +291,22 @@ exports[`SendContent Component render should match snapshot 1`] = `
                           ETH
                         </span>
                       </div>
+                      <br />
+                      <div
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        title="0.0000315 ETH"
+                      >
+                        <span
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                        >
+                          0.0000315
+                        </span>
+                        <span
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                        >
+                          ETH
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </h6>
@@ -287,3 +319,5 @@ exports[`SendContent Component render should match snapshot 1`] = `
   </div>
 </div>
 `;
+
+exports[`SendContent Component render should match snapshot 2`] = `<div />`;

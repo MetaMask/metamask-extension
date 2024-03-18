@@ -253,10 +253,6 @@
   "fast": {
     "message": "מהיר"
   },
-  "fiat": {
-    "message": "פיאט",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ייבוא הקובץ לא עובד? לחצ/י כאן!",
     "description": "Helps user import their account from a JSON file"

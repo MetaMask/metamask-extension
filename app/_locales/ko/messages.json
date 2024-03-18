@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "수수료가 이 요청과 연결되어 있습니다."
   },
-  "fiat": {
-    "message": "명목",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"

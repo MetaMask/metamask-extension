@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "Bu talep ile ilişkili bir ücret mevcuttur."
   },
-  "fiat": {
-    "message": "Fiat Para",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"

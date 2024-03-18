@@ -253,10 +253,6 @@
   "fast": {
     "message": "Hiter"
   },
-  "fiat": {
-    "message": "Klasične",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Uvoz z datoteko ne deluje? Kliknite tukaj!",
     "description": "Helps user import their account from a JSON file"

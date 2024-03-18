@@ -253,10 +253,6 @@
   "fast": {
     "message": "Nopea"
   },
-  "fiat": {
-    "message": "Kiinteä",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Eikö tiedoston tuominen onnistu? Klikkaa tästä!",
     "description": "Helps user import their account from a JSON file"

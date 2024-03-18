@@ -51,26 +51,6 @@ describe('Settings Tab', () => {
     expect(mockUpdateCurrentLocale).toHaveBeenCalled();
   });
 
-  it('sets fiat primary currency', async () => {
-    const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
-    const fiatCurrencyToggle = queryByTestId('toggle-fiat-currency');
-
-    fireEvent.click(fiatCurrencyToggle);
-
-    expect(
-      mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
-    ).toHaveBeenCalled();
-  });
-
-  it('should display currency symbol for native token', async () => {
-    const { getByText } = renderWithProvider(<SettingsTab />, mockStore);
-
-    const textElement = getByText('ETH');
-
-    expect(textElement).toBeInTheDocument();
-  });
-
   it('clicks jazzicon', () => {
     const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
 

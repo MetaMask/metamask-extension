@@ -62,10 +62,26 @@ describe('SendContent Component', () => {
 
   describe('render', () => {
     it('should match snapshot', async () => {
-      const { container } = await render({
+      const mockStore = configureMockStore()({
+        ...mockSendState,
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
+      });
+      const props = {
         gasIsExcessive: false,
         showHexData: true,
-      });
+      };
+
+      const { container } = renderWithProvider(
+        <SendContent {...props} />,
+        mockStore,
+      );
 
       await waitFor(() => {
         expect(container).toMatchSnapshot();

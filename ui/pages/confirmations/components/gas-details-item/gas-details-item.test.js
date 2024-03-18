@@ -7,7 +7,6 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-
 import GasDetailsItem from './gas-details-item';
 
 jest.mock('../../../../store/actions', () => ({
@@ -162,6 +161,26 @@ describe('GasDetailsItem', () => {
     await waitFor(() => {
       expect(screen.queryAllByTitle('0.00147 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('$').length).toBeLessThanOrEqual(0);
+    });
+  });
+
+  it('should render gas fee details with conversion if its not a testnet', async () => {
+    await render({
+      contextProps: {
+        providerConfig: {
+          type: 'rpc',
+          nickname: 'ethereum',
+          chainId: '0x1',
+          ticker: 'ETH',
+          id: 'chain1',
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(screen.queryAllByTitle('0.00147 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('USD').length).toBeGreaterThan(0);
     });
   });
 

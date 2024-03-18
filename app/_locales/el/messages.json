@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "Ένα τέλος σχετίζεται με αυτό το αίτημα."
   },
-  "fiat": {
-    "message": "Εντολή",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"

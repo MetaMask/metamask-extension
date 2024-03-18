@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "Yêu cầu này có kèm theo một khoản phí."
   },
-  "fiat": {
-    "message": "Pháp định",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Tính năng nhập tập tin không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"

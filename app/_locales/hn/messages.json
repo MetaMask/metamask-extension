@@ -90,10 +90,6 @@
   "failed": {
     "message": "विफल"
   },
-  "fiat": {
-    "message": "FIAT एक्सचेंज टाइप",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"

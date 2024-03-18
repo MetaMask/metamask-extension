@@ -26,6 +26,8 @@ describe('Localization', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        await driver.delay(500);
+
         const secondaryBalance = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );

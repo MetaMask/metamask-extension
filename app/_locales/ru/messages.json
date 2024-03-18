@@ -1519,10 +1519,6 @@
   "feeAssociatedRequest": {
     "message": "За выполнение этого запроса взимается комиссия."
   },
-  "fiat": {
-    "message": "Фиатная",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "Импорт файлов не работает? Нажмите здесь!",
     "description": "Helps user import their account from a JSON file"

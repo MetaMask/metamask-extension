@@ -250,10 +250,6 @@
   "fast": {
     "message": "দ্রুত"
   },
-  "fiat": {
-    "message": "ফিয়াট",
-    "description": "Exchange type"
-  },
   "fileImportFail": {
     "message": "ফাইল আমদানি কাজ করছে না? এখানে ক্লিক করুন!",
     "description": "Helps user import their account from a JSON file"
