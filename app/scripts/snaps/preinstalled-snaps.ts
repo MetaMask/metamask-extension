@@ -9,10 +9,10 @@ import type { PreinstalledSnap } from '@metamask/snaps-controllers';
 /* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
 const fs = require('fs');
 
-const TEMP_PREINSTALLED_SNAPS = [];
+const PREINSTALLED_SNAPS: PreinstalledSnap[] = [];
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-TEMP_PREINSTALLED_SNAPS.push(
+PREINSTALLED_SNAPS.push(
   getPreinstalledSnap(
     '@metamask/message-signing-snap',
     fs.readFileSync(
@@ -50,4 +50,6 @@ function getPreinstalledSnap(
 }
 ///: END:ONLY_INCLUDE_IF
 
-export const PREINSTALLED_SNAPS = Object.freeze(TEMP_PREINSTALLED_SNAPS);
+Object.freeze(PREINSTALLED_SNAPS);
+
+export default PREINSTALLED_SNAPS;
