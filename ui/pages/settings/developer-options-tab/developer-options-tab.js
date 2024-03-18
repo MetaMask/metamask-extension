@@ -59,8 +59,9 @@ const DeveloperOptionsTab = () => {
     await dispatch(resetOnboarding());
     setHasResetOnboarding(true);
 
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
     const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
     if (isPopup) {
       global.platform.openExtensionInBrowser(backUpSRPRoute);
     } else {
