@@ -204,9 +204,6 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { MESSAGE_SIGNING_SNAP } from './snap/preinstalled-snaps';
-///: END:ONLY_INCLUDE_IF
 
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1237,7 +1234,6 @@ export default class MetamaskController extends EventEmitter {
         allowLocalSnaps,
         requireAllowlist,
       },
-      preinstalledSnaps: [MESSAGE_SIGNING_SNAP],
     });
 
     this.notificationController = new NotificationController({
@@ -2019,10 +2015,6 @@ export default class MetamaskController extends EventEmitter {
       SnapInterfaceController: this.snapInterfaceController,
       ///: END:ONLY_INCLUDE_IF
 
-      PlatformNotificationsController: this.platformNotificationsController,
-      AuthenticationController: this.authenticationController,
-      UserStorageController: this.userStorageController,
-
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IF
@@ -2075,10 +2067,6 @@ export default class MetamaskController extends EventEmitter {
         NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
         ///: END:ONLY_INCLUDE_IF
-
-        PlatformNotificationsController: this.platformNotificationsController,
-        AuthenticationController: this.authenticationController,
-        UserStorageController: this.userStorageController,
 
         ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         DesktopController: this.desktopController.store,
@@ -2754,12 +2742,6 @@ export default class MetamaskController extends EventEmitter {
 
     // The vault should not be exposed to the UI
     delete flatState.vault;
-
-    // The jwt authentication token should not be exposed to the UI
-    delete flatState.jwtToken;
-
-    // The user storage key should not be exposed to the UI
-    delete flatState.userStorgeKey;
 
     return {
       isInitialized,
@@ -3489,29 +3471,6 @@ export default class MetamaskController extends EventEmitter {
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-
-      // Platform Notifications
-      fetchAndUpdatePlatformNotifications:
-        this.fetchAndUpdatePlatformNotifications.bind(this),
-
-      createOnChainTriggers: this.createOnChainTriggers.bind(this),
-
-      deleteOnChainTriggers: this.deleteOnChainTriggers.bind(this),
-
-      updateOnChainTriggers: this.updateOnChainTriggers.bind(this),
-
-      markPlatformNotificationsAsRead:
-        this.markPlatformNotificationsAsRead.bind(this),
-
-      // Authentication Controller
-      performSignIn: this.performSignIn.bind(this),
-
-      // UserStorage Controller
-      makeUserStorageKey: this.makeUserStorageKey.bind(this),
-
-      deleteUserStorageKey: this.deleteUserStorageKey.bind(this),
-
-      performSignOut: this.performSignOut.bind(this),
     };
   }
 
@@ -5704,78 +5663,6 @@ export default class MetamaskController extends EventEmitter {
     }
   };
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * Fetches and updates platform notifications.
-   * This method retrieves the latest notifications from the platform and updates the state accordingly.
-   * If an error occurs during the process, it is logged and rethrown.
-   */
-  fetchAndUpdatePlatformNotifications() {
-    try {
-      this.platformNotificationsController.fetchAndUpdatePlatformNotifications();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  }
-
-  // TODO Add JsDoc
-  async createOnChainTriggers() {
-    this.platformNotificationsController.createOnChainTriggers();
-  }
-
-  async deleteOnChainTriggers() {
-    this.platformNotificationsController.deleteOnChainTriggers();
-  }
-
-  async updateOnChainTriggers() {
-    this.platformNotificationsController.updateOnChainTriggers();
-  }
-
-  /**
-   * Updates the readPlatformNotification list with the ids of the specified notifications.
-   *
-   * @param {string[]} ids - The notifications ids to mark as read.
-   */
-  markPlatformNotificationsAsRead(ids) {
-    this.platformNotificationsController.markPlatformNotificationsAsRead(ids);
-  }
-
-  /**
-   * Initiates the sign-in process.
-   * This method delegates the sign-in operation to the `authenticationController`.
-   */
-  performSignIn() {
-    this.authenticationController.performSignIn();
-  }
-
-  /**
-   * Initiates the sign-out process.
-   * This method delegates the sign-out operation to the `authenticationController`.
-   */
-  performSignOut() {
-    this.authenticationController.performSignOut();
-  }
-
-  // TODO Add JsDoc
-  async makeUserStorageKey() {
-    try {
-      await this.userStorageController.makeUserStorageKey();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  }
-
-  // TODO Add JsDoc
-  deleteUserStorageKey() {
-    try {
-      this.userStorageController.deleteUserStorageKey();
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  }
 
   updateNetworksList = (sortedNetworkList) => {
     try {

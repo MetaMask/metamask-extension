@@ -19,6 +19,12 @@ export enum TRIGGER_TYPES {
   ERC1155_RECEIVED = 'erc1155_received',
 }
 
+export enum TRIGGER_TYPES_GROUPS {
+  RECEIVED = 'received',
+  SENT = 'sent',
+  DEFI = 'defi',
+}
+
 const chains = {
   ETHEREUM: `${parseInt(CHAIN_IDS.MAINNET, 16)}`,
   OPTIMISM: `${parseInt(CHAIN_IDS.OPTIMISM, 16)}`,

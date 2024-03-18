@@ -243,7 +243,7 @@ export default class EncryptionPublicKeyController extends BaseController<
    * @returns A full state update.
    */
   async encryptionPublicKey(msgParams: EncryptionPublicKeyParamsMetamask) {
-    log.error('MetaMaskController - encryptionPublicKey');
+    log.info('MetaMaskController - encryptionPublicKey');
     const messageId = msgParams.metamaskId as string;
     // sets the status op the message to 'approved'
     // and removes the metamaskId for decryption
@@ -268,7 +268,7 @@ export default class EncryptionPublicKeyController extends BaseController<
 
       return this._getState();
     } catch (error) {
-      log.error(
+      log.info(
         'MetaMaskController - eth_getEncryptionPublicKey failed.',
         error,
       );

@@ -4875,31 +4875,3 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   ]);
 }
 ///: END:ONLY_INCLUDE_IF
-
-export function fetchAndUpdatePlatformNotifications(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground('fetchAndUpdatePlatformNotifications');
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
-}
-
-export function markPlatformNotificationsAsRead(
-  ids: string[],
-): ThunkAction<void, MetaMaskReduxState, any, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('markPlatformNotificationsAsRead', [ids]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
-}

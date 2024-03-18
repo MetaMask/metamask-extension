@@ -1,12 +1,16 @@
 /* eslint-disable camelcase */
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
-import type { UserStorage } from '../../user-storage/types/types';
-import { USER_STORAGE_VERSION_KEY } from '../../../../../shared/constants/user-storage';
+import type { UserStorage } from '../types/user-storage/user-storage';
+import {
+  USER_STORAGE_VERSION_KEY,
+  USER_STORAGE_VERSION,
+} from '../../../../../shared/constants/user-storage';
 import {
   TRIGGER_TYPES,
+  TRIGGER_TYPES_GROUPS,
   TRIGGERS,
-} from '../../../../../shared/constants/platform-notifications';
+} from '../../../../../shared/constants/metamask-notifications';
 
 export type NotificationTrigger = {
   id: string;
@@ -24,7 +28,7 @@ type TraverseTriggerOpts<Result> = {
   mapTrigger?: MapTriggerFn<Result>;
 };
 
-export class PlatformNotificationUtils {
+export class MetamaskNotificationsUtils {
   /**
    * Extracts and returns the ID from a notification trigger.
    * This utility function is primarily used as a mapping function in `traverseUserStorageTriggers`
@@ -44,6 +48,89 @@ export class PlatformNotificationUtils {
    * @returns The same notification trigger that was passed in.
    */
   private triggerIdentity = (trigger: NotificationTrigger) => trigger;
+
+  /**
+   * Maps a given trigger type to its corresponding trigger group.
+   *
+   * This method categorizes each trigger type into one of the predefined groups:
+   * RECEIVED, SENT, or DEFI. These groups help in organizing triggers based on their nature.
+   * For instance, triggers related to receiving assets are categorized under RECEIVED,
+   * triggers for sending assets under SENT, and triggers related to decentralized finance (DeFi)
+   * operations under DEFI. This categorization aids in managing and responding to different types
+   * of notifications more effectively.
+   *
+   * @param type - The trigger type to be categorized.
+   * @returns The group to which the trigger type belongs.
+   */
+  private groupTriggerTypes = (type: TRIGGER_TYPES): TRIGGER_TYPES_GROUPS => {
+    switch (type) {
+      case TRIGGER_TYPES.ERC20_RECEIVED:
+      case TRIGGER_TYPES.ETH_RECEIVED:
+      case TRIGGER_TYPES.ERC721_RECEIVED:
+      case TRIGGER_TYPES.ERC1155_RECEIVED:
+        return TRIGGER_TYPES_GROUPS.RECEIVED;
+      case TRIGGER_TYPES.ERC20_SENT:
+      case TRIGGER_TYPES.ETH_SENT:
+      case TRIGGER_TYPES.ERC721_SENT:
+      case TRIGGER_TYPES.ERC1155_SENT:
+        return TRIGGER_TYPES_GROUPS.SENT;
+      case TRIGGER_TYPES.METAMASK_SWAP_COMPLETED:
+      case TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED:
+      case TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED:
+      case TRIGGER_TYPES.LIDO_STAKE_COMPLETED:
+      case TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED:
+      case TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED:
+      case TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN:
+        return TRIGGER_TYPES_GROUPS.DEFI;
+      default:
+        return TRIGGER_TYPES_GROUPS.DEFI;
+    }
+  };
+
+  /**
+   * Builds and returns a user storage object for the given accounts and state.
+   * This method initializes the user storage with a version key and iterates over each account to populate it with triggers.
+   * Each trigger is associated with supported chains, and for each chain, a unique identifier (UUID) is generated.
+   * The trigger object contains a kind (`k`) indicating the type of trigger and an enabled state (`e`).
+   * The kind and enabled state are stored with abbreviated keys to reduce the JSON size.
+   *
+   * @param accounts - An array of account objects, each optionally containing an address.
+   * @param state - A boolean indicating the initial enabled state for all triggers in the user storage.
+   * @returns A `UserStorage` object populated with triggers for each account and chain.
+   */
+  public buildUserStorage = (
+    accounts: { address?: string }[],
+    state: boolean,
+  ): UserStorage => {
+    const userStorage: UserStorage = {
+      [USER_STORAGE_VERSION_KEY]: USER_STORAGE_VERSION,
+    };
+
+    accounts.forEach((account) => {
+      const address = account.address?.toLowerCase();
+      if (!address) {
+        return;
+      }
+      if (!userStorage[address]) {
+        userStorage[address] = {};
+      }
+
+      Object.entries(TRIGGERS).forEach(([trigger, { supported_chains }]) => {
+        supported_chains.forEach((chain) => {
+          if (!userStorage[address]?.[chain]) {
+            userStorage[address][chain] = {};
+          }
+
+          userStorage[address][chain][uuidv4()] = {
+            k: trigger as TRIGGER_TYPES, // use 'k' instead of 'kind' to reduce the json weigh
+            e: state, // use 'e' instead of 'enabled' to reduce the json weigh
+          };
+        });
+      });
+    });
+
+    return userStorage;
+  };
 
   /**
    * Iterates over user storage to find and optionally transform notification triggers.
@@ -90,6 +177,140 @@ export class PlatformNotificationUtils {
     }
 
     return triggers;
+  }
+
+  /**
+   * Checks for the complete presence of trigger types by group across all addresses in the user storage.
+   * This method ensures that each address has at least one trigger of each type expected for every group.
+   * It leverages `traverseUserStorageTriggers` to iterate over triggers and check their presence.
+   *
+   * @param userStorage - The user storage object containing notification triggers.
+   * @returns A record indicating whether all expected trigger types for each group are present for every address.
+   */
+  public checkTriggersPresenceByGroup(
+    userStorage: UserStorage,
+  ): Record<TRIGGER_TYPES_GROUPS, boolean> {
+    // Initialize a record to track the complete presence of triggers for each group
+    const completeGroupPresence: Record<TRIGGER_TYPES_GROUPS, boolean> = {
+      [TRIGGER_TYPES_GROUPS.RECEIVED]: true,
+      [TRIGGER_TYPES_GROUPS.SENT]: true,
+      [TRIGGER_TYPES_GROUPS.DEFI]: true,
+    };
+
+    // Map to track the required trigger types for each group
+    const requiredTriggersByGroup: Record<
+      TRIGGER_TYPES_GROUPS,
+      Set<TRIGGER_TYPES>
+    > = {
+      [TRIGGER_TYPES_GROUPS.RECEIVED]: new Set([
+        TRIGGER_TYPES.ERC20_RECEIVED,
+        TRIGGER_TYPES.ETH_RECEIVED,
+        TRIGGER_TYPES.ERC721_RECEIVED,
+        TRIGGER_TYPES.ERC1155_RECEIVED,
+      ]),
+      [TRIGGER_TYPES_GROUPS.SENT]: new Set([
+        TRIGGER_TYPES.ERC20_SENT,
+        TRIGGER_TYPES.ETH_SENT,
+        TRIGGER_TYPES.ERC721_SENT,
+        TRIGGER_TYPES.ERC1155_SENT,
+      ]),
+      [TRIGGER_TYPES_GROUPS.DEFI]: new Set([
+        TRIGGER_TYPES.METAMASK_SWAP_COMPLETED,
+        TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED,
+        TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED,
+        TRIGGER_TYPES.LIDO_STAKE_COMPLETED,
+        TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED,
+        TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED,
+        TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN,
+      ]),
+    };
+
+    // Object to keep track of encountered triggers for each group by address
+    const encounteredTriggers: Record<
+      string,
+      Record<TRIGGER_TYPES_GROUPS, Set<TRIGGER_TYPES>>
+    > = {};
+
+    // Use traverseUserStorageTriggers to iterate over all triggers
+    this.traverseUserStorageTriggers(userStorage, {
+      mapTrigger: (trigger) => {
+        const group = this.groupTriggerTypes(trigger.kind as TRIGGER_TYPES);
+        if (!encounteredTriggers[trigger.address]) {
+          encounteredTriggers[trigger.address] = {
+            [TRIGGER_TYPES_GROUPS.RECEIVED]: new Set(),
+            [TRIGGER_TYPES_GROUPS.SENT]: new Set(),
+            [TRIGGER_TYPES_GROUPS.DEFI]: new Set(),
+          };
+        }
+        encounteredTriggers[trigger.address][group].add(
+          trigger.kind as TRIGGER_TYPES,
+        );
+        return undefined; // We don't need to transform the trigger, just record its presence
+      },
+    });
+
+    // Check if all required triggers for each group are present for every address
+    Object.keys(encounteredTriggers).forEach((address) => {
+      Object.entries(requiredTriggersByGroup).forEach(
+        ([group, requiredTriggers]) => {
+          const hasAllTriggers = Array.from(requiredTriggers).every(
+            (triggerType) =>
+              encounteredTriggers[address][group as TRIGGER_TYPES_GROUPS].has(
+                triggerType,
+              ),
+          );
+          if (!hasAllTriggers) {
+            completeGroupPresence[group as TRIGGER_TYPES_GROUPS] = false;
+          }
+        },
+      );
+    });
+
+    return completeGroupPresence;
+  }
+
+  /**
+   * Verifies the presence of specified accounts and their chains in the user storage.
+   * This method checks if each provided account exists in the user storage and if all its supported chains are present.
+   *
+   * @param userStorage - The user storage object containing notification triggers.
+   * @param accounts - An array of account addresses to check for presence.
+   * @returns A record where each key is an account address and each value is a boolean indicating whether the account and all its supported chains are present in the user storage.
+   */
+  public checkAccountsPresence(
+    userStorage: UserStorage,
+    accounts: string[],
+  ): Record<string, boolean> {
+    const presenceRecord: Record<string, boolean> = {};
+
+    // Initialize presence record for all accounts as false
+    accounts.forEach((account) => {
+      presenceRecord[account.toLowerCase()] = false;
+    });
+
+    // Use traverseUserStorageTriggers to check presence of accounts and chains
+    this.traverseUserStorageTriggers(userStorage, {
+      mapTrigger: (trigger) => {
+        if (accounts.includes(trigger.address.toLowerCase())) {
+          // Mark account as present
+          presenceRecord[trigger.address.toLowerCase()] = true;
+        }
+        return undefined; // No need to transform the trigger
+      },
+    });
+
+    // After traversing, check if all accounts have been marked as present
+    Object.keys(presenceRecord).forEach((account) => {
+      // For each account, verify if all supported chains are present
+      const allChainsPresent = Object.values(TRIGGERS).some((trigger) =>
+        trigger.supported_chains.every((chain) =>
+          Object.prototype.hasOwnProperty.call(userStorage[account], chain),
+        ),
+      );
+      presenceRecord[account] = presenceRecord[account] && allChainsPresent;
+    });
+
+    return presenceRecord;
   }
 
   /**
@@ -336,7 +557,7 @@ export class PlatformNotificationUtils {
   /**
    * Performs an API call with automatic retries on failure.
    *
-   * @param jwt - The JSON Web Token for authorization.
+   * @param bearerToken - The JSON Web Token for authorization.
    * @param endpoint - The URL of the API endpoint to call.
    * @param method - The HTTP method ('POST' or 'DELETE').
    * @param body - The body of the request. It should be an object that can be serialized to JSON.
@@ -345,7 +566,7 @@ export class PlatformNotificationUtils {
    * @returns A Promise that resolves to the response of the fetch request.
    */
   static async makeApiCall<T>(
-    jwt: string,
+    bearerToken: string,
     endpoint: string,
     method: 'POST' | 'DELETE',
     body: T,
@@ -356,7 +577,7 @@ export class PlatformNotificationUtils {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${bearerToken}`,
       },
       body: JSON.stringify(body),
     };

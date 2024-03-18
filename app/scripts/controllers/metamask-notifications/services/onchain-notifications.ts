@@ -1,11 +1,11 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable camelcase */
 import log from 'loglevel';
-import type { UserStorage } from '../../user-storage/types/types';
-import { createSHA256Hash } from '../../user-storage/encryption/encryption';
+import type { UserStorage } from '../types/user-storage/user-storage';
+import { createSHA256Hash } from '../encryption/encryption';
 import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
-import { PlatformNotificationUtils } from '../utils/utils';
-import type { TRIGGER_TYPES } from '../../../../../shared/constants/platform-notifications';
+import { MetamaskNotificationsUtils } from '../utils/utils';
+import type { TRIGGER_TYPES } from '../../../../../shared/constants/metamask-notifications';
 import type { components } from '../types/on-chain-notification/schema';
 
 export type NotificationTrigger = {
@@ -35,14 +35,14 @@ export class OnChainNotificationsService {
    *
    * @param userStorage - The user's storage object where triggers and their statuses are stored.
    * @param storageKey - A key used along with the trigger ID to generate a unique token for each trigger.
-   * @param jwt - The JSON Web Token used for authentication in the API call.
+   * @param bearerToken - The JSON Web Token used for authentication in the API call.
    * @param triggers - An array of notification triggers to be created. Each trigger includes an ID, chain ID, kind, and address.
    * @returns A promise that resolves to void. Throws an error if the API call fails or if there's an issue creating the triggers.
    */
   public async createOnChainTriggers(
     userStorage: UserStorage,
     storageKey: string,
-    jwt: string,
+    bearerToken: string,
     triggers: NotificationTrigger[],
   ): Promise<void> {
     type RequestPayloadTrigger = {
@@ -69,8 +69,8 @@ export class OnChainNotificationsService {
       return;
     }
 
-    const response = await PlatformNotificationUtils.makeApiCall(
-      jwt,
+    const response = await MetamaskNotificationsUtils.makeApiCall(
+      bearerToken,
       this.BATCH_ENDPOINT,
       'POST',
       triggersToCreate,
@@ -85,7 +85,7 @@ export class OnChainNotificationsService {
     // If the trigger creation was fine
     // then update the userStorage
     for (const trigger of triggersToCreate) {
-      PlatformNotificationUtils.toggleUserStorageTriggerStatus(
+      MetamaskNotificationsUtils.toggleUserStorageTriggerStatus(
         userStorage,
         trigger.config.address,
         String(trigger.config.chain_id),
@@ -103,14 +103,14 @@ export class OnChainNotificationsService {
    *
    * @param userStorage - The user's storage object where triggers and their statuses are stored.
    * @param storageKey - A key used along with the UUID to generate a unique token for each trigger.
-   * @param jwt - The JSON Web Token used for authentication in the API call.
+   * @param bearerToken - The JSON Web Token used for authentication in the API call.
    * @param uuids - An array of UUIDs representing the triggers to be deleted.
    * @returns A promise that resolves to the updated UserStorage object. Throws an error if the API call fails or if there's an issue deleting the triggers.
    */
   public async deleteOnChainTriggers(
     userStorage: UserStorage,
     storageKey: string,
-    jwt: string,
+    bearerToken: string,
     uuids: string[],
   ): Promise<UserStorage> {
     const triggersToDelete = uuids.map((uuid) => ({
@@ -119,8 +119,8 @@ export class OnChainNotificationsService {
     }));
 
     try {
-      const response = await PlatformNotificationUtils.makeApiCall(
-        jwt,
+      const response = await MetamaskNotificationsUtils.makeApiCall(
+        bearerToken,
         this.BATCH_ENDPOINT,
         'DELETE',
         triggersToDelete,
@@ -170,18 +170,18 @@ export class OnChainNotificationsService {
   }
 
   /**
-   * Fetches on-chain notifications for the given user storage and JWT.
+   * Fetches on-chain notifications for the given user storage and BearerToken.
    * This method iterates through the userStorage to find enabled triggers and fetches notifications for those triggers.
    * It makes paginated API calls to the notifications service, transforming and aggregating the notifications into a single array.
    * The process stops either when all pages have been fetched or when a page has less than 100 notifications, indicating the end of the data.
    *
    * @param userStorage - The user's storage object containing trigger information.
-   * @param jwt - The JSON Web Token used for authentication in the API call.
+   * @param bearerToken - The JSON Web Token used for authentication in the API call.
    * @returns A promise that resolves to an array of OnChainRawNotification objects. If no triggers are enabled or an error occurs, it may return an empty array.
    */
   public async getOnChainNotifications(
     userStorage: UserStorage,
-    jwt: string,
+    bearerToken: string,
   ): Promise<OnChainRawNotification[]> {
     const triggerIds = [];
 
@@ -207,8 +207,8 @@ export class OnChainNotificationsService {
     const PAGE_LIMIT = 2;
     for (let page = 1; page <= PAGE_LIMIT; page++) {
       try {
-        const response = await PlatformNotificationUtils.makeApiCall(
-          jwt,
+        const response = await MetamaskNotificationsUtils.makeApiCall(
+          bearerToken,
           this.LIST_NOTIFICATIONS_ENDPOINT(page),
           'POST',
           { trigger_ids: triggerIds },
@@ -261,12 +261,12 @@ export class OnChainNotificationsService {
    * This method sends a POST request to the notifications service to mark the provided notification IDs as read.
    * If the operation is successful, it completes without error. If the operation fails, it throws an error with details.
    *
-   * @param jwt - The JSON Web Token used for authentication in the API call.
+   * @param bearerToken - The JSON Web Token used for authentication in the API call.
    * @param notificationIds - An array of notification IDs to be marked as read.
    * @returns A promise that resolves to void. The promise will reject if there's an error during the API call or if the response status is not 200.
    */
   public async markNotificationsAsRead(
-    jwt: string,
+    bearerToken: string,
     notificationIds: string[],
   ): Promise<void> {
     if (notificationIds.length === 0) {
@@ -274,8 +274,8 @@ export class OnChainNotificationsService {
     }
 
     try {
-      const response = await PlatformNotificationUtils.makeApiCall(
-        jwt,
+      const response = await MetamaskNotificationsUtils.makeApiCall(
+        bearerToken,
         this.MARK_ALL_AS_READ_ENDPOINT,
         'POST',
         { ids: notificationIds },

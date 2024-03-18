@@ -1,7 +1,7 @@
 import type { Notification } from '../types/notification/notification';
 import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
 import type { FeatureAnnouncementRawNotification } from '../types/feature-announcement/feature-announcement';
-import { TRIGGER_TYPES } from '../../../../../shared/constants/platform-notifications';
+import { TRIGGER_TYPES } from '../../../../../shared/constants/metamask-notifications';
 import { processHalNotification } from './process-hal-notifications';
 import {
   isFeatureAnnouncementRead,

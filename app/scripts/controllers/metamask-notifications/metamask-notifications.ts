@@ -11,14 +11,15 @@ import type {
   AccountsControllerSelectedAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import type { UserStorage } from '../user-storage/types/types';
-import type {
-  UserStorageControllerGetUserStorage,
-  UserStorageControllerBuildUserStorage,
-  UserStorageControllerUpsertUserStorage,
-} from '../user-storage/user-storage';
-import { TRIGGER_TYPES } from '../../../../shared/constants/metamask-notifications';
+import {
+  TRIGGER_TYPES,
+  TRIGGER_TYPES_GROUPS,
+} from '../../../../shared/constants/metamask-notifications';
 import { USER_STORAGE_VERSION_KEY } from '../../../../shared/constants/user-storage';
+import type {
+  UserStorage,
+  UserStorageEntryKeys,
+} from './types/user-storage/user-storage';
 import { FeatureAnnouncementsService } from './services/feature-announcements';
 import { OnChainNotificationsService } from './services/onchain-notifications';
 import type {
@@ -28,7 +29,7 @@ import type {
 import { OnChainRawNotification } from './types/on-chain-notification/on-chain-notification';
 import { FeatureAnnouncementRawNotification } from './types/feature-announcement/feature-announcement';
 import { processNotification } from './processors/process-notifications';
-import { MetamaskNotificationUtils } from './utils/utils';
+import { MetamaskNotificationsUtils } from './utils/utils';
 
 // Unique name for the controller
 const controllerName = 'MetamaskNotificationsController';
@@ -37,7 +38,26 @@ const controllerName = 'MetamaskNotificationsController';
  * State shape for MetamaskNotificationsController
  */
 export type MetamaskNotificationsControllerState = {
-  metamaskNotificationsAreEnabled: boolean;
+  /**
+   * Flag that indicates if the metamask notifications feature has been seen
+   */
+  isMetamaskNotificationsFeatureSeen: boolean;
+
+  /**
+   * Flag that indicates if the metamask notifications are enabled
+   */
+  isMetamaskNotificationsEnabled: boolean;
+
+  /**
+   * Flag that indicates if the feature announcements are enabled
+   */
+  isFeatureAnnouncementsEnabled: boolean;
+
+  /**
+   * Flag that indicates if the Snap notifications are enabled
+   */
+  isSnapNotificationsEnabled: boolean;
+
   /**
    * List of metamask notifications
    */
@@ -54,11 +74,6 @@ export type MetamaskNotificationsControllerState = {
   metamaskNotificationsUnreadList: string[];
 
   /**
-   * Loading state for metamask notifications
-   */
-  metamaskNotificationsIsLoading: boolean;
-
-  /**
    * List of addresses to be used to create the onChain triggers
    */
   metamaskNotificationsAddressRegistry: string[];
@@ -70,23 +85,12 @@ export type MetamaskNotificationsControllerUpdateNotificationsListAction = {
   handler: MetamaskNotificationsController['updateMetamaskNotificationsList'];
 };
 
-// Describes the action for updating the loading state
-export type MetamaskNotificationsControllerUpdateLoadingStateAction = {
-  type: `${typeof controllerName}:updateMetamaskNotificationsIsLoadingState`;
-  handler: (isLoading: boolean) => void;
-};
-
 // Union of all possible actions for the messenger
 export type MetamaskNotificationsControllerMessengerActions =
   | MetamaskNotificationsControllerUpdateNotificationsListAction
-  | MetamaskNotificationsControllerUpdateLoadingStateAction
   | ControllerGetStateAction<'state', MetamaskNotificationsControllerState>;
 
-type AllowedActions =
-  | UserStorageControllerGetUserStorage
-  | UserStorageControllerBuildUserStorage
-  | UserStorageControllerUpsertUserStorage
-  | AccountsControllerListAccountsAction;
+type AllowedActions = AccountsControllerListAccountsAction;
 
 export type MetamaskNotificationsControllerMessengerEvents =
   ControllerStateChangeEvent<
@@ -108,9 +112,21 @@ export type MetamaskNotificationsControllerMessenger =
 
 // Metadata for the controller state
 const metadata = {
-  metamaskNotificationsAreEnabled: {
+  isMetamaskNotificationsFeatureSeen: {
     persist: true,
-    anonymous: true,
+    anonymous: false,
+  },
+  isMetamaskNotificationsEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  isFeatureAnnouncementsEnabled: {
+    persist: true,
+    anonymous: false,
+  },
+  isSnapNotificationsEnabled: {
+    persist: true,
+    anonymous: false,
   },
   metamaskNotificationsList: {
     persist: true,
@@ -122,10 +138,6 @@ const metadata = {
   },
   metamaskNotificationsUnreadList: {
     persist: true,
-    anonymous: true,
-  },
-  metamaskNotificationsIsLoading: {
-    persist: false,
     anonymous: true,
   },
   metamaskNotificationsAddressRegistry: {
@@ -148,11 +160,28 @@ export class MetamaskNotificationsController extends BaseController<
 
   private onChainNotificationsService: OnChainNotificationsService;
 
-  private metamaskNotificationUtils: MetamaskNotificationUtils;
+  private metamaskNotificationUtils: MetamaskNotificationsUtils;
 
-  private getJwtToken: () => string;
+  private isSignedIn: () => boolean;
+
+  private getBearerTokenToken: () => string;
 
   private getStorageKey: () => string;
+
+  private getStorage: (
+    entryKey: UserStorageEntryKeys,
+  ) => Promise<string | null>;
+
+  private setStorage: (
+    entryKey: UserStorageEntryKeys,
+    value: string,
+  ) => Promise<void>;
+
+  private enablePushNotifications: (UUIDs: string[]) => Promise<void>;
+
+  private disablePushNotifications: (UUIDs: string[]) => Promise<void>;
+
+  private updatePushNotifications: (UUIDs: string[]) => Promise<void>;
 
   private accounts: InternalAccount[];
 
@@ -162,29 +191,54 @@ export class MetamaskNotificationsController extends BaseController<
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
-   * @param args.getJwtToken - Function that returns the jet token for this controller.
+   * @param args.isSignedIn - Function to check if the user is signed in.
+   * @param args.getBearerTokenToken - Function that returns the jet token for this controller.
    * @param args.getStorageKey - Function that returns the storage key for this controller.
+   * @param args.getStorage - Function to retrieve user storage data.
+   * @param args.setStorage - Function to update user storage data.
+   * @param args.enablePushNotifications - Function to enable push notifications for specific UUIDs.
+   * @param args.disablePushNotifications - Function to disable push notifications for specific UUIDs.
+   * @param args.updatePushNotifications - Function to update push notifications settings.
    */
   constructor({
     messenger,
     state,
-    getJwtToken,
+    isSignedIn,
+    getBearerTokenToken,
     getStorageKey,
+    getStorage,
+    setStorage,
+    enablePushNotifications,
+    disablePushNotifications,
+    updatePushNotifications,
   }: {
     messenger: MetamaskNotificationsControllerMessenger;
     state?: MetamaskNotificationsControllerState;
-    getJwtToken: () => string;
+    isSignedIn: () => boolean;
+    getBearerTokenToken: () => string;
     getStorageKey: () => string;
+    getStorage: (entryKey: UserStorageEntryKeys) => Promise<string | null>;
+    setStorage: (
+      entryKey: UserStorageEntryKeys,
+      value: string,
+    ) => Promise<void>;
+    enablePushNotifications: (UUIDs: string[]) => Promise<void>;
+    disablePushNotifications: (UUIDs: string[]) => Promise<void>;
+    updatePushNotifications: (UUIDs: string[]) => Promise<void>;
   }) {
+    const isMetamaskNotificationsFeatureSeen =
+      state?.isMetamaskNotificationsFeatureSeen || false;
+    const isMetamaskNotificationsEnabled =
+      state?.isMetamaskNotificationsEnabled || false;
+    const isFeatureAnnouncementsEnabled =
+      state?.isFeatureAnnouncementsEnabled || false;
+    const isSnapNotificationsEnabled =
+      state?.isSnapNotificationsEnabled || false;
     const metamaskNotificationsList = state?.metamaskNotificationsList || [];
     const metamaskNotificationsReadList =
       state?.metamaskNotificationsReadList || [];
     const metamaskNotificationsUnreadList =
       state?.metamaskNotificationsUnreadList || [];
-    const metamaskNotificationsIsLoading =
-      state?.metamaskNotificationsIsLoading || false;
-    const metamaskNotificationsAreEnabled =
-      state?.metamaskNotificationsAreEnabled || false;
     const metamaskNotificationsAddressRegistry =
       state?.metamaskNotificationsAddressRegistry || [];
 
@@ -194,11 +248,13 @@ export class MetamaskNotificationsController extends BaseController<
       metadata,
       name: controllerName,
       state: {
-        metamaskNotificationsIsLoading,
+        isMetamaskNotificationsFeatureSeen,
+        isMetamaskNotificationsEnabled,
+        isFeatureAnnouncementsEnabled,
+        isSnapNotificationsEnabled,
         metamaskNotificationsList,
         metamaskNotificationsReadList,
         metamaskNotificationsUnreadList,
-        metamaskNotificationsAreEnabled,
         metamaskNotificationsAddressRegistry,
       },
     });
@@ -206,15 +262,26 @@ export class MetamaskNotificationsController extends BaseController<
     this.featureAnnouncementsService = new FeatureAnnouncementsService();
     this.onChainNotificationsService = new OnChainNotificationsService();
 
-    this.metamaskNotificationUtils = new MetamaskNotificationUtils();
+    this.metamaskNotificationUtils = new MetamaskNotificationsUtils();
 
     this.accounts = this.messagingSystem.call(
       'AccountsController:listAccounts',
     ) as InternalAccount[];
+    this.isSignedIn = isSignedIn;
 
-    this.getJwtToken = getJwtToken;
+    this.getBearerTokenToken = getBearerTokenToken;
 
     this.getStorageKey = getStorageKey;
+
+    this.getStorage = getStorage;
+
+    this.setStorage = setStorage;
+
+    this.enablePushNotifications = enablePushNotifications;
+
+    this.disablePushNotifications = disablePushNotifications;
+
+    this.updatePushNotifications = updatePushNotifications;
 
     this.inizializeAddressRegistry();
 
@@ -310,18 +377,6 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
-   * Updates the loading state in the state with the provided value.
-   *
-   * @param isLoading - The loading state to update in the state.
-   */
-  private updateMetamaskNotificationsIsLoadingState(isLoading: boolean) {
-    this.update((state) => {
-      state.metamaskNotificationsIsLoading = isLoading;
-      return state;
-    });
-  }
-
-  /**
    * Updates the accounts list in the state with the provided list of accounts.
    *
    * @param metamaskNotificationsList - The list of the notifications to update in the state.
@@ -336,32 +391,176 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
+   * Retrieves and parses the user storage from the storage key.
+   *
+   * This method attempts to retrieve the user storage using the specified storage key,
+   * then parses the JSON string to an object. If the storage is not found or cannot be parsed,
+   * it throws an error.
+   *
+   * @returns The parsed user storage object.
+   * @throws {Error} If the storage cannot be retrieved or parsed.
+   */
+  private async getUserStorage(): Promise<UserStorage> {
+    const userStorageString: string | null = await this.getStorage(
+      'notification_settings',
+    );
+    if (!userStorageString) {
+      throw new Error('User storage does not exist');
+    }
+
+    try {
+      const userStorage: UserStorage = JSON.parse(userStorageString);
+      return userStorage;
+    } catch (error) {
+      throw new Error('Failed to parse user storage');
+    }
+  }
+
+  /**
+   * Checks for the complete presence of trigger types by group across all addresses in user storage.
+   *
+   * This method retrieves the user storage and uses `MetamaskNotificationsUtils` to verify if all expected trigger types for each group are present for every address.
+   *
+   * @returns A record indicating whether all expected trigger types for each group are present for every address.
+   * @throws {Error} If user storage does not exist.
+   */
+  public async checkTriggersPresenceByGroup(): Promise<
+    Record<TRIGGER_TYPES_GROUPS, boolean>
+  > {
+    const userStorage = await this.getUserStorage();
+
+    // Use MetamaskNotificationsUtils to check the presence of triggers
+    return this.metamaskNotificationUtils.checkTriggersPresenceByGroup(
+      userStorage,
+    );
+  }
+
+  /**
+   * Verifies the presence of specified accounts and their chains in user storage.
+   *
+   * This method retrieves the user storage and uses `MetamaskNotificationsUtils` to check if the specified accounts and all their supported chains are present in the user storage.
+   *
+   * @param accounts - An array of account addresses to be checked for presence.
+   * @returns A record where each key is an account address and each value is a boolean indicating whether the account and all its supported chains are present in the user storage.
+   * @throws {Error} If user storage does not exist.
+   */
+  public async checkAccountsPresence(
+    accounts: string[],
+  ): Promise<Record<string, boolean>> {
+    // Retrieve user storage
+    const userStorage = await this.getUserStorage();
+
+    // Use MetamaskNotificationsUtils to check the presence of accounts
+    return this.metamaskNotificationUtils.checkAccountsPresence(
+      userStorage,
+      accounts,
+    );
+  }
+
+  /**
    * Toggles the enabled state of metamask notifications.
    *
-   * This method checks for the presence of a JWT token and a storage key before attempting to toggle the notification state.
-   * If either the JWT token or the storage key is missing, the method disables metamask notifications and logs an error.
+   * This method checks for the presence of a BearerToken token and a storage key before attempting to toggle the notification state.
+   * If either the BearerToken token or the storage key is missing, the method disables metamask notifications and logs an error.
    * Otherwise, it toggles the current state of metamask notifications (enabled/disabled).
    *
    * @async
    * @throws {Error} If updating the state fails.
    */
-  public async toggleNotificationsEnabled() {
-    const jwt = this.getJwtToken();
-    const storageKey = this.getStorageKey();
-
-    // If the jwt or the storage key are not available, we disable the notifications
-    // the user will not be able to enable them again until the jwt and the storage key are available
-    if (!jwt || !storageKey) {
+  public async toggleMetamaskNotificationsEnabled() {
+    if (!this.isSignedIn()) {
+      log.error('User is not signed in.');
       this.update((state) => {
-        state.metamaskNotificationsAreEnabled = false;
+        state.isMetamaskNotificationsEnabled = false;
         return state;
       });
-      log.error('Metamask Notifications - Missing JWT or storage key');
+      return;
     }
 
     this.update((state) => {
-      state.metamaskNotificationsAreEnabled =
-        !state.metamaskNotificationsAreEnabled;
+      state.isMetamaskNotificationsEnabled =
+        !state.isMetamaskNotificationsEnabled;
+      return state;
+    });
+  }
+
+  /**
+   * Sets the `isMetamaskNotificationsFeatureSeen` state to true.
+   *
+   * This method ensures that the feature indicating whether the Metamask notifications
+   * have been seen by the user is set to true. It checks for the presence of a BearerToken token
+   * and a storage key before making the update. If either the BearerToken token or the storage key
+   * is missing, it logs an error and throws an exception to indicate the failure.
+   *
+   * @async
+   * @throws {Error} Throws an error if the BearerToken token or storage key is missing.
+   */
+  public async setMetamaskNotificationsFeatureSeen() {
+    if (!this.isSignedIn()) {
+      log.error('User is not signed in.');
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = false;
+        return state;
+      });
+      return;
+    }
+
+    this.update((state) => {
+      // Imposta il valore su true indipendentemente dallo stato precedente
+      state.isMetamaskNotificationsFeatureSeen = true;
+      return state;
+    });
+  }
+
+  /**
+   * Toggles the enabled state of feature announcements.
+   *
+   * This method checks for the presence of a BearerToken token and a storage key before attempting to toggle the state.
+   * If either the BearerToken token or the storage key is missing, the method logs an error and throws an exception.
+   * Otherwise, it toggles the current state of feature announcements (enabled/disabled).
+   *
+   * @async
+   * @throws {Error} If the BearerToken token or storage key is missing.
+   */
+  public async toggleFeatureAnnouncementsEnabled() {
+    if (!this.isSignedIn()) {
+      log.error('User is not signed in.');
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = false;
+        return state;
+      });
+      return;
+    }
+
+    this.update((state) => {
+      state.isFeatureAnnouncementsEnabled =
+        !state.isFeatureAnnouncementsEnabled;
+      return state;
+    });
+  }
+
+  /**
+   * Toggles the enabled state of Snap notifications.
+   *
+   * Similar to toggling feature announcements, this method verifies the presence of a BearerToken token and a storage key
+   * before toggling the state of Snap notifications. If either is missing, an error is logged and an exception is thrown.
+   * On successful verification, it toggles the enabled state of Snap notifications.
+   *
+   * @async
+   * @throws {Error} If the BearerToken token or storage key is missing.
+   */
+  public async toggleSnapNotificationsEnabled() {
+    if (!this.isSignedIn()) {
+      log.error('User is not signed in.');
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = false;
+        return state;
+      });
+      return;
+    }
+
+    this.update((state) => {
+      state.isSnapNotificationsEnabled = !state.isSnapNotificationsEnabled;
       return state;
     });
   }
@@ -372,7 +571,7 @@ export class MetamaskNotificationsController extends BaseController<
    * It then proceeds to create on-chain triggers and updates the user storage accordingly.
    *
    * @returns The updated or newly created user storage.
-   * @throws {Error} Throws an error if JWT or storage key is missing, or if the operation fails.
+   * @throws {Error} Throws an error if BearerToken or storage key is missing, or if the operation fails.
    */
   public async createOnChainTriggers(): Promise<UserStorage> {
     try {
@@ -380,36 +579,31 @@ export class MetamaskNotificationsController extends BaseController<
         toChecksumHexAddress(a.address),
       );
 
-      // Check if userStorage already exists
       const storageKey = this.getStorageKey();
-      const jwt = this.getJwtToken();
+      const bearerToken = this.getBearerTokenToken();
 
-      if (!jwt || !storageKey) {
-        // Handle the case where jwt or storageKey is null
-        log.error('Metamask Notifications - Missing JWT or storage key');
+      if (!bearerToken || !storageKey) {
+        // Handle the case where bearerToken or storageKey is null
+        log.error(
+          'Metamask Notifications - Missing BearerToken or storage key',
+        );
         throw new Error();
       }
 
-      let userStorage: UserStorage | null = null;
-
-      // Retrieve and decrypt user storage
-      userStorage = await this.messagingSystem.call(
-        'UserStorageController:getUserStorage',
-      );
+      let userStorage = await this.getUserStorage();
 
       // If userStorage does not exist, create a new one
       // All the triggers created are set
       // as not enabled
       if (userStorage?.[USER_STORAGE_VERSION_KEY] === undefined) {
-        userStorage = this.messagingSystem.call(
-          'UserStorageController:buildUserStorage',
+        userStorage = this.metamaskNotificationUtils.buildUserStorage(
           accounts.map((account) => ({ address: account })),
           false,
         );
 
         // Write the userStorage
-        await this.messagingSystem.call(
-          'UserStorageController:upsertUserStorage',
+        await this.setStorage(
+          'notification_settings',
           JSON.stringify(userStorage),
         );
       }
@@ -420,15 +614,17 @@ export class MetamaskNotificationsController extends BaseController<
       await this.onChainNotificationsService.createOnChainTriggers(
         userStorage,
         storageKey,
-        jwt,
+        bearerToken,
         triggers,
       );
 
-      // TODO Update push notifications triggers
+      // Create push notifications triggers
+      const allUUIDS = this.metamaskNotificationUtils.getAllUUIDs(userStorage);
+      await this.enablePushNotifications(allUUIDS);
 
       // Write the new userStorage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(userStorage),
       );
 
@@ -442,7 +638,7 @@ export class MetamaskNotificationsController extends BaseController<
   /**
    * Deletes on-chain triggers associated with a specific account.
    * This method performs several key operations:
-   * 1. Validates the presence of a JWT token and a user storage key. If either is missing, an error is thrown.
+   * 1. Validates the presence of a BearerToken token and a user storage key. If either is missing, an error is thrown.
    * 2. Retrieves and validates the user storage. If the user storage does not exist, an error is thrown.
    * 3. Identifies the UUIDs associated with the account to be deleted. If no UUIDs are found, the method returns early with a success message.
    * 4. Deletes the identified UUIDs from the on-chain triggers, effectively removing the triggers associated with the account.
@@ -450,29 +646,23 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * @param account - The account for which on-chain triggers are to be deleted.
    * @returns A promise that resolves to void or an object containing a success message.
-   * @throws An error if JWT or storage key is missing, if user storage does not exist, or if the deletion operation fails.
+   * @throws An error if BearerToken or storage key is missing, if user storage does not exist, or if the deletion operation fails.
    */
   public async deleteOnChainTriggersByAccount(
     account: string,
-  ): Promise<void | { data: string }> {
+  ): Promise<UserStorage> {
     try {
-      // Get and Validate JWT and User Storage Key
+      // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const jwt = this.getJwtToken();
+      const bearerToken = this.getBearerTokenToken();
 
-      if (!jwt || !storageKey) {
-        log.error('Missing JWT or the Storage Key');
+      if (!bearerToken || !storageKey) {
+        log.error('Missing BearerToken or the Storage Key');
         throw new Error();
       }
 
       // Get & Validate User Storage
-      const userStorage: UserStorage | null = await this.messagingSystem.call(
-        'UserStorageController:getUserStorage',
-      );
-      if (!userStorage) {
-        log.error('User storage does not exist');
-        throw new Error();
-      }
+      const userStorage = await this.getUserStorage();
 
       // Get the UUIDs to delete
       const UUIDs = this.metamaskNotificationUtils.getUUIDsForAccount(
@@ -480,26 +670,27 @@ export class MetamaskNotificationsController extends BaseController<
         account,
       );
       if (UUIDs.length === 0) {
-        return { data: 'OK' };
+        return userStorage;
       }
 
       // Delete these UUIDs (Mutates User Storage)
       await this.onChainNotificationsService.deleteOnChainTriggers(
         userStorage,
         storageKey,
-        jwt,
+        bearerToken,
         UUIDs,
       );
 
+      // Delete these UUIDs from the push notifications
+      await this.disablePushNotifications(UUIDs);
+
       // Update User Storage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(userStorage),
       );
 
-      // TODO Update push notifications triggers
-
-      return { data: 'OK' };
+      return userStorage;
     } catch (err) {
       log.error('Failed to delete OnChain triggers', err);
       throw new Error();
@@ -509,7 +700,7 @@ export class MetamaskNotificationsController extends BaseController<
   /**
    * Deletes on-chain triggers based on the specified trigger type.
    * This method performs several key operations:
-   * 1. Validates the presence of a JWT token and a user storage key. If either is missing, an error is thrown.
+   * 1. Validates the presence of a BearerToken token and a user storage key. If either is missing, an error is thrown.
    * 2. Retrieves and validates the user storage. If the user storage does not exist, an error is thrown.
    * 3. Identifies the UUIDs associated with the specified trigger type. If no UUIDs are found, the method returns early with a success message.
    * 4. Deletes the identified UUIDs from the on-chain triggers, effectively removing the triggers associated with the specified trigger type.
@@ -517,29 +708,23 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * @param triggerType - The type of trigger to delete.
    * @returns A promise that resolves to void or an object containing a success message.
-   * @throws An error if JWT or storage key is missing, if user storage does not exist, or if the deletion operation fails.
+   * @throws An error if BearerToken or storage key is missing, if user storage does not exist, or if the deletion operation fails.
    */
   public async deleteOnChainTriggersByTriggerType(
     triggerType: TRIGGER_TYPES,
-  ): Promise<void | { data: string }> {
+  ): Promise<UserStorage> {
     try {
-      // Get and Validate JWT and User Storage Key
+      // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const jwt = this.getJwtToken();
+      const bearerToken = this.getBearerTokenToken();
 
-      if (!jwt || !storageKey) {
-        log.error('Missing JWT or the Storage Key');
+      if (!bearerToken || !storageKey) {
+        log.error('Missing BearerToken or the Storage Key');
         throw new Error();
       }
 
       // Get & Validate User Storage
-      const userStorage: UserStorage | null = await this.messagingSystem.call(
-        'UserStorageController:getUserStorage',
-      );
-      if (!userStorage) {
-        log.error('User storage does not exist');
-        throw new Error();
-      }
+      const userStorage = await this.getUserStorage();
 
       // Get the UUIDs to delete
       const UUIDs = this.metamaskNotificationUtils.getUUIDsForKinds(
@@ -547,26 +732,27 @@ export class MetamaskNotificationsController extends BaseController<
         [triggerType],
       );
       if (UUIDs.length === 0) {
-        return { data: 'OK' };
+        return userStorage;
       }
 
       // Delete these UUIDs (Mutates User Storage)
       await this.onChainNotificationsService.deleteOnChainTriggers(
         userStorage,
         storageKey,
-        jwt,
+        bearerToken,
         UUIDs,
       );
 
+      // Delete these UUIDs from the push notifications
+      await this.disablePushNotifications(UUIDs);
+
       // Update User Storage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(userStorage),
       );
 
-      // TODO Update push notifications triggers
-
-      return { data: 'OK' };
+      return userStorage;
     } catch (err) {
       log.error('Failed to delete OnChain triggers', err);
       throw new Error();
@@ -576,7 +762,7 @@ export class MetamaskNotificationsController extends BaseController<
   /**
    * Updates on-chain triggers for a specific account.
    * This method performs several key operations:
-   * 1. Validates the presence of a JWT token and a user storage key. If either is missing, an error is thrown.
+   * 1. Validates the presence of a BearerToken token and a user storage key. If either is missing, an error is thrown.
    * 2. Retrieves and validates the current user storage. If the user storage does not exist, an error is thrown.
    * 3. Updates the user storage by upserting triggers related to the specified account.
    * 4. Validates the kinds of notifications that are enabled for the account.
@@ -586,26 +772,23 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * @param account - The account for which on-chain triggers are to be updated.
    * @returns A promise that resolves to the updated user storage.
-   * @throws An error if JWT or storage key is missing, if user storage does not exist, or if the operation fails.
+   * @throws An error if BearerToken or storage key is missing, if user storage does not exist, or if the operation fails.
    */
-  public async updateOnChainTriggersByAccount(account: string) {
+  public async updateOnChainTriggersByAccount(
+    account: string,
+  ): Promise<UserStorage> {
     try {
-      // Get and Validate JWT and User Storage Key
+      // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const jwt = this.getJwtToken();
+      const bearerToken = this.getBearerTokenToken();
 
-      if (!jwt || !storageKey) {
-        log.error('Missing JWT or the Storage Key');
+      if (!bearerToken || !storageKey) {
+        log.error('Missing BearerToken or the Storage Key');
         throw new Error();
       }
 
       // Get & Validate User Storage
-      const currentUserStorage: UserStorage | null =
-        await this.messagingSystem.call('UserStorageController:getUserStorage');
-      if (!currentUserStorage) {
-        log.error('Current user storage does not exist');
-        throw new Error();
-      }
+      const currentUserStorage = await this.getUserStorage();
 
       // Check if the address has related UUIDs
       let updatedUserStorage = currentUserStorage;
@@ -615,8 +798,8 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       // Write te updated userStorage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(updatedUserStorage),
       );
 
@@ -633,19 +816,22 @@ export class MetamaskNotificationsController extends BaseController<
       await this.onChainNotificationsService.createOnChainTriggers(
         updatedUserStorage,
         storageKey,
-        jwt,
+        bearerToken,
         triggers,
       );
 
+      // Update Push Notifications Triggers
+      const UUIDs =
+        this.metamaskNotificationUtils.getAllUUIDs(updatedUserStorage);
+      await this.updatePushNotifications(UUIDs);
+
       // Update the userStorage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(updatedUserStorage),
       );
 
-      // TODO Update Push Notifications Triggers
-
-      return { data: updatedUserStorage };
+      return updatedUserStorage;
     } catch (err) {
       log.error('Failed to update OnChain triggers', err);
       throw new Error();
@@ -655,7 +841,7 @@ export class MetamaskNotificationsController extends BaseController<
   /**
    * Updates on-chain triggers based on the specified trigger type.
    * This method performs several key operations:
-   * 1. Validates the presence of a JWT token and a user storage key. If either is missing, an error is thrown.
+   * 1. Validates the presence of a BearerToken token and a user storage key. If either is missing, an error is thrown.
    * 2. Retrieves and validates the current user storage. If the user storage does not exist, an error is thrown.
    * 3. Updates the user storage by upserting triggers related to the specified trigger type.
    * 4. Creates on-chain triggers based on the updated user storage.
@@ -664,26 +850,23 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * @param triggerType - The type of trigger to update.
    * @returns A promise that resolves to the updated user storage.
-   * @throws An error if JWT or storage key is missing, if user storage does not exist, or if the operation fails.
+   * @throws An error if BearerToken or storage key is missing, if user storage does not exist, or if the operation fails.
    */
-  public async updateOnChainTriggersByType(triggerType: TRIGGER_TYPES) {
+  public async updateOnChainTriggersByType(
+    triggerType: TRIGGER_TYPES,
+  ): Promise<UserStorage> {
     try {
-      // Get and Validate JWT and User Storage Key
+      // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const jwt = this.getJwtToken();
+      const bearerToken = this.getBearerTokenToken();
 
-      if (!jwt || !storageKey) {
-        log.error('Missing JWT or the Storage Key');
+      if (!bearerToken || !storageKey) {
+        log.error('Missing BearerToken or the Storage Key');
         throw new Error();
       }
 
       // Get & Validate User Storage
-      const currentUserStorage: UserStorage | null =
-        await this.messagingSystem.call('UserStorageController:getUserStorage');
-      if (!currentUserStorage) {
-        log.error('Current user storage does not exist');
-        throw new Error();
-      }
+      const currentUserStorage = await this.getUserStorage();
 
       // Check if the address has related UUIDs
       let updatedUserStorage = currentUserStorage;
@@ -694,8 +877,8 @@ export class MetamaskNotificationsController extends BaseController<
         );
 
       // Write te updated userStorage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(updatedUserStorage),
       );
 
@@ -707,19 +890,22 @@ export class MetamaskNotificationsController extends BaseController<
       await this.onChainNotificationsService.createOnChainTriggers(
         updatedUserStorage,
         storageKey,
-        jwt,
+        bearerToken,
         triggers,
       );
 
+      // Update Push Notifications Triggers
+      const UUIDs =
+        this.metamaskNotificationUtils.getAllUUIDs(updatedUserStorage);
+      await this.updatePushNotifications(UUIDs);
+
       // Update the userStorage
-      await this.messagingSystem.call(
-        'UserStorageController:upsertUserStorage',
+      await this.setStorage(
+        'notification_settings',
         JSON.stringify(updatedUserStorage),
       );
 
-      // TODO Update Push Notifications Triggers
-
-      return { data: updatedUserStorage };
+      return updatedUserStorage;
     } catch (err) {
       log.error('Failed to update OnChain triggers', err);
       throw new Error();
@@ -730,14 +916,12 @@ export class MetamaskNotificationsController extends BaseController<
    * Fetches and updates the list of metamask notifications.
    *
    * This method performs several key operations to update the metamask notifications:
-   * 1. Sets the loading state to true at the beginning of the operation.
-   * 2. Validates the presence of a JWT token and a storage key. If either is missing, logs an error and throws an exception.
-   * 3. Fetches raw feature announcement notifications regardless of the user's authentication status.
-   * 4. If a JWT token and storage key are present, it attempts to fetch raw on-chain notifications.
-   * 5. Processes both feature announcement and on-chain notifications, filtering out any undefined values.
-   * 6. Sorts the combined list of notifications by their creation date in descending order.
-   * 7. Updates the metamask notifications list with the processed notifications.
-   * 8. Sets the loading state to false at the end of the operation.
+   * 1. Validates the presence of a BearerToken token and a storage key. If either is missing, logs an error and throws an exception.
+   * 2. Fetches raw feature announcement notifications regardless of the user's authentication status.
+   * 3. If a BearerToken token and storage key are present, it attempts to fetch raw on-chain notifications.
+   * 4. Processes both feature announcement and on-chain notifications, filtering out any undefined values.
+   * 5. Sorts the combined list of notifications by their creation date in descending order.
+   * 6. Updates the metamask notifications list with the processed notifications.
    *
    * If any errors occur during the process, it logs the error and throws an exception.
    *
@@ -746,15 +930,15 @@ export class MetamaskNotificationsController extends BaseController<
    */
   public async fetchAndUpdateMetamaskNotifications() {
     try {
-      this.updateMetamaskNotificationsIsLoadingState(true);
-
       // Check if userStorage already exists
       const storageKey = this.getStorageKey();
-      const jwt = this.getJwtToken();
+      const bearerToken = this.getBearerTokenToken();
 
-      if (!jwt || !storageKey) {
-        // Handle the case where jwt or storageKey is null
-        log.error('Metamask Notifications - Missing JWT or storage key');
+      if (!bearerToken || !storageKey) {
+        // Handle the case where bearerToken or storageKey is null
+        log.error(
+          'Metamask Notifications - Missing BearerToken or storage key',
+        );
         throw new Error();
       }
 
@@ -765,21 +949,14 @@ export class MetamaskNotificationsController extends BaseController<
           .catch(() => []);
 
       let rawOnChainNotifications: OnChainRawNotification[] = [];
-      if (jwt && storageKey) {
+      if (bearerToken && storageKey) {
         // Get & Validate User Storage
-        const userStorage: UserStorage | null = await this.messagingSystem.call(
-          'UserStorageController:getUserStorage',
-        );
-
-        if (!userStorage) {
-          log.error('User storage does not exist');
-          throw new Error();
-        }
+        const userStorage = await this.getUserStorage();
 
         // Check if the userStorage exists
         if (userStorage) {
           rawOnChainNotifications = await this.onChainNotificationsService
-            .getOnChainNotifications(userStorage, jwt)
+            .getOnChainNotifications(userStorage, bearerToken)
             .catch(() => []);
         }
       }
@@ -816,7 +993,6 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       this.updateMetamaskNotificationsList(metamaskNotifications);
-      this.updateMetamaskNotificationsIsLoadingState(false);
     } catch (err) {
       log.error('Failed to fetch notifications', err);
       throw new Error('Failed to fetch notifications');
@@ -828,12 +1004,12 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * This method processes a list of notifications, segregating them into on-chain and feature announcement notifications.
    * It then marks each notification as read by updating the relevant service or state. For on-chain notifications, it requires
-   * a JWT token to proceed. If the JWT token is missing, an error is logged, and the process is halted. After successfully
+   * a BearerToken token to proceed. If the BearerToken token is missing, an error is logged, and the process is halted. After successfully
    * marking the notifications as read, it updates the internal state to reflect these changes, ensuring the UI components
    * can accurately display read/unread notifications.
    *
    * @param notifications - An array of notifications to be marked as read. Each notification should include its type and read status.
-   * @throws {Error} Throws an error if marking on-chain notifications as read fails due to missing JWT token or any other issue.
+   * @throws {Error} Throws an error if marking on-chain notifications as read fails due to missing BearerToken token or any other issue.
    * @returns A promise that resolves when the operation is complete.
    */
   public async markMetamaskNotificationsAsRead(
@@ -858,20 +1034,20 @@ export class MetamaskNotificationsController extends BaseController<
 
       // If the onChainNotifications is not empty, start to set the onChainNotifications as read
       if (onChainNotifications.length > 0) {
-        const jwt = this.getJwtToken();
+        const bearerToken = this.getBearerTokenToken();
 
-        if (!jwt) {
-          log.error('Metamask Notifications - Missing JWT');
+        if (!bearerToken) {
+          log.error('Metamask Notifications - Missing BearerToken');
           throw new Error();
         }
 
-        // 2. If a JWT token is available, mark the onchain notifications as read
-        if (jwt) {
+        // 2. If a BearerToken token is available, mark the onchain notifications as read
+        if (bearerToken) {
           onchainNotificationIds = onChainNotifications.map(
             (notification) => notification.id,
           );
           await this.onChainNotificationsService.markNotificationsAsRead(
-            jwt,
+            bearerToken,
             onchainNotificationIds,
           );
         }

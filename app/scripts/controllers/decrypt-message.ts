@@ -262,7 +262,7 @@ export default class DecryptMessageController extends BaseController<
       );
       this._acceptApproval(messageId);
     } catch (error) {
-      log.error('MetaMaskController - eth_decrypt failed.', error);
+      log.info('MetaMaskController - eth_decrypt failed.', error);
       this._cancelAbstractMessage(this._decryptMessageManager, messageId);
       throw error;
     }
@@ -412,7 +412,7 @@ export default class DecryptMessageController extends BaseController<
         true,
       );
     } catch (error) {
-      log.error('Error adding request to approval controller', error);
+      log.info('Error adding request to approval controller', error);
     }
   }
 
@@ -430,7 +430,7 @@ export default class DecryptMessageController extends BaseController<
         'Cancel',
       );
     } catch (error) {
-      log.error('Error rejecting request to approval controller', error);
+      log.info('Error rejecting request to approval controller', error);
     }
   }
 }

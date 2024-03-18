@@ -1,4 +1,4 @@
-import type { TRIGGER_TYPES } from '../../../../../../shared/constants/platform-notifications';
+import type { TRIGGER_TYPES } from '../../../../../../shared/constants/metamask-notifications';
 import type { Compute } from '../type-utils';
 import type { components } from './schema';
 

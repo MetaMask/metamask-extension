@@ -7,7 +7,7 @@ import type {
 } from '../types/feature-announcement/feature-announcement';
 import type { Notification } from '../types/notification/notification';
 import { processFeatureAnnouncement } from '../processors/process-feature-announcement';
-import { TRIGGER_TYPES } from '../../../../../shared/constants/platform-notifications';
+import { TRIGGER_TYPES } from '../../../../../shared/constants/metamask-notifications';
 
 export class FeatureAnnouncementsService {
   private async fetchFromContentful(
