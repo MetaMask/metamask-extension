@@ -41,8 +41,8 @@
       "currencyRates": {
         "ETH": {
           "conversionDate": "number",
-          "conversionRate": 1300,
-          "usdConversionRate": 1300
+          "conversionRate": 1700,
+          "usdConversionRate": 1700
         }
       }
     },
