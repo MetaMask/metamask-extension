@@ -164,7 +164,7 @@ export class MetamaskNotificationsController extends BaseController<
 
   private isSignedIn: () => boolean;
 
-  private getBearerTokenToken: () => string;
+  private getBearerToken: () => string;
 
   private getStorageKey: () => string;
 
@@ -192,7 +192,7 @@ export class MetamaskNotificationsController extends BaseController<
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
    * @param args.isSignedIn - Function to check if the user is signed in.
-   * @param args.getBearerTokenToken - Function that returns the jet token for this controller.
+   * @param args.getBearerToken - Function that returns the jet token for this controller.
    * @param args.getStorageKey - Function that returns the storage key for this controller.
    * @param args.getStorage - Function to retrieve user storage data.
    * @param args.setStorage - Function to update user storage data.
@@ -204,7 +204,7 @@ export class MetamaskNotificationsController extends BaseController<
     messenger,
     state,
     isSignedIn,
-    getBearerTokenToken,
+    getBearerToken,
     getStorageKey,
     getStorage,
     setStorage,
@@ -215,7 +215,7 @@ export class MetamaskNotificationsController extends BaseController<
     messenger: MetamaskNotificationsControllerMessenger;
     state?: MetamaskNotificationsControllerState;
     isSignedIn: () => boolean;
-    getBearerTokenToken: () => string;
+    getBearerToken: () => string;
     getStorageKey: () => string;
     getStorage: (entryKey: UserStorageEntryKeys) => Promise<string | null>;
     setStorage: (
@@ -269,7 +269,7 @@ export class MetamaskNotificationsController extends BaseController<
     ) as InternalAccount[];
     this.isSignedIn = isSignedIn;
 
-    this.getBearerTokenToken = getBearerTokenToken;
+    this.getBearerToken = getBearerToken;
 
     this.getStorageKey = getStorageKey;
 
@@ -580,7 +580,7 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       const storageKey = this.getStorageKey();
-      const bearerToken = this.getBearerTokenToken();
+      const bearerToken = this.getBearerToken();
 
       if (!bearerToken || !storageKey) {
         // Handle the case where bearerToken or storageKey is null
@@ -654,7 +654,7 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const bearerToken = this.getBearerTokenToken();
+      const bearerToken = this.getBearerToken();
 
       if (!bearerToken || !storageKey) {
         log.error('Missing BearerToken or the Storage Key');
@@ -716,7 +716,7 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const bearerToken = this.getBearerTokenToken();
+      const bearerToken = this.getBearerToken();
 
       if (!bearerToken || !storageKey) {
         log.error('Missing BearerToken or the Storage Key');
@@ -780,7 +780,7 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const bearerToken = this.getBearerTokenToken();
+      const bearerToken = this.getBearerToken();
 
       if (!bearerToken || !storageKey) {
         log.error('Missing BearerToken or the Storage Key');
@@ -858,7 +858,7 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       // Get and Validate BearerToken and User Storage Key
       const storageKey = this.getStorageKey();
-      const bearerToken = this.getBearerTokenToken();
+      const bearerToken = this.getBearerToken();
 
       if (!bearerToken || !storageKey) {
         log.error('Missing BearerToken or the Storage Key');
@@ -932,7 +932,7 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       // Check if userStorage already exists
       const storageKey = this.getStorageKey();
-      const bearerToken = this.getBearerTokenToken();
+      const bearerToken = this.getBearerToken();
 
       if (!bearerToken || !storageKey) {
         // Handle the case where bearerToken or storageKey is null
@@ -1034,7 +1034,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       // If the onChainNotifications is not empty, start to set the onChainNotifications as read
       if (onChainNotifications.length > 0) {
-        const bearerToken = this.getBearerTokenToken();
+        const bearerToken = this.getBearerToken();
 
         if (!bearerToken) {
           log.error('Metamask Notifications - Missing BearerToken');
