@@ -75,7 +75,10 @@ export default function TokenAsset({ token }) {
         }
       />
       <TokenOverview className="asset__overview" token={token} />
-      <TransactionList tokenAddress={token.address} />
+      <TransactionList
+        tokenAddress={token.address}
+        boxProps={{ paddingTop: 4 }}
+      />
     </>
   );
 }
