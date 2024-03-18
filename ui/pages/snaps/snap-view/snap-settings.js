@@ -37,13 +37,12 @@ import {
   getSnaps,
   getSubjectsWithSnapPermission,
   getPermissions,
-  getTargetSubjectMetadata,
   getSnapLatestVersion,
+  getSnapMetadata,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMemoizedMetaMaskIdentities,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
 import {
   Box,
   Button,
@@ -87,8 +86,9 @@ function SnapSettings({ snapId }) {
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snap?.id),
+
+  const { name: snapName, description } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
 
   let isKeyringSnap = false;
@@ -111,8 +111,6 @@ function SnapSettings({ snapId }) {
   const onDisconnect = (connectedOrigin) => {
     dispatch(disconnectOriginFromSnap(connectedOrigin, snap.id));
   };
-
-  const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
   const latestRegistryVersion = useSelector((state) =>
     snap ? getSnapLatestVersion(state, snap?.id) : null,
@@ -148,7 +146,7 @@ function SnapSettings({ snapId }) {
       <Box className="snap-view__content__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <ShowMore buttonBackground={BackgroundColor.backgroundDefault}>
-            <Text>{snap?.manifest.description}</Text>
+            <Text>{description}</Text>
           </ShowMore>
         </SnapDelineator>
       </Box>
@@ -156,8 +154,8 @@ function SnapSettings({ snapId }) {
         <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
         <SnapPermissionsList
           snapId={snapId}
+          snapName={snapName}
           permissions={permissions ?? {}}
-          targetSubjectMetadata={targetSubjectMetadata}
           showOptions
         />
       </Box>
