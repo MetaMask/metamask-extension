@@ -1,6 +1,11 @@
 import { isHexString } from 'ethereumjs-util';
 import { Interface } from '@ethersproject/abi';
-import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
+import {
+  abiERC721,
+  abiERC20,
+  abiERC1155,
+  USDC_ABI,
+} from '@metamask/metamask-eth-abis';
 import type EthQuery from '@metamask/eth-query';
 import log from 'loglevel';
 import {
@@ -18,6 +23,7 @@ const INFERRABLE_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.tokenMethodSetApprovalForAll,
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodIncreaseAllowance,
   TransactionType.contractInteraction,
   TransactionType.simpleSend,
 ];
@@ -32,6 +38,7 @@ type InferTransactionTypeResult = {
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
+const USDCInterface = new Interface(USDC_ABI);
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
@@ -116,6 +123,12 @@ export function parseStandardTokenTransactionData(data: string) {
     // ignore and return undefined
   }
 
+  try {
+    return USDCInterface.parseTransaction({ data });
+  } catch {
+    // ignore and return undefined
+  }
+
   return undefined;
 }
 
@@ -169,6 +182,7 @@ export async function determineTransactionType(
         TransactionType.tokenMethodSetApprovalForAll,
         TransactionType.tokenMethodTransfer,
         TransactionType.tokenMethodTransferFrom,
+        TransactionType.tokenMethodIncreaseAllowance,
         TransactionType.tokenMethodSafeTransferFrom,
       ].find((methodName) => isEqualCaseInsensitive(methodName, name));
       return {
@@ -227,6 +241,7 @@ export async function determineTransactionAssetType(
     TransactionType.tokenMethodSetApprovalForAll,
     TransactionType.tokenMethodTransfer,
     TransactionType.tokenMethodTransferFrom,
+    TransactionType.tokenMethodIncreaseAllowance,
   ].find((methodName) => methodName === inferrableType);
 
   if (
