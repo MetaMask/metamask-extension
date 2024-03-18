@@ -36,12 +36,12 @@ export default class OnboardingController {
    * Constructs a Onboarding  controller.
    *
    * @param options - the controller options
-   * @param options.state - Initial controller state.
+   * @param options.initState - Initial controller state.
    */
-  constructor({ state }: { state: OnboardingControllerState }) {
+  constructor({ initState }: { initState: OnboardingControllerState }) {
     this.store = new ObservableStore({
       ...defaultState,
-      ...state,
+      ...initState,
       ...defaultTransientState,
     });
   }
