@@ -292,8 +292,10 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.method = method;
       }
 
-      const transformParams = TRANSFORM_PARAMS_MAP[method] ?? (() => undefined);
-      eventProperties.params = transformParams(params);
+      const transformParams = TRANSFORM_PARAMS_MAP[method];
+      if (transformParams) {
+        eventProperties.params = transformParams(params);
+      }
 
       trackEvent({
         event,
