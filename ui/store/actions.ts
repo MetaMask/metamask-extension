@@ -2027,6 +2027,34 @@ export function addNft(
   };
 }
 
+export function updateNftMetadata(
+  nfts: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    if (nfts.some((nft) => !nft.address)) {
+      throw new Error('MetaMask - Cannot updateNftMetadata without address');
+    }
+    if (nfts.some((nft) => !nft.tokenId)) {
+      throw new Error('MetaMask - Cannot updateNftMetadata without tokenId');
+    }
+    try {
+      const networkClientId = getSelectedNetworkClientId(getState());
+      await submitRequestToBackground('updateNftMetadata', [
+        {
+          nfts,
+          networkClientId,
+        },
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning(error));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function addNftVerifyOwnership(
   address: string,
   tokenID: string,
