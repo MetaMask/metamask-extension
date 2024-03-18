@@ -4822,10 +4822,6 @@
   "whatsThis": {
     "message": "これは何ですか？"
   },
-  "xOfY": {
-    "message": "$2中の$1",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
   "xOfYPending": {
     "message": "$2件中$1件が保留中",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"

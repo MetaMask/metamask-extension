@@ -1825,10 +1825,6 @@
   "whatsThis": {
     "message": "Cos'è?"
   },
-  "xOfY": {
-    "message": "$1 di $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."
   },

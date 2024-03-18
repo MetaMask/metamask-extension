@@ -2,10 +2,17 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { SubjectType } from '@metamask/permission-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';
 import { PageContainerFooter } from '../../../components/ui/page-container';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { Box, Text } from '../../../components/component-library';
 
 const ChooseAccount = ({
   selectedAccountAddresses,
@@ -65,15 +72,20 @@ const ChooseAccount = ({
 
   return (
     <>
-      <div className="permissions-connect-choose-account__content">
-        <PermissionsConnectHeader
-          iconUrl={targetSubjectMetadata?.iconUrl}
-          iconName={targetSubjectMetadata?.name}
-          headerTitle={t('connectWithMetaMask')}
-          headerText={headerText}
-          siteOrigin={targetSubjectMetadata?.origin}
-          subjectType={targetSubjectMetadata?.subjectType}
-        />
+      <Box className="permissions-connect-choose-account__content">
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          <Text variant={TextVariant.headingLg}>
+            {t('connectWithMetaMask')}
+          </Text>
+          <Text variant={TextVariant.bodyMd}>{headerText}</Text>
+        </Box>
         <AccountList
           accounts={accounts}
           selectNewAccountViaModal={selectNewAccountViaModal}
@@ -85,7 +97,7 @@ const ChooseAccount = ({
           selectAll={selectAll}
           handleAccountClick={handleAccountClick}
         />
-      </div>
+      </Box>
       <div className="permissions-connect-choose-account__footer-container">
         {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
           <PermissionsConnectFooter />

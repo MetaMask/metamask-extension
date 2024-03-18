@@ -10,12 +10,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
+import { Box } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
@@ -80,8 +75,6 @@ export default class PermissionConnect extends Component {
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     hideTopBar: PropTypes.bool,
-    totalPages: PropTypes.string.isRequired,
-    page: PropTypes.string.isRequired,
     targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
@@ -283,56 +276,32 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar() {
-    const {
-      redirecting,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-      targetSubjectMetadata,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.state;
-    const { page, isRequestingAccounts, totalPages } = this.props;
-    const { t } = this.context;
+    const { redirecting, targetSubjectMetadata } = this.state;
+    console.log('////////////////////////');
+    console.log(targetSubjectMetadata);
     return redirecting ? null : (
       <Box
         style={{
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           marginBottom:
             targetSubjectMetadata.subjectType === SubjectType.Snap && '14px',
           boxShadow:
             targetSubjectMetadata.subjectType === SubjectType.Snap &&
             'var(--shadow-size-lg) var(--color-shadow-default)',
-          ///: END:ONLY_INCLUDE_IF
         }}
       >
-        <div className="permissions-connect__top-bar">
-          {page === '2' && isRequestingAccounts ? (
-            <div
-              className="permissions-connect__back"
-              onClick={() => this.goBack()}
-            >
-              <Icon
-                name={IconName.ArrowLeft}
-                marginInlineEnd={1}
-                size={IconSize.Xs}
-              />
-              {t('back')}
-            </div>
-          ) : null}
-          {isRequestingAccounts ? (
-            <div className="permissions-connect__page-count">
-              {t('xOfY', [page, totalPages])}
-            </div>
-          ) : null}
-        </div>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          targetSubjectMetadata.subjectType === SubjectType.Snap && (
-            <SnapAuthorshipHeader
-              snapId={targetSubjectMetadata.origin}
-              boxShadow="none"
-            />
-          )
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {targetSubjectMetadata.subjectType === SubjectType.Snap ? (
+          <SnapAuthorshipHeader
+            snapId={targetSubjectMetadata.origin}
+            boxShadow="none"
+          />
+        ) : (
+          <SnapAuthorshipHeader
+            website
+            websiteName={targetSubjectMetadata.name}
+            websiteOrigin={targetSubjectMetadata.origin}
+            websiteIconUrl={targetSubjectMetadata.iconUrl}
+          />
+        )}
       </Box>
     );
   }

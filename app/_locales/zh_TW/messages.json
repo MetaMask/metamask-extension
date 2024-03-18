@@ -1509,10 +1509,6 @@
   "whatsThis": {
     "message": "這是什麼？"
   },
-  "xOfY": {
-    "message": "$1 之 $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
   "xOfYPending": {
     "message": "$1 之 $2 等待中",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"

@@ -30,6 +30,7 @@ const SnapAvatar = ({
   avatarSize = IconSize.Lg,
   borderWidth = 2,
   className,
+  websiteIconUrl,
 }) => {
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -39,25 +40,31 @@ const SnapAvatar = ({
     getSnapMetadata(state, snapId),
   );
 
-  const iconUrl = subjectMetadata?.iconUrl;
+  const iconUrl = websiteIconUrl || subjectMetadata?.iconUrl;
 
   // We choose the first non-symbol char as the fallback icon.
-  const fallbackIcon = snapName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+  const fallbackIcon = snapId
+    ? snapName?.match(/[a-z0-9]/iu)?.[0] ?? '?'
+    : websiteIconUrl?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 
   return (
     <BadgeWrapper
       className={classnames('snap-avatar', className)}
       badge={
-        <AvatarIcon
-          iconName={IconName.Snaps}
-          size={badgeSize}
-          backgroundColor={IconColor.infoDefault}
-          borderColor={BackgroundColor.backgroundDefault}
-          borderWidth={borderWidth}
-          iconProps={{
-            color: IconColor.infoInverse,
-          }}
-        />
+        websiteIconUrl ? (
+          ''
+        ) : (
+          <AvatarIcon
+            iconName={IconName.Snaps}
+            size={badgeSize}
+            backgroundColor={IconColor.infoDefault}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={borderWidth}
+            iconProps={{
+              color: IconColor.infoInverse,
+            }}
+          />
+        )
       }
       position={BadgeWrapperPosition.bottomRight}
     >
@@ -97,6 +104,7 @@ SnapAvatar.propTypes = {
    * The className of the SnapAvatar
    */
   className: PropTypes.string,
+  websiteIconUrl: PropTypes.string,
 };
 
 export default SnapAvatar;

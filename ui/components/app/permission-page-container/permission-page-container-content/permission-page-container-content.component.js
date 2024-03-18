@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IF
-import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../component-library';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -18,12 +24,10 @@ export default class PermissionPageContainerContent extends PureComponent {
     }),
     selectedPermissions: PropTypes.object.isRequired,
     selectedAccounts: PropTypes.array,
-    allAccountsSelected: PropTypes.bool,
   };
 
   static defaultProps = {
     selectedAccounts: [],
-    allAccountsSelected: false,
   };
 
   static contextTypes = {
@@ -72,66 +76,35 @@ export default class PermissionPageContainerContent extends PureComponent {
     );
   }
 
-  getTitle() {
-    const {
-      subjectMetadata,
-      selectedAccounts,
-      allAccountsSelected,
-      selectedPermissions,
-    } = this.props;
-    const { t } = this.context;
-
-    if (subjectMetadata.extensionId) {
-      return t('externalExtension', [subjectMetadata.extensionId]);
-    } else if (!selectedPermissions.eth_accounts) {
-      return t('permissionRequestCapitalized');
-    } else if (allAccountsSelected) {
-      return t('connectToAll', [
-        this.renderAccountTooltip(t('connectToAllAccounts')),
-      ]);
-    } else if (selectedAccounts.length > 1) {
-      return t('connectToMultiple', [
-        this.renderAccountTooltip(
-          t('connectToMultipleNumberOfAccounts', [selectedAccounts.length]),
-        ),
-      ]);
-    }
-    return t('connectTo', [selectedAccounts[0]?.addressLabel]);
-  }
-
-  getHeaderText() {
-    const { subjectMetadata } = this.props;
-    const { t } = this.context;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-    if (subjectMetadata.subjectType === SubjectType.Snap) {
-      return t('allowThisSnapTo');
-    }
-    ///: END:ONLY_INCLUDE_IF
-
-    return subjectMetadata.extensionId
-      ? t('allowExternalExtensionTo', [subjectMetadata.extensionId])
-      : t('allowThisSiteTo');
-  }
-
   render() {
+    const { t } = this.context;
     const { subjectMetadata } = this.props;
-
-    const title = this.getTitle();
-
-    const headerText = this.getHeaderText();
 
     return (
       <div className="permission-approval-container__content">
         <div className="permission-approval-container__content-container">
-          <PermissionsConnectHeader
-            iconUrl={subjectMetadata.iconUrl}
-            iconName={subjectMetadata.name}
-            headerTitle={title}
-            headerText={headerText}
-            siteOrigin={subjectMetadata.origin}
-            subjectType={subjectMetadata.subjectType}
-          />
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            paddingTop={4}
+            paddingBottom={4}
+          >
+            <Text variant={TextVariant.headingLg} textAlign={TextAlign.Center}>
+              {t('permissions')}
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              {t('nativePermissionRequestDescription', [
+                <Text
+                  key={`description_key_${subjectMetadata.origin}`}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {subjectMetadata.origin}
+                </Text>,
+              ])}
+            </Text>
+          </Box>
           <section className="permission-approval-container__permissions-container">
             {this.renderRequestedPermissions()}
           </section>

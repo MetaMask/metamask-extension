@@ -2690,6 +2690,10 @@
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nativePermissionRequestDescription": {
+    "message": "$1 is asking for your approval to:",
+    "description": "Description below header used on Permission Connect screen for native permissions. $1 is the website origin."
+  },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",
     "description": "$1 represents the name of the native token on the current network"
@@ -5899,10 +5903,6 @@
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "xOfY": {
-    "message": "$1 of $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",
