@@ -429,6 +429,7 @@ export default class ConfirmTransactionBase extends Component {
             key="total-max-amount"
             value={getTotalAmount(useMaxFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+              numberOfDecimals={9}
           />
         );
       }
@@ -456,6 +457,7 @@ export default class ConfirmTransactionBase extends Component {
               key="total-detail-text"
               value={value}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              numberOfDecimals={9}
             />
           </div>
         );

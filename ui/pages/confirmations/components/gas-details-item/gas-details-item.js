@@ -109,6 +109,7 @@ const GasDetailsItem = ({
                 type={SECONDARY}
                 value={getTransactionFeeTotal}
                 hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                numberOfDecimals={9}
               />
             )}
           </div>
@@ -121,6 +122,7 @@ const GasDetailsItem = ({
             type={PRIMARY}
             value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            numberOfDecimals={9}
           />
         </div>
       }
@@ -156,6 +158,7 @@ const GasDetailsItem = ({
                   getMaxTransactionFeeTotal || draftHexMaximumTransactionFee
                 }
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                numberOfDecimals={9}
               />
             </div>
           </Box>
