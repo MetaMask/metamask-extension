@@ -115,7 +115,7 @@ export default class PreferencesController {
       useTransactionSimulations: true,
       enableMV3TimestampSave: true,
       ///: END:ONLY_INCLUDE_IF
-      disableExternalServices: true, // consider a name that aligns with the feature
+      disableExternalServices: true,
       ...opts.initState,
     };
 

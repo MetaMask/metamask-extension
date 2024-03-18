@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Display,
   FlexDirection,
@@ -29,13 +29,19 @@ import {
   IconSize,
   Checkbox,
 } from '../../component-library';
+import { getDisableExternalServices } from '../../../selectors';
 
 export function BasicConfigurationModal() {
   const t = useI18nContext();
   const [hasAgreed, setHasAgreed] = useState(false);
   const dispatch = useDispatch();
-
+  const isBasicConfigurationSettingOff = useSelector(
+    getDisableExternalServices,
+  );
   function disableExternalServices() {
+    dispatch(setDisableExternalServices(true));
+  }
+  function enableExternalServices() {
     dispatch(setDisableExternalServices(false));
   }
 
@@ -75,7 +81,9 @@ export function BasicConfigurationModal() {
               color={IconColor.errorDefault}
             />
             <Text variant={TextVariant.headingSm}>
-              {t('basicConfigurationModalHeading')}
+              {isBasicConfigurationSettingOff
+                ? t('basicConfigurationModalHeadingOn')
+                : t('basicConfigurationModalHeadingOff')}
             </Text>
           </Box>
         </ModalHeader>
@@ -89,17 +97,23 @@ export function BasicConfigurationModal() {
           flexDirection={FlexDirection.Column}
         >
           <Text variant={TextVariant.bodySm}>
-            {t('basicConfigurationModalDisclaimer')}
+            {isBasicConfigurationSettingOff
+              ? t('basicConfigurationModalDisclaimerOn')
+              : t('basicConfigurationModalDisclaimerOff')}
           </Text>
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <Checkbox
-              isChecked={hasAgreed}
-              onClick={() => setHasAgreed((prevValue) => !prevValue)}
-            />{' '}
-            <Text variant={TextVariant.bodySm}>
-              {t('basicConfigurationModalCheckbox')}
-            </Text>
-          </Box>
+          {!isBasicConfigurationSettingOff && (
+            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+              <Checkbox
+                isChecked={hasAgreed}
+                onClick={() => {
+                  setHasAgreed((prevValue) => !prevValue);
+                }}
+              />{' '}
+              <Text variant={TextVariant.bodySm}>
+                {t('basicConfigurationModalCheckbox')}
+              </Text>
+            </Box>
+          )}
         </Box>
 
         <ModalFooter>
@@ -114,16 +128,18 @@ export function BasicConfigurationModal() {
               {t('cancel')}
             </Button>
             <Button
-              disabled={!hasAgreed}
+              disabled={!hasAgreed && !isBasicConfigurationSettingOff}
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
               onClick={() => {
                 closeModal();
-                disableExternalServices();
+                isBasicConfigurationSettingOff
+                  ? enableExternalServices()
+                  : disableExternalServices();
               }}
               danger
             >
-              {t('turnOff')}
+              {isBasicConfigurationSettingOff ? t('turnOn') : t('turnOff')}
             </Button>
           </Box>
         </ModalFooter>
