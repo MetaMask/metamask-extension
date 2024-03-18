@@ -19,7 +19,7 @@ function useConfirmationRecipientInfo() {
     if (msgParams) {
       recipientAddress = msgParams.from;
       const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
-      recipientName = fromAccount?.metadata.name;
+      recipientName = fromAccount?.metadata?.name;
     }
     // TODO: as we add support for more transaction code to find recipient address for different
     // transaction types will come here
