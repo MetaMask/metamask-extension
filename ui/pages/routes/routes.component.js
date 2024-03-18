@@ -255,6 +255,7 @@ export default class Routes extends Component {
       activeTabOrigin,
       unapprovedTransactions,
       allNetworks,
+      isUnlocked,
     } = this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
@@ -271,8 +272,9 @@ export default class Routes extends Component {
     if (!neverShowSwitchedNetworkMessage) {
       if (
         networkToAutomaticallySwitchTo &&
-        prevProps.unapprovedTransactions > 0 &&
-        unapprovedTransactions === 0
+        ((prevProps.unapprovedTransactions > 0 &&
+          unapprovedTransactions === 0) ||
+          (prevProps.isUnlocked === false && isUnlocked))
       ) {
         this.props.autoSwitchNetwork(
           networkToAutomaticallySwitchTo,
