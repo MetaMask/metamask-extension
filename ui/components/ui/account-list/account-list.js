@@ -151,7 +151,6 @@ const AccountList = ({
                       width={BlockSize.Full}
                     >
                       <Text
-                        as="span"
                         variant={TextVariant.bodyLgMedium}
                         style={{ maxWidth: '130px' }}
                         ellipsis

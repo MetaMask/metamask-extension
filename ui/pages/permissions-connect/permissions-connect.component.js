@@ -277,8 +277,6 @@ export default class PermissionConnect extends Component {
 
   renderTopBar() {
     const { redirecting, targetSubjectMetadata } = this.state;
-    console.log('////////////////////////');
-    console.log(targetSubjectMetadata);
     return redirecting ? null : (
       <Box
         style={{
