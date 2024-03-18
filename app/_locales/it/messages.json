@@ -241,15 +241,9 @@
     "message": "Tutti i tuoi $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
-  "allowExternalExtensionTo": {
-    "message": "Permetti a questa estensione di:"
-  },
   "allowSpendToken": {
     "message": "Dai il permesso di spendere tuoi $1?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Permetti a questo sito di:"
   },
   "allowWithdrawAndSpend": {
     "message": "Consenti a $1 di ritirare e spendere fino a questo importo:",
@@ -455,26 +449,6 @@
   },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
-  },
-  "connectTo": {
-    "message": "Connettiti a $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Connettiti a tutti i tuoi $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "account",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Connettiti a $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 account",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Connetti con MetaMask"

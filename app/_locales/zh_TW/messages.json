@@ -92,12 +92,6 @@
   "alerts": {
     "message": "提醒"
   },
-  "allowExternalExtensionTo": {
-    "message": "允許這個外部擴充功能："
-  },
-  "allowThisSiteTo": {
-    "message": "允許這個網站："
-  },
   "allowWithdrawAndSpend": {
     "message": "允許 $1 提款或最多花費以下額度：",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -244,26 +238,6 @@
   },
   "connectManually": {
     "message": "手動連結到目前的網站"
-  },
-  "connectTo": {
-    "message": "連結到 $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "連結到您的全部$1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "帳戶",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "連結到 $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 個帳戶",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "連結到 MetaMask"
