@@ -1126,18 +1126,19 @@ export const signAndSendTransactions = (
     const usedTradeTxParams = usedQuote.trade;
 
     const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || `0x0`,
+      usedQuote?.gasEstimate || 0,
       16,
-    );
-    const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
-      .round(0)
-      .toString(16);
+    ).toString(16);
+
     const maxGasLimit =
       customSwapsGas ||
       (usedQuote?.gasEstimate
-        ? estimatedGasLimitWithMultiplier
-        : `0x${decimalToHex(usedQuote?.maxGas || 0)}`);
+        ? `0x${estimatedGasLimit}`
+        : `0x${decimalToHex(
+            new BigNumber(usedQuote?.maxGas)
+              .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
+              .toString() || 0,
+          )}`);
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
