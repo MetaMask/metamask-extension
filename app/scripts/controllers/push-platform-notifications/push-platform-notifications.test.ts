@@ -34,7 +34,7 @@ describe('PushPlatformNotificationsController', () => {
     it('should fail if a jwt token is not provided', async () => {
       await withController(async ({ controller }) => {
         jest
-          .spyOn(controller as any, 'getJwtToken')
+          .spyOn(controller as any, 'getBearerToken')
           .mockResolvedValue(undefined);
 
         await expect(controller.enablePushNotifications([])).rejects.toThrow();
@@ -63,7 +63,7 @@ describe('PushPlatformNotificationsController', () => {
     it('should fail if a jwt token is not provided', async () => {
       await withController(async ({ controller }) => {
         jest
-          .spyOn(controller as any, 'getJwtToken')
+          .spyOn(controller as any, 'getBearerToken')
           .mockResolvedValue(undefined);
 
         await expect(controller.disablePushNotifications([])).rejects.toThrow();
@@ -128,11 +128,11 @@ async function withController<ReturnValue>(
   fn: WithControllerCallback<ReturnValue>,
 ): Promise<ReturnValue> {
   const messenger = buildPushPlatformNotificationsControllerMessanger();
-  const getJwtToken = async () => MOCK_JWT;
+  const getBearerToken = async () => MOCK_JWT;
   const controller = new PushPlatformNotificationsController({
     messenger,
     state: { fcmToken: '' },
-    getJwtToken,
+    getBearerToken,
   });
 
   return await fn({

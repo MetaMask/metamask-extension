@@ -69,17 +69,17 @@ export class PushPlatformNotificationsUtils {
   }
 
   /**
-   * Fetches push notification links from a remote endpoint using a JWT for authorization.
+   * Fetches push notification links from a remote endpoint using a BearerToken for authorization.
    *
-   * @param jwt - The JSON Web Token used for authorization.
+   * @param bearerToken - The JSON Web Token used for authorization.
    * @returns A promise that resolves with the links result or null if an error occurs.
    */
   private static async getPushNotificationLinks(
-    jwt: string,
+    bearerToken: string,
   ): Promise<LinksResult | null> {
     try {
       const response = await fetch(REGISTRATION_TOKENS_ENDPOINT, {
-        headers: { Authorization: `Bearer ${jwt}` },
+        headers: { Authorization: `Bearer ${bearerToken}` },
       });
       if (!response.ok) {
         throw new Error('Failed to fetch links');
@@ -93,13 +93,13 @@ export class PushPlatformNotificationsUtils {
   /**
    * Updates the push notification links on a remote API.
    *
-   * @param jwt - The JSON Web Token used for authorization.
+   * @param bearerToken - The JSON Web Token used for authorization.
    * @param triggers - An array of trigger identifiers.
    * @param regTokens - An array of registration tokens.
    * @returns A promise that resolves with true if the update was successful, false otherwise.
    */
   private static async updateLinksAPI(
-    jwt: string,
+    bearerToken: string,
     triggers: string[],
     regTokens: string[],
   ): Promise<boolean> {
@@ -113,7 +113,7 @@ export class PushPlatformNotificationsUtils {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${bearerToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(body),
@@ -128,15 +128,15 @@ export class PushPlatformNotificationsUtils {
   /**
    * Enables push notifications by registering the device and linking triggers.
    *
-   * @param jwt - The JSON Web Token used for authorization.
+   * @param bearerToken - The JSON Web Token used for authorization.
    * @param triggers - An array of trigger identifiers.
-   * @returns A promise that resolves with an object containing the success status and the JWT token.
+   * @returns A promise that resolves with an object containing the success status and the BearerToken token.
    */
   public static async enablePushNotifications(
-    jwt: string,
+    bearerToken: string,
     triggers: string[],
   ): Promise<string | null> {
-    const notificationLinks = await this.getPushNotificationLinks(jwt);
+    const notificationLinks = await this.getPushNotificationLinks(bearerToken);
     if (!notificationLinks) {
       return null;
     }
@@ -149,7 +149,7 @@ export class PushPlatformNotificationsUtils {
     const newRegTokens = new Set(notificationLinks.registration_tokens);
     newRegTokens.add(regToken);
 
-    await this.updateLinksAPI(jwt, triggers, Array.from(newRegTokens));
+    await this.updateLinksAPI(bearerToken, triggers, Array.from(newRegTokens));
     return regToken;
   }
 
@@ -157,13 +157,13 @@ export class PushPlatformNotificationsUtils {
    * Disables push notifications by removing the registration token and unlinking triggers.
    *
    * @param regToken - The registration token to be removed.
-   * @param jwt - The JSON Web Token used for authorization.
+   * @param bearerToken - The JSON Web Token used for authorization.
    * @param triggers - An array of trigger identifiers to be unlinked.
    * @returns A promise that resolves with true if notifications were successfully disabled, false otherwise.
    */
   public static async disablePushNotifications(
     regToken: string,
-    jwt: string,
+    bearerToken: string,
     triggers: string[],
   ): Promise<boolean> {
     // if we don't have a reg token, then we can early return
@@ -171,7 +171,7 @@ export class PushPlatformNotificationsUtils {
       return true;
     }
 
-    const notificationLinks = await this.getPushNotificationLinks(jwt);
+    const notificationLinks = await this.getPushNotificationLinks(bearerToken);
     if (!notificationLinks) {
       return false;
     }
@@ -180,7 +180,7 @@ export class PushPlatformNotificationsUtils {
     regTokenSet.delete(regToken);
 
     const isTokenRemovedFromAPI = await this.updateLinksAPI(
-      jwt,
+      bearerToken,
       triggers,
       Array.from(regTokenSet),
     );
@@ -200,16 +200,16 @@ export class PushPlatformNotificationsUtils {
    * Updates the triggers linked to push notifications for a given registration token.
    *
    * @param regToken - The registration token to update triggers for.
-   * @param jwt - The JSON Web Token used for authorization.
+   * @param bearerToken - The JSON Web Token used for authorization.
    * @param triggers - An array of new trigger identifiers to link.
    * @returns A promise that resolves with true if the triggers were successfully updated, false otherwise.
    */
   public static async updateTriggerPushNotifications(
     regToken: string,
-    jwt: string,
+    bearerToken: string,
     triggers: string[],
   ): Promise<boolean> {
-    const notificationLinks = await this.getPushNotificationLinks(jwt);
+    const notificationLinks = await this.getPushNotificationLinks(bearerToken);
     if (!notificationLinks) {
       return false;
     }
@@ -226,7 +226,7 @@ export class PushPlatformNotificationsUtils {
     }
 
     const isTriggersLinkedToPushNotifications = await this.updateLinksAPI(
-      jwt,
+      bearerToken,
       triggers,
       Array.from(regTokenSet),
     );

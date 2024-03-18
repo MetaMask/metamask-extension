@@ -316,7 +316,7 @@ const base64Encode = function (str) {
 };
 /**
  * URL-safe base64 encoding (without "." padding in the end).
- * e.g. Used in JSON Web Token (JWT) parts.
+ * e.g. Used in JSON Web Token (BearerToken) parts.
  */
 const base64urlEncodeWithoutPadding = function (str) {
   // Use base64url encoding and remove padding in the end (dot characters).

@@ -50,16 +50,16 @@ export class PushPlatformNotificationsController extends BaseController<
   PushPlatformNotificationsControllerState,
   PushPlatformNotificationsControllerMessanger
 > {
-  private getJwtToken: () => Promise<string>;
+  private getBearerToken: () => Promise<string>;
 
   constructor({
     messenger,
     state,
-    getJwtToken,
+    getBearerToken,
   }: {
     messenger: PushPlatformNotificationsControllerMessanger;
     state: PushPlatformNotificationsControllerState;
-    getJwtToken: () => Promise<string>;
+    getBearerToken: () => Promise<string>;
   }) {
     super({
       messenger,
@@ -70,7 +70,7 @@ export class PushPlatformNotificationsController extends BaseController<
       },
     });
 
-    this.getJwtToken = getJwtToken;
+    this.getBearerToken = getBearerToken;
     this.messageListener = this.messageListener.bind(this);
   }
 
@@ -99,9 +99,9 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs to enable push notifications for.
    */
   public async enablePushNotifications(UUIDs: string[]) {
-    const jwt = await this.getJwtToken();
-    if (!jwt) {
-      log.error('Failed to enable push notifications: JWT token is missing.');
+    const bearerToken = await this.getBearerToken();
+    if (!bearerToken) {
+      log.error('Failed to enable push notifications: BearerToken token is missing.');
       throw new Error();
     }
 
@@ -113,7 +113,7 @@ export class PushPlatformNotificationsController extends BaseController<
       // 2. Call the enablePushNotifications method from PushPlatformNotificationsUtils
       const regToken =
         await PushPlatformNotificationsUtils.enablePushNotifications(
-          jwt,
+          bearerToken,
           UUIDs,
         );
 
@@ -139,9 +139,9 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs for which push notifications should be disabled.
    */
   public async disablePushNotifications(UUIDs: string[]) {
-    const jwt = await this.getJwtToken();
-    if (!jwt) {
-      log.error('Failed to enable push notifications: JWT token is missing.');
+    const bearerToken = await this.getBearerToken();
+    if (!bearerToken) {
+      log.error('Failed to enable push notifications: BearerToken token is missing.');
       throw new Error();
     }
 
@@ -172,7 +172,7 @@ export class PushPlatformNotificationsController extends BaseController<
     const isPushNotificationsDisabled =
       await PushPlatformNotificationsUtils.disablePushNotifications(
         this.state.fcmToken,
-        jwt,
+        bearerToken,
         UUIDs,
       );
 
@@ -187,21 +187,21 @@ export class PushPlatformNotificationsController extends BaseController<
   /**
    * Updates the triggers for push notifications.
    * This method is responsible for updating the server with the new set of UUIDs that should trigger push notifications.
-   * It uses the current FCM token and a JWT for authentication.
+   * It uses the current FCM token and a BearerToken for authentication.
    *
    * @param UUIDs - An array of UUIDs that should trigger push notifications.
    */
   public async updateTriggerPushNotifications(UUIDs: string[]) {
-    const jwt = await this.getJwtToken();
-    if (!jwt) {
-      log.error('Failed to enable push notifications: JWT token is missing.');
+    const bearerToken = await this.getBearerToken();
+    if (!bearerToken) {
+      log.error('Failed to enable push notifications: BearerToken token is missing.');
       throw new Error();
     }
 
     try {
       PushPlatformNotificationsUtils.updateTriggerPushNotifications(
         this.state.fcmToken,
-        jwt,
+        bearerToken,
         UUIDs,
       );
     } catch (error) {
