@@ -25,19 +25,15 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
-import { AvatarGroup } from '../../avatar-group';
-import { AvatarType } from '../../avatar-group/avatar-group.types';
+import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const AVATAR_GROUP_LIMIT = 5;
-  const addressIconList = connection.addresses?.map((address) => ({
-    avatarValue: address,
-  }));
 
   return (
     <Box
+      data-testid="connection-list-item"
       as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -55,6 +51,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       >
         {isSnap ? (
           <SnapAvatar
+            className="connection-list-item__snap-avatar"
             snapId={connection.id}
             badgeSize={IconSize.Xs}
             avatarSize={IconSize.Md}
@@ -71,7 +68,10 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               />
             }
           >
-            <AvatarFavicon src={connection.iconUrl} />
+            <AvatarFavicon
+              data-testid="connection-list-item__avatar-favicon"
+              src={connection.iconUrl}
+            />
           </BadgeWrapper>
         )}
       </Box>
@@ -85,7 +85,12 @@ export const ConnectionListItem = ({ connection, onClick }) => {
           {isSnap ? connection.packageName : getURLHost(connection.origin)}
         </Text>
         {isSnap ? null : (
-          <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={1}
+          >
             <Text
               as="span"
               width={BlockSize.Max}
@@ -94,12 +99,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
             >
               {t('connectedWith')}
             </Text>
-            <AvatarGroup
-              members={addressIconList}
-              limit={AVATAR_GROUP_LIMIT}
-              avatarType={AvatarType.ACCOUNT}
-              borderColor={BackgroundColor.backgroundDefault}
-            />
+            <ConnectionListTooltip connection={connection} />
           </Box>
         )}
       </Box>

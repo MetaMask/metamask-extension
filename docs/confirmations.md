@@ -9,12 +9,12 @@ Confirmations can be triggered by dApps and the UI itself, and are used to appro
 - Connecting to dApps
 - Giving permissions to dApps
 - Sending Eth
-- Transfering tokens
+- Transferring tokens
 - Signing data
 - Interacting with Snaps
 - Adding Ethereum networks
 
-It is vital any new confirmations are implemented using best practices and consistent patterns, to avoid adding complexity to the code, and to minimise the maintenance cost of many alternate confirmations.
+It is vital any new confirmations are implemented using best practices and consistent patterns, to avoid adding complexity to the code, and to minimize the maintenance cost of many alternate confirmations.
 
 As we try to maintain a clean boundary between the UI and background page, the effort to implement a new confirmation can also be split accordingly.
 
@@ -32,7 +32,7 @@ If the controller extends `BaseControllerV2`, the property `messagingSystem` is 
 
 #### Example
 
-```
+```js
 this.someController = new SomeController({
     messenger: this.controllerMessenger.getRestricted({
       name: 'SomeController',
@@ -69,7 +69,7 @@ The available message arguments are:
 
 #### Example
 
-```
+```js
 await this.messagingSystem.call(
   'ApprovalController:addRequest',
   {
@@ -97,7 +97,7 @@ The available message arguments are:
 
 #### Example
 
-```
+```js
 await this.messagingSystem.call(
   'ApprovalController:updateRequestState',
   {
@@ -115,12 +115,12 @@ The `ConfirmationPage` component is already configured to display any approval r
 
 In order to configure how the resulting confirmation is rendered, an **Approval Template** is required.
 
-Create a new JavaScript file in `ui/pages/confirmation/templates` with the name matching the `type` used in the background approval request.
+Create a new JavaScript file in `ui/pages/confirmations/confirmation/templates` with the name matching the `type` used in the background approval request.
 
 ### 2. Update Approval Templates
 
 Add your imported file to the `APPROVAL_TEMPLATES` constant in:
-[ui/pages/confirmation/templates/index.js](../ui/pages/confirmation/templates/index.js)
+[ui/pages/confirmation/templates/index.js](../ui/pages/confirmations/confirmation/templates/index.js)
 
 ### 3. Define Values
 
@@ -138,7 +138,7 @@ Inside the template file, define a `getValues` function that returns an object w
 
 #### Example
 
-```
+```js
 function getValues(pendingApproval, t, actions, _history) {
   return {
     content: [
@@ -175,6 +175,28 @@ function getValues(pendingApproval, t, actions, _history) {
 }
 ```
 
+#### 3.1 Create React Component
+
+Unless the component is very simple as in the example above, we recommend creating a standard React component for the content of each approval template so it can be more easily maintained, extended, and tested.
+
+Any new components will need to be added to the [safe component list](../ui/components/app/metamask-template-renderer/safe-component-list.js) which defines the list of components that can be used by the [MetaMaskTemplateRenderer](../ui/components/app/metamask-template-renderer/metamask-template-renderer.js).
+
+##### Example
+
+```js
+content: [
+  {
+    element: 'ExampleApprovalContent',
+    key: 'content',
+    props: {
+      exampleBooleanProperty: true,
+      exampleNumberProperty: 123,
+      exampleStringProperty: 'example'
+    },
+  },
+]
+```
+
 ### 4. Define Alerts
 
 If any alerts are required in the confirmation, define the `getAlerts` function in the template file.
@@ -191,7 +213,7 @@ Each alert is an object with the following properties:
 
 #### Example
 
-```
+```js
 function getAlerts(_pendingApproval) {
   return [
     {
@@ -215,9 +237,13 @@ function getAlerts(_pendingApproval) {
 
 Ensure the `getValues` and `getAlerts` functions are exported from the template file.
 
+### Example
+
+For live examples of the current approval templates, see [storybook](https://metamask.github.io/metamask-storybook/index.html?path=/docs/pages-confirmationpage-addethereumchain--docs) and the entries under the `ConfirmationPage` folder.
+
 #### Example
 
-```
+```js
 const example = {
   getAlerts,
   getValues,
@@ -226,11 +252,104 @@ const example = {
 export default example;
 ```
 
-## Example Branch
+## Approval Flows
 
-See [this branch](https://github.com/MetaMask/metamask-extension/compare/develop...example/confirmation) as an example of the full code needed to add a confirmation.
+### Overview
 
-The confirmation can be tested using the [E2E Test dApp](https://metamask.github.io/test-dapp/) and selecting `Request Permissions`.
+When an approval request is created, the extension popup is shown and a suitable approval is displayed.
+
+When this approval request is approved or rejected, the standard behavior is for the extension popup to be automatically closed.
+
+In some scenarios, multiple sequential approvals are needed such as when adding a new network, and then being prompted to switch to the new network.
+
+Depending on the work done between the approvals and the latency of the state updates from the background page to the extension, this can result in poor UX due to the notification window repeatedly being closed and opened again or even "flashing" if the interval is very small.
+
+Approval flows are a mechanism to avoid this by ensuring the extension popup is not closed until the final approval in the sequence has been approved or rejected.
+
+### Usage
+
+#### 1. Start Flow
+
+Before creating the first approval, call the `ApprovalController.startFlow` method or send a `ApprovalController:startFlow` action using the controller messenger.
+
+This supports the following parameters:
+
+| Name | Description | Example Value |
+| -- | -- | -- |
+| id | An optional string to identify the flow.<br>Generated automatically if not specified.  | `"550e8400-e29b-41d4-a716-446655440000"` |
+| loadingText | The text to display on the loading page between approvals. | `"Processing something..."` |
+
+#### 2. Create Approval Requests
+
+Create sequential approval requests as normal using the above instructions.
+
+While the an approval request has been approved or rejected but no subsequent approval request has been created, a loading page is automatically displayed containing a spinner.
+
+This has no text by default, but can be specified using the `loadingText` option above, or by calling the `setFlowLoadingText` method or messenger action.
+
+#### 3. End Flow
+
+Once all approval requests have been processed, the flow must be ended using the `endFlow` method or messenger action while providing the approval flow ID returned by `startFlow`.
+
+This will close the popup as normal.
+
+We recommend the use of a `try finally` block to ensure the flow is ended even if an error is thrown.
+
+In rare scenarios where an approval flow is initialized within another approval flow, the popup will remain open until the parent approval flow has been ended.
+
+#### Example
+
+For an example usage, see the [add network middleware](../app/scripts/lib/rpc-method-middleware/handlers/add-ethereum-chain.js) and the call to `startApprovalFlow`.
+
+## Result Pages
+
+### Overview
+
+Many types of approvals are not needed before a process is executed, but instead aim to provide a simple status page to display a success or error message after a process has completed.
+
+The standardized result pages exist to simplify the creation of these types of approvals, and to avoid many very similar approval templates with the same intent.
+
+### Usage
+
+A default success or error message can be displayed simply by calling the `ApprovalController.success` or `ApprovalController.error` methods, or using the `showSuccess` or `showError` messenger actions.
+
+No options are required but both success and error approvals can be configured with the following:
+
+| Name | Description | Example Value |
+| -- | -- | -- |
+| error | The text of the error message in the center of the window.<br>Also supports templates.<br>Used only by the `error` method. | See example below. |
+| header | The text or template to optionally display above the message at the top of the window. | See example below. |
+| icon | The name of the icon to display above the message.<br>Can be hidden with `null`. | `"confirmation"` |
+| message | The text of message in the center of the window.<br>Also supports templates.<br>Used only by the `success` method. | See example below. |
+| title | The title text in the center of the page.<br>Can be hidden with `null`. | `"Success"`
+
+#### Example
+
+```js
+await this.messagingSystem.call(
+  'ApprovalController:showSuccess',
+  {
+    title: 'Example Success',
+    icon: IconName.UserCircleAdd,
+    header: [
+      {
+        name: 'ExampleHeaderComponent',
+        key: 'exampleHeader',
+        properties: { exampleProperty: 'exampleValue' },
+      },
+    ],
+    message: [
+      {
+        name: 'ExampleMessageComponent',
+        key: 'exampleMessage',
+        properties: { exampleProperty: 'exampleValue' },
+      },
+    ]
+  }
+);
+```
+
+For live examples, see [storybook](https://metamask.github.io/metamask-storybook/index.html?path=/docs/pages-confirmationpage-resultsuccess--docs).
 
 ## Glossary
 
@@ -240,14 +359,46 @@ The [ApprovalController](https://github.com/MetaMask/core/blob/main/packages/app
 
 The `pendingApprovals` state used by the `ApprovalController` is not currently persisted, meaning any confirmations created by it will not persist after restarting the browser for example.
 
+### Approval Request
+
+A standardized object added to the state by the `ApprovalController` that contains details about an instance of approval such as the `type` and any associated `requestData`.
+
+The UI will automatically display a suitable approval when an approval request is detected in the state.
+
+### Approval Template
+
+A standardized JavaScript object specifying the content and details of a type of approval.
+
+Used by the `ConfirmationPage` React component to automatically show the approval if an `ApprovalRequest` is detected in the state with a matching type
+
 ### ConfirmationPage
 
-The [ConfirmationPage](../ui/pages/confirmation/confirmation.js) is a React component that aims to provide a generic confirmation window which can be configured using templates, each implementing a consistent interface.
+The [ConfirmationPage](../ui/pages/confirmations/confirmation/confirmation.js) is a React component that aims to provide a generic confirmation window which can be configured using templates, each implementing a consistent interface.
 
-This avoids the need for additional React components when creating confirmations, as additional templates with less logic, and less duplication, can be created instead.
+This avoids the need for custom routing logic for each confirmation type, and reduces duplicate code across the approvals.
+
+### MetaMaskTemplateRenderer
+
+A React component that is able to render dynamic child components using a JSON format that includes a hierarchy of the components and properties needed.
+
+This is useful for dynamically rendering UI from backend code from controllers and snaps..
+
+### Approval Flow
+
+A mechanism to prevent the popup closing until multiple sequential approvals have been approved or rejected.
+
+When an approval flow is created, this is reflected in the state and the UI will automatically prevent the popup being closed.
 
 ## Screenshots
 
-### Confirmation Window
+### Approval Template
 
-[<img src="assets/confirmation.png" width="300">](assets/confirmation.png)
+[<img src="assets/approval_template.png" width="300">](assets/confirmation.png)
+
+### Success Approval
+
+[<img src="assets/success_approval.png" width="300">](assets/confirmation.png)
+
+### Custom Success Approval
+
+[<img src="assets/success_approval_templates.png" width="300">](assets/confirmation.png)
