@@ -22,7 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -43,7 +43,7 @@ const DeveloperOptionsTab = () => {
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
 
   const settingsRefs = Array(
-    getNumberOfSettingsInSection(t, t('developerOptions')),
+    getNumberOfSettingRoutesInTab(t, t('developerOptions')),
   )
     .fill(undefined)
     .map(() => {
