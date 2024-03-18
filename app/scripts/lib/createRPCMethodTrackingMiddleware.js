@@ -17,8 +17,11 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/security-provider';
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -123,7 +126,9 @@ const rateLimitTimeouts = {};
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
+ ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
  * @param {AppStateController} opts.appStateController
+ ///: END:ONLY_INCLUDE_IF
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
@@ -134,7 +139,9 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
+  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
