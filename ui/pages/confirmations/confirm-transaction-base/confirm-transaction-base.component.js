@@ -7,7 +7,6 @@ import {
 import ConfirmPageContainer from '../components/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -176,7 +175,6 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    estimatedL1Fees: 0,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
     ///: END:ONLY_INCLUDE_IF
@@ -251,21 +249,11 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (hexMaximumTransactionFee !== prevHexMaximumTransactionFee) {
-      fetchEstimatedL1Fee(txData?.chainId, txData)
-        .then((result) => {
-          this.setState({
-            estimatedL1Fees: result,
-          });
-        })
-        .catch((_err) => {
-          this.setState({
-            estimatedL1Fees: 0,
-          });
-        });
-      if (useMaxValue) {
-        this.updateValueToMax();
-      }
+    if (
+      hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
+      useMaxValue
+    ) {
+      this.updateValueToMax();
     }
   }
 
@@ -400,7 +388,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     const { t } = this.context;
-    const { userAcknowledgedGasMissing, estimatedL1Fees } = this.state;
+    const { userAcknowledgedGasMissing } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
@@ -417,7 +405,7 @@ export default class ConfirmTransactionBase extends Component {
       return sumHexes(
         txData.txParams.value,
         useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
-        isMultiLayerFeeNetwork ? estimatedL1Fees : 0,
+        isMultiLayerFeeNetwork ? txData.layer1GasFee : 0,
       );
     };
 
