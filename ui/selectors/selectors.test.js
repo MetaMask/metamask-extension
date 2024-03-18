@@ -960,7 +960,13 @@ describe('Selectors', () => {
   it('#getAllSnapAvailableUpdates', () => {
     const snapMap = selectors.getAllSnapAvailableUpdates(mockState);
     expect(Object.fromEntries(snapMap)).toStrictEqual({
+      'npm:@metamask/test-snap-bip32': false,
       'npm:@metamask/test-snap-bip44': true,
+      'npm:@metamask/test-snap-dialog': false,
+      'npm:@metamask/test-snap-getEntropy': false,
+      'npm:@metamask/test-snap-networkAccess': false,
+      'npm:@metamask/test-snap-notify': false,
+      'npm:@metamask/test-snap-wasm': false,
     });
   });
 
