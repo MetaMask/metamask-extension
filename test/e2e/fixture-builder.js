@@ -94,8 +94,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         currencyRates: {
           ETH: {
             conversionDate: 1665507600.0,
-            conversionRate: 1300.0,
-            usdConversionRate: 1300.0,
+            conversionRate: 1700.0,
+            usdConversionRate: 1700.0,
           },
         },
       },
