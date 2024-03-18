@@ -5,8 +5,6 @@ import type {
   FeatureAnnouncementRawNotification,
   TypeFeatureAnnouncement,
 } from '../types/feature-announcement/feature-announcement';
-import type { Notification } from '../types/notification/notification';
-import { processFeatureAnnouncement } from '../processors/process-feature-announcement';
 import { TRIGGER_TYPES } from '../../../../../shared/constants/metamask-notifications';
 
 export class FeatureAnnouncementsService {
@@ -93,11 +91,8 @@ export class FeatureAnnouncementsService {
     return rawNotifications;
   }
 
-  async getFeatureAnnouncementNotifications(): Promise<Notification[]> {
-    const rawNotifications = await this.fetchFeatureAnnouncementNotifications();
-    const notifications = rawNotifications.map((notification) =>
-      processFeatureAnnouncement(notification),
-    );
+  async getFeatureAnnouncementNotifications(): Promise<FeatureAnnouncementRawNotification[]> {
+    const notifications = await this.fetchFeatureAnnouncementNotifications();
 
     return notifications;
   }

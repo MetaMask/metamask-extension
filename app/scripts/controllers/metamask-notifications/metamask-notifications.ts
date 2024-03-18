@@ -942,11 +942,14 @@ export class MetamaskNotificationsController extends BaseController<
         throw new Error();
       }
 
-      // Fetch Feature Announcement Notifications regardless of authentication
-      const rawFeatureAnnouncementNotifications =
-        await this.featureAnnouncementsService
-          .getFeatureAnnouncementNotifications()
-          .catch(() => []);
+      // Fetch Feature Announcement Notifications
+      let rawFeatureAnnouncementNotifications: FeatureAnnouncementRawNotification[] = [];
+      if (this.state.isFeatureAnnouncementsEnabled) {
+        rawFeatureAnnouncementNotifications =
+          await this.featureAnnouncementsService
+            .getFeatureAnnouncementNotifications()
+            .catch(() => []);
+      }
 
       let rawOnChainNotifications: OnChainRawNotification[] = [];
       if (bearerToken && storageKey) {
