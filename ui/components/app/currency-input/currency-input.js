@@ -60,12 +60,10 @@ export default function CurrencyInput({
   const secondarySuffix = secondaryCurrency.toUpperCase();
   const isLongSymbol = (primarySuffix?.length || 0) > LARGE_SYMBOL_LENGTH;
 
-  const [shouldDisplayFiatIfAvailable, setShouldDisplayFiatIfAvailable] =
-    useState(featureSecondary);
+  const [isFiatPreferred, setIsFiatPreferred] = useState(featureSecondary);
   const isFiatAvailable = useSelector(getShouldShowFiat);
 
-  const shouldUseFiat =
-    isFiatAvailable && Boolean(shouldDisplayFiatIfAvailable);
+  const shouldUseFiat = isFiatAvailable && isFiatPreferred;
   const isTokenPrimary = !shouldUseFiat;
 
   const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
@@ -89,7 +87,7 @@ export default function CurrencyInput({
 
   const swap = async () => {
     await onPreferenceToggle();
-    setShouldDisplayFiatIfAvailable(!shouldDisplayFiatIfAvailable);
+    setIsFiatPreferred(!isFiatPreferred);
   };
 
   // if the conversion rate is undefined, do not allow a fiat input
@@ -100,7 +98,7 @@ export default function CurrencyInput({
 
     if (!tokenToFiatConversionRate) {
       onPreferenceToggle();
-      setShouldDisplayFiatIfAvailable(false);
+      setIsFiatPreferred(false);
     }
   }, [tokenToFiatConversionRate, isTokenPrimary, onPreferenceToggle]);
 
