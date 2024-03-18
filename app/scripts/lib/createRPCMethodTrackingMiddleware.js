@@ -321,6 +321,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       let blockaidMetricProps = {};
 
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       if (!isDisabledRPCMethod) {
         if (SIGNING_METHODS.includes(method)) {
           const securityAlertResponse =
@@ -333,6 +334,7 @@ export default function createRPCMethodTrackingMiddleware({
           });
         }
       }
+      ///: END:ONLY_INCLUDE_IF
 
       const properties = {
         ...eventProperties,
