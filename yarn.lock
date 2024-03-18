@@ -1625,7 +1625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.24.0":
+"@babel/runtime@npm:7.24.0, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.23.4":
   version: 7.24.0
   resolution: "@babel/runtime@npm:7.24.0"
   dependencies:
