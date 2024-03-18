@@ -18,6 +18,7 @@ import {
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import {
   getCurrentNetwork,
+  getIsBridgeChain,
   getMetaMetricsId,
   getUseTokenDetection,
 } from '../../../selectors';
@@ -47,6 +48,7 @@ export default function NewNetworkInfo() {
   const providerConfig = useSelector(getProviderConfig);
   const currentNetwork = useSelector(getCurrentNetwork);
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const isBridgeChain = useSelector(getIsBridgeChain);
 
   const onCloseClick = () => {
     setShowPopup(false);
@@ -201,30 +203,33 @@ export default function NewNetworkInfo() {
                   color={Color.textDefault}
                   display={Display.InlineBlock}
                 >
-                  {t('attemptSendingAssets', [
-                    <a
-                      href={`${getPortfolioUrl(
-                        'bridge',
-                        'ext_bridge_new_network_info_link',
-                        metaMetricsId,
-                      )}&destChain=${currentNetwork?.chainId}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      key="bridge-link"
-                    >
-                      <Text
-                        variant={TextVariant.bodySm}
-                        as="h6"
-                        color={Color.infoDefault}
-                        className="new-network-info__button"
-                      >
-                        {t('metamaskPortfolio')}
-                      </Text>
-                    </a>,
-                  ])}
+                  {isBridgeChain
+                    ? t('attemptSendingAssetsWithPortfolio', [
+                        <a
+                          href={`${getPortfolioUrl(
+                            'bridge',
+                            'ext_bridge_new_network_info_link',
+                            metaMetricsId,
+                          )}&destChain=${currentNetwork?.chainId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          key="bridge-link"
+                        >
+                          <Text
+                            variant={TextVariant.bodySm}
+                            as="h6"
+                            color={Color.infoDefault}
+                            className="new-network-info__button"
+                          >
+                            {t('metamaskPortfolio')}
+                          </Text>
+                        </a>,
+                      ])
+                    : t('attemptSendingAssets')}
                 </Text>
               </Box>
             </Box>
+
             {!autoDetectToken || !tokenDetectionSupported ? (
               <Box
                 display={Display.Flex}

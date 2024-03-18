@@ -488,6 +488,9 @@
     "message": "Asset options"
   },
   "attemptSendingAssets": {
+    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
+  },
+  "attemptSendingAssetsWithPortfolio": {
     "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge, like $1"
   },
   "attemptToCancelSwapForFree": {
