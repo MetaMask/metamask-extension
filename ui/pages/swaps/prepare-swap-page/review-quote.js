@@ -296,7 +296,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
 
   const estimatedGasLimit = new BigNumber(
-    usedQuote?.gasEstimate || `0x0`,
+    usedQuote?.gasEstimate || 0,
     16,
   ).toString(16);
 
