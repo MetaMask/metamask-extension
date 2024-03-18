@@ -1021,12 +1021,12 @@ export default class SecurityTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={disableExternalServices}
+            value={!disableExternalServices}
             onToggle={(value) => {
-              if (value) {
+              if (value === true) {
                 setBasicFunctionalityModalOpen();
               } else {
-                setDisableExternalServices(!value);
+                setDisableExternalServices(false);
               }
             }}
             offLabel={t('off')}

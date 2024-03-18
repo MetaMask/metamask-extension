@@ -112,7 +112,7 @@ export default class PreferencesController {
       useExternalNameSources: true,
       useTransactionSimulations: true,
       ///: END:ONLY_INCLUDE_IF
-      disableExternalServices: true, // consider a name that aligns with the feature
+      disableExternalServices: true,
       ...opts.initState,
     };
 
