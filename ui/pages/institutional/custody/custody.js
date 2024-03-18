@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
+import Fuse from 'fuse.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -21,6 +22,7 @@ import {
   ButtonVariant,
   Box,
   Text,
+  TextFieldSearch,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -36,6 +38,7 @@ import {
   TextAlign,
   TextVariant,
   BackgroundColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -86,12 +89,30 @@ const CustodyPage = () => {
   const [jwtList, setJwtList] = useState([]);
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
-  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [accounts, setAccounts] = useState();
+  const [searchQuery, setSearchQuery] = useState('');
+  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const address = useSelector(getSelectedAddress);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
   const isCheckBoxSelected =
     accounts && Object.keys(selectedAccounts).length === accounts.length;
+
+  let searchResults = accounts;
+
+  if (searchQuery) {
+    const fuse = new Fuse(accounts, {
+      threshold: 0.0,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      tokenize: true,
+      matchAllTokens: true,
+      keys: ['name', 'address'],
+    });
+
+    searchResults = fuse.search(searchQuery);
+  }
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
@@ -545,7 +566,7 @@ const CustodyPage = () => {
       {accounts && accounts.length > 0 && (
         <CustodyAccountList
           custody={selectedCustodianName}
-          accounts={accounts}
+          accounts={searchResults}
           onAccountChange={(account) => {
             setSelectedAccounts((prevSelectedAccounts) => {
               const updatedSelectedAccounts = { ...prevSelectedAccounts };
@@ -633,10 +654,25 @@ const CustodyPage = () => {
         >
           <Box paddingTop={4} paddingBottom={4} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
-            <Text marginTop={2} marginBottom={2}>
-              {t('selectAnAccountHelp')}
-            </Text>
+            <Text marginTop={2}>{t('selectAnAccountHelp')}</Text>
           </Box>
+          {/* Search box */}
+          {accounts.length > 1 ? (
+            <Box paddingBottom={4} paddingTop={0}>
+              <TextFieldSearch
+                size={Size.SM}
+                width={BlockSize.Full}
+                placeholder={t('searchAccounts')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                clearButtonOnClick={() => setSearchQuery('')}
+                clearButtonProps={{
+                  size: Size.SM,
+                }}
+                inputProps={{ autoFocus: true }}
+              />
+            </Box>
+          ) : null}
           <Box
             paddingBottom={4}
             display={Display.Flex}
