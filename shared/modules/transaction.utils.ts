@@ -7,7 +7,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { TransactionParams } from '@metamask/transaction-controller/dist/types';
+import type { TransactionParams } from '@metamask/transaction-controller';
 
 import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';

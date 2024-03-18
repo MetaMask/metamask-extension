@@ -9,72 +9,105 @@ exports[`Confirm should match snapshot for personal signature 1`] = `
       class="mm-box multichain-page__inner-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box confirm_header__wrapper mm-box--padding-4 mm-box--display-flex mm-box--align-items-center"
+        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
         >
           <div
-            class=""
+            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
           >
             <div
-              class="identicon"
-              style="height: 32px; width: 32px; border-radius: 16px;"
+              class=""
             >
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
               >
-                <svg
-                  height="32"
-                  width="32"
-                  x="0"
-                  y="0"
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
                 >
-                  <rect
-                    fill="#FB184D"
+                  <svg
                     height="32"
-                    transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
                     width="32"
                     x="0"
                     y="0"
-                  />
-                  <rect
-                    fill="#1888F2"
-                    height="32"
-                    transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FA8900"
-                    height="32"
-                    transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
-                    width="32"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                  >
+                    <rect
+                      fill="#FB184D"
+                      height="32"
+                      transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#1888F2"
+                      height="32"
+                      transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#FA8900"
+                      height="32"
+                      transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
               </div>
+            </div>
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            >
+              C
             </div>
           </div>
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-box--margin-inline-start-4"
           >
-            C
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            />
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+            >
+              Chain 5
+            </p>
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-start-4"
+          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-          />
-          <p
-            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="align-self: flex-end;"
           >
-            Chain 5
-          </p>
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="Account details"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <button
+                  aria-label="Account details"
+                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -120,7 +153,7 @@ exports[`Confirm should match snapshot for personal signature 1`] = `
               </p>
               <div>
                 <div
-                  aria-describedby="tippy-tooltip-1"
+                  aria-describedby="tippy-tooltip-3"
                   class=""
                   data-original-title="This is the site asking for your signature."
                   data-tooltipped=""

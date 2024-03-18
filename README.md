@@ -202,8 +202,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   - If your PR is from a fork, you can ask a MetaMask team member to help with updating the policy files.
   - Manual update instructions: The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
     - There are two sets of LavaMoat policy files:
-      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`. Add `--help` for usage.
-        - These should be regenerated whenever the production dependencies for the background change.
+      - The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:webapp:auto`. Add `--help` for usage.
+        - These should be regenerated whenever the production dependencies for the webapp change.
       - The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
         - This should be regenerated whenever the dependencies used by the build system itself change.
     - Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
@@ -229,6 +229,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [Developing on MetaMask](./development/README.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 - [How to add new confirmations](./docs/confirmations.md)
+- [Browser support guidelines](./docs/browser-support.md)
 
 ## Dapp Developer Resources
 

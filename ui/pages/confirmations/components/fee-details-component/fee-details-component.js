@@ -43,10 +43,7 @@ export default function FeeDetailsComponent({
 
   const t = useI18nContext();
 
-  const {
-    maximumCostInHexWei: hexMaximumTransactionFee,
-    minimumCostInHexWei: hexMinimumTransactionFee,
-  } = useGasFeeContext();
+  const { minimumCostInHexWei: hexMinimumTransactionFee } = useGasFeeContext();
   useEffect(() => {
     if (isMultiLayerFeeNetwork) {
       fetchEstimatedL1Fee(txData?.chainId, txData)
@@ -61,11 +58,11 @@ export default function FeeDetailsComponent({
 
   const getTransactionFeeTotal = useMemo(() => {
     if (isMultiLayerFeeNetwork) {
-      return addHexes(hexMaximumTransactionFee, estimatedL1Fees || 0);
+      return addHexes(hexMinimumTransactionFee, estimatedL1Fees || 0);
     }
 
-    return hexMaximumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMaximumTransactionFee, estimatedL1Fees]);
+    return hexMinimumTransactionFee;
+  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, estimatedL1Fees]);
 
   const renderTotalDetailText = useCallback(
     (value) => {
@@ -109,7 +106,7 @@ export default function FeeDetailsComponent({
         justifyContent={JustifyContent.center}
         flexDirection={FlexDirection.Column}
       >
-        {!hideGasDetails && (
+        {!hideGasDetails && isMultiLayerFeeNetwork && (
           <Box
             padding={4}
             display={Display.Flex}
