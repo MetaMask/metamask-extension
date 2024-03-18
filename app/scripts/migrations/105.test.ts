@@ -21,15 +21,15 @@ function addressToUUID(address: string): string {
   });
 }
 
-interface Identity {
+type Identity = {
   name: string;
   address: string;
   lastSelected?: number;
-}
+};
 
-interface Identities {
+type Identities = {
   [key: string]: Identity;
-}
+};
 
 function createMockPreferenceControllerState(
   identities: Identity[] = [{ name: 'Account 1', address: MOCK_ADDRESS }],

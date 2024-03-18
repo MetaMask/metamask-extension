@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AlignItems,
@@ -12,7 +12,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONNECT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -20,6 +23,7 @@ import {
   getInternalAccounts,
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getPermittedAccountsByOrigin,
   getSelectedAccount,
 } from '../../../../selectors';
 import {
@@ -43,24 +47,51 @@ import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
+import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
+import { requestAccountsPermissionWithId } from '../../../../store/actions';
 import { AccountType, ConnectedSites } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const history = useHistory();
+  const [showConnectAccountsModal, setShowConnectAccountsModal] =
+    useState(false);
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
-  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+  const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+  const { id } = useSelector((state: any) => state.activeTab);
+
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+  const permittedAccountsByOrigin = useSelector(
+    getPermittedAccountsByOrigin,
+  ) as { [key: string]: any[] };
+
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[activeTabOrigin]?.length;
+  let tabToConnect: { origin: any } = { origin: null };
+  if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
+    tabToConnect = {
+      origin: activeTabOrigin,
+    };
+  }
+  const requestAccountsPermission = async () => {
+    const requestId = await dispatch(
+      requestAccountsPermissionWithId(tabToConnect.origin),
+    );
+    history.push(`${CONNECT_ROUTE}/${requestId}`);
+  };
+  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
   return (
     <Page data-testid="connections-page" className="connections-page">
       <Header
@@ -107,7 +138,7 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata ? (
+        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
           <Tabs defaultActiveTabKey="connections">
             {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -117,23 +148,26 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
-                {mergedAccounts.map((account: AccountType, index: number) => {
+                {mergedAccounts.map((account: AccountType) => {
                   const connectedSites: ConnectedSites = {};
 
                   const connectedSite = connectedSites[account.address]?.find(
                     ({ origin }) => origin === activeTabOrigin,
                   );
+                  // Since this list renders only connected accounts, selected account will be the active account
+                  const isSelectedAccount =
+                    selectedAccount.address === account.address;
                   return (
                     <AccountListItem
                       identity={account}
                       key={account.address}
                       accountsCount={mergedAccounts.length}
-                      selected={selectedAccount.address === account.address}
+                      selected={isSelectedAccount}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
                       menuType={AccountListItemMenuTypes.Connection}
                       currentTabOrigin={activeTabOrigin}
-                      isActive={index === 0 ? t('active') : null}
+                      isActive={isSelectedAccount ? t('active') : null}
                     />
                   );
                 })}
@@ -143,9 +177,14 @@ export const Connections = () => {
         ) : (
           <NoConnectionContent />
         )}
+        {showConnectAccountsModal ? (
+          <ConnectAccountsModal
+            onClose={() => setShowConnectAccountsModal(false)}
+          />
+        ) : null}
       </Content>
       <Footer>
-        {connectedSubjectsMetadata ? (
+        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
           <Box
             display={Display.Flex}
             gap={2}
@@ -158,6 +197,7 @@ export const Connections = () => {
               block
               variant={ButtonVariant.Secondary}
               startIconName={IconName.Add}
+              onClick={() => setShowConnectAccountsModal(true)}
             >
               {t('connectMoreAccounts')}
             </Button>
@@ -176,6 +216,7 @@ export const Connections = () => {
             size={ButtonPrimarySize.Lg}
             block
             data-test-id="no-connections-button"
+            onClick={() => dispatch(requestAccountsPermission())}
           >
             {t('connectAccounts')}
           </ButtonPrimary>
