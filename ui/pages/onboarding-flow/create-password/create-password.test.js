@@ -55,7 +55,7 @@ describe('Onboarding Create Password', () => {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
-          firstTimeFlowType: 'import',
+          firstTimeFlowType: FirstTimeFlowType.import,
         },
       };
       const mockStore = configureMockStore()(importFirstTimeFlowState);
