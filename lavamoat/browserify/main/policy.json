@@ -175,8 +175,8 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true,
+        "@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
@@ -184,19 +184,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
-      }
-    },
-    "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
+        "@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
@@ -453,9 +441,9 @@
       },
       "packages": {
         "@ngraveio/bc-ur": true,
+        "@trezor/connect-web>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "mockttp>graphql-tag>tslib": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -1248,7 +1236,8 @@
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
       "packages": {
-        "@metamask/eth-sig-util": true
+        "@metamask/eth-sig-util": true,
+        "@trezor/connect-web>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>hdkey": {
@@ -1571,7 +1560,7 @@
         "setTimeout": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true
+        "@trezor/connect-web>tslib": true
       }
     },
     "@metamask/network-controller": {
@@ -2182,18 +2171,10 @@
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
-        "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/snaps-registry>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {
@@ -2296,7 +2277,7 @@
         "setTimeout": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true
+        "@trezor/connect-web>tslib": true
       }
     },
     "@metamask/user-operation-controller": {
@@ -2566,6 +2547,7 @@
     },
     "@trezor/connect-web": {
       "globals": {
+        "URLSearchParams": true,
         "__TREZOR_CONNECT_SRC": true,
         "addEventListener": true,
         "btoa": true,
@@ -2588,7 +2570,7 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect": true,
         "@trezor/connect-web>@trezor/utils": true,
-        "mockttp>graphql-tag>tslib": true,
+        "@trezor/connect-web>tslib": true,
         "webpack>events": true
       }
     },
@@ -2599,24 +2581,38 @@
         "console.warn": true
       },
       "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@trezor/connect-web>@trezor/connect>tslib": true
+        "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>tslib": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>tslib": {
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
       "globals": {
-        "define": true
+        "console.warn": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>ts-mixer": true,
+        "browserify>buffer": true
       }
     },
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
-        "AbortController": true,
-        "Intl.NumberFormat": true,
         "clearTimeout": true,
         "setTimeout": true
-      },
-      "packages": {
-        "browserify>buffer": true
+      }
+    },
+    "@trezor/connect-web>tslib": {
+      "globals": {
+        "SuppressedError": true,
+        "define": true
       }
     },
     "@zxing/browser": {
@@ -3412,16 +3408,7 @@
       "packages": {
         "@metamask/ethjs>js-sha3": true,
         "bn.js": true,
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "browserify>buffer>ieee754": true
+        "ganache>abstract-level>buffer": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
@@ -3610,6 +3597,15 @@
         "define": true
       }
     },
+    "ganache>abstract-level>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "base64-js": true,
+        "browserify>buffer>ieee754": true
+      }
+    },
     "ganache>keccak": {
       "packages": {
         "browserify>buffer": true,
@@ -3748,12 +3744,6 @@
       "packages": {
         "browserify>process": true,
         "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "mockttp>graphql-tag>tslib": {
-      "globals": {
-        "SuppressedError": true,
-        "define": true
       }
     },
     "nanoid": {
@@ -4012,7 +4002,7 @@
         "setTimeout": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true
+        "@trezor/connect-web>tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4031,7 +4021,7 @@
         "console.error": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true,
+        "@trezor/connect-web>tslib": true,
         "react": true,
         "react-focus-lock>use-sidecar>detect-node-es": true
       }
