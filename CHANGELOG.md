@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.12.2]
+### Fixed
+- Fix transaction confirmations so that they correctly show estimated fees instead of max possible fees
+    - For non-layer 2 network, and non-token send, transactions([#23203](https://github.com/MetaMask/metamask-extension/pull/23203))
+    - For layer 2 networks and for erc20 transfers ([#23511](https://github.com/MetaMask/metamask-extension/pull/23511))
+
 ## [11.12.1]
 ### Changed
 - Updated styling for missing petnames to prevent misinterpretation as malicious ([#23458](https://github.com/MetaMask/metamask-extension/pull/23458))
@@ -4496,7 +4502,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.12.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.12.2...HEAD
+[11.12.2]: https://github.com/MetaMask/metamask-extension/compare/v11.12.1...v11.12.2
 [11.12.1]: https://github.com/MetaMask/metamask-extension/compare/v11.12.0...v11.12.1
 [11.12.0]: https://github.com/MetaMask/metamask-extension/compare/v11.11.4...v11.12.0
 [11.11.4]: https://github.com/MetaMask/metamask-extension/compare/v11.11.3...v11.11.4
