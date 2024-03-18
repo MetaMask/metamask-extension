@@ -144,6 +144,13 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+import {
+  getLocalizedSnapManifest,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IF
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -995,7 +1002,6 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:test',
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
-        'SubjectMetadataController:getSubjectMetadata',
         'AccountsController:setSelectedAccount',
         'AccountsController:getAccountByAddress',
       ],
@@ -1009,6 +1015,31 @@ export default class MetamaskController extends EventEmitter {
       await this.accountsController.updateAccounts();
     };
 
+    const getSnapName = (id) => {
+      if (!id) {
+        return null;
+      }
+
+      const currentLocale = this.getLocale();
+      const { snaps } = this.snapController.state;
+      const snap = snaps[id];
+
+      if (!snap) {
+        return stripSnapPrefix(id);
+      }
+
+      if (snap.localizationFiles) {
+        const localizedManifest = getLocalizedSnapManifest(
+          snap.manifest,
+          currentLocale,
+          snap.localizationFiles,
+        );
+        return localizedManifest.proposedName;
+      }
+
+      return snap.manifest.proposedName;
+    };
+
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
@@ -1017,6 +1048,7 @@ export default class MetamaskController extends EventEmitter {
         (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
+        getSnapName,
       ),
     );
 

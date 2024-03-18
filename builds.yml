@@ -102,6 +102,7 @@ buildTypes:
     features:
       - build-mmi
       - snaps
+      - blockaid
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY

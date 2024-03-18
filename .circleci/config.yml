@@ -6,21 +6,18 @@ executors:
       - image: cimg/node:20.11-browsers
     resource_class: small
     environment:
-      FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
       - image: cimg/node:20.11-browsers
     resource_class: medium
     environment:
-      FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=3072
   node-browsers-medium-plus:
     docker:
       - image: cimg/node:20.11-browsers
     resource_class: medium+
     environment:
-      FONTCONFIG_PATH: /etc/fonts
       NODE_OPTIONS: --max_old_space_size=4096
   shellcheck:
     docker:
