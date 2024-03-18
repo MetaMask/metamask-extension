@@ -80,6 +80,7 @@ interface AppState {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
+  multiLayerFee: string;
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
   ///: END:ONLY_INCLUDE_IF
@@ -156,6 +157,7 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  multiLayerFee: '0x0',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
   ///: END:ONLY_INCLUDE_IF
@@ -501,6 +503,11 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    case actionConstants.SET_MULTI_LAYER_FEE:
+      return {
+        ...appState,
+        multiLayerFee: action.payload,
+      }
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -545,6 +552,12 @@ export function setLedgerWebHidConnectedStatus(
   return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, payload };
 }
 
+export function setMultiLayerFee(
+  payload: string,
+): PayloadAction<string> {
+  return { type: actionConstants.SET_MULTI_LAYER_FEE, payload };
+}
+
 export function setLedgerTransportStatus(
   payload: HardwareTransportStates,
 ): PayloadAction<HardwareTransportStates> {
@@ -575,6 +588,10 @@ export function getQrCodeData(state: AppSliceState): {
 
 export function getGasLoadingAnimationIsShowing(state: AppSliceState): boolean {
   return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getMultiLayerFee(state: AppSliceState): string {
+  return state.appState.multiLayerFee;
 }
 
 export function getLedgerWebHidConnectedStatus(

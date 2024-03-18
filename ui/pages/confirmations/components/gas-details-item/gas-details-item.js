@@ -37,25 +37,11 @@ const GasDetailsItem = ({
 }) => {
   const t = useI18nContext();
 
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const txData = useSelector(getTxData);
-
-  const [estimatedL1Fees, setEstimatedL1Fees] = useState(null);
-
-  useEffect(() => {
-    if (isMultiLayerFeeNetwork) {
-      fetchEstimatedL1Fee(txData?.chainId, txData)
-        .then((result) => {
-          setEstimatedL1Fees(result);
-        })
-        .catch((_err) => {
-          setEstimatedL1Fees(null);
-        });
-    }
-  }, [isMultiLayerFeeNetwork, txData]);
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
+
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,
@@ -68,8 +54,10 @@ const GasDetailsItem = ({
     minimumCostInHexWei: hexMinimumTransactionFee,
     maxPriorityFeePerGas,
     maxFeePerGas,
+    estimatedL1Fees,
   } = useGasFeeContext();
 
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);//
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);

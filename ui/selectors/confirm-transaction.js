@@ -14,6 +14,9 @@ import {
   getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
+  getMultiLayerFee
+} from '../ducks/app/app';
+import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../shared/constants/gas';
@@ -218,6 +221,7 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
+  const multiLayerFee = getMultiLayerFee(state);
   const networkAndAccountSupportsEIP1559 =
     checkNetworkAndAccountSupports1559(state);
 
@@ -311,7 +315,7 @@ export const transactionFeeSelector = function (state, txData) {
   });
 
   const ethTransactionFee = getTransactionFee({
-    value: hexMinimumTransactionFee,
+    value: sumHexes(hexMinimumTransactionFee, multiLayerFee || '0x0'),
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
     numberOfDecimals: 6,

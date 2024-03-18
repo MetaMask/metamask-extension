@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
   CUSTOM_GAS_ESTIMATE,
@@ -8,11 +8,15 @@ import {
   PriorityLevels,
 } from '../../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
+import { setMultiLayerFee } from '../../../ducks/app/app';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
+  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../../helpers/utils/gas';
@@ -100,6 +104,7 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EditGasModes.modifyInPlace,
 ) {
+  const dispatch = useDispatch();
   const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
     id: _transaction?.id,
@@ -158,6 +163,23 @@ export function useGasFeeInputs(
   const [gasLimit, setGasLimit] = useState(() =>
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
+
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
+
+  const [estimatedL1Fees, setEstimatedL1Fees] = useState(null);
+
+  useEffect(() => {
+    if (isMultiLayerFeeNetwork) {
+      fetchEstimatedL1Fee(transaction?.chainId, transaction)
+        .then((result) => {
+          setEstimatedL1Fees(result);
+          dispatch(setMultiLayerFee(result));
+        })
+        .catch((_err) => {
+          setEstimatedL1Fees(null);
+        });
+    }
+  }, [isMultiLayerFeeNetwork, transaction]);
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
 
@@ -332,5 +354,6 @@ export function useGasFeeInputs(
     updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
+    estimatedL1Fees,
   };
 }
