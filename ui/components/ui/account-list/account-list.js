@@ -67,7 +67,7 @@ const AccountList = ({
           <div className="choose-account-list__select-all">
             <Checkbox
               className="choose-account-list__header-check-box"
-              dataTestId="choose-account-list-operate-all-check-box"
+              data-testid="choose-account-list-operate-all-check-box"
               isChecked={checked}
               isIndeterminate={isIndeterminate}
               onClick={() => (allAreSelected() ? deselectAll() : selectAll())}
