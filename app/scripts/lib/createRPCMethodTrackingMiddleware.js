@@ -167,7 +167,7 @@ export default function createRPCMethodTrackingMiddleware({
         break;
       case RATE_LIMIT_TYPES.BLOCKED:
         isRateLimited = true;
-        break
+        break;
       default:
       case RATE_LIMIT_TYPES.RANDOM_SAMPLE:
         isRateLimited = Math.random() >= rateLimitSamplePercent;
