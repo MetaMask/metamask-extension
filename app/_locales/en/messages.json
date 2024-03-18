@@ -156,6 +156,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accounts": {
+    "message": "Accounts"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
@@ -470,6 +473,10 @@
   "approvedOn": {
     "message": "Approved on $1",
     "description": "$1 is the approval date for a permission"
+  },
+  "approvedOnForAccounts": {
+    "message": "Approved on $1 for $2",
+    "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
   "areYouSure": {
     "message": "Are you sure?"
@@ -3409,8 +3416,16 @@
   "permissionRequested": {
     "message": "Requested now"
   },
+  "permissionRequestedForAccounts": {
+    "message": "Requested now for $1",
+    "description": "Permission cell status for requested permission including accounts, rendered as AvatarGroup which is $1."
+  },
   "permissionRevoked": {
     "message": "Revoked in this update"
+  },
+  "permissionRevokedForAccounts": {
+    "message": "Revoked in this update for $1",
+    "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
