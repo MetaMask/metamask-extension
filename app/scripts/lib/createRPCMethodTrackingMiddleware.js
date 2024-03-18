@@ -137,7 +137,7 @@ export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
-  rateLimitSamplePercent = 0.01, // 1%
+  rateLimitSamplePercent = 0.001, // 0.1%
   securityProviderRequest,
   getAccountType,
   getDeviceModel,
