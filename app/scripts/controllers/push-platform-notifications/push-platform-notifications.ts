@@ -107,18 +107,8 @@ export class PushPlatformNotificationsController extends BaseController<
 
     try {
       // 1. Register the service worker and listen for messages
-      navigator.serviceWorker
-        .register('./firebase-messaging-sw.js')
-        .then(() => {
-          navigator.serviceWorker.addEventListener(
-            'message',
-            this.messageListener,
-          );
-        })
-        .catch((error) => {
-          log.error('Service Worker registration failed:', error);
-          throw new Error();
-        });
+      await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+      navigator.serviceWorker.addEventListener('message', this.messageListener);
 
       // 2. Call the enablePushNotifications method from PushPlatformNotificationsUtils
       const regToken =
