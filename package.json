@@ -245,11 +245,7 @@
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^5.0.1",
     "@metamask/approval-controller": "^5.1.2",
-<<<<<<< HEAD
     "@metamask/assets-controllers": "^26.0.0",
-=======
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A24.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-24.0.0-dfef136464.patch%3A%3Aversion=24.0.0&hash=f321cb#~/.yarn/patches/@metamask-assets-controllers-patch-74191f09e4.patch",
->>>>>>> c563892848 (fix: update patch and fix actions)
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.3.1",

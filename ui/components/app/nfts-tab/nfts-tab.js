@@ -77,12 +77,9 @@ export default function NftsTab() {
       (isIpfsEnabled || openSeaEnabled) &&
       (hasAnyNfts || hasAnyPreviouslyOwnedNfts)
     ) {
-      const allNfts = [...previouslyOwnedCollection.nfts];
-      for (const key in collections) {
-        if (Object.hasOwn(collections, key)) {
-          allNfts.push(...collections[key].nfts);
-        }
-      }
+      const allNfts = previouslyOwnedCollection.nfts.concat(
+        Object.values(collections).flatMap((collection) => collection.nfts),
+      );
       const nftsToUpdateMetadata = allNfts.filter(
         (singleNft) =>
           !singleNft.name && !singleNft.description && !singleNft.image,
