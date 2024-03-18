@@ -280,7 +280,16 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "webpack>eslint-scope": true
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+      }
+    },
+    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true,
+        "eslint>eslint-scope>esrecurse": true
       }
     },
     "@babel/eslint-parser>semver": {
@@ -2362,17 +2371,6 @@
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
       }
     },
-    "depcheck>cosmiconfig>yaml": {
-      "globals": {
-        "Buffer": true,
-        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
-        "YAML_SILENCE_WARNINGS": true,
-        "atob": true,
-        "btoa": true,
-        "console.warn": true,
-        "process": true
-      }
-    },
     "depcheck>is-core-module": {
       "globals": {
         "process.versions": true
@@ -2472,6 +2470,7 @@
         "eslint>@eslint/js": true,
         "eslint>@humanwhocodes/config-array": true,
         "eslint>@nodelib/fs.walk": true,
+        "eslint>@ungap/structured-clone": true,
         "eslint>ajv": true,
         "eslint>doctrine": true,
         "eslint>eslint-scope": true,
@@ -2483,10 +2482,9 @@
         "eslint>file-entry-cache": true,
         "eslint>glob-parent": true,
         "eslint>globals": true,
-        "eslint>grapheme-splitter": true,
+        "eslint>graphemer": true,
         "eslint>ignore": true,
         "eslint>imurmurhash": true,
-        "eslint>js-sdsl": true,
         "eslint>json-stable-stringify-without-jsonify": true,
         "eslint>levn": true,
         "eslint>lodash.merge": true,
@@ -3073,9 +3071,37 @@
         "nock>debug": true
       }
     },
+    "eslint>@eslint/eslintrc>import-fresh": {
+      "builtin": {
+        "path.dirname": true
+      },
+      "globals": {
+        "__filename": true
+      },
+      "packages": {
+        "eslint>@eslint/eslintrc>import-fresh>parent-module": true,
+        "eslint>@eslint/eslintrc>import-fresh>resolve-from": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh>parent-module": {
+      "packages": {
+        "@metamask/test-bundler>ow>callsites": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh>resolve-from": {
+      "builtin": {
+        "fs.realpathSync": true,
+        "module._nodeModulePaths": true,
+        "module._resolveFilename": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
     "eslint>@humanwhocodes/config-array": {
       "builtin": {
-        "path": true
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true
       },
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
@@ -3123,6 +3149,11 @@
     "eslint>@nodelib/fs.walk>fastq": {
       "packages": {
         "eslint>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
+    "eslint>@ungap/structured-clone": {
+      "globals": {
+        "structuredClone": true
       }
     },
     "eslint>ajv": {
@@ -3222,32 +3253,6 @@
     "eslint>ignore": {
       "globals": {
         "process": true
-      }
-    },
-    "eslint>import-fresh": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "globals": {
-        "__filename": true
-      },
-      "packages": {
-        "eslint>import-fresh>parent-module": true,
-        "eslint>import-fresh>resolve-from": true
-      }
-    },
-    "eslint>import-fresh>parent-module": {
-      "packages": {
-        "@metamask/test-bundler>ow>callsites": true
-      }
-    },
-    "eslint>import-fresh>resolve-from": {
-      "builtin": {
-        "fs.realpathSync": true,
-        "module._nodeModulePaths": true,
-        "module._resolveFilename": true,
-        "path.join": true,
-        "path.resolve": true
       }
     },
     "eslint>levn": {
@@ -3749,8 +3754,8 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "depcheck>cosmiconfig>yaml": true,
         "gulp-postcss>postcss-load-config>lilconfig": true,
+        "gulp-postcss>postcss-load-config>yaml": true,
         "ts-node": true
       }
     },
@@ -3769,6 +3774,17 @@
       },
       "globals": {
         "process.cwd": true
+      }
+    },
+    "gulp-postcss>postcss-load-config>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "gulp-sass": {
@@ -7896,9 +7912,20 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json": true,
-        "depcheck>cosmiconfig>yaml": true,
-        "eslint>import-fresh": true,
-        "globby>dir-glob>path-type": true
+        "eslint>@eslint/eslintrc>import-fresh": true,
+        "globby>dir-glob>path-type": true,
+        "stylelint>cosmiconfig>yaml": true
+      }
+    },
+    "stylelint>cosmiconfig>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "stylelint>execall": {
@@ -8853,18 +8880,20 @@
         "webpack>browserslist>node-releases": true
       }
     },
-    "webpack>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "webpack>eslint-scope>estraverse": true
-      }
-    },
     "webpack>json-parse-even-better-errors": {
       "globals": {
         "Buffer.isBuffer": true
+      }
+    },
+    "yaml": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.dir": true,
+        "console.log": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "yargs": {

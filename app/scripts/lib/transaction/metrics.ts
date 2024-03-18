@@ -716,12 +716,11 @@ function getUniqueId(
   eventName: TransactionMetaMetricsEvent,
   transactionId: string,
 ) {
-  const isSubmitted = [
-    TransactionMetaMetricsEvent.finalized,
-    TransactionMetaMetricsEvent.submitted,
-  ].includes(eventName);
+  const isFinalizedOrSubmitted =
+    eventName === TransactionMetaMetricsEvent.finalized ||
+    eventName === TransactionMetaMetricsEvent.submitted;
   const uniqueIdentifier = `transaction-${
-    isSubmitted ? 'submitted' : 'added'
+    isFinalizedOrSubmitted ? 'submitted' : 'added'
   }-${transactionId}`;
 
   return uniqueIdentifier;
