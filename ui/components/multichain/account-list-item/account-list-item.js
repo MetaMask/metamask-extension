@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu, AvatarGroup } from '..';
+import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -57,6 +57,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -67,6 +68,7 @@ export const AccountListItem = ({
   selected = false,
   onClick,
   closeMenu,
+  accountsCount,
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
@@ -74,6 +76,7 @@ export const AccountListItem = ({
   isHidden = false,
   currentTabOrigin,
   isActive = false,
+  startAccessory,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -91,7 +94,9 @@ export const AccountListItem = ({
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-
+  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
+    avatarValue: item.iconUrl,
+  }));
   let balanceToTranslate = totalWeiBalance;
   if (showFiat) {
     balanceToTranslate = identity.balance;
@@ -117,6 +122,7 @@ export const AccountListItem = ({
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
+  const isSingleAccount = accountsCount === 1;
 
   return (
     <Box
@@ -136,6 +142,11 @@ export const AccountListItem = ({
         }
       }}
     >
+      {startAccessory ? (
+        <Box marginInlineEnd={2} marginTop={1}>
+          {startAccessory}
+        </Box>
+      ) : null}
       {selected && (
         <Box
           className="multichain-account-list-item__selected-indicator"
@@ -275,8 +286,8 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          {orderedTokenList.length > 1 ? (
-            <AvatarGroup members={orderedTokenList} limit={4} />
+          {mappedOrderedTokenList.length > 1 ? (
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
               display={Display.Flex}
@@ -358,6 +369,16 @@ export const AccountListItem = ({
           isConnected={isConnected}
         />
       )}
+      {menuType === AccountListItemMenuTypes.Connection && (
+        <ConnectedAccountsMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={closeMenu}
+          disableAccountSwitcher={isSingleAccount}
+          isOpen={accountOptionsMenuOpen}
+        />
+      )}
     </Box>
   );
 };
@@ -395,6 +416,10 @@ AccountListItem.propTypes = {
    */
   onClick: PropTypes.func,
   /**
+   * Represents how many accounts are being listed
+   */
+  accountsCount: PropTypes.number,
+  /**
    * Function that closes the menu
    */
   closeMenu: PropTypes.func,
@@ -426,6 +451,10 @@ AccountListItem.propTypes = {
    * Represents active accounts
    */
   isActive: PropTypes.bool,
+  /**
+   * Represents start accessory
+   */
+  startAccessory: PropTypes.node,
 };
 
 AccountListItem.displayName = 'AccountListItem';
