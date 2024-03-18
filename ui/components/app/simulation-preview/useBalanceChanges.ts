@@ -4,10 +4,14 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
-import { useMemo } from 'react';
+import { Hex } from '@metamask/utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { useTokenDetails } from '../../../hooks/useTokenDetails';
+import {
+  AsyncResultStrict,
+  useAsyncResultStrict,
+} from '../../../hooks/useAsyncResult';
+import { getTokenStandardAndDetails } from '../../../store/actions';
 import { AssetInfo, BalanceChange } from './types';
 
 /**
@@ -18,7 +22,7 @@ import { AssetInfo, BalanceChange } from './types';
  * @param balanceChange.difference
  * @returns The converted BalanceChange object.
  */
-function getNativeAssetBalanceChange({
+function convertNativeBalanceChange({
   isDecrease,
   difference,
 }: SimulationBalanceChange): BalanceChange {
@@ -29,26 +33,37 @@ function getNativeAssetBalanceChange({
   };
 }
 
-function getTokenAssetBalanceChange(
-  {
+/**
+ * Converts a SimulationTokenBalanceChange to a BalanceChange.
+ *
+ * @param simTokenBalanceChange
+ * @param erc20Decimals
+ */
+function convertTokenBalanceChange(
+  simTokenBalanceChange: SimulationTokenBalanceChange,
+  erc20Decimals: Record<Hex, number>,
+): BalanceChange {
+  const {
     standard,
     address: contractAddress,
     id: tokenId,
     isDecrease,
     difference,
-  }: SimulationTokenBalanceChange,
-  strDecimals?: string,
-): BalanceChange {
+  } = simTokenBalanceChange;
+
   const absChange: Numeric = (() => {
     switch (standard) {
-      case SimulationTokenStandard.erc20: {
-        const decimals = strDecimals ? parseInt(strDecimals, 10) : 18;
-        return Numeric.from(difference, 16).shiftedBy(decimals);
-      }
+      case SimulationTokenStandard.erc20:
+        return Numeric.from(difference, 16).shiftedBy(
+          erc20Decimals[contractAddress],
+        );
+
       case SimulationTokenStandard.erc721:
         return Numeric.from(1, 10);
+
       case SimulationTokenStandard.erc1155:
         return Numeric.from(difference, 16);
+
       default:
         throw new Error(`Unknown token standard: ${standard}`);
     }
@@ -67,37 +82,71 @@ function getTokenAssetBalanceChange(
   };
 }
 
+export type TokenDetails = Awaited<
+  ReturnType<typeof getTokenStandardAndDetails>
+>;
+
+/**
+ * Fetches token details for all the token addresses in the
+ * SimulationTokenBalanceChanges.
+ *
+ * @param addresses
+ */
+async function fetchErc20Decimals(addresses: Hex[]) {
+  const uniqAddresses = [...new Set(addresses)];
+
+  const tokenInfos = await Promise.all(
+    uniqAddresses.map((address) => getTokenStandardAndDetails(address)),
+  );
+
+  return tokenInfos.reduce(
+    (result, tokenInfo, index) => ({
+      ...result,
+      [uniqAddresses[index]]: tokenInfo.decimals
+        ? parseInt(tokenInfo.decimals, 10)
+        : 18,
+    }),
+    {} as Record<Hex, number>,
+  );
+}
+
 /**
  * Compiles a list of balance changes from simulation data.
  *
  * @param simulationData
  */
-export function useBalanceChanges(simulationData?: SimulationData) {
+export function useBalanceChanges(
+  simulationData?: SimulationData,
+): AsyncResultStrict<BalanceChange[]> {
   if (!simulationData) {
-    return { isLoading: false, balanceChanges: [] };
+    return { pending: false, value: [] };
   }
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
 
-  const tokenAddresses = useMemo(
-    () => [...new Set(tokenBalanceChanges?.map((change) => change.address))],
-    [simulationData],
+  const erc20Decimals = useAsyncResultStrict(
+    () =>
+      fetchErc20Decimals(
+        tokenBalanceChanges
+          .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
+          .map((tbc) => tbc.address),
+      ),
+    [tokenBalanceChanges],
   );
-  const { isLoading, addressToTokenDetails } = useTokenDetails(tokenAddresses);
 
-  if (isLoading) {
-    return { isLoading: true, balanceChanges: [] };
+  if (erc20Decimals.pending) {
+    return { pending: true };
   }
+
   const balanceChanges = [];
 
   if (nativeBalanceChange) {
-    balanceChanges.push(getNativeAssetBalanceChange(nativeBalanceChange));
+    balanceChanges.push(convertNativeBalanceChange(nativeBalanceChange));
   }
   for (const tokenBalanceChange of tokenBalanceChanges) {
-    const { decimals } = addressToTokenDetails[tokenBalanceChange.address];
     balanceChanges.push(
-      getTokenAssetBalanceChange(tokenBalanceChange, decimals),
+      convertTokenBalanceChange(tokenBalanceChange, erc20Decimals.value),
     );
   }
 
-  return { isLoading: false, balanceChanges };
+  return { pending: false, value: balanceChanges };
 }
