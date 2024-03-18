@@ -221,11 +221,7 @@ const SignatureRequest = ({
         <div className="signature-request-content">
           {
             ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-            <BlockaidBannerAlert
-              txData={txData}
-              marginLeft={4}
-              marginRight={4}
-            />
+            <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
             ///: END:ONLY_INCLUDE_IF
           }
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
