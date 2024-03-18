@@ -1,16 +1,23 @@
-import {
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
+import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from 'json-rpc-engine';
+} from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcRequest,
+  JsonRpcResponse,
+  JsonRpcParams,
+  Json,
+} from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
-type ethereumAccountsRequestType = {
+type EthereumAccountsRequestType<
+  Params extends JsonRpcParams = JsonRpcParams,
+  Result extends Json = Json,
+> = {
   methodNames: [string];
   implementation: (
-    _req: JsonRpcRequest<unknown>,
-    res: PendingJsonRpcResponse<unknown>,
+    _req: JsonRpcRequest<Params>,
+    res: JsonRpcResponse<Result>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
     { getAccounts }: Record<string, () => Promise<string[]>>,
@@ -22,7 +29,7 @@ type ethereumAccountsRequestType = {
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
 
-const requestEthereumAccounts: ethereumAccountsRequestType = {
+const requestEthereumAccounts: EthereumAccountsRequestType = {
   methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
   implementation: ethAccountsHandler,
   hookNames: {
@@ -46,9 +53,12 @@ export default requestEthereumAccounts;
  * @param options - The RPC method hooks.
  * @param options.getAccounts
  */
-async function ethAccountsHandler(
-  _req: JsonRpcRequest<unknown>,
-  res: PendingJsonRpcResponse<unknown>,
+async function ethAccountsHandler<
+  Params extends JsonRpcParams = JsonRpcParams,
+  Result extends Json = Json,
+>(
+  _req: JsonRpcRequest<Params>,
+  res: JsonRpcResponse<Result>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { getAccounts }: Record<string, () => Promise<string[]>>,
