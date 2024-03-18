@@ -15,9 +15,6 @@ describe('Inline Alert', () => {
       <InlineAlert onClick={onClickMock} severity={Severity.Danger} />,
     );
 
-    expect(
-      container.getElementsByClassName('inline-alert__critical'),
-    ).toHaveLength(1);
     expect(container).toMatchSnapshot();
   });
 
@@ -25,18 +22,13 @@ describe('Inline Alert', () => {
     const { container } = render(
       <InlineAlert onClick={onClickMock} severity={Severity.Warning} />,
     );
-    expect(
-      container.getElementsByClassName('inline-alert__non_critical'),
-    ).toHaveLength(1);
+
     expect(container).toMatchSnapshot();
   });
 
   it('renders alert with informative severity', () => {
     const { container } = render(<InlineAlert onClick={onClickMock} />);
 
-    expect(
-      container.getElementsByClassName('inline-alert__informative'),
-    ).toHaveLength(1);
     expect(container).toMatchSnapshot();
   });
 });

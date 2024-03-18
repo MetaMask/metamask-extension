@@ -1,54 +1,15 @@
 .inline-alert {
-  border-radius: 4px;
   padding: 2px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  max-width: 100%;
-  font-family: Euclid Circular B;
-  font-weight: 400;
 
-
-  &__critical {
-    background-color: var(--color-error-muted);
-
-    .inline-alert__text {
-      color: var(--color-error-default);
-    }
-  }
-
-  &__informative {
-    background-color: var(--color-info-muted);
-
-    .inline-alert__text {
-      color: var(--color-info-default);
-    }
-  }
-
-  &__non_critical {
-    background-color: var(--color-warning-muted);
-
-    .inline-alert__text {
-      color: var(--color-warning-default);
-    }
-  }
-
-  &__critical &__icon {
+  &__danger {
     color: var(--color-error-default);
   }
 
-  &__informative &__icon {
+  &__info {
     color: var(--color-info-default);
   }
 
-  &__non_critical &__icon {
+  &__warning {
     color: var(--color-warning-default);
-  }
-
-  &__text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 }

@@ -15,7 +15,7 @@ export default {
     },
     onClick: {
       action: 'onClick',
-      description: 'Handle click to open alert modal.',
+      description: 'The onClick handler for the inline alerts.',
     },
   },
   args: {
@@ -26,8 +26,7 @@ export default {
 const Template: StoryFn<InlineAlertProps> = (args) => <InlineAlert {...args} />;
 
 /**
- * Inline Informative alert. This is the default alert type.<br/>
- * The component will still display a modal with more information when clicked.
+ * Inline Informative alert. This is the default alert type.
  */
 export const Info = Template.bind({});
 Info.args = {
@@ -35,8 +34,7 @@ Info.args = {
 };
 
 /**
- * Inline Non-Critical alert.<br/>
- * The component will still display a modal with more information when clicked.
+ * Inline Non-Critical alert.
  */
 export const Warning = Template.bind({});
 Warning.args = {
@@ -44,8 +42,7 @@ Warning.args = {
 };
 
 /**
- * Inline Critical alert.<br/>
- * The component will still display a modal with more information when clicked.
+ * Inline Critical alert.
  */
 export const Danger = Template.bind({});
 Danger.args = {
