@@ -18,12 +18,15 @@ type CreateActionsObj<T extends keyof UserStorageController> = {
     handler: UserStorageController[K];
   };
 };
-type ActionsObj = CreateActionsObj<'performGetStorage' | 'performSetStorage'>;
+type ActionsObj = CreateActionsObj<
+  'performGetStorage' | 'performSetStorage' | 'getStorageKey'
+>;
 export type Actions = ActionsObj[keyof ActionsObj];
 export type UserStorageControllerPerformGetStorage =
   ActionsObj['performGetStorage'];
 export type UserStorageControllerPerformSetStorage =
   ActionsObj['performSetStorage'];
+export type UserStorageControllerGetStorageKey = ActionsObj['getStorageKey'];
 
 // Allowed Actions
 type AllowedActions = HandleSnapRequest;
@@ -109,6 +112,16 @@ export default class UserStorageController extends BaseController<
       bearerToken,
       storageKey,
     });
+  }
+
+  /**
+   * Retrieves the storage key, for internal use only!
+   *
+   * @returns the storage key
+   */
+  public async getStorageKey(): Promise<string> {
+    const storageKey = await this.#createStorageKey();
+    return storageKey;
   }
 
   /**
