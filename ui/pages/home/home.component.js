@@ -14,6 +14,7 @@ import NftsTab from '../../components/app/nfts-tab';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -76,7 +77,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IF
