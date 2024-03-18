@@ -6003,25 +6003,32 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _onUserOperationTransactionUpdated(transactionMeta) {
-    transactionMeta.txParams.from =
-      this.preferencesController.getSelectedAddress();
+    const updatedTransactionMeta = {
+      ...transactionMeta,
+      txParams: {
+        ...transactionMeta.txParams,
+        from: this.preferencesController.getSelectedAddress(),
+      },
+    };
 
     const transactionExists = this.txController.state.transactions.some(
-      (tx) => tx.id === transactionMeta.id,
+      (tx) => tx.id === updatedTransactionMeta.id,
     );
 
     if (!transactionExists) {
-      this.txController.state.transactions.push(transactionMeta);
+      this.txController.update((state) => {
+        state.transactions.push(updatedTransactionMeta);
+      });
     }
 
     this.txController.updateTransaction(
-      transactionMeta,
+      updatedTransactionMeta,
       'Generated from user operation',
     );
 
     this.controllerMessenger.publish(
       'TransactionController:transactionStatusUpdated',
-      { transactionMeta },
+      { updatedTransactionMeta },
     );
   }
 }
