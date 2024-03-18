@@ -180,11 +180,11 @@ export const isValidDate = (d: Date | number) => {
  * @property {() => void} reject - A function that rejects the Promise.
  */
 
-interface DeferredPromise {
+type DeferredPromise = {
   promise: Promise<any>;
   resolve?: () => void;
   reject?: () => void;
-}
+};
 
 /**
  * Create a defered Promise.
@@ -274,7 +274,7 @@ export function isWebUrl(urlString: string): boolean {
   );
 }
 
-interface FormattedTransactionMeta {
+type FormattedTransactionMeta = {
   blockHash: string | null;
   blockNumber: string | null;
   from: string;
@@ -293,7 +293,7 @@ interface FormattedTransactionMeta {
   type: TransactionEnvelopeType;
   accessList: AccessList | null;
   transactionIndex: string | null;
-}
+};
 
 export function formatTxMetaForRpcResult(
   txMeta: TransactionMeta,

@@ -19,11 +19,11 @@ import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
 
-export interface NotificationDetailCopyButtonProps {
+export type NotificationDetailCopyButtonProps = {
   text: string;
   displayText: string;
   color?: TextColor;
-}
+};
 
 /**
  * A component to display a button that copies a given text to the clipboard when clicked.

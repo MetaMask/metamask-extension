@@ -7,6 +7,8 @@ import type {
 } from '../box';
 import type { ButtonProps } from '../button';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
   /**
    * Additional className to add to the ModalFooter
