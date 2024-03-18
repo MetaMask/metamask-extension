@@ -1,5 +1,5 @@
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index 32e85c46607567fad81242ca8e83108ee52ad747..9437066a90c95ec63f81d02337a0c0644d6b6580 100644
+index 32e85c46607567fad81242ca8e83108ee52ad747..adf17f694f8d1a18904a7ce9f2d39636930dca45 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
 @@ -4,31 +4,31 @@
@@ -7,39 +7,44 @@ index 32e85c46607567fad81242ca8e83108ee52ad747..9437066a90c95ec63f81d02337a0c064
  
  
 -var _chunkQDIYZX5Vjs = require('./chunk-QDIYZX5V.js');
-+var _chunkAFM3ZOKZjs = require('./chunk-AFM3ZOKZ.js');
- require('./chunk-VH47Q6TS.js');
- require('./chunk-RQKICZYP.js');
- require('./chunk-QP75SWIQ.js');
+-require('./chunk-VH47Q6TS.js');
+-require('./chunk-RQKICZYP.js');
+-require('./chunk-QP75SWIQ.js');
++var _chunk3ZLGFPPQjs = require('./chunk-3ZLGFPPQ.js');
++require('./chunk-GSZUE7GA.js');
++require('./chunk-SCRFJDKV.js');
  require('./chunk-ZNZEJDOE.js');
 -require('./chunk-WXQZIUNW.js');
 -require('./chunk-4S25HUCL.js');
-+require('./chunk-EAUE4RCU.js');
-+require('./chunk-BOZ2GRIU.js');
++require('./chunk-LVC2VSLJ.js');
++require('./chunk-CRFAUS5P.js');
  require('./chunk-HS277C77.js');
 -require('./chunk-BILEZLAT.js');
-+require('./chunk-QEX3QMSL.js');
- require('./chunk-R7NJVDWN.js');
- require('./chunk-DTDTOMTB.js');
+-require('./chunk-R7NJVDWN.js');
+-require('./chunk-DTDTOMTB.js');
++require('./chunk-VH47Q6TS.js');
  require('./chunk-NRWEI43Q.js');
  require('./chunk-5XBULBP2.js');
  require('./chunk-7LXE4KHV.js');
 -require('./chunk-CQBXHAYR.js');
 -require('./chunk-TXVH44HM.js');
 -require('./chunk-QPNEFZB3.js');
-+require('./chunk-FHG5GY6F.js');
-+require('./chunk-PF3UOCRW.js');
 +require('./chunk-5IHLDAOF.js');
  require('./chunk-5OQ373JS.js');
  require('./chunk-UGFBA4GV.js');
 -require('./chunk-O7H2MC7R.js');
-+require('./chunk-TZTP4JVA.js');
++require('./chunk-RQKICZYP.js');
++require('./chunk-QP75SWIQ.js');
  require('./chunk-F3CMU2DM.js');
  require('./chunk-CXXGL43K.js');
  require('./chunk-ITDY6AIZ.js');
++require('./chunk-QEX3QMSL.js');
++require('./chunk-R7NJVDWN.js');
++require('./chunk-TZTP4JVA.js');
++require('./chunk-VEJ3MIZG.js');
++require('./chunk-DTDTOMTB.js');
  require('./chunk-S6VGOPUY.js');
 -require('./chunk-W3GAOR7Y.js');
-+require('./chunk-VEJ3MIZG.js');
  require('./chunk-Z4BLTVTB.js');
  
  
@@ -48,262 +53,35 @@ index 32e85c46607567fad81242ca8e83108ee52ad747..9437066a90c95ec63f81d02337a0c064
  
  
 -exports.ApprovalState = _chunkQDIYZX5Vjs.ApprovalState; exports.CANCEL_RATE = _chunkQDIYZX5Vjs.CANCEL_RATE; exports.HARDFORK = _chunkQDIYZX5Vjs.HARDFORK; exports.SPEED_UP_RATE = _chunkQDIYZX5Vjs.SPEED_UP_RATE; exports.TransactionController = _chunkQDIYZX5Vjs.TransactionController;
-+exports.ApprovalState = _chunkAFM3ZOKZjs.ApprovalState; exports.CANCEL_RATE = _chunkAFM3ZOKZjs.CANCEL_RATE; exports.HARDFORK = _chunkAFM3ZOKZjs.HARDFORK; exports.SPEED_UP_RATE = _chunkAFM3ZOKZjs.SPEED_UP_RATE; exports.TransactionController = _chunkAFM3ZOKZjs.TransactionController;
++exports.ApprovalState = _chunk3ZLGFPPQjs.ApprovalState; exports.CANCEL_RATE = _chunk3ZLGFPPQjs.CANCEL_RATE; exports.HARDFORK = _chunk3ZLGFPPQjs.HARDFORK; exports.SPEED_UP_RATE = _chunk3ZLGFPPQjs.SPEED_UP_RATE; exports.TransactionController = _chunk3ZLGFPPQjs.TransactionController;
  //# sourceMappingURL=TransactionController.js.map
 \ No newline at end of file
-diff --git a/dist/chunk-5IHLDAOF.js b/dist/chunk-5IHLDAOF.js
+diff --git a/dist/chunk-3ZLGFPPQ.js b/dist/chunk-3ZLGFPPQ.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..06f3748679a26a7c2bbc66e72fdeb6fbf5b6ac5d
+index 0000000000000000000000000000000000000000..542c69150ec41cb9a4267a54ff4b77100f7d0173
 --- /dev/null
-+++ b/dist/chunk-5IHLDAOF.js
-@@ -0,0 +1,208 @@
-+"use strict";Object.defineProperty(exports, "__esModule", {value: true});
-+
-+var _chunk5OQ373JSjs = require('./chunk-5OQ373JS.js');
-+
-+
-+var _chunkTZTP4JVAjs = require('./chunk-TZTP4JVA.js');
-+
-+
-+var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
-+
-+// src/utils/gas-fees.ts
-+
-+
-+
-+
-+
-+var _controllerutils = require('@metamask/controller-utils');
-+var _utils = require('@metamask/utils');
-+var log = _utils.createModuleLogger.call(void 0, _chunkS6VGOPUYjs.projectLogger, "gas-fees");
-+async function updateGasFees(request) {
-+  const { txMeta } = request;
-+  const initialParams = { ...txMeta.txParams };
-+  const isSwap = _chunk5OQ373JSjs.SWAP_TRANSACTION_TYPES.includes(
-+    txMeta.type
-+  );
-+  const savedGasFees = isSwap ? void 0 : request.getSavedGasFees(txMeta.chainId);
-+  const suggestedGasFees = await getSuggestedGasFees(request);
-+  log("Suggested gas fees", suggestedGasFees);
-+  const getGasFeeRequest = {
-+    ...request,
-+    initialParams,
-+    savedGasFees,
-+    suggestedGasFees
-+  };
-+  txMeta.txParams.maxFeePerGas = getMaxFeePerGas(getGasFeeRequest);
-+  txMeta.txParams.maxPriorityFeePerGas = getMaxPriorityFeePerGas(getGasFeeRequest);
-+  txMeta.txParams.gasPrice = getGasPrice(getGasFeeRequest);
-+  txMeta.userFeeLevel = getUserFeeLevel(getGasFeeRequest);
-+  log("Updated gas fee properties", {
-+    maxFeePerGas: txMeta.txParams.maxFeePerGas,
-+    maxPriorityFeePerGas: txMeta.txParams.maxPriorityFeePerGas,
-+    gasPrice: txMeta.txParams.gasPrice
-+  });
-+  if (txMeta.txParams.maxFeePerGas || txMeta.txParams.maxPriorityFeePerGas) {
-+    delete txMeta.txParams.gasPrice;
-+  }
-+  if (txMeta.txParams.gasPrice) {
-+    delete txMeta.txParams.maxFeePerGas;
-+    delete txMeta.txParams.maxPriorityFeePerGas;
-+  }
-+  updateDefaultGasEstimates(txMeta);
-+}
-+function gweiDecimalToWeiHex(value) {
-+  return _controllerutils.toHex.call(void 0, _controllerutils.gweiDecToWEIBN.call(void 0, value));
-+}
-+function getMaxFeePerGas(request) {
-+  const { savedGasFees, eip1559, initialParams, suggestedGasFees } = request;
-+  if (!eip1559) {
-+    return void 0;
-+  }
-+  if (savedGasFees) {
-+    const maxFeePerGas = gweiDecimalToWeiHex(savedGasFees.maxBaseFee);
-+    log("Using maxFeePerGas from savedGasFees", maxFeePerGas);
-+    return maxFeePerGas;
-+  }
-+  if (initialParams.maxFeePerGas) {
-+    log("Using maxFeePerGas from request", initialParams.maxFeePerGas);
-+    return initialParams.maxFeePerGas;
-+  }
-+  if (initialParams.gasPrice && !initialParams.maxPriorityFeePerGas) {
-+    log(
-+      "Setting maxFeePerGas to gasPrice from request",
-+      initialParams.gasPrice
-+    );
-+    return initialParams.gasPrice;
-+  }
-+  if (suggestedGasFees.maxFeePerGas) {
-+    log("Using suggested maxFeePerGas", suggestedGasFees.maxFeePerGas);
-+    return suggestedGasFees.maxFeePerGas;
-+  }
-+  if (suggestedGasFees.gasPrice) {
-+    log(
-+      "Setting maxFeePerGas to suggested gasPrice",
-+      suggestedGasFees.gasPrice
-+    );
-+    return suggestedGasFees.gasPrice;
-+  }
-+  log("maxFeePerGas not set");
-+  return void 0;
-+}
-+function getMaxPriorityFeePerGas(request) {
-+  const { eip1559, initialParams, savedGasFees, suggestedGasFees, txMeta } = request;
-+  if (!eip1559) {
-+    return void 0;
-+  }
-+  if (savedGasFees) {
-+    const maxPriorityFeePerGas = gweiDecimalToWeiHex(savedGasFees.priorityFee);
-+    log(
-+      "Using maxPriorityFeePerGas from savedGasFees.priorityFee",
-+      maxPriorityFeePerGas
-+    );
-+    return maxPriorityFeePerGas;
-+  }
-+  if (initialParams.maxPriorityFeePerGas) {
-+    log(
-+      "Using maxPriorityFeePerGas from request",
-+      initialParams.maxPriorityFeePerGas
-+    );
-+    return initialParams.maxPriorityFeePerGas;
-+  }
-+  if (initialParams.gasPrice && !initialParams.maxFeePerGas) {
-+    log(
-+      "Setting maxPriorityFeePerGas to gasPrice from request",
-+      initialParams.gasPrice
-+    );
-+    return initialParams.gasPrice;
-+  }
-+  if (suggestedGasFees.maxPriorityFeePerGas) {
-+    log(
-+      "Using suggested maxPriorityFeePerGas",
-+      suggestedGasFees.maxPriorityFeePerGas
-+    );
-+    return suggestedGasFees.maxPriorityFeePerGas;
-+  }
-+  if (txMeta.txParams.maxFeePerGas) {
-+    log(
-+      "Setting maxPriorityFeePerGas to maxFeePerGas",
-+      txMeta.txParams.maxFeePerGas
-+    );
-+    return txMeta.txParams.maxFeePerGas;
-+  }
-+  log("maxPriorityFeePerGas not set");
-+  return void 0;
-+}
-+function getGasPrice(request) {
-+  const { eip1559, initialParams, suggestedGasFees } = request;
-+  if (eip1559) {
-+    return void 0;
-+  }
-+  if (initialParams.gasPrice) {
-+    log("Using gasPrice from request", initialParams.gasPrice);
-+    return initialParams.gasPrice;
-+  }
-+  if (suggestedGasFees.maxFeePerGas) {
-+    log("Using suggested maxFeePerGas", suggestedGasFees.maxFeePerGas);
-+    return suggestedGasFees.maxFeePerGas;
-+  }
-+  if (suggestedGasFees.gasPrice) {
-+    log("Using suggested gasPrice", suggestedGasFees.gasPrice);
-+    return suggestedGasFees.gasPrice;
-+  }
-+  log("gasPrice not set");
-+  return void 0;
-+}
-+function getUserFeeLevel(request) {
-+  const { eip1559, initialParams, savedGasFees, suggestedGasFees, txMeta } = request;
-+  if (!eip1559) {
-+    return void 0;
-+  }
-+  if (savedGasFees) {
-+    return "custom" /* CUSTOM */;
-+  }
-+  if (!initialParams.maxFeePerGas && !initialParams.maxPriorityFeePerGas && initialParams.gasPrice) {
-+    return txMeta.origin === _controllerutils.ORIGIN_METAMASK ? "custom" /* CUSTOM */ : "dappSuggested" /* DAPP_SUGGESTED */;
-+  }
-+  if (!initialParams.maxFeePerGas && !initialParams.maxPriorityFeePerGas && suggestedGasFees.maxFeePerGas && suggestedGasFees.maxPriorityFeePerGas) {
-+    return "medium" /* MEDIUM */;
-+  }
-+  if (txMeta.origin === _controllerutils.ORIGIN_METAMASK) {
-+    return "medium" /* MEDIUM */;
-+  }
-+  return "dappSuggested" /* DAPP_SUGGESTED */;
-+}
-+function updateDefaultGasEstimates(txMeta) {
-+  if (!txMeta.defaultGasEstimates) {
-+    txMeta.defaultGasEstimates = {};
-+  }
-+  txMeta.defaultGasEstimates.maxFeePerGas = txMeta.txParams.maxFeePerGas;
-+  txMeta.defaultGasEstimates.maxPriorityFeePerGas = txMeta.txParams.maxPriorityFeePerGas;
-+  txMeta.defaultGasEstimates.gasPrice = txMeta.txParams.gasPrice;
-+  txMeta.defaultGasEstimates.estimateType = txMeta.userFeeLevel;
-+}
-+async function getSuggestedGasFees(request) {
-+  const { eip1559, ethQuery, gasFeeFlows, getGasFeeEstimates, txMeta } = request;
-+  if (!eip1559 && txMeta.txParams.gasPrice || eip1559 && txMeta.txParams.maxFeePerGas && txMeta.txParams.maxPriorityFeePerGas) {
-+    return {};
-+  }
-+  const gasFeeFlow = _chunkTZTP4JVAjs.getGasFeeFlow.call(void 0, txMeta, gasFeeFlows);
-+  try {
-+    const response = await gasFeeFlow.getGasFees({
-+      ethQuery,
-+      getGasFeeControllerEstimates: getGasFeeEstimates,
-+      transactionMeta: txMeta
-+    });
-+    return response.estimates.medium;
-+  } catch (error) {
-+    log("Failed to get suggested gas fees", error);
-+  }
-+  const gasPriceDecimal = await _controllerutils.query.call(void 0, ethQuery, "gasPrice");
-+  const gasPrice = gasPriceDecimal ? _utils.add0x.call(void 0, gasPriceDecimal.toString(16)) : void 0;
-+  return { gasPrice };
-+}
-+
-+
-+
-+
-+exports.updateGasFees = updateGasFees; exports.gweiDecimalToWeiHex = gweiDecimalToWeiHex;
-+//# sourceMappingURL=chunk-5IHLDAOF.js.map
-\ No newline at end of file
-diff --git a/dist/chunk-AFM3ZOKZ.js b/dist/chunk-AFM3ZOKZ.js
-new file mode 100644
-index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d8635df0e3d4
---- /dev/null
-+++ b/dist/chunk-AFM3ZOKZ.js
-@@ -0,0 +1,2358 @@
++++ b/dist/chunk-3ZLGFPPQ.js
+@@ -0,0 +1,2384 @@
 +"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 +
-+
-+var _chunkVH47Q6TSjs = require('./chunk-VH47Q6TS.js');
-+
++var _chunkGSZUE7GAjs = require('./chunk-GSZUE7GA.js');
 +
 +
-+
-+var _chunkRQKICZYPjs = require('./chunk-RQKICZYP.js');
-+
-+
-+
-+var _chunkQP75SWIQjs = require('./chunk-QP75SWIQ.js');
++var _chunkSCRFJDKVjs = require('./chunk-SCRFJDKV.js');
 +
 +
 +
 +var _chunkZNZEJDOEjs = require('./chunk-ZNZEJDOE.js');
 +
 +
-+var _chunkEAUE4RCUjs = require('./chunk-EAUE4RCU.js');
++var _chunkLVC2VSLJjs = require('./chunk-LVC2VSLJ.js');
 +
 +
 +var _chunkHS277C77js = require('./chunk-HS277C77.js');
 +
 +
-+var _chunkQEX3QMSLjs = require('./chunk-QEX3QMSL.js');
 +
-+
-+var _chunkR7NJVDWNjs = require('./chunk-R7NJVDWN.js');
-+
-+
-+var _chunkDTDTOMTBjs = require('./chunk-DTDTOMTB.js');
++var _chunkVH47Q6TSjs = require('./chunk-VH47Q6TS.js');
 +
 +
 +var _chunkNRWEI43Qjs = require('./chunk-NRWEI43Q.js');
@@ -313,12 +91,6 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +
 +
 +var _chunk7LXE4KHVjs = require('./chunk-7LXE4KHV.js');
-+
-+
-+var _chunkFHG5GY6Fjs = require('./chunk-FHG5GY6F.js');
-+
-+
-+var _chunkPF3UOCRWjs = require('./chunk-PF3UOCRW.js');
 +
 +
 +var _chunk5IHLDAOFjs = require('./chunk-5IHLDAOF.js');
@@ -340,7 +112,25 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +var _chunkUGFBA4GVjs = require('./chunk-UGFBA4GV.js');
 +
 +
++
++
++var _chunkRQKICZYPjs = require('./chunk-RQKICZYP.js');
++
++
++
++var _chunkQP75SWIQjs = require('./chunk-QP75SWIQ.js');
++
++
 +var _chunkF3CMU2DMjs = require('./chunk-F3CMU2DM.js');
++
++
++var _chunkQEX3QMSLjs = require('./chunk-QEX3QMSL.js');
++
++
++var _chunkR7NJVDWNjs = require('./chunk-R7NJVDWN.js');
++
++
++var _chunkDTDTOMTBjs = require('./chunk-DTDTOMTB.js');
 +
 +
 +var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
@@ -404,7 +194,7 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +    lastFetchedBlockNumbers: {}
 +  };
 +}
-+var _internalEvents, _incomingTransactionOptions, _pendingTransactionOptions, _transactionHistoryLimit, _isSimulationEnabled, _multichainTrackingHelper, _createNonceTracker, createNonceTracker_fn, _createIncomingTransactionHelper, createIncomingTransactionHelper_fn, _createPendingTransactionTracker, createPendingTransactionTracker_fn, _checkForPendingTransactionAndStartPolling, _stopAllTracking, stopAllTracking_fn, _removeIncomingTransactionHelperListeners, removeIncomingTransactionHelperListeners_fn, _addIncomingTransactionHelperListeners, addIncomingTransactionHelperListeners_fn, _removePendingTransactionTrackerListeners, removePendingTransactionTrackerListeners_fn, _addPendingTransactionTrackerListeners, addPendingTransactionTrackerListeners_fn, _getNonceTrackerPendingTransactions, getNonceTrackerPendingTransactions_fn, _getGasFeeFlows, getGasFeeFlows_fn, _getLayer1GasFeeFlows, getLayer1GasFeeFlows_fn, _updateTransactionInternal, updateTransactionInternal_fn, _getSimulationData, getSimulationData_fn;
++var _internalEvents, _incomingTransactionOptions, _pendingTransactionOptions, _transactionHistoryLimit, _isSimulationEnabled, _multichainTrackingHelper, _createNonceTracker, createNonceTracker_fn, _createIncomingTransactionHelper, createIncomingTransactionHelper_fn, _createPendingTransactionTracker, createPendingTransactionTracker_fn, _checkForPendingTransactionAndStartPolling, _stopAllTracking, stopAllTracking_fn, _removeIncomingTransactionHelperListeners, removeIncomingTransactionHelperListeners_fn, _addIncomingTransactionHelperListeners, addIncomingTransactionHelperListeners_fn, _removePendingTransactionTrackerListeners, removePendingTransactionTrackerListeners_fn, _addPendingTransactionTrackerListeners, addPendingTransactionTrackerListeners_fn, _getNonceTrackerPendingTransactions, getNonceTrackerPendingTransactions_fn, _getGasFeeFlows, getGasFeeFlows_fn, _getLayer1GasFeeFlows, getLayer1GasFeeFlows_fn, _updateTransactionInternal, updateTransactionInternal_fn, _checkIfTransactionParamsUpdated, checkIfTransactionParamsUpdated_fn, _onTransactionParamsUpdated, onTransactionParamsUpdated_fn, _updateSimulationData, updateSimulationData_fn;
 +var TransactionController = class extends _basecontroller.BaseController {
 +  /**
 +   * Constructs a TransactionController.
@@ -484,7 +274,9 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getGasFeeFlows);
 +    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLayer1GasFeeFlows);
 +    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _updateTransactionInternal);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getSimulationData);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _checkIfTransactionParamsUpdated);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _onTransactionParamsUpdated);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _updateSimulationData);
 +    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _internalEvents, new (0, _events.EventEmitter)());
 +    this.inProcessOfSigning = /* @__PURE__ */ new Set();
 +    this.mutex = new (0, _asyncmutex.Mutex)();
@@ -750,7 +542,6 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +      type: transactionType,
 +      networkClientId
 +    };
-+    const getSimulationDataPromise = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getSimulationData, getSimulationData_fn).call(this, addedTransactionMeta);
 +    await this.updateGasProperties(addedTransactionMeta);
 +    if (!existingTransactionMeta) {
 +      if (method && this.securityProviderRequest) {
@@ -777,16 +568,11 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +        }
 +      );
 +      this.addMetadata(addedTransactionMeta);
++      _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _updateSimulationData, updateSimulationData_fn).call(this, addedTransactionMeta);
 +      this.messagingSystem.publish(
 +        `${controllerName}:unapprovedTransactionAdded`,
 +        addedTransactionMeta
 +      );
-+      getSimulationDataPromise.then(async (simulationData) => {
-+        await this.updateSimulationData(
-+          addedTransactionMeta.id,
-+          simulationData
-+        );
-+      });
 +    }
 +    return {
 +      result: this.processApproval(addedTransactionMeta, {
@@ -2413,22 +2199,6 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +  isTransactionAlreadyConfirmedError(error) {
 +    return error?.message?.includes("nonce too low") || error?.data?.message?.includes("nonce too low");
 +  }
-+  async updateSimulationData(transactionId, simulationData) {
-+    const transactionMeta = this.getTransaction(transactionId);
-+    if (!transactionMeta) {
-+      _chunkS6VGOPUYjs.projectLogger.call(void 0, 
-+        "Cannot update simulation data as transaction not found",
-+        transactionId,
-+        simulationData
-+      );
-+      return;
-+    }
-+    this.updateTransaction(
-+      { ...transactionMeta, simulationData },
-+      "TransactionController#updateSimulationData - Update simulation data"
-+    );
-+    _chunkS6VGOPUYjs.projectLogger.call(void 0, "Updated simulation data", transactionId, simulationData);
-+  }
 +};
 +_internalEvents = new WeakMap();
 +_incomingTransactionOptions = new WeakMap();
@@ -2574,7 +2344,7 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +};
 +_getGasFeeFlows = new WeakSet();
 +getGasFeeFlows_fn = function() {
-+  return [new (0, _chunkFHG5GY6Fjs.LineaGasFeeFlow)(), new (0, _chunkPF3UOCRWjs.DefaultGasFeeFlow)()];
++  return [new (0, _chunkGSZUE7GAjs.LineaGasFeeFlow)(), new (0, _chunkSCRFJDKVjs.DefaultGasFeeFlow)()];
 +};
 +_getLayer1GasFeeFlows = new WeakSet();
 +getLayer1GasFeeFlows_fn = function() {
@@ -2587,6 +2357,7 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +    txParams: _chunkUGFBA4GVjs.normalizeTransactionParams.call(void 0, transactionMeta.txParams)
 +  };
 +  _chunkVH47Q6TSjs.validateTxParams.call(void 0, normalizedTransaction.txParams);
++  const updatedTransactionParams = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _checkIfTransactionParamsUpdated, checkIfTransactionParamsUpdated_fn).call(this, normalizedTransaction);
 +  const transactionWithUpdatedHistory = skipHistory === true ? normalizedTransaction : _chunkQP75SWIQjs.updateTransactionHistory.call(void 0, 
 +    normalizedTransaction,
 +    note ?? "Transaction updated"
@@ -2597,29 +2368,74 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +    );
 +    state.transactions[index] = transactionWithUpdatedHistory;
 +  });
-+};
-+_getSimulationData = new WeakSet();
-+getSimulationData_fn = async function(transactionMeta) {
-+  if (!_chunkZ4BLTVTBjs.__privateGet.call(void 0, this, _isSimulationEnabled).call(this)) {
-+    _chunkS6VGOPUYjs.projectLogger.call(void 0, "Skipping simulation as disabled");
-+    return {
-+      error: {
-+        message: "Simulation disabled",
-+        isReverted: false
-+      },
-+      tokenBalanceChanges: []
-+    };
++  if (updatedTransactionParams.length > 0) {
++    _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _onTransactionParamsUpdated, onTransactionParamsUpdated_fn).call(this, normalizedTransaction, updatedTransactionParams);
 +  }
-+  const { chainId, txParams } = transactionMeta;
++};
++_checkIfTransactionParamsUpdated = new WeakSet();
++checkIfTransactionParamsUpdated_fn = function(newTransactionMeta) {
++  const { id: transactionId, txParams: newParams } = newTransactionMeta;
++  const originalParams = this.getTransaction(transactionId)?.txParams;
++  if (!originalParams || _lodash.isEqual.call(void 0, originalParams, newParams)) {
++    return [];
++  }
++  const params = Object.keys(newParams);
++  const updatedProperties = params.filter(
++    (param) => newParams[param] !== originalParams[param]
++  );
++  _chunkS6VGOPUYjs.projectLogger.call(void 0, 
++    "Transaction parameters have been updated",
++    transactionId,
++    updatedProperties,
++    originalParams,
++    newParams
++  );
++  return updatedProperties;
++};
++_onTransactionParamsUpdated = new WeakSet();
++onTransactionParamsUpdated_fn = function(transactionMeta, updatedParams) {
++  if (["to", "value", "data"].some(
++    (param) => updatedParams.includes(param)
++  )) {
++    _chunkS6VGOPUYjs.projectLogger.call(void 0, "Updating simulation data due to transaction parameter update");
++    _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _updateSimulationData, updateSimulationData_fn).call(this, transactionMeta);
++  }
++};
++_updateSimulationData = new WeakSet();
++updateSimulationData_fn = async function(transactionMeta) {
++  const { id, chainId, txParams } = transactionMeta;
 +  const { from, to, value, data } = txParams;
-+  const simulationData = await _chunkEAUE4RCUjs.getSimulationData.call(void 0, {
-+    chainId,
-+    from,
-+    to,
-+    value,
-+    data
-+  });
-+  return simulationData;
++  let simulationData = {
++    error: {
++      message: "Simulation disabled",
++      isReverted: false
++    },
++    tokenBalanceChanges: []
++  };
++  if (_chunkZ4BLTVTBjs.__privateGet.call(void 0, this, _isSimulationEnabled).call(this)) {
++    _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _updateTransactionInternal, updateTransactionInternal_fn).call(this, { ...transactionMeta, simulationData: void 0 }, { skipHistory: true });
++    simulationData = await _chunkLVC2VSLJjs.getSimulationData.call(void 0, {
++      chainId,
++      from,
++      to,
++      value,
++      data
++    });
++  }
++  const finalTransactionMeta = this.getTransaction(id);
++  if (!finalTransactionMeta) {
++    _chunkS6VGOPUYjs.projectLogger.call(void 0, 
++      "Cannot update simulation data as transaction not found",
++      id,
++      simulationData
++    );
++    return;
++  }
++  this.updateTransaction(
++    { ...finalTransactionMeta, simulationData },
++    "TransactionController#updateSimulationData - Update simulation data"
++  );
++  _chunkS6VGOPUYjs.projectLogger.call(void 0, "Updated simulation data", id, simulationData);
 +};
 +
 +
@@ -2629,14 +2445,229 @@ index 0000000000000000000000000000000000000000..3eb9cf25d036e6566ffbe38c1319d863
 +
 +
 +exports.HARDFORK = HARDFORK; exports.CANCEL_RATE = CANCEL_RATE; exports.SPEED_UP_RATE = SPEED_UP_RATE; exports.ApprovalState = ApprovalState; exports.TransactionController = TransactionController;
-+//# sourceMappingURL=chunk-AFM3ZOKZ.js.map
++//# sourceMappingURL=chunk-3ZLGFPPQ.js.map
 \ No newline at end of file
-diff --git a/dist/chunk-BOZ2GRIU.js b/dist/chunk-BOZ2GRIU.js
+diff --git a/dist/chunk-5IHLDAOF.js b/dist/chunk-5IHLDAOF.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..e9577a026ce1ace2bc46abe6a369c57d9469fb1e
+index 0000000000000000000000000000000000000000..06f3748679a26a7c2bbc66e72fdeb6fbf5b6ac5d
 --- /dev/null
-+++ b/dist/chunk-BOZ2GRIU.js
-@@ -0,0 +1,56 @@
++++ b/dist/chunk-5IHLDAOF.js
+@@ -0,0 +1,208 @@
++"use strict";Object.defineProperty(exports, "__esModule", {value: true});
++
++var _chunk5OQ373JSjs = require('./chunk-5OQ373JS.js');
++
++
++var _chunkTZTP4JVAjs = require('./chunk-TZTP4JVA.js');
++
++
++var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
++
++// src/utils/gas-fees.ts
++
++
++
++
++
++var _controllerutils = require('@metamask/controller-utils');
++var _utils = require('@metamask/utils');
++var log = _utils.createModuleLogger.call(void 0, _chunkS6VGOPUYjs.projectLogger, "gas-fees");
++async function updateGasFees(request) {
++  const { txMeta } = request;
++  const initialParams = { ...txMeta.txParams };
++  const isSwap = _chunk5OQ373JSjs.SWAP_TRANSACTION_TYPES.includes(
++    txMeta.type
++  );
++  const savedGasFees = isSwap ? void 0 : request.getSavedGasFees(txMeta.chainId);
++  const suggestedGasFees = await getSuggestedGasFees(request);
++  log("Suggested gas fees", suggestedGasFees);
++  const getGasFeeRequest = {
++    ...request,
++    initialParams,
++    savedGasFees,
++    suggestedGasFees
++  };
++  txMeta.txParams.maxFeePerGas = getMaxFeePerGas(getGasFeeRequest);
++  txMeta.txParams.maxPriorityFeePerGas = getMaxPriorityFeePerGas(getGasFeeRequest);
++  txMeta.txParams.gasPrice = getGasPrice(getGasFeeRequest);
++  txMeta.userFeeLevel = getUserFeeLevel(getGasFeeRequest);
++  log("Updated gas fee properties", {
++    maxFeePerGas: txMeta.txParams.maxFeePerGas,
++    maxPriorityFeePerGas: txMeta.txParams.maxPriorityFeePerGas,
++    gasPrice: txMeta.txParams.gasPrice
++  });
++  if (txMeta.txParams.maxFeePerGas || txMeta.txParams.maxPriorityFeePerGas) {
++    delete txMeta.txParams.gasPrice;
++  }
++  if (txMeta.txParams.gasPrice) {
++    delete txMeta.txParams.maxFeePerGas;
++    delete txMeta.txParams.maxPriorityFeePerGas;
++  }
++  updateDefaultGasEstimates(txMeta);
++}
++function gweiDecimalToWeiHex(value) {
++  return _controllerutils.toHex.call(void 0, _controllerutils.gweiDecToWEIBN.call(void 0, value));
++}
++function getMaxFeePerGas(request) {
++  const { savedGasFees, eip1559, initialParams, suggestedGasFees } = request;
++  if (!eip1559) {
++    return void 0;
++  }
++  if (savedGasFees) {
++    const maxFeePerGas = gweiDecimalToWeiHex(savedGasFees.maxBaseFee);
++    log("Using maxFeePerGas from savedGasFees", maxFeePerGas);
++    return maxFeePerGas;
++  }
++  if (initialParams.maxFeePerGas) {
++    log("Using maxFeePerGas from request", initialParams.maxFeePerGas);
++    return initialParams.maxFeePerGas;
++  }
++  if (initialParams.gasPrice && !initialParams.maxPriorityFeePerGas) {
++    log(
++      "Setting maxFeePerGas to gasPrice from request",
++      initialParams.gasPrice
++    );
++    return initialParams.gasPrice;
++  }
++  if (suggestedGasFees.maxFeePerGas) {
++    log("Using suggested maxFeePerGas", suggestedGasFees.maxFeePerGas);
++    return suggestedGasFees.maxFeePerGas;
++  }
++  if (suggestedGasFees.gasPrice) {
++    log(
++      "Setting maxFeePerGas to suggested gasPrice",
++      suggestedGasFees.gasPrice
++    );
++    return suggestedGasFees.gasPrice;
++  }
++  log("maxFeePerGas not set");
++  return void 0;
++}
++function getMaxPriorityFeePerGas(request) {
++  const { eip1559, initialParams, savedGasFees, suggestedGasFees, txMeta } = request;
++  if (!eip1559) {
++    return void 0;
++  }
++  if (savedGasFees) {
++    const maxPriorityFeePerGas = gweiDecimalToWeiHex(savedGasFees.priorityFee);
++    log(
++      "Using maxPriorityFeePerGas from savedGasFees.priorityFee",
++      maxPriorityFeePerGas
++    );
++    return maxPriorityFeePerGas;
++  }
++  if (initialParams.maxPriorityFeePerGas) {
++    log(
++      "Using maxPriorityFeePerGas from request",
++      initialParams.maxPriorityFeePerGas
++    );
++    return initialParams.maxPriorityFeePerGas;
++  }
++  if (initialParams.gasPrice && !initialParams.maxFeePerGas) {
++    log(
++      "Setting maxPriorityFeePerGas to gasPrice from request",
++      initialParams.gasPrice
++    );
++    return initialParams.gasPrice;
++  }
++  if (suggestedGasFees.maxPriorityFeePerGas) {
++    log(
++      "Using suggested maxPriorityFeePerGas",
++      suggestedGasFees.maxPriorityFeePerGas
++    );
++    return suggestedGasFees.maxPriorityFeePerGas;
++  }
++  if (txMeta.txParams.maxFeePerGas) {
++    log(
++      "Setting maxPriorityFeePerGas to maxFeePerGas",
++      txMeta.txParams.maxFeePerGas
++    );
++    return txMeta.txParams.maxFeePerGas;
++  }
++  log("maxPriorityFeePerGas not set");
++  return void 0;
++}
++function getGasPrice(request) {
++  const { eip1559, initialParams, suggestedGasFees } = request;
++  if (eip1559) {
++    return void 0;
++  }
++  if (initialParams.gasPrice) {
++    log("Using gasPrice from request", initialParams.gasPrice);
++    return initialParams.gasPrice;
++  }
++  if (suggestedGasFees.maxFeePerGas) {
++    log("Using suggested maxFeePerGas", suggestedGasFees.maxFeePerGas);
++    return suggestedGasFees.maxFeePerGas;
++  }
++  if (suggestedGasFees.gasPrice) {
++    log("Using suggested gasPrice", suggestedGasFees.gasPrice);
++    return suggestedGasFees.gasPrice;
++  }
++  log("gasPrice not set");
++  return void 0;
++}
++function getUserFeeLevel(request) {
++  const { eip1559, initialParams, savedGasFees, suggestedGasFees, txMeta } = request;
++  if (!eip1559) {
++    return void 0;
++  }
++  if (savedGasFees) {
++    return "custom" /* CUSTOM */;
++  }
++  if (!initialParams.maxFeePerGas && !initialParams.maxPriorityFeePerGas && initialParams.gasPrice) {
++    return txMeta.origin === _controllerutils.ORIGIN_METAMASK ? "custom" /* CUSTOM */ : "dappSuggested" /* DAPP_SUGGESTED */;
++  }
++  if (!initialParams.maxFeePerGas && !initialParams.maxPriorityFeePerGas && suggestedGasFees.maxFeePerGas && suggestedGasFees.maxPriorityFeePerGas) {
++    return "medium" /* MEDIUM */;
++  }
++  if (txMeta.origin === _controllerutils.ORIGIN_METAMASK) {
++    return "medium" /* MEDIUM */;
++  }
++  return "dappSuggested" /* DAPP_SUGGESTED */;
++}
++function updateDefaultGasEstimates(txMeta) {
++  if (!txMeta.defaultGasEstimates) {
++    txMeta.defaultGasEstimates = {};
++  }
++  txMeta.defaultGasEstimates.maxFeePerGas = txMeta.txParams.maxFeePerGas;
++  txMeta.defaultGasEstimates.maxPriorityFeePerGas = txMeta.txParams.maxPriorityFeePerGas;
++  txMeta.defaultGasEstimates.gasPrice = txMeta.txParams.gasPrice;
++  txMeta.defaultGasEstimates.estimateType = txMeta.userFeeLevel;
++}
++async function getSuggestedGasFees(request) {
++  const { eip1559, ethQuery, gasFeeFlows, getGasFeeEstimates, txMeta } = request;
++  if (!eip1559 && txMeta.txParams.gasPrice || eip1559 && txMeta.txParams.maxFeePerGas && txMeta.txParams.maxPriorityFeePerGas) {
++    return {};
++  }
++  const gasFeeFlow = _chunkTZTP4JVAjs.getGasFeeFlow.call(void 0, txMeta, gasFeeFlows);
++  try {
++    const response = await gasFeeFlow.getGasFees({
++      ethQuery,
++      getGasFeeControllerEstimates: getGasFeeEstimates,
++      transactionMeta: txMeta
++    });
++    return response.estimates.medium;
++  } catch (error) {
++    log("Failed to get suggested gas fees", error);
++  }
++  const gasPriceDecimal = await _controllerutils.query.call(void 0, ethQuery, "gasPrice");
++  const gasPrice = gasPriceDecimal ? _utils.add0x.call(void 0, gasPriceDecimal.toString(16)) : void 0;
++  return { gasPrice };
++}
++
++
++
++
++exports.updateGasFees = updateGasFees; exports.gweiDecimalToWeiHex = gweiDecimalToWeiHex;
++//# sourceMappingURL=chunk-5IHLDAOF.js.map
+\ No newline at end of file
+diff --git a/dist/chunk-CRFAUS5P.js b/dist/chunk-CRFAUS5P.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..d4ca0635e4426ecedbacf2ce65e95074144a21bd
+--- /dev/null
++++ b/dist/chunk-CRFAUS5P.js
+@@ -0,0 +1,59 @@
 +"use strict";Object.defineProperty(exports, "__esModule", {value: true});
 +
 +var _chunkITDY6AIZjs = require('./chunk-ITDY6AIZ.js');
@@ -2661,13 +2692,16 @@ index 0000000000000000000000000000000000000000..e9577a026ce1ace2bc46abe6a369c57d
 +  [_chunkITDY6AIZjs.CHAIN_IDS.POLYGON]: "polygon-mainnet",
 +  [_chunkITDY6AIZjs.CHAIN_IDS.BSC]: "bsc-mainnet"
 +};
++var requestIdCounter = 0;
 +async function simulateTransactions(chainId, request) {
 +  const url = getUrl(chainId);
 +  log("Sending request", url, request);
++  const requestId = requestIdCounter;
++  requestIdCounter += 1;
 +  const response = await fetch(url, {
 +    method: "POST",
 +    body: JSON.stringify({
-+      id: "1",
++      id: String(requestId),
 +      jsonrpc: "2.0",
 +      method: RPC_METHOD,
 +      params: [request]
@@ -2692,17 +2726,145 @@ index 0000000000000000000000000000000000000000..e9577a026ce1ace2bc46abe6a369c57d
 +
 +
 +exports.simulateTransactions = simulateTransactions;
-+//# sourceMappingURL=chunk-BOZ2GRIU.js.map
++//# sourceMappingURL=chunk-CRFAUS5P.js.map
 \ No newline at end of file
-diff --git a/dist/chunk-EAUE4RCU.js b/dist/chunk-EAUE4RCU.js
+diff --git a/dist/chunk-GSZUE7GA.js b/dist/chunk-GSZUE7GA.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..c2b41fd08910b8985ce017916cb4918549e1cae1
+index 0000000000000000000000000000000000000000..bca718f237d6e22e8a60891f29a084da79f7bf1b
 --- /dev/null
-+++ b/dist/chunk-EAUE4RCU.js
-@@ -0,0 +1,255 @@
++++ b/dist/chunk-GSZUE7GA.js
+@@ -0,0 +1,121 @@
 +"use strict";Object.defineProperty(exports, "__esModule", {value: true});
 +
-+var _chunkBOZ2GRIUjs = require('./chunk-BOZ2GRIU.js');
++var _chunkSCRFJDKVjs = require('./chunk-SCRFJDKV.js');
++
++
++var _chunkVEJ3MIZGjs = require('./chunk-VEJ3MIZG.js');
++
++
++var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
++
++
++
++var _chunkZ4BLTVTBjs = require('./chunk-Z4BLTVTB.js');
++
++// src/gas-flows/LineaGasFeeFlow.ts
++var _controllerutils = require('@metamask/controller-utils');
++var _utils = require('@metamask/utils');
++var log = _utils.createModuleLogger.call(void 0, _chunkS6VGOPUYjs.projectLogger, "linea-gas-fee-flow");
++var LINEA_CHAIN_IDS = [
++  _controllerutils.ChainId["linea-mainnet"],
++  _controllerutils.ChainId["linea-goerli"],
++  _controllerutils.ChainId["linea-sepolia"]
++];
++var BASE_FEE_MULTIPLIERS = {
++  low: 1,
++  medium: 1.35,
++  high: 1.7
++};
++var PRIORITY_FEE_MULTIPLIERS = {
++  low: 1,
++  medium: 1.05,
++  high: 1.1
++};
++var _getLineaGasFees, getLineaGasFees_fn, _getLineaResponse, getLineaResponse_fn, _getValuesFromMultipliers, getValuesFromMultipliers_fn, _getMaxFees, getMaxFees_fn, _feesToString, feesToString_fn;
++var LineaGasFeeFlow = class {
++  constructor() {
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLineaGasFees);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLineaResponse);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getValuesFromMultipliers);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getMaxFees);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _feesToString);
++  }
++  matchesTransaction(transactionMeta) {
++    return LINEA_CHAIN_IDS.includes(transactionMeta.chainId);
++  }
++  async getGasFees(request) {
++    try {
++      return await _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getLineaGasFees, getLineaGasFees_fn).call(this, request);
++    } catch (error) {
++      log("Using default flow as fallback due to error", error);
++      return new (0, _chunkSCRFJDKVjs.DefaultGasFeeFlow)().getGasFees(request);
++    }
++  }
++};
++_getLineaGasFees = new WeakSet();
++getLineaGasFees_fn = async function(request) {
++  const { ethQuery, transactionMeta } = request;
++  const lineaResponse = await _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getLineaResponse, getLineaResponse_fn).call(this, transactionMeta, ethQuery);
++  log("Received Linea response", lineaResponse);
++  const baseFees = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getValuesFromMultipliers, getValuesFromMultipliers_fn).call(this, lineaResponse.baseFeePerGas, BASE_FEE_MULTIPLIERS);
++  log("Generated base fees", _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _feesToString, feesToString_fn).call(this, baseFees));
++  const priorityFees = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getValuesFromMultipliers, getValuesFromMultipliers_fn).call(this, lineaResponse.priorityFeePerGas, PRIORITY_FEE_MULTIPLIERS);
++  log("Generated priority fees", _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _feesToString, feesToString_fn).call(this, priorityFees));
++  const maxFees = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getMaxFees, getMaxFees_fn).call(this, baseFees, priorityFees);
++  log("Generated max fees", _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _feesToString, feesToString_fn).call(this, maxFees));
++  const estimates = Object.values(_chunkVEJ3MIZGjs.GasFeeEstimateLevel).reduce(
++    (result, level) => ({
++      ...result,
++      [level]: {
++        maxFeePerGas: _controllerutils.toHex.call(void 0, maxFees[level]),
++        maxPriorityFeePerGas: _controllerutils.toHex.call(void 0, priorityFees[level])
++      }
++    }),
++    {}
++  );
++  return { estimates };
++};
++_getLineaResponse = new WeakSet();
++getLineaResponse_fn = function(transactionMeta, ethQuery) {
++  return _controllerutils.query.call(void 0, ethQuery, "linea_estimateGas", [
++    {
++      from: transactionMeta.txParams.from,
++      to: transactionMeta.txParams.to,
++      value: transactionMeta.txParams.value,
++      input: transactionMeta.txParams.data,
++      // Required in request but no impact on response.
++      gasPrice: "0x100000000"
++    }
++  ]);
++};
++_getValuesFromMultipliers = new WeakSet();
++getValuesFromMultipliers_fn = function(value, multipliers) {
++  const base = _controllerutils.hexToBN.call(void 0, value);
++  const low = base.muln(multipliers.low);
++  const medium = base.muln(multipliers.medium);
++  const high = base.muln(multipliers.high);
++  return {
++    low,
++    medium,
++    high
++  };
++};
++_getMaxFees = new WeakSet();
++getMaxFees_fn = function(baseFees, priorityFees) {
++  return {
++    low: baseFees.low.add(priorityFees.low),
++    medium: baseFees.medium.add(priorityFees.medium),
++    high: baseFees.high.add(priorityFees.high)
++  };
++};
++_feesToString = new WeakSet();
++feesToString_fn = function(fees) {
++  return Object.values(_chunkVEJ3MIZGjs.GasFeeEstimateLevel).map(
++    (level) => fees[level].toString(10)
++  );
++};
++
++
++
++exports.LineaGasFeeFlow = LineaGasFeeFlow;
++//# sourceMappingURL=chunk-GSZUE7GA.js.map
+\ No newline at end of file
+diff --git a/dist/chunk-LVC2VSLJ.js b/dist/chunk-LVC2VSLJ.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..96555d2fe55496802b486f23ec26a59ca7b2a464
+--- /dev/null
++++ b/dist/chunk-LVC2VSLJ.js
+@@ -0,0 +1,265 @@
++"use strict";Object.defineProperty(exports, "__esModule", {value: true});
++
++var _chunkCRFAUS5Pjs = require('./chunk-CRFAUS5P.js');
 +
 +
 +var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
@@ -2717,13 +2879,23 @@ index 0000000000000000000000000000000000000000..c2b41fd08910b8985ce017916cb49185
 +  const { chainId, from, to, value, data } = request;
 +  log("Getting simulation data", request);
 +  try {
-+    const response = await _chunkBOZ2GRIUjs.simulateTransactions.call(void 0, chainId, {
-+      transactions: [{ from, to, value, data }],
++    const response = await _chunkCRFAUS5Pjs.simulateTransactions.call(void 0, chainId, {
++      transactions: [
++        {
++          data,
++          from,
++          maxFeePerGas: "0x0",
++          maxPriorityFeePerGas: "0x0",
++          to,
++          value
++        }
++      ],
 +      withCallTrace: true,
 +      withLogs: true
 +    });
-+    if (response.transactions?.[0]?.error) {
-+      throw { message: response.transactions[0].error };
++    const transactionError = response.transactions?.[0]?.error;
++    if (transactionError) {
++      throw { message: transactionError };
 +    }
 +    const nativeBalanceChange = getNativeBalanceChange(request.from, response);
 +    const events = getEvents(response);
@@ -2817,7 +2989,7 @@ index 0000000000000000000000000000000000000000..c2b41fd08910b8985ce017916cb49185
 +  if (!balanceTransactions.length) {
 +    return [];
 +  }
-+  const response = await _chunkBOZ2GRIUjs.simulateTransactions.call(void 0, request.chainId, {
++  const response = await _chunkCRFAUS5Pjs.simulateTransactions.call(void 0, request.chainId, {
 +    transactions: [...balanceTransactions, request, ...balanceTransactions]
 +  });
 +  log("Balance simulation response", response);
@@ -2954,232 +3126,7 @@ index 0000000000000000000000000000000000000000..c2b41fd08910b8985ce017916cb49185
 +
 +
 +exports.getSimulationData = getSimulationData;
-+//# sourceMappingURL=chunk-EAUE4RCU.js.map
-\ No newline at end of file
-diff --git a/dist/chunk-FHG5GY6F.js b/dist/chunk-FHG5GY6F.js
-new file mode 100644
-index 0000000000000000000000000000000000000000..5bdbbc258b9a0805e33e7f4170789e74fad7e652
---- /dev/null
-+++ b/dist/chunk-FHG5GY6F.js
-@@ -0,0 +1,121 @@
-+"use strict";Object.defineProperty(exports, "__esModule", {value: true});
-+
-+var _chunkPF3UOCRWjs = require('./chunk-PF3UOCRW.js');
-+
-+
-+var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
-+
-+
-+var _chunkVEJ3MIZGjs = require('./chunk-VEJ3MIZG.js');
-+
-+
-+
-+var _chunkZ4BLTVTBjs = require('./chunk-Z4BLTVTB.js');
-+
-+// src/gas-flows/LineaGasFeeFlow.ts
-+var _controllerutils = require('@metamask/controller-utils');
-+var _utils = require('@metamask/utils');
-+var log = _utils.createModuleLogger.call(void 0, _chunkS6VGOPUYjs.projectLogger, "linea-gas-fee-flow");
-+var LINEA_CHAIN_IDS = [
-+  _controllerutils.ChainId["linea-mainnet"],
-+  _controllerutils.ChainId["linea-goerli"],
-+  _controllerutils.ChainId["linea-sepolia"]
-+];
-+var BASE_FEE_MULTIPLIERS = {
-+  low: 1,
-+  medium: 1.35,
-+  high: 1.7
-+};
-+var PRIORITY_FEE_MULTIPLIERS = {
-+  low: 1,
-+  medium: 1.05,
-+  high: 1.1
-+};
-+var _getLineaGasFees, getLineaGasFees_fn, _getLineaResponse, getLineaResponse_fn, _getValuesFromMultipliers, getValuesFromMultipliers_fn, _getMaxFees, getMaxFees_fn, _feesToString, feesToString_fn;
-+var LineaGasFeeFlow = class {
-+  constructor() {
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLineaGasFees);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLineaResponse);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getValuesFromMultipliers);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getMaxFees);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _feesToString);
-+  }
-+  matchesTransaction(transactionMeta) {
-+    return LINEA_CHAIN_IDS.includes(transactionMeta.chainId);
-+  }
-+  async getGasFees(request) {
-+    try {
-+      return await _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getLineaGasFees, getLineaGasFees_fn).call(this, request);
-+    } catch (error) {
-+      log("Using default flow as fallback due to error", error);
-+      return new (0, _chunkPF3UOCRWjs.DefaultGasFeeFlow)().getGasFees(request);
-+    }
-+  }
-+};
-+_getLineaGasFees = new WeakSet();
-+getLineaGasFees_fn = async function(request) {
-+  const { ethQuery, transactionMeta } = request;
-+  const lineaResponse = await _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getLineaResponse, getLineaResponse_fn).call(this, transactionMeta, ethQuery);
-+  log("Received Linea response", lineaResponse);
-+  const baseFees = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getValuesFromMultipliers, getValuesFromMultipliers_fn).call(this, lineaResponse.baseFeePerGas, BASE_FEE_MULTIPLIERS);
-+  log("Generated base fees", _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _feesToString, feesToString_fn).call(this, baseFees));
-+  const priorityFees = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getValuesFromMultipliers, getValuesFromMultipliers_fn).call(this, lineaResponse.priorityFeePerGas, PRIORITY_FEE_MULTIPLIERS);
-+  log("Generated priority fees", _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _feesToString, feesToString_fn).call(this, priorityFees));
-+  const maxFees = _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getMaxFees, getMaxFees_fn).call(this, baseFees, priorityFees);
-+  log("Generated max fees", _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _feesToString, feesToString_fn).call(this, maxFees));
-+  const estimates = Object.values(_chunkVEJ3MIZGjs.GasFeeEstimateLevel).reduce(
-+    (result, level) => ({
-+      ...result,
-+      [level]: {
-+        maxFeePerGas: _controllerutils.toHex.call(void 0, maxFees[level]),
-+        maxPriorityFeePerGas: _controllerutils.toHex.call(void 0, priorityFees[level])
-+      }
-+    }),
-+    {}
-+  );
-+  return { estimates };
-+};
-+_getLineaResponse = new WeakSet();
-+getLineaResponse_fn = function(transactionMeta, ethQuery) {
-+  return _controllerutils.query.call(void 0, ethQuery, "linea_estimateGas", [
-+    {
-+      from: transactionMeta.txParams.from,
-+      to: transactionMeta.txParams.to,
-+      value: transactionMeta.txParams.value,
-+      input: transactionMeta.txParams.data,
-+      // Required in request but no impact on response.
-+      gasPrice: "0x100000000"
-+    }
-+  ]);
-+};
-+_getValuesFromMultipliers = new WeakSet();
-+getValuesFromMultipliers_fn = function(value, multipliers) {
-+  const base = _controllerutils.hexToBN.call(void 0, value);
-+  const low = base.muln(multipliers.low);
-+  const medium = base.muln(multipliers.medium);
-+  const high = base.muln(multipliers.high);
-+  return {
-+    low,
-+    medium,
-+    high
-+  };
-+};
-+_getMaxFees = new WeakSet();
-+getMaxFees_fn = function(baseFees, priorityFees) {
-+  return {
-+    low: baseFees.low.add(priorityFees.low),
-+    medium: baseFees.medium.add(priorityFees.medium),
-+    high: baseFees.high.add(priorityFees.high)
-+  };
-+};
-+_feesToString = new WeakSet();
-+feesToString_fn = function(fees) {
-+  return Object.values(_chunkVEJ3MIZGjs.GasFeeEstimateLevel).map(
-+    (level) => fees[level].toString(10)
-+  );
-+};
-+
-+
-+
-+exports.LineaGasFeeFlow = LineaGasFeeFlow;
-+//# sourceMappingURL=chunk-FHG5GY6F.js.map
-\ No newline at end of file
-diff --git a/dist/chunk-PF3UOCRW.js b/dist/chunk-PF3UOCRW.js
-new file mode 100644
-index 0000000000000000000000000000000000000000..7719c384ed9f9fc8bdf08b3759866b733aefe285
---- /dev/null
-+++ b/dist/chunk-PF3UOCRW.js
-@@ -0,0 +1,90 @@
-+"use strict";Object.defineProperty(exports, "__esModule", {value: true});
-+
-+var _chunk5IHLDAOFjs = require('./chunk-5IHLDAOF.js');
-+
-+
-+var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
-+
-+
-+var _chunkVEJ3MIZGjs = require('./chunk-VEJ3MIZG.js');
-+
-+
-+
-+var _chunkZ4BLTVTBjs = require('./chunk-Z4BLTVTB.js');
-+
-+// src/gas-flows/DefaultGasFeeFlow.ts
-+var _gasfeecontroller = require('@metamask/gas-fee-controller');
-+var _utils = require('@metamask/utils');
-+var log = _utils.createModuleLogger.call(void 0, _chunkS6VGOPUYjs.projectLogger, "default-gas-fee-flow");
-+var _getEstimateLevel, getEstimateLevel_fn, _getFeeMarketLevel, getFeeMarketLevel_fn, _getLegacyLevel, getLegacyLevel_fn;
-+var DefaultGasFeeFlow = class {
-+  constructor() {
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getEstimateLevel);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getFeeMarketLevel);
-+    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLegacyLevel);
-+  }
-+  matchesTransaction(_transactionMeta) {
-+    return true;
-+  }
-+  async getGasFees(request) {
-+    const { getGasFeeControllerEstimates, transactionMeta } = request;
-+    const { networkClientId } = transactionMeta;
-+    const { gasEstimateType, gasFeeEstimates } = await getGasFeeControllerEstimates({ networkClientId });
-+    if (gasEstimateType === _gasfeecontroller.GAS_ESTIMATE_TYPES.FEE_MARKET) {
-+      log("Using fee market estimates", gasFeeEstimates);
-+    } else if (gasEstimateType === _gasfeecontroller.GAS_ESTIMATE_TYPES.LEGACY) {
-+      log("Using legacy estimates", gasFeeEstimates);
-+    } else {
-+      throw new Error(`'No gas fee estimates available`);
-+    }
-+    const estimates = Object.values(_chunkVEJ3MIZGjs.GasFeeEstimateLevel).reduce(
-+      (result, level) => ({
-+        ...result,
-+        [level]: _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getEstimateLevel, getEstimateLevel_fn).call(this, {
-+          gasEstimateType,
-+          gasFeeEstimates,
-+          level
-+        })
-+      }),
-+      {}
-+    );
-+    return { estimates };
-+  }
-+};
-+_getEstimateLevel = new WeakSet();
-+getEstimateLevel_fn = function({
-+  gasEstimateType,
-+  gasFeeEstimates,
-+  level
-+}) {
-+  if (gasEstimateType === _gasfeecontroller.GAS_ESTIMATE_TYPES.FEE_MARKET) {
-+    return _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getFeeMarketLevel, getFeeMarketLevel_fn).call(this, gasFeeEstimates, level);
-+  }
-+  return _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getLegacyLevel, getLegacyLevel_fn).call(this, gasFeeEstimates, level);
-+};
-+_getFeeMarketLevel = new WeakSet();
-+getFeeMarketLevel_fn = function(gasFeeEstimates, level) {
-+  const maxFeePerGas = _chunk5IHLDAOFjs.gweiDecimalToWeiHex.call(void 0, 
-+    gasFeeEstimates[level].suggestedMaxFeePerGas
-+  );
-+  const maxPriorityFeePerGas = _chunk5IHLDAOFjs.gweiDecimalToWeiHex.call(void 0, 
-+    gasFeeEstimates[level].suggestedMaxPriorityFeePerGas
-+  );
-+  return {
-+    maxFeePerGas,
-+    maxPriorityFeePerGas
-+  };
-+};
-+_getLegacyLevel = new WeakSet();
-+getLegacyLevel_fn = function(gasFeeEstimates, level) {
-+  const gasPrice = _chunk5IHLDAOFjs.gweiDecimalToWeiHex.call(void 0, gasFeeEstimates[level]);
-+  return {
-+    maxFeePerGas: gasPrice,
-+    maxPriorityFeePerGas: gasPrice
-+  };
-+};
-+
-+
-+
-+exports.DefaultGasFeeFlow = DefaultGasFeeFlow;
-+//# sourceMappingURL=chunk-PF3UOCRW.js.map
++//# sourceMappingURL=chunk-LVC2VSLJ.js.map
 \ No newline at end of file
 diff --git a/dist/chunk-QEX3QMSL.js b/dist/chunk-QEX3QMSL.js
 new file mode 100644
@@ -3370,6 +3317,103 @@ index 0000000000000000000000000000000000000000..d455304eb6d7d559de45a28aff443159
 +exports.GasFeePoller = GasFeePoller;
 +//# sourceMappingURL=chunk-QEX3QMSL.js.map
 \ No newline at end of file
+diff --git a/dist/chunk-SCRFJDKV.js b/dist/chunk-SCRFJDKV.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..89cb12704e8a92c12bd3e415ae546cbc779b48a6
+--- /dev/null
++++ b/dist/chunk-SCRFJDKV.js
+@@ -0,0 +1,90 @@
++"use strict";Object.defineProperty(exports, "__esModule", {value: true});
++
++var _chunk5IHLDAOFjs = require('./chunk-5IHLDAOF.js');
++
++
++var _chunkVEJ3MIZGjs = require('./chunk-VEJ3MIZG.js');
++
++
++var _chunkS6VGOPUYjs = require('./chunk-S6VGOPUY.js');
++
++
++
++var _chunkZ4BLTVTBjs = require('./chunk-Z4BLTVTB.js');
++
++// src/gas-flows/DefaultGasFeeFlow.ts
++var _gasfeecontroller = require('@metamask/gas-fee-controller');
++var _utils = require('@metamask/utils');
++var log = _utils.createModuleLogger.call(void 0, _chunkS6VGOPUYjs.projectLogger, "default-gas-fee-flow");
++var _getEstimateLevel, getEstimateLevel_fn, _getFeeMarketLevel, getFeeMarketLevel_fn, _getLegacyLevel, getLegacyLevel_fn;
++var DefaultGasFeeFlow = class {
++  constructor() {
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getEstimateLevel);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getFeeMarketLevel);
++    _chunkZ4BLTVTBjs.__privateAdd.call(void 0, this, _getLegacyLevel);
++  }
++  matchesTransaction(_transactionMeta) {
++    return true;
++  }
++  async getGasFees(request) {
++    const { getGasFeeControllerEstimates, transactionMeta } = request;
++    const { networkClientId } = transactionMeta;
++    const { gasEstimateType, gasFeeEstimates } = await getGasFeeControllerEstimates({ networkClientId });
++    if (gasEstimateType === _gasfeecontroller.GAS_ESTIMATE_TYPES.FEE_MARKET) {
++      log("Using fee market estimates", gasFeeEstimates);
++    } else if (gasEstimateType === _gasfeecontroller.GAS_ESTIMATE_TYPES.LEGACY) {
++      log("Using legacy estimates", gasFeeEstimates);
++    } else {
++      throw new Error(`'No gas fee estimates available`);
++    }
++    const estimates = Object.values(_chunkVEJ3MIZGjs.GasFeeEstimateLevel).reduce(
++      (result, level) => ({
++        ...result,
++        [level]: _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getEstimateLevel, getEstimateLevel_fn).call(this, {
++          gasEstimateType,
++          gasFeeEstimates,
++          level
++        })
++      }),
++      {}
++    );
++    return { estimates };
++  }
++};
++_getEstimateLevel = new WeakSet();
++getEstimateLevel_fn = function({
++  gasEstimateType,
++  gasFeeEstimates,
++  level
++}) {
++  if (gasEstimateType === _gasfeecontroller.GAS_ESTIMATE_TYPES.FEE_MARKET) {
++    return _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getFeeMarketLevel, getFeeMarketLevel_fn).call(this, gasFeeEstimates, level);
++  }
++  return _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _getLegacyLevel, getLegacyLevel_fn).call(this, gasFeeEstimates, level);
++};
++_getFeeMarketLevel = new WeakSet();
++getFeeMarketLevel_fn = function(gasFeeEstimates, level) {
++  const maxFeePerGas = _chunk5IHLDAOFjs.gweiDecimalToWeiHex.call(void 0, 
++    gasFeeEstimates[level].suggestedMaxFeePerGas
++  );
++  const maxPriorityFeePerGas = _chunk5IHLDAOFjs.gweiDecimalToWeiHex.call(void 0, 
++    gasFeeEstimates[level].suggestedMaxPriorityFeePerGas
++  );
++  return {
++    maxFeePerGas,
++    maxPriorityFeePerGas
++  };
++};
++_getLegacyLevel = new WeakSet();
++getLegacyLevel_fn = function(gasFeeEstimates, level) {
++  const gasPrice = _chunk5IHLDAOFjs.gweiDecimalToWeiHex.call(void 0, gasFeeEstimates[level]);
++  return {
++    maxFeePerGas: gasPrice,
++    maxPriorityFeePerGas: gasPrice
++  };
++};
++
++
++
++exports.DefaultGasFeeFlow = DefaultGasFeeFlow;
++//# sourceMappingURL=chunk-SCRFJDKV.js.map
+\ No newline at end of file
 diff --git a/dist/chunk-TZTP4JVA.js b/dist/chunk-TZTP4JVA.js
 new file mode 100644
 index 0000000000000000000000000000000000000000..3fdf72e49f5db74f3fabf9f24fbfe9393c9ec1cc
@@ -3523,7 +3567,7 @@ index 0000000000000000000000000000000000000000..cbbbb7018c24bb9b56ae50ba89a39069
 +//# sourceMappingURL=chunk-VEJ3MIZG.js.map
 \ No newline at end of file
 diff --git a/dist/gas-flows/DefaultGasFeeFlow.js b/dist/gas-flows/DefaultGasFeeFlow.js
-index 3612294fc10df5b3f522b7aba4c2c38a35a4edea..5df79a781177e44255a67b5ba3c6f7427ca14c72 100644
+index 3612294fc10df5b3f522b7aba4c2c38a35a4edea..99cd77b35a7d2d323b5aede73e299194a93259a3 100644
 --- a/dist/gas-flows/DefaultGasFeeFlow.js
 +++ b/dist/gas-flows/DefaultGasFeeFlow.js
 @@ -1,15 +1,15 @@
@@ -3531,25 +3575,25 @@ index 3612294fc10df5b3f522b7aba4c2c38a35a4edea..5df79a781177e44255a67b5ba3c6f742
  
 -var _chunkTXVH44HMjs = require('../chunk-TXVH44HM.js');
 -require('../chunk-QPNEFZB3.js');
-+var _chunkPF3UOCRWjs = require('../chunk-PF3UOCRW.js');
++var _chunkSCRFJDKVjs = require('../chunk-SCRFJDKV.js');
 +require('../chunk-5IHLDAOF.js');
  require('../chunk-5OQ373JS.js');
  require('../chunk-UGFBA4GV.js');
 -require('../chunk-O7H2MC7R.js');
-+require('../chunk-TZTP4JVA.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-TZTP4JVA.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 -exports.DefaultGasFeeFlow = _chunkTXVH44HMjs.DefaultGasFeeFlow;
-+exports.DefaultGasFeeFlow = _chunkPF3UOCRWjs.DefaultGasFeeFlow;
++exports.DefaultGasFeeFlow = _chunkSCRFJDKVjs.DefaultGasFeeFlow;
  //# sourceMappingURL=DefaultGasFeeFlow.js.map
 \ No newline at end of file
 diff --git a/dist/gas-flows/LineaGasFeeFlow.js b/dist/gas-flows/LineaGasFeeFlow.js
-index 7ed21145148f95813f7a4189374e88cebd467078..06c67aa2fc05daedbfcde80db54494bedb8f86a0 100644
+index 7ed21145148f95813f7a4189374e88cebd467078..b92b4117cf659d9f4f16c34cc6fa0dd313121f25 100644
 --- a/dist/gas-flows/LineaGasFeeFlow.js
 +++ b/dist/gas-flows/LineaGasFeeFlow.js
 @@ -1,16 +1,16 @@
@@ -3558,39 +3602,40 @@ index 7ed21145148f95813f7a4189374e88cebd467078..06c67aa2fc05daedbfcde80db54494be
 -var _chunkCQBXHAYRjs = require('../chunk-CQBXHAYR.js');
 -require('../chunk-TXVH44HM.js');
 -require('../chunk-QPNEFZB3.js');
-+var _chunkFHG5GY6Fjs = require('../chunk-FHG5GY6F.js');
-+require('../chunk-PF3UOCRW.js');
++var _chunkGSZUE7GAjs = require('../chunk-GSZUE7GA.js');
++require('../chunk-SCRFJDKV.js');
 +require('../chunk-5IHLDAOF.js');
  require('../chunk-5OQ373JS.js');
  require('../chunk-UGFBA4GV.js');
 -require('../chunk-O7H2MC7R.js');
-+require('../chunk-TZTP4JVA.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-TZTP4JVA.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 -exports.LineaGasFeeFlow = _chunkCQBXHAYRjs.LineaGasFeeFlow;
-+exports.LineaGasFeeFlow = _chunkFHG5GY6Fjs.LineaGasFeeFlow;
++exports.LineaGasFeeFlow = _chunkGSZUE7GAjs.LineaGasFeeFlow;
  //# sourceMappingURL=LineaGasFeeFlow.js.map
 \ No newline at end of file
 diff --git a/dist/helpers/EtherscanRemoteTransactionSource.js b/dist/helpers/EtherscanRemoteTransactionSource.js
-index 079e726a934c10b04eb5e6cc751fdec8b604f21b..99317792556323428a5409e9aecf1a9f13ca3b37 100644
+index 079e726a934c10b04eb5e6cc751fdec8b604f21b..00301a166b77289cc0a8ced075d5b9d2126d7dbf 100644
 --- a/dist/helpers/EtherscanRemoteTransactionSource.js
 +++ b/dist/helpers/EtherscanRemoteTransactionSource.js
-@@ -4,7 +4,7 @@ var _chunkF3CMU2DMjs = require('../chunk-F3CMU2DM.js');
+@@ -3,8 +3,8 @@
+ var _chunkF3CMU2DMjs = require('../chunk-F3CMU2DM.js');
  require('../chunk-CXXGL43K.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 diff --git a/dist/helpers/GasFeePoller.js b/dist/helpers/GasFeePoller.js
-index d693329df526bbde638f7913b3d93b851dd536f2..9f5a47c2d9ea640b7472dd6f537c776f2a8a4b3b 100644
+index d693329df526bbde638f7913b3d93b851dd536f2..08b14ea66a51cb784b419f0521425aeee56b5138 100644
 --- a/dist/helpers/GasFeePoller.js
 +++ b/dist/helpers/GasFeePoller.js
 @@ -1,12 +1,12 @@
@@ -3601,9 +3646,9 @@ index d693329df526bbde638f7913b3d93b851dd536f2..9f5a47c2d9ea640b7472dd6f537c776f
  require('../chunk-R7NJVDWN.js');
 -require('../chunk-O7H2MC7R.js');
 +require('../chunk-TZTP4JVA.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
@@ -3612,84 +3657,97 @@ index d693329df526bbde638f7913b3d93b851dd536f2..9f5a47c2d9ea640b7472dd6f537c776f
  //# sourceMappingURL=GasFeePoller.js.map
 \ No newline at end of file
 diff --git a/dist/helpers/MultichainTrackingHelper.js b/dist/helpers/MultichainTrackingHelper.js
-index 59b25659bc2b95d591e216a3e2ccc98a84485d91..cbbb4f8ce0e4ba3a5b07dd69f5662bbae0884e78 100644
+index 59b25659bc2b95d591e216a3e2ccc98a84485d91..e85f8e66dcdda28bba84bbfff2e0b8e32e0bbbc5 100644
 --- a/dist/helpers/MultichainTrackingHelper.js
 +++ b/dist/helpers/MultichainTrackingHelper.js
-@@ -5,7 +5,7 @@ require('../chunk-F3CMU2DM.js');
+@@ -4,8 +4,8 @@ var _chunkNRWEI43Qjs = require('../chunk-NRWEI43Q.js');
+ require('../chunk-F3CMU2DM.js');
  require('../chunk-CXXGL43K.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 diff --git a/dist/helpers/PendingTransactionTracker.js b/dist/helpers/PendingTransactionTracker.js
-index 8db5cde60a2fb1c4a96b3e805a275d911428d10a..f840b51300552d19bd2499d9f51c565aa589546e 100644
+index 8db5cde60a2fb1c4a96b3e805a275d911428d10a..5b7d25b12590ade961100423a21ab984f24d94e9 100644
 --- a/dist/helpers/PendingTransactionTracker.js
 +++ b/dist/helpers/PendingTransactionTracker.js
-@@ -2,7 +2,7 @@
+@@ -1,8 +1,8 @@
+ "use strict";Object.defineProperty(exports, "__esModule", {value: true});
  
  var _chunk5XBULBP2js = require('../chunk-5XBULBP2.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 diff --git a/dist/index.js b/dist/index.js
-index 40ead10dfa45e4c1840fdec2ae4e6ffb4dbf453e..73d119bc6b0c8dd28d9c827717ff616bd60ca888 100644
+index 40ead10dfa45e4c1840fdec2ae4e6ffb4dbf453e..fbcd8ce5e2668f9b0c680b80a5a335300df9b989 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -2,25 +2,25 @@
+@@ -2,44 +2,45 @@
  
  
  
 -var _chunkQDIYZX5Vjs = require('./chunk-QDIYZX5V.js');
-+var _chunkAFM3ZOKZjs = require('./chunk-AFM3ZOKZ.js');
- require('./chunk-VH47Q6TS.js');
- require('./chunk-RQKICZYP.js');
- require('./chunk-QP75SWIQ.js');
+-require('./chunk-VH47Q6TS.js');
+-require('./chunk-RQKICZYP.js');
+-require('./chunk-QP75SWIQ.js');
++var _chunk3ZLGFPPQjs = require('./chunk-3ZLGFPPQ.js');
++require('./chunk-GSZUE7GA.js');
++require('./chunk-SCRFJDKV.js');
  require('./chunk-ZNZEJDOE.js');
 -require('./chunk-WXQZIUNW.js');
 -require('./chunk-4S25HUCL.js');
-+require('./chunk-EAUE4RCU.js');
-+require('./chunk-BOZ2GRIU.js');
++require('./chunk-LVC2VSLJ.js');
++require('./chunk-CRFAUS5P.js');
  
  
  var _chunkHS277C77js = require('./chunk-HS277C77.js');
 -require('./chunk-BILEZLAT.js');
-+require('./chunk-QEX3QMSL.js');
- require('./chunk-R7NJVDWN.js');
- require('./chunk-DTDTOMTB.js');
+-require('./chunk-R7NJVDWN.js');
+-require('./chunk-DTDTOMTB.js');
++require('./chunk-VH47Q6TS.js');
  require('./chunk-NRWEI43Q.js');
  require('./chunk-5XBULBP2.js');
  require('./chunk-7LXE4KHV.js');
 -require('./chunk-CQBXHAYR.js');
 -require('./chunk-TXVH44HM.js');
 -require('./chunk-QPNEFZB3.js');
-+require('./chunk-FHG5GY6F.js');
-+require('./chunk-PF3UOCRW.js');
 +require('./chunk-5IHLDAOF.js');
  require('./chunk-5OQ373JS.js');
  
  
-@@ -28,7 +28,7 @@ require('./chunk-5OQ373JS.js');
+ 
  var _chunkUGFBA4GVjs = require('./chunk-UGFBA4GV.js');
- 
- 
+-
+-
 -var _chunkO7H2MC7Rjs = require('./chunk-O7H2MC7R.js');
-+var _chunkTZTP4JVAjs = require('./chunk-TZTP4JVA.js');
++require('./chunk-RQKICZYP.js');
++require('./chunk-QP75SWIQ.js');
  require('./chunk-F3CMU2DM.js');
  require('./chunk-CXXGL43K.js');
  require('./chunk-ITDY6AIZ.js');
-@@ -39,7 +39,8 @@ require('./chunk-S6VGOPUY.js');
+-require('./chunk-S6VGOPUY.js');
++require('./chunk-QEX3QMSL.js');
++require('./chunk-R7NJVDWN.js');
++
++
++var _chunkTZTP4JVAjs = require('./chunk-TZTP4JVA.js');
+ 
+ 
+ 
  
  
  
 -var _chunkW3GAOR7Yjs = require('./chunk-W3GAOR7Y.js');
 +
 +var _chunkVEJ3MIZGjs = require('./chunk-VEJ3MIZG.js');
++require('./chunk-DTDTOMTB.js');
++require('./chunk-S6VGOPUY.js');
  require('./chunk-Z4BLTVTB.js');
  
  
@@ -3699,30 +3757,8 @@ index 40ead10dfa45e4c1840fdec2ae4e6ffb4dbf453e..73d119bc6b0c8dd28d9c827717ff616b
  
 -exports.CANCEL_RATE = _chunkQDIYZX5Vjs.CANCEL_RATE; exports.HARDFORK = _chunkQDIYZX5Vjs.HARDFORK; exports.TransactionController = _chunkQDIYZX5Vjs.TransactionController; exports.TransactionEnvelopeType = _chunkW3GAOR7Yjs.TransactionEnvelopeType; exports.TransactionStatus = _chunkW3GAOR7Yjs.TransactionStatus; exports.TransactionType = _chunkW3GAOR7Yjs.TransactionType; exports.UserFeeLevel = _chunkW3GAOR7Yjs.UserFeeLevel; exports.WalletDevice = _chunkW3GAOR7Yjs.WalletDevice; exports.determineTransactionType = _chunkHS277C77js.determineTransactionType; exports.isEIP1559Transaction = _chunkUGFBA4GVjs.isEIP1559Transaction; exports.mergeGasFeeEstimates = _chunkO7H2MC7Rjs.mergeGasFeeEstimates; exports.normalizeTransactionParams = _chunkUGFBA4GVjs.normalizeTransactionParams;
 +
-+exports.CANCEL_RATE = _chunkAFM3ZOKZjs.CANCEL_RATE; exports.HARDFORK = _chunkAFM3ZOKZjs.HARDFORK; exports.SimulationTokenStandard = _chunkVEJ3MIZGjs.SimulationTokenStandard; exports.TransactionController = _chunkAFM3ZOKZjs.TransactionController; exports.TransactionEnvelopeType = _chunkVEJ3MIZGjs.TransactionEnvelopeType; exports.TransactionStatus = _chunkVEJ3MIZGjs.TransactionStatus; exports.TransactionType = _chunkVEJ3MIZGjs.TransactionType; exports.UserFeeLevel = _chunkVEJ3MIZGjs.UserFeeLevel; exports.WalletDevice = _chunkVEJ3MIZGjs.WalletDevice; exports.determineTransactionType = _chunkHS277C77js.determineTransactionType; exports.isEIP1559Transaction = _chunkUGFBA4GVjs.isEIP1559Transaction; exports.mergeGasFeeEstimates = _chunkTZTP4JVAjs.mergeGasFeeEstimates; exports.normalizeTransactionParams = _chunkUGFBA4GVjs.normalizeTransactionParams;
++exports.CANCEL_RATE = _chunk3ZLGFPPQjs.CANCEL_RATE; exports.HARDFORK = _chunk3ZLGFPPQjs.HARDFORK; exports.SimulationTokenStandard = _chunkVEJ3MIZGjs.SimulationTokenStandard; exports.TransactionController = _chunk3ZLGFPPQjs.TransactionController; exports.TransactionEnvelopeType = _chunkVEJ3MIZGjs.TransactionEnvelopeType; exports.TransactionStatus = _chunkVEJ3MIZGjs.TransactionStatus; exports.TransactionType = _chunkVEJ3MIZGjs.TransactionType; exports.UserFeeLevel = _chunkVEJ3MIZGjs.UserFeeLevel; exports.WalletDevice = _chunkVEJ3MIZGjs.WalletDevice; exports.determineTransactionType = _chunkHS277C77js.determineTransactionType; exports.isEIP1559Transaction = _chunkUGFBA4GVjs.isEIP1559Transaction; exports.mergeGasFeeEstimates = _chunkTZTP4JVAjs.mergeGasFeeEstimates; exports.normalizeTransactionParams = _chunkUGFBA4GVjs.normalizeTransactionParams;
  //# sourceMappingURL=index.js.map
-\ No newline at end of file
-diff --git a/dist/types/TransactionController.d.ts b/dist/types/TransactionController.d.ts
-index 9e6fa51ca24e08ca851f89c7a780f10f7d15473b..09b1ebe22f6f269223e8531d80d5fbcde8815b84 100644
---- a/dist/types/TransactionController.d.ts
-+++ b/dist/types/TransactionController.d.ts
-@@ -8,7 +8,7 @@ import type { BlockTracker, NetworkClientId, NetworkController, NetworkControlle
- import type { Hex } from '@metamask/utils';
- import type { NonceLock, Transaction as NonceTrackerTransaction } from 'nonce-tracker';
- import type { IncomingTransactionOptions } from './helpers/IncomingTransactionHelper';
--import type { SavedGasFees, SecurityProviderRequest, SendFlowHistoryEntry, TransactionParams, TransactionMeta, TransactionReceipt, WalletDevice, SecurityAlertResponse } from './types';
-+import type { SavedGasFees, SecurityProviderRequest, SendFlowHistoryEntry, TransactionParams, TransactionMeta, TransactionReceipt, WalletDevice, SecurityAlertResponse, SimulationData } from './types';
- import { TransactionType, TransactionStatus } from './types';
- export declare const HARDFORK = Hardfork.London;
- /**
-@@ -803,6 +803,7 @@ export declare class TransactionController extends BaseController<typeof control
-      * @returns Whether or not the error is a nonce issue
-      */
-     private isTransactionAlreadyConfirmedError;
-+    updateSimulationData(transactionId: string, simulationData: SimulationData): Promise<void>;
- }
- export {};
- //# sourceMappingURL=TransactionController.d.ts.map
 \ No newline at end of file
 diff --git a/dist/types/index.d.ts b/dist/types/index.d.ts
 index ac3c3f9130202f10f57ed9a1510396b119be2446..dc15f5bc02197848f07db3c3f0a16bd70693336f 100644
@@ -3763,10 +3799,33 @@ index abbb9ed126c5740cec1b959c71f1c126c5e9bd1e..88ee5ee83a530d6ada91aeee4c1110cb
      nativeBalanceChange?: SimulationBalanceChange;
      /** Data concerning a change to the user's token balances. */
 diff --git a/dist/types/utils/simulation-api.d.ts b/dist/types/utils/simulation-api.d.ts
-index 38b464f05c8a1a00b27736e7b560a19233f58052..36cba9f5ea6d0c0c5efe028e0278a8c07175a2f2 100644
+index 38b464f05c8a1a00b27736e7b560a19233f58052..69c78e7a3f6a0033c9d98c8e11e25569b8d171eb 100644
 --- a/dist/types/utils/simulation-api.d.ts
 +++ b/dist/types/utils/simulation-api.d.ts
-@@ -73,16 +73,18 @@ export declare type SimulationResponseStateDiff = {
+@@ -1,14 +1,20 @@
+ import { type Hex } from '@metamask/utils';
+ /** Single transaction to simulate in a simulation API request.  */
+ export declare type SimulationRequestTransaction = {
++    /** Data to send with the transaction. */
++    data?: Hex;
+     /** Sender of the transaction. */
+     from: Hex;
++    /** Gas limit for the transaction. */
++    gas?: Hex;
++    /** Maximum fee per gas for the transaction. */
++    maxFeePerGas?: Hex;
++    /** Maximum priority fee per gas for the transaction. */
++    maxPriorityFeePerGas?: Hex;
+     /** Recipient of the transaction. */
+     to?: Hex;
+     /** Value to send with the transaction. */
+     value?: Hex;
+-    /** Data to send with the transaction. */
+-    data?: Hex;
+ };
+ /** Request to the simulation API to simulate transactions. */
+ export declare type SimulationRequest = {
+@@ -73,16 +79,18 @@ export declare type SimulationResponseStateDiff = {
  };
  /** Response from the simulation API for a single transaction. */
  export declare type SimulationResponseTransaction = {
@@ -3836,7 +3895,7 @@ index 7491a8cb7222a5a342b55b328d8f7ec42b706f05..524f59603cb60faf4451064bff087810
  
  
 diff --git a/dist/utils/gas-fees.js b/dist/utils/gas-fees.js
-index 27a126065d6edd4ef0cf5a64ca05b8f1b3f2c349..0d3bf72112715845fc61c7c6cdf1ef7342a07d92 100644
+index 27a126065d6edd4ef0cf5a64ca05b8f1b3f2c349..4bb3784dafa19209d9ba12d51fa8b29ca330276c 100644
 --- a/dist/utils/gas-fees.js
 +++ b/dist/utils/gas-fees.js
 @@ -1,16 +1,16 @@
@@ -3848,11 +3907,11 @@ index 27a126065d6edd4ef0cf5a64ca05b8f1b3f2c349..0d3bf72112715845fc61c7c6cdf1ef73
  require('../chunk-5OQ373JS.js');
  require('../chunk-UGFBA4GV.js');
 -require('../chunk-O7H2MC7R.js');
-+require('../chunk-TZTP4JVA.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-TZTP4JVA.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
@@ -3882,25 +3941,25 @@ index 6cab898f0ccb9ea9932467c031ef8cd982b65120..c05f8bd04bc5b6bf708f757b558e4b8d
  //# sourceMappingURL=gas-flow.js.map
 \ No newline at end of file
 diff --git a/dist/utils/simulation-api.js b/dist/utils/simulation-api.js
-index 7c8da7b027b93cdf5c7ac65b8671a7eb155827df..8a9144c27741e7ac4d0708d75b9427a38ea9a69f 100644
+index 7c8da7b027b93cdf5c7ac65b8671a7eb155827df..027494e668ee54acf23de59dec17c1b58fea37bb 100644
 --- a/dist/utils/simulation-api.js
 +++ b/dist/utils/simulation-api.js
 @@ -1,10 +1,10 @@
  "use strict";Object.defineProperty(exports, "__esModule", {value: true});
  
 -var _chunk4S25HUCLjs = require('../chunk-4S25HUCL.js');
-+var _chunkBOZ2GRIUjs = require('../chunk-BOZ2GRIU.js');
++var _chunkCRFAUS5Pjs = require('../chunk-CRFAUS5P.js');
  require('../chunk-ITDY6AIZ.js');
  require('../chunk-S6VGOPUY.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 -exports.simulateTransactions = _chunk4S25HUCLjs.simulateTransactions;
-+exports.simulateTransactions = _chunkBOZ2GRIUjs.simulateTransactions;
++exports.simulateTransactions = _chunkCRFAUS5Pjs.simulateTransactions;
  //# sourceMappingURL=simulation-api.js.map
 \ No newline at end of file
 diff --git a/dist/utils/simulation.js b/dist/utils/simulation.js
-index e072847885c25d9ef7300b2c234c0c17eccbe53d..6d288d8a18b1595da5a729fccd5a03d146595e4a 100644
+index e072847885c25d9ef7300b2c234c0c17eccbe53d..3a10176a845abe23b93030d8292aea1690ad7601 100644
 --- a/dist/utils/simulation.js
 +++ b/dist/utils/simulation.js
 @@ -1,12 +1,12 @@
@@ -3908,29 +3967,30 @@ index e072847885c25d9ef7300b2c234c0c17eccbe53d..6d288d8a18b1595da5a729fccd5a03d1
  
 -var _chunkWXQZIUNWjs = require('../chunk-WXQZIUNW.js');
 -require('../chunk-4S25HUCL.js');
-+var _chunkEAUE4RCUjs = require('../chunk-EAUE4RCU.js');
-+require('../chunk-BOZ2GRIU.js');
++var _chunkLVC2VSLJjs = require('../chunk-LVC2VSLJ.js');
++require('../chunk-CRFAUS5P.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
 -exports.getSimulationData = _chunkWXQZIUNWjs.getSimulationData;
-+exports.getSimulationData = _chunkEAUE4RCUjs.getSimulationData;
++exports.getSimulationData = _chunkLVC2VSLJjs.getSimulationData;
  //# sourceMappingURL=simulation.js.map
 \ No newline at end of file
 diff --git a/dist/utils/swaps.js b/dist/utils/swaps.js
-index 61d099dc60077cc237c968d94428a99abc73bb97..6e39ece23481e1f71555a0bc2d4255a2acfd9eb3 100644
+index 61d099dc60077cc237c968d94428a99abc73bb97..427c877a01065a18634856a7a881df6ba3a2b52a 100644
 --- a/dist/utils/swaps.js
 +++ b/dist/utils/swaps.js
-@@ -10,7 +10,7 @@ var _chunk5OQ373JSjs = require('../chunk-5OQ373JS.js');
+@@ -9,8 +9,8 @@
+ var _chunk5OQ373JSjs = require('../chunk-5OQ373JS.js');
  require('../chunk-UGFBA4GV.js');
  require('../chunk-ITDY6AIZ.js');
++require('../chunk-VEJ3MIZG.js');
  require('../chunk-S6VGOPUY.js');
 -require('../chunk-W3GAOR7Y.js');
-+require('../chunk-VEJ3MIZG.js');
  require('../chunk-Z4BLTVTB.js');
  
  
