@@ -53,7 +53,9 @@ import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+///: BEGIN:ONLY_INCLUDE_IF(developer-options)
 import DeveloperOptionsTab from './developer-options-tab';
+///: END:ONLY_INCLUDE_IF
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
