@@ -110,6 +110,7 @@ const EVENT_NAME_MAP = {
 
 const rateLimitTimeouts = {};
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -126,11 +127,10 @@ const rateLimitTimeouts = {};
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
  * @param {AppStateController} opts.appStateController
- ///: END:ONLY_INCLUDE_IF
  * @returns {Function}
  */
+///: END:ONLY_INCLUDE_IF
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
