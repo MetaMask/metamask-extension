@@ -5,7 +5,12 @@ import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 
-import { Footer } from '.';
+import Footer from './footer';
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -38,8 +43,7 @@ describe('ConfirmFooter', () => {
   it('renders the "Cancel" and "Confirm" Buttons', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
-    expect(buttons[0]).toBeInTheDocument();
-    expect(buttons[1]).toBeInTheDocument();
+    expect(buttons).toHaveLength(2);
     expect(getByText('Confirm')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
   });
