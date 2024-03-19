@@ -37,7 +37,6 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
         const symbol = matchedChain?.nativeCurrency?.symbol ?? null;
 
         setIsOriginalNativeSymbol(symbol === ticker);
-        return;
       } catch (err) {
         setIsOriginalNativeSymbol(false);
       }

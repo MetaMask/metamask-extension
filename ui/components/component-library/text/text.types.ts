@@ -75,6 +75,8 @@ export type ValidTagType =
   | 'a'
   | 'button';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface TextStyleUtilityProps extends StyleUtilityProps {
   /**
    * Additional className to assign the Text component

@@ -10,6 +10,7 @@ import {
   getCurrentChainId,
   getNameLookupSnapsIds,
   getPermissionSubjects,
+  getSnapMetadata,
 } from '../selectors';
 import { handleSnapRequest } from '../store/actions';
 import {
@@ -25,7 +26,7 @@ import {
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
 } from '../pages/confirmations/send/send.constants';
-import { getSnapName, isValidDomainName } from '../helpers/utils/util';
+import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,
@@ -276,6 +277,9 @@ export function lookupDomainName(domainName) {
         }
       }
 
+      const snapId = fetchedResolutions?.[0].snapId;
+      const snapName = getSnapMetadata(state, snapId)?.name;
+
       await dispatch(
         domainLookup({
           address,
@@ -284,9 +288,7 @@ export function lookupDomainName(domainName) {
           network: chainIdInt,
           domainType: hasSnapResolution ? 'Other' : ENS,
           domainName: trimmedDomainName,
-          ...(hasSnapResolution
-            ? { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }
-            : {}),
+          ...(hasSnapResolution ? { resolvingSnap: snapName } : {}),
         }),
       );
     }
