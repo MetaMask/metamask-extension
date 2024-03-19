@@ -13,6 +13,11 @@ import {
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import * as selectors from './selectors';
 
+jest.mock('../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../app/scripts/lib/util'),
+  getEnvironmentType: jest.fn().mockReturnValue('popup'),
+}));
+
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');
   return {
@@ -201,6 +206,59 @@ describe('Selectors', () => {
           },
         }),
       ).toStrictEqual(2);
+    });
+  });
+
+  describe('#getAutomaticSwitchNetwork', () => {
+    const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
+    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const state = {
+      activeTab: {
+        origin: SELECTED_ORIGIN,
+      },
+      metamask: {
+        isUnlocked: true,
+        useRequestQueue: true,
+        selectedTabOrigin: SELECTED_ORIGIN,
+        unapprovedMsgs: [],
+        unapprovedDecryptMsgs: [],
+        unapprovedPersonalMsgs: [],
+        unapprovedEncryptionPublicKeyMsgs: [],
+        unapprovedTypedMessages: [],
+        domains: {
+          [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
+        },
+        providerConfig: {
+          ...mockState.metamask.networkConfigurations
+            .testNetworkConfigurationId,
+          chainId: '0x1',
+          type: 'rpc',
+          id: 'mainnet',
+        },
+      },
+    };
+
+    it('should return the network to switch to', () => {
+      process.env.MULTICHAIN = 1;
+      const networkToSwitchTo = selectors.getAutomaticSwitchNetwork(state);
+      expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
+      delete process.env.MULTICHAIN;
+    });
+
+    it('should return no network to switch to because we are already on it', () => {
+      process.env.MULTICHAIN = 1;
+      const networkToSwitchTo = selectors.getAutomaticSwitchNetwork({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: 'linea-goerli',
+          },
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+      delete process.env.MULTICHAIN;
     });
   });
 
