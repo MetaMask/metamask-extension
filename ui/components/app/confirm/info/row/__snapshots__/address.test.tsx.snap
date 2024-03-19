@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConfirmInfoRowAddress should render appropriately with PetNames disabled with a name from the ENS resolution  1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a name from the ENS resolution  1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -62,7 +62,7 @@ exports[`ConfirmInfoRowAddress should render appropriately with PetNames disable
 </div>
 `;
 
-exports[`ConfirmInfoRowAddress should render appropriately with PetNames disabled with a name from the contract metadata 1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a name from the contract metadata 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -124,7 +124,7 @@ exports[`ConfirmInfoRowAddress should render appropriately with PetNames disable
 </div>
 `;
 
-exports[`ConfirmInfoRowAddress should render appropriately with PetNames disabled with a shortened address 1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with a shortened address 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -186,7 +186,7 @@ exports[`ConfirmInfoRowAddress should render appropriately with PetNames disable
 </div>
 `;
 
-exports[`ConfirmInfoRowAddress should render appropriately with PetNames disabled with an address book contact 1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with an address book contact 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -248,7 +248,7 @@ exports[`ConfirmInfoRowAddress should render appropriately with PetNames disable
 </div>
 `;
 
-exports[`ConfirmInfoRowAddress should render appropriately with PetNames disabled with an internal account name 1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames disabled with an internal account name 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
@@ -310,7 +310,7 @@ exports[`ConfirmInfoRowAddress should render appropriately with PetNames disable
 </div>
 `;
 
-exports[`ConfirmInfoRowAddress should render appropriately with PetNames enabled 1`] = `
+exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

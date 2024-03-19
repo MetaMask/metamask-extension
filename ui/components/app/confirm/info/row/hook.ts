@@ -1,6 +1,6 @@
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {
   getAccountName,
