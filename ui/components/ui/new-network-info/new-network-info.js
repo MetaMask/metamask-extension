@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { I18nContext } from '../../../contexts/i18n';
@@ -15,7 +14,6 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import {
   getCurrentNetwork,
   getIsBridgeChain,
@@ -28,7 +26,6 @@ import {
   Text,
   Box,
   Button,
-  ButtonLinkSize,
   Icon,
   IconName,
   ButtonPrimarySize,
@@ -40,7 +37,6 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 export default function NewNetworkInfo() {
   const t = useContext(I18nContext);
-  const history = useHistory();
   const [tokenDetectionSupported, setTokenDetectionSupported] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,12 +47,6 @@ export default function NewNetworkInfo() {
   const isBridgeChain = useSelector(getIsBridgeChain);
 
   const onCloseClick = () => {
-    setShowPopup(false);
-    setFirstTimeUsedNetwork(providerConfig.chainId);
-  };
-
-  const addTokenManually = () => {
-    history.push(IMPORT_TOKEN_ROUTE);
     setShowPopup(false);
     setFirstTimeUsedNetwork(providerConfig.chainId);
   };
@@ -242,27 +232,24 @@ export default function NewNetworkInfo() {
                 <Box className="new-network-info__bullet-icon-container">
                   <Icon name={IconName.Coin} size={IconSize.Sm} />
                 </Box>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={Color.textDefault}
-                  display={Display.InlineBlock}
-                >
-                  {t('tokenShowUp', [
-                    <Button
-                      variant="link"
-                      onClick={addTokenManually}
-                      className="new-network-info__button"
-                      key="manually-add-tokens-button"
-                      size={ButtonLinkSize.Inherit}
-                      textProps={{
-                        color: Color.infoDefault,
-                      }}
-                    >
-                      {t('clickToManuallyAdd')}
-                    </Button>,
-                  ])}
-                </Text>
+                <Box flexDirection={FlexDirection.Column}>
+                  <Text
+                    variant={TextVariant.bodySmBold}
+                    as="h6"
+                    color={Color.textDefault}
+                  >
+                    {t('addingTokens')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    color={Color.textDefault}
+                    display={Display.InlineBlock}
+                  >
+                    {t('tokenShowUp')}
+                    {t('clickToManuallyAdd')}
+                  </Text>
+                </Box>
               </Box>
             ) : null}
           </Box>

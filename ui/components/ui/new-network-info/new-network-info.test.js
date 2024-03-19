@@ -260,7 +260,9 @@ describe('NewNetworkInfo', () => {
         });
         // render add token link when token is supported
         expect(
-          getByText('Click here to manually add the tokens.'),
+          getByText(
+            'Your tokens may not automatically show up in your wallet. You can always add tokens manually.',
+          ),
         ).toBeInTheDocument();
       });
     });

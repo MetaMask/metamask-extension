@@ -302,6 +302,9 @@
   "addingCustomNetwork": {
     "message": "Adding Network"
   },
+  "addingTokens": {
+    "message": "Adding tokens"
+  },
   "address": {
     "message": "Address"
   },
@@ -763,7 +766,7 @@
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clickToManuallyAdd": {
-    "message": "Click here to manually add the tokens."
+    "message": "You can always add tokens manually."
   },
   "close": {
     "message": "Close"
@@ -5464,7 +5467,7 @@
     "message": "token scams and security risks"
   },
   "tokenShowUp": {
-    "message": "Your tokens may not automatically show up in your wallet. $1"
+    "message": "Your tokens may not automatically show up in your wallet. "
   },
   "tokenSymbol": {
     "message": "Token symbol"
