@@ -271,6 +271,7 @@ export const SENTRY_BACKGROUND_STATE = {
   SnapsRegistry: {
     database: false,
     lastUpdated: false,
+    databaseUnavailable: false,
   },
   SubjectMetadataController: {
     subjectMetadata: false,
@@ -303,6 +304,9 @@ export const SENTRY_BACKGROUND_STATE = {
       topAggId: false,
       tradeTxId: false,
     },
+  },
+  TokenDetectionController: {
+    [AllProperties]: false,
   },
   TokenListController: {
     preventPollingOnNetworkRestart: true,
