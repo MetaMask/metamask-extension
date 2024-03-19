@@ -97,7 +97,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 
-let popupIsOpen = false;
+let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
@@ -571,7 +571,7 @@ export function setupController(
 
   const isClientOpenStatus = () => {
     return (
-      popupIsOpen ||
+      openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen
     );
@@ -657,9 +657,9 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
-        popupIsOpen = true;
+        openPopupCount += 1;
         endOfStream(portStream, () => {
-          popupIsOpen = false;
+          openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
@@ -933,7 +933,7 @@ async function triggerUi() {
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
   );
-  // Vivaldi is not closing port connection on popup close, so popupIsOpen does not work correctly
+  // Vivaldi is not closing port connection on popup close, so openPopupCount does not work correctly
   // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
   const isVivaldi =
     tabs.length > 0 &&
@@ -941,7 +941,7 @@ async function triggerUi() {
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
   if (
     !uiIsTriggering &&
-    (isVivaldi || !popupIsOpen) &&
+    (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;
