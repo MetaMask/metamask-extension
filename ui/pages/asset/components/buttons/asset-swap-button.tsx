@@ -10,7 +10,6 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   BlockSize,
   BorderColor,
-  BorderStyle,
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../app/scripts/translate';
 import {
