@@ -1,12 +1,6 @@
 import React, { useEffect, useState, useRef, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  getCurrentCurrency,
-  getIsBridgeChain,
-  getIsBuyableChain,
-  getIsSwapsChain,
-} from '../../../selectors';
-import {
   BackgroundColor,
   Display,
   FlexDirection,
@@ -31,15 +25,29 @@ import {
   getPricePrecision,
   localizeLargeNumber,
 } from '../util';
+
+import {
+  getCurrentCurrency,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getIsBridgeChain,
+  getIsBuyableChain,
+  getIsSwapsChain,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors';
+
 import AssetChart from './asset-chart';
 import AssetHeader from './asset-header';
 import AssetSendButton from './buttons/asset-send-button';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import AssetBridgeButton from './buttons/asset-bridge-button';
 import AssetBuyButton from './buttons/asset-buy-button';
 import AssetSwapButton from './buttons/asset-swap-button';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import AssetMmiStakeButton from './buttons/asset-mmi-stake-button';
 import AssetMmiPortfolioButton from './buttons/asset-mmi-portfolio-button';
+import AssetMmiSwapButton from './buttons/asset-mmi-swap-button';
 ///: END:ONLY_INCLUDE_IF
 
 /** Information about a native or token asset */
@@ -94,11 +102,13 @@ const AssetV2 = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-
   const currency = useSelector(getCurrentCurrency);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const isBridgeChain = useSelector(getIsBridgeChain);
+  ///: END:ONLY_INCLUDE_IF
 
   const [marketData, setMarketData] = useState<any>();
   const headerRef = useRef<{ setBalanceOpacity: (o: number) => void }>(null);
@@ -223,7 +233,7 @@ const AssetV2 = ({
                     {type === AssetType.native && chainId === '0x1' ? (
                       <AssetMmiStakeButton />
                     ) : (
-                      <AssetSwapButton asset={asset} />
+                      <AssetMmiSwapButton />
                     )}
                     <AssetSendButton asset={asset} />
                   </Box>

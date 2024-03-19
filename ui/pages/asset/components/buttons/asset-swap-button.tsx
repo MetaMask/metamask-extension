@@ -25,9 +25,6 @@ import Tooltip from '../../../../components/ui/tooltip';
 import { setSwapsFromToken } from '../../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import { BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getMmiPortfolioUrl } from '../../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IF
 
 const AssetSwapButton = ({
   asset,
@@ -45,10 +42,6 @@ const AssetSwapButton = ({
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  ///: END:ONLY_INCLUDE_IF
-
   const Button = primary ? ButtonPrimary : ButtonSecondary;
   return (
     <Box width={BlockSize.Full}>
@@ -62,7 +55,6 @@ const AssetSwapButton = ({
           padding={5}
           width={BlockSize.Full}
           onClick={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             trackEvent({
               event: MetaMetricsEventName.NavSwapButtonClicked,
               category: MetaMetricsEventCategory.Swaps,
@@ -95,13 +87,6 @@ const AssetSwapButton = ({
             } else {
               history.push(BUILD_QUOTE_ROUTE);
             }
-            ///: END:ONLY_INCLUDE_IF
-
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            global.platform.openTab({
-              url: `${mmiPortfolioUrl}/swap`,
-            });
-            ///: END:ONLY_INCLUDE_IF
           }}
         >
           {t('swap')}
