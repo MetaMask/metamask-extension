@@ -1,4 +1,8 @@
 import { useEffect, useRef } from 'react';
+import {
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
+} from '../store/actions';
 
 type UsePollingOptions = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
@@ -20,6 +24,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
 
     const cleanup = () => {
       if (pollTokenRef.current) {
+        removePollingTokenFromAppState(pollTokenRef.current);
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
         cleanupRef.current?.(pollTokenRef.current);
       }
@@ -32,6 +37,7 @@ const usePolling = (usePollingOptions: UsePollingOptions) => {
       )
       .then((pollToken) => {
         pollTokenRef.current = pollToken;
+        addPollingTokenToAppState(pollToken);
         cleanupRef.current = usePollingOptions.callback?.(pollToken) || null;
         if (!isMounted) {
           cleanup();
