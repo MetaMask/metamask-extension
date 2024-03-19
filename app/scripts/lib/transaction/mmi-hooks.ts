@@ -22,10 +22,16 @@ export function afterTransactionSign(
     return true;
   }
 
-  txMeta.custodyId = signedEthTx.custodian_transactionId;
-  txMeta.custodyStatus = signedEthTx.transactionStatus;
+  const updatedTxMeta = {
+    ...txMeta,
+    custodyId: signedEthTx.custodian_transactionId,
+    custodyStatus: signedEthTx.transactionStatus,
+  };
 
-  addTransactionToWatchList(txMeta.custodyId, txMeta.txParams.from);
+  addTransactionToWatchList(
+    updatedTxMeta.custodyId,
+    updatedTxMeta.txParams.from,
+  );
 
   return false;
 }
