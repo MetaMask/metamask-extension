@@ -482,6 +482,7 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
+    this.deprecatedNetworkVersions = {};
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
@@ -2716,10 +2717,18 @@ export default class MetamaskController extends EventEmitter {
       networkClientId,
     );
 
-    const ethQuery = new EthQuery(networkClient.provider);
-
     const { chainId } = networkClient.configuration;
-    const networkVersion = await new Promise((resolve) => {
+
+    let networkVersion = this.deprecatedNetworkVersions[networkClientId];
+    if (networkVersion) {
+      return {
+        chainId,
+        networkVersion,
+      };
+    }
+
+    const ethQuery = new EthQuery(networkClient.provider);
+    networkVersion = await new Promise((resolve) => {
       ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
         if (error) {
           console.error(error);
@@ -2729,6 +2738,8 @@ export default class MetamaskController extends EventEmitter {
         }
       });
     });
+
+    this.deprecatedNetworkVersions[networkClientId] = networkVersion;
 
     return {
       chainId,
