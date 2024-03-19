@@ -78,7 +78,6 @@ const HeaderLayout: React.FC = ({ children }) => {
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
       gap={1}
-      marginBottom={3}
     >
       <Text variant={TextVariant.bodyMdMedium}>
         {t('simulationPreviewTitle')}
@@ -110,6 +109,7 @@ const SimulationPreviewLayout: React.FC<{
     borderColor={BorderColor.borderDefault}
     padding={3}
     margin={4}
+    gap={5}
   >
     <HeaderLayout>{inHeader}</HeaderLayout>
     {children}
@@ -126,10 +126,9 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
   simulationData,
 }: SimulationPreviewProps) => {
   const t = useI18nContext();
-  const { isLoading: isBalanceChangesLoading, balanceChanges } =
+  const { pending: loading, value: balanceChanges } =
     useBalanceChanges(simulationData);
 
-  const loading = isBalanceChangesLoading;
   if (loading) {
     return (
       <SimulationPreviewLayout
@@ -137,6 +136,7 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
       ></SimulationPreviewLayout>
     );
   }
+
   const error = !simulationData;
   if (error) {
     return (
@@ -145,6 +145,7 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
       </SimulationPreviewLayout>
     );
   }
+
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (
@@ -154,8 +155,8 @@ export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
     );
   }
 
-  const outgoing = balanceChanges.filter((change) => change.isDecrease);
-  const incoming = balanceChanges.filter((change) => !change.isDecrease);
+  const outgoing = balanceChanges.filter((change) => change.amount.isNegative);
+  const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
   return (
     <SimulationPreviewLayout>
       <BalanceChangeList

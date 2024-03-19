@@ -53,7 +53,7 @@ describe('useBalanceChanges', () => {
     await waitForNextUpdate();
     expect(result.current.value).toEqual([
       {
-        assetInfo: { isNative: true },
+        asset: { isNative: true },
         isDecrease: true,
         absChange: new Numeric('0x1234', 16, EtherDenomination.WEI),
       },
@@ -107,16 +107,18 @@ describe('useBalanceChanges', () => {
       await waitForNextUpdate();
       expect(result.current.value).toHaveLength(1);
       const balanceChanges = result.current.value as BalanceChange[];
-      expect(balanceChanges[0].assetInfo).toEqual({
+      expect(balanceChanges[0].asset).toEqual({
         isNative: false,
         standard,
-        contractAddress: TOKEN_ADDRESS_1_MOCK,
+        address: TOKEN_ADDRESS_1_MOCK,
         tokenId,
       });
-      expect(balanceChanges[0].isDecrease).toBe(true);
-      expect(balanceChanges[0].absChange.toBase(10).toString()).toBe(
-        expectedAbsChange,
-      );
+      expect(balanceChanges[0].amount.isNegative).toBe(true);
+      expect(
+        Numeric.from(balanceChanges[0].amount.quantity, 16)
+          .toBase(10)
+          .toString(),
+      ).toBe(expectedAbsChange);
     },
   );
 

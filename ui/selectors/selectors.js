@@ -499,6 +499,18 @@ export function getTargetAccount(state, targetAddress) {
 export const getTokenExchangeRates = (state) =>
   state.metamask.contractExchangeRates;
 
+/**
+ * Get the to
+ */
+const getTokenConversionRates = createSelector(
+  getTokenExchangeRates,
+  getConfirmationExchangeRates,
+  (contractExchangeRates, confirmationExchangeRates) => ({
+    ...contractExchangeRates,
+    ...confirmationExchangeRates,
+  }),
+);
+
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {

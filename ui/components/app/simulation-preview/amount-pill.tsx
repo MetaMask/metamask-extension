@@ -10,29 +10,41 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { BalanceChange } from './types';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount is an increase or decrease.
  *
  * @param props
- * @param props.isDecrease
- * @param props.absChange
+ * @param props.asset
+ * @param props.amount
  */
-export const AmountPill: React.FC<{
-  isDecrease: boolean;
-  absChange: Numeric;
-}> = ({ isDecrease, absChange }) => {
-  const backgroundColor = isDecrease
+export const AmountPill: React.FC<BalanceChange> = ({ asset, amount }) => {
+  const backgroundColor = amount.isNegative
     ? BackgroundColor.errorMuted
     : BackgroundColor.successMuted;
 
-  const color = isDecrease
+  const color = amount.isNegative
     ? TextColor.errorAlternative
     : TextColor.successDefault;
 
-  const sign = isDecrease ? '-' : '+';
-  const formattedAmount = `${sign} ${absChange.round(6).toBase(10).toString()}`;
+  const amountParts: string[] = [amount.isNegative ? '-' : '+'];
 
+  const hideAmount = asset.standard === TokenStandard.ERC721;
+  if (!hideAmount) {
+    amountParts.push(
+      Numeric.from(amount.quantity, 16)
+        .shiftedBy(-amount.exponent)
+        .toBase(10)
+        .round(6)
+        .toString(),
+    );
+  }
+  if (asset.tokenId) {
+    amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
+  }
   return (
     <Text
       display={Display.Flex}
@@ -46,7 +58,7 @@ export const AmountPill: React.FC<{
       }}
       variant={TextVariant.bodyMd}
     >
-      {formattedAmount}
+      {amountParts.join(' ')}
     </Text>
   );
 };

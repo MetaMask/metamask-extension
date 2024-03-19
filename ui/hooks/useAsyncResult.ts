@@ -5,7 +5,7 @@ import { useState, DependencyList, useEffect } from 'react';
  * are thrown to be handled by an error boundary.
  */
 export type AsyncResultStrict<T> =
-  | { pending: true; value?: undefined } // pending
+  | { pending: true; value?: never } // pending
   | { pending: false; value: T }; // success
 
 /**
@@ -13,8 +13,8 @@ export type AsyncResultStrict<T> =
  * possibility of an error
  */
 export type AsyncResult<T> =
-  | (AsyncResultStrict<T> & { error?: undefined })
-  | { pending: false; value?: undefined; error: Error }; // error
+  | (AsyncResultStrict<T> & { error?: never })
+  | { pending: false; value?: never; error: Error }; // error
 
 /**
  * Hook that executes an asynchronous function and returns its result

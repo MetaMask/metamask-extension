@@ -1,6 +1,6 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import { Text } from '../../component-library';
+import { AvatarToken, AvatarTokenSize, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,7 +10,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Name from '../name';
-import { AssetInfo } from './types';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { AssetIdentifier } from './types';
 
 const EthAssetPill: React.FC = () => (
   <Text
@@ -21,11 +22,15 @@ const EthAssetPill: React.FC = () => (
     backgroundColor={BackgroundColor.backgroundAlternative}
     gap={1}
     style={{
-      padding: '0px 8px 0 4px',
+      padding: '2px 8px 2px 4px',
     }}
     variant={TextVariant.bodyMd}
   >
-    <img alt="ETH logo" src="./images/eth_badge.svg" width="18px" />
+    <AvatarToken
+      name="eth"
+      size={AvatarTokenSize.Sm}
+      src="./images/eth_logo.svg"
+    />
     ETH
   </Text>
 );
@@ -34,18 +39,16 @@ const EthAssetPill: React.FC = () => (
  * Displays a pill with an asset's icon and name.
  *
  * @param props
- * @param props.assetInfo
+ * @param props.asset
  */
-export const AssetPill: React.FC<{ assetInfo: AssetInfo }> = ({
-  assetInfo,
-}) => {
-  if (assetInfo.isNative) {
+export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
+  if (asset.standard === TokenStandard.none) {
     return <EthAssetPill />;
   }
   return (
     <Name
       type={NameType.ETHEREUM_ADDRESS}
-      value={assetInfo.contractAddress}
+      value={asset.address}
       preferContractSymbol
     />
   );

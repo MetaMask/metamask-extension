@@ -10,7 +10,7 @@ import { useFirstPartyContractName } from './useFirstPartyContractName';
  *
  * @param value
  * @param type
- * @param preferContractSymbol - Applies to recognized contracts with no petname saved:
+ * @param preferContractSymbol - Applies to recognized contracts when no petname is saved:
  * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
  * @returns An object with two properties:
  * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
