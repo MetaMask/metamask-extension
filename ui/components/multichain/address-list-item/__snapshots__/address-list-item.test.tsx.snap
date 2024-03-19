@@ -56,9 +56,89 @@ exports[`AddressListItem renders the address and label 1`] = `
         class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
         data-testid="address-list-item-label"
       >
-        <span>
+        metamask.eth
+      </p>
+      <div
+        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+        data-testid="address-list-item-address"
+      >
+        <div>
           <div
             aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
+          >
+            0x0c54F...7AaFb
+          </div>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`AddressListItem uses a confusable when it should 1`] = `
+<div>
+  <button
+    class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+    >
+      <div
+        class="mm-avatar-account__jazzicon"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(3, 73, 94);"
+        >
+          <svg
+            height="24"
+            width="24"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#F5D800"
+              height="24"
+              transform="translate(-1.6948137315966292 7.490045892231985) rotate(238.2 12 12)"
+              width="24"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#1888F2"
+              height="24"
+              transform="translate(2.6987555575750655 10.47254609666851) rotate(211.2 12 12)"
+              width="24"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#017E8E"
+              height="24"
+              transform="translate(4.1286145552783005 -17.188975454864387) rotate(404.9 12 12)"
+              width="24"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+      style="overflow: hidden;"
+    >
+      <p
+        class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+        data-testid="address-list-item-label"
+      >
+        <span>
+          <div
+            aria-describedby="tippy-tooltip-2"
             class=""
             data-original-title="'m' is similar to 'rn'."
             data-tooltipped=""
@@ -77,7 +157,7 @@ exports[`AddressListItem renders the address and label 1`] = `
         a
         <span>
           <div
-            aria-describedby="tippy-tooltip-2"
+            aria-describedby="tippy-tooltip-3"
             class=""
             data-original-title="'m' is similar to 'rn'."
             data-tooltipped=""
@@ -105,7 +185,7 @@ exports[`AddressListItem renders the address and label 1`] = `
       >
         <div>
           <div
-            aria-describedby="tippy-tooltip-3"
+            aria-describedby="tippy-tooltip-4"
             class=""
             data-original-title="0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb"
             data-tooltipped=""
