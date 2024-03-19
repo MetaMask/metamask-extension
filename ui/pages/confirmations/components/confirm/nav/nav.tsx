@@ -3,8 +3,6 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { ApprovalType } from '@metamask/controller-utils';
-
 import {
   Box,
   Button,
@@ -36,12 +34,7 @@ import {
   pendingConfirmationsSortedSelector,
 } from '../../../../../selectors';
 import { rejectPendingApproval } from '../../../../../store/actions';
-
-const SignatureApprovalTypes = [
-  ApprovalType.EthSign,
-  ApprovalType.PersonalSign,
-  ApprovalType.EthSignTypedData,
-];
+import { isSignatureApprovalRequest } from '../../../utils';
 
 const Nav = () => {
   const history = useHistory();
@@ -68,8 +61,10 @@ const Nav = () => {
       // In new routing all confirmations will support
       // "/confirm-transaction/<confirmation_id>"
       history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}${
-          SignatureApprovalTypes.includes(nextConfirmation.type as ApprovalType)
+        `${CONFIRM_TRANSACTION_ROUTE}/${
+          pendingConfirmations[currentConfirmationPosition + pos].id
+        }${
+          isSignatureApprovalRequest(nextConfirmation)
             ? SIGNATURE_REQUEST_PATH
             : ''
         }`,

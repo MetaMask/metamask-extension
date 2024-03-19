@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
-import { currentConfirmationSelector } from '../../../selectors/confirm';
+import { currentConfirmationSelector } from '../selectors/confirm';
 
 const syncConfirmPath = () => {
   const history = useHistory();
