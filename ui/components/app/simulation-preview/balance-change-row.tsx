@@ -3,7 +3,6 @@ import {
   AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
@@ -31,15 +30,15 @@ export const BalanceChangeRow: React.FC<{
       data-testid="simulation-preview-balance-change-row"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
     >
-      <Text variant={TextVariant.bodyMd}>{label}</Text>
+      {label && <Text variant={TextVariant.bodyMd}>{label}</Text>}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexEnd}
         gap={1}
+        marginLeft={'auto'}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
           <AmountPill {...balanceChange} />

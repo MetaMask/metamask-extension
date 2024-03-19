@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -25,12 +26,13 @@ import {
   Text,
   Box,
 } from '../../../../components/component-library';
-import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapInstall({
   request,
@@ -43,6 +45,7 @@ export default function SnapInstall({
   const siteMetadata = useOriginMetadata(request?.metadata?.dappOrigin) || {};
   const { origin, iconUrl, name } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const snapsMetadata = useSelector(getSnapsMetadata);
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
@@ -57,22 +60,21 @@ export default function SnapInstall({
     [request, approveSnapInstall],
   );
 
-  const hasError = !requestState.loading && requestState.error;
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
+  );
 
+  const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
 
   const warnings = getSnapInstallWarnings(
     requestState?.permissions ?? {},
-    targetSubjectMetadata,
     t,
+    snapName,
+    getSnapName(snapsMetadata),
   );
 
   const shouldShowWarning = warnings.length > 0;
-
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
-  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -185,7 +187,6 @@ export default function SnapInstall({
               <SnapPermissionsList
                 snapId={targetSubjectMetadata.origin}
                 permissions={requestState.permissions || {}}
-                targetSubjectMetadata={targetSubjectMetadata}
               />
             </Box>
             {isScrollable && !isScrolledToBottom ? (

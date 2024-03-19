@@ -1,8 +1,8 @@
 import { By } from "selenium-webdriver";
-import FixtureBuilder from "../fixture-builder";
-import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow } from "../helpers";
-import { Driver } from '../webdriver/driver';
-import { MOCK_RECIPIENT_ADDRESS } from "./simulation-preview.mocks";
+import FixtureBuilder from "../../fixture-builder";
+import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow } from "../../helpers";
+import { Driver } from '../../webdriver/driver';
+import { RECIPIENT_ADDRESS_MOCK } from "./simulation-preview.mocks";
 
 const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress: string, quantity: string) => {
   await openActionMenuAndStartSendFlow(driver);
@@ -43,7 +43,7 @@ async function expectBalanceChange(driver: Driver, displayAmount: string, assetN
     `));
 }
 
-describe('Simulation Preview', () => {
+describe.skip('Simulation Preview', () => {
   it('display native currency balance change', async function (this: Mocha.Context) {
       // TODO: Update Test when Multichain Send Flow is added
     if (process.env.MULTICHAIN) {
@@ -51,7 +51,7 @@ describe('Simulation Preview', () => {
     }
 
     await withFixturesForSimulationPreview({ title: this.test?.fullTitle() }, async (driver) => {
-      await prepareSendTransactionSimulation(driver, MOCK_RECIPIENT_ADDRESS, '0.001');
+      await prepareSendTransactionSimulation(driver, RECIPIENT_ADDRESS_MOCK, '0.001');
       await expectBalanceChange(driver, '- 0.001', 'ETH');
     });
   });

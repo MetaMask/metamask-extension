@@ -148,6 +148,216 @@
             "version": "5.1.2"
           }
         ]
+      },
+      "npm:@metamask/test-snap-bip32": {
+        "id": "npm:@metamask/test-snap-bip32",
+        "origin": "npm:@metamask/test-snap-bip32",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that signs messages using BLS.",
+          "proposedName": "BIP-32 Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-bip32",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-getEntropy": {
+        "id": "npm:@metamask/test-snap-getEntropy",
+        "origin": "npm:@metamask/test-snap-getEntropy",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that can derive snap specific entropy.",
+          "proposedName": "Get Entropy Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-getEntropy",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-networkAccess": {
+        "id": "npm:@metamask/test-snap-networkAccess",
+        "origin": "npm:@metamask/test-snap-networkAccess",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that has network access.",
+          "proposedName": "Network Access Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-networkAccess",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-wasm": {
+        "id": "npm:@metamask/test-snap-wasm",
+        "origin": "npm:@metamask/test-snap-wasm",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that has WASM access.",
+          "proposedName": "WASM Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-wasm",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-notify": {
+        "id": "npm:@metamask/test-snap-notify",
+        "origin": "npm:@metamask/test-snap-notify",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that can send notifications.",
+          "proposedName": "Notification Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-notify",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-dialog": {
+        "id": "npm:@metamask/test-snap-dialog",
+        "origin": "npm:@metamask/test-snap-dialog",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that can send dialog prompts.",
+          "proposedName": "Dialog Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-dialog",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
       }
     },
     "preferences": {

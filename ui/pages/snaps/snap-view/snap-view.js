@@ -4,12 +4,7 @@ import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { SNAPS_ROUTE } from '../../../helpers/constants/routes';
-import {
-  getSnaps,
-  getPermissions,
-  getTargetSubjectMetadata,
-} from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
+import { getSnaps, getPermissions, getSnapMetadata } from '../../../selectors';
 import { ButtonIcon } from '../../../components/component-library';
 import {
   Content,
@@ -30,6 +25,10 @@ function SnapView() {
     .map(([_, snapState]) => snapState)
     .find((snapState) => snapState.id === snapId);
 
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
   useEffect(() => {
     if (!snap) {
       history.push(SNAPS_ROUTE);
@@ -40,10 +39,6 @@ function SnapView() {
     (state) => snap && getPermissions(state, snap.id),
   );
 
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snap?.id),
-  );
-
   const hasHomePage =
     permissions && hasProperty(permissions, 'endowment:page-home');
   const [showSettings, setShowSettings] = useState(!hasHomePage);
@@ -51,8 +46,6 @@ function SnapView() {
   if (!snap) {
     return null;
   }
-
-  const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
   const handleSettingsClick = () => {
     setShowSettings(true);

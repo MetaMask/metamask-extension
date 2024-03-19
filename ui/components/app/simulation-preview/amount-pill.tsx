@@ -15,7 +15,8 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { BalanceChange } from './types';
 
 /**
- * Displays a pill with an amount and a background color indicating whether the amount is an increase or decrease.
+ * Displays a pill with an amount and a background color indicating whether the amount
+ * is an increase or decrease.
  *
  * @param props
  * @param props.asset
