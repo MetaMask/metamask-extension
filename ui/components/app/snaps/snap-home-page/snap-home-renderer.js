@@ -15,11 +15,11 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 import { Copyable } from '../copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { deleteInterface } from '../../../../store/actions';
-import { useSnapHome } from './useSnapHome';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { useSnapHome } from './useSnapHome';
 
 export const SnapHomeRenderer = ({ snapId }) => {
   const dispatch = useDispatch();
@@ -31,7 +31,9 @@ export const SnapHomeRenderer = ({ snapId }) => {
   const unapprovedTemplatedConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
-  const unapprovedConfirmations = useSelector(getMemoizedUnapprovedConfirmations);
+  const unapprovedConfirmations = useSelector(
+    getMemoizedUnapprovedConfirmations,
+  );
   const history = useHistory();
 
   const { data, error, loading } = useSnapHome({ snapId });
@@ -52,9 +54,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
     );
 
     if (templatedSnapApproval) {
-      history.push(
-        `${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`,
-      );
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     } else if (snapApproval) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
