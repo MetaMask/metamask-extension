@@ -16,7 +16,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
+  getIsBuyableChain,
   getIsMainnet,
+  getSelectedAccount,
+  getShouldHideZeroBalanceTokens,
   getUseNftDetection,
 } from '../../../selectors';
 import {
@@ -39,6 +42,7 @@ import {
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { RampsCard } from '../../multichain/ramps-card';
 import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -47,6 +51,18 @@ export default function NftsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    selectedAddress,
+    shouldHideZeroBalanceTokens,
+  );
+  const balanceIsZero = Number(totalFiatBalance) === 0;
+  const isBuyableChain = useSelector(getIsBuyableChain);
+  const showRampsCard = isBuyableChain && balanceIsZero;
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
@@ -87,112 +103,113 @@ export default function NftsTab() {
   }
 
   return (
-    <Box className="nfts-tab">
-      {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
-        <NftsItems
-          collections={collections}
-          previouslyOwnedCollection={previouslyOwnedCollection}
-        />
-      ) : (
-        <>
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
-
-          {isMainnet && !useNftDetection ? (
-            <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
-              <NFTsDetectionNoticeNFTsTab />
-            </Box>
-          ) : null}
-
-          <Box
-            padding={12}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-          >
-            <Box justifyContent={JustifyContent.center}>
-              <img src="./images/no-nfts.svg" />
-            </Box>
-            <Box
-              marginTop={4}
-              marginBottom={12}
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              flexDirection={FlexDirection.Column}
-              className="nfts-tab__link"
-            >
-              <Text
-                color={TextColor.textMuted}
-                variant={TextVariant.headingSm}
-                align={TextAlign.Center}
-                as="h4"
-              >
-                {t('noNFTs')}
-              </Text>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                <ButtonLink
-                  size={Size.MD}
-                  href={ZENDESK_URLS.NFT_TOKENS}
-                  externalLink
-                >
-                  {t('learnMoreUpperCase')}
-                </ButtonLink>
-                ///: END:ONLY_INCLUDE_IF
-              }
-            </Box>
-          </Box>
-        </>
-      )}
-      <Box
-        className="nfts-tab__buttons"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        margin={4}
-        gap={2}
-        marginBottom={2}
-      >
-        <ButtonLink
-          size={Size.MD}
-          data-testid="import-nft-button"
-          startIconName={IconName.Add}
-          onClick={() => {
-            dispatch(showImportNftsModal());
-          }}
-        >
-          {t('importNFT')}
-        </ButtonLink>
-        {!isMainnet && Object.keys(collections).length < 1 ? null : (
+    <>
+      {showRampsCard && <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />}
+      <Box className="nfts-tab">
+        {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
+          <NftsItems
+            collections={collections}
+            previouslyOwnedCollection={previouslyOwnedCollection}
+          />
+        ) : (
           <>
+            {isMainnet && !useNftDetection ? (
+              <Box paddingTop={4} paddingInlineStart={4} paddingInlineEnd={4}>
+                <NFTsDetectionNoticeNFTsTab />
+              </Box>
+            ) : null}
+
             <Box
-              className="nfts-tab__link"
-              justifyContent={JustifyContent.flexEnd}
+              padding={12}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
             >
-              {isMainnet && !useNftDetection ? (
-                <ButtonLink
-                  size={Size.MD}
-                  startIconName={IconName.Setting}
-                  data-testid="refresh-list-button"
-                  onClick={onEnableAutoDetect}
+              <Box justifyContent={JustifyContent.center}>
+                <img src="./images/no-nfts.svg" />
+              </Box>
+              <Box
+                marginTop={4}
+                marginBottom={12}
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                flexDirection={FlexDirection.Column}
+                className="nfts-tab__link"
+              >
+                <Text
+                  color={TextColor.textMuted}
+                  variant={TextVariant.headingSm}
+                  align={TextAlign.Center}
+                  as="h4"
                 >
-                  {t('enableAutoDetect')}
-                </ButtonLink>
-              ) : (
-                <ButtonLink
-                  size={Size.MD}
-                  startIconName={IconName.Refresh}
-                  data-testid="refresh-list-button"
-                  onClick={onRefresh}
-                >
-                  {t('refreshList')}
-                </ButtonLink>
-              )}
+                  {t('noNFTs')}
+                </Text>
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                  <ButtonLink
+                    size={Size.MD}
+                    href={ZENDESK_URLS.NFT_TOKENS}
+                    externalLink
+                  >
+                    {t('learnMoreUpperCase')}
+                  </ButtonLink>
+                  ///: END:ONLY_INCLUDE_IF
+                }
+              </Box>
             </Box>
           </>
         )}
+        <Box
+          className="nfts-tab__buttons"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexStart}
+          margin={4}
+          gap={2}
+          marginBottom={2}
+        >
+          <ButtonLink
+            size={Size.MD}
+            data-testid="import-nft-button"
+            startIconName={IconName.Add}
+            onClick={() => {
+              dispatch(showImportNftsModal());
+            }}
+          >
+            {t('importNFT')}
+          </ButtonLink>
+          {!isMainnet && Object.keys(collections).length < 1 ? null : (
+            <>
+              <Box
+                className="nfts-tab__link"
+                justifyContent={JustifyContent.flexEnd}
+              >
+                {isMainnet && !useNftDetection ? (
+                  <ButtonLink
+                    size={Size.MD}
+                    startIconName={IconName.Setting}
+                    data-testid="refresh-list-button"
+                    onClick={onEnableAutoDetect}
+                  >
+                    {t('enableAutoDetect')}
+                  </ButtonLink>
+                ) : (
+                  <ButtonLink
+                    size={Size.MD}
+                    startIconName={IconName.Refresh}
+                    data-testid="refresh-list-button"
+                    onClick={onRefresh}
+                  >
+                    {t('refreshList')}
+                  </ButtonLink>
+                )}
+              </Box>
+            </>
+          )}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
