@@ -483,14 +483,6 @@ export default class MetamaskController extends EventEmitter {
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
-    // TODO: Delete when ready to remove `networkVersion` from provider object
-    this.deprecatedNetworkId = null;
-    this.updateDeprecatedNetworkId();
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      () => this.updateDeprecatedNetworkId(),
-    );
-
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
       allowedEvents: ['NetworkController:stateChange'],
@@ -2664,20 +2656,21 @@ export default class MetamaskController extends EventEmitter {
     // subset of state for metamask inpage provider
     const publicConfigStore = new ObservableStore();
 
-    const selectPublicState = (chainId, { isUnlocked }) => {
+    const selectPublicState = async ({ isUnlocked }) => {
+      const { chainId, networkVersion } = await this.getProviderNetworkState();
+
       return {
         isUnlocked,
         chainId,
-        networkVersion: this.deprecatedNetworkId ?? 'loading',
+        networkVersion: networkVersion ?? 'loading',
       };
     };
 
-    const updatePublicConfigStore = (memState) => {
+    const updatePublicConfigStore = async (memState) => {
       const networkStatus =
         memState.networksMetadata[memState.selectedNetworkClientId]?.status;
-      const { chainId } = this.networkController.state.providerConfig;
       if (networkStatus === NetworkStatus.Available) {
-        publicConfigStore.putState(selectPublicState(chainId, memState));
+        publicConfigStore.putState(await selectPublicState(memState));
       }
     };
 
@@ -2695,12 +2688,14 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[] }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
+    const providerNetworkState = await this.getProviderNetworkState(
+      this.preferencesController.getUseRequestQueue() ? origin : undefined,
+    );
+
     return {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
-      ...this.getProviderNetworkState(
-        this.preferencesController.getUseRequestQueue() ? origin : undefined,
-      ),
+      ...providerNetworkState,
     };
   }
 
@@ -2710,71 +2705,35 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
    * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  getProviderNetworkState(origin = METAMASK_DOMAIN) {
-    let chainId;
-    if (
-      this.preferencesController.getUseRequestQueue() &&
-      origin !== METAMASK_DOMAIN
-    ) {
-      const networkClientId = this.controllerMessenger.call(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        origin,
-      );
-
-      const networkClient = this.controllerMessenger.call(
-        'NetworkController:getNetworkClientById',
-        networkClientId,
-      );
-      chainId = networkClient.configuration.chainId;
-    } else {
-      chainId = this.networkController.state.providerConfig.chainId;
-    }
-
-    return {
-      chainId,
-      networkVersion: this.deprecatedNetworkId ?? 'loading',
-    };
-  }
-
-  /**
-   * TODO: Delete when ready to remove `networkVersion` from provider object
-   * Updates the `deprecatedNetworkId` value
-   */
-  async updateDeprecatedNetworkId() {
-    try {
-      this.deprecatedNetworkId = await this.deprecatedGetNetworkId();
-    } catch (error) {
-      console.error(error);
-      this.deprecatedNetworkId = null;
-    }
-    this._notifyChainChange();
-  }
-
-  /**
-   * TODO: Delete when ready to remove `networkVersion` from provider object
-   * Gets current networkId as returned by `net_version`
-   *
-   * @returns {string} The networkId for the current network or null on failure
-   * @throws Will throw if there is a problem getting the network version
-   */
-  async deprecatedGetNetworkId() {
-    const ethQuery = this.controllerMessenger.call(
-      'NetworkController:getEthQuery',
+  async getProviderNetworkState(origin = METAMASK_DOMAIN) {
+    const networkClientId = this.controllerMessenger.call(
+      'SelectedNetworkController:getNetworkClientIdForDomain',
+      origin,
     );
 
-    if (!ethQuery) {
-      throw new Error('Provider has not been initialized');
-    }
+    const networkClient = this.controllerMessenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
 
-    return new Promise((resolve, reject) => {
+    const ethQuery = new EthQuery(networkClient.provider);
+
+    const { chainId } = networkClient.configuration;
+    const networkVersion = await new Promise((resolve) => {
       ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
         if (error) {
-          reject(error);
+          console.error(error);
+          resolve(null);
         } else {
           resolve(convertNetworkId(result));
         }
       });
     });
+
+    return {
+      chainId,
+      networkVersion,
+    };
   }
 
   //=============================================================================
@@ -5289,8 +5248,12 @@ export default class MetamaskController extends EventEmitter {
 
     Object.keys(this.connections).forEach((origin) => {
       Object.values(this.connections[origin]).forEach(async (conn) => {
-        if (conn.engine) {
-          conn.engine.emit('notification', await getPayload(origin));
+        try {
+          if (conn.engine) {
+            conn.engine.emit('notification', await getPayload(origin));
+          }
+        } catch (err) {
+          console.error(err);
         }
       });
     });
@@ -5859,16 +5822,16 @@ export default class MetamaskController extends EventEmitter {
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
 
-  _notifyChainChange() {
+  async _notifyChainChange() {
     if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyAllConnections((origin) => ({
+      this.notifyAllConnections(async (origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,
-        params: this.getProviderNetworkState(origin),
+        params: await this.getProviderNetworkState(origin),
       }));
     } else {
       this.notifyAllConnections({
         method: NOTIFICATION_NAMES.chainChanged,
-        params: this.getProviderNetworkState(),
+        params: await this.getProviderNetworkState(),
       });
     }
   }
