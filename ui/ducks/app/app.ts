@@ -6,7 +6,7 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-interface AppState {
+type AppState = {
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
@@ -84,11 +84,11 @@ interface AppState {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
   ///: END:ONLY_INCLUDE_IF
-}
+};
 
-interface AppSliceState {
+type AppSliceState = {
   appState: AppState;
-}
+};
 
 // default state
 const initialState: AppState = {
