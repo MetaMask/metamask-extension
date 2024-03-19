@@ -9,7 +9,7 @@ type VersionedData = {
 export const version = 113;
 
 /**
- * Migrates users from opensea + blockaid to blockaid only
+ * Migrates users that have opensea enabled to blockaid
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -27,22 +27,38 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, any>) {
-  if(!state?.PreferencesController) {
+  if (!hasProperty(state, 'PreferencesController')) {
     return state;
   }
 
-  const PreferencesController = state?.PreferencesController || {};
+  if (!isObject(state.PreferencesController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController is type: ${typeof state.PreferencesController}`,
+      ),
+    );
+    state.PreferencesController = {};
+  } else if (
+    !hasProperty(state.PreferencesController, 'transactionSecurityCheckEnabled')
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController.transactionSecurityCheckEnabled is missing from PreferencesController state`,
+      ),
+    );
+  } else if (
+    typeof state.PreferencesController.transactionSecurityCheckEnabled !==
+    'boolean'
+  ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController.transactionSecurityCheckEnabled is type: ${typeof state
+          .PreferencesController.transactionSecurityCheckEnabled}`,
+      ),
+    );
+  }
 
-  const newState = {
-    ...state,
-    PreferencesController: {
-      ...PreferencesController,
-      transactionSecurityCheckEnabled: false,
-      securityAlertsEnabled: true
-    },
-  };
+  delete state.PreferencesController.transactionSecurityCheckEnabled;
 
-  delete newState.PreferencesController.transactionSecurityCheckEnabled;
-
-  return newState;
+  return state;
 }

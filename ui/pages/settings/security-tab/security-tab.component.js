@@ -950,8 +950,7 @@ export default class SecurityTab extends PureComponent {
    */
   toggleSecurityAlert(oldValue) {
     const newValue = !oldValue;
-    const { setSecurityAlertsEnabled } =
-      this.props;
+    const { setSecurityAlertsEnabled } = this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
