@@ -25,7 +25,9 @@ import Tooltip from '../../../../components/ui/tooltip';
 import { setSwapsFromToken } from '../../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import { BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getMmiPortfolioUrl } from '../../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IF
 
 const AssetSwapButton = ({
   asset,
@@ -40,9 +42,12 @@ const AssetSwapButton = ({
 
   const isSwapsChain = useSelector(getIsSwapsChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
+  ///: END:ONLY_INCLUDE_IF
 
   const Button = primary ? ButtonPrimary : ButtonSecondary;
   return (
