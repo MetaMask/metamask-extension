@@ -15,7 +15,7 @@ export function useConfirmationRouting() {
     isEqual,
   );
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   if (!id) {
     return null;
