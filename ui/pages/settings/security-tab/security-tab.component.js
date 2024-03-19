@@ -18,6 +18,7 @@ import {
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
+  SECURITY_ALERTS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
@@ -202,7 +203,16 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-item">
             <span>{t('securityAlerts')}</span>
             <div className="settings-page__content-description">
-              {t('securityAlertsDescription')}
+              {t('securityAlertsDescription', [
+                <a
+                  key="learn_more_link"
+                  href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {t('learnMoreUpperCase')}
+                </a>,
+              ])}
             </div>
           </div>
 
