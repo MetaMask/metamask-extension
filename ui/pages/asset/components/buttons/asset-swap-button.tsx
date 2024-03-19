@@ -7,7 +7,11 @@ import {
   ButtonSecondary,
 } from '../../../../components/component-library';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { BlockSize } from '../../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  BorderColor,
+  BorderStyle,
+} from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../app/scripts/translate';
 import {
   MetaMetricsEventName,
@@ -54,6 +58,7 @@ const AssetSwapButton = ({
           disabled={!isSwapsChain}
           padding={5}
           width={BlockSize.Full}
+          borderColor={BorderColor.primaryDefault}
           onClick={() => {
             trackEvent({
               event: MetaMetricsEventName.NavSwapButtonClicked,
