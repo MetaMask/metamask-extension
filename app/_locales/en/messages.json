@@ -3785,6 +3785,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receiveTokensCamelCase": {
+    "message": "Receive tokens"
+  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },

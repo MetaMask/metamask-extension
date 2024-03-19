@@ -22,7 +22,6 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -33,6 +32,7 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
+  ReceiveTokenLink,
 } from '../../multichain';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
@@ -168,9 +168,18 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <ImportTokenLink margin={4} marginBottom={2} />
-      </Box>
+      {balanceIsZero && (
+        <ReceiveTokenLink
+          margin={4}
+          marginBottom={0}
+          marginTop={detectedTokens.length > 0 ? 0 : 4}
+        />
+      )}
+      <ImportTokenLink
+        margin={4}
+        marginBottom={2}
+        marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
+      />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}

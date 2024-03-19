@@ -7,6 +7,7 @@ export { AppHeader } from './app-header';
 export { DetectedTokensBanner } from './detected-token-banner';
 export { GlobalMenu } from './global-menu';
 export { ImportTokenLink } from './import-token-link';
+export { ReceiveTokenLink } from './receive-token-link';
 export { TokenListItem } from './token-list-item';
 export { AddressCopyButton } from './address-copy-button';
 export { ConnectedSiteMenu } from './connected-site-menu';
