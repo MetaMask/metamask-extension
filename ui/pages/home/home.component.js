@@ -888,14 +888,10 @@ export default class Home extends PureComponent {
                 actionButtonOnClick={() => {
                   setBasicFunctionalityModalOpen();
                   // TODO:
-                  // 1) make this modal text dynamic for "turn on/off" in the title and modal CTA button
-                  // 2) add toggle to onboarding, defaulted to true
-                  // 3) disable ENS setting & any others that are not "basic functionality"
+                  // 1) disable ENS setting & any others that are not "basic functionality"
                 }}
                 title={t('basicConfigurationBannerTitle')}
-              >
-                {t('basicConfigurationBannerDescription')}
-              </BannerAlert>
+              ></BannerAlert>
             ) : null}
             <div className="home__balance-wrapper">
               {

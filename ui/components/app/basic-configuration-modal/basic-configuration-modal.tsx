@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Display,
@@ -10,10 +11,7 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  hideBasicFunctionalityModal,
-  setDisableExternalServices,
-} from '../../../store/actions';
+import { setDisableExternalServices } from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -30,6 +28,11 @@ import {
   Checkbox,
 } from '../../component-library';
 import { getDisableExternalServices } from '../../../selectors';
+import {
+  hideBasicFunctionalityModal,
+  onboardingToggleBasicFunctionalityOff,
+} from '../../../ducks/app/app';
+import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 
 export function BasicConfigurationModal() {
   const t = useI18nContext();
@@ -38,6 +41,8 @@ export function BasicConfigurationModal() {
   const isBasicConfigurationSettingOff = useSelector(
     getDisableExternalServices,
   );
+  const { pathname } = useLocation();
+  const onboardingFlow = pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
   function disableExternalServices() {
     dispatch(setDisableExternalServices(true));
   }
@@ -132,10 +137,15 @@ export function BasicConfigurationModal() {
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
               onClick={() => {
-                closeModal();
-                isBasicConfigurationSettingOff
-                  ? enableExternalServices()
-                  : disableExternalServices();
+                if (onboardingFlow) {
+                  dispatch(hideBasicFunctionalityModal());
+                  dispatch(onboardingToggleBasicFunctionalityOff());
+                } else {
+                  closeModal();
+                  isBasicConfigurationSettingOff
+                    ? enableExternalServices()
+                    : disableExternalServices();
+                }
               }}
               danger
             >
