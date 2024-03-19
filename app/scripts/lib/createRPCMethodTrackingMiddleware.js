@@ -17,8 +17,11 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/security-provider';
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -107,6 +110,7 @@ const EVENT_NAME_MAP = {
 
 const rateLimitTimeouts = {};
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -126,6 +130,7 @@ const rateLimitTimeouts = {};
  * @param {AppStateController} opts.appStateController
  * @returns {Function}
  */
+///: END:ONLY_INCLUDE_IF
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
@@ -134,7 +139,9 @@ export default function createRPCMethodTrackingMiddleware({
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
+  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -321,6 +328,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       let blockaidMetricProps = {};
 
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       if (!isDisabledRPCMethod) {
         if (SIGNING_METHODS.includes(method)) {
           const securityAlertResponse =
@@ -333,6 +341,7 @@ export default function createRPCMethodTrackingMiddleware({
           });
         }
       }
+      ///: END:ONLY_INCLUDE_IF
 
       const properties = {
         ...eventProperties,
