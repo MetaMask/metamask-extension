@@ -673,9 +673,9 @@ describe('SwapsController', function () {
             total: '5.43388249494949494949494949494949495',
             medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
-          ethFee: '0.113822',
-          multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
-          overallValueOfQuote: '49.886178',
+          ethFee: '0.113536',
+          multiLayerL1TradeFeeTotal: '0x1',
+          overallValueOfQuote: '49.886464',
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
@@ -857,6 +857,8 @@ describe('SwapsController', function () {
           getTokenRatesState: MOCK_TOKEN_RATES_STORE,
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
+          getLayer1GasFee: getLayer1GasFeeStub,
+          getNetworkClientId: getNetworkClientIdStub,
         });
         const firstEthersInstance = _swapsController.ethersProvider;
         const firstEthersProviderChainId =
