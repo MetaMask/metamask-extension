@@ -11,7 +11,7 @@ import {
 } from '../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../store/actions';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { AssetIdentifier, BalanceChange, NATIVE_ASSET } from './types';
+import { AssetIdentifier, BalanceChange, NativeAssetIdentifier } from './types';
 
 /**
  * Converts a SimulationBalanceChange to a BalanceChange for the native asset.
@@ -22,17 +22,13 @@ import { AssetIdentifier, BalanceChange, NATIVE_ASSET } from './types';
  * @returns The converted BalanceChange object.
  */
 function convertNativeBalanceChange({
-  isDecrease,
-  difference,
+  isDecrease: isNegative,
+  difference: quantity,
 }: SimulationBalanceChange): BalanceChange {
-  return {
-    asset: NATIVE_ASSET,
-    amount: {
-      isNegative: isDecrease,
-      quantity: difference,
-      exponent: -18,
-    },
+  const asset: NativeAssetIdentifier = {
+    standard: TokenStandard.none,
   };
+  return { asset, amount: { isNegative, quantity, decimals: 18 } };
 }
 
 /**
@@ -67,8 +63,8 @@ function convertTokenBalanceChange(
     standard: simStandard,
     address,
     id: tokenId,
-    isDecrease,
-    difference,
+    isDecrease: isNegative,
+    difference: quantity,
   } = simTokenBalanceChange;
 
   const asset = {
@@ -77,14 +73,7 @@ function convertTokenBalanceChange(
     tokenId,
   } as AssetIdentifier;
 
-  return {
-    asset,
-    amount: {
-      isNegative: isDecrease,
-      quantity: difference,
-      exponent: -decimals,
-    },
-  };
+  return { asset, amount: { isNegative, quantity, decimals } };
 }
 
 /**
@@ -139,6 +128,7 @@ export function useBalanceChanges(
   if (nativeBalanceChange) {
     balanceChanges.push(convertNativeBalanceChange(nativeBalanceChange));
   }
+
   for (const tokenBc of tokenBalanceChanges) {
     const decimals =
       tokenBc.standard === SimulationTokenStandard.erc20

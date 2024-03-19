@@ -4,13 +4,6 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 /**
  * Identifies the native asset of a chain.
  */
-export const NATIVE_ASSET: NativeAssetIdentifier = {
-  standard: TokenStandard.none,
-} as const;
-
-/**
- * Identifies the native asset of a chain.
- */
 export type NativeAssetIdentifier = {
   standard: TokenStandard.none;
   address?: undefined;
@@ -70,14 +63,19 @@ export type Amount = {
   quantity: Hex;
 
   /**
-   * The exponent to apply to the quantity to convert it to the
-   * amount of asset tokens in decimal form.
-   * The formula is: `tokenAmount = hexToDecimal(quantity) * (10 ^ exponent)`.
-   * For example: If the quantity is in wei and the exponent is
-   * -18, the amount of ETH tokens would be the quantity
-   * divided by 10^18.
+   * The number of decimal places the associated asset supports.
+   *
+   * This value is the negation of the exponent used when converting
+   * the quantity to the decimal amount of a token.
+   *
+   * To calculate the token amount in decimal form, use the formula:
+   * `tokenAmount = hexToDecimal(quantity) / (10 ^ decimals)`
+   *
+   * Example: If the asset is ETH, the quantity is expressed in wei
+   * (the smallest unit of ETH) and decimals would be 18. The amount
+   * of ETH tokens would be: `ethAmount = quantity / (10 ^ 18)`
    */
-  exponent: number;
+  decimals: number;
 };
 
 /**

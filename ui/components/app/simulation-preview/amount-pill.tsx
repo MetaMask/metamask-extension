@@ -37,7 +37,7 @@ export const AmountPill: React.FC<BalanceChange> = ({ asset, amount }) => {
   if (!hideAmount) {
     amountParts.push(
       Numeric.from(amount.quantity, 16)
-        .shiftedBy(-amount.exponent)
+        .shiftedBy(amount.decimals)
         .toBase(10)
         .round(6)
         .toString(),

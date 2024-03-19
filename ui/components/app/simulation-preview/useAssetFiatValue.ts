@@ -84,7 +84,7 @@ function getAssetFiatAmount(
     return FIAT_UNAVAILABLE;
   }
   let numeric = new Numeric(bc.amount.quantity, 16).shiftedBy(
-    -bc.amount.exponent,
+    bc.amount.decimals,
   );
   numeric = numeric.applyConversionRate(conversionRate);
   return {
