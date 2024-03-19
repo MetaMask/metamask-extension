@@ -3264,9 +3264,6 @@
   "securityAlerts": {
     "message": "安全提醒"
   },
-  "securityAlertsDescription": {
-    "message": "此功能会主动审查交易和签名请求，如发现以太坊主网上有恶意活动，就会向您发出警报，与此同时也会保护您的隐私。您的数据不会与提供此服务的第三方共享。在批准任何请求之前，均务必自行作出审慎调查。不保证此功能可检测到所有恶意活动。"
-  },
   "securityAndPrivacy": {
     "message": "安全和隐私"
   },
