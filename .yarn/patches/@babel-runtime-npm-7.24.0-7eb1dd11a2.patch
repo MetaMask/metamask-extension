@@ -1,34 +1,26 @@
 diff --git a/helpers/construct.js b/helpers/construct.js
-index 3d3c232dcb226892cdf6181c6f4f4f40f2325fcc..da7e2696a244fadd35f0eeb5cae5f577ee3c7442 100644
+index 771e1d7952e80f11619424fbabb3744b959ffa49..5fe152bc1129bd8c8b7bb217ca1972ac4e089051 100644
 --- a/helpers/construct.js
 +++ b/helpers/construct.js
-@@ -1,18 +1,21 @@
+@@ -1,10 +1,21 @@
 -var setPrototypeOf = require("./setPrototypeOf.js");
 -var isNativeReflectConstruct = require("./isNativeReflectConstruct.js");
--function _construct(Parent, args, Class) {
--  if (isNativeReflectConstruct()) {
--    module.exports = _construct = Reflect.construct.bind(), module.exports.__esModule = true, module.exports["default"] = module.exports;
--  } else {
--    module.exports = _construct = function _construct(Parent, args, Class) {
--      var a = [null];
--      a.push.apply(a, args);
--      var Constructor = Function.bind.apply(Parent, a);
--      var instance = new Constructor();
--      if (Class) setPrototypeOf(instance, Class.prototype);
--      return instance;
--    }, module.exports.__esModule = true, module.exports["default"] = module.exports;
--  }
--  return _construct.apply(null, arguments);
+-function _construct(t, e, r) {
+-  if (isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
+-  var o = [null];
+-  o.push.apply(o, e);
+-  var p = new (t.bind.apply(t, o))();
+-  return r && setPrototypeOf(p, r.prototype), p;
 -}
 -module.exports = _construct, module.exports.__esModule = true, module.exports["default"] = module.exports;
 \ No newline at end of file
 +// All of MetaMask's supported browsers include `Reflect.construct` support, so
 +// we don't need this polyfill.
 +
-+// This Proxy preseves the two properties that were added by `@babel/runtime`.
++// This Proxy preserves the two properties that were added by `@babel/runtime`.
 +// I am not entire sure what these properties are for (maybe ES5/ES6
 +// interoperability?) but they have been preserved just in case.
-+const reflectProxy =  new Proxy(
++const reflectProxy = new Proxy(
 +  Reflect.construct,
 +  {
 +    get: function (target, property) {
@@ -39,7 +31,7 @@ index 3d3c232dcb226892cdf6181c6f4f4f40f2325fcc..da7e2696a244fadd35f0eeb5cae5f577
 +      }
 +      return Reflect.get(...arguments);
 +    }
-+    }
++  }
 +);
 +
 +module.exports = reflectProxy;
