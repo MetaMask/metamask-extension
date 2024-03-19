@@ -31,12 +31,12 @@ function transformState(state: Record<string, any>) {
     return state;
   }
 
-  const PreferencesControlller = state?.PreferencesController || {};
+  const PreferencesController = state?.PreferencesController || {};
 
   const newState = {
     ...state,
     PreferencesController: {
-      ...PreferencesControlller,
+      ...PreferencesController,
       transactionSecurityCheckEnabled: false,
       securityAlertsEnabled: true
     },
