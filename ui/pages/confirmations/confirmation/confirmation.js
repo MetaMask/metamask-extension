@@ -51,6 +51,7 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
+import { useConfirmationRouting } from './useConfirmationRouting';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -210,9 +211,15 @@ export default function ConfirmationPage({
     useSafeChainsListValidationSelector,
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
-  const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
+  const pendingRoutedConfirmation = useConfirmationRouting();
+  // Confirmations that are directly routed to get priority and will be shown above the current queue.
+  const pendingConfirmation =
+    pendingRoutedConfirmation ??
+    pendingConfirmations[currentPendingConfirmation];
+
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
   const preventAlertsForAddChainValidation =

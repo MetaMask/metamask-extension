@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
-import { getSnapMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getMemoizedUnapprovedConfirmations,
+} from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { TextVariant } from '../../../../helpers/constants/design-system';
@@ -11,6 +15,7 @@ import { Copyable } from '../copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { deleteInterface } from '../../../../store/actions';
 import { useSnapHome } from './useSnapHome';
+import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 
 export const SnapHomeRenderer = ({ snapId }) => {
   const dispatch = useDispatch();
@@ -19,6 +24,9 @@ export const SnapHomeRenderer = ({ snapId }) => {
     getSnapMetadata(state, snapId),
   );
 
+  const pendingApprovals = useSelector(getMemoizedUnapprovedConfirmations);
+  const history = useHistory();
+
   const { data, error, loading } = useSnapHome({ snapId });
 
   const interfaceId = !loading && !error ? data?.id : undefined;
@@ -26,6 +34,16 @@ export const SnapHomeRenderer = ({ snapId }) => {
   useEffect(() => {
     return () => interfaceId && dispatch(deleteInterface(interfaceId));
   }, [interfaceId]);
+
+  useEffect(() => {
+    const pendingSnapApproval = pendingApprovals.find(
+      (approval) => approval.origin === snapId,
+    );
+
+    if (pendingSnapApproval) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${pendingSnapApproval.id}`);
+    }
+  }, [pendingApprovals, history]);
 
   return (
     <Box>
