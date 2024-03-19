@@ -26,6 +26,8 @@ import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
 
+const ENS_RESOLUTION_TYPE = 'ENS resolution';
+
 const renderExplicitAddress = (
   address: string,
   nickname: string,
@@ -36,6 +38,7 @@ const renderExplicitAddress = (
     <AddressListItem
       address={address}
       label={nickname}
+      useConfusable={type === ENS_RESOLUTION_TYPE}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -85,7 +88,7 @@ export const SendPageRecipient = () => {
     contents = renderExplicitAddress(
       domainResolution,
       addressBookEntryName || userInput,
-      'ENS resolution',
+      ENS_RESOLUTION_TYPE,
       dispatch,
     );
   } else {
