@@ -155,6 +155,7 @@ describe('SwapsController', function () {
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
       getNetworkClientId: getNetworkClientIdStub,
+      getLayer1GasFee: getLayer1GasFeeStub,
     });
   };
 
