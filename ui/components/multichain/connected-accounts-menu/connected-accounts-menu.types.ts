@@ -1,3 +1,3 @@
-export interface Identity {
+export type Identity = {
   address: string;
-}
+};

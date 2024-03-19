@@ -1,6 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { getMemoizedMetadataContractName } from '../selectors';
+import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useName } from './useName';
 import { useFirstPartyContractName } from './useFirstPartyContractName';
 
@@ -9,7 +10,6 @@ import { useFirstPartyContractName } from './useFirstPartyContractName';
  *
  * @param value
  * @param type
- * @param variation
  * @returns An object with two properties:
  * - `name` {string|null} - The display name, if it can be resolved, otherwise null.
  * - `hasPetname` {boolean} - True if there is a petname for the given address.
@@ -17,19 +17,30 @@ import { useFirstPartyContractName } from './useFirstPartyContractName';
 export function useDisplayName(
   value: string,
   type: NameType,
-  variation?: string,
 ): { name: string | null; hasPetname: boolean } {
-  const nameEntry = useName(value, type, variation);
-  const firstPartyContractName = useFirstPartyContractName(
-    value,
-    type,
-    variation,
-  );
+  const nameEntry = useName(value, type);
+
+  const firstPartyContractName = useFirstPartyContractName(value, type);
+
   const contractName = useSelector((state) =>
     (getMemoizedMetadataContractName as any)(state, value),
   );
+
+  const watchedNftName = useSelector(getNftContractsByAddressOnCurrentChain)[
+    value.toLowerCase()
+  ]?.name;
+
+  const name =
+    nameEntry?.name ||
+    firstPartyContractName ||
+    contractName ||
+    watchedNftName ||
+    null;
+
+  const hasPetname = Boolean(nameEntry?.name);
+
   return {
-    name: nameEntry?.name || firstPartyContractName || contractName || null,
-    hasPetname: Boolean(nameEntry?.name),
+    name,
+    hasPetname,
   };
 }
