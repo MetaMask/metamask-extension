@@ -4,6 +4,9 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { createPPOMMiddleware } from './ppom-middleware';
+import { normalizePPOMRequest } from './ppom-util';
+
+jest.mock('./ppom-util');
 
 Object.defineProperty(globalThis, 'fetch', {
   writable: true,
@@ -49,6 +52,14 @@ const createMiddleWare = (
 };
 
 describe('PPOMMiddleware', () => {
+  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    normalizePPOMRequestMock.mockImplementation((txParams) => txParams);
+  });
+
   it('should call ppomController.usePPOM for requests of type confirmation', async () => {
     const usePPOMMock = jest.fn();
     const middlewareFunction = createMiddleWare(usePPOMMock);
@@ -174,5 +185,39 @@ describe('PPOMMiddleware', () => {
       () => undefined,
     );
     expect(validateMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('normalizes transaction requests before validation', async () => {
+    const requestMock1 = {
+      method: 'eth_sendTransaction',
+      params: [{ data: '0x1' }],
+    };
+
+    const requestMock2 = {
+      ...requestMock1,
+      params: [{ data: '0x2' }],
+    };
+
+    const validateMock = jest.fn();
+
+    normalizePPOMRequestMock.mockReturnValue(requestMock2);
+
+    const ppom = {
+      validateJsonRpc: validateMock,
+    };
+
+    const usePPOM = async (callback: any) => {
+      callback(ppom);
+    };
+
+    const middlewareFunction = createMiddleWare(usePPOM);
+
+    await middlewareFunction(requestMock1, undefined, () => undefined);
+
+    expect(normalizePPOMRequestMock).toHaveBeenCalledTimes(1);
+    expect(normalizePPOMRequestMock).toHaveBeenCalledWith(requestMock1);
+
+    expect(validateMock).toHaveBeenCalledTimes(1);
+    expect(validateMock).toHaveBeenCalledWith(requestMock2);
   });
 });
