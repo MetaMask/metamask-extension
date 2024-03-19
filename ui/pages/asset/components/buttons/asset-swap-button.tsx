@@ -1,7 +1,11 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, ButtonPrimary } from '../../../../components/component-library';
+import {
+  Box,
+  ButtonPrimary,
+  ButtonSecondary,
+} from '../../../../components/component-library';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { BlockSize } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../app/scripts/translate';
@@ -21,17 +25,26 @@ import Tooltip from '../../../../components/ui/tooltip';
 import { setSwapsFromToken } from '../../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import { BUILD_QUOTE_ROUTE } from '../../../../helpers/constants/routes';
+import { getMmiPortfolioUrl } from '../../../../selectors/institutional/selectors';
 
-const AssetSwapButton = ({ asset }: { asset: Asset }) => {
+const AssetSwapButton = ({
+  asset,
+  primary,
+}: {
+  asset: Asset;
+  primary?: boolean;
+}) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
   const isSwapsChain = useSelector(getIsSwapsChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
+  const Button = primary ? ButtonPrimary : ButtonSecondary;
   return (
     <Box width={BlockSize.Full}>
       <Tooltip
@@ -39,11 +52,12 @@ const AssetSwapButton = ({ asset }: { asset: Asset }) => {
         title={t('currentlyUnavailable')}
         position="top"
       >
-        <ButtonPrimary
+        <Button
           disabled={!isSwapsChain}
           padding={5}
           width={BlockSize.Full}
           onClick={() => {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             trackEvent({
               event: MetaMetricsEventName.NavSwapButtonClicked,
               category: MetaMetricsEventCategory.Swaps,
@@ -76,10 +90,17 @@ const AssetSwapButton = ({ asset }: { asset: Asset }) => {
             } else {
               history.push(BUILD_QUOTE_ROUTE);
             }
+            ///: END:ONLY_INCLUDE_IF
+
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            global.platform.openTab({
+              url: `${mmiPortfolioUrl}/swap`,
+            });
+            ///: END:ONLY_INCLUDE_IF
           }}
         >
           {t('swap')}
-        </ButtonPrimary>
+        </Button>
       </Tooltip>
     </Box>
   );

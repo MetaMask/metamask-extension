@@ -27,7 +27,7 @@ const AssetSendButton = ({
   primary,
 }: {
   asset: Asset;
-  primary: boolean;
+  primary?: boolean;
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();

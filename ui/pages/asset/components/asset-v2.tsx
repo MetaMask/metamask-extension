@@ -37,6 +37,8 @@ import AssetSendButton from './buttons/asset-send-button';
 import AssetBridgeButton from './buttons/asset-bridge-button';
 import AssetBuyButton from './buttons/asset-buy-button';
 import AssetSwapButton from './buttons/asset-swap-button';
+import AssetMmiStakeButton from './buttons/asset-mmi-stake-button';
+import AssetMmiPortfolioButton from './buttons/asset-mmi-portfolio-button';
 
 /** Information about a native or token asset */
 export type Asset = (
@@ -193,17 +195,38 @@ const AssetV2 = ({
                     />
                   )}
                 </Box>
-                {(isSwapsChain || isBuyableChain || isBridgeChain) && (
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                  (isSwapsChain || isBuyableChain || isBridgeChain) && (
+                    <Box
+                      display={Display.Flex}
+                      gap={4}
+                      paddingLeft={4}
+                      paddingRight={4}
+                    >
+                      <AssetBridgeButton asset={asset} />
+                      <AssetSendButton asset={asset} />
+                    </Box>
+                  )
+                  ///: END:ONLY_INCLUDE_IF
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                   <Box
                     display={Display.Flex}
                     gap={4}
                     paddingLeft={4}
                     paddingRight={4}
                   >
-                    <AssetBridgeButton asset={asset} />
-                    <AssetSendButton asset={asset} primary={false} />
+                    {type === AssetType.native && chainId === '0x1' ? (
+                      <AssetMmiStakeButton />
+                    ) : (
+                      <AssetSwapButton asset={asset} />
+                    )}
+                    <AssetSendButton asset={asset} />
                   </Box>
-                )}
+                  ///: END:ONLY_INCLUDE_IF
+                }
               </Box>
               {type === AssetType.token && (
                 <Box
@@ -331,14 +354,23 @@ const AssetV2 = ({
             padding={4}
             display={Display.Flex}
           >
-            {isSwapsChain || isBuyableChain || isBridgeChain ? (
-              <>
-                <AssetBuyButton asset={asset} />
-                <AssetSwapButton asset={asset} />
-              </>
-            ) : (
-              <AssetSendButton asset={asset} primary={true} />
-            )}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+              isSwapsChain || isBuyableChain || isBridgeChain ? (
+                <>
+                  <AssetBuyButton asset={asset} />
+                  <AssetSwapButton asset={asset} primary />
+                </>
+              ) : (
+                <AssetSendButton asset={asset} primary />
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              <AssetMmiPortfolioButton />
+              ///: END:ONLY_INCLUDE_IF
+            }
           </Box>
         </Box>
       </Box>
