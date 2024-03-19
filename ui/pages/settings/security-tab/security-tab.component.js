@@ -82,8 +82,6 @@ export default class SecurityTab extends PureComponent {
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
-    transactionSecurityCheckEnabled: PropTypes.bool,
-    setTransactionSecurityCheckEnabled: PropTypes.func,
     securityAlertsEnabled: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
@@ -952,7 +950,7 @@ export default class SecurityTab extends PureComponent {
    */
   toggleSecurityAlert(oldValue) {
     const newValue = !oldValue;
-    const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
+    const { setSecurityAlertsEnabled } =
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
@@ -961,35 +959,9 @@ export default class SecurityTab extends PureComponent {
         blockaid_alerts_enabled: newValue,
       },
     });
-    console.log('Dickie: SSAE: ', { setSecurityAlertsEnabled, newValue });
     setSecurityAlertsEnabled(newValue);
-    if (newValue && transactionSecurityCheckEnabled) {
-      this.toggleTransactionSecurityCheck(true);
-    }
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * toggleTransactionSecurityCheck
-   *
-   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
-   */
-  toggleTransactionSecurityCheck(oldValue) {
-    const newValue = !oldValue;
-    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
-      this.props;
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        opensea_alerts_enabled: newValue,
-      },
-    });
-    setTransactionSecurityCheckEnabled(newValue);
-    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
-      this.toggleSecurityAlert(true);
-    }
-  }
 
   render() {
     const { warning, petnamesEnabled } = this.props;
