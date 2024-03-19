@@ -4,15 +4,18 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-
-import { Footer } from '.';
+import {
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
+} from '../../../../../../shared/constants/hardware-wallets';
+import Footer from './footer';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
 
-const render = () => {
+const render = (args = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -24,6 +27,7 @@ const render = () => {
         },
       },
     },
+    ...args,
   });
 
   return renderWithProvider(<Footer />, store);
@@ -38,8 +42,7 @@ describe('ConfirmFooter', () => {
   it('renders the "Cancel" and "Confirm" Buttons', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
-    expect(buttons[0]).toBeInTheDocument();
-    expect(buttons[1]).toBeInTheDocument();
+    expect(buttons).toHaveLength(2);
     expect(getByText('Confirm')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
   });
@@ -56,11 +59,33 @@ describe('ConfirmFooter', () => {
 
   it('invoke action resolvePendingApproval when submit button is clicked', () => {
     const { getAllByRole } = render();
-    const cancelButton = getAllByRole('button')[1];
+    const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
       .spyOn(Actions, 'resolvePendingApproval')
       .mockImplementation(() => ({} as any));
-    fireEvent.click(cancelButton);
+    fireEvent.click(submitButton);
     expect(resolveSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables submit button if required LedgerHidConnection is not yet established', () => {
+    const { getAllByRole } = render({
+      metamask: {
+        ...mockState.metamask,
+        ledgerTransportType: LedgerTransportTypes.webhid,
+      },
+      confirm: {
+        currentConfirmation: {
+          msgParams: {
+            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          },
+        },
+      },
+      appState: {
+        ...mockState.appState,
+        ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.notConnected,
+      },
+    });
+    const submitButton = getAllByRole('button')[1];
+    expect(submitButton).toBeDisabled();
   });
 });
