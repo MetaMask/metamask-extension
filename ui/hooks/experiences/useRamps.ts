@@ -17,9 +17,9 @@ const useRamps = (): IUseRamps => {
 
   const getBuyURI = useCallback(
     (_chainId: Hex) => {
-      // ChainId is not used in the current implementation but is kept for future use
       const params = new URLSearchParams();
       params.set('metamaskEntry', 'ext_buy_sell_button');
+      params.set('chainId', _chainId);
       if (metaMetricsId) {
         params.set('metametricsId', metaMetricsId);
       }
