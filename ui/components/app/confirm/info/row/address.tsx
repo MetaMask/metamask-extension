@@ -31,6 +31,8 @@ export const ConfirmInfoRowAddress = ({
   const isPetNamesEnabled = useSelector(getPetnamesEnabled);
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
+  const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
+  const onCloseHandler = () => setIsNicknamePopoverShown(false);
 
   return (
     <Box
@@ -50,7 +52,7 @@ export const ConfirmInfoRowAddress = ({
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
-              onClick={() => setIsNicknamePopoverShown(true)}
+              onClick={handleDisplayNameClick}
             >
               <AvatarAccount
                 address={address}
@@ -66,10 +68,7 @@ export const ConfirmInfoRowAddress = ({
               </Text>
             </Box>
             {isNicknamePopoverShown ? (
-              <NicknamePopovers
-                onClose={() => setIsNicknamePopoverShown(false)}
-                address={hexAddress}
-              />
+              <NicknamePopovers onClose={onCloseHandler} address={hexAddress} />
             ) : null}
           </>
         )
