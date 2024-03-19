@@ -40,8 +40,8 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -56,7 +56,7 @@ export default function OnboardingWelcome() {
   // have already imported or created a wallet
   useEffect(() => {
     if (currentKeyring) {
-      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+      if (firstTimeFlowType === FirstTimeFlowType.import) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
@@ -66,7 +66,7 @@ export default function OnboardingWelcome() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const onCreateClick = async () => {
-    dispatch(setFirstTimeFlowType('create'));
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletCreationStarted,
