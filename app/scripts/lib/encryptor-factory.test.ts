@@ -1,5 +1,5 @@
-import { encryptorFactory } from './encryptor-factory';
 import * as browserPassworder from '@metamask/browser-passworder';
+import { encryptorFactory } from './encryptor-factory';
 
 jest.mock('@metamask/browser-passworder');
 
@@ -25,7 +25,7 @@ describe('encryptorFactory', () => {
       'keyFromPassword',
       'importKey',
       'isVaultUpdated',
-    ].map((method) => {
+    ].forEach((method) => {
       expect(encryptor).toHaveProperty(method);
     });
   });
