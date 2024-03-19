@@ -264,7 +264,7 @@
     "@metamask/address-book-controller": "^3.1.7",
     "@metamask/announcement-controller": "^5.0.1",
     "@metamask/approval-controller": "^6.0.0",
-    "@metamask/assets-controllers": "^27.1.0",
+    "@metamask/assets-controllers": "^27.2.0",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.3.1",

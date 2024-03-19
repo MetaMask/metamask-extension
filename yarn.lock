@@ -4008,9 +4008,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^27.1.0":
-  version: 27.1.0
-  resolution: "@metamask/assets-controllers@npm:27.1.0"
+"@metamask/assets-controllers@npm:^27.2.0":
+  version: 27.2.0
+  resolution: "@metamask/assets-controllers@npm:27.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4046,7 +4046,7 @@ __metadata:
     "@metamask/keyring-controller": ^14.0.0
     "@metamask/network-controller": ^18.0.0
     "@metamask/preferences-controller": ^9.0.0
-  checksum: 5b1cd694ee3ad9ddaad1fae87e394804a4f7802e6f065b81526ef0fef5f1fe803e36749bd0044925ffedeed7134f21afaef2bbac4564bc94a50f8816b92817ab
+  checksum: 49ff4cd3f72c16b4d092ca8e6ec6b37c67dac5f1c0435784f8eb98f45b5c549a5e89eb8ea07d9f16915f13a7ab0794ffacd37aebf0831fa3c5fcf7da1b455b79
   languageName: node
   linkType: hard
 
@@ -25122,7 +25122,7 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.1.7"
     "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^6.0.0"
-    "@metamask/assets-controllers": "npm:^27.1.0"
+    "@metamask/assets-controllers": "npm:^27.2.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
