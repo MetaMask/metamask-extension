@@ -149,7 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Improved interface by disabling transaction buttons for accounts that can't sign ([#23178](https://github.com/MetaMask/metamask-extension/pull/23178))
--Fixed an issue where account permissions persisted after account removal ([#23247](https://github.com/MetaMask/metamask-extension/pull/23247))
+- Fixed an issue where account permissions persisted after account removal ([#23247](https://github.com/MetaMask/metamask-extension/pull/23247))
 - Improved account naming in transactions ([#23046](https://github.com/MetaMask/metamask-extension/pull/23046))
 - Fixed a glitch that prevented some NFTs from being listed due to a mix-up with token types ([#22822](https://github.com/MetaMask/metamask-extension/pull/22822))
 - Fixed an issue with ERC1155 token transfers where decimal input amounts were incorrectly interpreted as hexadecimal ([#23151](https://github.com/MetaMask/metamask-extension/pull/23151))
