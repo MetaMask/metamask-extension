@@ -1,0 +1,19 @@
+{
+  "alloc": {
+    "3eBf9d63C3Ae5D70b252a885D65168960102E7f8": {
+      "balance": "0xad78ebc5ac6200000"
+    }
+  },
+  "chainId": "0x2323",
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "difficulty": "0x400000000",
+  "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
+  "gasLimit": "0x1388",
+  "gasUsed": "0x0",
+  "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "nonce": "0x42",
+  "number": "0x0",
+  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "stateRoot": "0xd7f8974fb5ac78d9ac099b9ad5018bedc2ce0a72dad1827a1709da30580f0544",
+  "timestamp": "0x0"
+}
