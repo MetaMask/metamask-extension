@@ -3692,9 +3692,6 @@
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
   },
-  "preferredProvider": {
-    "message": "Select your preferred provider"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -4083,7 +4080,8 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
+    "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
