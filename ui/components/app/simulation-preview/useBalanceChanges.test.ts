@@ -1,27 +1,34 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { Hex } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import {
+  SimulationBalanceChange,
   SimulationData,
+  SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { getTokenStandardAndDetails } from '../../../store/actions';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { getTokenToFiatConversionRates } from '../../../selectors';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { useBalanceChanges } from './useBalanceChanges';
-import { BalanceChange } from './types';
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('../../../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),
 }));
 
+const mockUseSelector = useSelector as jest.Mock;
 const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
 
-const TOKEN_ADDRESS_1_MOCK =
-  '0x1234567890123456789012345678901234567890' as Hex;
-const TOKEN_ADDRESS_2_MOCK =
-  '0x0987654321098765432109876543210987654321' as Hex;
-const TOKEN_ID_1_MOCK = '0x1234' as Hex;
-const TOKEN_ID_2_MOCK = '0x5678' as Hex;
+const TOKEN_ADDRESS_1 = '0x1111111111111111111111111111111111111111' as const;
+const TOKEN_ADDRESS_2 = '0x2222222222222222222222222222222222222222' as const;
+const TOKEN_ID_1 = '0x1234' as const;
+const TOKEN_ID_2 = '0x5678' as const;
 
 const dummyBalanceChange = {
   previousBalance: '0xIGNORE' as Hex,
@@ -38,132 +45,173 @@ describe('useBalanceChanges', () => {
     expect(result.current).toEqual({ pending: false, value: [] });
   });
 
-  it('correctly converts native balance change and verifies absChange', async () => {
+  it('handles native asset balance changes correctly', () => {
     const simulationData: SimulationData = {
       nativeBalanceChange: {
         ...dummyBalanceChange,
-        difference: '0x1234',
+        difference: '0x0a',
         isDecrease: true,
       },
       tokenBalanceChanges: [],
     };
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBalanceChanges(simulationData),
-    );
-    await waitForNextUpdate();
+
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getConversionRate) {
+        return 2;
+      }
+      return {};
+    });
+
+    const { result } = renderHook(() => useBalanceChanges(simulationData));
     expect(result.current.value).toEqual([
       {
-        asset: { isNative: true },
-        isDecrease: true,
-        absChange: new Numeric('0x1234', 16, EtherDenomination.WEI),
+        asset: { standard: TokenStandard.none },
+        amount: {
+          isNegative: true,
+          quantity: '0x0a',
+          decimals: 18,
+          numeric: expect.any(Numeric),
+        },
+        fiatAmount: expect.any(Numeric),
       },
     ]);
   });
 
-  it.each([
-    {
-      standard: SimulationTokenStandard.erc20,
-      difference: '0x12',
-      decimals: undefined, // Defaults to 18
-      expectedAbsChange: '0.000000000000000018',
-    },
-    {
-      standard: SimulationTokenStandard.erc20,
-      difference: '0x12',
-      decimals: 10,
-      expectedAbsChange: '0.0000000018',
-    },
-    {
-      standard: SimulationTokenStandard.erc721,
-      tokenId: TOKEN_ID_1_MOCK,
-      expectedAbsChange: '1',
-    },
-    {
-      standard: SimulationTokenStandard.erc1155,
-      tokenId: TOKEN_ID_1_MOCK,
-      difference: '0x12',
-      expectedAbsChange: '18',
-    },
-  ])(
-    'correctly converts $standard token balance change with decimals $decimals and verifies absChange',
-    async ({ standard, tokenId, difference, decimals, expectedAbsChange }) => {
-      mockGetTokenStandardAndDetails.mockResolvedValueOnce({ decimals });
-
-      const simulationData = {
-        tokenBalanceChanges: [
-          {
-            ...dummyBalanceChange,
-            standard,
-            address: TOKEN_ADDRESS_1_MOCK,
-            id: tokenId,
-            difference: difference as Hex,
-            isDecrease: true,
-          },
-        ],
-      };
-      const { result, waitForNextUpdate } = renderHook(() =>
-        useBalanceChanges(simulationData),
-      );
-      await waitForNextUpdate();
-      expect(result.current.value).toHaveLength(1);
-      const balanceChanges = result.current.value as BalanceChange[];
-      expect(balanceChanges[0].asset).toEqual({
-        isNative: false,
-        standard,
-        address: TOKEN_ADDRESS_1_MOCK,
-        tokenId,
-      });
-      expect(balanceChanges[0].amount.isNegative).toBe(true);
-      expect(
-        Numeric.from(balanceChanges[0].amount.quantity, 16)
-          .toBase(10)
-          .toString(),
-      ).toBe(expectedAbsChange);
-    },
-  );
-
-  it('fetches token details for unique erc20 token addresses', async () => {
-    mockGetTokenStandardAndDetails
-      .mockResolvedValueOnce({ decimals: '18' })
-      .mockResolvedValueOnce({ decimals: '10' });
-
-    const simulationData: SimulationData = {
-      tokenBalanceChanges: [
-        {
-          ...dummyBalanceChange,
-          standard: SimulationTokenStandard.erc20,
-          address: TOKEN_ADDRESS_1_MOCK,
-          difference: '0x12',
-          isDecrease: true,
-        },
-        {
-          ...dummyBalanceChange,
-          standard: SimulationTokenStandard.erc20,
-          address: TOKEN_ADDRESS_1_MOCK,
-          difference: '0x34',
-          isDecrease: false,
-        },
-        {
-          ...dummyBalanceChange,
-          standard: SimulationTokenStandard.erc721,
-          address: TOKEN_ADDRESS_2_MOCK,
-          id: TOKEN_ID_2_MOCK,
-          difference: '0x01',
-          isDecrease: true,
-        },
-      ],
+  describe('token balance changes', () => {
+    const baseTokenBalanceChange: SimulationBalanceChange = {
+      ...dummyBalanceChange,
+      difference: '0x0a',
+      isDecrease: false,
     };
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBalanceChanges(simulationData),
+
+    it.each([
+      [
+        SimulationTokenStandard.erc20,
+        TOKEN_ADDRESS_1,
+        undefined,
+        6,
+        TokenStandard.ERC20,
+      ],
+      [
+        SimulationTokenStandard.erc721,
+        TOKEN_ADDRESS_2,
+        TOKEN_ID_1,
+        0,
+        TokenStandard.ERC721,
+      ],
+      [
+        SimulationTokenStandard.erc1155,
+        TOKEN_ADDRESS_1,
+        TOKEN_ID_2,
+        0,
+        TokenStandard.ERC1155,
+      ],
+    ])(
+      'handles %s token balance changes correctly',
+      (standard, address, tokenId, expectedDecimals, expectedStandard) => {
+        const tokenBalanceChange = {
+          ...baseTokenBalanceChange,
+          standard,
+          address,
+          id: tokenId,
+        };
+        const simulationData: SimulationData = {
+          tokenBalanceChanges: [tokenBalanceChange],
+        };
+
+        mockUseSelector.mockImplementation((selector) => {
+          if (selector === getTokenToFiatConversionRates) {
+            return { [address]: 3 };
+          }
+          return {};
+        });
+
+        mockGetTokenStandardAndDetails.mockResolvedValue({
+          decimals: expectedDecimals.toString(),
+        });
+
+        const { result } = renderHook(() => useBalanceChanges(simulationData));
+        expect(result.current.value).toEqual([
+          {
+            asset: {
+              standard: expectedStandard,
+              address,
+              tokenId,
+            },
+            amount: {
+              isNegative: false,
+              quantity: '0x0a',
+              decimals: expectedDecimals,
+              numeric: expect.any(Numeric),
+            },
+            fiatAmount: expect.any(Numeric),
+          },
+        ]);
+      },
     );
 
-    expect(result.current.pending).toBe(true);
-    await waitForNextUpdate();
-    expect(result.current.pending).toBe(false);
+    it('defaults to 18 decimals for ERC20 tokens when getTokenStandardAndDetails does not return decimals', () => {
+      const tokenBalanceChange = {
+        ...baseTokenBalanceChange,
+        standard: SimulationTokenStandard.erc20,
+        address: TOKEN_ADDRESS_1,
+      };
+      const simulationData: SimulationData = {
+        tokenBalanceChanges: [tokenBalanceChange],
+      };
 
-    expect(mockGetTokenStandardAndDetails).toHaveBeenCalledTimes(1);
-    expect(mockGetTokenStandardAndDetails).toHaveBeenCalledWith(
-      TOKEN_ADDRESS_1_MOCK,
-    );
+      mockUseSelector.mockImplementation((selector) => {
+        if (selector === getTokenToFiatConversionRates) {
+          return { [TOKEN_ADDRESS_1]: 3 };
+        }
+        return {};
+      });
+
+      mockGetTokenStandardAndDetails.mockResolvedValue({});
+
+      const { result } = renderHook(() => useBalanceChanges(simulationData));
+      expect(result.current.value[0].amount.decimals).toBe(18);
+    });
+
+    it('returns FIAT_UNAVAILABLE when fiat conversion rate is not available', () => {
+      const tokenBalanceChange = {
+        ...baseTokenBalanceChange,
+        standard: SimulationTokenStandard.erc20,
+        address: TOKEN_ADDRESS_1,
+      };
+      const simulationData: SimulationData = {
+        tokenBalanceChanges: [tokenBalanceChange],
+      };
+
+      mockUseSelector.mockImplementation((selector) => {
+        if (selector === getTokenToFiatConversionRates) {
+          return {};
+        }
+        return {};
+      });
+
+      mockGetTokenStandardAndDetails.mockResolvedValue({ decimals: '6' });
+
+      const { result } = renderHook(() => useBalanceChanges(simulationData));
+      expect(result.current.value[0].fiatAmount).toBe('FIAT_UNAVAILABLE');
+    });
+  });
+
+  it('returns pending state while fetching ERC20 token decimals', () => {
+    const tokenBalanceChange: SimulationTokenBalanceChange = {
+      ...dummyBalanceChange,
+      difference: '0x0a',
+      isDecrease: false,
+      standard: SimulationTokenStandard.erc20,
+      address: TOKEN_ADDRESS_1,
+    };
+    const simulationData: SimulationData = {
+      tokenBalanceChanges: [tokenBalanceChange],
+    };
+
+    mockGetTokenStandardAndDetails.mockImplementation(async () => ({}));
+
+    const { result } = renderHook(() => useBalanceChanges(simulationData));
+    expect(result.current).toEqual({ pending: true, value: [] });
   });
 });

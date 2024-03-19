@@ -500,9 +500,9 @@ export const getTokenExchangeRates = (state) =>
   state.metamask.contractExchangeRates;
 
 /**
- * Get the to
+ * Get the exchange rates for converting tokens to the user's fiat currency.
  */
-const getTokenConversionRates = createSelector(
+export const getTokenToFiatConversionRates = createSelector(
   getTokenExchangeRates,
   getConfirmationExchangeRates,
   (contractExchangeRates, confirmationExchangeRates) => ({

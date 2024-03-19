@@ -9,6 +9,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { BalanceChange, Erc20AssetIdentifier, Amount } from './types';
+import { FIAT_UNAVAILABLE, FiatAmount } from './useFiatAmount';
 
 const textStyle = {
   color: TextColor.textAlternative,
@@ -20,29 +21,23 @@ const FiatNotAvailableDisplay: React.FC = () => {
   return <Text {...textStyle}>{t('simulationPreviewFiatNotAvailable')}</Text>;
 };
 
-const NativeFiatDisplay: React.FC<{ amount: Amount }> = ({ amount }) => {
-  const wei = amount.quantity;
-  return (
-    <UserPreferencedCurrencyDisplay
-      value={wei}
-      showFiat
-      textProps={textStyle}
-      suffixProps={textStyle}
-    />
-  );
-};
-
-const Erc20FiatDisplay: React.FC<{
-  asset: Erc20AssetIdentifier;
-  amount: Amount;
-}> = ({ asset, amount }) => {
-  const { address } = asset;
-  const f = useTokenFiatAmount(address, amount.quantity, undefined, {}, false);
-  if (!f) {
-    return <FiatNotAvailableDisplay />;
-  }
-  return <Text {...textStyle}>{f}</Text>;
-};
+/**
+ * Formats a fiat amount as a localized string.
+ *
+ * @param locale
+ * @param fiatCurrency
+ * @param fiatAmount
+ */
+function formatFiatAmount(
+  locale: string,
+  fiatCurrency: string,
+  fiatAmount: Exclude<FiatAmount, typeof FIAT_UNAVAILABLE>,
+): string {
+  return Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: fiatCurrency,
+  }).format(fiatAmount.toNumber());
+}
 
 export const IndividualFiatDisplay: React.FC<BalanceChange> = ({
   asset,

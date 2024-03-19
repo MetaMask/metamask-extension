@@ -5,38 +5,27 @@ import {
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  AsyncResultStrict,
-  useAsyncResultStrict,
-} from '../../../hooks/useAsyncResult';
+import { createSelector } from 'reselect';
+import { useSelector } from 'react-redux';
+import { useAsyncResultStrict } from '../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../store/actions';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { AssetIdentifier, BalanceChange, NativeAssetIdentifier } from './types';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { getTokenToFiatConversionRates } from '../../../selectors';
+import {
+  Amount,
+  AssetIdentifier,
+  BalanceChange,
+  FIAT_UNAVAILABLE,
+  NativeAssetIdentifier,
+} from './types';
 
-/**
- * Converts a SimulationBalanceChange to a BalanceChange for the native asset.
- *
- * @param balanceChange
- * @param balanceChange.isDecrease
- * @param balanceChange.difference
- * @returns The converted BalanceChange object.
- */
-function convertNativeBalanceChange({
-  isDecrease: isNegative,
-  difference: quantity,
-}: SimulationBalanceChange): BalanceChange {
-  const asset: NativeAssetIdentifier = {
-    standard: TokenStandard.none,
-  };
-  return { asset, amount: { isNegative, quantity, decimals: 18 } };
-}
+const NATIVE_ASSET: NativeAssetIdentifier = { standard: TokenStandard.none };
+const NATIVE_DECIMALS = 18;
 
-/**
- * Converts a SimulationTokenStandard to a TokenStandard.
- *
- * @param standard
- */
-const convertStandard = (standard: SimulationTokenStandard) => {
+// Converts a SimulationTokenStandard to a TokenStandard
+const convertStandard = (standard: SimulationTokenStandard): TokenStandard => {
   switch (standard) {
     case SimulationTokenStandard.erc20:
       return TokenStandard.ERC20;
@@ -49,93 +38,120 @@ const convertStandard = (standard: SimulationTokenStandard) => {
   }
 };
 
-/**
- * Converts a SimulationTokenBalanceChange to a BalanceChange.
- *
- * @param simTokenBalanceChange
- * @param decimals
- */
-function convertTokenBalanceChange(
-  simTokenBalanceChange: SimulationTokenBalanceChange,
+// Calculates the asset amount based on the balance change and decimals
+const getAssetAmount = (
+  { isDecrease: isNegative, difference: quantity }: SimulationBalanceChange,
   decimals: number,
-): BalanceChange {
-  const {
-    standard: simStandard,
-    address,
-    id: tokenId,
-    isDecrease: isNegative,
-    difference: quantity,
-  } = simTokenBalanceChange;
+): Amount => {
+  const numeric = Numeric.from(quantity, 16).shiftedBy(decimals);
+  return { isNegative, quantity, decimals, numeric };
+};
 
-  const asset = {
-    standard: convertStandard(simStandard),
-    address,
-    tokenId,
-  } as AssetIdentifier;
+// Retrieves the non-native asset identifier from the token balance change
+const getNonNativeAsset = (
+  simBC: SimulationTokenBalanceChange,
+): AssetIdentifier =>
+  ({
+    standard: convertStandard(simBC.standard),
+    address: simBC.address,
+    tokenId: simBC.id,
+  } as AssetIdentifier);
 
-  return { asset, amount: { isNegative, quantity, decimals } };
-}
-
-/**
- * Fetches token details for all the token addresses in the
- * SimulationTokenBalanceChanges.
- *
- * @param addresses
- */
-async function fetchErc20Decimals(addresses: Hex[]) {
-  const uniqAddresses = [...new Set(addresses)];
-
+// Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
+const fetchErc20Decimals = async (
+  addresses: Hex[],
+): Promise<Record<Hex, number>> => {
+  const uniqueAddresses = [...new Set(addresses)];
   const tokenInfos = await Promise.all(
-    uniqAddresses.map((address) => getTokenStandardAndDetails(address)),
+    uniqueAddresses.map((address) => getTokenStandardAndDetails(address)),
   );
 
   return tokenInfos.reduce(
     (result, { decimals }, index) => ({
       ...result,
-      [uniqAddresses[index]]: decimals ? parseInt(decimals, 10) : 18,
+      [uniqueAddresses[index]]: decimals ? parseInt(decimals, 10) : 18,
     }),
-    {} as Record<Hex, number>,
+    {},
   );
-}
+};
 
-/**
- * Compiles a list of balance changes from simulation data.
- *
- * @param simulationData
- */
-export function useBalanceChanges(
+// Selector to get fiat conversion rates
+const getFiatConversionRates = createSelector(
+  getConversionRate,
+  getTokenToFiatConversionRates,
+  (fromNative, fromTokens) => ({ fromNative, fromTokens }),
+);
+
+// Compiles the balance change for the native asset
+const getNativeBalanceChange = (
+  nativeBalanceChange: SimulationBalanceChange | undefined,
+  fiatRates: { fromNative: number },
+): BalanceChange | undefined => {
+  if (!nativeBalanceChange) {
+    return undefined;
+  }
+
+  const asset = NATIVE_ASSET;
+  const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
+  const fiatAmount = amount.numeric.applyConversionRate(fiatRates.fromNative);
+  return { asset, amount, fiatAmount };
+};
+
+// Compiles the balance changes for token assets
+const getTokenBalanceChanges = (
+  tokenBalanceChanges: SimulationTokenBalanceChange[],
+  erc20Decimals: Record<Hex, number>,
+  fiatRates: { fromTokens: Record<Hex, number> },
+): BalanceChange[] => {
+  return tokenBalanceChanges.map((tokenBc) => {
+    const decimals =
+      tokenBc.standard === SimulationTokenStandard.erc20
+        ? erc20Decimals[tokenBc.address]
+        : 0;
+    const asset = getNonNativeAsset(tokenBc);
+    const amount = getAssetAmount(tokenBc, decimals);
+    const fiatRate = fiatRates.fromTokens[tokenBc.address];
+    const fiatAmount = fiatRate
+      ? amount.numeric.applyConversionRate(fiatRate)
+      : FIAT_UNAVAILABLE;
+    return { asset, amount, fiatAmount };
+  });
+};
+
+// Compiles a list of balance changes from simulation data
+export const useBalanceChanges = (
   simulationData?: SimulationData,
-): AsyncResultStrict<BalanceChange[]> {
+): { pending: boolean; value: BalanceChange[] } => {
   if (!simulationData) {
     return { pending: false, value: [] };
   }
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
 
+  const fiatRates = useSelector(getFiatConversionRates);
+
   const erc20Decimals = useAsyncResultStrict(() => {
-    return fetchErc20Decimals(
-      tokenBalanceChanges
-        .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
-        .map((tbc) => tbc.address),
-    );
+    const erc20Addresses = tokenBalanceChanges
+      .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
+      .map((tbc) => tbc.address);
+    return fetchErc20Decimals(erc20Addresses);
   }, [tokenBalanceChanges]);
 
   if (erc20Decimals.pending) {
-    return { pending: true };
+    return { pending: true, value: [] };
   }
 
-  const balanceChanges = [];
+  const nativeChange = getNativeBalanceChange(nativeBalanceChange, fiatRates);
+  const tokenChanges = getTokenBalanceChanges(
+    tokenBalanceChanges,
+    erc20Decimals.value,
+    fiatRates,
+  );
 
-  if (nativeBalanceChange) {
-    balanceChanges.push(convertNativeBalanceChange(nativeBalanceChange));
+  const balanceChanges: BalanceChange[] = [];
+  if (nativeChange) {
+    balanceChanges.push(nativeChange);
   }
-
-  for (const tokenBc of tokenBalanceChanges) {
-    const decimals =
-      tokenBc.standard === SimulationTokenStandard.erc20
-        ? erc20Decimals.value[tokenBc.address]
-        : 0;
-    balanceChanges.push(convertTokenBalanceChange(tokenBc, decimals));
-  }
+  balanceChanges.push(...tokenChanges);
 
   return { pending: false, value: balanceChanges };
-}
+};
