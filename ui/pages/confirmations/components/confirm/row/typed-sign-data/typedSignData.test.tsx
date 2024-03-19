@@ -6,7 +6,9 @@ import configureStore from '../../../../../../store/store';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
 describe('ConfirmInfoRowTypedSignData', () => {
-  const render = (data: string = unapprovedTypedSignMsg.msgParams.data) => {
+  const renderWithComponentData = (
+    data: string = unapprovedTypedSignMsg.msgParams.data,
+  ) => {
     const store = configureStore({
       metamask: { ...mockState.metamask },
     });
@@ -18,12 +20,14 @@ describe('ConfirmInfoRowTypedSignData', () => {
   };
 
   it('should match snapshot', () => {
-    const { container } = render(unapprovedTypedSignMsg.msgParams.data);
+    const { container } = renderWithComponentData(
+      unapprovedTypedSignMsg.msgParams.data,
+    );
     expect(container).toMatchSnapshot();
   });
 
   it('should return null if data is not defined', () => {
-    const { container } = render('');
+    const { container } = renderWithComponentData('');
     expect(container).toBeEmptyDOMElement();
   });
 });
