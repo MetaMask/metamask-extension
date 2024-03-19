@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 import {
   AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -34,82 +36,68 @@ export default class PermissionPageContainerContent extends PureComponent {
     t: PropTypes.func,
   };
 
-  renderRequestedPermissions() {
-    const { selectedPermissions, subjectMetadata } = this.props;
-
-    return (
-      <div className="permission-approval-container__content__requested">
-        <PermissionsConnectPermissionList
-          permissions={selectedPermissions}
-          subjectName={subjectMetadata.origin}
-        />
-      </div>
-    );
-  }
-
-  renderAccountTooltip(textContent) {
-    const { selectedAccounts } = this.props;
-    const { t } = this.context;
-
-    return (
-      <Tooltip
-        key="all-account-connect-tooltip"
-        position="bottom"
-        wrapperClassName="permission-approval-container__bold-title-elements"
-        html={
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {selectedAccounts.slice(0, 6).map((account, index) => {
-              return (
-                <div key={`tooltip-account-${index}`}>
-                  {account.addressLabel}
-                </div>
-              );
-            })}
-            {selectedAccounts.length > 6
-              ? t('plusXMore', [selectedAccounts.length - 6])
-              : null}
-          </div>
-        }
-      >
-        {textContent}
-      </Tooltip>
-    );
-  }
-
   render() {
     const { t } = this.context;
-    const { subjectMetadata } = this.props;
+
+    const { selectedPermissions, selectedAccounts, subjectMetadata } =
+      this.props;
+
+    const accounts = selectedAccounts.reduce((accumulator, account) => {
+      accumulator.push({
+        avatarValue: account.address,
+        avatarName: account.label,
+      });
+      return accumulator;
+    }, []);
 
     return (
-      <div className="permission-approval-container__content">
-        <div className="permission-approval-container__content-container">
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            paddingTop={4}
-            paddingBottom={4}
-          >
-            <Text variant={TextVariant.headingLg} textAlign={TextAlign.Center}>
-              {t('permissions')}
-            </Text>
-            <Text variant={TextVariant.bodyMd}>
-              {t('nativePermissionRequestDescription', [
-                <Text
-                  key={`description_key_${subjectMetadata.origin}`}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {subjectMetadata.origin}
-                </Text>,
-              ])}
-            </Text>
-          </Box>
-          <section className="permission-approval-container__permissions-container">
-            {this.renderRequestedPermissions()}
-          </section>
-        </div>
-      </div>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.flexStart}
+        alignItems={AlignItems.center}
+        height={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          <Text variant={TextVariant.headingLg} textAlign={TextAlign.Center}>
+            {t('permissions')}
+          </Text>
+          <Text variant={TextVariant.bodyMd}>
+            {t('nativePermissionRequestDescription', [
+              <Text
+                key={`description_key_${subjectMetadata.origin}`}
+                fontWeight={FontWeight.Medium}
+              >
+                {subjectMetadata.origin}
+              </Text>,
+            ])}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={2}
+          paddingBottom={2}
+          borderRadius={BorderRadius.XL}
+        >
+          <PermissionsConnectPermissionList
+            permissions={selectedPermissions}
+            subjectName={subjectMetadata.origin}
+            accounts={accounts}
+          />
+        </Box>
+      </Box>
     );
   }
 }

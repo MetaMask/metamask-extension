@@ -194,6 +194,7 @@ export default class PermissionPageContainer extends Component {
             <PermissionsConnectFooter />
           )}
           <PageContainerFooter
+            footerClassName="permission-page-container-footer"
             cancelButtonType="default"
             onCancel={() => this.onCancel()}
             cancelText={this.context.t('cancel')}
