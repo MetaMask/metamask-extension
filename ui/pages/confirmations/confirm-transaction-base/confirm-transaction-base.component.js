@@ -194,7 +194,6 @@ export default class ConfirmTransactionBase extends Component {
       setDefaultHomeActiveTabName,
       hexMaximumTransactionFee,
       useMaxValue,
-      txData,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
