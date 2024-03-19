@@ -131,16 +131,11 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        } catch {
-          const sendButton = await driver.findElement(
-            '[data-testid="asset-send-button"]',
-          );
-          await driver.scrollToElement(sendButton);
-          sendButton.click();
-        }
+        const sendButton = await driver.findElement(
+          '[data-testid="asset-send-button"]',
+        );
+        await driver.scrollToElement(sendButton);
+        sendButton.click();
 
         // Paste address without hex prefix
         await driver.pasteIntoField(
@@ -205,16 +200,11 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           '[data-testid="multichain-token-list-button"]',
         );
 
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        } catch {
-          const sendButton = await driver.findElement(
-            '[data-testid="asset-send-button"]',
-          );
-          await driver.scrollToElement(sendButton);
-          sendButton.click();
-        }
+        const sendButton = await driver.findElement(
+          '[data-testid="asset-send-button"]',
+        );
+        await driver.scrollToElement(sendButton);
+        sendButton.click();
 
         // Type address without hex prefix
         await driver.fill(
