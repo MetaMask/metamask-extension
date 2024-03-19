@@ -74,7 +74,12 @@ export const RampsCard = ({ variant }) => {
         referrer: ORIGIN_METAMASK,
       },
     });
-  }, []);
+  }, [
+    currentLocale,
+    currentNetwork.chainId,
+    currentNetwork.nickname,
+    trackEvent,
+  ]);
 
   const onClick = () => {
     openBuyCryptoInPdapp();
