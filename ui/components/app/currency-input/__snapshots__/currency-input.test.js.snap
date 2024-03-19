@@ -94,14 +94,6 @@ exports[`CurrencyInput Component rendering should render properly with a native 
         No conversion rate available
       </div>
     </div>
-    <button
-      class="currency-input__swap-component"
-      data-testid="currency-swap"
-    >
-      <i
-        class="fa fa-retweet fa-lg"
-      />
-    </button>
   </div>
 </div>
 `;

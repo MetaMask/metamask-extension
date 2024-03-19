@@ -136,14 +136,6 @@ exports[`SendContent Component render should match snapshot 1`] = `
                   No conversion rate available
                 </div>
               </div>
-              <button
-                class="currency-input__swap-component"
-                data-testid="currency-swap"
-              >
-                <i
-                  class="fa fa-retweet fa-lg"
-                />
-              </button>
             </div>
           </div>
           <div />
