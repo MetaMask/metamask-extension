@@ -20,7 +20,7 @@ const render = (
 };
 
 describe('ConfirmInfoRowAddress', () => {
-  it('should render appropriately with PetNames enabled', () => {
+  it('renders appropriately with PetNames enabled', () => {
     const { container } = render({
       metamask: {
         ...mockState.metamask,
@@ -34,7 +34,7 @@ describe('ConfirmInfoRowAddress', () => {
     expect(container).toMatchSnapshot();
   });
 
-  describe('should render appropriately with PetNames disabled', () => {
+  describe('renders appropriately with PetNames disabled', () => {
     it('with an internal account name', () => {
       const testAccountName = 'Account 1';
 
