@@ -128,7 +128,9 @@ const EMPTY_INIT_STATE = {
 const sandbox = sinon.createSandbox();
 let fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
+const getNetworkClientIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
+getNetworkClientIdStub.returns('1');
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -150,6 +152,7 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
+      getNetworkClientId: getNetworkClientIdStub,
     });
   };
 
