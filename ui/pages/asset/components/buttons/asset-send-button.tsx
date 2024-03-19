@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
+  Box,
   ButtonPrimary,
   ButtonSecondary,
 } from '../../../../components/component-library';
@@ -21,6 +22,7 @@ import { startNewDraftTransaction } from '../../../../ducks/send';
 import { INVALID_ASSET_TYPE } from '../../../../helpers/constants/error-keys';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { Asset } from '../asset-v2';
+import Tooltip from '../../../../components/ui/tooltip';
 
 const AssetSendButton = ({
   asset,
@@ -35,46 +37,50 @@ const AssetSendButton = ({
 
   const Button = primary ? ButtonPrimary : ButtonSecondary;
   return (
-    <Button
-      width={BlockSize.Full}
-      padding={5}
-      data-testid="asset-send-button"
-      onClick={async () => {
-        trackEvent({
-          event: MetaMetricsEventName.NavSendButtonClicked,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            token_symbol: asset.symbol,
-            location: MetaMetricsSwapsEventSource.TokenView,
-            text: 'Send',
-            chain_id: asset.chainId,
-          },
-        });
-        try {
-          await dispatch(
-            startNewDraftTransaction({
-              type: asset.type,
-              details:
-                asset.type === AssetType.native
-                  ? undefined
-                  : {
-                      standard: TokenStandard.ERC20,
-                      decimals: asset.decimals,
-                      symbol: asset.symbol,
-                      address: asset.address,
-                    },
-            }),
-          );
-          history.push(SEND_ROUTE);
-        } catch (err: any) {
-          if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
-            throw err;
-          }
-        }
-      }}
-    >
-      {t('send')}
-    </Button>
+    <Box width={BlockSize.Full}>
+      <Tooltip disabled={true}>
+        <Button
+          width={BlockSize.Full}
+          padding={5}
+          data-testid="asset-send-button"
+          onClick={async () => {
+            trackEvent({
+              event: MetaMetricsEventName.NavSendButtonClicked,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                token_symbol: asset.symbol,
+                location: MetaMetricsSwapsEventSource.TokenView,
+                text: 'Send',
+                chain_id: asset.chainId,
+              },
+            });
+            try {
+              await dispatch(
+                startNewDraftTransaction({
+                  type: asset.type,
+                  details:
+                    asset.type === AssetType.native
+                      ? undefined
+                      : {
+                          standard: TokenStandard.ERC20,
+                          decimals: asset.decimals,
+                          symbol: asset.symbol,
+                          address: asset.address,
+                        },
+                }),
+              );
+              history.push(SEND_ROUTE);
+            } catch (err: any) {
+              if (!err?.message?.includes(INVALID_ASSET_TYPE)) {
+                throw err;
+              }
+            }
+          }}
+        >
+          {t('send')}
+        </Button>
+      </Tooltip>
+    </Box>
   );
 };
 
