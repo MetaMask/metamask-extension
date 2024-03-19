@@ -37,8 +37,10 @@ import AssetSendButton from './buttons/asset-send-button';
 import AssetBridgeButton from './buttons/asset-bridge-button';
 import AssetBuyButton from './buttons/asset-buy-button';
 import AssetSwapButton from './buttons/asset-swap-button';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import AssetMmiStakeButton from './buttons/asset-mmi-stake-button';
 import AssetMmiPortfolioButton from './buttons/asset-mmi-portfolio-button';
+///: END:ONLY_INCLUDE_IF
 
 /** Information about a native or token asset */
 export type Asset = (
