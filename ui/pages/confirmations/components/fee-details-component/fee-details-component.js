@@ -34,7 +34,7 @@ export default function FeeDetailsComponent({
   useCurrencyRateCheck,
   hideGasDetails = false,
 }) {
-  const { layer1GasFee } = txData;
+  const layer1GasFee = txData?.layer1GasFee;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
 
   const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
