@@ -7,6 +7,7 @@ import { SnapUIRenderer } from '../snap-ui-renderer';
 import {
   getSnapMetadata,
   getMemoizedUnapprovedConfirmations,
+  getMemoizedUnapprovedTemplatedConfirmations,
 } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -15,7 +16,10 @@ import { Copyable } from '../copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { deleteInterface } from '../../../../store/actions';
 import { useSnapHome } from './useSnapHome';
-import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+} from '../../../../helpers/constants/routes';
 
 export const SnapHomeRenderer = ({ snapId }) => {
   const dispatch = useDispatch();
@@ -24,7 +28,10 @@ export const SnapHomeRenderer = ({ snapId }) => {
     getSnapMetadata(state, snapId),
   );
 
-  const pendingApprovals = useSelector(getMemoizedUnapprovedConfirmations);
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+  const unapprovedConfirmations = useSelector(getMemoizedUnapprovedConfirmations);
   const history = useHistory();
 
   const { data, error, loading } = useSnapHome({ snapId });
@@ -36,14 +43,22 @@ export const SnapHomeRenderer = ({ snapId }) => {
   }, [interfaceId]);
 
   useEffect(() => {
-    const pendingSnapApproval = pendingApprovals.find(
+    // Snaps are allowed to redirect to their own pending confirmations (templated or not)
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => approval.origin === snapId,
+    );
+    const snapApproval = unapprovedConfirmations.find(
       (approval) => approval.origin === snapId,
     );
 
-    if (pendingSnapApproval) {
-      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${pendingSnapApproval.id}`);
+    if (templatedSnapApproval) {
+      history.push(
+        `${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`,
+      );
+    } else if (snapApproval) {
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [pendingApprovals, history]);
+  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
 
   return (
     <Box>

@@ -936,6 +936,14 @@ export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
 );
 
 /**
+ * Get a memoized version of the unapproved templated confirmations.
+ */
+export const getMemoizedUnapprovedTemplatedConfirmations = createDeepEqualSelector(
+  getUnapprovedTemplatedConfirmations,
+  (confirmations) => confirmations,
+);
+
+/**
  * Get the Snap interfaces from the redux state.
  *
  * @param state - Redux state object.
