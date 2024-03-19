@@ -1534,83 +1534,86 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
 
-    const transactionControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'TransactionController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          'NetworkController:findNetworkClientIdByChainId',
-          'NetworkController:getNetworkClientById',
-        ],
-        allowedEvents: [`NetworkController:stateChange`],
-      });
-    this.txController = new TransactionController({
-      blockTracker: this.blockTracker,
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getExternalPendingTransactions:
-        this.getExternalPendingTransactions.bind(this),
-      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
-        this.gasFeeController,
-      ),
-      getNetworkClientRegistry:
-        this.networkController.getNetworkClientRegistry.bind(
-          this.networkController,
-        ),
-      getNetworkState: () => this.networkController.state,
-      getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getSavedGasFees: () =>
-        this.preferencesController.store.getState().advancedGasFee[
-          this.networkController.state.providerConfig.chainId
-        ],
-      getSelectedAddress: () =>
-        this.accountsController.getSelectedAccount().address,
-      incomingTransactions: {
-        includeTokenTransfers: false,
-        isEnabled: () =>
-          Boolean(
-            this.preferencesController.store.getState()
-              .incomingTransactionsPreferences?.[
-              this.networkController.state.providerConfig.chainId
-            ] && this.onboardingController.store.getState().completedOnboarding,
+    this.txController = new TransactionController(
+      {
+        blockTracker: this.blockTracker,
+        cancelMultiplier: 1.1,
+        getCurrentNetworkEIP1559Compatibility:
+          this.networkController.getEIP1559Compatibility.bind(
+            this.networkController,
           ),
-        queryEntireHistory: false,
-        updateTransactions: false,
-      },
-      isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-      isSimulationEnabled: () => false,
-      messenger: transactionControllerMessenger,
-      onNetworkStateChange: (listener) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => listener(),
-        );
-      },
-      provider: this.provider,
-      hooks: {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        afterSign: (txMeta, signedEthTx) =>
-          afterTransactionSignMMI(
-            txMeta,
-            signedEthTx,
-            this.transactionUpdateController.addTransactionToWatchList.bind(
-              this.transactionUpdateController,
+        getCurrentAccountEIP1559Compatibility:
+          this.getCurrentAccountEIP1559Compatibility.bind(this),
+        getExternalPendingTransactions:
+          this.getExternalPendingTransactions.bind(this),
+        getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+          this.gasFeeController,
+        ),
+        getNetworkClientRegistry:
+          this.networkController.getNetworkClientRegistry.bind(
+            this.networkController,
+          ),
+        getNetworkState: () => this.networkController.state,
+        getPermittedAccounts: this.getPermittedAccounts.bind(this),
+        getSavedGasFees: () =>
+          this.preferencesController.store.getState().advancedGasFee[
+            this.networkController.state.providerConfig.chainId
+          ],
+        getSelectedAddress: () =>
+          this.accountsController.getSelectedAccount().address,
+        isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
+        incomingTransactions: {
+          includeTokenTransfers: false,
+          isEnabled: () =>
+            Boolean(
+              this.preferencesController.store.getState()
+                .incomingTransactionsPreferences?.[
+                this.networkController.state.providerConfig.chainId
+              ] &&
+                this.onboardingController.store.getState().completedOnboarding,
             ),
-          ),
-        beforeCheckPendingTransaction:
-          beforeCheckPendingTransactionMMI.bind(this),
-        beforeApproveOnInit: beforeApproveOnInitMMI.bind(this),
-        beforePublish: beforeTransactionPublishMMI.bind(this),
-        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
-        ///: END:ONLY_INCLUDE_IF
+          queryEntireHistory: false,
+          updateTransactions: false,
+        },
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'TransactionController',
+          allowedActions: [
+            `${this.approvalController.name}:addRequest`,
+            'NetworkController:findNetworkClientIdByChainId',
+            'NetworkController:getNetworkClientById',
+          ],
+          allowedEvents: [`NetworkController:stateChange`],
+        }),
+        onNetworkStateChange: (listener) => {
+          networkControllerMessenger.subscribe(
+            'NetworkController:networkDidChange',
+            () => listener(),
+          );
+        },
+        provider: this.provider,
+        hooks: {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          afterSign: (txMeta, signedEthTx) =>
+            afterTransactionSignMMI(
+              txMeta,
+              signedEthTx,
+              this.transactionUpdateController.addTransactionToWatchList.bind(
+                this.transactionUpdateController,
+              ),
+            ),
+          beforeCheckPendingTransaction:
+            beforeCheckPendingTransactionMMI.bind(this),
+          beforeApproveOnInit: beforeApproveOnInitMMI.bind(this),
+          beforePublish: beforeTransactionPublishMMI.bind(this),
+          getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
+          ///: END:ONLY_INCLUDE_IF
+        },
       },
-      sign: (...args) => this.keyringController.signTransaction(...args),
-      state: initState.TransactionController,
-    });
+      {
+        sign: (...args) => this.keyringController.signTransaction(...args),
+      },
+      initState.TransactionController,
+    );
 
     this._addTransactionControllerListeners();
 
@@ -5461,61 +5464,58 @@ export default class MetamaskController extends EventEmitter {
   _addTransactionControllerListeners() {
     const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:postTransactionBalanceUpdated',
+    this.txController.hub.on(
+      'post-transaction-balance-updated',
       handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:unapprovedTransactionAdded',
-      (transactionMeta) =>
-        handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
+    this.txController.hub.on('unapprovedTransaction', (transactionMeta) =>
+      handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionApproved',
+    this.txController.hub.on(
+      'transaction-approved',
       handleTransactionApproved.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionDropped',
+    this.txController.hub.on(
+      'transaction-dropped',
       handleTransactionDropped.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionConfirmed',
+    this.txController.hub.on(
+      'transaction-confirmed',
       handleTransactionConfirmed.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionFailed',
+    this.txController.hub.on(
+      'transaction-failed',
       handleTransactionFailed.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionNewSwap',
-      ({ transactionMeta }) =>
-        this.swapsController.setTradeTxId(transactionMeta.id),
+    this.txController.hub.on('transaction-new-swap', ({ transactionMeta }) => {
+      this.swapsController.setTradeTxId(transactionMeta.id);
+    });
+
+    this.txController.hub.on(
+      'transaction-new-swap-approval',
+      ({ transactionMeta }) => {
+        this.swapsController.setApproveTxId(transactionMeta.id);
+      },
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionNewSwapApproval',
-      ({ transactionMeta }) =>
-        this.swapsController.setApproveTxId(transactionMeta.id),
-    );
-
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionRejected',
+    this.txController.hub.on(
+      'transaction-rejected',
       handleTransactionRejected.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionSubmitted',
+    this.txController.hub.on(
+      'transaction-submitted',
       handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
 
-    this.controllerMessenger.subscribe(
-      'TransactionController:transactionStatusUpdated',
+    this.txController.hub.on(
+      'transaction-status-update',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
       },
@@ -5984,51 +5984,40 @@ export default class MetamaskController extends EventEmitter {
     const transactionMeta = this.txController.state.transactions.find(
       (tx) => tx.id === userOperationMeta.id,
     );
-
     if (!transactionMeta) {
       return;
     }
 
     if (transactionMeta.type === TransactionType.swap) {
-      this.controllerMessenger.publish(
-        'TransactionController:transactionNewSwap',
-        { transactionMeta },
-      );
+      this.txController.hub.emit('transaction-new-swap', {
+        transactionMeta,
+      });
     } else if (transactionMeta.type === TransactionType.swapApproval) {
-      this.controllerMessenger.publish(
-        'TransactionController:transactionNewSwapApproval',
-        { transactionMeta },
-      );
+      this.txController.hub.emit('transaction-new-swap-approval', {
+        transactionMeta,
+      });
     }
   }
 
   _onUserOperationTransactionUpdated(transactionMeta) {
-    const updatedTransactionMeta = {
-      ...transactionMeta,
-      txParams: {
-        ...transactionMeta.txParams,
-        from: this.preferencesController.getSelectedAddress(),
-      },
-    };
+    transactionMeta.txParams.from =
+      this.preferencesController.getSelectedAddress();
 
     const transactionExists = this.txController.state.transactions.some(
-      (tx) => tx.id === updatedTransactionMeta.id,
+      (tx) => tx.id === transactionMeta.id,
     );
 
     if (!transactionExists) {
-      this.txController.update((state) => {
-        state.transactions.push(updatedTransactionMeta);
-      });
+      this.txController.state.transactions.push(transactionMeta);
     }
 
     this.txController.updateTransaction(
-      updatedTransactionMeta,
+      transactionMeta,
       'Generated from user operation',
     );
 
-    this.controllerMessenger.publish(
-      'TransactionController:transactionStatusUpdated',
-      { updatedTransactionMeta },
-    );
+    this.txController.hub.emit('transaction-status-update', {
+      transactionMeta,
+    });
   }
 }
