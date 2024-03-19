@@ -82,13 +82,14 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
   ) {
     return (
       <>
-        <Box marginLeft={'auto'}>
+        <Box
+          marginLeft={'auto'}
+          textAlign={TextAlign.End}
+          paddingTop={2}
+          paddingBottom={2}
+        >
           <Text variant={TextVariant.bodySm}>{t('tokenId')}</Text>
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Bold}
-            marginLeft={10}
-          >
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Bold}>
             {asset?.details?.tokenId}
           </Text>
         </Box>
@@ -100,13 +101,7 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
     asset.details?.standard === TokenStandard.ERC1155
   ) {
     return (
-      <Box
-        marginLeft={'auto'}
-        textAlign={TextAlign.End}
-        paddingTop={2}
-        paddingBottom={2}
-        width={BlockSize.Max}
-      >
+      <Box marginLeft={'auto'} textAlign={TextAlign.End} width={BlockSize.Max}>
         <Text variant={TextVariant.bodyMd} ellipsis>
           {t('amount')}
         </Text>
@@ -163,7 +158,10 @@ export const AssetPickerAmount = () => {
         />
       );
     }
-    if (asset.details?.standard === TokenStandard.ERC20) {
+    if (
+      asset.details?.standard === TokenStandard.ERC20 ||
+      asset.details?.standard === TokenStandard.ERC721
+    ) {
       return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: Details should be defined for token assets
@@ -214,13 +212,13 @@ export const AssetPickerAmount = () => {
         paddingRight={4}
         borderRadius={BorderRadius.LG}
         borderColor={
-          amount.error ? BorderColor.errorDefault : BorderColor.primaryDefault
+          error ? BorderColor.errorDefault : BorderColor.primaryDefault
         }
         borderStyle={BorderStyle.solid}
         borderWidth={2}
         marginTop={2}
-        paddingTop={3}
-        paddingBottom={3}
+        paddingTop={1}
+        paddingBottom={1}
       >
         <AssetPicker asset={asset} />
         {renderCurrencyInput(asset, amount)}
@@ -260,8 +258,10 @@ export const AssetPickerAmount = () => {
             alignItems={AlignItems.flexEnd}
           >
             <Text
-              variant={TextVariant.bodyMd}
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
               width={BlockSize.ThreeFourths}
+              textAlign={TextAlign.End}
               ellipsis
             >
               ID: {`#${asset.details?.tokenId}`}

@@ -1,6 +1,6 @@
 import React from 'react';
-import { fireEvent, act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ConnectedAccountsMenu } from '.';
@@ -8,52 +8,58 @@ import { ConnectedAccountsMenu } from '.';
 const DEFAULT_PROPS = {
   isOpen: true,
   onClose: jest.fn(),
+  identity: { address: '0x123' },
+  anchorElement: null,
+  disableAccountSwitcher: false,
+  closeMenu: jest.fn(),
 };
 
-const render = (props = {}) => {
+const renderComponent = (props = {}, stateChanges = {}) => {
   const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
+    ...mockState,
+    ...stateChanges,
+    activeTab: {
+      origin: 'https://example.com',
     },
   });
-  const allProps = { ...DEFAULT_PROPS, ...props };
   document.body.innerHTML = '<div id="anchor"></div>';
   const anchorElement = document.getElementById('anchor');
   return renderWithProvider(
-    <ConnectedAccountsMenu anchorElement={anchorElement} {...allProps} />,
+    <ConnectedAccountsMenu
+      {...DEFAULT_PROPS}
+      {...props}
+      anchorElement={anchorElement}
+    />,
     store,
   );
 };
 
 describe('ConnectedAccountsMenu', () => {
   it('renders permission details menu item', async () => {
-    await act(async () => {
-      const { getByText } = render();
-      expect(getByText('Permission details')).toBeInTheDocument();
-    });
+    const { getByTestId } = renderComponent();
+    expect(getByTestId('permission-details-menu-item')).toBeInTheDocument();
   });
 
-  it('renders switch to this account menu item', async () => {
-    await act(async () => {
-      const { getByText } = render();
-      expect(getByText('Switch to this account')).toBeInTheDocument();
-    });
+  it('renders switch to this account menu item if account switcher is enabled', async () => {
+    const { getByTestId } = renderComponent();
+    expect(getByTestId('switch-account-menu-item')).toBeInTheDocument();
+  });
+
+  it('does not render switch to this account menu item if account switcher is disabled', async () => {
+    const { queryByTestId } = renderComponent({ disableAccountSwitcher: true });
+    expect(queryByTestId('switch-account-menu-item')).toBeNull();
   });
 
   it('renders disconnect menu item', async () => {
-    await act(async () => {
-      const { getByText } = render();
-      expect(getByText('Disconnect')).toBeInTheDocument();
-    });
+    const { getByTestId } = renderComponent();
+    expect(getByTestId('disconnect-menu-item')).toBeInTheDocument();
   });
 
-  it('closes the menu on tab key down when focus is on the last menu item', async () => {
+  it('closes the menu on tab key down when focus is within the menu', async () => {
     const onClose = jest.fn();
-    await act(async () => {
-      const { getByText } = render({ onClose });
-      const disconnectMenuItem = getByText('Disconnect');
-      fireEvent.keyDown(disconnectMenuItem, { key: 'Tab' });
-    });
+    const { getByTestId } = renderComponent({ onClose });
+    const menu = getByTestId('permission-details-menu-item');
+    fireEvent.keyDown(menu, { key: 'Tab' });
     expect(onClose).toHaveBeenCalled();
   });
 });
