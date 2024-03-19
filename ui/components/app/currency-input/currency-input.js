@@ -140,9 +140,14 @@ export default function CurrencyInput({
   }, [hexValue, assetDecimals, processNewDecimalValue, isTokenPrimary]);
 
   const renderSwapButton = () => {
+    if (swapIcon) {
+      return swapIcon(swap);
+    }
+
     if (!isOriginalNativeSymbol) {
       return null;
     }
+
     return (
       <button
         className="currency-input__swap-component"
@@ -153,6 +158,7 @@ export default function CurrencyInput({
       </button>
     );
   };
+
   const renderConversionComponent = () => {
     let suffix, displayValue;
 
@@ -198,7 +204,11 @@ export default function CurrencyInput({
       onChange={handleChange}
       value={isTokenPrimary ? tokenDecimalValue : fiatDecimalValue}
       className={className}
-      actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
+      actionComponent={
+        isFiatAvailable && tokenToFiatConversionRate
+          ? renderSwapButton()
+          : undefined
+      }
       keyPressRegex={DECIMAL_INPUT_REGEX}
     >
       {renderConversionComponent()}
