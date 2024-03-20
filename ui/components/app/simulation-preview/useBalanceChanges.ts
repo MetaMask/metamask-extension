@@ -1,17 +1,21 @@
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useAsyncResultStrict } from '../../../hooks/useAsyncResult';
-import { getTokenStandardAndDetails } from '../../../store/actions';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
-import { getTokenToFiatConversionRates } from '../../../selectors';
+import { createSelector } from 'reselect';
 import {
   SimulationBalanceChange,
   SimulationData,
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
-} from './ERASEME-core-simulation-types';
+} from '@metamask/transaction-controller';
+import { useAsyncResultStrict } from '../../../hooks/useAsyncResult';
+import { getTokenStandardAndDetails } from '../../../store/actions';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getConfirmationExchangeRates,
+  getTokenExchangeRates,
+} from '../../../selectors';
 import {
   Amount,
   AssetIdentifier,
@@ -114,6 +118,22 @@ const getTokenBalanceChanges = (
     return { asset, amount, fiatAmount };
   });
 };
+
+// Get the exchange rates for converting tokens to the user's fiat currency.
+const getTokenToFiatConversionRates = createSelector(
+  getTokenExchangeRates,
+  getConfirmationExchangeRates,
+  (contractExchangeRates, confirmationExchangeRates) => {
+    const mergedRates = {
+      ...contractExchangeRates,
+      ...confirmationExchangeRates,
+    } as Record<string, number>;
+    return Object.entries(mergedRates).reduce((acc, [key, value]) => {
+      acc[key.toLowerCase()] = value;
+      return acc;
+    }, {} as Record<string, number>);
+  },
+);
 
 // Compiles a list of balance changes from simulation data
 export const useBalanceChanges = (

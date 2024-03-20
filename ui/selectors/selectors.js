@@ -499,24 +499,6 @@ export function getTargetAccount(state, targetAddress) {
 export const getTokenExchangeRates = (state) =>
   state.metamask.contractExchangeRates;
 
-/**
- * Get the exchange rates for converting tokens to the user's fiat currency.
- */
-export const getTokenToFiatConversionRates = createSelector(
-  getTokenExchangeRates,
-  getConfirmationExchangeRates,
-  (contractExchangeRates, confirmationExchangeRates) => {
-    const mergedRates = {
-      ...contractExchangeRates,
-      ...confirmationExchangeRates,
-    };
-    return Object.entries(mergedRates).reduce((acc, [key, value]) => {
-      acc[key.toLowerCase()] = value;
-      return acc;
-    }, {});
-  },
-);
-
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {

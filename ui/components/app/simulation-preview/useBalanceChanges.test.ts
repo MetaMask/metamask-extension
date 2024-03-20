@@ -1,15 +1,15 @@
 import { Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react-hooks';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
-import { getTokenToFiatConversionRates } from '../../../selectors';
-import { getTokenStandardAndDetails } from '../../../store/actions';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { useBalanceChanges } from './useBalanceChanges';
 import {
   SimulationData,
   SimulationTokenStandard,
-} from './ERASEME-core-simulation-types';
+} from '@metamask/transaction-controller';
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { getTokenExchangeRates } from '../../../selectors';
+import { getTokenStandardAndDetails } from '../../../store/actions';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
 jest.mock('react-redux', () => ({
@@ -21,7 +21,8 @@ jest.mock('../../../ducks/metamask/metamask', () => ({
 }));
 
 jest.mock('../../../selectors', () => ({
-  getTokenToFiatConversionRates: jest.fn(),
+  getTokenExchangeRates: jest.fn(),
+  getConfirmationExchangeRates: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -29,8 +30,7 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 const mockGetConversionRate = getConversionRate as jest.Mock;
-const mockGetTokenToFiatConversionRates =
-  getTokenToFiatConversionRates as unknown as jest.Mock;
+const mockGetTokenExchangeRates = getTokenExchangeRates as unknown as jest.Mock;
 const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
 
 const TOKEN_ADDRESS_1_MOCK: Hex = '0x1';
@@ -48,7 +48,7 @@ describe('useBalanceChanges', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetConversionRate.mockReturnValue(1);
-    mockGetTokenToFiatConversionRates.mockReturnValue({});
+    mockGetTokenExchangeRates.mockReturnValue({});
     mockGetTokenStandardAndDetails.mockResolvedValue({});
   });
 
@@ -90,7 +90,7 @@ describe('useBalanceChanges', () => {
 
     it('maps token balance changes correctly', async () => {
       mockGetTokenStandardAndDetails.mockResolvedValue({ decimals: '10' });
-      mockGetTokenToFiatConversionRates.mockReturnValue({
+      mockGetTokenExchangeRates.mockReturnValue({
         [TOKEN_ADDRESS_1_MOCK]: 0.5,
       });
 
@@ -134,7 +134,7 @@ describe('useBalanceChanges', () => {
       mockGetTokenStandardAndDetails.mockImplementation((address: Hex) =>
         Promise.resolve({ decimals: decimalMap[address].toString() }),
       );
-      mockGetTokenToFiatConversionRates.mockReturnValue({
+      mockGetTokenExchangeRates.mockReturnValue({
         [TOKEN_ADDRESS_1_MOCK]: 0.5,
         [TOKEN_ADDRESS_2_MOCK]: 2,
       });
@@ -269,7 +269,7 @@ describe('useBalanceChanges', () => {
   it('combines native and token balance changes', async () => {
     mockGetTokenStandardAndDetails.mockResolvedValue({ decimals: '10' });
     mockGetConversionRate.mockReturnValue(2);
-    mockGetTokenToFiatConversionRates.mockReturnValue({
+    mockGetTokenExchangeRates.mockReturnValue({
       [TOKEN_ADDRESS_1_MOCK]: 0.5,
     });
 

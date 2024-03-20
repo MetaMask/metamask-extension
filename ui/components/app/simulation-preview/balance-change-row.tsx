@@ -18,7 +18,6 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.label
  * @param props.showFiat
  * @param props.balanceChange
- * @returns
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
