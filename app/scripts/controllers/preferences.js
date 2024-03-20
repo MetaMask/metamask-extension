@@ -91,7 +91,7 @@ export default class PreferencesController {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
-        stxOptIn: null,
+        stxOptIn: null, // null means we will show the STX opt-in modal to a user if they are eligible
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
