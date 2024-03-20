@@ -49,6 +49,7 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import sharedSelectors from '../../shared/modules/selectors';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -790,6 +791,26 @@ export function getShowExtensionInFullSizeView(state) {
   return Boolean(showExtensionInFullSizeView);
 }
 
+export function getSmartTransactionsOptInStatus(state) {
+  return sharedSelectors.getSmartTransactionsOptInStatus(state);
+}
+
+export function getIsAllowedStxChainId(state) {
+  return sharedSelectors.getIsAllowedStxChainId(state);
+}
+
+export function getSmartTransactionsEnabled(state) {
+  return sharedSelectors.getSmartTransactionsEnabled(state);
+}
+
+export function getIsSmartTransaction(state) {
+  return sharedSelectors.getIsSmartTransaction(state);
+}
+
+export function getFeatureFlagsByChainId(state) {
+  return sharedSelectors.getFeatureFlagsByChainId(state);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {
@@ -830,7 +851,8 @@ export function getAdvancedInlineGasShown(state) {
 }
 
 export function getUseNonceField(state) {
-  return Boolean(state.metamask.useNonceField);
+  const isSmartTransaction = getIsSmartTransaction(state);
+  return Boolean(!isSmartTransaction && state.metamask.useNonceField);
 }
 
 export function getCustomNonceValue(state) {
