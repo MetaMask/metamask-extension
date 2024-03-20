@@ -1,0 +1,55 @@
+diff --git a/dist/chunk-VNCJZRDU.js b/dist/chunk-VNCJZRDU.js
+index 78251fc9517438d90261ed53172d2a4133d3a5fd..d9fa7bc4b4fdc7d2cc9687cf9ad34c2e65cf809e 100644
+--- a/dist/chunk-VNCJZRDU.js
++++ b/dist/chunk-VNCJZRDU.js
+@@ -320,10 +320,14 @@ var NetworkController = class extends _basecontroller.BaseController {
+    * Populates the network clients and establishes the initial network based on
+    * the provider configuration in state.
+    */
+-  async initializeProvider() {
++  async initializeProvider(lookup) {
+     _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _ensureAutoManagedNetworkClientRegistryPopulated, ensureAutoManagedNetworkClientRegistryPopulated_fn).call(this);
+     _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _applyNetworkSelection, applyNetworkSelection_fn).call(this);
+-    await this.lookupNetwork();
++
++    lookup = lookup !== undefined ? lookup : true;
++    if (lookup) {
++      await this.lookupNetwork();
++    }
+   }
+   /**
+    * Refreshes the network meta with EIP-1559 support and the network status
+diff --git a/dist/chunk-XWP6GXMK.mjs b/dist/chunk-XWP6GXMK.mjs
+index fb7e30d27367a38e8a357ff9e744894a4505b5a5..670117818e9634c360eeef632e7b614bbc6df9ea 100644
+--- a/dist/chunk-XWP6GXMK.mjs
++++ b/dist/chunk-XWP6GXMK.mjs
+@@ -320,10 +320,14 @@ var NetworkController = class extends BaseController {
+    * Populates the network clients and establishes the initial network based on
+    * the provider configuration in state.
+    */
+-  async initializeProvider() {
++  async initializeProvider(lookup) {
+     __privateMethod(this, _ensureAutoManagedNetworkClientRegistryPopulated, ensureAutoManagedNetworkClientRegistryPopulated_fn).call(this);
+     __privateMethod(this, _applyNetworkSelection, applyNetworkSelection_fn).call(this);
+-    await this.lookupNetwork();
++
++    lookup = lookup !== undefined ? lookup : true;
++    if (lookup) {
++      await this.lookupNetwork();
++    }
+   }
+   /**
+    * Refreshes the network meta with EIP-1559 support and the network status
+diff --git a/dist/types/NetworkController.d.ts b/dist/types/NetworkController.d.ts
+index f1e1e49de2461d7606374d6a1a406abd54581bf7..a06f3c627bf1e31a2ca3ef351a74c3615474fea2 100644
+--- a/dist/types/NetworkController.d.ts
++++ b/dist/types/NetworkController.d.ts
+@@ -272,7 +272,7 @@ export declare class NetworkController extends BaseController<typeof name, Netwo
+      * Populates the network clients and establishes the initial network based on
+      * the provider configuration in state.
+      */
+-    initializeProvider(): Promise<void>;
++    initializeProvider(lookup: Boolean): Promise<void>;
+     /**
+      * Refreshes the network meta with EIP-1559 support and the network status
+      * based on the given network client ID.
