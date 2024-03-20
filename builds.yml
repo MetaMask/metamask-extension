@@ -19,7 +19,6 @@ buildTypes:
       - snaps
       - keyring-snaps
       - blockaid
-      - transaction-simulation
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID

@@ -308,6 +308,7 @@ export default class PreferencesController {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   /**
    * Setter for the `useSimulations` property
    *
@@ -318,6 +319,7 @@ export default class PreferencesController {
       useSimulations,
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property

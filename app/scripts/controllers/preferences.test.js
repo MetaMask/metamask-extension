@@ -403,6 +403,7 @@ describe('preferences controller', () => {
   });
   ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   describe('setUseSimulations', () => {
     it('should default to true', () => {
       expect(
@@ -417,4 +418,5 @@ describe('preferences controller', () => {
       ).toStrictEqual(false);
     });
   });
+  ///: END:ONLY_INCLUDE_IF
 });
