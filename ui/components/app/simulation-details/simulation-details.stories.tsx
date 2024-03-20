@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
-import { SimulationPreview } from './simulation-preview';
+import { SimulationDetails } from './simulation-details';
 import mockState from '../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
@@ -63,14 +63,14 @@ const storeMock = configureStore({
   },
 });
 
-const meta: Meta<typeof SimulationPreview> = {
-  title: 'Components/App/SimulationPreview',
-  component: SimulationPreview,
+const meta: Meta<typeof SimulationDetails> = {
+  title: 'Components/App/SimulationDetails',
+  component: SimulationDetails,
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 };
 
 export default meta;
-type Story = StoryObj<typeof SimulationPreview>;
+type Story = StoryObj<typeof SimulationDetails>;
 
 export const BuyErc20: Story = {
   args: {

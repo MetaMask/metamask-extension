@@ -8,7 +8,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { SimulationPreview } from './simulation-preview';
+import { SimulationDetails } from './simulation-details';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -18,7 +18,7 @@ const DUMMY_BALANCE_CHANGE = {
 const ONE_ETH = Numeric.from('0xde0b6b3a7640000', 16, EtherDenomination.ETH);
 const HALF_ETH = ONE_ETH.divide(2, 16);
 
-describe('SimulationPreview', () => {
+describe('SimulationDetails', () => {
   const store = configureStore()(mockState);
 
   it('renders the component with balance changes', () => {
@@ -32,7 +32,7 @@ describe('SimulationPreview', () => {
     };
 
     renderWithProvider(
-      <SimulationPreview simulationData={simulationData} />,
+      <SimulationDetails simulationData={simulationData} />,
       store,
     );
 
@@ -51,7 +51,7 @@ describe('SimulationPreview', () => {
     };
 
     renderWithProvider(
-      <SimulationPreview simulationData={simulationData} />,
+      <SimulationDetails simulationData={simulationData} />,
       store,
     );
 
@@ -71,7 +71,7 @@ describe('SimulationPreview', () => {
     };
 
     renderWithProvider(
-      <SimulationPreview simulationData={simulationData} />,
+      <SimulationDetails simulationData={simulationData} />,
       store,
     );
 
@@ -81,7 +81,7 @@ describe('SimulationPreview', () => {
   });
 
   it('renders the error message when simulation fails', () => {
-    renderWithProvider(<SimulationPreview simulationData={undefined} />, store);
+    renderWithProvider(<SimulationDetails simulationData={undefined} />, store);
 
     expect(screen.getByText(/There was an error/u)).toBeInTheDocument();
   });

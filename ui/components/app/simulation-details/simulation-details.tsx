@@ -122,7 +122,7 @@ const SimulationPreviewLayout: React.FC<{
  * @param props
  * @param props.simulationData - The simulation data to display.
  */
-export const SimulationPreview: React.FC<SimulationPreviewProps> = ({
+export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
   simulationData,
 }: SimulationPreviewProps) => {
   const t = useI18nContext();
