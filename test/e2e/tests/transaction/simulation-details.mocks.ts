@@ -662,7 +662,7 @@ const SIMULATION_REQUEST_SWAP_MOCK = {
 
 const requests = [SIMULATION_REQUEST_NATIVE_CHANGE_MOCK, SIMULATION_REQUEST_SWAP_MOCK];
 
-export async function mockTxSentinelServer(server: Mockttp) {
+export async function mockSimulationServer(server: Mockttp) {
   requests.forEach(async (request) => {
     await server.forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/')
     .withJsonBody(request.request)

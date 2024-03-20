@@ -11,6 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Name from '../name';
 import { TokenStandard } from '../../../../shared/constants/transaction';
+import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 import { AssetIdentifier } from './types';
 
 const EthAssetPill: React.FC = () => (
@@ -29,7 +30,7 @@ const EthAssetPill: React.FC = () => (
     <AvatarToken
       name="eth"
       size={AvatarTokenSize.Sm}
-      src="./images/eth_logo.svg"
+      src={ETH_TOKEN_IMAGE_URL}
     />
     ETH
   </Text>
