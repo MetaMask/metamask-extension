@@ -1426,6 +1426,7 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          this.networkController.lookupNetwork();
           this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
@@ -2188,6 +2189,10 @@ export default class MetamaskController extends EventEmitter {
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
+
+    if (this.onboardingController.store.getState().completedOnboarding) {
+      this.networkController.lookupNetwork();
+    }
   }
 
   async triggerNetworkrequests() {
