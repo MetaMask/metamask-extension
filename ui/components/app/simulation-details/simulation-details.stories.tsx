@@ -72,7 +72,7 @@ const meta: Meta<typeof SimulationDetails> = {
 export default meta;
 type Story = StoryObj<typeof SimulationDetails>;
 
-export const BuyErc20: Story = {
+export const BuyMultipleTokens: Story = {
   args: {
     simulationData: {
       nativeBalanceChange: {

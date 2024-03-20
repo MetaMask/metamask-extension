@@ -4,7 +4,7 @@ import { useState, DependencyList, useEffect } from 'react';
  * Represents the result of an asynchronous function where errors
  * are thrown to be handled by an error boundary.
  */
-export type AsyncResultStrict<T> =
+export type AsyncResultNoError<T> =
   | { pending: true; value?: never } // pending
   | { pending: false; value: T }; // success
 
@@ -13,7 +13,7 @@ export type AsyncResultStrict<T> =
  * possibility of an error
  */
 export type AsyncResult<T> =
-  | (AsyncResultStrict<T> & { error?: never })
+  | (AsyncResultNoError<T> & { error?: never })
   | { pending: false; value?: never; error: Error }; // error
 
 /**
@@ -26,7 +26,7 @@ export type AsyncResult<T> =
 export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   dependencies: DependencyList = [],
-) {
+): AsyncResult<T> {
   const [result, setResult] = useState<AsyncResult<T>>({
     pending: true,
   });
@@ -61,13 +61,14 @@ export function useAsyncResult<T>(
  * @param deps
  * @returns
  */
-export function useAsyncResultStrict<T>(
+export function useAsyncResultOrThrow<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
-): AsyncResultStrict<T> {
+): AsyncResultNoError<T> {
   const result = useAsyncResult(asyncFn, deps);
 
   if (result.error) {
+    // Error is thrown from render phase to be handled by an error boundary.
     throw result.error;
   }
 

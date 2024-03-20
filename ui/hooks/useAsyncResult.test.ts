@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import * as hookModule from './useAsyncResult';
 
-const { useAsyncResult, useAsyncResultStrict } = hookModule;
+const { useAsyncResult, useAsyncResultOrThrow: useAsyncResultStrict } = hookModule;
 
 describe('useAsyncResult', () => {
   it('should return pending state initially', async () => {

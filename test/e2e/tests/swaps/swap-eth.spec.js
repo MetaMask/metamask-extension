@@ -80,7 +80,6 @@ describe('Swap Eth for another Token @no-mmi', function () {
           swapTo: 'DAI',
           skipCounter: true,
         });
-        await driver.delay(100000000);
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         await waitForTransactionToComplete(driver, { tokenName: 'DAI' });
         await checkActivityTransaction(driver, {

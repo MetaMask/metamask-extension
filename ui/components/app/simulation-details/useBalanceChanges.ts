@@ -7,7 +7,7 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
-import { useAsyncResultStrict } from '../../../hooks/useAsyncResult';
+import { useAsyncResultOrThrow } from '../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../store/actions';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
@@ -75,10 +75,10 @@ const fetchErc20Decimals = async (
 };
 
 // Compiles the balance change for the native asset
-const getNativeBalanceChange = (
+function getNativeBalanceChange(
   nativeBalanceChange: SimulationBalanceChange | undefined,
   nativeFiatRate: number,
-): BalanceChange | undefined => {
+): BalanceChange | undefined {
   if (!nativeBalanceChange) {
     return undefined;
   }
@@ -88,14 +88,14 @@ const getNativeBalanceChange = (
     .applyConversionRate(nativeFiatRate)
     .toNumber();
   return { asset, amount, fiatAmount };
-};
+}
 
 // Compiles the balance changes for token assets
-const getTokenBalanceChanges = (
+function getTokenBalanceChanges(
   tokenBalanceChanges: SimulationTokenBalanceChange[],
   erc20Decimals: Record<Hex, number>,
   tokenFiatRates: Record<Hex, number>,
-): BalanceChange[] => {
+): BalanceChange[] {
   return tokenBalanceChanges.map((tokenBc) => {
     const asset: TokenAssetIdentifier = {
       standard: convertStandard(tokenBc.standard),
@@ -114,7 +114,7 @@ const getTokenBalanceChanges = (
 
     return { asset, amount, fiatAmount };
   });
-};
+}
 
 // Get the exchange rates for converting tokens to the user's fiat currency.
 const getTokenToFiatConversionRates = createSelector(
@@ -145,7 +145,7 @@ export const useBalanceChanges = (
   const nativeFiatRate = useSelector(getConversionRate);
   const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
-  const erc20Decimals = useAsyncResultStrict(() => {
+  const erc20Decimals = useAsyncResultOrThrow(() => {
     const erc20Addresses = tokenBalanceChanges
       .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
       .map((tbc) => tbc.address.toLowerCase() as Hex);
@@ -166,11 +166,9 @@ export const useBalanceChanges = (
     tokenFiatRates,
   );
 
-  const balanceChanges: BalanceChange[] = [];
-  if (nativeChange) {
-    balanceChanges.push(nativeChange);
-  }
-  balanceChanges.push(...tokenChanges);
-
+  const balanceChanges: BalanceChange[] = [
+    ...(nativeChange ? [nativeChange] : []),
+    ...tokenChanges,
+  ];
   return { pending: false, value: balanceChanges };
 };

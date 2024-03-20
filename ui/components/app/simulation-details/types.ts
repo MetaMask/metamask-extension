@@ -5,7 +5,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 /**
  * Describes an amount of fiat.
  */
-export const FIAT_UNAVAILABLE = 'Fiat Unavailable';
+export const FIAT_UNAVAILABLE = null;
 export type FiatAmountAvailable = number;
 export type FiatAmount = FiatAmountAvailable | typeof FIAT_UNAVAILABLE;
 

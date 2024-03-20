@@ -537,9 +537,7 @@ export class Numeric {
    * carrying over the base and denomination from the current Numeric.
    */
   abs() {
-    return this.isPositive()
-      ? this
-      : new Numeric(this.value.abs(), this.base, this.denomination);
+    return new Numeric(this.value.abs(), this.base, this.denomination);
   }
 
   greaterThan(
