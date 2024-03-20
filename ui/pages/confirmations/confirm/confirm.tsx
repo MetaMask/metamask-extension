@@ -6,6 +6,7 @@ import { Info } from '../components/confirm/info';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMISignatureMismatchBanner } from '../components/confirm/mmi-signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
+import { Nav } from '../components/confirm/nav';
 import { SignatureMessage } from '../components/confirm/signature-message';
 import { Title } from '../components/confirm/title';
 import { Box } from '../../../components/component-library';
@@ -20,6 +21,7 @@ const Confirm = () => {
 
   return (
     <Page backgroundColor={BackgroundColor.backgroundAlternative}>
+      <Nav />
       <Header />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
