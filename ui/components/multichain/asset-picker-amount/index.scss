@@ -26,12 +26,11 @@
     height: 66px;
     aspect-ratio: 1/1;
 
+    // 4 padding + 1 border
+    margin: -5px -5px -5px 0;
     box-sizing: border-box;
     border-width: 1px;
     border-radius: 0 8px 8px 0;
-
-    // 4 padding + 1 border
-    margin: -5px -5px -5px 0;
   }
 
   // input for tokens
