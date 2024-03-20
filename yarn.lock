@@ -3815,9 +3815,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.3.16":
-  version: 0.3.16
-  resolution: "@metamask-institutional/extension@npm:0.3.16"
+"@metamask-institutional/extension@npm:^0.3.17":
+  version: 0.3.17
+  resolution: "@metamask-institutional/extension@npm:0.3.17"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
@@ -3828,7 +3828,8 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.0.4"
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
-  checksum: 099b941dba62a503829e8806a6892ff49672492379f3d6230f6c562cf3e70da7ffc077598ff2acf8fe286a6fa8df3d8eaa63e9d40eca943fed3c609150b43af2
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: b1cc3c6e0a6719692b78b08ec9b4dd4bae03913f4c1a94a18eebfe3a2abbd386335a0aeb695167ed60681bf15db140e00ee1639485f1fdd19d4b62905a0cb6bc
   languageName: node
   linkType: hard
 
@@ -4128,24 +4129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/controller-utils@npm:9.0.1"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^8.3.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    "@types/bn.js": "npm:^5.1.5"
-    bn.js: "npm:^5.2.1"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 9bee25c1e846e7cecbc0188ec57810461ee618eb0f869afd0d39a297bdcb78594e101753e1b085db68f0949fd4b3986ebc4863763128af0283ac8fab01322fea
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^9.0.2":
+"@metamask/controller-utils@npm:^9.0.1, @metamask/controller-utils@npm:^9.0.2":
   version: 9.0.2
   resolution: "@metamask/controller-utils@npm:9.0.2"
   dependencies:
@@ -5639,9 +5623,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:@metamask-previews/transaction-controller@25.1.0-preview-97731c3":
-  version: 25.1.0-preview-97731c3
-  resolution: "@metamask-previews/transaction-controller@npm:25.1.0-preview-97731c3"
+"@metamask/transaction-controller@npm:^25.1.0, @metamask/transaction-controller@npm:^25.2.0":
+  version: 25.2.0
+  resolution: "@metamask/transaction-controller@npm:25.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5668,41 +5652,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.0
     "@metamask/gas-fee-controller": ^14.0.0
     "@metamask/network-controller": ^18.0.0
-  checksum: 1cb1b11940bd911c1f0a9aa14f1e0e9681cd86f642d81fbc19de9cbe85fab5d3f35e01a6a21d8ac5d02ebb471568a367670874637d65e338627e367b45f0fb09
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@npm:^25.1.0":
-  version: 25.1.0
-  resolution: "@metamask/transaction-controller@npm:25.1.0"
-  dependencies:
-    "@ethereumjs/common": "npm:^3.2.0"
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/approval-controller": "npm:^6.0.1"
-    "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^14.0.1"
-    "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^18.0.1"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    nonce-tracker: "npm:^3.0.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.23.9
-    "@metamask/approval-controller": ^6.0.0
-    "@metamask/gas-fee-controller": ^14.0.0
-    "@metamask/network-controller": ^18.0.0
-  checksum: 45ef39db7a99f4d41d8edd79995029890c0cbad12bec0c716824f5f21659a097386ce53bef1a37cdf99b9086f3fe71be2d22a1d8f20ffffe4a5df6ad1b496c90
+  checksum: 83db5bb73017fee80ddde54666841bcbe59afd1e7ad2257d9faa5635b953e7c1349a5499056606d104238a41500742abec9be1ad4a672a9753649324c06ebb90
   languageName: node
   linkType: hard
 
@@ -25156,7 +25106,7 @@ __metadata:
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
     "@metamask-institutional/custody-keyring": "npm:^1.0.10"
-    "@metamask-institutional/extension": "npm:^0.3.16"
+    "@metamask-institutional/extension": "npm:^0.3.17"
     "@metamask-institutional/institutional-features": "npm:^1.2.11"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
@@ -25229,7 +25179,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.3.0"
-    "@metamask/transaction-controller": "npm:^25.0.0"
+    "@metamask/transaction-controller": "npm:^25.2.0"
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
