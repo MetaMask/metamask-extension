@@ -59,6 +59,8 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - blockaid
+      # DO NOT MERGE: This is a temporary feature flag for the transaction simulation feature
+      - transaction-simulation
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
