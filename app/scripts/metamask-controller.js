@@ -1393,20 +1393,26 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IF(notifications)
     // Notification Controllers
-    this.userStorageController = new UserStorageController(
-      this.controllerMessenger.getRestricted({
+    this.userStorageController = new UserStorageController({
+      messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [`${this.snapController.name}:handleRequest`],
       }),
-      {
+      auth: {
         getBearerToken: () => {
           throw new Error('Unimplemented Method');
         },
         getSessionIdentifier: () => {
           throw new Error('Unimplemented Method');
         },
+        isAuthEnabled: () => {
+          throw new Error('Unimplemented Method');
+        },
+        signIn: () => {
+          throw new Error('Unimplemented Method');
+        },
       },
-    );
+    });
     ///: END:ONLY_INCLUDE_IF
 
     // account tracker watches balances, nonces, and any code at their address
