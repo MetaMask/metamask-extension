@@ -92,9 +92,6 @@ describe('Send ETH', function () {
 
     /* eslint-disable-next-line mocha/max-top-level-suites */
     it('finds the transaction in the transactions list using advanced gas modal', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -199,9 +196,6 @@ describe('Send ETH', function () {
     });
 
     it('shows no error when cancel transaction when sending via QR code', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -408,9 +402,6 @@ describe('Send ETH', function () {
 
     describe('to non-contract address with data that matches ERC20 transfer data signature', function () {
       it('renders the correct recipient on the confirmation screen', async function () {
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder()

@@ -11,9 +11,6 @@ describe('Send ERC20 token to contract address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should display the token contract warning to the user', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
