@@ -40,7 +40,7 @@ const DECIMAL_INPUT_REGEX = /^\d*(\.|,)?\d*$/u;
  */
 export default function CurrencyInput({
   hexValue,
-  featureSecondary,
+  featureSecondary, // rename to isFiatPreferred
   onChange,
   onPreferenceToggle,
   swapIcon,
@@ -60,10 +60,9 @@ export default function CurrencyInput({
   const secondarySuffix = secondaryCurrency.toUpperCase();
   const isLongSymbol = (primarySuffix?.length || 0) > LARGE_SYMBOL_LENGTH;
 
-  const [isFiatPreferred, setIsFiatPreferred] = useState(featureSecondary);
   const isFiatAvailable = useSelector(getShouldShowFiat);
 
-  const shouldUseFiat = isFiatAvailable && isFiatPreferred;
+  const shouldUseFiat = isFiatAvailable && featureSecondary;
   const isTokenPrimary = !shouldUseFiat;
 
   const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
@@ -87,7 +86,6 @@ export default function CurrencyInput({
 
   const swap = async () => {
     await onPreferenceToggle();
-    setIsFiatPreferred(!isFiatPreferred);
   };
 
   // if the conversion rate is undefined, do not allow a fiat input
@@ -98,7 +96,6 @@ export default function CurrencyInput({
 
     if (!tokenToFiatConversionRate) {
       onPreferenceToggle();
-      setIsFiatPreferred(false);
     }
   }, [tokenToFiatConversionRate, isTokenPrimary, onPreferenceToggle]);
 
