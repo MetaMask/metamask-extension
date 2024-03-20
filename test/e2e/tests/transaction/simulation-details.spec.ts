@@ -2,7 +2,7 @@ import { By } from "selenium-webdriver";
 import FixtureBuilder from "../../fixture-builder";
 import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow } from "../../helpers";
 import { Driver } from '../../webdriver/driver';
-import { RECIPIENT_ADDRESS_MOCK } from "./simulation-preview.mocks";
+import { RECIPIENT_ADDRESS_MOCK } from "./simulation-details.mocks";
 
 const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress: string, quantity: string) => {
   await openActionMenuAndStartSendFlow(driver);

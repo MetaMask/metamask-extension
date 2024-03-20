@@ -12,7 +12,7 @@ const {
 
 const {
   mockTxSentinelServer,
-} = require('./tests/transaction/simulation-preview.mocks');
+} = require('./tests/transaction/simulation-details.mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
