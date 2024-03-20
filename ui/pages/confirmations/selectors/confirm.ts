@@ -1,31 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { ApprovalControllerState } from '@metamask/approval-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 
-import { getPendingApprovals } from './approvals';
-
-type SignatureRequestType = {
-  chainId?: string;
-  id: string;
-  msgParams?: {
-    from: string;
-    origin: string;
-    data: string;
-  };
-  type: TransactionType;
-};
-
-type Confirmation = SignatureRequestType;
-
-export type ConfirmMetamaskState = {
-  confirm: {
-    currentConfirmation?: Confirmation;
-  };
-  metamask: {
-    pendingApprovals: ApprovalControllerState['pendingApprovals'];
-    approvalFlows: ApprovalControllerState['approvalFlows'];
-  };
-};
+import { getPendingApprovals } from '../../../selectors/approvals';
+import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.EthSign,
@@ -38,6 +14,16 @@ export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
   return getPendingApprovals(state).filter(({ type }) =>
     ConfirmationApprovalTypes.includes(type as ApprovalType),
   );
+}
+
+export function pendingConfirmationsSortedSelector(
+  state: ConfirmMetamaskState,
+) {
+  return getPendingApprovals(state)
+    .filter(({ type }) =>
+      ConfirmationApprovalTypes.includes(type as ApprovalType),
+    )
+    .sort((a1, a2) => a1.time - a2.time);
 }
 
 export function latestPendingConfirmationSelector(state: ConfirmMetamaskState) {
