@@ -1,5 +1,5 @@
 import React from 'react';
-import { unapprovedTypedSignMsgV3 } from '../../../../../../../test/data/confirmations/typed_sign';
+import { unapprovedTypedSignMsgV4 } from '../../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../../store/store';
@@ -7,7 +7,7 @@ import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
 describe('ConfirmInfoRowTypedSignData', () => {
   const renderWithComponentData = (
-    data: string = unapprovedTypedSignMsgV3.msgParams.data,
+    data: string = unapprovedTypedSignMsgV4.msgParams.data,
   ) => {
     const store = configureStore({
       metamask: { ...mockState.metamask },
@@ -21,7 +21,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithComponentData(
-      unapprovedTypedSignMsgV3.msgParams.data,
+      unapprovedTypedSignMsgV4.msgParams.data,
     );
     expect(container).toMatchSnapshot();
   });
