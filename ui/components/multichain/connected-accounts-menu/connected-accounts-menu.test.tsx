@@ -1,14 +1,22 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { KeyringType } from '@metamask/eth-keyring-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ConnectedAccountsMenu } from '.';
 
 const DEFAULT_PROPS = {
   isOpen: true,
   onClose: jest.fn(),
-  identity: { address: '0x123' },
+  account: {
+    ...createMockInternalAccount(),
+    balance: '0x123',
+    keyringType: {
+      type: KeyringType.HD,
+    },
+  },
   anchorElement: null,
   disableAccountSwitcher: false,
   closeMenu: jest.fn(),

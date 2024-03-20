@@ -21,7 +21,7 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { getOriginOfCurrentTab } from '../../../selectors';
-import { Identity } from './connected-accounts-menu.types';
+import { InternalAccountWithBalance } from './connected-accounts-menu.types';
 
 const TsMenuItem = MenuItem as any;
 
@@ -34,7 +34,7 @@ export const ConnectedAccountsMenu = ({
   closeMenu,
 }: {
   isOpen: boolean;
-  account: Identity;
+  account: InternalAccountWithBalance;
   anchorElement: HTMLElement | null;
   disableAccountSwitcher: boolean;
   onClose: () => void;

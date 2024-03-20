@@ -63,7 +63,7 @@ describe('Ducks - Swaps', () => {
     };
 
     const createGetState = () => {
-      const mockInternalAccount = createMockInternalAccount({});
+      const mockInternalAccount = createMockInternalAccount();
 
       return () => ({
         metamask: {

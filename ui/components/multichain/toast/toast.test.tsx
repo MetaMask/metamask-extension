@@ -6,7 +6,7 @@ import { BorderColor } from '../../../helpers/constants/design-system';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { Toast } from '.';
 
-const mockInternalAccount = createMockInternalAccount({});
+const mockInternalAccount = createMockInternalAccount();
 
 const CHAOS_ACCOUNT: any = {
   ...mockInternalAccount,
