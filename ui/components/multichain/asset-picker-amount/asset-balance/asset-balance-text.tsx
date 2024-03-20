@@ -58,16 +58,6 @@ export function AssetBalanceText({
     true,
   );
 
-  if (asset.type === AssetType.NFT) {
-    const numberOfTokens = hexToDecimal(asset.balance);
-    return (
-      <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodyMd}>
-        {numberOfTokens}{' '}
-        {t(numberOfTokens === '1' ? 'token' : 'tokens')?.toLowerCase()}
-      </Text>
-    );
-  }
-
   const formattedFiat =
     asset.type === AssetType.native
       ? nativeTokenFiatBalance
@@ -84,6 +74,16 @@ export function AssetBalanceText({
       variant: TextVariant.bodySm,
     },
   };
+
+  if (asset.type === AssetType.NFT) {
+    const numberOfTokens = hexToDecimal(asset.balance || '0x0');
+    return (
+      <Text fontWeight={FontWeight.Medium} {...commonProps.textProps}>
+        {numberOfTokens}{' '}
+        {t(numberOfTokens === '1' ? 'token' : 'tokens')?.toLowerCase()}
+      </Text>
+    );
+  }
 
   if (isFiatPrimary) {
     return (
