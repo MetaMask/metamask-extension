@@ -33,11 +33,22 @@ const mockGetConversionRate = getConversionRate as jest.Mock;
 const mockGetTokenExchangeRates = getTokenExchangeRates as unknown as jest.Mock;
 const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
 
-const TOKEN_ADDRESS_1_MOCK: Hex = '0x1';
-const TOKEN_ADDRESS_2_MOCK: Hex = '0x2';
+const ETH_TO_FIAT_RATE = 3;
+
+const ERC20_TOKEN_ADDRESS_1_MOCK: Hex = '0x0erc20_1';
+const ERC20_TOKEN_ADDRESS_2_MOCK: Hex = '0x0erc20_2';
+const ERC20_DECIMALS_1_MOCK = 3;
+const ERC20_DECIMALS_2_MOCK = 4;
+const ERC20_TO_ETH_RATE_1_MOCK = 0.5;
+const ERC20_TO_ETH_RATE_2_MOCK = 2;
+
+const NFT_TOKEN_ADDRESS_MOCK: Hex = '0x0nft';
+
 const TOKEN_ID_1_MOCK: Hex = '0x123';
-const DIFFERENCE_1: Hex = '0x1';
-const DIFFERENCE_2: Hex = '0x2';
+
+const DIFFERENCE_1_MOCK: Hex = '0x11';
+const DIFFERENCE_2_MOCK: Hex = '0x2';
+const DIFFERENCE_ETH_MOCK: Hex = '0x1234567890123456789';
 
 const dummyBalanceChange = {
   previousBalance: '0xIGNORE' as Hex,
@@ -47,9 +58,20 @@ const dummyBalanceChange = {
 describe('useBalanceChanges', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetConversionRate.mockReturnValue(1);
-    mockGetTokenExchangeRates.mockReturnValue({});
-    mockGetTokenStandardAndDetails.mockResolvedValue({});
+    mockGetTokenStandardAndDetails.mockImplementation((address: Hex) => {
+      const decimalMap: Record<Hex, number> = {
+        [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_DECIMALS_1_MOCK,
+        [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_DECIMALS_2_MOCK,
+      };
+      return Promise.resolve({
+        decimals: decimalMap[address]?.toString() ?? undefined,
+      });
+    });
+    mockGetConversionRate.mockReturnValue(ETH_TO_FIAT_RATE);
+    mockGetTokenExchangeRates.mockReturnValue({
+      [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_ETH_RATE_1_MOCK,
+      [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_ETH_RATE_2_MOCK,
+    });
   });
 
   it('returns empty array when no simulation data', () => {
@@ -63,9 +85,9 @@ describe('useBalanceChanges', () => {
       tokenBalanceChanges: [
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1,
+          difference: DIFFERENCE_1_MOCK,
           isDecrease: true,
-          address: TOKEN_ADDRESS_1_MOCK,
+          address: ERC20_TOKEN_ADDRESS_1_MOCK,
           standard: SimulationTokenStandard.erc20,
         },
       ],
@@ -89,69 +111,52 @@ describe('useBalanceChanges', () => {
     };
 
     it('maps token balance changes correctly', async () => {
-      mockGetTokenStandardAndDetails.mockResolvedValue({ decimals: '10' });
-      mockGetTokenExchangeRates.mockReturnValue({
-        [TOKEN_ADDRESS_1_MOCK]: 0.5,
-      });
-
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1,
+          difference: DIFFERENCE_1_MOCK,
           isDecrease: true,
-          address: TOKEN_ADDRESS_1_MOCK,
+          address: ERC20_TOKEN_ADDRESS_1_MOCK,
           standard: SimulationTokenStandard.erc20,
         },
       ]);
 
       await waitForNextUpdate();
 
-      expect(result.current.value).toEqual([
+      const changes = result.current.value;
+      expect(changes).toEqual([
         {
           asset: {
-            address: TOKEN_ADDRESS_1_MOCK,
+            address: ERC20_TOKEN_ADDRESS_1_MOCK,
             standard: TokenStandard.ERC20,
+            tokenId: undefined,
           },
           amount: {
             isNegative: true,
-            quantity: DIFFERENCE_1,
-            decimals: 10,
+            quantity: DIFFERENCE_1_MOCK,
+            decimals: 3,
             numeric: expect.any(Numeric),
           },
-          fiatAmount: expect.any(Numeric),
+          fiatAmount: Number('-0.0255'),
         },
       ]);
-      const changes = result.current.value;
-      expect(changes[0].amount.numeric.toString()).toBe('-0.0000000001');
-      expect(changes[0].fiatAmount.toString()).toBe('-0.00000000005');
+      expect(changes[0].amount.numeric.toString()).toBe('-0.017');
     });
 
     it('handles multiple token balance changes', async () => {
-      const decimalMap: Record<Hex, number> = {
-        [TOKEN_ADDRESS_1_MOCK]: 3,
-        [TOKEN_ADDRESS_2_MOCK]: 4,
-      };
-      mockGetTokenStandardAndDetails.mockImplementation((address: Hex) =>
-        Promise.resolve({ decimals: decimalMap[address].toString() }),
-      );
-      mockGetTokenExchangeRates.mockReturnValue({
-        [TOKEN_ADDRESS_1_MOCK]: 0.5,
-        [TOKEN_ADDRESS_2_MOCK]: 2,
-      });
-
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1,
+          difference: DIFFERENCE_1_MOCK,
           isDecrease: true,
-          address: TOKEN_ADDRESS_1_MOCK,
+          address: ERC20_TOKEN_ADDRESS_1_MOCK,
           standard: SimulationTokenStandard.erc20,
         },
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_2,
+          difference: DIFFERENCE_2_MOCK,
           isDecrease: false,
-          address: TOKEN_ADDRESS_2_MOCK,
+          address: ERC20_TOKEN_ADDRESS_2_MOCK,
           standard: SimulationTokenStandard.erc20,
         },
       ]);
@@ -160,19 +165,19 @@ describe('useBalanceChanges', () => {
 
       const changes = result.current.value;
       expect(changes).toHaveLength(2);
-      expect(changes[0].amount.numeric.toString()).toBe('-0.001');
-      expect(changes[0].fiatAmount.toString()).toBe('-0.0005');
+      expect(changes[0].amount.numeric.toString()).toBe('-0.017');
+      expect(changes[0].fiatAmount).toBe(Number('-0.0255'));
       expect(changes[1].amount.numeric.toString()).toBe('0.0002');
-      expect(changes[1].fiatAmount.toString()).toBe('0.0004');
+      expect(changes[1].fiatAmount).toBe(Number('0.0012'));
     });
 
     it('handles non-ERC20 tokens', async () => {
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1,
+          difference: DIFFERENCE_1_MOCK,
           isDecrease: true,
-          address: TOKEN_ADDRESS_1_MOCK,
+          address: NFT_TOKEN_ADDRESS_MOCK,
           standard: SimulationTokenStandard.erc721,
           id: TOKEN_ID_1_MOCK,
         },
@@ -183,13 +188,13 @@ describe('useBalanceChanges', () => {
       expect(result.current.value).toEqual([
         {
           asset: {
-            address: TOKEN_ADDRESS_1_MOCK,
+            address: NFT_TOKEN_ADDRESS_MOCK,
             standard: TokenStandard.ERC721,
             tokenId: TOKEN_ID_1_MOCK,
           },
           amount: {
             isNegative: true,
-            quantity: DIFFERENCE_1,
+            quantity: DIFFERENCE_1_MOCK,
             decimals: 0,
             numeric: expect.any(Numeric),
           },
@@ -202,9 +207,9 @@ describe('useBalanceChanges', () => {
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1,
+          difference: DIFFERENCE_1_MOCK,
           isDecrease: true,
-          address: TOKEN_ADDRESS_1_MOCK,
+          address: '0x0unknown',
           standard: SimulationTokenStandard.erc20,
         },
       ]);
@@ -227,35 +232,31 @@ describe('useBalanceChanges', () => {
     };
 
     it('maps native balance change correctly', async () => {
-      mockGetConversionRate.mockReturnValue(2);
-
       const { result, waitForNextUpdate } = setupHook({
         ...dummyBalanceChange,
-        difference: DIFFERENCE_1,
+        difference: DIFFERENCE_ETH_MOCK,
         isDecrease: true,
       });
 
       await waitForNextUpdate();
 
-      expect(result.current.value).toEqual([
+      const changes = result.current.value;
+      expect(changes).toEqual([
         {
           asset: {
             standard: TokenStandard.none,
           },
           amount: {
             isNegative: true,
-            quantity: DIFFERENCE_1,
+            quantity: DIFFERENCE_ETH_MOCK,
             decimals: 18,
             numeric: expect.any(Numeric),
           },
-          fiatAmount: expect.any(Numeric),
+          fiatAmount: Number('-16119.010925996032'),
         },
       ]);
-      expect(result.current.value[0].amount.numeric.toString()).toBe(
-        '-0.000000000000000001',
-      );
-      expect(result.current.value[0].fiatAmount.toString()).toBe(
-        '-0.000000000000000002',
+      expect(changes[0].amount.numeric.toString()).toBe(
+        '-5373.003641998677469065',
       );
     });
 
@@ -267,24 +268,18 @@ describe('useBalanceChanges', () => {
   });
 
   it('combines native and token balance changes', async () => {
-    mockGetTokenStandardAndDetails.mockResolvedValue({ decimals: '10' });
-    mockGetConversionRate.mockReturnValue(2);
-    mockGetTokenExchangeRates.mockReturnValue({
-      [TOKEN_ADDRESS_1_MOCK]: 0.5,
-    });
-
     const simulationData: SimulationData = {
       nativeBalanceChange: {
         ...dummyBalanceChange,
-        difference: DIFFERENCE_1,
+        difference: DIFFERENCE_ETH_MOCK,
         isDecrease: true,
       },
       tokenBalanceChanges: [
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_2,
+          difference: DIFFERENCE_2_MOCK,
           isDecrease: false,
-          address: TOKEN_ADDRESS_1_MOCK,
+          address: ERC20_TOKEN_ADDRESS_1_MOCK,
           standard: SimulationTokenStandard.erc20,
         },
       ],
@@ -295,23 +290,19 @@ describe('useBalanceChanges', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current.value).toHaveLength(2);
-    expect(result.current.value[0].asset).toEqual({
+    const changes = result.current.value;
+    expect(changes).toHaveLength(2);
+    expect(changes[0].asset).toEqual({
       standard: TokenStandard.none,
     });
-    expect(result.current.value[0].amount.numeric.toString()).toBe(
-      '-0.000000000000000001',
+    expect(changes[0].amount.numeric.toString()).toBe(
+      '-5373.003641998677469065',
     );
-    expect(result.current.value[0].fiatAmount.toString()).toBe(
-      '-0.000000000000000002',
-    );
-    expect(result.current.value[1].asset).toEqual({
-      address: TOKEN_ADDRESS_1_MOCK,
+    expect(changes[0].fiatAmount).toBe(Number('-16119.010925996032'));
+    expect(changes[1].asset).toEqual({
+      address: ERC20_TOKEN_ADDRESS_1_MOCK,
       standard: TokenStandard.ERC20,
     });
-    expect(result.current.value[1].amount.numeric.toString()).toBe(
-      '0.0000000002',
-    );
-    expect(result.current.value[1].fiatAmount.toString()).toBe('0.0000000001');
+    expect(changes[1].amount.numeric.toString()).toBe('0.002');
   });
 });

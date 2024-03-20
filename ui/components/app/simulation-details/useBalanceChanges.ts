@@ -118,15 +118,16 @@ const getTokenBalanceChanges = (
 
 // Get the exchange rates for converting tokens to the user's fiat currency.
 const getTokenToFiatConversionRates = createSelector(
+  getConversionRate,
   getTokenExchangeRates,
   getConfirmationExchangeRates,
-  (contractExchangeRates, confirmationExchangeRates) => {
+  (nativeToFiat, contractExchangeRates, confirmationExchangeRates) => {
     const mergedRates = {
       ...contractExchangeRates,
       ...confirmationExchangeRates,
     } as Record<string, number>;
     return Object.entries(mergedRates).reduce((acc, [key, value]) => {
-      acc[key.toLowerCase()] = value;
+      acc[key.toLowerCase()] = nativeToFiat * value;
       return acc;
     }, {} as Record<string, number>);
   },
