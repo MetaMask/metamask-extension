@@ -62,7 +62,7 @@ describe('CurrencyInput Component', () => {
       const props = {
         onChange: jest.fn(),
         hexValue: '0xf602f2234d0ea',
-        featureSecondary: true,
+        isFiatPreferred: true,
       };
 
       const { container } = renderWithProvider(
@@ -89,7 +89,7 @@ describe('CurrencyInput Component', () => {
       const props = {
         onChange: jest.fn(),
         hexValue: '0xf602f2234d0ea',
-        featureSecondary: true,
+        isFiatPreferred: true,
       };
 
       const { container } = renderWithProvider(
@@ -131,7 +131,7 @@ describe('CurrencyInput Component', () => {
       const props = {
         onChange: jest.fn(),
         hexValue: '0xf602f2234d0ea',
-        featureSecondary: true,
+        isFiatPreferred: true,
       };
 
       const { queryByTestId, queryByTitle } = renderWithProvider(
@@ -153,7 +153,7 @@ describe('CurrencyInput Component', () => {
         onChange: jest.fn(),
         onPreferenceToggle: jest.fn(),
         hexValue: '0xf602f2234d0ea',
-        featureSecondary: true,
+        isFiatPreferred: true,
       };
 
       const { queryByTestId, queryByTitle } = renderWithProvider(

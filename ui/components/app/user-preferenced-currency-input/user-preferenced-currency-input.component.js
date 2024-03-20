@@ -19,7 +19,7 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
     return (
       <CurrencyInput
         {...restProps}
-        featureSecondary={Boolean(
+        isFiatPreferred={Boolean(
           (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
             (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
         )}

@@ -82,7 +82,7 @@ export function SwappableCurrencyInput({
       return (
         <CurrencyInput
           className="asset-picker-amount__input"
-          featureSecondary={isFiatPrimary}
+          isFiatPreferred={isFiatPrimary}
           onChange={onAmountChange}
           hexValue={value}
           swapIcon={(onClick: React.MouseEventHandler) => (

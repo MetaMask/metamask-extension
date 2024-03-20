@@ -31,7 +31,7 @@ const DECIMAL_INPUT_REGEX = /^\d*(\.|,)?\d*$/u;
  *
  * @param options0
  * @param options0.hexValue
- * @param options0.featureSecondary
+ * @param options0.isFiatPreferred
  * @param options0.onChange
  * @param options0.onPreferenceToggle
  * @param options0.swapIcon
@@ -40,7 +40,7 @@ const DECIMAL_INPUT_REGEX = /^\d*(\.|,)?\d*$/u;
  */
 export default function CurrencyInput({
   hexValue,
-  featureSecondary, // rename to isFiatPreferred
+  isFiatPreferred,
   onChange,
   onPreferenceToggle,
   swapIcon,
@@ -62,7 +62,7 @@ export default function CurrencyInput({
 
   const isFiatAvailable = useSelector(getShouldShowFiat);
 
-  const shouldUseFiat = isFiatAvailable && featureSecondary;
+  const shouldUseFiat = isFiatAvailable && isFiatPreferred;
   const isTokenPrimary = !shouldUseFiat;
 
   const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
@@ -215,7 +215,7 @@ export default function CurrencyInput({
 
 CurrencyInput.propTypes = {
   hexValue: PropTypes.string,
-  featureSecondary: PropTypes.bool,
+  isFiatPreferred: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
   swapIcon: PropTypes.func,
