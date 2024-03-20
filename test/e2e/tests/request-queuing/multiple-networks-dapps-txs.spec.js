@@ -107,12 +107,16 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.executeScript(`window.location.reload()`);
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
         await driver.delay(largeDelayMs);
 
         // Dapp two send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        await driver.executeScript(`window.location.reload()`);
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
         // First switch network
@@ -123,6 +127,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.delay(largeDelayMs);
 
         // Find correct network on confirm tx
         await driver.findElement({
