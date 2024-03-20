@@ -2200,8 +2200,6 @@ export default class MetamaskController extends EventEmitter {
     this.deprecatedNetworkId = null;
     this.updateDeprecatedNetworkId();
 
-    await this.networkController.lookupNetwork();
-
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
