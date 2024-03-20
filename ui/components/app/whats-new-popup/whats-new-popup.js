@@ -321,7 +321,9 @@ export default function WhatsNewPopup({ onClose }) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: renderFirstNotification,
     [NOTIFICATION_PORTFOLIO_V2]: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     [NOTIFICATION_SIMULATIONS]: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   return (
