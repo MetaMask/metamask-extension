@@ -17,12 +17,11 @@
     flex-shrink: 1;
     box-sizing: border-box;
     border-width: 1px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 0 8px 8px 0;
 
     // 4 padding + 1 border
     margin: -5px -5px -5px 0;
-    padding: 24px 16px 24px 16px;
+    padding: 24px 24px 24px 24px;
   }
 
   // input for tokens
