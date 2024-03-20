@@ -663,7 +663,7 @@ export enum MetaMetricsEventName {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
-  SnapInstallRejected = 'Snap Update Rejected',
+  SnapInstallRejected = 'Snap Install Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
   SnapUpdateStarted = 'Snap Update Started',

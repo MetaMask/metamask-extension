@@ -443,7 +443,8 @@
         "@ngraveio/bc-ur": true,
         "@trezor/connect-web>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true,
+        "ganache>abstract-level>buffer": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -699,16 +700,8 @@
     },
     "@metamask/address-book-controller": {
       "packages": {
-        "@metamask/address-book-controller>@metamask/base-controller": true,
-        "@metamask/address-book-controller>@metamask/controller-utils": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/address-book-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true
       }
     },
     "@metamask/address-book-controller>@metamask/controller-utils": {
@@ -719,32 +712,14 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/address-book-controller>@metamask/controller-utils>@metamask/utils": true,
-        "@metamask/address-book-controller>@metamask/controller-utils>ethjs-unit": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/controller-utils>ethjs-unit": {
-      "packages": {
-        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
-        "bn.js": true
+        "eth-ens-namehash": true
       }
     },
     "@metamask/announcement-controller": {
@@ -2209,13 +2184,19 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/address-book-controller>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/smart-transactions-controller>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controller-utils>ethjs-unit": {
+      "packages": {
+        "@metamask/ethjs>ethjs-abi>number-to-bn": true,
+        "bn.js": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -2671,7 +2652,7 @@
     },
     "@ngraveio/bc-ur": {
       "packages": {
-        "@ngraveio/bc-ur>@apocentre/alias-sampling": true,
+        "@ngraveio/bc-ur>@keystonehq/alias-sampling": true,
         "@ngraveio/bc-ur>bignumber.js": true,
         "@ngraveio/bc-ur>cbor-sync": true,
         "@ngraveio/bc-ur>crc": true,

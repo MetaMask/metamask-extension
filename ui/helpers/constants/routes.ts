@@ -165,6 +165,7 @@ const PATH_NAME_MAP = {
   [CONFIRM_TRANSACTION_ROUTE]: 'Confirmation Root Page',
   // TODO: rename when this is the only confirmation page
   [CONFIRMATION_V_NEXT_ROUTE]: 'New Confirmation Page',
+  [`${CONFIRMATION_V_NEXT_ROUTE}/:id`]: 'New Confirmation Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`]:
     'Confirm Token Method Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`]:

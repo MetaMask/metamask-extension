@@ -34,22 +34,27 @@ const useCurrentConfirmation = () => {
       pendingConfirmation = pendingConfirmations.find(
         ({ id: confirmId }) => confirmId === paramsTransactionId,
       );
-    } else {
+    }
+    if (!pendingConfirmation) {
+      if (!latestPendingConfirmation) {
+        setCurrentConfirmation(undefined);
+        return;
+      }
       pendingConfirmation = latestPendingConfirmation;
     }
-    if (
-      pendingConfirmation &&
-      pendingConfirmation.id !== currentConfirmation?.id
-    ) {
+    if (pendingConfirmation.id !== currentConfirmation?.id) {
       // currently re-design is enabled only for personal signatures
       // condition below can be changed as we enable it for other transactions also
       const unapprovedMsg = unapprovedPersonalMsgs[pendingConfirmation.id];
       if (!unapprovedMsg) {
+        setCurrentConfirmation(undefined);
         return;
       }
       const { siwe } = unapprovedMsg.msgParams;
 
-      if (!siwe?.isSIWEMessage) {
+      if (siwe?.isSIWEMessage) {
+        setCurrentConfirmation(undefined);
+      } else {
         setCurrentConfirmation(unapprovedMsg);
       }
     }
