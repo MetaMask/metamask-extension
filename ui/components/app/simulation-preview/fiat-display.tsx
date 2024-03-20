@@ -1,19 +1,20 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, Text } from '../../component-library';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { BalanceChange, Erc20AssetIdentifier, Amount } from './types';
-import { FIAT_UNAVAILABLE, FiatAmount } from './useFiatAmount';
+import { Text } from '../../component-library';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { getCurrentCurrency } from '../../../selectors';
+import { SizeNumber } from '../../component-library/box/box.types';
+import { BalanceChange, FIAT_UNAVAILABLE, FiatAmountAvailable } from './types';
 
 const textStyle = {
   color: TextColor.textAlternative,
   variant: TextVariant.bodySm,
+  paddingRight: 2 as SizeNumber,
 };
 
 const FiatNotAvailableDisplay: React.FC = () => {
@@ -22,63 +23,58 @@ const FiatNotAvailableDisplay: React.FC = () => {
 };
 
 /**
- * Formats a fiat amount as a localized string.
- *
- * @param locale
- * @param fiatCurrency
- * @param fiatAmount
+ * Returns a function that formats a fiat amount as a localized string.
  */
-function formatFiatAmount(
-  locale: string,
-  fiatCurrency: string,
-  fiatAmount: Exclude<FiatAmount, typeof FIAT_UNAVAILABLE>,
-): string {
-  return Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: fiatCurrency,
-  }).format(fiatAmount.toNumber());
-}
+const useFiatFormatter = () => {
+  const locale = useSelector(getCurrentLocale);
+  const fiatCurrency = useSelector(getCurrentCurrency);
 
-export const IndividualFiatDisplay: React.FC<BalanceChange> = ({
-  asset,
-  amount,
-}) => {
-  function renderContent() {
-    if (asset.standard === TokenStandard.none) {
-      return <NativeFiatDisplay amount={amount} />;
-    }
-    if (asset.standard === TokenStandard.ERC20) {
-      return <Erc20FiatDisplay asset={asset} amount={amount} />;
-    }
-    return <FiatNotAvailableDisplay />;
-  }
-
-  return <Box paddingRight={2}>{renderContent()}</Box>;
+  return (fiatAmount: FiatAmountAvailable) => {
+    return Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: fiatCurrency,
+    }).format(fiatAmount);
+  };
 };
 
+/**
+ * Displays the fiat value of a single balance change.
+ *
+ * @param props
+ * @param props.fiatAmount
+ */
+export const IndividualFiatDisplay: React.FC<BalanceChange> = ({
+  fiatAmount,
+}) => {
+  const fiatFormatter = useFiatFormatter();
+
+  if (fiatAmount === FIAT_UNAVAILABLE) {
+    return <FiatNotAvailableDisplay />;
+  }
+  return <Text {...textStyle}>{fiatFormatter(Math.abs(fiatAmount))}</Text>;
+};
+
+/**
+ * Displays the total fiat value of a list of balance changes.
+ *
+ * @param props
+ * @param props.balanceChanges
+ */
 export const TotalFiatDisplay: React.FC<{
   balanceChanges: BalanceChange[];
-}> = () => {
+}> = ({ balanceChanges }) => {
   const t = useI18nContext();
-  const totalFiat = 123456;
-  // let hasUnknownFiat = false;
-  // const fiatBreakdown = [] as string[];
-  // const totalFiat = balanceChanges.reduce((total, bc) => {
-  //   const fiat = getFiatValue(bc);
-  //   if (fiat === undefined) {
-  //     hasUnknownFiat = true;
-  //     return total;
-  //   }
-  //   return total + fiat;
-  // }, 0);
+  const fiatFormatter = useFiatFormatter();
 
-  // if (totalFiat === 0) {
-  //   return <FiatNotAvailableDisplay />;
-  // }
+  const totalFiat = balanceChanges.reduce((total, { fiatAmount }) => {
+    return fiatAmount === FIAT_UNAVAILABLE ? total : total + fiatAmount;
+  }, 0);
 
-  return (
-    <Text {...textStyle} paddingRight={2}>
-      {t('simulationPreviewTotalFiat', totalFiat)}
+  return totalFiat === 0 ? (
+    <FiatNotAvailableDisplay />
+  ) : (
+    <Text {...textStyle}>
+      {t('simulationPreviewTotalFiat', [fiatFormatter(Math.abs(totalFiat))])}
     </Text>
   );
 };

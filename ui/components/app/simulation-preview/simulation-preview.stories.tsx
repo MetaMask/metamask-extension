@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { SimulationPreview } from './simulation-preview';
 import mockState from '../../../../test/data/mock-state.json';
-import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { SimulationTokenStandard } from './ERASEME-core-simulation-types';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -14,9 +14,9 @@ const DUMMY_BALANCE_CHANGE = {
 
 const CHAIN_ID_MOCK = '0x1';
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
-const ERC20_TOKEN_2_MOCK = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'; // USDC
+const ERC20_TOKEN_2_MOCK = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC
 const ERC721_TOKEN_MOCK = '0x06012c8cf97bead5deae237070f9587f8e7a266d'; // CryptoKitties
-const ERC1155_TOKEN_MOCK = '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'; // MAYC
+const ERC1155_TOKEN_MOCK = '0x60e4d786628fea6478f785a6d7e704777c86a7c6'; // MAYC
 
 const storeMock = configureStore({
   metamask: {

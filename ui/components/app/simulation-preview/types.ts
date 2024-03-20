@@ -2,12 +2,12 @@ import { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
 
-export const FIAT_UNAVAILABLE = 'Fiat Unavailable';
-
 /**
  * Describes an amount of fiat.
  */
-export type FiatAmount = Numeric | typeof FIAT_UNAVAILABLE;
+export const FIAT_UNAVAILABLE = 'Fiat Unavailable';
+export type FiatAmountAvailable = number;
+export type FiatAmount = FiatAmountAvailable | typeof FIAT_UNAVAILABLE;
 
 /**
  * Identifies the native asset of a chain.

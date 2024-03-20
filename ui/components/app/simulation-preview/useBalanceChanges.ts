@@ -80,7 +80,9 @@ const getNativeBalanceChange = (
   }
   const asset = NATIVE_ASSET;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount.numeric.applyConversionRate(nativeFiatRate);
+  const fiatAmount = amount.numeric
+    .applyConversionRate(nativeFiatRate)
+    .toNumber();
   return { asset, amount, fiatAmount };
 };
 
@@ -103,7 +105,10 @@ const getTokenBalanceChanges = (
 
     const fiatRate = tokenFiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? amount.numeric.applyConversionRate(fiatRate)
+      ? new Numeric(amount.quantity, 16)
+          .times(amount.isNegative ? -1 : 1, 10)
+          .applyConversionRate(fiatRate)
+          .toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };
@@ -125,7 +130,7 @@ export const useBalanceChanges = (
   const erc20Decimals = useAsyncResultStrict(() => {
     const erc20Addresses = tokenBalanceChanges
       .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
-      .map((tbc) => tbc.address);
+      .map((tbc) => tbc.address.toLowerCase() as Hex);
     return fetchErc20Decimals(erc20Addresses);
   }, [tokenBalanceChanges]);
 

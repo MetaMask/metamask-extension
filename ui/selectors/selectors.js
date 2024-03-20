@@ -505,10 +505,16 @@ export const getTokenExchangeRates = (state) =>
 export const getTokenToFiatConversionRates = createSelector(
   getTokenExchangeRates,
   getConfirmationExchangeRates,
-  (contractExchangeRates, confirmationExchangeRates) => ({
-    ...contractExchangeRates,
-    ...confirmationExchangeRates,
-  }),
+  (contractExchangeRates, confirmationExchangeRates) => {
+    const mergedRates = {
+      ...contractExchangeRates,
+      ...confirmationExchangeRates,
+    };
+    return Object.entries(mergedRates).reduce((acc, [key, value]) => {
+      acc[key.toLowerCase()] = value;
+      return acc;
+    }, {});
+  },
 );
 
 export function getAddressBook(state) {
