@@ -3474,15 +3474,12 @@ export default class MetamaskController extends EventEmitter {
       rejectPendingApproval: this.rejectPendingApproval,
 
       // Notifications
+      resetViewedNotifications: announcementController.resetIsShownStates.bind(
+        announcementController,
+      ),
       updateViewedNotifications: announcementController.updateViewed.bind(
         announcementController,
       ),
-
-      ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
-      resetViewedNotifications: announcementController.resetViewedState.bind(
-        announcementController,
-      ),
-      ///: END:ONLY_INCLUDE_IF
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
