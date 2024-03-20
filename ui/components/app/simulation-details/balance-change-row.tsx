@@ -26,7 +26,7 @@ export const BalanceChangeRow: React.FC<{
 }> = ({ label, showFiat, balanceChange }) => {
   return (
     <Box
-      data-testid="simulation-preview-balance-change-row"
+      data-testid="simulation-details-balance-change-row"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.flexStart}

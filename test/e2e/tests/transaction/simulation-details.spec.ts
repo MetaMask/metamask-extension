@@ -17,7 +17,7 @@ const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress
   });
 };
 
-async function withFixturesForSimulationPreview(
+async function withFixturesForSimulationDetails(
   { title }: { title?: string; },
   test: (driver: Driver) => Promise<void>
 ) {
@@ -41,25 +41,25 @@ async function withFixturesForSimulationPreview(
 
 async function expectBalanceChange(driver: Driver, displayAmount: string, assetName: string) {
   await driver.findElement(By.xpath(`
-      //div[@data-testid="simulation-preview-balance-change-row" and contains(., '${displayAmount}') and contains(., '${assetName}')]
+      //div[@data-testid="simulation-details-balance-change-row" and contains(., '${displayAmount}') and contains(., '${assetName}')]
     `));
 }
 
-describe('Simulation Preview', () => {
+describe('Simulation Details', () => {
   it('displays native currency balance change', async function (this: Mocha.Context) {
-      // TODO: Update Test when Multichain Send Flow is added
+    // TODO: Update Test when Multichain Send Flow is added
     if (process.env.MULTICHAIN) {
       return;
     }
 
-    await withFixturesForSimulationPreview({ title: this.test?.fullTitle() }, async (driver) => {
+    await withFixturesForSimulationDetails({ title: this.test?.fullTitle() }, async (driver) => {
       await prepareSendTransactionSimulation(driver, RECIPIENT_ADDRESS_MOCK, '0.001');
       await expectBalanceChange(driver, '- 0.001', 'ETH');
     });
   });
 
   it.only('displays native and token balance changes', async function (this: Mocha.Context) {
-    await withFixturesForSimulationPreview({ title: this.test?.fullTitle() }, async (driver) => {
+    await withFixturesForSimulationDetails({ title: this.test?.fullTitle() }, async (driver) => {
       // Swap ETH for DAI
       await createDappTransaction(driver, {
         "data": "0x5ae401dc0000000000000000000000000000000000000000000000000000000065fadb5f0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000124b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000228a77554072ee25bab4b7c04f357ec0922c219700000000000000000000000000000000000000000000000000038d7ea4c680000000000000000000000000000000000000000000000000003045a473a85c22040000000000000000000000000000000000000000000000000000000000000042c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000064a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000646b175474e89094c44da98b954eedeac495271d0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
