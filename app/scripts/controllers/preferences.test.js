@@ -402,4 +402,19 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('setUseSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseSimulations property in state', () => {
+      preferencesController.setUseSimulations(false);
+      expect(
+        preferencesController.store.getState().useSimulations,
+      ).toStrictEqual(false);
+    });
+  });
 });

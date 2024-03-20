@@ -3106,6 +3106,12 @@
   "notificationsPortfolioV2Title": {
     "message": "MetaMask Portfolio - join millions"
   },
+  "notificationsSimulationsDescriptionOne": {
+    "message": "Now you can see the potential outcome of your transactions before you make them!"
+  },
+  "notificationsSimulationsDescriptionTwo": {
+    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in Settings > Security & Privacy. "
+  },
   "notificationsStakingPortfolioActionText": {
     "message": "Got it",
     "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
@@ -4335,6 +4341,12 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationsSettingDescription": {
+    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
+  },
+  "simulationsSettingSubHeader": {
+    "message": "Estimate balance changes"
   },
   "siteConnections": {
     "message": "Site Connections"

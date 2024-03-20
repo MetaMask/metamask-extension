@@ -81,6 +81,10 @@ export default class SecurityTab extends PureComponent {
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    setUseSimulations: PropTypes.func.isRequired,
+    useSimulations: PropTypes.bool.isRequired,
+    ///: END:ONLY_INCLUDE_IF
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -907,6 +911,43 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  renderSimulationsToggle() {
+    const { t } = this.context;
+    const { useSimulations, setUseSimulations } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[14]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('simulationsSettingSubHeader')}</span>
+          <div className="settings-page__content-description">
+            {t('simulationsSettingDescription')}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useExternalNameSources"
+        >
+          <ToggleButton
+            value={useSimulations}
+            onToggle={(value) => setUseSimulations(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * toggleSecurityAlert
@@ -968,6 +1009,9 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
+          {/* ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation) */}
+          {this.renderSimulationsToggle()}
+          {/* ///: END:ONLY_INCLUDE_IF */}
         </div>
 
         <span
