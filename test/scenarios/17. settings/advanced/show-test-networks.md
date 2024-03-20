@@ -8,6 +8,7 @@ Manual test scenario for the 'Show test networks' toggle. Below is a summary of 
 
 ['Show test networks' toggle](<../../../../../../Desktop/Screen Recording 2024-03-20 at 5.57.06 PM.mov>)
 
+```markdown
 
 # Advanced Settings: Verify "Show test networks" Toggle Functionality
 
@@ -57,3 +58,4 @@ Then the "Select a network" dialog box appears
 And the "Show test networks" toggle is selected OFF
 And the test networks are not visible in the dropdown
 
+```
