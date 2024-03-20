@@ -312,10 +312,10 @@ export const createTransactionEventFragmentWithTxId = async (
     actionId: string;
   },
 ) => {
-  const transactionMeta =
-    transactionMetricsRequest.getTransaction(transactionId);
-
-  transactionMeta.actionId = actionId;
+  const transactionMeta = {
+    ...transactionMetricsRequest.getTransaction(transactionId),
+    actionId,
+  };
 
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({

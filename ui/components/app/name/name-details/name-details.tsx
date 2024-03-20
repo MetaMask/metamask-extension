@@ -59,12 +59,12 @@ import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
-export interface NameDetailsProps {
+export type NameDetailsProps = {
   onClose: () => void;
   sourcePriority?: string[];
   type: NameType;
   value: string;
-}
+};
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
   sourceId: string;
