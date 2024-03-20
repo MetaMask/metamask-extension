@@ -159,10 +159,22 @@ async function main() {
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      await runTestsOnSingleBrowser(currentBrowser);
+      console.log(`Running tests on ${currentBrowser}`);
+      try {
+        await runTestsOnSingleBrowser(currentBrowser);
+      }
+      catch (error) {
+        exitWithError(`Error occurred while running tests on ${currentBrowser}: ${error}`);
+      }
     }
   } else {
-    await runTestsOnSingleBrowser(browser);
+    console.log(`Running tests on ${browser}`);
+    try {
+      await runTestsOnSingleBrowser(browser);
+    }
+    catch (error) {
+      exitWithError(`Error occurred while running tests on ${browser}: ${error}`);
+    }
   }
 }
 
