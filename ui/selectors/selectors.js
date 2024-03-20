@@ -931,6 +931,23 @@ export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
 );
 
 /**
+ * Get a memoized version of the unapproved confirmations.
+ */
+export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
+  getUnapprovedConfirmations,
+  (confirmations) => confirmations,
+);
+
+/**
+ * Get a memoized version of the unapproved templated confirmations.
+ */
+export const getMemoizedUnapprovedTemplatedConfirmations =
+  createDeepEqualSelector(
+    getUnapprovedTemplatedConfirmations,
+    (confirmations) => confirmations,
+  );
+
+/**
  * Get the Snap interfaces from the redux state.
  *
  * @param state - Redux state object.
