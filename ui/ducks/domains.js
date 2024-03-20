@@ -25,6 +25,7 @@ import {
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
+  NO_RESOLUTION_FOR_DOMAIN,
 } from '../pages/confirmations/send/send.constants';
 import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
@@ -105,7 +106,7 @@ const slice = createSlice({
         }
       } else {
         if (!address) {
-          state.error = 'No resolution for domain provided.';
+          state.error = NO_RESOLUTION_FOR_DOMAIN;
         }
         if (address) {
           state.resolution = address;
@@ -136,6 +137,10 @@ const slice = createSlice({
       state.resolution = null;
       state.warning = null;
       state.error = null;
+      state.domainType = null;
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      state.resolvingSnap = null;
+      ///: END:ONLY_INCLUDE_IF
     },
   },
   extraReducers: (builder) => {
@@ -180,7 +185,7 @@ export function initializeDomainSlice() {
   };
 }
 
-export async function fetchResolutions({ domain, address, chainId, state }) {
+export async function fetchResolutions({ domain, chainId, state }) {
   const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
   const subjects = getPermissionSubjects(state);
   const nameLookupSnaps = getNameLookupSnapsIds(state);
@@ -191,12 +196,14 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
     return chainIdCaveat?.includes(chainId) ?? true;
   });
 
-  const snapRequestArgs = domain
-    ? {
-        domain,
-        chainId,
-      }
-    : { address, chainId };
+  // previous logic would switch request args based on the domain property to determine
+  // if this should have been a domain request or a reverse resolution request
+  // since reverse resolution is not supported in the send screen flow,
+  // the logic was changed to cancel the request, because otherwise a snap can erroneously
+  // check for the domain property without checking domain length and return faulty results.
+  if (!domain.length) {
+    return [];
+  }
 
   const results = await Promise.allSettled(
     filteredNameLookupSnapsIds.map((snapId) => {
@@ -207,11 +214,16 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
         request: {
           jsonrpc: '2.0',
           method: ' ',
-          params: snapRequestArgs,
+          params: {
+            domain,
+            chainId,
+          },
         },
       });
     }),
   );
+
+  console.log('domain:', domain);
 
   const filteredResults = results.reduce(
     (successfulResolutions, result, idx) => {
@@ -228,6 +240,8 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
     },
     [],
   );
+
+  console.log('results:', filteredResults);
 
   return filteredResults;
 }
@@ -277,7 +291,7 @@ export function lookupDomainName(domainName) {
         }
       }
 
-      const snapId = fetchedResolutions?.[0].snapId;
+      const snapId = fetchedResolutions?.[0]?.snapId;
       const snapName = getSnapMetadata(state, snapId)?.name;
 
       await dispatch(
@@ -286,7 +300,10 @@ export function lookupDomainName(domainName) {
           error,
           chainId,
           network: chainIdInt,
-          domainType: hasSnapResolution ? 'Other' : ENS,
+          domainType:
+            hasSnapResolution || (!hasSnapResolution && !address)
+              ? 'Other'
+              : ENS,
           domainName: trimmedDomainName,
           ...(hasSnapResolution ? { resolvingSnap: snapName } : {}),
         }),

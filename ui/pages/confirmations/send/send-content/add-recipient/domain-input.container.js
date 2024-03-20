@@ -15,7 +15,7 @@ function mapDispatchToProps(dispatch) {
     ),
     initializeDomainSlice: () => dispatch(initializeDomainSlice()),
     resetDomainResolution: debounce(
-      () => dispatch(resetDomainResolution()),
+      async () => dispatch(resetDomainResolution()),
       300,
     ),
   };
