@@ -19,7 +19,7 @@ const account = {
 };
 
 const DEFAULT_PROPS = {
-  account: account,
+  account,
   onClick: jest.fn(),
 };
 
