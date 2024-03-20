@@ -28,6 +28,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   isBalanceCached,
+  getShouldShowFiat,
   getIsSwapsChain,
   getCurrentChainId,
   getPreferences,
@@ -39,7 +40,6 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
-  getShouldShowFiat,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
