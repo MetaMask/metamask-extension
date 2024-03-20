@@ -72,10 +72,10 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
-        await driver.findElement({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `$ 0.00 USD`,
-        });
+        const balance = await driver.findElement(
+          '[data-testid="eth-overview__primary-currency"]',
+        );
+        assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },
     );
   });
