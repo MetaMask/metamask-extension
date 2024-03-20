@@ -1832,11 +1832,12 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-          this.txController.nonceTracker,
-        ),
+        getNonceLock: this.txController.getNonceLock.bind(this.txController),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
+        getTransactions: this.txController.getTransactions.bind(
+          this.txController,
+        ),
         provider: this.provider,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
