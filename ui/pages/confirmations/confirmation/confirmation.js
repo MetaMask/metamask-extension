@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -24,7 +24,7 @@ import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getUnapprovedTemplatedConfirmations,
+  getMemoizedUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
@@ -51,7 +51,6 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
-import { useConfirmationRouting } from './useConfirmationRouting';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
 // be renamed to "Dialog", now that we are using it in that manner.
@@ -201,8 +200,7 @@ export default function ConfirmationPage({
   const dispatch = useDispatch();
   const history = useHistory();
   const pendingConfirmations = useSelector(
-    getUnapprovedTemplatedConfirmations,
-    isEqual,
+    getMemoizedUnapprovedTemplatedConfirmations,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
@@ -214,7 +212,10 @@ export default function ConfirmationPage({
 
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
-  const pendingRoutedConfirmation = useConfirmationRouting();
+  const { id } = useParams();
+  const pendingRoutedConfirmation = pendingConfirmations.find(
+    (confirmation) => confirmation.id === id,
+  );
   // Confirmations that are directly routed to get priority and will be shown above the current queue.
   const pendingConfirmation =
     pendingRoutedConfirmation ??
