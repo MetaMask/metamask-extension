@@ -2,7 +2,6 @@ import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { GetSnap } from '@metamask/snaps-controllers';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
 
 type AllowedActions =

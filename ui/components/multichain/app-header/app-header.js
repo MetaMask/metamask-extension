@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath, useHistory } from 'react-router-dom';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,6 +13,7 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  CONNECTIONS,
   DEFAULT_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -75,7 +75,8 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getURLHost, shortenAddress } from '../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -173,6 +174,11 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  const handleConnectionsRoute = () => {
+    const hostName = getURLHost(origin);
+
+    history.push(`${CONNECTIONS}/${encodeURIComponent(hostName)}`);
+  };
   // This is required to ensure send and confirmation screens
   // look as desired
   const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
@@ -364,11 +370,16 @@ export const AppHeader = ({ location }) => {
                     <Box ref={menuRef}>
                       <ConnectedStatusIndicator
                         onClick={() => {
-                          history.push(CONNECTED_ACCOUNTS_ROUTE);
-                          trackEvent({
-                            event: MetaMetricsEventName.NavConnectedSitesOpened,
-                            category: MetaMetricsEventCategory.Navigation,
-                          });
+                          if (process.env.MULTICHAIN) {
+                            handleConnectionsRoute();
+                          } else {
+                            history.push(CONNECTED_ACCOUNTS_ROUTE);
+                            trackEvent({
+                              event:
+                                MetaMetricsEventName.NavConnectedSitesOpened,
+                              category: MetaMetricsEventCategory.Navigation,
+                            });
+                          }
                         }}
                       />
                     </Box>

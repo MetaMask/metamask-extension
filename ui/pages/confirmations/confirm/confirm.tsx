@@ -1,11 +1,15 @@
 import React from 'react';
 
-import { Box } from '../../../components/component-library';
 import { Content, Page } from '../../../components/multichain/pages/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { MMISignatureMismatchBanner } from '../components/confirm/mmi-signature-mismatch-banner';
+///: END:ONLY_INCLUDE_IF
 import { Info } from '../components/confirm/info';
+import { Nav } from '../components/confirm/nav';
+import { SignatureMessage } from '../components/confirm/signature-message';
 import { Title } from '../components/confirm/title';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
@@ -16,11 +20,17 @@ const Confirm = () => {
 
   return (
     <Page>
+      <Nav />
       <Header />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        <MMISignatureMismatchBanner />
+        ///: END:ONLY_INCLUDE_IF
+      }
       <Content backgroundColor={BackgroundColor.backgroundAlternative}>
         <Title />
         <Info />
-        <Box>CONFIRMATION PAGE BODY TO COME HERE</Box>
+        <SignatureMessage />
       </Content>
       <Footer />
     </Page>

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedIdentity } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../selectors';
 import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
@@ -16,7 +16,7 @@ import { SendPageRow } from '.';
 
 export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
-  const identity = useSelector(getSelectedIdentity);
+  const internalAccount = useSelector(getSelectedInternalAccount);
 
   const [showAccountPicker, setShowAccountPicker] = useState(false);
 
@@ -25,8 +25,8 @@ export const SendPageAccountPicker = () => {
       <Label paddingBottom={2}>{t('from')}</Label>
       <AccountPicker
         className="multichain-send-page__account-picker"
-        address={identity.address}
-        name={identity.name}
+        address={internalAccount.address}
+        name={internalAccount.metadata.name}
         onClick={() => setShowAccountPicker(true)}
         showAddress
         borderColor={BorderColor.borderDefault}

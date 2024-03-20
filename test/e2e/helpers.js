@@ -14,6 +14,9 @@ const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const { Bundler } = require('./bundler');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { ERC_4337_ACCOUNT } = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -27,6 +30,8 @@ const createDownloadFolder = async (downloadsFolder) => {
 };
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
+
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 async function withFixtures(options, testSuite) {
   const {
@@ -43,9 +48,13 @@ async function withFixtures(options, testSuite) {
     testSpecificMock = function () {
       // do nothing.
     },
+    useBundler,
+    usePaymaster,
   } = options;
+
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
@@ -77,6 +86,11 @@ async function withFixtures(options, testSuite) {
         ...ganacheOptions2,
       });
     }
+
+    if (useBundler) {
+      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+    }
+
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
@@ -157,6 +171,7 @@ async function withFixtures(options, testSuite) {
       ganacheServer,
       secondaryGanacheServer,
       mockedEndpoint,
+      bundlerServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -214,7 +229,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
+      if (
+        process.env.E2E_LEAVE_RUNNING !== 'true' &&
+        (driver.errors.length > 0 || driver.exceptions.length > 0)
+      ) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
@@ -234,9 +252,15 @@ async function withFixtures(options, testSuite) {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
       await ganacheServer.quit();
+
       if (ganacheOptions?.concurrent) {
         await secondaryGanacheServer.quit();
       }
+
+      if (useBundler) {
+        await bundlerServer.stop();
+      }
+
       if (webDriver) {
         await driver.quit();
       }
@@ -278,6 +302,7 @@ const WINDOW_TITLES = Object.freeze({
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
   TestDApp: 'E2E Test Dapp',
   TestSnaps: 'Test Snaps',
+  ERC4337Snap: 'Account Abstraction Snap',
 });
 
 /**
@@ -326,7 +351,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
-  await driver.waitForElementNotPresent('.loading-overlay');
+  await driver.assertElementNotPresent('.loading-overlay');
 };
 
 const completeImportSRPOnboardingFlow = async (
@@ -375,7 +400,7 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="create-password-import"]');
 
   // wait for loading to complete
-  await driver.waitForElementNotPresent('.loading-overlay');
+  await driver.assertElementNotPresent('.loading-overlay');
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
@@ -659,8 +684,6 @@ const PRIVATE_KEY =
 const PRIVATE_KEY_TWO =
   '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
-const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
-
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
@@ -763,6 +786,10 @@ const sendTransaction = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
+
+  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
+  await driver.findElement({ text: '0.000', tag: 'span' });
+
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
@@ -777,9 +804,7 @@ const sendTransaction = async (
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
     await driver.clickElement('[data-testid="home__activity-tab"]');
-    await driver.waitForElementNotPresent(
-      '.transaction-list-item--unconfirmed',
-    );
+    await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
 };
@@ -808,16 +833,11 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
-    undefined,
-    {
-      minimumFractionDigits: 2,
-    },
-  );
+  const balance = await ganacheServer.getBalance();
 
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `$ ${balance} USD`,
+    text: `${balance} ETH`,
   });
 };
 
@@ -850,7 +870,8 @@ async function unlockWallet(
   await driver.press('#password', driver.Key.ENTER);
 
   if (options.waitLoginSuccess !== false) {
-    await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+    // No guard is necessary here, because it goes from present to absent
+    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
 
@@ -1022,6 +1043,33 @@ async function getCleanAppState(driver) {
       window.stateHooks?.getCleanAppState &&
       window.stateHooks.getCleanAppState(),
   );
+}
+
+async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+  try {
+    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+
+    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+
+    await ganacheSeeder.deploySmartContract(
+      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
+    );
+
+    if (usePaymaster) {
+      await ganacheSeeder.deploySmartContract(
+        SMART_CONTRACTS.VERIFYING_PAYMASTER,
+      );
+
+      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+    }
+
+    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+
+    await bundlerServer.start();
+  } catch (error) {
+    console.log('Failed to initialise bundler', error);
+    throw error;
+  }
 }
 
 module.exports = {

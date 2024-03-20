@@ -425,7 +425,7 @@ describe('Actions', () => {
   describe('#addNewAccount', () => {
     it('adds a new account', async () => {
       const store = mockStore({
-        metamask: { identities: {}, ...defaultState.metamask },
+        metamask: { ...defaultState.metamask },
       });
 
       const addNewAccount = background.addNewAccount.callsFake((_, cb) =>

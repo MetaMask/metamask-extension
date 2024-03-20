@@ -20,7 +20,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
   Box,
@@ -66,9 +65,7 @@ export const AccountListItemMenu = ({
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
-  );
+  const { keyring } = identity.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
@@ -346,11 +343,22 @@ AccountListItemMenu.propTypes = {
    */
   isConnected: PropTypes.bool,
   /**
-   * Identity of the account
+   * An account object that has name, address, and balance data
    */
   identity: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
 };

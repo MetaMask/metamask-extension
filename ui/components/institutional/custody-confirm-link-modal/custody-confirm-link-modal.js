@@ -11,7 +11,7 @@ import withModalProps from '../../../helpers/higher-order-components/with-modal-
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { setSelectedAddress } from '../../../store/actions';
-import { getMetaMaskIdentities } from '../../../selectors';
+import { getInternalAccounts } from '../../../selectors';
 import {
   getMMIAddressFromModalOrAddress,
   getCustodyAccountDetails,
@@ -42,7 +42,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
   const trackEvent = useContext(MetaMetricsContext);
-  const mmiAccounts = useSelector(getMetaMaskIdentities);
+  const mmiAccounts = useSelector(getInternalAccounts);
   const address = useSelector(getMMIAddressFromModalOrAddress);
   const custodyAccountDetails = useSelector(getCustodyAccountDetails);
   const { custodians } = useSelector(getMMIConfiguration);
@@ -60,9 +60,9 @@ const CustodyConfirmLink = ({ hideModal }) => {
     }
 
     if (ethereum) {
-      const ethAccount = Object.keys(mmiAccounts).find((account) =>
-        ethereum.accounts.includes(account.toLowerCase()),
-      );
+      const ethAccount = Object.values(mmiAccounts)
+        .map((internalAccount) => internalAccount.address)
+        .find((account) => ethereum.accounts.includes(account.toLowerCase()));
 
       ethAccount && dispatch(setSelectedAddress(ethAccount.toLowerCase()));
     }

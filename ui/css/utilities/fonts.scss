@@ -74,7 +74,7 @@ $font-path: './fonts';
   font-family: 'Euclid Circular B';
   font-style: italic;
   font-weight: 400;
-  src: url($font-path + '/Euclid/EuclidCircularB-RegularItalic-WebXL.ttf') format('truetype');
+  src: url('#{$font-path}/Euclid/EuclidCircularB-RegularItalic-WebXL.ttf') format('truetype');
 }
 
 @font-face {

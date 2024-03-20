@@ -202,7 +202,7 @@ export default function TokenDetailsPage() {
               color={TextColor.textAlternative}
               fontWeight={FontWeight.Bold}
             >
-              {t('tokenList')}
+              {t('tokenList')}:
             </Text>
             <Text
               variant={TextVariant.bodySm}

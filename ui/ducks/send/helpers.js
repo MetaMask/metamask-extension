@@ -222,7 +222,7 @@ export function generateTransactionParams(sendState) {
                 draftTransaction.fromAccount?.address ??
                 sendState.selectedAccount.address,
               tokenId: draftTransaction.asset.details.tokenId,
-              amount: parseInt(draftTransaction.amount.value, 16).toString(),
+              amount: draftTransaction.amount.value,
             });
       break;
     case AssetType.native:

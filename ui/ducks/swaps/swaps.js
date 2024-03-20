@@ -996,6 +996,7 @@ export const signAndSendSwapsSmartTransaction = ({
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
         )}`;
+        updatedApproveTxParams.chainId = chainId;
         approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
             unsignedTransaction: updatedApproveTxParams,
@@ -1006,6 +1007,7 @@ export const signAndSendSwapsSmartTransaction = ({
       unsignedTransaction.gas = `0x${decimalToHex(
         fees.tradeTxFees?.gasLimit || 0,
       )}`;
+      unsignedTransaction.chainId = chainId;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
@@ -1124,18 +1126,19 @@ export const signAndSendTransactions = (
     const usedTradeTxParams = usedQuote.trade;
 
     const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || `0x0`,
+      usedQuote?.gasEstimate || 0,
       16,
-    );
-    const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
-      .round(0)
-      .toString(16);
+    ).toString(16);
+
     const maxGasLimit =
       customSwapsGas ||
       (usedQuote?.gasEstimate
-        ? estimatedGasLimitWithMultiplier
-        : `0x${decimalToHex(usedQuote?.maxGas || 0)}`);
+        ? `0x${estimatedGasLimit}`
+        : `0x${decimalToHex(
+            new BigNumber(usedQuote?.maxGas)
+              .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
+              .toString() || 0,
+          )}`);
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
@@ -1187,7 +1190,7 @@ export const signAndSendTransactions = (
           ? ''
           : usedQuote.aggregator,
       gas_fees: gasEstimateTotalInUSD,
-      estimated_gas: estimatedGasLimit.toString(10),
+      estimated_gas: new BigNumber(estimatedGasLimit, 16).toString(10),
       suggested_gas_price: fastGasEstimate,
       used_gas_price: hexWEIToDecGWEI(usedGasPrice),
       average_savings: usedQuote.savings?.total,

@@ -3264,9 +3264,6 @@
   "securityAlerts": {
     "message": "Sicherheitsbenachrichtigungen"
   },
-  "securityAlertsDescription": {
-    "message": "Diese Funktion warnt Sie vor schädlichen Aktivitäten im Ethereum Mainnet, indem sie Ihre Transaktions- und Signaturanfragen aktiv überprüft und dabei ihre Privatsphäre schützt. Ihre Daten werden dazu nicht an Dritte weitergegeben, die diesen Dienst anbieten. Denken Sie immer an Ihre eigene Sorgfaltspflicht, bevor Sie Anfragen genehmigen, denn es gibt keine Garantie dafür, dass diese Funktion alle schädlichen Aktivitäten auch tatsächlich erkennt."
-  },
   "securityAndPrivacy": {
     "message": "Sicherheit und Datenschutz"
   },

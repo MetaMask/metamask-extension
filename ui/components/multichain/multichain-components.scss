@@ -14,8 +14,8 @@
 @import 'account-picker';
 @import 'activity-list-item';
 @import 'app-header';
+@import 'connected-accounts-menu';
 @import 'connected-site-menu';
-@import 'account-list-menu';
 @import 'token-list-item';
 @import 'network-list-item';
 @import 'network-list-menu';
@@ -27,3 +27,9 @@
 @import 'asset-picker-amount';
 @import 'asset-picker-amount/asset-picker';
 @import 'asset-picker-amount/asset-picker-modal';
+@import 'notification-detail';
+@import 'notification-detail-collection';
+@import 'notification-detail-nft';
+@import 'notification-list-item-icon';
+@import 'notification-list-item';
+@import 'toast';

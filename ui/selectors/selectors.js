@@ -3,7 +3,10 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { stripSnapPrefix } from '@metamask/snaps-utils';
+import {
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+} from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -59,9 +62,6 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getSnapName,
-  ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
@@ -96,6 +96,7 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -106,13 +107,14 @@ import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 // eslint-disable-next-line import/order
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
+  ///: END:ONLY_INCLUDE_IF
+  getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
-///: END:ONLY_INCLUDE_IF
 import { createDeepEqualSelector } from './util';
 
 /**
@@ -182,9 +184,10 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
+ * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
  */
-export function checkNetworkAndAccountSupports1559(state) {
-  const networkSupports1559 = isEIP1559Network(state);
+export function checkNetworkAndAccountSupports1559(state, networkClientId) {
+  const networkSupports1559 = isEIP1559Network(state, networkClientId);
   return networkSupports1559;
 }
 
@@ -272,40 +275,54 @@ export function getAccountTypeForKeyring(keyring) {
  * Get MetaMask accounts, including account name and balance.
  */
 export const getMetaMaskAccounts = createSelector(
-  getMetaMaskIdentities,
+  getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (identities, balances, cachedBalances) =>
-    Object.keys(identities).reduce((accounts, address) => {
+  (internalAccounts, balances, cachedBalances) =>
+    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
-      let account = {};
+      let account = internalAccount;
 
-      if (balances[address]) {
+      if (balances[internalAccount.address]) {
         account = {
           ...account,
-          ...balances[address],
+          ...balances[internalAccount.address],
         };
       }
 
       if (account.balance === null || account.balance === undefined) {
         account = {
           ...account,
-          balance: cachedBalances && cachedBalances[address],
+          balance:
+            (cachedBalances && cachedBalances[internalAccount.address]) ??
+            '0x0',
         };
       }
 
       return {
         ...accounts,
-        [address]: account,
+        [internalAccount.address]: account,
       };
     }, {}),
 );
 
+/**
+ * Returns the selected address from the Metamask state.
+ *
+ * @param state - The Metamask state object.
+ * @returns {string} The selected address.
+ */
 export function getSelectedAddress(state) {
   return state.metamask.selectedAddress;
 }
 
+/**
+ * Returns the selected identity from the Metamask state.
+ *
+ * @param state - The Metamask state object.
+ * @returns The selected identity object.
+ */
 export function getSelectedIdentity(state) {
   const selectedAddress = getSelectedAddress(state);
   const { identities } = state.metamask;
@@ -349,22 +366,28 @@ export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
-export function getInternalAccountsSortedByKeyring(state) {
-  const accounts = getInternalAccounts(state);
+/**
+ * Returns an array of internal accounts sorted by keyring.
+ *
+ * @param keyrings - The array of keyrings.
+ * @param accounts - The object containing the accounts.
+ * @returns The array of internal accounts sorted by keyring.
+ */
+export const getInternalAccountsSortedByKeyring = createSelector(
+  getMetaMaskKeyrings,
+  getMetaMaskAccounts,
+  (keyrings, accounts) => {
+    // keep existing keyring order
+    const internalAccounts = keyrings
+      .map(({ accounts: addresses }) => addresses)
+      .flat()
+      .map((address) => {
+        return accounts[address];
+      });
 
-  return accounts.sort((previousAccount, currentAccount) => {
-    // sort accounts by keyring type in alphabetical order
-    const previousKeyringType = previousAccount.metadata.keyring.type;
-    const currentKeyringType = currentAccount.metadata.keyring.type;
-    if (previousKeyringType < currentKeyringType) {
-      return -1;
-    }
-    if (previousKeyringType > currentKeyringType) {
-      return 1;
-    }
-    return 0;
-  });
-}
+    return internalAccounts;
+  },
+);
 
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
@@ -414,25 +437,14 @@ export function getMetaMaskCachedBalances(state) {
  * Get ordered (by keyrings) accounts with identity and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
-  getMetaMaskKeyrings,
-  getMetaMaskIdentities,
+  getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
-  getInternalAccounts,
-  (keyrings, identities, accounts, internalAccounts) =>
-    keyrings
-      .reduce((list, keyring) => list.concat(keyring.accounts), [])
-      .filter((address) => Boolean(identities[address]))
-      .map((address) => {
-        const internalAccount = internalAccounts.find((account) =>
-          isEqualCaseInsensitive(account.address, address),
-        );
-
-        return {
-          ...identities[address],
-          ...internalAccount,
-          ...accounts[address],
-        };
-      }),
+  (internalAccounts, accounts) => {
+    return internalAccounts.map((internalAccount) => ({
+      ...internalAccount,
+      ...accounts[internalAccount.address],
+    }));
+  },
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -469,10 +481,14 @@ export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
   const selectedAccount = getSelectedInternalAccount(state);
 
-  return {
-    ...selectedAccount,
-    ...accounts[selectedAccount.address],
-  };
+  // At the time of onboarding there is no selected account
+  if (selectedAccount) {
+    return {
+      ...selectedAccount,
+      ...accounts[selectedAccount.address],
+    };
+  }
+  return undefined;
 }
 
 export function getTargetAccount(state, targetAddress) {
@@ -541,11 +557,14 @@ export function getMetadataContractName(state, address) {
 
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
-  const identities = getMetaMaskIdentities(state);
+  const internalAccounts = getInternalAccounts(state);
 
-  const accountsWithSendEtherInfo = Object.entries(identities).map(
-    ([key, identity]) => {
-      return { ...identity, ...accounts[key] };
+  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
+    (internalAccount) => {
+      return {
+        ...internalAccount,
+        ...accounts[internalAccount.address],
+      };
     },
   );
 
@@ -553,9 +572,14 @@ export function accountsWithSendEtherInfoSelector(state) {
 }
 
 export function getAccountsWithLabels(state) {
-  return getMetaMaskAccountsOrdered(state).map(
-    ({ address, balance, metadata: { name } }) => ({
+  return getMetaMaskAccountsOrdered(state).map((account) => {
+    const {
       address,
+      metadata: { name },
+      balance,
+    } = account;
+    return {
+      ...account,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT
           ? name
@@ -563,8 +587,8 @@ export function getAccountsWithLabels(state) {
       } (${shortenAddress(address)})`,
       label: name,
       balance,
-    }),
-  );
+    };
+  });
 }
 
 export function getCurrentAccountWithSendEtherInfo(state) {
@@ -904,6 +928,23 @@ export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
 );
 
 /**
+ * Get a memoized version of the unapproved confirmations.
+ */
+export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
+  getUnapprovedConfirmations,
+  (confirmations) => confirmations,
+);
+
+/**
+ * Get a memoized version of the unapproved templated confirmations.
+ */
+export const getMemoizedUnapprovedTemplatedConfirmations =
+  createDeepEqualSelector(
+    getUnapprovedTemplatedConfirmations,
+    (confirmations) => confirmations,
+  );
+
+/**
  * Get the Snap interfaces from the redux state.
  *
  * @param state - Redux state object.
@@ -1089,11 +1130,23 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+/**
+ * Returns a memoized version of the MetaMask identities.
+ *
+ * @param state - The Redux state.
+ * @returns {Array} An array of MetaMask identities.
+ */
 export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
   getMetaMaskIdentities,
   (identities) => identities,
 );
 
+/**
+ * Returns a memoized selector that gets the internal accounts from the Redux store.
+ *
+ * @param state - The Redux store state.
+ * @returns {Array} An array of internal accounts.
+ */
 export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   getInternalAccounts,
   (internalAccounts) => internalAccounts,
@@ -1190,8 +1243,9 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 );
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
+  getMetaMaskIdentities,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
@@ -1199,8 +1253,16 @@ export const getConnectedSitesList = createDeepEqualSelector(
 
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
+          sitesList[siteKey].addressToNameMap[connectedAddress] =
+            identities[connectedAddress].name; // Map address to name
         } else {
-          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+          sitesList[siteKey] = {
+            ...app,
+            addresses: [connectedAddress],
+            addressToNameMap: {
+              [connectedAddress]: identities[connectedAddress].name,
+            },
+          };
         }
       });
     });
@@ -1259,6 +1321,70 @@ export const getSnap = createDeepEqualSelector(
   (_, snapId) => snapId,
   (snaps, snapId) => {
     return snaps[snapId];
+  },
+);
+
+/**
+ * Get a selector that returns the snap manifest for a given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the manifest for.
+ * @returns {object | undefined} The snap manifest.
+ */
+export const getSnapManifest = createDeepEqualSelector(
+  (state) => state.metamask.currentLocale,
+  (state, snapId) => getSnap(state, snapId),
+  (locale, snap) => {
+    if (!snap?.localizationFiles) {
+      return snap?.manifest;
+    }
+
+    return getLocalizedSnapManifest(
+      snap.manifest,
+      locale,
+      snap.localizationFiles,
+    );
+  },
+);
+
+/**
+ * Get a selector that returns the snap metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the metadata for.
+ * @returns {object} An object containing the snap name and description.
+ */
+export const getSnapMetadata = createDeepEqualSelector(
+  (state, snapId) => getSnapManifest(state, snapId),
+  (_, snapId) => snapId,
+  (manifest, snapId) => {
+    return {
+      // The snap manifest may not be available if the Snap is not installed, so
+      // we use the snap ID as the name in that case.
+      name: manifest?.proposedName ?? (snapId ? stripSnapPrefix(snapId) : null),
+      description: manifest?.description,
+    };
+  },
+);
+
+/**
+ * Get a selector that returns all snaps metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ */
+export const getSnapsMetadata = createDeepEqualSelector(
+  (state) => state,
+  (state) => {
+    return Object.keys(getSnaps(state));
+  },
+  (state, snapIds) => {
+    return snapIds.reduce((snapsMetadata, snapId) => {
+      snapsMetadata[snapId] = getSnapMetadata(state, snapId);
+      return snapsMetadata;
+    }, {});
   },
 );
 
@@ -1394,6 +1520,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
+    [NOTIFICATION_PORTFOLIO_V2]: true,
   };
 }
 
@@ -1721,7 +1848,8 @@ export function getAllNetworks(state) {
 export function getIsOptimism(state) {
   return (
     getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
   );
 }
 
@@ -2021,14 +2149,36 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getUnconnectedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const unConnectedAccounts = accounts.filter((account) => {
+    return !connectedAccounts.some(
+      (connectedAccount) => connectedAccount.address === account.address,
+    );
+  });
+  return unConnectedAccounts;
+}
+
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
   const hiddenAddresses = getHiddenAccountsList(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
 
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses.includes(account.address));
     account.hidden = Boolean(hiddenAddresses.includes(account.address));
+    if (
+      connectedAccounts.length > 0 &&
+      account.address === connectedAccounts[0].address
+    ) {
+      // Update the active property of the matched account to true
+      account.active = true;
+    } else {
+      // If not the first element or no match found, set active to false
+      account.active = false;
+    }
   });
 
   const sortedPinnedAccounts = pinnedAddresses
@@ -2126,7 +2276,7 @@ export function getSnapsList(state) {
         iconUrl: targetSubjectMetadata?.iconUrl,
         subjectType: targetSubjectMetadata?.subjectType,
         packageName: stripSnapPrefix(snap.id),
-        name: getSnapName(snap.id, targetSubjectMetadata),
+        name: getSnapMetadata(state, snap.id).name,
       };
     });
 }

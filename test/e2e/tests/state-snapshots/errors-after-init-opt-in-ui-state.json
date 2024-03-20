@@ -14,6 +14,7 @@
     "isAccountMenuOpen": false,
     "isNetworkMenuOpen": false,
     "identities": "object",
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
@@ -42,8 +43,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1300,
-        "usdConversionRate": 1300
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     },
     "providerConfig": {
@@ -55,7 +56,6 @@
       "type": "rpc",
       "id": "networkConfigurationId"
     },
-    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -67,7 +67,6 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
-    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showPermissionsTour": true,
     "showProductTour": true,
@@ -81,6 +80,7 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "signatureSecurityAlertResponses": "object",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
@@ -162,8 +162,7 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean",
+    "domains": "object",
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
@@ -173,6 +172,7 @@
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
+    "databaseUnavailable": "boolean",
     "notifications": "object",
     "interfaces": "object",
     "names": "object",
@@ -217,6 +217,7 @@
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2
     },
+    "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",

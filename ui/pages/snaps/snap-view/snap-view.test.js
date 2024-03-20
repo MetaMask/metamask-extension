@@ -50,9 +50,9 @@ describe('SnapView', () => {
     ).toBeDefined();
     // Snap website
     await waitFor(() => {
-      const websiteElement = screen.queryByText('https://snaps.consensys.io/');
+      const websiteElement = screen.queryByText('snaps.consensys.io');
       expect(websiteElement).toBeDefined();
-      expect(getByText('https://snaps.consensys.io/')).toBeDefined();
+      expect(getByText('snaps.consensys.io')).toBeDefined();
     });
     // Snap version info
     expect(getByText('5.1.2')).toBeDefined();

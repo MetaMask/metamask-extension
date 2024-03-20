@@ -105,7 +105,7 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
-        await driver.waitForElementNotPresent({
+        await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
         });
@@ -158,7 +158,7 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
-        await driver.waitForElementNotPresent({
+        await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
         });

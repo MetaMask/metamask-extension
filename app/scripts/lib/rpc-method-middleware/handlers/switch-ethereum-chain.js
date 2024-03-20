@@ -26,8 +26,8 @@ const switchEthereumChain = {
     setActiveNetwork: true,
     requestUserApproval: true,
     getNetworkConfigurations: true,
-    getNetworkClientIdForDomain: true,
     getProviderConfig: true,
+    hasPermissions: true,
   },
 };
 
@@ -65,6 +65,7 @@ async function switchEthereumChainHandler(
     setActiveNetwork,
     requestUserApproval,
     getProviderConfig,
+    hasPermissions,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -126,7 +127,9 @@ async function switchEthereumChainHandler(
     const networkClientId = findNetworkClientIdByChainId(_chainId);
 
     if (currentChainId === _chainId) {
-      setNetworkClientIdForDomain(req.origin, networkClientId);
+      if (hasPermissions(req.origin)) {
+        setNetworkClientIdForDomain(req.origin, networkClientId);
+      }
       res.result = null;
       return end();
     }
@@ -146,7 +149,9 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
-      setNetworkClientIdForDomain(req.origin, networkClientId);
+      if (hasPermissions(req.origin)) {
+        setNetworkClientIdForDomain(req.origin, networkClientId);
+      }
       res.result = null;
     } catch (error) {
       return end(error);

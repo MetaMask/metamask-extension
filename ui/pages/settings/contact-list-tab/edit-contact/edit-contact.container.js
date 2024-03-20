@@ -1,7 +1,10 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntry } from '../../../../selectors';
+import {
+  getAddressBookEntry,
+  getInternalAccountByAddress,
+} from '../../../../selectors';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import {
   CONTACT_VIEW_ROUTE,
@@ -22,9 +25,10 @@ const mapStateToProps = (state, ownProps) => {
     ? pathNameTail.toLowerCase()
     : ownProps.match.params.id;
 
-  const contact =
-    getAddressBookEntry(state, address) || state.metamask.identities[address];
-  const { memo, name } = contact || {};
+  const contact = getAddressBookEntry(state, address);
+  const { memo } = contact || {};
+  const name =
+    contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
 
   const { chainId } = getProviderConfig(state);
 

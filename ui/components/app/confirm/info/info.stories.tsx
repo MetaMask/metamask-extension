@@ -14,6 +14,13 @@ const mockRowConfigs: ConfirmInfoRowConfig[] = [
     type: ConfirmInfoRowType.Divider,
   },
   {
+    label: 'Origin',
+    type: ConfirmInfoRowType.UrlType,
+    rowProps: {
+      address: 'https://metamask.github.io',
+    },
+  },
+  {
     label: 'Account',
     type: ConfirmInfoRowType.ValueDouble,
     rowProps: {

@@ -1,7 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-sdk';
-import { nanoid } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
 import { isEqual } from 'lodash';
@@ -9,11 +8,9 @@ import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-import { getSnapName } from '../../../../helpers/utils/util';
 import {
+  getSnapMetadata,
   getMemoizedInterfaceContent,
-  getMemoizedTargetSubjectMetadata,
 } from '../../../../selectors';
 import { Box, FormTextField, Text } from '../../../component-library';
 import { Copyable } from '../copyable';
@@ -39,11 +36,9 @@ const SnapUIRendererComponent = ({
   interfaceId,
 }) => {
   const t = useI18nContext();
-  const targetSubjectMetadata = useSelector((state) =>
-    getMemoizedTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const content = useSelector((state) =>
     getMemoizedInterfaceContent(state, interfaceId),
@@ -51,18 +46,15 @@ const SnapUIRendererComponent = ({
 
   const isValidComponent = content && isComponent(content);
 
-  const elementKeyIndex = { value: 0 };
-
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
       isValidComponent &&
       mapToTemplate({
+        map: {},
         element: content,
-        rootKey: nanoid(),
-        elementKeyIndex,
       }),
-    [content, isValidComponent, elementKeyIndex],
+    [content, isValidComponent],
   );
 
   if (isLoading || !content) {
@@ -74,7 +66,7 @@ const SnapUIRendererComponent = ({
         isCollapsed={isCollapsed}
         onClick={onClick}
         boxProps={boxProps}
-        isLoading={isLoading}
+        isLoading
       />
     );
   }

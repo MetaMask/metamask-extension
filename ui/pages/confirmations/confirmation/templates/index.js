@@ -50,11 +50,13 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'content',
+  'onLoad',
   'onCancel',
   'onSubmit',
   'networkDisplay',
   'submitText',
   'loadingText',
+  'hideSubmitButton',
 ];
 
 /**
@@ -148,9 +150,17 @@ function getAttenuatedDispatch(dispatch) {
  * @param {Function} t - Translation function.
  * @param {Function} dispatch - Redux dispatch function.
  * @param {object} history - The application's history object.
- * @param {object} data - The data object passed into the template from the confimation page.
+ * @param {object} data - The data object passed into the template from the confirmation page.
+ * @param {object} contexts - Contexts objects passed into the template from the confirmation page.
  */
-export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
+export function getTemplateValues(
+  pendingApproval,
+  t,
+  dispatch,
+  history,
+  data,
+  contexts,
+) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -159,7 +169,7 @@ export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions, history, data);
+  const values = fn(pendingApproval, t, safeActions, history, data, contexts);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {

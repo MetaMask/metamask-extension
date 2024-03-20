@@ -12,7 +12,8 @@ import {
   regularDelayMs,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../ui/helpers/constants/common';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
+import { retry } from '../../../development/lib/retry';
 
 /**
  * These are fixtures specific to Account Snap E2E tests:
@@ -64,7 +65,9 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+  await driver.findElement({ text: 'Installation request', tag: 'h2' });
+
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
   await driver.waitForSelector({ text: 'Install' });
 
@@ -172,7 +175,7 @@ async function switchToAccount2(driver: Driver) {
     text: 'Snap Account 1',
   });
 
-  await driver.waitForElementNotPresent({
+  await driver.assertElementNotPresent({
     tag: 'header',
     text: 'Select an account',
   });
@@ -253,6 +256,9 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
     });
   }
 
+  // Close the SnapSimpleKeyringDapp, so that 6 of the same tab doesn't pile up
+  await driver.closeWindow();
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 }
 
@@ -264,17 +270,23 @@ export async function signData(
 ) {
   const isAsyncFlow = flowType !== 'sync';
 
-  await switchToOrOpenDapp(driver);
+  // This step can frequently fail, so retry it
+  await retry(
+    {
+      retries: 3,
+      delay: 2000,
+    },
+    async () => {
+      await switchToOrOpenDapp(driver);
 
-  await driver.clickElement(locatorID);
+      await driver.clickElement(locatorID);
 
-  // behavior of chrome and firefox is different,
-  // chrome needs extra time to load the popup
-  if (driver.browser === 'chrome') {
-    await driver.delay(500);
-  }
+      // take extra time to load the popup
+      await driver.delay(500);
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    },
+  );
 
   // these three don't have a contract details page
   if (!['#ethSign', '#personalSign', '#signTypedData'].includes(locatorID)) {
@@ -284,14 +296,23 @@ export async function signData(
   await clickSignOnSignatureConfirmation(driver, 3, locatorID);
 
   if (isAsyncFlow) {
-    await driver.delay(1000);
+    await driver.delay(2000);
 
-    // // Navigate to the Notification window and click 'Go to site' button
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await driver.clickElement({
-      text: 'Go to site',
-      tag: 'button',
-    });
+    // This step can frequently fail, so retry it
+    await retry(
+      {
+        retries: 3,
+        delay: 1000,
+      },
+      async () => {
+        // Navigate to the Notification window and click 'Go to site' button
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElement({
+          text: 'Go to site',
+          tag: 'button',
+        });
+      },
+    );
 
     await driver.delay(1000);
     await approveOrRejectRequest(driver, flowType);

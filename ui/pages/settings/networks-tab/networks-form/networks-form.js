@@ -751,11 +751,12 @@ const NetworksForm = ({
         <FormTextField
           data-testid="network-form-ticker"
           helpText={
-            suggestedTicker ? (
+            suggestedTicker && suggestedTicker !== ticker ? (
               <Text
                 as="span"
                 variant={TextVariant.bodySm}
                 color={TextColor.textDefault}
+                data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedTokenSymbol')}
                 <ButtonLink

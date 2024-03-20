@@ -15,6 +15,8 @@ import {
   ConfirmInfoRowAddressProps,
   ConfirmInfoRowDivider,
   ConfirmInfoRowProps,
+  ConfirmInfoRowText,
+  ConfirmInfoRowTextProps,
   ConfirmInfoRowUrl,
   ConfirmInfoRowUrlProps,
   ConfirmInfoRowValueDouble,
@@ -25,12 +27,14 @@ import {
 export enum ConfirmInfoRowType {
   Address = 'address',
   Divider = 'divider',
-  ValueDouble = 'value-double',
+  Text = 'text',
   UrlType = 'url',
+  ValueDouble = 'value-double',
 }
 
 type ConfirmInfoTypeProps =
   | ConfirmInfoRowAddressProps
+  | ConfirmInfoRowTextProps
   | ConfirmInfoRowUrlProps
   | ConfirmInfoRowValueDoubleProps;
 
@@ -40,6 +44,9 @@ const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
   },
   [ConfirmInfoRowType.Divider]: () => {
     return <ConfirmInfoRowDivider />;
+  },
+  [ConfirmInfoRowType.Text]: ({ text }: ConfirmInfoRowTextProps) => {
+    return <ConfirmInfoRowText text={text} />;
   },
   [ConfirmInfoRowType.UrlType]: ({ url }: ConfirmInfoRowUrlProps) => {
     return <ConfirmInfoRowUrl url={url} />;
@@ -66,9 +73,9 @@ export type ConfirmInfoRowConfig = {
   variant?: ConfirmInfoRowVariant;
 };
 
-interface ConfirmInfoProps {
+type ConfirmInfoProps = {
   rowConfigs: ConfirmInfoRowConfig[];
-}
+};
 
 /**
  * ConfirmInfo receives a custom config object and displays a list of ConfirmInfoRow components

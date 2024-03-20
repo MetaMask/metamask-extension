@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 
 import {
   EditGasModes,
@@ -17,11 +17,13 @@ import {
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
   getGasFeeTimeEstimate: jest
     .fn()
     .mockImplementation(() => Promise.resolve('unknown')),
@@ -55,7 +57,7 @@ const ESTIMATE_MOCK = {
   maxPriorityFeePerGas: '0x59682f00',
 };
 
-const renderComponent = ({
+const render = async ({
   componentProps,
   transactionProps,
   contextProps,
@@ -67,6 +69,15 @@ const renderComponent = ({
         chainId: CHAIN_IDS.GOERLI,
         nickname: GOERLI_DISPLAY_NAME,
         type: NETWORK_TYPES.GOERLI,
+      },
+      selectedNetworkClientId: 'goerli',
+      networkConfigurations: {
+        goerli: {
+          type: 'rpc',
+          chainId: '0x5',
+          ticker: 'ETH',
+          id: 'goerli',
+        },
       },
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
@@ -85,10 +96,41 @@ const renderComponent = ({
       identities: {
         '0xAddress': {},
       },
+      internalAccounts: {
+        accounts: {
+          mockId: {
+            address: '0xAddress',
+            id: 'mockId',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+        },
+        selectedAccount: 'mock-id',
+      },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      gasFeeEstimatesByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          gasFeeEstimates: MOCK_FEE_ESTIMATE,
+          gasEstimateType: 'fee-market',
+        },
+      },
       advancedGasFee: {
         [CHAIN_IDS.GOERLI]: {
           maxBaseFee: '100',
@@ -98,20 +140,27 @@ const renderComponent = ({
     },
   });
 
-  return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
-      {...contextProps}
-    >
-      <EditGasItem priorityLevel="low" {...componentProps} />
-    </GasFeeContextProvider>,
-    store,
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+          {...contextProps}
+        >
+          <EditGasItem priorityLevel="low" {...componentProps} />
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
+
+  return result;
 };
 
 describe('EditGasItem', () => {
-  it('should renders low gas estimate option for priorityLevel low', () => {
-    renderComponent({ componentProps: { priorityLevel: PriorityLevels.low } });
+  it('should renders low gas estimate option for priorityLevel low', async () => {
+    await render({ componentProps: { priorityLevel: PriorityLevels.low } });
     expect(screen.queryByRole('button', { name: 'low' })).toBeInTheDocument();
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
@@ -119,8 +168,8 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.001113 ETH')).toBeInTheDocument();
   });
 
-  it('should renders market gas estimate option for priorityLevel medium', () => {
-    renderComponent({
+  it('should renders market gas estimate option for priorityLevel medium', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.medium },
     });
     expect(
@@ -132,8 +181,8 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.00147 ETH')).toBeInTheDocument();
   });
 
-  it('should renders aggressive gas estimate option for priorityLevel high', () => {
-    renderComponent({ componentProps: { priorityLevel: PriorityLevels.high } });
+  it('should renders aggressive gas estimate option for priorityLevel high', async () => {
+    await render({ componentProps: { priorityLevel: PriorityLevels.high } });
     expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
@@ -141,8 +190,8 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
-  it('should render priorityLevel high as "Swap suggested" for swaps', () => {
-    renderComponent({
+  it('should render priorityLevel high as "Swap suggested" for swaps', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.high },
       contextProps: { editGasMode: EditGasModes.swaps },
     });
@@ -153,8 +202,8 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
-  it('should highlight option is priorityLevel is currently selected', () => {
-    renderComponent({
+  it('should highlight option is priorityLevel is currently selected', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.high },
       transactionProps: { userFeeLevel: 'high' },
     });
@@ -163,8 +212,8 @@ describe('EditGasItem', () => {
     ).toHaveLength(1);
   });
 
-  it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
-    renderComponent({
+  it('should renders site gas estimate option for priorityLevel dappSuggested', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.dAppSuggested },
       transactionProps: { dappSuggestedGasFees: ESTIMATE_MOCK },
     });
@@ -176,15 +225,15 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
   });
 
-  it('should not renders site gas estimate option for priorityLevel dappSuggested if site does not provided gas estimates', () => {
-    renderComponent({
+  it('should not renders site gas estimate option for priorityLevel dappSuggested if site does not provided gas estimates', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.dAppSuggested },
       transactionProps: {},
     });
     expect(
       screen.queryByRole('button', { name: 'dappSuggested' }),
     ).not.toBeInTheDocument();
-    renderComponent({
+    await render({
       componentProps: { priorityLevel: PriorityLevels.dAppSuggested },
       transactionProps: { dappSuggestedGasFees: { gas: '0x59682f10' } },
     });
@@ -193,8 +242,8 @@ describe('EditGasItem', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should renders advance gas estimate option for priorityLevel custom', () => {
-    renderComponent({
+  it('should renders advance gas estimate option for priorityLevel custom', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.custom },
       transactionProps: { userFeeLevel: 'high' },
     });
@@ -207,8 +256,8 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
-  it('should renders +10% gas estimate option for priorityLevel minimum', () => {
-    renderComponent({
+  it('should renders +10% gas estimate option for priorityLevel minimum', async () => {
+    await render({
       componentProps: { priorityLevel: PriorityLevels.tenPercentIncreased },
       transactionProps: {
         userFeeLevel: 'tenPercentIncreased',

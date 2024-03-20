@@ -24,6 +24,19 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
+export const MMI_SENTRY_BACKGROUND_STATE = {
+  MMIController: {
+    opts: true,
+  },
+  CustodyController: {
+    store: true,
+  },
+  MmiConfigurationController: {
+    store: true,
+    configurationClient: true,
+  },
+};
+
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
@@ -114,6 +127,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   EnsController: {
     ensResolutionsByAddress: false,
+    ensEntries: false,
   },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
@@ -225,7 +239,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
   },
-  SelectedNetworkController: { domains: true, perDomainNetwork: false },
+  SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,
@@ -257,6 +271,7 @@ export const SENTRY_BACKGROUND_STATE = {
   SnapsRegistry: {
     database: false,
     lastUpdated: false,
+    databaseUnavailable: false,
   },
   SubjectMetadataController: {
     subjectMetadata: false,
@@ -289,6 +304,9 @@ export const SENTRY_BACKGROUND_STATE = {
       topAggId: false,
       tradeTxId: false,
     },
+  },
+  TokenDetectionController: {
+    [AllProperties]: false,
   },
   TokenListController: {
     preventPollingOnNetworkRestart: true,
@@ -326,6 +344,9 @@ export const SENTRY_BACKGROUND_STATE = {
   UserOperationController: {
     userOperations: false,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  ...MMI_SENTRY_BACKGROUND_STATE,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 const flattenedBackgroundStateMask = Object.values(

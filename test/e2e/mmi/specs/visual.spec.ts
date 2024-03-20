@@ -6,6 +6,7 @@ import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
+import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 test.describe('MMI visual', () => {
   test('Full visual e2e', async ({ page, context }) => {
@@ -37,7 +38,7 @@ test.describe('MMI visual', () => {
     // Check network
     const networkPage = new MMINetworkPage(page);
     await networkPage.open();
-    await networkPage.selectNetwork('Sepolia');
+    await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
     // get token to access saturn
     const client = new CustodianTestClient();
@@ -50,7 +51,6 @@ test.describe('MMI visual', () => {
     const accountsPopup = new MMIAccountMenuPage(page);
 
     await accountsPopup.accountsMenu();
-    // FIX: This check fails in the pipeline. I think it is related with the image used to run the test
     // await accountsPopup.accountMenuScreenshot('connect_custodian.png');
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
@@ -59,10 +59,7 @@ test.describe('MMI visual', () => {
 
     // Check accounts added from Custodian
     await accountsPopup.accountsMenu();
-    // FIX: This check fails in the pipeline. I think it is related with the image used to run the test
     // await accountsPopup.accountMenuScreenshot('custody_accounts_selection.png');
-
-    // FIX: This check fails in the pipeline. I think it is related with the image used to run the test
 
     // Check remove custodian token screen (aborted before removed)
     await accountsPopup.removeTokenScreenshot('Custody Account A');
