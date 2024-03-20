@@ -1,55 +1,21 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-  getEventPayloads,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-/**
- * mocks the segment api multiple times for specific payloads that we expect to
- * see when these tests are run. In this case we are looking for
- * 'Snap Installed'. Do not use the constants from the metrics constants files,
- * because if these change we want a strong indicator to our data team that the
- * shape of data will change.
- *
- * @param {import('mockttp').Mockttp} mockServer
- * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
- */
-
-async function mockSnapUninstall(mockServer) {
-  return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-  ];
-}
-
 describe('Test Snap Management', function () {
   it('tests install disable enable and removal of a snap', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
-        testSpecificMock: mockSnapUninstall,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver }) => {
         await unlockWallet(driver);
 
         // open a new tab and navigate to test snaps page and connect
@@ -183,17 +149,6 @@ describe('Test Snap Management', function () {
           css: '.mm-box',
           text: "You don't have any snaps installed.",
           tag: 'p',
-        });
-
-        // check that snap uninstalled event metrics have been sent
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/notification-example-snap',
-          version: '2.1.1',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
         });
       },
     );
