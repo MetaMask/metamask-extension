@@ -16,10 +16,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
-
-  ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
   DEVELOPER_OPTIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -53,9 +50,7 @@ import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
-///: BEGIN:ONLY_INCLUDE_IF(developer-options)
 import DeveloperOptionsTab from './developer-options-tab';
-///: END:ONLY_INCLUDE_IF
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
@@ -298,6 +293,7 @@ class SettingsPage extends PureComponent {
   renderTabs() {
     const { history, currentPath } = this.props;
     const { t } = this.context;
+
     const tabs = [
       {
         content: t('general'),
@@ -334,19 +330,20 @@ class SettingsPage extends PureComponent {
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
       },
-      ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
-      {
-        content: t('developerOptions'),
-        icon: <Icon name={IconName.CodeCircle} />,
-        key: DEVELOPER_OPTIONS_ROUTE,
-      },
-      ///: END:ONLY_INCLUDE_IF
       {
         content: t('about'),
         icon: <Icon name={IconName.Info} />,
         key: ABOUT_US_ROUTE,
       },
     ];
+
+    if (process.env.SETTINGS_PAGE_DEV_OPTIONS) {
+      tabs.splice(-1, 0, {
+        content: t('developerOptions'),
+        icon: <Icon name={IconName.CodeCircle} />,
+        key: DEVELOPER_OPTIONS_ROUTE,
+      });
+    }
 
     return (
       <TabBar
@@ -401,17 +398,13 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
-        {/*
-        ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
-        */}
-        <Route
-          exact
-          path={DEVELOPER_OPTIONS_ROUTE}
-          component={DeveloperOptionsTab}
-        />
-        {/*
-        ///: END:ONLY_INCLUDE_IF
-        */}
+        {process.env.SETTINGS_PAGE_DEV_OPTIONS && (
+          <Route
+            exact
+            path={DEVELOPER_OPTIONS_ROUTE}
+            component={DeveloperOptionsTab}
+          />
+        )}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route

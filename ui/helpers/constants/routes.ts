@@ -6,10 +6,7 @@ const SETTINGS_ROUTE = '/settings';
 const GENERAL_ROUTE = '/settings/general';
 const ADVANCED_ROUTE = '/settings/advanced';
 
-///: BEGIN:ONLY_INCLUDE_IF(developer-options)
 const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
-///: END:ONLY_INCLUDE_IF
-
 const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
@@ -237,9 +234,7 @@ export {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
   ADVANCED_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   DEVELOPER_OPTIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,

@@ -1,4 +1,3 @@
-///: BEGIN:ONLY_INCLUDE_IF(developer-options)
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -180,4 +179,3 @@ const DeveloperOptionsTab = () => {
 };
 
 export default DeveloperOptionsTab;
-///: END:ONLY_INCLUDE_IF

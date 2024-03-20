@@ -1,3 +1,4 @@
+import React from 'react';
 import { IconName } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
@@ -22,7 +23,7 @@ import {
  */
 
 /** @type {SettingRouteConfig[]} */
-export const SETTINGS_CONSTANTS = [
+const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currencyConversion'),
@@ -445,29 +446,36 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-flask',
   },
   ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
-  {
-    tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('resetStates'),
-    descriptionMessage: (t) => t('resetStates'),
-    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
-    icon: IconName.CodeCircle,
-  },
-  {
-    tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('announcements'),
-    descriptionMessage: (t) =>
-      t('developerOptionsResetStatesAnnouncementsDescription'),
-    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
-    icon: IconName.CodeCircle,
-  },
-  {
-    tabMessage: (t) => t('developerOptions'),
-    sectionMessage: (t) => t('onboarding'),
-    descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
-    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
-    icon: IconName.CodeCircle,
-  },
-  ///: END:ONLY_INCLUDE_IF
 ];
+
+if (process.env.SETTINGS_PAGE_DEV_OPTIONS) {
+  SETTINGS_CONSTANTS.push(
+    // developerOptions settingsRefs[0]
+    {
+      tabMessage: (t) => t('developerOptions'),
+      sectionMessage: (t) => t('resetStates'),
+      descriptionMessage: (t) => t('resetStates'),
+      route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
+      icon: IconName.CodeCircle,
+    },
+    // developerOptions settingsRefs[1]
+    {
+      tabMessage: (t) => t('developerOptions'),
+      sectionMessage: (t) => t('announcements'),
+      descriptionMessage: (t) =>
+        t('developerOptionsResetStatesAnnouncementsDescription'),
+      route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
+      icon: IconName.CodeCircle,
+    },
+    // developerOptions settingsRefs[2]
+    {
+      tabMessage: (t) => t('developerOptions'),
+      sectionMessage: (t) => t('onboarding'),
+      descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
+      route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
+      icon: IconName.CodeCircle,
+    },
+  );
+}
+
+export default SETTINGS_CONSTANTS;

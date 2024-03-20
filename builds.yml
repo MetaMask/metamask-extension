@@ -56,7 +56,6 @@ buildTypes:
     features:
       - snaps
       - desktop
-      - developer-options
       - build-flask
       - keyring-snaps
       - blockaid
@@ -141,7 +140,6 @@ features:
       - DISABLE_WEB_SOCKET_ENCRYPTION: false
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
-  developer-options:
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
@@ -264,6 +262,8 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
+  # Determines if feature flagged Settings Page - Developer Options should be used
+  - SETTINGS_PAGE_DEV_OPTIONS
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
 

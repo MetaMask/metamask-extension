@@ -21,3 +21,6 @@ BLOCKAID_PUBLIC_KEY=
 ; SELENIUM_HEADLESS=
 ; Set this to 1 to make chrome e2e tests disable DoH/DoT and use system DNS
 ; SELENIUM_USE_SYSTEM_DNS=
+
+; Enables the Settings Page - Developer Options
+; SETTINGS_PAGE_DEV_OPTIONS=true

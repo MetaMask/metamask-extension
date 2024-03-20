@@ -18,9 +18,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
   DEVELOPER_OPTIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   GENERAL_ROUTE,
   NETWORKS_FORM_ROUTE,
   NETWORKS_ROUTE,
@@ -42,9 +40,7 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
-  ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
   [DEVELOPER_OPTIONS_ROUTE]: 'developerOptions',
-  ///: END:ONLY_INCLUDE_IF
   [EXPERIMENTAL_ROUTE]: 'experimental',
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
