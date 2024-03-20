@@ -45,7 +45,7 @@ And the icon should visually indicate that it is in the OFF position
 Given I am on the Advanced settings page
 When I toggle the "Show test networks" switch ON
 Then the switch is turned on as expected
-And when I click on the Network selection drop down on the left top
+When I click on the Network selection drop down on the left top
 Then the "Select a network" dialog box appears
 And the "Show test networks" toggle is selected ON automatically
 And the test networks are shown as expected
@@ -54,7 +54,7 @@ And the test networks are shown as expected
 
 Given I am on the Advanced settings page
 When I toggle the "Show test networks" switch OFF
-And when I click on the Network selection drop down on the left top
+And I click on the Network selection drop down on the left top
 Then the "Select a network" dialog box appears
 And the "Show test networks" toggle is selected OFF
 And the test networks are not visible in the dropdown
