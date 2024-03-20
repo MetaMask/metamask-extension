@@ -1586,9 +1586,7 @@ export default class MetamaskController extends EventEmitter {
         let enabled = false;
         ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
         // Only support transaction simulation on mainnet.
-        enabled =
-          this.networkController.state.providerConfig.chainId ===
-          CHAIN_IDS.MAINNET;
+        enabled = true;
         ///: END:ONLY_INCLUDE_IF
         return enabled;
       },

@@ -83,7 +83,7 @@ const SIMULATION_REQUEST_NATIVE_CHANGE_MOCK = {
   }
 };
 
-export async function mockTxSentinelServer(server: Mockttp) {
+export async function mockSimulationServer(server: Mockttp) {
   await server.forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/')
   .withJsonBody(SIMULATION_REQUEST_NATIVE_CHANGE_MOCK.request)
   .thenJson(200, SIMULATION_REQUEST_NATIVE_CHANGE_MOCK.response);
