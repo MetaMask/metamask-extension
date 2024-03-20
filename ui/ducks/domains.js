@@ -223,8 +223,6 @@ export async function fetchResolutions({ domain, chainId, state }) {
     }),
   );
 
-  console.log('domain:', domain);
-
   const filteredResults = results.reduce(
     (successfulResolutions, result, idx) => {
       if (result.status !== 'rejected' && result.value !== null) {
@@ -240,8 +238,6 @@ export async function fetchResolutions({ domain, chainId, state }) {
     },
     [],
   );
-
-  console.log('results:', filteredResults);
 
   return filteredResults;
 }

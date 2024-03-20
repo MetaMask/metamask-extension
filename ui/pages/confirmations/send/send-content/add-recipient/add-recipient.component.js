@@ -133,8 +133,6 @@ export default class AddRecipient extends Component {
         'validated user input',
       );
     } else if (domainResolution && !recipient.error) {
-      console.log('rendering this shit');
-      console.log('domain resolution:', domainResolution);
       content = this.renderExplicitAddress(
         domainResolution,
         addressBookEntryName || userInput,
