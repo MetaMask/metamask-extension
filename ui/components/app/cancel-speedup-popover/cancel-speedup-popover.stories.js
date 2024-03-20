@@ -13,12 +13,17 @@ import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
+const mockSelectedInternalAccount =
+  mockState.metamask.internalAccounts.accounts[
+    mockState.metamask.internalAccounts.selectedAccount
+  ];
+
 const store = configureStore({
   metamask: {
     ...mockState.metamask,
     accounts: {
-      [mockState.metamask.selectedAddress]: {
-        address: mockState.metamask.selectedAddress,
+      [mockState]: {
+        address: mockSelectedInternalAccount.address,
         balance: '0x1F4',
       },
     },

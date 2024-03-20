@@ -55,12 +55,6 @@ type TemporaryBackgroundState = {
     chainId: string;
   };
   transactions: TransactionMeta[];
-  selectedAddress: string;
-  identities: {
-    [address: string]: {
-      balance: string;
-    };
-  };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
   unapprovedMsgs: MessagesIndexedById;

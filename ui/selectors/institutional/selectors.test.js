@@ -37,7 +37,14 @@ function buildState(overrides = {}) {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: [
+              EthMethod.PersonalSign,
+              EthMethod.Sign,
+              EthMethod.SignTransaction,
+              EthMethod.SignTypedDataV1,
+              EthMethod.SignTypedDataV3,
+              EthMethod.SignTypedDataV4,
+            ],
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
@@ -566,6 +573,30 @@ describe('Institutional selectors', () => {
   });
 
   describe('getMMIAddressFromModalOrAddress', () => {
+    const mockInternalAccount = {
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Custody Account A',
+        keyring: {
+          type: 'Custody',
+        },
+      },
+      options: {},
+      methods: [
+        EthMethod.PersonalSign,
+        EthMethod.Sign,
+        EthMethod.SignTransaction,
+        EthMethod.SignTypedDataV1,
+        EthMethod.SignTypedDataV3,
+        EthMethod.SignTypedDataV4,
+      ],
+      type: EthAccountType.Eoa,
+      code: '0x',
+      balance: '0x47c9d71831c76efe',
+      nonce: '0x1b',
+      address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+    };
+
     it('returns modalAddress if it exists', () => {
       const state = {
         appState: {
@@ -578,7 +609,10 @@ describe('Institutional selectors', () => {
           },
         },
         metamask: {
-          selectedAddress: 'selectedAddress',
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
         },
       };
 
@@ -587,7 +621,7 @@ describe('Institutional selectors', () => {
       expect(address).toBe('modalAddress');
     });
 
-    it('returns selectedAddress if modalAddress does not exist', () => {
+    it('returns selectedAccount if modalAddress does not exist', () => {
       const state = {
         appState: {
           modal: {
@@ -597,16 +631,21 @@ describe('Institutional selectors', () => {
           },
         },
         metamask: {
-          selectedAddress: 'selectedAddress',
+          internalAccounts: {
+            accounts: {
+              [mockInternalAccount.id]: mockInternalAccount,
+            },
+            selectedAccount: mockInternalAccount.id,
+          },
         },
       };
 
       const address = getMMIAddressFromModalOrAddress(state);
 
-      expect(address).toBe('selectedAddress');
+      expect(address).toBe(mockInternalAccount.address);
     });
 
-    it('returns undefined if neither modalAddress nor selectedAddress exist', () => {
+    it('returns undefined if neither modalAddress nor selectedAccount exist', () => {
       const state = {
         appState: {
           modal: {
@@ -615,7 +654,12 @@ describe('Institutional selectors', () => {
             },
           },
         },
-        metamask: {},
+        metamask: {
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
       };
 
       const address = getMMIAddressFromModalOrAddress(state);

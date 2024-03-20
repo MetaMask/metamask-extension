@@ -64,6 +64,7 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
+  getSelectedInternalAccount,
 } from '../../selectors';
 
 import {
@@ -604,7 +605,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
-            from: state.metamask?.selectedAddress,
+            from: getSelectedInternalAccount(state).address,
           },
         });
         disableStxIfRegularTxInProgress(dispatch, transactions);

@@ -10,7 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { setSelectedAddress } from '../../../store/actions';
+import { setSelectedInternalAccount } from '../../../store/actions';
 import { getInternalAccounts } from '../../../selectors';
 import {
   getMMIAddressFromModalOrAddress,
@@ -64,7 +64,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
         .map((internalAccount) => internalAccount.address)
         .find((account) => ethereum.accounts.includes(account.toLowerCase()));
 
-      ethAccount && dispatch(setSelectedAddress(ethAccount.toLowerCase()));
+      ethAccount && dispatch(setSelectedInternalAccount(ethAccount.id));
     }
 
     trackEvent({

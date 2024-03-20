@@ -35,7 +35,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
 } from '../../../../selectors';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
@@ -88,7 +88,7 @@ export function AssetPickerModal({
   asset,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const dispatch = useDispatch();
   const history = useHistory();
 

@@ -277,16 +277,6 @@ describe('MetaMask Reducers', () => {
       },
     });
 
-    expect(state.identities).toStrictEqual({
-      ...mockState.metamask.identities,
-      '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-        ...mockState.metamask.identities[
-          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
-        ],
-        name: 'test label',
-      },
-    });
-
     expect(state.internalAccounts).toStrictEqual({
       ...mockState.metamask.internalAccounts,
       accounts: {

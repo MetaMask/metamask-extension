@@ -197,7 +197,7 @@ export const Connections = () => {
                     selectedAccount.address === account.address;
                   return (
                     <AccountListItem
-                      identity={account}
+                      account={account}
                       key={account.address}
                       accountsCount={mergedAccounts.length}
                       selected={isSelectedAccount}

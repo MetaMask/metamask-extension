@@ -6,6 +6,7 @@ import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
@@ -62,10 +63,18 @@ describe('Ducks - Swaps', () => {
     };
 
     const createGetState = () => {
+      const mockInternalAccount = createMockInternalAccount();
+
       return () => ({
         metamask: {
           providerConfig: { ...providerConfigState },
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          internalAccounts: {
+            accounts: {
+              [mockInternalAccount.id]: mockInternalAccount,
+            },
+            selectedAccount: mockInternalAccount.id,
+          },
         },
       });
     };

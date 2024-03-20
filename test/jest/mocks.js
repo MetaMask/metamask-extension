@@ -156,13 +156,19 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
   },
 });
 
-export function createMockInternalAccount({
-  address = MOCK_DEFAULT_ADDRESS,
-  name,
-  is4337 = false,
-  keyringType = KeyringTypes.hd,
-  snapOptions,
-}) {
+export function createMockInternalAccount(
+  {
+    address = MOCK_DEFAULT_ADDRESS,
+    name,
+    is4337 = false,
+    keyringType = KeyringTypes.hd,
+    snapOptions,
+  } = {
+    address: MOCK_DEFAULT_ADDRESS,
+    is4337: false,
+    keyringType: KeyringTypes.hd,
+  },
+) {
   return {
     address,
     id: uuidv4(),
@@ -191,3 +197,9 @@ export function createMockInternalAccount({
     type: is4337 ? EthAccountType.Erc4337 : EthAccountType.Eoa,
   };
 }
+
+export const getSelectedInternalAccountFromMockState = (state) => {
+  return state.metamask.internalAccounts.accounts[
+    state.metamask.internalAccounts.selectedAccount
+  ];
+};

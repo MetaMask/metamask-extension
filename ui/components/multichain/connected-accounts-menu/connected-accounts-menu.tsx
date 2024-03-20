@@ -21,20 +21,20 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { getOriginOfCurrentTab } from '../../../selectors';
-import { Identity } from './connected-accounts-menu.types';
+import { InternalAccountWithBalance } from './connected-accounts-menu.types';
 
 const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({
   isOpen,
-  identity,
+  account,
   anchorElement,
   disableAccountSwitcher = false,
   onClose,
   closeMenu,
 }: {
   isOpen: boolean;
-  identity: Identity;
+  account: InternalAccountWithBalance;
   anchorElement: HTMLElement | null;
   disableAccountSwitcher: boolean;
   onClose: () => void;
@@ -104,7 +104,7 @@ export const ConnectedAccountsMenu = ({
               iconName={IconName.SwapHorizontal}
               data-testid="switch-account-menu-item"
               onClick={() => {
-                dispatch(setSelectedAccount(identity.address));
+                dispatch(setSelectedAccount(account.address));
                 onClose();
                 closeMenu();
               }}
@@ -120,7 +120,7 @@ export const ConnectedAccountsMenu = ({
             data-testid="disconnect-menu-item"
             onClick={() => {
               dispatch(
-                removePermittedAccount(activeTabOrigin, identity.address),
+                removePermittedAccount(activeTabOrigin, account.address),
               );
             }}
           >

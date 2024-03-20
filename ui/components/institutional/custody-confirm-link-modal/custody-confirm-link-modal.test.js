@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import { hideModal } from '../../../store/actions';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import CustodyConfirmLink from '.';
 
 const mockedSetWaitForConfirmDeepLinkDialog = jest
@@ -22,6 +23,10 @@ jest.mock('../../../store/actions', () => ({
 const mockedCustodianName = 'saturn-dev';
 
 describe('Custody Confirm Link', () => {
+  const mockInternalAccount = createMockInternalAccount({
+    keyringType: 'Custody Test',
+    address: '0xAddress',
+  });
   const mockStore = {
     ...testData,
     appState: {
@@ -43,6 +48,12 @@ describe('Custody Confirm Link', () => {
     },
     metamask: {
       ...testData.metamask,
+      internalAccounts: {
+        accounts: {
+          [mockInternalAccount.id]: mockInternalAccount,
+        },
+        selectedAccount: mockInternalAccount.id,
+      },
       mmiConfiguration: {
         custodians: [
           {
@@ -73,7 +84,6 @@ describe('Custody Confirm Link', () => {
       providerConfig: {
         type: 'test',
       },
-      selectedAddress: '0xAddress',
     },
   };
 

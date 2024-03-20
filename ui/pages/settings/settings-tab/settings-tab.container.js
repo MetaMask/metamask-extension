@@ -8,7 +8,12 @@ import {
   setParticipateInMetaMetrics,
   setTheme,
 } from '../../../store/actions';
-import { getTokenList, getPreferences, getTheme } from '../../../selectors';
+import {
+  getTokenList,
+  getPreferences,
+  getTheme,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,8 +26,8 @@ const mapStateToProps = (state, ownProps) => {
     providerConfig: { ticker: nativeCurrency },
     useBlockie,
     currentLocale,
-    selectedAddress,
   } = metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
     getPreferences(state);
 
