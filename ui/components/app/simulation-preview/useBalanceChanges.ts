@@ -1,11 +1,4 @@
-import {
-  SimulationBalanceChange,
-  SimulationData,
-  SimulationTokenBalanceChange,
-  SimulationTokenStandard,
-} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { createSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { useAsyncResultStrict } from '../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../store/actions';
@@ -13,6 +6,12 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { getTokenToFiatConversionRates } from '../../../selectors';
+import {
+  SimulationBalanceChange,
+  SimulationData,
+  SimulationTokenBalanceChange,
+  SimulationTokenStandard,
+} from './ERASEME-core-simulation-types';
 import {
   Amount,
   AssetIdentifier,
@@ -23,9 +22,10 @@ import {
 
 const NATIVE_ASSET: NativeAssetIdentifier = { standard: TokenStandard.none };
 const NATIVE_DECIMALS = 18;
+const ERC20_DEFAULT_DECIMALS = 18;
 
 // Converts a SimulationTokenStandard to a TokenStandard
-const convertStandard = (standard: SimulationTokenStandard): TokenStandard => {
+const convertStandard = (standard: SimulationTokenStandard) => {
   switch (standard) {
     case SimulationTokenStandard.erc20:
       return TokenStandard.ERC20;
@@ -43,19 +43,12 @@ const getAssetAmount = (
   { isDecrease: isNegative, difference: quantity }: SimulationBalanceChange,
   decimals: number,
 ): Amount => {
-  const numeric = Numeric.from(quantity, 16).shiftedBy(decimals);
+  const numeric = Numeric.from(quantity, 16)
+    .times(isNegative ? -1 : 1, 10)
+    .toBase(10)
+    .shiftedBy(decimals);
   return { isNegative, quantity, decimals, numeric };
 };
-
-// Retrieves the non-native asset identifier from the token balance change
-const getNonNativeAsset = (
-  simBC: SimulationTokenBalanceChange,
-): AssetIdentifier =>
-  ({
-    standard: convertStandard(simBC.standard),
-    address: simBC.address,
-    tokenId: simBC.id,
-  } as AssetIdentifier);
 
 // Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
 const fetchErc20Decimals = async (
@@ -69,31 +62,25 @@ const fetchErc20Decimals = async (
   return tokenInfos.reduce(
     (result, { decimals }, index) => ({
       ...result,
-      [uniqueAddresses[index]]: decimals ? parseInt(decimals, 10) : 18,
+      [uniqueAddresses[index]]: decimals
+        ? parseInt(decimals, 10)
+        : ERC20_DEFAULT_DECIMALS,
     }),
     {},
   );
 };
 
-// Selector to get fiat conversion rates
-const getFiatConversionRates = createSelector(
-  getConversionRate,
-  getTokenToFiatConversionRates,
-  (fromNative, fromTokens) => ({ fromNative, fromTokens }),
-);
-
 // Compiles the balance change for the native asset
 const getNativeBalanceChange = (
   nativeBalanceChange: SimulationBalanceChange | undefined,
-  fiatRates: { fromNative: number },
+  nativeFiatRate: number,
 ): BalanceChange | undefined => {
   if (!nativeBalanceChange) {
     return undefined;
   }
-
   const asset = NATIVE_ASSET;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount.numeric.applyConversionRate(fiatRates.fromNative);
+  const fiatAmount = amount.numeric.applyConversionRate(nativeFiatRate);
   return { asset, amount, fiatAmount };
 };
 
@@ -101,19 +88,24 @@ const getNativeBalanceChange = (
 const getTokenBalanceChanges = (
   tokenBalanceChanges: SimulationTokenBalanceChange[],
   erc20Decimals: Record<Hex, number>,
-  fiatRates: { fromTokens: Record<Hex, number> },
+  tokenFiatRates: Record<Hex, number>,
 ): BalanceChange[] => {
   return tokenBalanceChanges.map((tokenBc) => {
+    const asset = {
+      standard: convertStandard(tokenBc.standard),
+      address: tokenBc.address.toLowerCase(),
+      tokenId: tokenBc.id,
+    } as AssetIdentifier;
+
     const decimals =
-      tokenBc.standard === SimulationTokenStandard.erc20
-        ? erc20Decimals[tokenBc.address]
-        : 0;
-    const asset = getNonNativeAsset(tokenBc);
+      asset.standard === TokenStandard.ERC20 ? erc20Decimals[asset.address] : 0;
     const amount = getAssetAmount(tokenBc, decimals);
-    const fiatRate = fiatRates.fromTokens[tokenBc.address];
+
+    const fiatRate = tokenFiatRates[tokenBc.address];
     const fiatAmount = fiatRate
       ? amount.numeric.applyConversionRate(fiatRate)
       : FIAT_UNAVAILABLE;
+
     return { asset, amount, fiatAmount };
   });
 };
@@ -127,7 +119,8 @@ export const useBalanceChanges = (
   }
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
 
-  const fiatRates = useSelector(getFiatConversionRates);
+  const nativeFiatRate = useSelector(getConversionRate);
+  const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
   const erc20Decimals = useAsyncResultStrict(() => {
     const erc20Addresses = tokenBalanceChanges
@@ -140,11 +133,14 @@ export const useBalanceChanges = (
     return { pending: true, value: [] };
   }
 
-  const nativeChange = getNativeBalanceChange(nativeBalanceChange, fiatRates);
+  const nativeChange = getNativeBalanceChange(
+    nativeBalanceChange,
+    nativeFiatRate,
+  );
   const tokenChanges = getTokenBalanceChanges(
     tokenBalanceChanges,
     erc20Decimals.value,
-    fiatRates,
+    tokenFiatRates,
   );
 
   const balanceChanges: BalanceChange[] = [];
