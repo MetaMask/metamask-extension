@@ -1,6 +1,7 @@
 import React from 'react';
 import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
 import { ConfirmInfoRowAddress } from './address';
+import { TEST_ADDRESS } from './constants';
 
 const ConfirmInfoRowAddressStory = {
   title: 'Components/App/Confirm/InfoRowAddress',
@@ -26,7 +27,7 @@ export const DefaultStory = ({ variant, address }) => (
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+  address: TEST_ADDRESS,
 };
 
 export default ConfirmInfoRowAddressStory;
