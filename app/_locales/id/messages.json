@@ -3264,9 +3264,6 @@
   "securityAlerts": {
     "message": "Peringatan keamanan"
   },
-  "securityAlertsDescription": {
-    "message": "Fitur ini memperingatkan Anda tentang aktivitas berbahaya di Mainnet Ethereum dengan secara aktif meninjau permintaan transaksi dan tanda tangan sambil menjaga privasi. Data Anda tidak dibagikan dengan pihak ketiga yang menyediakan layanan ini. Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan apa pun. Tidak ada jaminan bahwa fitur ini akan mendeteksi semua aktivitas berbahaya."
-  },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },
