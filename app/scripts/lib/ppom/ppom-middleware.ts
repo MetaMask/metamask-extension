@@ -81,16 +81,22 @@ export function createPPOMMiddleware(
             securityAlertResponse = await ppom.validateJsonRpc(req);
             securityAlertResponse.securityAlertId = securityAlertId;
           })
-          .catch((error: any) => {
-            const errorObject = error as unknown as Error;
-
+          .catch((error: unknown) => {
             sentry?.captureException(error);
-            console.error('Error validating JSON RPC using PPOM: ', error);
+            console.error(
+              'Error validating JSON RPC using PPOM: ',
+              typeof error === 'object' || typeof error === 'string'
+                ? error
+                : JSON.stringify(error),
+            );
 
             securityAlertResponse = {
               result_type: BlockaidResultType.Errored,
               reason: BlockaidReason.errored,
-              description: `${errorObject.name}: ${errorObject.message}`,
+              description:
+                error instanceof Error
+                  ? `${error.name}: ${error.message}`
+                  : JSON.stringify(error),
             };
           })
           .finally(() => {
@@ -110,16 +116,22 @@ export function createPPOMMiddleware(
 
         req.securityAlertResponse = { ...securityAlertResponse };
       }
-    } catch (error: any) {
-      const errorObject = error as unknown as Error;
-
+    } catch (error: unknown) {
       sentry?.captureException(error);
-      console.error('Error validating JSON RPC using PPOM: ', error);
+      console.error(
+        'Error validating JSON RPC using PPOM: ',
+        typeof error === 'object' || typeof error === 'string'
+          ? error
+          : JSON.stringify(error),
+      );
 
       req.securityAlertResponse = {
         result_type: BlockaidResultType.Errored,
         reason: BlockaidReason.errored,
-        description: `${errorObject.name}: ${errorObject.message}`,
+        description:
+          error instanceof Error
+            ? `${error.name}: ${error.message}`
+            : JSON.stringify(error),
       };
     } finally {
       next();
