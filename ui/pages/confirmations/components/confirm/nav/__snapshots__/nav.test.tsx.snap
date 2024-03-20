@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmNav should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        aria-label="Previous Confirmation"
+        class="mm-box mm-button-icon mm-button-icon--size-sm confirm_nav__left_btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
+      </button>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-inline-2 mm-box--color-text-alternative"
+      >
+        2
+         of 
+        3
+      </p>
+      <button
+        aria-label="Next Confirmation"
+        class="mm-box mm-button-icon mm-button-icon--size-sm confirm_nav__right_btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-right.svg');"
+        />
+      </button>
+    </div>
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-md confirm_nav__reject_all mm-button-primary mm-text--body-md-medium mm-text--font-weight-normal mm-box--padding-0 mm-box--padding-right-3 mm-box--padding-left-3 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+      type="secondary"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/close.svg');"
+      />
+      Reject all
+    </button>
+  </div>
+</div>
+`;
