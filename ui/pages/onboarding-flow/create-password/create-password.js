@@ -59,8 +59,10 @@ export default function CreatePassword({
   secretRecoveryPhrase,
 }) {
   const t = useI18nContext();
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(
+    process.env.PASSWORD || '',
+  );
+  const [password, setPassword] = useState(process.env.PASSWORD || '');
   const [passwordError, setPasswordError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
   const [passwordStrengthText, setPasswordStrengthText] = useState('');
@@ -339,7 +341,7 @@ export default function CreatePassword({
               <CheckBox
                 dataTestId="create-password-terms"
                 onClick={() => setTermsChecked(!termsChecked)}
-                checked={termsChecked}
+                checked={!!process.env.TEST_SRP || termsChecked}
               />
               <Text variant={TextVariant.bodyMd} marginLeft={3}>
                 {
@@ -381,7 +383,7 @@ export default function CreatePassword({
               type="primary"
               large
               className="create-password__form--submit-button"
-              disabled={!isValid || !termsChecked}
+              disabled={!process.env.TEST_SRP && (!isValid || !termsChecked)}
               onClick={handleCreate}
             >
               {secretRecoveryPhrase &&

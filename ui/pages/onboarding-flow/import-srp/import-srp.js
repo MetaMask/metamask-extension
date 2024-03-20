@@ -26,7 +26,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
-  const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState(
+    process.env.TEST_SRP || '',
+  );
   const history = useHistory();
   const t = useI18nContext();
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -71,6 +73,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         <Box textAlign={TEXT_ALIGN.LEFT}>
           <SrpInput
             onChange={setSecretRecoveryPhrase}
+            initialSrp={secretRecoveryPhrase}
             srpText={t('typeYourSRP')}
           />
           <Button

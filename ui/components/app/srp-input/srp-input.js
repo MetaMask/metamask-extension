@@ -20,12 +20,13 @@ const hasUpperCase = (draftSrp) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
-export default function SrpInput({ onChange, srpText }) {
+export default function SrpInput({ onChange, srpText, initialSrp }) {
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
   const [draftSrp, setDraftSrp] = useState(
-    new Array(defaultNumberOfWords).fill(''),
+    initialSrp?.split(' ') || new Array(defaultNumberOfWords).fill(''),
   );
+
   const [showSrp, setShowSrp] = useState(
     new Array(defaultNumberOfWords).fill(false),
   );

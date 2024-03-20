@@ -184,6 +184,7 @@ env:
   - TRANSACTION_SECURITY_PROVIDER: false
   # The unlock password
   - PASSWORD: null
+  - TEST_SRP: null
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
