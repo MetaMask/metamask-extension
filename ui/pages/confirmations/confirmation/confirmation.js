@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -24,7 +24,7 @@ import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getUnapprovedTemplatedConfirmations,
+  getMemoizedUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
@@ -200,8 +200,7 @@ export default function ConfirmationPage({
   const dispatch = useDispatch();
   const history = useHistory();
   const pendingConfirmations = useSelector(
-    getUnapprovedTemplatedConfirmations,
-    isEqual,
+    getMemoizedUnapprovedTemplatedConfirmations,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
@@ -210,9 +209,18 @@ export default function ConfirmationPage({
     useSafeChainsListValidationSelector,
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
-  const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
+  const { id } = useParams();
+  const pendingRoutedConfirmation = pendingConfirmations.find(
+    (confirmation) => confirmation.id === id,
+  );
+  // Confirmations that are directly routed to get priority and will be shown above the current queue.
+  const pendingConfirmation =
+    pendingRoutedConfirmation ??
+    pendingConfirmations[currentPendingConfirmation];
+
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
   const preventAlertsForAddChainValidation =

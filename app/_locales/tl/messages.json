@@ -3264,9 +3264,6 @@
   "securityAlerts": {
     "message": "Mga alerto sa seguridad"
   },
-  "securityAlertsDescription": {
-    "message": "Ang tampok na ito ay nagbibigay ng alerto sa iyo sa mapaminsalang aktibidad sa pamamagitan ng lokal na pagsusuri sa iyong mga transaksyon at kahilingan sa paglagda. Ang iyong datos ay hindi ibinabahagi sa mga third party na nagbibigay ng serbisyong ito. Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang anumang mga kahilingan. Walang garantiya na made-detect ng tampok na ito ang lahat ng mapaminsalang aktibidad."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at pagkapribado"
   },
