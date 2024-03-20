@@ -12,47 +12,23 @@ export type FiatAmount = FiatAmountAvailable | typeof FIAT_UNAVAILABLE;
 /**
  * Identifies the native asset of a chain.
  */
-export type NativeAssetIdentifier = Readonly<{
+export type NativeAssetIdentifier = {
   standard: TokenStandard.none;
   address?: undefined;
   tokenId?: undefined;
-}>;
-
-/**
- * Uniquely identifies an ERC20 token on a chain.
- */
-export type Erc20AssetIdentifier = {
-  standard: TokenStandard.ERC20;
-  address: Hex;
-  tokenId?: undefined;
 };
 
 /**
- * Uniquely identifies an ERC721 token on a chain.
+ * Uniquely identifies a token asset on a chain.
  */
-export type Erc721AssetIdentifier = {
-  standard: TokenStandard.ERC721;
+export type TokenAssetIdentifier = {
+  standard: Exclude<TokenStandard, TokenStandard.none>;
   address: Hex;
-  tokenId: Hex;
+  tokenId?: Hex;
 };
 
-/**
- * Uniquely identifies an ERC1155 token on a chain.
- */
-export type Erc1155AssetIdentifier = {
-  standard: TokenStandard.ERC1155;
-  address: Hex;
-  tokenId: Hex;
-};
-
-/**
- * Uniquely identifies an asset on a chain.
- */
 export type AssetIdentifier = Readonly<
-  | NativeAssetIdentifier
-  | Erc20AssetIdentifier
-  | Erc721AssetIdentifier
-  | Erc1155AssetIdentifier
+  NativeAssetIdentifier | TokenAssetIdentifier
 >;
 
 /**

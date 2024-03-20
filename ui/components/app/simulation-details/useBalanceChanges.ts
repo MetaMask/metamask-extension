@@ -18,10 +18,10 @@ import {
 } from '../../../selectors';
 import {
   Amount,
-  AssetIdentifier,
   BalanceChange,
   FIAT_UNAVAILABLE,
   NativeAssetIdentifier,
+  TokenAssetIdentifier,
 } from './types';
 
 const NATIVE_ASSET: NativeAssetIdentifier = { standard: TokenStandard.none };
@@ -97,11 +97,11 @@ const getTokenBalanceChanges = (
   tokenFiatRates: Record<Hex, number>,
 ): BalanceChange[] => {
   return tokenBalanceChanges.map((tokenBc) => {
-    const asset = {
+    const asset: TokenAssetIdentifier = {
       standard: convertStandard(tokenBc.standard),
-      address: tokenBc.address.toLowerCase(),
+      address: tokenBc.address.toLowerCase() as Hex,
       tokenId: tokenBc.id,
-    } as AssetIdentifier;
+    };
 
     const decimals =
       asset.standard === TokenStandard.ERC20 ? erc20Decimals[asset.address] : 0;

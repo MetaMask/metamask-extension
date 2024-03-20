@@ -9,7 +9,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { BalanceChange } from './types';
@@ -35,13 +34,7 @@ export const AmountPill: React.FC<BalanceChange> = ({ asset, amount }) => {
 
   const hideAmount = asset.standard === TokenStandard.ERC721;
   if (!hideAmount) {
-    amountParts.push(
-      Numeric.from(amount.quantity, 16)
-        .shiftedBy(amount.decimals)
-        .toBase(10)
-        .round(6)
-        .toString(),
-    );
+    amountParts.push(amount.numeric.round(6).toString());
   }
   if (asset.tokenId) {
     amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
