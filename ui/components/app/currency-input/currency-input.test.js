@@ -156,7 +156,7 @@ describe('CurrencyInput Component', () => {
         isFiatPreferred: true,
       };
 
-      const { queryByTestId, queryByTitle } = renderWithProvider(
+      const { queryByTestId, queryByTitle, rerender } = renderWithProvider(
         <CurrencyInput {...props} />,
         store,
       );
@@ -168,6 +168,9 @@ describe('CurrencyInput Component', () => {
 
       const currencySwap = queryByTestId('currency-swap');
       fireEvent.click(currencySwap);
+
+      // expect isFiatPreferred to update
+      rerender(<CurrencyInput {...props} isFiatPreferred={false} />);
 
       await waitFor(() => {
         expect(queryByTitle('$1.00')).toBeInTheDocument();
