@@ -184,7 +184,7 @@ export const NFTStory = () => (
         type: AssetType.NFT,
         balance: '0xfff',
         details: {
-          address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+          address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
           symbol: 'BAYC',
           isERC721: false,
           tokenId: 1,

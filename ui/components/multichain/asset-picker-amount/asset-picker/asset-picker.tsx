@@ -12,6 +12,7 @@ import { Asset } from '../../../../ducks/send';
 import {
   AlignItems,
   BackgroundColor,
+  BorderRadius,
   Display,
   IconColor,
   JustifyContent,
@@ -66,6 +67,8 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
     ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
     : symbol;
 
+  const isNFT = asset.type === AssetType.NFT;
+
   return (
     <>
       {/* This is the Modal that ask to choose token to send */}
@@ -83,16 +86,19 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         padding={2}
         paddingLeft={2}
         paddingRight={2}
-        justifyContent={
-          asset.type === AssetType.NFT ? JustifyContent.spaceBetween : undefined
-        }
+        justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
         backgroundColor={BackgroundColor.transparent}
         onClick={() => setShowAssetPickerModal(true)}
         endIconName={IconName.ArrowDown}
         endIconProps={{ color: IconColor.iconDefault }}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <AvatarToken src={image} size={AvatarTokenSize.Md} showHalo />
+          <AvatarToken
+            borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+            src={image}
+            size={AvatarTokenSize.Md}
+            showHalo={!isNFT}
+          />
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text variant={TextVariant.bodyMd}>{shortFormSymbol}</Text>
             {asset.details?.tokenId && (
