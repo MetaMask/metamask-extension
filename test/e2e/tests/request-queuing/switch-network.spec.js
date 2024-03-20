@@ -12,7 +12,7 @@ const {
 const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing Switch Network on Dapp Send Tx while on different networks.', function () {
-  it('should show switch network dialog while dapp and mm network differ, dapp tx is on correct network.', async function () {
+  it('should switch to the dapps network automatically when mm network differs, dapp tx is on correct network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -78,7 +78,7 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        // Queue confirm tx should show switch chain first when on different network
+        // Queue confirm tx should first auto switch network
         await driver.clickElement('#sendButton');
 
         await driver.delay(regularDelayMs);
