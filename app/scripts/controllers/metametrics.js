@@ -768,9 +768,6 @@ export default class MetaMetricsController {
     if (metamaskState.securityAlertsEnabled) {
       securityProvider = 'blockaid';
     }
-    if (metamaskState.transactionSecurityCheckEnabled) {
-      securityProvider = 'opensea';
-    }
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
