@@ -36,7 +36,7 @@ async function mockedSnapInstallRejected(mockServer) {
   return await mockServer
     .forPost('https://api.segment.io/v1/batch')
     .withJsonBodyIncluding({
-      batch: [{ type: 'track', event: 'Snap Update Rejected' }],
+      batch: [{ type: 'track', event: 'Snap Install Rejected' }],
     })
     .thenCallback(() => {
       return {
