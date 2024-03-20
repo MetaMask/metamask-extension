@@ -120,7 +120,6 @@
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
-    "@metamask/transaction-controller@^25.0.0": "npm:@metamask-previews/transaction-controller@25.1.0-preview-97731c3",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
     "analytics-node/axios": "^0.21.2",
@@ -316,7 +315,7 @@
     "@metamask/snaps-rpc-methods": "^7.0.1",
     "@metamask/snaps-sdk": "^3.1.1",
     "@metamask/snaps-utils": "^7.0.3",
-    "@metamask/transaction-controller": "^25.0.0",
+    "@metamask/transaction-controller": "^25.2.0",
     "@metamask/user-operation-controller": "^6.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",
