@@ -1,10 +1,10 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ConnectedAccountsMenu } from '.';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 const DEFAULT_PROPS = {
   isOpen: true,
