@@ -5,7 +5,7 @@ import configureStore from '../../../store/store';
 import { SimulationPreview } from './simulation-preview';
 import mockState from '../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
-import { SimulationTokenStandard } from './ERASEME-core-simulation-types';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,

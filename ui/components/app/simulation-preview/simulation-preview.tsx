@@ -1,4 +1,5 @@
 import React from 'react';
+import { SimulationData } from '@metamask/transaction-controller';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
@@ -14,7 +15,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
-import { SimulationData } from './ERASEME-core-simulation-types';
 
 export type SimulationPreviewProps = {
   simulationData?: SimulationData;
