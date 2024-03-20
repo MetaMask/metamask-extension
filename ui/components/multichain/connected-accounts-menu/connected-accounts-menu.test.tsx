@@ -8,7 +8,18 @@ import { ConnectedAccountsMenu } from '.';
 const DEFAULT_PROPS = {
   isOpen: true,
   onClose: jest.fn(),
-  identity: { address: '0x123' },
+  identity: {
+      address: 'mockAddress',
+      balance: 'mockBalance',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'mockName',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      label: '',
+    },
   anchorElement: null,
   disableAccountSwitcher: false,
   closeMenu: jest.fn(),
