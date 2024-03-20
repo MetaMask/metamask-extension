@@ -172,6 +172,34 @@ FungibleTokenStory.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
 
+export const LongFungibleTokenStory = () => (
+  <div style={{ width: '400px' }}>
+    <AssetPickerAmount
+      onAmountChange={(newAmount: string) =>
+        store.dispatch(updateSendAmount(newAmount))
+      }
+      onAssetChange={noop}
+      amount={{ value: '0xff' }}
+      asset={{
+        type: AssetType.NFT,
+        balance: '0xfff',
+        details: {
+          address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+          symbol:
+            'BAYCBAYCBAYCBAYCBAYCBAYCBAYC BAYCBAYCBAYCBAYCBAYCBAYCBAYCBAYCBAYC',
+          isERC721: true,
+          tokenId: 1,
+          standard: 'ERC721',
+        },
+      }}
+    />{' '}
+  </div>
+);
+LongFungibleTokenStory.storyName = 'Long ERC721 Token';
+LongFungibleTokenStory.decorators = [
+  (story) => <Provider store={store}>{story()}</Provider>,
+];
+
 export const NFTStory = () => (
   <div style={{ width: '400px' }}>
     <AssetPickerAmount

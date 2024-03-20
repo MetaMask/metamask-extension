@@ -62,12 +62,12 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
       : asset.details?.symbol;
 
   const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
-
-  const shortFormSymbol = isSymbolLong
-    ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
-    : symbol;
-
   const isNFT = asset.type === AssetType.NFT;
+
+  const formattedSymbol =
+    isSymbolLong && !isNFT
+      ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
+      : symbol;
 
   return (
     <>
@@ -100,7 +100,9 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
             showHalo={!isNFT}
           />
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
-            <Text variant={TextVariant.bodyMd}>{shortFormSymbol}</Text>
+            <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
+              {formattedSymbol}
+            </Text>
             {asset.details?.tokenId && (
               <Text
                 variant={TextVariant.bodySm}
