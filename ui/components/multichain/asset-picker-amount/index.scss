@@ -10,10 +10,6 @@
 
   // input for NFTs
   &__input-nft {
-    &:focus-within {
-      border-color: inherit;
-    }
-
     // the input element itself
     & > div > div > input {
       text-overflow: hidden;
@@ -29,6 +25,7 @@
     // 4 padding + 1 border
     margin: -5px -5px -5px 0;
     box-sizing: border-box;
+    border-color: inherit;
     border-width: 1px;
     border-radius: 0 8px 8px 0;
   }
