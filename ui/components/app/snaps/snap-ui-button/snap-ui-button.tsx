@@ -1,6 +1,6 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
-import { Button, ButtonProps } from '../../../component-library';
+import { ButtonLink, ButtonLinkProps, ButtonProps } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUIButtonProps = {
@@ -8,7 +8,7 @@ export type SnapUIButtonProps = {
 };
 
 export const SnapUIButton: FunctionComponent<
-  SnapUIButtonProps & ButtonProps<'button'>
+  SnapUIButtonProps & ButtonLinkProps<'button'>
 > = ({ name, children, type, ...props }) => {
   const { handleEvent } = useSnapInterfaceContext();
 
@@ -21,7 +21,7 @@ export const SnapUIButton: FunctionComponent<
   };
 
   return (
-    <Button
+    <ButtonLink
       className="snap-ui-renderer__button"
       id={name}
       type={type}
@@ -30,6 +30,6 @@ export const SnapUIButton: FunctionComponent<
       {...props}
     >
       {children}
-    </Button>
+    </ButtonLink>
   );
 };
