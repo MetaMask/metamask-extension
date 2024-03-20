@@ -3264,9 +3264,6 @@
   "securityAlerts": {
     "message": "Alertas de seguridad"
   },
-  "securityAlertsDescription": {
-    "message": "Esta función le alerta sobre actividad maliciosa en la red principal de Ethereum al revisar activamente las solicitudes de transacciones y firmas mientras preserva su privacidad. Sus datos no se comparten con el tercero que proporciona este servicio. Haga siempre su propia diligencia debida antes de aprobar cualquier solicitud. No hay garantía de que esta función detecte toda la actividad maliciosa."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
