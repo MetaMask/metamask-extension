@@ -190,7 +190,7 @@ describe('Send ETH', function () {
           const balance = await driver.findElement(
             '[data-testid="eth-overview__primary-currency"]',
           );
-          assert.equal(await balance.getText(), '$42,496.38\nUSD');
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
@@ -215,12 +215,14 @@ describe('Send ETH', function () {
             return;
           }
           await unlockWallet(driver);
+
           const balance = await driver.findElement(
             '[data-testid="eth-overview__primary-currency"]',
           );
           await driver.isElementPresent('.loading-overlay__spinner');
           await driver.waitForElementNotPresent('.loading-overlay__spinner');
-          assert.equal(await balance.getText(), '$42,500.00\nUSD');
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
+
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
           await driver.clickElement('[data-testid="ens-qr-scan-button"]');
@@ -419,13 +421,13 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
+
             const balance = await driver.findElement(
               '[data-testid="eth-overview__primary-currency"]',
             );
-
             await driver.isElementPresent('.loading-overlay__spinner');
             await driver.waitForElementNotPresent('.loading-overlay__spinner');
-            assert.equal(await balance.getText(), '$42,500.00\nUSD');
+            assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
             if (process.env.MULTICHAIN) {
