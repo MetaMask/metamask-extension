@@ -60,13 +60,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apocentre/alias-sampling@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "@apocentre/alias-sampling@npm:0.5.3"
-  checksum: b1050c19a4391875d042d573eb24d2a885612b98e903b47f0a90e18c98c2b8c82b796f1e622bd9fe61a01ed2a420a47a8acf8af578654634776cefd9b7a32dcd
-  languageName: node
-  linkType: hard
-
 "@aw-web-design/x-default-browser@npm:1.4.126":
   version: 1.4.126
   resolution: "@aw-web-design/x-default-browser@npm:1.4.126"
@@ -1697,10 +1690,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.4":
-  version: 1.4.4
-  resolution: "@blockaid/ppom_release@npm:1.4.4"
-  checksum: 71f6276b21a59bc3b16d3335a266d199071e98009bb789ce26ab066da650b72068dff7743c3fbe86fef6dcbcef1eccef0e90362686283865b34514a956a5f4cd
+"@blockaid/ppom_release@npm:^1.4.5":
+  version: 1.4.5
+  resolution: "@blockaid/ppom_release@npm:1.4.5"
+  checksum: 653b75922951f0b73b0c9a1e3621a29d5a8d7569fbfc9e9ac89b0e14161eacc712dfe8a656107df2453b37ce1b40e59cd287dfcb6bdc73982771e3b90dfa5cca
   languageName: node
   linkType: hard
 
@@ -3474,6 +3467,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@keystonehq/alias-sampling@npm:^0.1.1":
+  version: 0.1.2
+  resolution: "@keystonehq/alias-sampling@npm:0.1.2"
+  checksum: 4dfdfb91e070b1d9f28058c92b5b8fad81696ac63bd432cd6bd359f2ab92eb50df75e8c5da1f75a351756387e9902f043b3ecc2cbf662c9c9456ecacc848abfd
+  languageName: node
+  linkType: hard
+
 "@keystonehq/base-eth-keyring@npm:^0.14.1":
   version: 0.14.1
   resolution: "@keystonehq/base-eth-keyring@npm:0.14.1"
@@ -3501,13 +3501,13 @@ __metadata:
   linkType: hard
 
 "@keystonehq/bc-ur-registry@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@keystonehq/bc-ur-registry@npm:0.6.0"
+  version: 0.6.4
+  resolution: "@keystonehq/bc-ur-registry@npm:0.6.4"
   dependencies:
     "@ngraveio/bc-ur": "npm:^1.1.5"
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
-  checksum: 9d5665eef6a62d43edab13706a7bd86af0b492306bc64d65c30faa7b1e8cab49cf3c73b7290f28f3fcc48b8ad22578979d31ea511f8f35357567a97fca407b2f
+  checksum: d4cdbefc14f3305543340d509564e1a795eb458327d46aad8665927999150df7e282939dcb714b81fea386061019e3b9f41eedbbb09a59d404355711c33159b2
   languageName: node
   linkType: hard
 
@@ -3815,9 +3815,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.3.16":
-  version: 0.3.16
-  resolution: "@metamask-institutional/extension@npm:0.3.16"
+"@metamask-institutional/extension@npm:^0.3.17":
+  version: 0.3.17
+  resolution: "@metamask-institutional/extension@npm:0.3.17"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
@@ -3828,7 +3828,8 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.0.4"
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
-  checksum: 099b941dba62a503829e8806a6892ff49672492379f3d6230f6c562cf3e70da7ffc077598ff2acf8fe286a6fa8df3d8eaa63e9d40eca943fed3c609150b43af2
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: b1cc3c6e0a6719692b78b08ec9b4dd4bae03913f4c1a94a18eebfe3a2abbd386335a0aeb695167ed60681bf15db140e00ee1639485f1fdd19d4b62905a0cb6bc
   languageName: node
   linkType: hard
 
@@ -5754,18 +5755,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.1.5, @ngraveio/bc-ur@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "@ngraveio/bc-ur@npm:1.1.6"
+"@ngraveio/bc-ur@npm:^1.1.12, @ngraveio/bc-ur@npm:^1.1.5":
+  version: 1.1.12
+  resolution: "@ngraveio/bc-ur@npm:1.1.12"
   dependencies:
-    "@apocentre/alias-sampling": "npm:^0.5.3"
+    "@keystonehq/alias-sampling": "npm:^0.1.1"
     assert: "npm:^2.0.0"
     bignumber.js: "npm:^9.0.1"
     cbor-sync: "npm:^1.0.4"
     crc: "npm:^3.8.0"
     jsbi: "npm:^3.1.5"
     sha.js: "npm:^2.4.11"
-  checksum: 2fc883aca227b90e1e4a760ed7f85c439e84d358e0cd8db350746f538112ff8cbde20a79c0755cd8857b26c8ad5fe6fdef4bfd4a3f8fad26f53eba0692e7fa30
+  checksum: 43f030019afc3074546acd61041827c0d6a81a523239f336a25e1540f5353bc69af8a83c9f0989a0bafdb72ebbd32de79965f001f092227caef8e96ee472e21e
   languageName: node
   linkType: hard
 
@@ -25086,7 +25087,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.4.4"
+    "@blockaid/ppom_release": "npm:^1.4.5"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -25106,7 +25107,7 @@ __metadata:
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
     "@metamask-institutional/custody-keyring": "npm:^1.0.10"
-    "@metamask-institutional/extension": "npm:^0.3.16"
+    "@metamask-institutional/extension": "npm:^0.3.17"
     "@metamask-institutional/institutional-features": "npm:^1.2.11"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
@@ -25182,7 +25183,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^25.0.0"
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
-    "@ngraveio/bc-ur": "npm:^1.1.6"
+    "@ngraveio/bc-ur": "npm:^1.1.12"
     "@noble/hashes": "npm:^1.3.3"
     "@playwright/test": "npm:^1.39.0"
     "@popperjs/core": "npm:^2.4.0"
