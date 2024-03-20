@@ -49,7 +49,7 @@ describe('Creation Successful Onboarding View', () => {
 
   it('should route to pin extension route when "Got it" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const gotItButton = getByText('Got it!');
+    const gotItButton = getByText('Got it');
     fireEvent.click(gotItButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_PIN_EXTENSION_ROUTE,

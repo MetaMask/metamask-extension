@@ -1,3 +1,5 @@
+@use "design-system";
+
 .confirm-page-container-navigation {
   display: flex;
   justify-content: space-between;
@@ -39,13 +41,13 @@
   }
 
   &__navtext {
-    @include H9;
+    @include design-system.H9;
 
     font-weight: bold;
   }
 
   &__longtext {
-    @include H9;
+    @include design-system.H9;
 
     color: var(--color-text-alternative);
   }

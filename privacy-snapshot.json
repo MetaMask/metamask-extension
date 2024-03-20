@@ -2,6 +2,7 @@
   "acl.execution.metamask.io",
   "api.lens.dev",
   "api.segment.io",
+  "api.web3modal.com",
   "arbitrum-mainnet.infura.io",
   "bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link",
   "bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link",
@@ -26,6 +27,7 @@
   "min-api.cryptocompare.com",
   "phishing-detection.metafi.codefi.network",
   "portfolio.metamask.io",
+  "price-api.metafi.codefi.network",
   "proxy.metafi.codefi.network",
   "raw.githubusercontent.com",
   "registry.npmjs.org",
@@ -34,11 +36,11 @@
   "start.metamask.io",
   "static.metafi-dev.codefi.network",
   "static.metafi.codefi.network",
+  "static.cx.metamask.io",
   "swap.metaswap.codefi.network",
   "test.metamask-phishing.io",
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
   "unresponsive-rpc.url",
-  "www.4byte.directory",
-  "price-api.metafi.codefi.network"
+  "www.4byte.directory"
 ]

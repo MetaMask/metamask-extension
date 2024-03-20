@@ -2062,7 +2062,7 @@ describe('Box', () => {
         <Box margin={[0]}>1 item</Box>
         <Box margin={[0, 1]}>2 items</Box>
         <Box margin={[0, 1, 2]}>3 items</Box>
-        <Box margin={[0, 1, 2, 3, 4]}>too many items</Box>
+        <Box margin={[0, 1, 2, 3, 4] as any}>too many items</Box>
       </>,
     );
 

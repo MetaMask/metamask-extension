@@ -17,7 +17,6 @@ describe('Privacy Settings Onboarding View', () => {
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: false,
-        [CHAIN_IDS.GOERLI]: false,
         [CHAIN_IDS.SEPOLIA]: false,
         [CHAIN_IDS.LINEA_GOERLI]: true,
       },
@@ -76,12 +75,12 @@ describe('Privacy Settings Onboarding View', () => {
     const submitButton = getByText('Done');
     // toggle to false
     fireEvent.click(toggles[0]);
+    fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
-    fireEvent.click(toggles[10]);
 
     fireEvent.click(submitButton);
 

@@ -9,6 +9,7 @@ import {
 } from '../../../../../../shared/constants/transaction';
 import { Box } from '../../../../../components/component-library';
 import UnitInput from '../../../../../components/ui/unit-input';
+import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
 import AmountMaxButton from './amount-max-button';
 
 export default class SendAmountRow extends Component {
@@ -67,7 +68,12 @@ export default class SendAmountRow extends Component {
             showError={inError}
             errorType="amount"
           >
-            <UnitInput onChange={this.handleChange} type="number" min="0">
+            <UnitInput
+              onChange={(amount) => this.handleChange(decimalToHex(amount))}
+              type="number"
+              min="0"
+              dataTestId="token-input"
+            >
               <Box className="currency-input__conversion-component">
                 {`${this.context.t('balance')}:`} {`${asset.details.balance} `}
                 {`${this.context.t('tokens').toLowerCase()}`}

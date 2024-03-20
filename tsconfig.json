@@ -23,10 +23,9 @@
     "useUnknownInCatchVariables": true
   },
   "exclude": [
-    "**/*.test.ts", // its pretty important to
-    "**/*.test.tsx", // use accurate types in
-    "**/*.stories.tsx", // tests and we don't
-    "**/*.stories.ts" // even come close.
+    // don't typecheck stories, as they don't yet pass the type checker.
+    "**/*.stories.tsx",
+    "**/*.stories.ts"
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node20/tsconfig.json",

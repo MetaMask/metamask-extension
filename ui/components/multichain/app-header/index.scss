@@ -1,3 +1,5 @@
+@use "design-system";
+
 .multichain-app-header {
   $height-screen-sm-max: 100%;
   $width-screen-sm-min: 85vw;
@@ -13,19 +15,19 @@
     grid-template-columns: 1fr 2fr 1fr;
     height: 68px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: $height-screen-sm-max;
     }
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       width: $width-screen-sm-min;
     }
 
-    @include screen-md-min {
+    @include design-system.screen-md-min {
       width: $width-screen-md-min;
     }
 
-    @include screen-lg-min {
+    @include design-system.screen-lg-min {
       width: $width-screen-lg-min;
     }
 
@@ -50,19 +52,19 @@
     flex-flow: row nowrap;
     height: 68px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: $height-screen-sm-max;
     }
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       width: $width-screen-sm-min;
     }
 
-    @include screen-md-min {
+    @include design-system.screen-md-min {
       width: $width-screen-md-min;
     }
 
-    @include screen-lg-min {
+    @include design-system.screen-lg-min {
       width: $width-screen-lg-min;
     }
   }
@@ -81,13 +83,13 @@
   &--icon {
     height: 32px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       display: none;
     }
   }
 
   &--horizontal {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       display: none;
     }
   }

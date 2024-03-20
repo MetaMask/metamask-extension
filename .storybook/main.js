@@ -69,9 +69,9 @@ module.exports = {
           loader: 'sass-loader',
           options: {
             sourceMap: true,
-            implementation: require('sass'),
+            implementation: require('sass-embedded'),
             sassOptions: {
-              includePaths: ['ui/css/'],
+              includePaths: ['ui/css/', 'node_modules/',],
             },
           },
         },

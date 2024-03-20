@@ -1,3 +1,5 @@
+@use "design-system";
+
 .signature-request-message {
   flex: 1 60%;
   max-height: 231px;
@@ -7,7 +9,7 @@
     flex: 1 100%;
     overflow: auto;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       width: auto;
     }
   }

@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'awaiting-swap/index';
 @import 'awaiting-signatures/index';
 @import 'smart-transaction-status/index';
@@ -28,7 +30,7 @@
   justify-content: center;
   width: 100%;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     z-index: 12;
   }
 
@@ -36,7 +38,7 @@
     margin-left: 24px;
     margin-right: 24px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-left: 20px;
       margin-right: 20px;
     }
@@ -51,7 +53,7 @@
     overflow-x: hidden;
     overflow-y: auto;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       width: 460px;
       background: var(--color-background-default);
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
@@ -69,25 +71,25 @@
     width: 100%;
     height: 100%;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       &--overflow {
         overflow: scroll;
       }
     }
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       width: 348px;
     }
 
     &--redesign-enabled {
-      @include screen-sm-min {
+      @include design-system.screen-sm-min {
         width: 100%;
       }
     }
   }
 
   &__title {
-    @include H5;
+    @include design-system.H5;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -110,7 +112,7 @@
     top: 0;
     z-index: 1;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       padding-top: 12px;
       padding-bottom: 12px;
       height: 66px;
@@ -118,7 +120,7 @@
   }
 
   &__header-cancel {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -128,7 +130,7 @@
   }
 
   &__header-edit {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     cursor: pointer;

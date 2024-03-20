@@ -316,7 +316,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     const {
       maxFeePerGas: suggestedMaxFeePerGas,
       maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
-      gasFeeEstimates: { estimatedBaseFee = '0' },
+      gasFeeEstimates: { estimatedBaseFee = '0' } = {},
     } = gasFeeInputs;
     maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
     maxPriorityFeePerGas =
@@ -988,13 +988,12 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
               value: '0x0', // For approval txs we need to use "0x0" here.
             },
-            chainId,
           });
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }

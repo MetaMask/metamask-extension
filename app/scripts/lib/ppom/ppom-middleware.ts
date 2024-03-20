@@ -11,6 +11,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
+import { normalizePPOMRequest } from './ppom-util';
 
 const { sentry } = global as any;
 
@@ -21,13 +22,15 @@ const CONFIRMATION_METHODS = Object.freeze([
 ]);
 
 export const SUPPORTED_CHAIN_IDS: string[] = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.POLYGON,
   CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.OPTIMISM,
   CHAIN_IDS.AVALANCHE,
+  CHAIN_IDS.BASE,
+  CHAIN_IDS.BSC,
   CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.SEPOLIA,
 ];
 
 /**
@@ -72,7 +75,12 @@ export function createPPOMMiddleware(
         ppomController
           .usePPOM(async (ppom: PPOM) => {
             try {
-              const securityAlertResponse = await ppom.validateJsonRpc(req);
+              const normalizedRequest = normalizePPOMRequest(req);
+
+              const securityAlertResponse = await ppom.validateJsonRpc(
+                normalizedRequest,
+              );
+
               securityAlertResponse.securityAlertId = securityAlertId;
               return securityAlertResponse;
             } catch (error: any) {

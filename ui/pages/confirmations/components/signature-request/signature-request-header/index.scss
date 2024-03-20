@@ -1,5 +1,7 @@
+@use "design-system";
+
 .signature-request-header {
-  @include H7;
+  @include design-system.H7;
 
   display: flex;
   padding: 1rem;
@@ -21,7 +23,7 @@
       }
 
       &__account-name {
-        @include H7;
+        @include design-system.H7;
 
         font-weight: 500;
       }

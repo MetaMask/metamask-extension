@@ -58,11 +58,11 @@ export function getRenderableTokenData(
     : '';
 
   const chainIdForTokenIcons =
-    chainId === CHAIN_IDS.GOERLI ? CHAIN_IDS.MAINNET : chainId;
+    chainId === CHAIN_IDS.SEPOLIA ? CHAIN_IDS.MAINNET : chainId;
 
   const tokenIconUrl =
     (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.MAINNET) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.GOERLI) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.SEPOLIA) ||
     (symbol === CURRENCY_SYMBOLS.BNB && chainId === CHAIN_IDS.BSC) ||
     (symbol === CURRENCY_SYMBOLS.MATIC && chainId === CHAIN_IDS.POLYGON) ||
     (symbol === CURRENCY_SYMBOLS.AVALANCHE &&

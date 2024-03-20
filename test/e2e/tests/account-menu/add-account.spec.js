@@ -190,7 +190,7 @@ describe('Add account', function () {
         await driver.clickElement(
           '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
         );
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="account-list-menu-remove"]',
         );
 

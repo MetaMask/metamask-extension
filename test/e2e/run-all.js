@@ -11,6 +11,7 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const FLASK_ONLY_TESTS = [
   'test-snap-txinsights-v2.spec.js',
   'test-snap-namelookup.spec.js',
+  'test-snap-siginsights.spec.js',
 ];
 
 const getTestPathsForTestDir = async (testDir) => {

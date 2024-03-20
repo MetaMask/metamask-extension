@@ -6,7 +6,7 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-interface AppState {
+type AppState = {
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
@@ -39,6 +39,7 @@ interface AppState {
   };
   showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
+  deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -83,11 +84,11 @@ interface AppState {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
   ///: END:ONLY_INCLUDE_IF
-}
+};
 
-interface AppSliceState {
+type AppSliceState = {
   appState: AppState;
-}
+};
 
 // default state
 const initialState: AppState = {
@@ -115,6 +116,7 @@ const initialState: AppState = {
   },
   showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
+  deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -223,6 +225,18 @@ export default function reduceApp(
       return {
         ...appState,
         importTokensModalOpen: false,
+      };
+
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
+      return {
+        ...appState,
+        deprecatedNetworkModalOpen: true,
+      };
+
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE:
+      return {
+        ...appState,
+        deprecatedNetworkModalOpen: false,
       };
 
     // alert methods

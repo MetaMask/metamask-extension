@@ -1,18 +1,62 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  TransactionStatus,
+  mergeGasFeeEstimates,
+} from '@metamask/transaction-controller';
+import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
+  getGasFeeControllerEstimates,
+  getGasFeeEstimates,
   getIsNetworkBusy,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
+  getTransactionGasFeeEstimates,
   isNotEIP1559Network,
 } from './metamask';
 
+const EOA_EVM_METHODS = [
+  EthMethod.PersonalSign,
+  EthMethod.Sign,
+  EthMethod.SignTransaction,
+  EthMethod.SignTypedDataV1,
+  EthMethod.SignTypedDataV3,
+  EthMethod.SignTypedDataV4,
+];
+jest.mock('@metamask/transaction-controller', () => ({
+  ...jest.requireActual('@metamask/transaction-controller'),
+  mergeGasFeeEstimates: jest.fn(),
+}));
+
+const GAS_FEE_CONTROLLER_ESTIMATES_MOCK = {
+  low: '0x1',
+  medium: '0x2',
+  high: '0x3',
+};
+
+const TRANSACTION_ESTIMATES_MOCK = {
+  low: {
+    maxFeePerGas: '0x1',
+    maxPriorityFeePerGas: '0x2',
+  },
+  medium: {
+    maxFeePerGas: '0x1',
+    maxPriorityFeePerGas: '0x2',
+  },
+  high: {
+    maxFeePerGas: '0x1',
+    maxPriorityFeePerGas: '0x2',
+  },
+};
+
 describe('MetaMask Reducers', () => {
+  const mergeGasFeeEstimatesMock = jest.mocked(mergeGasFeeEstimates);
+
   const mockState = {
     metamask: reduceMetamask(
       {
@@ -37,6 +81,64 @@ describe('MetaMask Reducers', () => {
             name: 'Send Account 4',
           },
         },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Send Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: EOA_EVM_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                name: 'Send Account 2',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: EOA_EVM_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            '15e69915-2a1a-4019-93b3-916e11fd432f': {
+              address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+              id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+              metadata: {
+                name: 'Send Account 3',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: EOA_EVM_METHODS,
+              type: EthAccountType.Eoa,
+            },
+            '784225f4-d30b-4e77-a900-c8bbce735b88': {
+              address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+              id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+              metadata: {
+                name: 'Send Account 4',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: EOA_EVM_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
+        cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
         currentBlockGasLimitByChainId: {
           '0x5': '0x4c1878',
@@ -147,6 +249,7 @@ describe('MetaMask Reducers', () => {
       {},
     ),
   };
+
   it('init state', () => {
     const initState = reduceMetamask(undefined, {});
 
@@ -166,19 +269,40 @@ describe('MetaMask Reducers', () => {
   });
 
   it('sets account label', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_ACCOUNT_LABEL,
-        value: {
-          account: 'test account',
-          label: 'test label',
-        },
+    const state = reduceMetamask(mockState.metamask, {
+      type: actionConstants.SET_ACCOUNT_LABEL,
+      value: {
+        account: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+        label: 'test label',
       },
-    );
+    });
 
     expect(state.identities).toStrictEqual({
-      'test account': { name: 'test label' },
+      ...mockState.metamask.identities,
+      '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+        ...mockState.metamask.identities[
+          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
+        ],
+        name: 'test label',
+      },
+    });
+
+    expect(state.internalAccounts).toStrictEqual({
+      ...mockState.metamask.internalAccounts,
+      accounts: {
+        ...mockState.metamask.internalAccounts.accounts,
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          ...mockState.metamask.internalAccounts.accounts[
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+          ],
+          metadata: {
+            ...mockState.metamask.internalAccounts.accounts[
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+            ].metadata,
+            name: 'test label',
+          },
+        },
+      },
     });
   });
 
@@ -322,32 +446,68 @@ describe('MetaMask Reducers', () => {
       it('should return an array including all the users accounts and the address book', () => {
         expect(getSendToAccounts(mockState)).toStrictEqual([
           {
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Send Account 1',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: EOA_EVM_METHODS,
+            type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
             nonce: '0x1b',
             address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-            name: 'Send Account 1',
           },
           {
+            id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+            metadata: {
+              name: 'Send Account 2',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: EOA_EVM_METHODS,
+            type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x37452b1315889f80',
             nonce: '0xa',
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-            name: 'Send Account 2',
           },
           {
+            id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+            metadata: {
+              name: 'Send Account 3',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: EOA_EVM_METHODS,
+            type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x30c9d71831c76efe',
             nonce: '0x1c',
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-            name: 'Send Account 3',
           },
           {
+            id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+            metadata: {
+              name: 'Send Account 4',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: EOA_EVM_METHODS,
+            type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x0',
             nonce: '0x0',
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-            name: 'Send Account 4',
           },
           {
             address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
@@ -424,6 +584,81 @@ describe('MetaMask Reducers', () => {
           metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
         }),
       ).toBe(false);
+    });
+  });
+
+  describe('getGasFeeControllerEstimates', () => {
+    it('returns estimates from GasFeeController state', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      expect(getGasFeeControllerEstimates(state)).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+  });
+
+  describe('getTransactionGasFeeEstimates', () => {
+    it('returns estimates from transaction', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+      };
+
+      expect(getTransactionGasFeeEstimates(state)).toStrictEqual(
+        TRANSACTION_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns undefined if no confirm transaction', () => {
+      expect(getTransactionGasFeeEstimates({})).toBeUndefined();
+    });
+  });
+
+  describe('getGasFeeEstimates', () => {
+    it('returns GasFeeController estimates if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      expect(getGasFeeEstimates(state)).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns merged transaction estimates if transaction estimates and GasFeeController estimates', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        },
+      };
+
+      mergeGasFeeEstimatesMock.mockReturnValue(TRANSACTION_ESTIMATES_MOCK);
+
+      expect(getGasFeeEstimates(state)).toStrictEqual(
+        TRANSACTION_ESTIMATES_MOCK,
+      );
+
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
+        gasFeeControllerEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+      });
     });
   });
 });

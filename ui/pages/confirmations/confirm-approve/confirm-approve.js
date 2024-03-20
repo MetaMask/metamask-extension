@@ -183,7 +183,11 @@ export default function ConfirmApprove({
   tokenAllowanceImprovements = false;
   ///: END:ONLY_INCLUDE_IF
 
-  if (tokenAllowanceImprovements && assetStandard === TokenStandard.ERC20) {
+  if (
+    tokenAllowanceImprovements &&
+    assetStandard === TokenStandard.ERC20 &&
+    !isSetApproveForAll
+  ) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>

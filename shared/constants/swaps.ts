@@ -26,7 +26,7 @@ export const MAX_ALLOWED_SLIPPAGE = 15;
 // in place of the token address that ERC-20 tokens have
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-export interface SwapsTokenObject {
+export type SwapsTokenObject = {
   /**
    * The symbol of token object
    */
@@ -47,7 +47,7 @@ export interface SwapsTokenObject {
    * URL for token icon
    */
   iconUrl: string;
-}
+};
 
 export const ETH_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.ETH,
@@ -90,6 +90,14 @@ export const TEST_ETH_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
 } as const;
 
 export const GOERLI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: CURRENCY_SYMBOLS.ETH,
+  name: 'Ether',
+  address: DEFAULT_TOKEN_ADDRESS,
+  decimals: 18,
+  iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
+} as const;
+
+export const SEPOLIA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.ETH,
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
@@ -264,6 +272,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.BSC]: BNB_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.POLYGON]: MATIC_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.GOERLI]: GOERLI_SWAPS_TOKEN_OBJECT,
+  [CHAIN_IDS.SEPOLIA]: GOERLI_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.AVALANCHE]: AVAX_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.ARBITRUM]: ARBITRUM_SWAPS_TOKEN_OBJECT,

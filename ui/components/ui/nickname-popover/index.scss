@@ -1,3 +1,5 @@
+@use "design-system";
+
 .nickname-popover {
   &__popover-wrap {
     height: 232px;
@@ -18,7 +20,7 @@
   }
 
   &__address {
-    @include H4;
+    @include design-system.H4;
 
     font-weight: bold;
     display: flex;
@@ -28,7 +30,7 @@
   }
 
   &__public-address {
-    @include H7;
+    @include design-system.H7;
 
     display: flex;
     flex-direction: row;
@@ -45,21 +47,21 @@
     }
 
     &__constant {
-      @include H8;
+      @include design-system.H8;
 
       color: var(--color-text-alternative);
     }
   }
 
   &__view-on-block-explorer {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     margin-top: 12px;
   }
 
   &__etherscan-link {
-    @include H7;
+    @include design-system.H7;
 
     padding: 0;
   }

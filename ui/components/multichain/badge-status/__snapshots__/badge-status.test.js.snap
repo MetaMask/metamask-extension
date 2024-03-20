@@ -3,7 +3,7 @@
 exports[`Badge Status should render correctly 1`] = `
 <div>
   <button
-    class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
     data-testid="multichain-badge-status"
   >
     <div>

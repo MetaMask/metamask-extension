@@ -1,3 +1,5 @@
+@use "design-system";
+
 .advanced-gas-inputs {
   &__gas-edit-rows {
     display: flex;
@@ -11,15 +13,15 @@
     width: 47.5%;
 
     &__label {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-text-alternative);
       display: flex;
       justify-content: space-between;
       align-items: center;
 
-      @include screen-sm-max {
-        @include H8;
+      @include design-system.screen-sm-max {
+        @include design-system.H8;
       }
 
       .info-circle {
@@ -32,13 +34,13 @@
     }
 
     &__error-text {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-error-default);
     }
 
     &__warning-text {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-warning-default);
     }
@@ -49,7 +51,7 @@
 
     &__input {
       /*rtl:ignore*/
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       direction: ltr;
       border: 1px solid var(--color-border-muted);
@@ -72,7 +74,7 @@
     }
 
     &__input-arrows {
-      @include H6;
+      @include design-system.H6;
 
       position: absolute;
       top: 7px;
@@ -107,7 +109,7 @@
       }
 
       i {
-        font-size: $font-size-h8;
+        font-size: design-system.$font-size-h8;
       }
 
       &--hidden {
@@ -149,7 +151,7 @@
     }
 
     &__custom-text {
-      @include H7;
+      @include design-system.H7;
     }
   }
 }

@@ -44,6 +44,14 @@ const STORE_MOCK = {
     identities: testData.metamask.identities,
     internalAccounts: testData.metamask.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
+    snaps: {
+      'npm:@test/test-snap': {
+        id: 'npm:@test/test-snap',
+        manifest: {
+          description: 'Test Snap',
+        },
+      },
+    },
   },
 };
 

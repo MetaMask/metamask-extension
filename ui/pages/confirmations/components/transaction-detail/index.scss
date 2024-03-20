@@ -1,3 +1,5 @@
+@use "design-system";
+
 .transaction-detail {
   margin: 15px;
   padding: 0 12px;
@@ -10,7 +12,7 @@
     padding-top: 20px;
 
     button {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-primary-default);
       background: transparent;

@@ -1,18 +1,19 @@
+@use "design-system";
 
 .remove-snap-account-page {
   $width-screen-sm-min: 85vw;
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     width: $width-screen-md-min;
   }
 
-  @include screen-lg-min {
+  @include design-system.screen-lg-min {
     width: $width-screen-lg-min;
   }
 }

@@ -21,7 +21,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
   }: {
     addressBookController: AddressBookController;
     nameController: NameController;
-    messenger: PetnamesBridgeMessenger;
+    messenger: PetnamesBridgeMessenger<never, never>;
   }) {
     super({ isTwoWay: true, nameController, messenger });
 

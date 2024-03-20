@@ -1,3 +1,5 @@
+@use "design-system";
+
 .build-quote {
   display: flex;
   flex-flow: column;
@@ -39,7 +41,7 @@
 
   &__title,
   &__input-label {
-    @include H5;
+    @include design-system.H5;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -66,14 +68,14 @@
   }
 
   &__max-button {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     cursor: pointer;
   }
 
   &__balance-message {
-    @include H7;
+    @include design-system.H7;
 
     width: 100%;
     color: var(--color-text-muted);
@@ -141,13 +143,13 @@
   &__open-to-dropdown {
     max-height: 194px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       max-height: 276px;
     }
   }
 
   &__token-message {
-    @include H7;
+    @include design-system.H7;
 
     width: 100%;
     color: var(--color-text-alternative);

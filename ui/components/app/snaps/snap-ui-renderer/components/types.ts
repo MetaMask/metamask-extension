@@ -1,9 +1,8 @@
 import { Component } from '@metamask/snaps-sdk';
 
 export type UIComponentParams<T extends Component> = {
+  map: Record<string, number>;
   element: T;
-  elementKeyIndex: { value: number };
-  rootKey: string;
   form?: string;
 };
 

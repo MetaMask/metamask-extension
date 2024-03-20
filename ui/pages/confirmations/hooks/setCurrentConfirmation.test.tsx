@@ -27,7 +27,7 @@ describe('setCurrentConfirmation', () => {
       ConfirmDucks,
       'updateCurrentConfirmation',
     );
-    const wrapper = ({ children }) => (
+    const wrapper = ({ children }: { children: any }) => (
       <ReduxProvider store={configureStore(mockState)}>
         {children}
       </ReduxProvider>

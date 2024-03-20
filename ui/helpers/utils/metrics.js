@@ -72,7 +72,7 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
     params.security_alert_reason = reason ?? BlockaidReason.notApplicable;
   }
 
-  if (resultType === BlockaidResultType.Errored && description) {
+  if (description) {
     params.security_alert_description = description;
   }
 

@@ -33,6 +33,7 @@ import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
 import RejectTransactions from './reject-transactions';
+import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -261,6 +262,17 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
+    },
+  },
+
+  TRANSACTION_ALREADY_CONFIRMED: {
+    disableBackdropClick: true,
+    contents: <TransactionAlreadyConfirmed />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
     },
   },
 
