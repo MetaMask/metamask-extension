@@ -134,7 +134,7 @@ export const getSmartTransactionsEnabled = (
 export const getIsSmartTransaction = (state: Record<string, any>): boolean => {
   const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-  return smartTransactionsOptInStatus && smartTransactionsEnabled;
+  return Boolean(smartTransactionsOptInStatus && smartTransactionsEnabled);
 };
 
 export function getFeatureFlagsByChainId(state: Record<string, any>) {

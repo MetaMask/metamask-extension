@@ -1624,19 +1624,23 @@ export default class MetamaskController extends EventEmitter {
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
         publish: (transactionMeta) => {
-          const isSmartTransaction = sharedSelectors.getIsSmartTransaction({
+          const state = {
             metamask: this.getState(),
-          });
+          };
+          const isSmartTransaction =
+            sharedSelectors.getIsSmartTransaction(state);
           if (!isSmartTransaction) {
             // Will cause TransactionController to publish to the RPC provider as normal.
             return { transactionHash: undefined };
           }
+          const featureFlags = sharedSelectors.getFeatureFlagsByChainId(state);
           return submitSmartTransactionHook({
             transactionMeta,
             transactionController: this.txController,
             smartTransactionsController: this.smartTransactionsController,
             controllerMessenger: this.controllerMessenger,
             isSmartTransaction,
+            featureFlags,
           });
         },
       },

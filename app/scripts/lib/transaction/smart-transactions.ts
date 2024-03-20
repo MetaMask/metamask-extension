@@ -24,6 +24,7 @@ export type SubmitSmartTransactionRequest = {
   transactionController: TransactionController;
   isSmartTransaction: boolean;
   controllerMessenger: any;
+  featureFlags: Record<string, any>;
 };
 
 export async function submitSmartTransactionHook(
@@ -35,6 +36,7 @@ export async function submitSmartTransactionHook(
     transactionController,
     isSmartTransaction,
     controllerMessenger,
+    featureFlags,
   } = request;
   log.info('Smart Transaction - Executing publish hook', transactionMeta);
   const isDapp = transactionMeta?.origin !== ORIGIN_METAMASK;
@@ -74,17 +76,15 @@ export async function submitSmartTransactionHook(
       signedCanceledTransactions,
     });
     log.info('Smart Transaction - Submitting signed transactions');
-    const response = await smartTransactionsController.submitSignedTransactions(
-      {
+    const submitTransactionResponse =
+      await smartTransactionsController.submitSignedTransactions({
         signedTransactions,
         signedCanceledTransactions,
         txParams,
-        // Patched into controller to skip unnecessary call to confirmExternalTransaction.
-        skipConfirm: false,
         transactionMeta,
-      },
-    );
-    const uuid = response?.uuid;
+      });
+    const uuid = submitTransactionResponse?.uuid;
+    const returnTxHashAsap = featureFlags?.smartTransactions?.returnTxHashAsap;
     const onApproveOrReject = () => {
       controllerMessenger.call('ApprovalController:endFlow', {
         id: smartTransactionStatusApprovalId,
@@ -113,6 +113,9 @@ export async function submitSmartTransactionHook(
       )
       .then(onApproveOrReject, onApproveOrReject);
     let transactionHash: string | undefined | null;
+    if (returnTxHashAsap && submitTransactionResponse?.txHash) {
+      transactionHash = submitTransactionResponse.txHash;
+    }
     (smartTransactionsController as any).eventEmitter.on(
       `${uuid}:smartTransaction`,
       async (smartTransaction: SmartTransaction) => {
