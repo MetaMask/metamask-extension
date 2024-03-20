@@ -109,10 +109,7 @@ const getTokenBalanceChanges = (
 
     const fiatRate = tokenFiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? new Numeric(amount.quantity, 16)
-          .times(amount.isNegative ? -1 : 1, 10)
-          .applyConversionRate(fiatRate)
-          .toNumber()
+      ? amount.numeric.applyConversionRate(fiatRate).toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };

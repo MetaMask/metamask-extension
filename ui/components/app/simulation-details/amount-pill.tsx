@@ -34,7 +34,7 @@ export const AmountPill: React.FC<BalanceChange> = ({ asset, amount }) => {
 
   const hideAmount = asset.standard === TokenStandard.ERC721;
   if (!hideAmount) {
-    amountParts.push(amount.numeric.round(6).toString());
+    amountParts.push(amount.numeric.abs().round(6).toString());
   }
   if (asset.tokenId) {
     amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
