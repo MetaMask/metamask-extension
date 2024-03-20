@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.12.4]
+### Fixed
+- Ensure native network balance is visible in home screen balance display ([#23614](https://github.com/MetaMask/metamask-extension/pull/23614))
 
 ## [11.12.3]
 ### Fixed
@@ -4511,6 +4513,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.12.4...HEAD
 [11.12.3]: https://github.com/MetaMask/metamask-extension/compare/v11.12.3...v11.12.4
+[11.12.4]: https://github.com/MetaMask/metamask-extension/compare/v11.12.3...v11.12.4
 [11.12.3]: https://github.com/MetaMask/metamask-extension/compare/v11.12.2...v11.12.3
 [11.12.2]: https://github.com/MetaMask/metamask-extension/compare/v11.12.1...v11.12.2
 [11.12.1]: https://github.com/MetaMask/metamask-extension/compare/v11.12.0...v11.12.1
