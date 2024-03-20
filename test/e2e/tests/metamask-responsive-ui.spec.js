@@ -74,9 +74,9 @@ describe('MetaMask Responsive UI', function () {
         await driver.waitForElementNotPresent('.loading-overlay__spinner');
         // assert balance
         const balance = await driver.findElement(
-          '.eth-overview__primary-container',
+          '[data-testid="eth-overview__primary-currency"]',
         );
-        assert.equal(await balance.getText(), '$0.00\nUSD');
+        assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },
     );
   });
