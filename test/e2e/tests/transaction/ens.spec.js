@@ -71,10 +71,6 @@ describe('ENS', function () {
   }
 
   it('domain resolves to a correct address', async function () {
-    // TODO: Update Test when Multichain Send Flow is added
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),

@@ -115,10 +115,6 @@ describe('MetaMask Responsive UI', function () {
   });
 
   it('Send Transaction from responsive window', async function () {
-    // TODO: Update Test when Multichain Send Flow is added
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     const driverOptions = { openDevToolsForTabs: true };
     await withFixtures(
       {
