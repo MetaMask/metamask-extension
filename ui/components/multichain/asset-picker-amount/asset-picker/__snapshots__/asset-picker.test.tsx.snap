@@ -35,7 +35,7 @@ exports[`AssetPicker matches snapshot 1`] = `
             tabindex="0"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text asset-picker__symbol mm-text--body-md mm-box--color-text-default"
             >
               NATIVE...
             </p>
