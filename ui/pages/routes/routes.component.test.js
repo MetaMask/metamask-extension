@@ -28,6 +28,8 @@ jest.mock('webextension-polyfill', () => ({
 
 jest.mock('../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

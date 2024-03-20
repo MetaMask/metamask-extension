@@ -19,6 +19,8 @@ import {
 import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

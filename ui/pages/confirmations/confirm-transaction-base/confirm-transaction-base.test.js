@@ -32,6 +32,8 @@ import ConfirmTransactionBase from './confirm-transaction-base.container';
 const middleware = [thunk];
 
 setBackgroundConnection({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

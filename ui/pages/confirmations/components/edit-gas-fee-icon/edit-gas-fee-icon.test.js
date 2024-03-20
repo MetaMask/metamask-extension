@@ -7,6 +7,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import EditGasFeeIcon from './edit-gas-fee-icon';
 
 jest.mock('../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

@@ -13,6 +13,8 @@ import { AdvancedGasFeePopoverContextProvider } from '../context';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

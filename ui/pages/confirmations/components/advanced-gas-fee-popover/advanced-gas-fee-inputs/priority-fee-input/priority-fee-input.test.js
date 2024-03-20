@@ -19,6 +19,8 @@ import PriorityfeeInput from './priority-fee-input';
 const LOW_PRIORITY_FEE = 0.000000001;
 
 jest.mock('../../../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

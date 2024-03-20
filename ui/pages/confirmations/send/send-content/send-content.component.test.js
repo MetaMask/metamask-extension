@@ -13,6 +13,8 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalN
 import SendContent from '.';
 
 jest.mock('../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

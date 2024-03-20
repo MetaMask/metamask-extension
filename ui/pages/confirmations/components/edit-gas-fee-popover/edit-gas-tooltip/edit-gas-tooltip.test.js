@@ -6,6 +6,8 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import EditGasToolTip from './edit-gas-tooltip';
 
 jest.mock('../../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

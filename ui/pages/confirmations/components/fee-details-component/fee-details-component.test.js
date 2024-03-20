@@ -7,6 +7,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import FeeDetailsComponent from './fee-details-component';
 
 jest.mock('../../../../store/actions', () => ({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

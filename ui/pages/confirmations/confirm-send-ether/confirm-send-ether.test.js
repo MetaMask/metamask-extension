@@ -7,6 +7,8 @@ import configureStore from '../../../store/store';
 import ConfirmSendEther from './confirm-send-ether';
 
 setBackgroundConnection({
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
