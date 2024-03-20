@@ -21,8 +21,8 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { getOriginOfCurrentTab } from '../../../selectors';
-import { Identity } from './connected-accounts-menu.types';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
+import { Identity } from './connected-accounts-menu.types';
 
 const TsMenuItem = MenuItem as any;
 

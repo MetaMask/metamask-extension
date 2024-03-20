@@ -1,8 +1,8 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import { PermissionDetailsModal } from '.';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 describe('PermissionDetailsModal', () => {
   const mockState = {
@@ -122,7 +122,7 @@ describe('PermissionDetailsModal', () => {
   };
 
   it('should render correctly', () => {
-    const { container, getByTestId } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <PermissionDetailsModal {...args} />,
       store,
     );
