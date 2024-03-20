@@ -4,7 +4,6 @@
   // balance text elements
   &__balance > *,
   &__balance > div > * {
-    color: var(--color-text-alternative);
     font-size: design-system.$font-size-h7;
     padding: 0;
   }
