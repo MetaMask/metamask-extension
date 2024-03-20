@@ -162,18 +162,20 @@ async function main() {
       console.log(`Running tests on ${currentBrowser}`);
       try {
         await runTestsOnSingleBrowser(currentBrowser);
-      }
-      catch (error) {
-        exitWithError(`Error occurred while running tests on ${currentBrowser}: ${error}`);
+      } catch (error) {
+        exitWithError(
+          `Error occurred while running tests on ${currentBrowser}: ${error}`,
+        );
       }
     }
   } else {
     console.log(`Running tests on ${browser}`);
     try {
       await runTestsOnSingleBrowser(browser);
-    }
-    catch (error) {
-      exitWithError(`Error occurred while running tests on ${browser}: ${error}`);
+    } catch (error) {
+      exitWithError(
+        `Error occurred while running tests on ${browser}: ${error}`,
+      );
     }
   }
 }
