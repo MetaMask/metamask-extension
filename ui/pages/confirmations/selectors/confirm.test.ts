@@ -1,7 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  ConfirmMetamaskState,
   currentConfirmationSelector,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,

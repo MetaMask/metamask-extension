@@ -13,6 +13,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
+import { normalizePPOMRequest } from './ppom-util';
 
 const { sentry } = global;
 
@@ -91,7 +92,10 @@ export function createPPOMMiddleware<
 
         ppomController
           .usePPOM(async (ppom: PPOM) => {
-            securityAlertResponse = await ppom.validateJsonRpc(req);
+            const normalizedRequest = normalizePPOMRequest(req);
+            securityAlertResponse = await ppom.validateJsonRpc(
+              normalizedRequest,
+            );
             securityAlertResponse.securityAlertId = securityAlertId;
           })
           .catch((error: unknown) => {
