@@ -1,12 +1,13 @@
 
-Manual test scenario for the 'Show test networks' toggle. Below is a summary of the validations included:-
+# Manual test scenario for the 'Show test networks' toggle
+
+Below is a summary of the validations included:-
 
 * Validate that the 'Show test networks' toggle is present in the Advanced settings and is off by default.
 * Validate that the toggle can be turned on and off.
 * Validate that when the toggle is turned on, the Networks dropdown also shows the 'Show test networks' as on, and the test networks are visible.
 * Validate that when the toggle is turned off, the Networks dropdown reflects the 'Show test networks' as off.
 
-['Show test networks' toggle](<../../../../../../Desktop/Screen Recording 2024-03-20 at 5.57.06 PM.mov>)
 
 ```markdown
 
