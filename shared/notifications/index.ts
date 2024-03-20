@@ -292,6 +292,7 @@ export const getTranslatedUINotifications = (
       actionText: t('notificationsPortfolioV2ActionText'),
       date: '',
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     [NOTIFICATION_SIMULATIONS]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_SIMULATIONS],
       title: t('simulationsSettingSubHeader'),
@@ -312,5 +313,6 @@ export const getTranslatedUINotifications = (
               width: '100%',
             },
     },
+    ///: END:ONLY_INCLUDE_IF
   };
 };
