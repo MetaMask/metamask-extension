@@ -929,6 +929,11 @@ export class MetamaskNotificationsController extends BaseController<
    * @throws {Error} If there's an issue fetching the notifications or if required credentials are missing.
    */
   public async fetchAndUpdateMetamaskNotifications() {
+    if (!this.state.isMetamaskNotificationsEnabled) {
+      log.info('Metamask Notifications are not enabled.');
+      return;
+    }
+
     try {
       // Check if userStorage already exists
       const storageKey = this.getStorageKey();
