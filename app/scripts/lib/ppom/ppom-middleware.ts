@@ -1,6 +1,8 @@
 import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
+import { Hex, Json, JsonRpcParams } from '@metamask/utils';
+import { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-engine';
 import { v4 as uuid } from 'uuid';
 
 import {
@@ -12,7 +14,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
 
-const { sentry } = global as any;
+const { sentry } = global;
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -20,7 +22,7 @@ const CONFIRMATION_METHODS = Object.freeze([
   ...SIGNING_METHODS,
 ]);
 
-export const SUPPORTED_CHAIN_IDS: string[] = [
+export const SUPPORTED_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.AVALANCHE,
   CHAIN_IDS.BASE,
@@ -48,17 +50,28 @@ export const SUPPORTED_CHAIN_IDS: string[] = [
  * @param updateSecurityAlertResponseByTxId
  * @returns PPOMMiddleware function.
  */
-export function createPPOMMiddleware(
+export function createPPOMMiddleware<
+  Params extends JsonRpcParams,
+  Result extends Json,
+>(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
   appStateController: any,
   updateSecurityAlertResponseByTxId: (
-    req: any,
+    req: JsonRpcRequest<JsonRpcParams> & {
+      securityAlertResponse: SecurityAlertResponse;
+    },
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
 ) {
-  return async (req: any, _res: any, next: () => void) => {
+  return async (
+    req: JsonRpcRequest<Params> & {
+      securityAlertResponse: SecurityAlertResponse;
+    },
+    _res: JsonRpcResponse<Result>,
+    next: () => void,
+  ) => {
     try {
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
