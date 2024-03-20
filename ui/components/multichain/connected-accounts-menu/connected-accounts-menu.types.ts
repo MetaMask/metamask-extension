@@ -12,3 +12,17 @@ export type Identity = {
   };
   label?: string;
 };
+
+export type Permission = {
+  key: string;
+  value: {
+    caveats: {
+      type: string;
+      value: string[];
+    }[];
+    date: number;
+    id: string;
+    invoker: string;
+    parentCapability: string;
+  };
+};

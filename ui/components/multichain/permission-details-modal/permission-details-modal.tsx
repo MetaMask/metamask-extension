@@ -18,12 +18,15 @@ import {
   ModalBody,
   ButtonSize,
 } from '../../component-library';
-import { getPermissionsForActiveTab, getUseBlockie } from '../../../selectors';
+import { getUseBlockie } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 import PermissionCell from '../../app/permission-cell';
-import { Identity } from '../connected-accounts-menu/connected-accounts-menu.types';
+import {
+  Identity,
+  Permission,
+} from '../connected-accounts-menu/connected-accounts-menu.types';
 import {
   AlignItems,
   Display,
@@ -36,18 +39,16 @@ export const PermissionDetailsModal = ({
   onClick,
   isOpen,
   account,
+  permissions,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onClick: () => void;
   account: Identity;
+  permissions: Permission[];
 }) => {
   const t = useI18nContext();
-  const permissions = useSelector(getPermissionsForActiveTab);
   const useBlockie = useSelector(getUseBlockie);
-  if (!permissions.length) {
-    return null;
-  }
 
   const permissionLabels = flatten(
     permissions.map(({ key, value }) =>

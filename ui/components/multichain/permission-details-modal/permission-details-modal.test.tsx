@@ -119,6 +119,23 @@ describe('PermissionDetailsModal', () => {
       label: '',
     },
     isOpen: true,
+    permissions: [
+      {
+        key: 'eth_accounts',
+        value: {
+          caveats: [
+            {
+              type: 'restrictReturnedAccounts',
+              value: ['0xd8ad671f1fcc94bcf0ebc6ec4790da35e8d5e1e1'],
+            },
+          ],
+          date: 1710853457632,
+          id: '5yj8do_LYnLHstT0tWjdu',
+          invoker: 'https://app.uniswap.org',
+          parentCapability: 'eth_accounts',
+        },
+      },
+    ],
   };
 
   it('should render correctly', () => {

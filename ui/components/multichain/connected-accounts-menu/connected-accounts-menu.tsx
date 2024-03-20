@@ -20,7 +20,10 @@ import {
   removePermittedAccount,
   setSelectedAccount,
 } from '../../../store/actions';
-import { getOriginOfCurrentTab } from '../../../selectors';
+import {
+  getOriginOfCurrentTab,
+  getPermissionsForActiveTab,
+} from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
 
@@ -46,6 +49,7 @@ export const ConnectedAccountsMenu = ({
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
+  const permissions = useSelector(getPermissionsForActiveTab);
 
   const handleClickOutside = useCallback(
     (event) => {
@@ -96,16 +100,20 @@ export const ConnectedAccountsMenu = ({
       >
         <ModalFocus restoreFocus initialFocusRef={{ current: anchorElement }}>
           <Box onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-            <TsMenuItem
-              iconName={IconName.SecurityTick}
-              data-testid="permission-details-menu-item"
-              onClick={() => {
-                setShowPermissionModal(true);
-                onClose();
-              }}
-            >
-              <Text variant={TextVariant.bodyMd}>{t('permissionDetails')}</Text>
-            </TsMenuItem>
+            {permissions?.length ? (
+              <TsMenuItem
+                iconName={IconName.SecurityTick}
+                data-testid="permission-details-menu-item"
+                onClick={() => {
+                  setShowPermissionModal(true);
+                  onClose();
+                }}
+              >
+                <Text variant={TextVariant.bodyMd}>
+                  {t('permissionDetails')}
+                </Text>
+              </TsMenuItem>
+            ) : null}
             {disableAccountSwitcher ? null : (
               <TsMenuItem
                 iconName={IconName.SwapHorizontal}
@@ -146,6 +154,7 @@ export const ConnectedAccountsMenu = ({
             dispatch(removePermittedAccount(activeTabOrigin, identity.address));
           }}
           onClose={() => setShowPermissionModal(false)}
+          permissions={permissions}
         />
       ) : null}
     </>
