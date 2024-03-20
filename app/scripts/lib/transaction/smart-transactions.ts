@@ -38,13 +38,13 @@ export async function submitSmartTransactionHook(
     controllerMessenger,
     featureFlags,
   } = request;
-  log.info('Smart Transaction - Executing publish hook', transactionMeta);
+  log.debug('Smart Transaction - Executing publish hook', transactionMeta);
   const isDapp = transactionMeta?.origin !== ORIGIN_METAMASK;
   const { chainId, txParams } = transactionMeta;
   // Will cause TransactionController to publish to the RPC provider as normal.
   const useRegularTransactionSubmit = { transactionHash: undefined };
   if (!isSmartTransaction) {
-    log.info(
+    log.debug(
       `Smart Transaction - Skipping hook as it is not a smart transaction on chainId: ${chainId}`,
     );
     return useRegularTransactionSubmit;
@@ -56,7 +56,7 @@ export async function submitSmartTransactionHook(
       { ...txParams, chainId },
       undefined,
     );
-    log.info('Smart Transaction - Retrieved fees', feesResponse);
+    log.debug('Smart Transaction - Retrieved fees', feesResponse);
     const signedTransactions = await createSignedTransactions(
       txParams,
       feesResponse.tradeTxFees?.fees ?? [],
@@ -71,11 +71,11 @@ export async function submitSmartTransactionHook(
       transactionController,
       chainId,
     );
-    log.info('Smart Transaction - Generated signed transactions', {
+    log.debug('Smart Transaction - Generated signed transactions', {
       signedTransactions,
       signedCanceledTransactions,
     });
-    log.info('Smart Transaction - Submitting signed transactions');
+    log.debug('Smart Transaction - Submitting signed transactions');
     const submitTransactionResponse =
       await smartTransactionsController.submitSignedTransactions({
         signedTransactions,
@@ -95,7 +95,7 @@ export async function submitSmartTransactionHook(
     if (!uuid) {
       throw new Error('No smart transaction UUID');
     }
-    log.info('Smart Transaction - Received UUID', uuid);
+    log.debug('Smart Transaction - Received UUID', uuid);
     controllerMessenger
       .call(
         'ApprovalController:addRequest',
@@ -121,13 +121,13 @@ export async function submitSmartTransactionHook(
     (smartTransactionsController as any).eventEmitter.on(
       `${uuid}:smartTransaction`,
       async (smartTransaction: SmartTransaction) => {
-        log.info('Smart Transaction: ', smartTransaction);
+        log.debug('Smart Transaction: ', smartTransaction);
         const { status, statusMetadata } = smartTransaction;
         if (!status || status === SmartTransactionStatuses.PENDING) {
           return;
         }
         if (statusMetadata?.minedHash) {
-          log.info(
+          log.debug(
             'Smart Transaction - Received tx hash: ',
             statusMetadata?.minedHash,
           );
