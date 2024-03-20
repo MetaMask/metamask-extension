@@ -14,14 +14,24 @@
       border-color: inherit;
     }
 
-    flex-shrink: 1;
+    // the input element itself
+    & > div > div > input {
+      text-overflow: hidden;
+      margin: auto;
+      text-align: center;
+      max-width: 5ch;
+    }
+
+    // 48 padding + 18 line height
+    height: 66px;
+    aspect-ratio: 1/1;
+
     box-sizing: border-box;
     border-width: 1px;
     border-radius: 0 8px 8px 0;
 
     // 4 padding + 1 border
     margin: -5px -5px -5px 0;
-    padding: 24px 24px 24px 24px;
   }
 
   // input for tokens
