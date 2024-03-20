@@ -1190,7 +1190,7 @@ export const signAndSendTransactions = (
           ? ''
           : usedQuote.aggregator,
       gas_fees: gasEstimateTotalInUSD,
-      estimated_gas: estimatedGasLimit.toString(10),
+      estimated_gas: new BigNumber(estimatedGasLimit, 16).toString(10),
       suggested_gas_price: fastGasEstimate,
       used_gas_price: hexWEIToDecGWEI(usedGasPrice),
       average_savings: usedQuote.savings?.total,
