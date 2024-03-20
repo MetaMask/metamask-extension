@@ -77,6 +77,13 @@ export default class MMIController extends EventEmitter {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
     );
+
+    this.transactionUpdateController.on(
+      'handshake',
+      async ({ channelId }: { channelId: string }) => {
+        this.appStateController.setChannelId({ channelId });
+      },
+    );
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {

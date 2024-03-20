@@ -467,6 +467,19 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  /**
+   * Set the channelId when a websocket connection is first established with the Extension
+   *
+   * @param {object} opts
+   * @param opts.channelId
+   * @returns {void}
+   */
+  setChannelId({ channelId }) {
+    this.store.updateState({
+      channelId,
+    });
+  }
+
   ///: END:ONLY_INCLUDE_IF
 
   getSignatureSecurityAlertResponse(securityAlertId) {
