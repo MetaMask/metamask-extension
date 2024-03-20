@@ -36,12 +36,6 @@ import {
   TextVariant,
 } from '../constants/design-system';
 ///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getSnapName,
-  ///: END:ONLY_INCLUDE_IF
-  getURLHostName,
-} from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
@@ -75,26 +69,9 @@ function getSnapNameComponent(snapName) {
   );
 }
 
-function getPermissionSubjectComponent(targetSubjectMetadata) {
-  const subjectName = Object.values(targetSubjectMetadata)?.[0]?.origin;
-  const formattedName = getURLHostName(subjectName) || subjectName;
-
-  return (
-    <Text
-      fontWeight={FontWeight.Medium}
-      variant={TextVariant.inherit}
-      color={TextColor.inherit}
-    >
-      {formattedName}
-    </Text>
-  );
-}
-
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
-  [RestrictedMethods.eth_accounts]: ({ t, targetSubjectMetadata }) => ({
-    label: t('permission_can_ethereumAccounts', [
-      getPermissionSubjectComponent(targetSubjectMetadata),
-    ]),
+  [RestrictedMethods.eth_accounts]: ({ t }) => ({
+    label: t('permission_ethereumAccounts'),
     leftIcon: getLeftIcon(IconName.Eye),
     rightIcon: null,
     weight: 3,
@@ -593,20 +570,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 });
 
 /**
- * @typedef {object} Caveat
- * @property {string} type - The type of the caveat.
- * @property {string[]} value - An array of strings, representing the value of the caveat.
- */
-
-/**
  * @typedef {object} PermissionLabelObject
  * @property {string} label - The text label.
- * @property {string} [description] - An optional description, shown when the `rightIcon` is hovered.
+ * @property {string} [description] - An optional description, shown when the
+ * `rightIcon` is hovered.
  * @property {string} leftIcon - The left icon.
  * @property {string} rightIcon - The right icon.
  * @property {number} weight - The weight of the permission.
  * @property {string} permissionName - The name of the permission.
- * @property {(string|{caveats: Caveat[]})} permissionValue - The raw value of the permission, which can either be a string or an object with caveats.
+ * @property {string} permissionValue - The raw value of the permission.
  */
 
 /**

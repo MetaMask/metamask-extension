@@ -27,15 +27,6 @@ import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
 
-function extractDomainOrOriginal(input) {
-  try {
-    const parsedUrl = new URL(input);
-    return parsedUrl.hostname;
-  } catch (error) {
-    return input;
-  }
-}
-
 const PermissionCell = ({
   snapId,
   permissionName,
@@ -116,12 +107,14 @@ const PermissionCell = ({
             'permission-cell__title-revoked': revoked,
           })}
         >
-          {invoker ? (
+          {process.env.MULTICHAIN && invoker ? (
             <Box display={Display.InlineBlock} size={Size.MD} marginRight={1}>
               {extractDomainOrOriginal(invoker)}
             </Box>
           ) : null}
-          {invoker ? t('permissionCan', [title.toLowerCase()]) : title}
+          {process.env.MULTICHAIN && invoker
+            ? t('permissionCan', [title.toLowerCase()])
+            : title}
         </Text>
         {!hideStatus && (
           <PermissionCellStatus
