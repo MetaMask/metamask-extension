@@ -14,6 +14,7 @@ import { Box } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
+import PermissionConnectHeader from '../../components/app/permission-connect-header';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -293,11 +294,10 @@ export default class PermissionConnect extends Component {
             boxShadow="none"
           />
         ) : (
-          <SnapAuthorshipHeader
-            website
-            websiteName={targetSubjectMetadata.name}
-            websiteOrigin={targetSubjectMetadata.origin}
-            websiteIconUrl={targetSubjectMetadata.iconUrl}
+          <PermissionConnectHeader
+            title={targetSubjectMetadata.name}
+            origin={targetSubjectMetadata.origin}
+            iconUrl={targetSubjectMetadata.iconUrl}
           />
         )}
       </Box>
