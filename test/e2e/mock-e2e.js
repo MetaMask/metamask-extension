@@ -11,7 +11,7 @@ const {
 } = require('./tests/phishing-controller/mocks');
 
 const {
-  mockTxSentinelServer,
+  mockSimulationServer,
 } = require('./tests/transaction/simulation-preview.mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
@@ -457,7 +457,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
-  await mockTxSentinelServer(server);
+  await mockSimulationServer(server);
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
