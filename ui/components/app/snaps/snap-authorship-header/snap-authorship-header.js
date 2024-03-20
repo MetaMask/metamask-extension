@@ -24,17 +24,13 @@ const SnapAuthorshipHeader = ({
   snapId,
   className,
   boxShadow = 'var(--shadow-size-lg) var(--color-shadow-default)',
-  website,
-  websiteName,
-  websiteOrigin,
-  websiteIconUrl,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
   // like it is done with snap install
-  const packageName = snapId ? stripSnapPrefix(snapId) : websiteOrigin;
+  const packageName = snapId && stripSnapPrefix(snapId);
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
@@ -64,7 +60,7 @@ const SnapAuthorshipHeader = ({
         />
       )}
       <Box>
-        <SnapAvatar snapId={snapId} websiteIconUrl={websiteIconUrl} />
+        <SnapAvatar snapId={snapId} />
       </Box>
       <Box
         marginLeft={4}
@@ -74,7 +70,7 @@ const SnapAuthorshipHeader = ({
         style={{ overflow: 'hidden' }}
       >
         <Text ellipsis fontWeight={FontWeight.Medium}>
-          {snapName || websiteName}
+          {snapName}
         </Text>
         <Text
           ellipsis
@@ -84,17 +80,15 @@ const SnapAuthorshipHeader = ({
           {packageName}
         </Text>
       </Box>
-      {!website && (
-        <Box marginLeft="auto">
-          <AvatarIcon
-            className="snaps-authorship-header__button"
-            iconName={IconName.Info}
-            onClick={openModal}
-            color={IconColor.iconMuted}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-          />
-        </Box>
-      )}
+      <Box marginLeft="auto">
+        <AvatarIcon
+          className="snaps-authorship-header__button"
+          iconName={IconName.Info}
+          onClick={openModal}
+          color={IconColor.iconMuted}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+        />
+      </Box>
     </Box>
   );
 };
@@ -109,10 +103,6 @@ SnapAuthorshipHeader.propTypes = {
    */
   className: PropTypes.string,
   boxShadow: PropTypes.string,
-  website: PropTypes.bool,
-  websiteName: PropTypes.string,
-  websiteOrigin: PropTypes.string,
-  websiteIconUrl: PropTypes.string,
 };
 
 export default SnapAuthorshipHeader;
