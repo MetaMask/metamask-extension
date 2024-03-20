@@ -87,7 +87,6 @@ const render = ({ newState } = {}) => {
     metamask: {
       ...mockState.metamask,
       modal: { props: address },
-      selectedAddress: address,
       interactiveReplacementToken: {
         url: 'https://saturn-custody-ui.codefi.network/',
       },
@@ -108,6 +107,18 @@ const render = ({ newState } = {}) => {
       },
       institutionalFeatures: {
         connectRequests,
+      },
+      internalAccounts: {
+        ...mockState.metamask.internalAccounts,
+        accounts: {
+          ...mockState.metamask.internalAccounts.accounts,
+          [mockState.metamask.internalAccounts.selectedAccount]: {
+            ...mockState.metamask.internalAccounts.accounts[
+              mockState.metamask.internalAccounts.selectedAccount
+            ],
+            address,
+          },
+        },
       },
       ...newState,
     },

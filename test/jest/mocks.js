@@ -191,3 +191,9 @@ export function createMockInternalAccount({
     type: is4337 ? EthAccountType.Erc4337 : EthAccountType.Eoa,
   };
 }
+
+export const getSelectedInternalAccountFromMockState = (state) => {
+  return state.metamask.internalAccounts.accounts[
+    state.metamask.internalAccounts.selectedAccount
+  ];
+};

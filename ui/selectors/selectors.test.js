@@ -30,19 +30,6 @@ const modifyStateWithHWKeyring = (keyring) => {
 };
 
 describe('Selectors', () => {
-  describe('#getSelectedAddress', () => {
-    it('returns undefined if selectedAddress is undefined', () => {
-      expect(selectors.getSelectedAddress({ metamask: {} })).toBeUndefined();
-    });
-
-    it('returns selectedAddress', () => {
-      const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-      expect(
-        selectors.getSelectedAddress({ metamask: { selectedAddress } }),
-      ).toStrictEqual(selectedAddress);
-    });
-  });
-
   describe('#getSelectedInternalAccount', () => {
     it('returns undefined if selectedAccount is undefined', () => {
       expect(
@@ -594,10 +581,26 @@ describe('Selectors', () => {
     });
   });
 
-  it('returns selected identity', () => {
-    expect(selectors.getSelectedIdentity(mockState)).toStrictEqual({
+  it('returns selected internalAccount', () => {
+    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Test Account',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Test Account',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
     });
   });
 

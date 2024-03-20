@@ -101,7 +101,7 @@ export function getPermittedAccountsByOrigin(state) {
  * @returns {Array<object>} An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(state) {
-  const { selectedAddress } = state.metamask;
+  const selectedInternalAccount = getSelectedInternalAccount(state);
   const subjects = getPermissionSubjects(state);
   const subjectMetadata = getSubjectMetadata(state);
 
@@ -109,7 +109,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
 
   Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
     const exposedAccounts = getAccountsFromSubject(subjectValue);
-    if (!exposedAccounts.includes(selectedAddress)) {
+    if (!exposedAccounts.includes(selectedInternalAccount.address)) {
       return;
     }
 

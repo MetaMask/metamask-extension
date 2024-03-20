@@ -98,6 +98,31 @@ describe('selectors', () => {
       const mockState = {
         metamask: {
           selectedAddress: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [
+                  'personal_sign',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           subjectMetadata: {
             'peepeth.com': {
               iconUrl: 'https://peepeth.com/favicon-32x32.png',
