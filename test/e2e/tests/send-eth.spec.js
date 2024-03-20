@@ -421,10 +421,11 @@ describe('Send ETH', function () {
           async ({ driver }) => {
             await unlockWallet(driver);
 
-            await driver.assertElementNotPresent('.loading-overlay__spinner');
             const balance = await driver.findElement(
               '[data-testid="eth-overview__primary-currency"]',
             );
+            await driver.isElementPresent('.loading-overlay__spinner');
+            await driver.waitForElementNotPresent('.loading-overlay__spinner');
             assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
