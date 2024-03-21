@@ -16,7 +16,6 @@ const trackEvent = jest.fn();
 const metricsState = { participateInMetaMetrics: null };
 const getMetricsState = () => metricsState;
 
-
 const appStateController = {
   store: {
     getState: () => ({
