@@ -17,7 +17,7 @@ const textStyle = {
 
 const FiatNotAvailableDisplay: React.FC = () => {
   const t = useI18nContext();
-  return <Text {...textStyle}>{t('simulationPreviewFiatNotAvailable')}</Text>;
+  return <Text {...textStyle}>{t('simulationDetailsFiatNotAvailable')}</Text>;
 };
 
 /**
@@ -58,7 +58,7 @@ export const TotalFiatDisplay: React.FC<{
     <FiatNotAvailableDisplay />
   ) : (
     <Text {...textStyle}>
-      {t('simulationPreviewTotalFiat', [fiatFormatter(Math.abs(totalFiat))])}
+      {t('simulationDetailsTotalFiat', [fiatFormatter(Math.abs(totalFiat))])}
     </Text>
   );
 };

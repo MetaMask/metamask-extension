@@ -16,7 +16,7 @@ describe('IndividualFiatDisplay', () => {
 
   it('renders fiat not available message when fiatAmount is FIAT_UNAVAILABLE', () => {
     render(<IndividualFiatDisplay fiatAmount={FIAT_UNAVAILABLE} />);
-    expect(screen.getByText('simulationPreviewFiatNotAvailable')).toBeInTheDocument();
+    expect(screen.getByText('simulationDetailsFiatNotAvailable')).toBeInTheDocument();
   });
 
   it('renders the fiat amount when fiatAmount is a valid number', () => {
@@ -44,24 +44,24 @@ describe('TotalFiatDisplay', () => {
   it('renders fiat not available message when all fiatAmounts are null', () => {
     const fiatAmounts = [null, null, null] as FiatAmount[];
     render(<TotalFiatDisplay fiatAmounts={fiatAmounts} />);
-    expect(screen.getByText('simulationPreviewFiatNotAvailable')).toBeInTheDocument();
+    expect(screen.getByText('simulationDetailsFiatNotAvailable')).toBeInTheDocument();
   });
 
   it('renders the total fiat amount when there are valid fiat amounts', () => {
     const fiatAmounts = [100, 200, null, 300];
     render(<TotalFiatDisplay fiatAmounts={fiatAmounts} />);
-    expect(screen.getByText('simulationPreviewTotalFiat: $600')).toBeInTheDocument();
+    expect(screen.getByText('simulationDetailsTotalFiat: $600')).toBeInTheDocument();
   });
 
   it('renders the absolute value of the total fiat amount', () => {
     const fiatAmounts = [-100, -200, null, -300];
     render(<TotalFiatDisplay fiatAmounts={fiatAmounts} />);
-    expect(screen.getByText('simulationPreviewTotalFiat: $600')).toBeInTheDocument();
+    expect(screen.getByText('simulationDetailsTotalFiat: $600')).toBeInTheDocument();
   });
 
   it('renders fiat not available message when fiatAmounts is an empty array', () => {
     const fiatAmounts: (number | null)[] = [];
     render(<TotalFiatDisplay fiatAmounts={fiatAmounts} />);
-    expect(screen.getByText('simulationPreviewFiatNotAvailable')).toBeInTheDocument();
+    expect(screen.getByText('simulationDetailsFiatNotAvailable')).toBeInTheDocument();
   });
 });

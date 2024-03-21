@@ -20,7 +20,7 @@ import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 
-export type SimulationPreviewProps = {
+export type SimulationDetailsProps = {
   simulationData?: Partial<SimulationData>;
 };
 
@@ -48,14 +48,14 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 
   function getMessage() {
     if (error.isReverted) {
-      return t('simulationPreviewTransactionReverted');
+      return t('simulationDetailsTransactionReverted');
     }
     if (error.message) {
       if (error.message.includes('Chain is not supported')) {
-        return t('simulationPreviewChainNotSupported');
+        return t('simulationDetailsChainNotSupported');
       }
     }
-    return t('simulationPreviewFailed');
+    return t('simulationDetailsFailed');
   }
 
   return (
@@ -83,7 +83,7 @@ const EmptyContent: React.FC = () => {
       display={Display.Flex}
       alignItems={AlignItems.flexStart}
     >
-      {t('simulationPreviewNoBalanceChanges')}
+      {t('simulationDetailsNoBalanceChanges')}
     </Text>
   );
 };
@@ -110,12 +110,12 @@ const HeaderLayout: React.FC = ({ children }) => {
         gap={1}
       >
         <Text variant={TextVariant.bodyMdMedium}>
-          {t('simulationPreviewTitle')}
+          {t('simulationDetailsTitle')}
         </Text>
         <InfoTooltip
           position="right"
           iconFillColor="var(--color-icon-muted)"
-          contentText={t('simulationPreviewTitleTooltip')}
+          contentText={t('simulationDetailsTitleTooltip')}
         />
       </Box>
       {children}
@@ -130,7 +130,7 @@ const HeaderLayout: React.FC = ({ children }) => {
  * @param props.inHeader
  * @param props.children
  */
-const SimulationPreviewLayout: React.FC<{
+const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
 }> = ({ inHeader, children }) => (
   <Box
@@ -153,27 +153,27 @@ const SimulationPreviewLayout: React.FC<{
  * @param props
  * @param props.simulationData - The simulation data to display.
  */
-export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
+export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
-}: SimulationPreviewProps) => {
+}: SimulationDetailsProps) => {
   const t = useI18nContext();
   const balanceChangesResult = useBalanceChanges(simulationData);
 
   const loading = !simulationData || balanceChangesResult.pending;
   if (loading) {
     return (
-      <SimulationPreviewLayout
+      <SimulationDetailsLayout
         inHeader={<LoadingIndicator />}
-      ></SimulationPreviewLayout>
+      ></SimulationDetailsLayout>
     );
   }
 
   const { error } = simulationData;
   if (error) {
     return (
-      <SimulationPreviewLayout>
+      <SimulationDetailsLayout>
         <ErrorContent error={error} />
-      </SimulationPreviewLayout>
+      </SimulationDetailsLayout>
     );
   }
 
@@ -181,26 +181,26 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (
-      <SimulationPreviewLayout>
+      <SimulationDetailsLayout>
         <EmptyContent />
-      </SimulationPreviewLayout>
+      </SimulationDetailsLayout>
     );
   }
 
   const outgoing = balanceChanges.filter((change) => change.amount.isNegative);
   const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
   return (
-    <SimulationPreviewLayout>
+    <SimulationDetailsLayout>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         <BalanceChangeList
-          heading={t('simulationPreviewOutgoingHeading')}
+          heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}
         />
         <BalanceChangeList
-          heading={t('simulationPreviewIncomingHeading')}
+          heading={t('simulationDetailsIncomingHeading')}
           balanceChanges={incoming}
         />
       </Box>
-    </SimulationPreviewLayout>
+    </SimulationDetailsLayout>
   );
 };
