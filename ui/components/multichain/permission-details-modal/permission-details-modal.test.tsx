@@ -1,37 +1,16 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
-import { ConnectedAccountsMenu } from '.';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { PermissionDetailsModal } from '.';
 
-const DEFAULT_PROPS = {
-  isOpen: true,
-  onClose: jest.fn(),
-  identity: {
-    address: 'mockAddress',
-    balance: 'mockBalance',
-    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-    metadata: {
-      name: 'mockName',
-      keyring: {
-        type: 'HD Key Tree',
-      },
-    },
-    label: '',
-  },
-  anchorElement: null,
-  disableAccountSwitcher: false,
-  closeMenu: jest.fn(),
-};
-
-const renderComponent = (props = {}, stateChanges = {}) => {
-  const store = configureStore({
-    ...mockState,
-    ...stateChanges,
+describe('PermissionDetailsModal', () => {
+  const mockState = {
     activeTab: {
+      title: 'Eth Sign Tests',
       origin: 'https://remix.ethereum.org',
+      protocol: 'https:',
+      url: 'https://remix.ethereum.org/',
     },
     metamask: {
       identities: {
@@ -120,45 +99,69 @@ const renderComponent = (props = {}, stateChanges = {}) => {
         },
       },
     },
-  });
-  document.body.innerHTML = '<div id="anchor"></div>';
-  const anchorElement = document.getElementById('anchor');
-  return renderWithProvider(
-    <ConnectedAccountsMenu
-      {...DEFAULT_PROPS}
-      {...props}
-      anchorElement={anchorElement}
-    />,
-    store,
-  );
-};
+  };
+  const store = configureStore()(mockState);
+  const onClick = jest.fn();
 
-describe('ConnectedAccountsMenu', () => {
-  it('renders permission details menu item', async () => {
-    const { getByTestId } = renderComponent();
-    expect(getByTestId('permission-details-menu-item')).toBeInTheDocument();
+  const args = {
+    onClose: jest.fn(),
+    onClick,
+    account: {
+      address: 'mockAddress',
+      balance: 'mockBalance',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'mockName',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      label: '',
+    },
+    isOpen: true,
+    permissions: [
+      {
+        key: 'eth_accounts',
+        value: {
+          caveats: [
+            {
+              type: 'restrictReturnedAccounts',
+              value: ['0xd8ad671f1fcc94bcf0ebc6ec4790da35e8d5e1e1'],
+            },
+          ],
+          date: 1710853457632,
+          id: '5yj8do_LYnLHstT0tWjdu',
+          invoker: 'https://app.uniswap.org',
+          parentCapability: 'eth_accounts',
+        },
+      },
+    ],
+  };
+
+  it('should render correctly', () => {
+    const { getByTestId } = renderWithProvider(
+      <PermissionDetailsModal {...args} />,
+      store,
+    );
+    expect(getByTestId('permission-details-modal')).toBeInTheDocument();
   });
 
-  it('renders switch to this account menu item if account switcher is enabled', async () => {
-    const { getByTestId } = renderComponent();
-    expect(getByTestId('switch-account-menu-item')).toBeInTheDocument();
+  it('should render account name correctly', () => {
+    const { getByText } = renderWithProvider(
+      <PermissionDetailsModal {...args} />,
+      store,
+    );
+    expect(getByText('mockName')).toBeInTheDocument();
   });
 
-  it('does not render switch to this account menu item if account switcher is disabled', async () => {
-    const { queryByTestId } = renderComponent({ disableAccountSwitcher: true });
-    expect(queryByTestId('switch-account-menu-item')).toBeNull();
-  });
-
-  it('renders disconnect menu item', async () => {
-    const { getByTestId } = renderComponent();
-    expect(getByTestId('disconnect-menu-item')).toBeInTheDocument();
-  });
-
-  it('closes the menu on tab key down when focus is within the menu', async () => {
-    const onClose = jest.fn();
-    const { getByTestId } = renderComponent({ onClose });
-    const menu = getByTestId('permission-details-menu-item');
-    fireEvent.keyDown(menu, { key: 'Tab' });
-    expect(onClose).toHaveBeenCalled();
+  it('should fire onClick when Disconnect All button is clicked', () => {
+    const { getByTestId } = renderWithProvider(
+      <PermissionDetailsModal {...args} />,
+      store,
+    );
+    const disconnectAllButton = getByTestId('disconnect');
+    expect(disconnectAllButton).toBeInTheDocument();
+    fireEvent.click(disconnectAllButton);
+    expect(onClick).toHaveBeenCalled();
   });
 });
