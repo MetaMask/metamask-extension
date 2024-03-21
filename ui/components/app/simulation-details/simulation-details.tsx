@@ -118,6 +118,19 @@ const SimulationPreviewLayout: React.FC<{
   </Box>
 );
 
+function useLoadingTime() {
+  const [loadingStart] = useState(Date.now());
+  const [loadingTime, setLoadingTime] = useState<number | undefined>();
+
+  const setLoadingComplete = () => {
+    if (loadingTime == null) {
+      setLoadingTime((Date.now() - loadingStart) / 1000);
+    }
+  };
+
+  return { loadingTime, setLoadingComplete };
+}
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -129,8 +142,7 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
   transactionId,
 }: SimulationPreviewProps) => {
   const t = useI18nContext();
-  const [loadingStart] = useState(Date.now());
-  const [loadingTime, setLoadingTime] = useState<number | undefined>();
+  const { loadingTime, setLoadingComplete } = useLoadingTime();
 
   const { pending: loading, value: balanceChanges } =
     useBalanceChanges(simulationData);
@@ -150,9 +162,7 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
     );
   }
 
-  if (loadingTime == null) {
-    setLoadingTime((Date.now() - loadingStart) / 1000);
-  }
+  setLoadingComplete();
 
   const error = !simulationData;
   if (error) {
