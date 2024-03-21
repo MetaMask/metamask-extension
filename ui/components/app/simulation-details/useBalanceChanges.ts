@@ -140,10 +140,10 @@ export const useBalanceChanges = (
   const nativeFiatRate = useSelector(getConversionRate);
   const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
-  if (!simulationData) {
-    return { pending: false, value: [] };
-  }
-  const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
+  const { nativeBalanceChange, tokenBalanceChanges } = simulationData ?? {
+    tokenBalanceChanges: [],
+    nativeBalanceChange: undefined,
+  };
 
   const erc20Decimals = useAsyncResultOrThrow(() => {
     const erc20Addresses = tokenBalanceChanges
@@ -154,6 +154,10 @@ export const useBalanceChanges = (
 
   if (erc20Decimals.pending) {
     return { pending: true, value: [] };
+  }
+
+  if (!simulationData) {
+    return { pending: false, value: [] };
   }
 
   const nativeChange = getNativeBalanceChange(
