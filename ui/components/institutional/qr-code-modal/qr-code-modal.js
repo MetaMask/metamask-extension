@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { Modal, ModalOverlay, Text, Box } from '../../component-library';
@@ -10,11 +11,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import Spinner from '../../ui/spinner';
+import { getChannelId } from '../../../ducks/institutional/institutional';
 
 export default function QRCodeModal({ onClose, custodianName }) {
   const t = useContext(I18nContext);
   const [publicKeyData, setPublicKeyData] = useState(null);
   const [error, setError] = useState('');
+  const channelId = useSelector(getChannelId);
 
   async function generatePublicKey() {
     try {
@@ -50,7 +53,7 @@ export default function QRCodeModal({ onClose, custodianName }) {
   const qrCodeValue = JSON.stringify({
     publicKey: publicKeyData,
     additionalInfo: {},
-    wsClientId: 12345,
+    wsClientId: channelId,
   });
 
   return (

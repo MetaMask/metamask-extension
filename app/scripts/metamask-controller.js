@@ -1759,6 +1759,8 @@ export default class MetamaskController extends EventEmitter {
         this.txController.updateTransaction(txMeta, note),
       updateTransactionHash: (id, hash) =>
         this.txController.updateCustodialTransaction(id, { hash }),
+      setChannelId: (channelId) =>
+        this.institutionalFeaturesController.setChannelId(channelId),
     });
     ///: END:ONLY_INCLUDE_IF
 

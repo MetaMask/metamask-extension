@@ -15,3 +15,5 @@ export default reducer;
 
 export const getInstitutionalConnectRequests = (state) =>
   state.metamask[name]?.connectRequests;
+
+export const getChannelId = (state) => state.metamask[name]?.getChannelId;

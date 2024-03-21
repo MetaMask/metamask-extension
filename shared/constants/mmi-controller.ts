@@ -36,6 +36,7 @@ export type MMIControllerOptions = {
   setTxStatusSubmitted: (txId: string) => void;
   setTxStatusFailed: (txId: string) => void;
   updateTransaction: (txMeta: any) => void;
+  setChannelId: (channelId: string) => void;
 };
 
 export type ISignedEvent = {
