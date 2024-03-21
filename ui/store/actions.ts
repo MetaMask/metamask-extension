@@ -111,6 +111,7 @@ import {
   logErrorWithMessage,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -2642,13 +2643,13 @@ export function hideDeprecatedNetworkModal(): Action {
 /**
  * TODO: this should be moved somewhere else when it makese sense to do so
  */
-interface NftDropDownState {
+type NftDropDownState = {
   [address: string]: {
     [chainId: string]: {
       [nftAddress: string]: boolean;
     };
   };
-}
+};
 
 export function updateNftDropDownState(
   value: NftDropDownState,
@@ -2659,12 +2660,12 @@ export function updateNftDropDownState(
   };
 }
 
-interface QrCodeData {
+type QrCodeData = {
   // Address when a Ethereum Address has been detected
   type?: 'address' | string;
   // contains an address key when Ethereum Address detected
   values?: { address?: string } & Json;
-}
+};
 
 /**
  * This action will receive two types of values via qrCodeData
@@ -2882,12 +2883,12 @@ export function showSendTokenPage(): Action {
 }
 
 // TODO: Lift to shared folder when it makes sense
-interface TemporaryFeatureFlagDef {
+type TemporaryFeatureFlagDef = {
   [feature: string]: boolean;
-}
-interface TemporaryPreferenceFlagDef {
+};
+type TemporaryPreferenceFlagDef = {
   [preference: string]: boolean | object;
-}
+};
 
 export function setFeatureFlag(
   feature: string,
@@ -3858,7 +3859,7 @@ export function rejectAllMessages(
 }
 
 export function setFirstTimeFlowType(
-  type: 'create' | 'import',
+  type: FirstTimeFlowType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setFirstTimeFlowType`);
@@ -4482,12 +4483,12 @@ export function fetchSmartTransactionFees(
   };
 }
 
-interface TemporarySmartTransactionGasFees {
+type TemporarySmartTransactionGasFees = {
   maxFeePerGas: string;
   maxPriorityFeePerGas: string;
   gas: string;
   value: string;
-}
+};
 
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },

@@ -156,6 +156,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accounts": {
+    "message": "Accounts"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
@@ -352,6 +355,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "all": {
+    "message": "ALL"
+  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -364,6 +370,12 @@
   },
   "allPermissions": {
     "message": "All Permissions"
+  },
+  "allTimeHigh": {
+    "message": "All time high"
+  },
+  "allTimeLow": {
+    "message": "All time low"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -461,6 +473,10 @@
   "approvedOn": {
     "message": "Approved on $1",
     "description": "$1 is the approval date for a permission"
+  },
+  "approvedOnForAccounts": {
+    "message": "Approved on $1 for $2",
+    "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
   "areYouSure": {
     "message": "Are you sure?"
@@ -569,6 +585,10 @@
   },
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
+  },
+  "billionAbbreviation": {
+    "message": "B",
+    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -713,6 +733,9 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "circulatingSupply": {
+    "message": "Circulating supply"
   },
   "clear": {
     "message": "Clear"
@@ -1971,6 +1994,9 @@
   "highLowercase": {
     "message": "high"
   },
+  "historicalPricesWereNotFound": {
+    "message": "Historical prices were not found"
+  },
   "history": {
     "message": "History"
   },
@@ -2475,6 +2501,12 @@
   "manageInSettings": {
     "message": "Manage in settings"
   },
+  "marketCap": {
+    "message": "Market cap"
+  },
+  "marketDetails": {
+    "message": "Market details"
+  },
   "max": {
     "message": "Max"
   },
@@ -2527,6 +2559,10 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "millionAbbreviation": {
+    "message": "M",
+    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
@@ -3234,6 +3270,22 @@
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "oneDayAbbreviation": {
+    "message": "1D",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1M",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1W",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1Y",
+    "description": "Shortened form of '1 year'"
+  },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
@@ -3364,8 +3416,16 @@
   "permissionRequested": {
     "message": "Requested now"
   },
+  "permissionRequestedForAccounts": {
+    "message": "Requested now for $1",
+    "description": "Permission cell status for requested permission including accounts, rendered as AvatarGroup which is $1."
+  },
   "permissionRevoked": {
     "message": "Revoked in this update"
+  },
+  "permissionRevokedForAccounts": {
+    "message": "Revoked in this update for $1",
+    "description": "Permission cell status for revoked permission including accounts, rendered as AvatarGroup which is $1."
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
@@ -3626,14 +3686,14 @@
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
   },
-  "preferredProvider": {
-    "message": "Select your preferred provider"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
   "prev": {
     "message": "Prev"
+  },
+  "pricingIsNotSupportedOnThisNetwork": {
+    "message": "Pricing is not supported on this network"
   },
   "primaryCurrencySetting": {
     "message": "Primary currency"
@@ -4014,7 +4074,8 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
+    "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -5253,6 +5314,10 @@
   "thisCollection": {
     "message": "this collection"
   },
+  "threeMonthsAbbreviation": {
+    "message": "3M",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "Time"
   },
@@ -5332,6 +5397,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenDecimal": {
+    "message": "Token decimal"
+  },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
@@ -5348,7 +5416,7 @@
     "message": "Token ID"
   },
   "tokenList": {
-    "message": "Token lists:"
+    "message": "Token lists"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -5380,6 +5448,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalVolume": {
+    "message": "Total volume"
   },
   "transaction": {
     "message": "transaction"
@@ -5485,6 +5556,10 @@
   },
   "transferFrom": {
     "message": "Transfer from"
+  },
+  "trillionAbbreviation": {
+    "message": "T",
+    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
@@ -5817,6 +5892,12 @@
   },
   "yourAccounts": {
     "message": "Your accounts"
+  },
+  "yourActivity": {
+    "message": "Your activity"
+  },
+  "yourBalance": {
+    "message": "Your balance"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"
