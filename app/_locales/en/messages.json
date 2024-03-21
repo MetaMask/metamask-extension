@@ -4333,9 +4333,6 @@
   "signing": {
     "message": "Signing"
   },
-  "simulationErrorMessageV2": {
-    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
-  },
   "simulationDetailsChainNotSupported": {
     "message": "The current chain does not support simulations."
   },
@@ -4366,6 +4363,9 @@
   },
   "simulationDetailsTransactionReverted": {
     "message": "This transaction is likely to fail"
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "siteConnections": {
     "message": "Site Connections"
