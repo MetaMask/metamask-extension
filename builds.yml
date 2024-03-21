@@ -59,7 +59,6 @@ buildTypes:
       - build-flask
       - keyring-snaps
       - blockaid
-      - petnames
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -144,7 +143,7 @@ features:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
       - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
-  petnames:
+  transaction-simulation:
   conf-redesign:
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
