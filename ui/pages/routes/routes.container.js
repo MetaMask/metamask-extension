@@ -21,7 +21,7 @@ import {
   getSwitchedNetworkDetails,
   getAllNetworks,
   getNeverShowSwitchedNetworkMessage,
-  getAutomaticSwitchNetwork,
+  getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactions,
 } from '../../selectors';
 import {
@@ -35,7 +35,7 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   addPermittedAccount,
-  autoSwitchNetwork,
+  automaticallySwitchNetwork,
   setSwitchedNetworkDetails,
   neverShowSwitchedNetworkMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -72,7 +72,21 @@ function mapStateToProps(state) {
       !connectedAccounts.find((address) => address === account.address),
   );
 
-  const networkToAutomaticallySwitchTo = getAutomaticSwitchNetwork(state);
+  const networkToAutomaticallySwitchTo =
+    getNetworkToAutomaticallySwitchTo(state);
+  const allNetworks = getAllNetworks(state);
+  const switchedNetworkDetailsObj = getSwitchedNetworkDetails(state);
+  let switchedNetworkDetails = null;
+  if (switchedNetworkDetailsObj) {
+    const switchedNetwork = allNetworks.find((network) => {
+      return switchedNetworkDetailsObj.networkClientId === network.id;
+    });
+    switchedNetworkDetails = {
+      nickname: switchedNetwork?.nickname,
+      imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
+      origin: switchedNetworkDetails?.origin,
+    };
+  }
 
   return {
     alertOpen,
@@ -109,10 +123,9 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
-    switchedNetworkDetails: getSwitchedNetworkDetails(state),
+    switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
     unapprovedTransactions: getNumberOfAllUnapprovedTransactions(state),
-    allNetworks: getAllNetworks(state),
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
@@ -141,8 +154,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(setSwitchedNetworkDetails(value)),
     setSwitchedNetworkNeverShowMessage: () =>
       dispatch(neverShowSwitchedNetworkMessage()),
-    autoSwitchNetwork: (networkId, selectedTabOrigin, allNetworks) =>
-      dispatch(autoSwitchNetwork(networkId, selectedTabOrigin, allNetworks)),
+    automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
+      dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

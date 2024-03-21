@@ -1661,21 +1661,21 @@ export function getNumberOfAllUnapprovedTransactions(state) {
 }
 
 /**
- * Returns the network ID of the network that should be auto-switched to
+ * Returns the network client ID of the network that should be auto-switched to
  * based on the current tab origin and its last network connected to
  *
  * @param state - Redux state object.
  * @returns Network ID to switch to
  */
-export function getAutomaticSwitchNetwork(state) {
+export function getNetworkToAutomaticallySwitchTo(state) {
   const numberOfUnapprovedTx = getNumberOfAllUnapprovedTransactions(state);
 
   // This block autoswitches chains based on the last chain used
-  // for a given dapp.  This allows the user to be connected on one chain
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
   const selectedTabOrigin = getOriginOfCurrentTab(state);
   const useRequestQueue = getUseRequestQueue(state);
-
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     getIsUnlocked(state) &&
