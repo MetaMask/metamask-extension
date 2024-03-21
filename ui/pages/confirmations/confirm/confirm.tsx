@@ -32,7 +32,6 @@ const Confirm = () => {
         <ScrollToBottom>
           <Box padding={4}>
             <Info />
-            <SignatureMessage />
           </Box>
         </ScrollToBottom>
       </Content>
