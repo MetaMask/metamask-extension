@@ -31,7 +31,9 @@ describe('Send ETH', function () {
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement('input[placeholder="0"]');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
 
           await inputAmount.press('1');
           await inputAmount.press('0');
@@ -110,7 +112,9 @@ describe('Send ETH', function () {
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement('input[placeholder="0"]');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
           await inputAmount.press('1');
 
           const inputValue = await inputAmount.getProperty('value');
