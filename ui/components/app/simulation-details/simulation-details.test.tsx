@@ -1,88 +1,118 @@
+import configureStore from 'redux-mock-store';
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { SimulationData } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-
 import mockState from '../../../../test/data/mock-state.json';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { SimulationDetails } from './simulation-details';
+import { useBalanceChanges } from './useBalanceChanges';
+import { BalanceChangeList } from './balance-change-list';
+import { BalanceChange } from './types';
 
-const DUMMY_BALANCE_CHANGE = {
-  previousBalance: '0xIGNORED' as Hex,
-  newBalance: '0xIGNORED' as Hex,
-};
+const store = configureStore()(mockState);
 
-const ONE_ETH = Numeric.from('0xde0b6b3a7640000', 16, EtherDenomination.ETH);
-const HALF_ETH = ONE_ETH.divide(2, 16);
+jest.mock('./useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(),
+}));
+
+jest.mock('./balance-change-list', () => ({
+  BalanceChangeList: jest.fn(() => null),
+}));
+
+const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
+  renderWithProvider(
+    <SimulationDetails simulationData={simulationData} />,
+    store,
+  );
 
 describe('SimulationDetails', () => {
-  const store = configureStore()(mockState);
-
-  it('renders the component with balance changes', () => {
-    const simulationData: SimulationData = {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        isDecrease: true,
-        difference: ONE_ETH.toPrefixedHexString() as Hex,
-      },
-      tokenBalanceChanges: [],
-    };
-
-    renderWithProvider(
-      <SimulationDetails simulationData={simulationData} />,
-      store,
-    );
-
-    expect(screen.getByText('You send')).toBeInTheDocument();
-    expect(screen.getByText('- 1')).toBeInTheDocument();
-    expect(screen.getByText('$556.12')).toBeInTheDocument();
-
-    expect(screen.getByAltText('ETH logo')).toBeInTheDocument();
-    expect(screen.getByText('ETH')).toBeInTheDocument();
+  beforeEach(() => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: [],
+    });
   });
 
-  it('renders the component without balance changes', () => {
-    const simulationData: SimulationData = {
-      nativeBalanceChange: undefined,
-      tokenBalanceChanges: [],
-    };
-
-    renderWithProvider(
-      <SimulationDetails simulationData={simulationData} />,
-      store,
-    );
-
-    expect(screen.getByText(/No changes predicted/u)).toBeInTheDocument();
-    expect(screen.queryByText('You send')).not.toBeInTheDocument();
-    expect(screen.queryByText('You receive')).not.toBeInTheDocument();
+  it('renders loading indicator when simulation data is not available', () => {
+    renderSimulationDetails();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('renders the component with a positive balance change', () => {
-    const simulationData: SimulationData = {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        isDecrease: false,
-        difference: HALF_ETH.toPrefixedHexString() as Hex,
-      },
-      tokenBalanceChanges: [],
-    };
+  it('renders loading indicator when balance changes are pending', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: true,
+      value: [],
+    });
 
-    renderWithProvider(
-      <SimulationDetails simulationData={simulationData} />,
-      store,
-    );
+    renderSimulationDetails({});
 
-    expect(screen.getByText('You receive')).toBeInTheDocument();
-    expect(screen.getByText('+ 0.5')).toBeInTheDocument();
-    expect(screen.getByText('$278.06')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('renders the error message when simulation fails', () => {
-    renderWithProvider(<SimulationDetails simulationData={undefined} />, store);
+  it('renders error content when simulation error is reverted', () => {
+    renderSimulationDetails({ error: { isReverted: true, message: '' } });
 
-    expect(screen.getByText(/There was an error/u)).toBeInTheDocument();
+    expect(
+      screen.getByText(/transaction is likely to fail/u),
+    ).toBeInTheDocument();
+  });
+
+  it('renders error content when simulation error is due to unsupported chain', () => {
+    renderSimulationDetails({
+      error: { isReverted: false, message: 'Chain is not supported' },
+    });
+
+    expect(
+      screen.getByText(/current chain does not support simulations/u),
+    ).toBeInTheDocument();
+  });
+
+  it('renders error content when simulation error has a generic message', () => {
+    renderSimulationDetails({
+      error: { isReverted: false, message: 'Unknown error' },
+    });
+    expect(
+      screen.getByText(/error loading your estimation/u),
+    ).toBeInTheDocument();
+  });
+
+  it('renders empty content when there are no balance changes', () => {
+    renderSimulationDetails({});
+
+    expect(
+      screen.getByText(/No changes predicted for your wallet/u),
+    ).toBeInTheDocument();
+  });
+
+  it('passes the correct properties to BalanceChangeList components', () => {
+    const balanceChangesMock = [
+      { amount: { isNegative: true } },
+      { amount: { isNegative: false } },
+    ] as BalanceChange[];
+
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: balanceChangesMock,
+    });
+
+    renderSimulationDetails({});
+
+    expect(BalanceChangeList).toHaveBeenCalledTimes(2);
+
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You send',
+        balanceChanges: [balanceChangesMock[0]],
+      }),
+      expect.anything(),
+    );
+
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You receive',
+        balanceChanges: [balanceChangesMock[1]],
+      }),
+      expect.anything(),
+    );
   });
 });

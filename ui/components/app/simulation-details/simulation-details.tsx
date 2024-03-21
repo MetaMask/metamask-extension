@@ -21,7 +21,7 @@ import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 
 export type SimulationPreviewProps = {
-  simulationData?: SimulationData;
+  simulationData?: Partial<SimulationData>;
 };
 
 /**
@@ -30,7 +30,11 @@ export type SimulationPreviewProps = {
  * @returns
  */
 const LoadingIndicator: React.FC = () => {
-  return <Preloader size={20} />;
+  return (
+    <div role="progressbar">
+      <Preloader size={20} />
+    </div>
+  );
 };
 
 /**
@@ -46,13 +50,18 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
     if (error.isReverted) {
       return t('simulationPreviewTransactionReverted');
     }
+    if (error.message) {
+      if (error.message.includes('Chain is not supported')) {
+        return t('simulationPreviewChainNotSupported');
+      }
+    }
     return t('simulationPreviewFailed');
   }
 
   return (
     <Text
       color={TextColor.warningDefault}
-      variant={TextVariant.bodySm}
+      variant={TextVariant.bodyMd}
       display={Display.Flex}
       alignItems={AlignItems.flexStart}
     >
@@ -94,7 +103,12 @@ const HeaderLayout: React.FC = ({ children }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={1}
+      >
         <Text variant={TextVariant.bodyMdMedium}>
           {t('simulationPreviewTitle')}
         </Text>
@@ -126,7 +140,7 @@ const SimulationPreviewLayout: React.FC<{
     borderColor={BorderColor.borderDefault}
     padding={3}
     margin={4}
-    gap={5}
+    gap={3}
   >
     <HeaderLayout>{inHeader}</HeaderLayout>
     {children}
@@ -177,14 +191,16 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
   const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
   return (
     <SimulationPreviewLayout>
-      <BalanceChangeList
-        heading={t('simulationPreviewOutgoingHeading')}
-        balanceChanges={outgoing}
-      />
-      <BalanceChangeList
-        heading={t('simulationPreviewIncomingHeading')}
-        balanceChanges={incoming}
-      />
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        <BalanceChangeList
+          heading={t('simulationPreviewOutgoingHeading')}
+          balanceChanges={outgoing}
+        />
+        <BalanceChangeList
+          heading={t('simulationPreviewIncomingHeading')}
+          balanceChanges={incoming}
+        />
+      </Box>
     </SimulationPreviewLayout>
   );
 };

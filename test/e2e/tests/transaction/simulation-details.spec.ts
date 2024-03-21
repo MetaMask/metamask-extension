@@ -1,4 +1,4 @@
-import { By } from "selenium-webdriver";
+import { By, WebElement } from "selenium-webdriver";
 import FixtureBuilder from "../../fixture-builder";
 import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow, createDappTransaction } from "../../helpers";
 import { Driver } from '../../webdriver/driver';
@@ -48,10 +48,27 @@ async function withFixturesForSimulationDetails(
   );
 }
 
+// async function expectBalanceChange(driver: Driver, displayAmount: string, assetName: string) {
+//   await driver.findElement(By.xpath(`
+//       //div[@data-testid="simulation-details-balance-change-row"][contains(., '${displayAmount}') and contains(., '${assetName}')]
+//     `));
+// }
+
 async function expectBalanceChange(driver: Driver, displayAmount: string, assetName: string) {
-  await driver.findElement(By.xpath(`
-      //div[@data-testid="simulation-details-balance-change-row" and contains(., '${displayAmount}') and contains(., '${assetName}')]
-    `));
+  const rows = await driver.findElements(By.xpath(`//div[@data-testid="simulation-details-balance-change-row"]`)) as WebElement[];
+
+  for (const row of rows) {
+    try {
+      await row.findElement(By.xpath(`.//*[contains(text(), '${displayAmount}')]`));
+      await row.findElement(By.xpath(`.//*[contains(text(), '${assetName}')]`));
+      return;
+    } catch (error) {
+      // If an element is not found, catch the error and continue to the next row.
+    }
+  }
+
+  // If no row contains both the displayAmount and assetName, throw an error.
+  throw new Error(`Expected balance change not found for amount "${displayAmount}" and asset "${assetName}".`);
 }
 
 export async function mockRequest(
@@ -87,7 +104,10 @@ describe('Simulation Details', () => {
     }
     await withFixturesForSimulationDetails({ title: this.test?.fullTitle(), testSpecificMock }, async ({ driver, mockServer }: TestArgs) => {
       await createDappTransaction(driver, BUY_DAI_WITH_ETH_TRANSACTION);
-      await driver.delay(10000);
+
+      // await expectBalanceChange(driver, '+ 6.756291', 'DAI');
+      await expectBalanceChange(driver, '- 0.002', 'ETH');
+      await driver.delay(100000000);
     });
   });
 });

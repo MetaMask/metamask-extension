@@ -24,21 +24,21 @@ export const BalanceChangeList: React.FC<{
   if (balanceChanges.length === 0) {
     return null; // Hide this component.
   }
-  const showFiatSummary = balanceChanges.length > 1;
+  const showFiatTotal = balanceChanges.length > 1;
 
   return (
     <Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {balanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
             key={index}
             label={index === 0 ? heading : undefined}
             balanceChange={balanceChange}
-            showFiat={!showFiatSummary}
+            showFiat={!showFiatTotal}
           />
         ))}
       </Box>
-      {showFiatSummary && (
+      {showFiatTotal && (
         <Box display={Display.Flex} flexDirection={FlexDirection.RowReverse}>
           <TotalFiatDisplay balanceChanges={balanceChanges} />
         </Box>

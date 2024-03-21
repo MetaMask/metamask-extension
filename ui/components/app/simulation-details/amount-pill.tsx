@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { BalanceChange } from './types';
+import { Amount, AssetIdentifier } from './types';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -21,7 +21,10 @@ import { BalanceChange } from './types';
  * @param props.asset
  * @param props.amount
  */
-export const AmountPill: React.FC<BalanceChange> = ({ asset, amount }) => {
+export const AmountPill: React.FC<{
+  asset: AssetIdentifier;
+  amount: Amount;
+}> = ({ asset, amount }) => {
   const backgroundColor = amount.isNegative
     ? BackgroundColor.errorMuted
     : BackgroundColor.successMuted;

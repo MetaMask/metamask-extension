@@ -1,0 +1,111 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+import { BalanceChangeList } from './balance-change-list';
+import { BalanceChangeRow } from './balance-change-row';
+import { TotalFiatDisplay } from './fiat-display';
+import { BalanceChange } from './types';
+
+const HEADING_MOCK = 'Mock Heading';
+
+jest.mock('./balance-change-row', () => ({
+  BalanceChangeRow: jest.fn(() => null),
+}));
+
+jest.mock('./fiat-display', () => ({
+  TotalFiatDisplay: jest.fn(() => null),
+}));
+
+describe('BalanceChangeList', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders null when there are no balance changes', () => {
+    const { container } = render(
+      <BalanceChangeList heading={HEADING_MOCK} balanceChanges={[]} />,
+    );
+    expect(container.firstChild).toBeNull();
+  });
+
+  describe('multiple balance changes', () => {
+    const balanceChanges = [
+      { asset: { address: '0x123' } },
+      { asset: { address: '0x456' } },
+    ] as unknown as BalanceChange[];
+
+    it('renders BalanceChangeRow components without fiat', () => {
+      render(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={balanceChanges}
+        />,
+      );
+
+      expect(BalanceChangeRow).toHaveBeenCalledTimes(balanceChanges.length);
+
+      balanceChanges.forEach((balanceChange, index) => {
+        expect(BalanceChangeRow).toHaveBeenCalledWith(
+          expect.objectContaining({
+            label: index === 0 ? HEADING_MOCK : undefined,
+            balanceChange,
+            showFiat: false,
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
+    it('renders TotalFiatDisplay component', () => {
+      render(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={balanceChanges}
+        />,
+      );
+
+      expect(TotalFiatDisplay).toHaveBeenCalledWith(
+        expect.objectContaining({ balanceChanges }),
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('single balance change', () => {
+    const balanceChanges = [
+      { asset: { address: '0x123' } },
+    ] as unknown as BalanceChange[];
+
+    it('renders BalanceChangeRow components with fiat', () => {
+      render(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={balanceChanges}
+        />,
+      );
+
+      expect(BalanceChangeRow).toHaveBeenCalledTimes(balanceChanges.length);
+
+      balanceChanges.forEach((balanceChange) => {
+        expect(BalanceChangeRow).toHaveBeenCalledWith(
+          expect.objectContaining({
+            label: HEADING_MOCK,
+            balanceChange,
+            showFiat: true,
+          }),
+          expect.anything(),
+        );
+      });
+    });
+
+    it('does not render TotalFiatDisplay component when there is only one balance change', () => {
+      render(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={balanceChanges}
+        />,
+      );
+
+      expect(TotalFiatDisplay).not.toHaveBeenCalled();
+    });
+  });
+});

@@ -136,15 +136,15 @@ const getTokenToFiatConversionRates = createSelector(
 
 // Compiles a list of balance changes from simulation data
 export const useBalanceChanges = (
-  simulationData?: SimulationData,
+  simulationData?: Partial<SimulationData>,
 ): { pending: boolean; value: BalanceChange[] } => {
   const nativeFiatRate = useSelector(getConversionRate);
   const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
-  const { nativeBalanceChange, tokenBalanceChanges } = simulationData ?? {
-    tokenBalanceChanges: EMPTY_TOKEN_BALANCE_CHANGES,
-    nativeBalanceChange: undefined,
-  };
+  const {
+    nativeBalanceChange,
+    tokenBalanceChanges = EMPTY_TOKEN_BALANCE_CHANGES,
+  } = simulationData ?? {};
 
   const erc20Decimals = useAsyncResultOrThrow(() => {
     const erc20Addresses = tokenBalanceChanges

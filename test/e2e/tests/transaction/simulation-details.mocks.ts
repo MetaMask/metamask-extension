@@ -21,22 +21,24 @@ export const INSUFFICIENT_GAS_REQUEST_MOCK = {
 
 export const SEND_NATIVE_REQUEST_MOCK: RequestResponse = {
   request: {
+    "id": "0",
+    "jsonrpc": "2.0",
     "method": "infura_simulateTransactions",
     "params": [
       {
         "transactions": [
           {
             "from": SENDER_ADDRESS_MOCK,
+            "maxFeePerGas": "0x0",
+            "maxPriorityFeePerGas": "0x0",
             "to": RECIPIENT_ADDRESS_MOCK,
-            "value": "0x38d7ea4c68000" // 0.001 ETH
+            "value": "0x38d7ea4c68000"
           }
         ],
         "withCallTrace": true,
         "withLogs": true
       }
-    ],
-    "id": 42,
-    "jsonrpc": "2.0"
+    ]
   },
   response: {
     "jsonrpc": "2.0",

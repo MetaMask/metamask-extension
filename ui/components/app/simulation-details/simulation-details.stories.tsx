@@ -176,7 +176,17 @@ export const TransactionReverted: Story = {
   },
 }
 
-export const SimulationFailed: Story = {
+export const ChainNotSupported: Story = {
+  args: {
+    simulationData: {
+      error: { isReverted: false, message: 'lorem ipsum Chain is not supported lorem ipsum ' },
+      nativeBalanceChange: undefined,
+      tokenBalanceChanges: [],
+    },
+  },
+}
+
+export const GenericError: Story = {
   args: {
     simulationData: {
       error: { isReverted: false },

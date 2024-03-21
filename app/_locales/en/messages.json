@@ -4336,6 +4336,9 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "simulationPreviewChainNotSupported": {
+    "message": "The current chain does not support simulations."
+  },
   "simulationPreviewFailed": {
     "message": "There was an error loading your estimation."
   },
