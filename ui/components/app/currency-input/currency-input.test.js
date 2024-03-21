@@ -99,6 +99,25 @@ describe('CurrencyInput Component', () => {
 
       expect(container).toMatchSnapshot();
     });
+
+    it('should render small number properly', () => {
+      const store = configureMockStore()(mockStore);
+
+      const props = {
+        onChange: jest.fn(),
+        hexValue: '174876e800',
+        isFiatPreferred: false,
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      const { value } = getByTestId('currency-input');
+
+      expect(value).toStrictEqual('0.0000001');
+    });
   });
 
   describe('handling actions', () => {
