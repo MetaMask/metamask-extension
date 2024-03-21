@@ -717,6 +717,9 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getSendInputCurrencySwitched({ appState }) {
+  return appState.sendInputCurrencySwitched;
+}
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
@@ -926,6 +929,23 @@ export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
   getTargetSubjectMetadata,
   (interfaces) => interfaces,
 );
+
+/**
+ * Get a memoized version of the unapproved confirmations.
+ */
+export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
+  getUnapprovedConfirmations,
+  (confirmations) => confirmations,
+);
+
+/**
+ * Get a memoized version of the unapproved templated confirmations.
+ */
+export const getMemoizedUnapprovedTemplatedConfirmations =
+  createDeepEqualSelector(
+    getUnapprovedTemplatedConfirmations,
+    (confirmations) => confirmations,
+  );
 
 /**
  * Get the Snap interfaces from the redux state.

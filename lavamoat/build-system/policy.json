@@ -1408,7 +1408,6 @@
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
-        "madge>debug": true,
         "nock>debug": true,
         "typescript": true
       }
@@ -6207,21 +6206,6 @@
         "loose-envify>js-tokens": true
       }
     },
-    "madge>detective-less>gonzales-pe": {
-      "globals": {
-        "console.error": true,
-        "define": true
-      }
-    },
-    "madge>ora>is-unicode-supported": {
-      "globals": {
-        "process.env.CI": true,
-        "process.env.TERM": true,
-        "process.env.TERM_PROGRAM": true,
-        "process.env.WT_SESSION": true,
-        "process.platform": true
-      }
-    },
     "mocha>find-up": {
       "builtin": {
         "path.dirname": true,
@@ -6257,7 +6241,16 @@
     "mocha>log-symbols": {
       "packages": {
         "chalk": true,
-        "madge>ora>is-unicode-supported": true
+        "mocha>log-symbols>is-unicode-supported": true
+      }
+    },
+    "mocha>log-symbols>is-unicode-supported": {
+      "globals": {
+        "process.env.CI": true,
+        "process.env.TERM": true,
+        "process.env.TERM_PROGRAM": true,
+        "process.env.WT_SESSION": true,
+        "process.platform": true
       }
     },
     "mocha>supports-color": {
@@ -8211,8 +8204,14 @@
     },
     "stylelint>postcss-sass": {
       "packages": {
-        "madge>detective-less>gonzales-pe": true,
+        "stylelint>postcss-sass>gonzales-pe": true,
         "stylelint>postcss-sass>postcss": true
+      }
+    },
+    "stylelint>postcss-sass>gonzales-pe": {
+      "globals": {
+        "console.error": true,
+        "define": true
       }
     },
     "stylelint>postcss-sass>postcss": {

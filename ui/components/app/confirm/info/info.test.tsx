@@ -1,6 +1,7 @@
-import { render } from '@testing-library/react';
 import React from 'react';
-
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import configureStore from '../../../../store/store';
 import { ConfirmInfo, ConfirmInfoRowConfig, ConfirmInfoRowType } from './info';
 
 const mockRowConfigs: ConfirmInfoRowConfig[] = [
@@ -25,6 +26,18 @@ const mockRowConfigs: ConfirmInfoRowConfig[] = [
 ];
 
 describe('ConfirmInfo', () => {
+  const render = (storeOverrides: Record<string, any> = {}) => {
+    const store = configureStore({
+      metamask: { ...mockState.metamask },
+      ...storeOverrides,
+    });
+
+    return renderWithProvider(
+      <ConfirmInfo rowConfigs={mockRowConfigs} />,
+      store,
+    );
+  };
+
   it('should match snapshot', () => {
     const { container } = render(<ConfirmInfo rowConfigs={mockRowConfigs} />);
     expect(container).toMatchSnapshot();
