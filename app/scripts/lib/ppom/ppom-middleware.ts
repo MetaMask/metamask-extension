@@ -97,16 +97,36 @@ export function createPPOMMiddleware<
 
         ppomController
           .usePPOM(async (ppom: PPOM) => {
-            const normalizedRequest = normalizePPOMRequest(req);
-            securityAlertResponse = await ppom.validateJsonRpc(
-              normalizedRequest,
-            );
-            securityAlertResponse.securityAlertId = securityAlertId;
+            try {
+              const normalizedRequest = normalizePPOMRequest(req);
+
+              securityAlertResponse = await ppom.validateJsonRpc(
+                normalizedRequest,
+              );
+              securityAlertResponse.securityAlertId = securityAlertId;
+            } catch (error: unknown) {
+              sentry?.captureException(error);
+              console.error(
+                'Error validating JSON RPC using PPOM: ',
+                typeof error === 'object' || typeof error === 'string'
+                  ? error
+                  : JSON.stringify(error),
+              );
+
+              securityAlertResponse = {
+                result_type: BlockaidResultType.Errored,
+                reason: BlockaidReason.errored,
+                description:
+                  error instanceof Error
+                    ? `${error.name}: ${error.message}`
+                    : JSON.stringify(error),
+              };
+            }
           })
           .catch((error: unknown) => {
             sentry?.captureException(error);
             console.error(
-              'Error validating JSON RPC using PPOM: ',
+              'Error createPPOMMiddleware#usePPOM: ',
               typeof error === 'object' || typeof error === 'string'
                 ? error
                 : JSON.stringify(error),
@@ -141,7 +161,7 @@ export function createPPOMMiddleware<
     } catch (error: unknown) {
       sentry?.captureException(error);
       console.error(
-        'Error validating JSON RPC using PPOM: ',
+        'Error createPPOMMiddleware: ',
         typeof error === 'object' || typeof error === 'string'
           ? error
           : JSON.stringify(error),
