@@ -43,7 +43,9 @@ export const BalanceChangeRow: React.FC<{
           <AmountPill {...balanceChange} />
           <AssetPill asset={balanceChange.asset} />
         </Box>
-        {showFiat && <IndividualFiatDisplay {...balanceChange} />}
+        {showFiat && (
+          <IndividualFiatDisplay fiatAmount={balanceChange.fiatAmount} />
+        )}
       </Box>
     </Box>
   );
