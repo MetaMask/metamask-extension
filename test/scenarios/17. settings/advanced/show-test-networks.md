@@ -21,7 +21,7 @@ I want to toggle the "Show test networks" option in the Advanced Settings
 
 # Scenario: Default state of "Show test networks" toggle is OFF
 
-Given I am settings
+Given I am in settings
 When I click on the "Advanced" tab
 Then the "Show test networks" toggle is set to off by default
 
