@@ -3833,9 +3833,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.3.17":
-  version: 0.3.17
-  resolution: "@metamask-institutional/extension@npm:0.3.17"
+"@metamask-institutional/extension@npm:^0.3.18":
+  version: 0.3.18
+  resolution: "@metamask-institutional/extension@npm:0.3.18"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
@@ -3847,7 +3847,7 @@ __metadata:
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: b1cc3c6e0a6719692b78b08ec9b4dd4bae03913f4c1a94a18eebfe3a2abbd386335a0aeb695167ed60681bf15db140e00ee1639485f1fdd19d4b62905a0cb6bc
+  checksum: 0adcdb89869870b00ec9227d211befcea851ff096c9e029938a81329e8dc0c1c3a1a7b208b9120fe647124223710cfb73a281e150553cf96c7f98e2cf091e7bd
   languageName: node
   linkType: hard
 
@@ -5640,9 +5640,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^25.1.0, @metamask/transaction-controller@npm:^25.2.0":
-  version: 25.2.0
-  resolution: "@metamask/transaction-controller@npm:25.2.0"
+"@metamask/transaction-controller@npm:^25.1.0, @metamask/transaction-controller@npm:^25.2.1":
+  version: 25.2.1
+  resolution: "@metamask/transaction-controller@npm:25.2.1"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5669,7 +5669,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.0
     "@metamask/gas-fee-controller": ^14.0.0
     "@metamask/network-controller": ^18.0.0
-  checksum: 83db5bb73017fee80ddde54666841bcbe59afd1e7ad2257d9faa5635b953e7c1349a5499056606d104238a41500742abec9be1ad4a672a9753649324c06ebb90
+  checksum: 111fa12796f343c9862abac2e0072068d3f036c22d6467ea4219b161d60293b9bd32f7bf0ceb2d0d2a0cad32ba99c7c21cb38449a097de4b1ebccb0031837205
   languageName: node
   linkType: hard
 
@@ -24772,7 +24772,7 @@ __metadata:
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.22"
     "@metamask-institutional/custody-keyring": "npm:^1.0.10"
-    "@metamask-institutional/extension": "npm:^0.3.17"
+    "@metamask-institutional/extension": "npm:^0.3.18"
     "@metamask-institutional/institutional-features": "npm:^1.2.11"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
@@ -24845,7 +24845,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.3.0"
-    "@metamask/transaction-controller": "npm:^25.2.0"
+    "@metamask/transaction-controller": "npm:^25.2.1"
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
