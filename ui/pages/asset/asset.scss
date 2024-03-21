@@ -1,12 +1,49 @@
 @use "design-system";
 
 .asset {
+  $max-width: 650px;
+
+  &__wrapper {
+    @media screen and (max-width: design-system.$screen-sm-max) {
+      width: 100%;
+    }
+  }
+
+  &__header {
+    min-height: 71px;
+  }
+
   &__container {
     background-color: var(--color-background-default);
   }
 
+  &__content {
+    max-width: $max-width;
+  }
+
+  &__footer {
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 0 8px 0 var(--color-shadow-default);
+    & > :first-child { max-width: $max-width; }
+  }
+
   &__overview {
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  }
+
+  &__chart {
+    &--no-data-light {
+      background:
+        linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+        linear-gradient(102deg, #e7f2f8 39.39%, #ebf2fa 50.57%, #eff2fc 61.75%, #f3f2ff 95.3%);
+    }
+
+    &--no-data-dark {
+      background:
+        linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+        linear-gradient(102deg, #e7f2f8, #f4f2ff);
+    }
   }
 }
 
@@ -28,8 +65,19 @@
   }
 }
 
-.asset-options {
-  &__button {
-    padding: 2px 0 2px 8px;
+.time-range-button {
+  height: 24px;
+
+  &:hover {
+    background-color: var(--color-background-default-hover);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  }
+
+  &__selected {
+    color: var(--color-text-default);
+    background-color: var(--color-background-default-pressed);
   }
 }
+
+.chart-up { stroke: var(--color-success-default); }
+.chart-down { stroke: var(--color-error-default); }

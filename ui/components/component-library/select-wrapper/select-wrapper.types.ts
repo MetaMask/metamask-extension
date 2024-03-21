@@ -21,6 +21,8 @@ export type SelectContextType = {
   placeholder: any;
 };
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * Additional classNames to be added to the SelectWrapper component.

@@ -4,6 +4,8 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalOverlayStyleUtilityProps extends StyleUtilityProps {
   /**
    * onClick handler for the overlay
