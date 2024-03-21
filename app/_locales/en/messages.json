@@ -4336,30 +4336,36 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
-  "simulationPreviewFailed": {
+  "simulationDetailsChainNotSupported": {
+    "message": "The current chain does not support simulations."
+  },
+  "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
-  "simulationPreviewFiatNotAvailable": {
+  "simulationDetailsFiatNotAvailable": {
     "message": "Not Available"
   },
-  "simulationPreviewIncomingHeading": {
+  "simulationDetailsIncomingHeading": {
     "message": "You receive"
   },
-  "simulationPreviewNoBalanceChanges": {
+  "simulationDetailsNoBalanceChanges": {
     "message": "No changes predicted for your wallet"
   },
-  "simulationPreviewOutgoingHeading": {
+  "simulationDetailsOutgoingHeading": {
     "message": "You send"
   },
-  "simulationPreviewTitle": {
+  "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
-  "simulationPreviewTotalFiat": {
+  "simulationDetailsTitleTooltip": {
+    "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTotalFiat": {
     "message": "Total = $1",
     "description": "$1 is the total amount in fiat currency on one side of the transaction"
   },
-  "simulationPreviewTitleTooltip": {
-    "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  "simulationDetailsTransactionReverted": {
+    "message": "This transaction is likely to fail"
   },
   "siteConnections": {
     "message": "Site Connections"

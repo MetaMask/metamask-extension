@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box } from '../../component-library';
 import {
   Display,
@@ -7,16 +7,6 @@ import {
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
-
-// const UNAVAILABLE_FIAT = -1;
-
-// function getFiatValue(bc: BalanceChange): number | typeof UNAVAILABLE_FIAT {
-//   if (bc.asset === NATIVE_ASSET) {
-
-//   }
-// }
-
-// function use
 
 /**
  * Displays a list of incoming or outgoing balance changes, along with a heading and a
@@ -31,26 +21,30 @@ export const BalanceChangeList: React.FC<{
   heading: string;
   balanceChanges: BalanceChange[];
 }> = ({ heading, balanceChanges }) => {
+  const fiatAmounts = useMemo(() => {
+    return balanceChanges.map((bc) => bc.fiatAmount);
+  }, [balanceChanges]);
+
   if (balanceChanges.length === 0) {
     return null; // Hide this component.
   }
-  const showIndividualFiat = balanceChanges.length === 1;
+  const showFiatTotal = balanceChanges.length > 1;
 
   return (
     <Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {balanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
             key={index}
             label={index === 0 ? heading : undefined}
             balanceChange={balanceChange}
-            showFiat={showIndividualFiat}
+            showFiat={!showFiatTotal}
           />
         ))}
       </Box>
-      {balanceChanges.length > 1 && (
+      {showFiatTotal && (
         <Box display={Display.Flex} flexDirection={FlexDirection.RowReverse}>
-          <TotalFiatDisplay balanceChanges={balanceChanges} />
+          <TotalFiatDisplay fiatAmounts={fiatAmounts} />
         </Box>
       )}
     </Box>

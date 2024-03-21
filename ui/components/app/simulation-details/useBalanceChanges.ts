@@ -27,6 +27,7 @@ import {
 const NATIVE_ASSET: NativeAssetIdentifier = { standard: TokenStandard.none };
 const NATIVE_DECIMALS = 18;
 const ERC20_DEFAULT_DECIMALS = 18;
+const EMPTY_TOKEN_BALANCE_CHANGES: SimulationTokenBalanceChange[] = [];
 
 // Converts a SimulationTokenStandard to a TokenStandard
 const convertStandard = (standard: SimulationTokenStandard) => {
@@ -135,15 +136,15 @@ const getTokenToFiatConversionRates = createSelector(
 
 // Compiles a list of balance changes from simulation data
 export const useBalanceChanges = (
-  simulationData?: SimulationData,
+  simulationData?: Partial<SimulationData>,
 ): { pending: boolean; value: BalanceChange[] } => {
-  if (!simulationData) {
-    return { pending: false, value: [] };
-  }
-  const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
-
   const nativeFiatRate = useSelector(getConversionRate);
   const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
+
+  const {
+    nativeBalanceChange,
+    tokenBalanceChanges = EMPTY_TOKEN_BALANCE_CHANGES,
+  } = simulationData ?? {};
 
   const erc20Addresses = tokenBalanceChanges
     .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
@@ -155,6 +156,10 @@ export const useBalanceChanges = (
 
   if (erc20Decimals.pending) {
     return { pending: true, value: [] };
+  }
+
+  if (!simulationData) {
+    return { pending: false, value: [] };
   }
 
   const nativeChange = getNativeBalanceChange(

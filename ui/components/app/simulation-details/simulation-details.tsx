@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationError,
+} from '@metamask/transaction-controller';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
@@ -7,6 +10,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -17,8 +21,8 @@ import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
-export type SimulationPreviewProps = {
-  simulationData?: SimulationData;
+export type SimulationDetailsProps = {
+  simulationData?: Partial<SimulationData>;
   transactionId: string;
 };
 
@@ -28,23 +32,43 @@ export type SimulationPreviewProps = {
  * @returns
  */
 const LoadingIndicator: React.FC = () => {
-  return <Preloader size={20} />;
+  return (
+    <div role="progressbar">
+      <Preloader size={20} />
+    </div>
+  );
 };
 
 /**
  * Content when simulation has failed.
+ *
+ * @param props
+ * @param props.error
  */
-const ErrorContent: React.FC = () => {
+const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
   const t = useI18nContext();
+
+  function getMessage() {
+    if (error.isReverted) {
+      return t('simulationDetailsTransactionReverted');
+    }
+    if (error.message) {
+      if (error.message.includes('Chain is not supported')) {
+        return t('simulationDetailsChainNotSupported');
+      }
+    }
+    return t('simulationDetailsFailed');
+  }
+
   return (
     <Text
       color={TextColor.warningDefault}
-      variant={TextVariant.bodySm}
+      variant={TextVariant.bodyMd}
       display={Display.Flex}
       alignItems={AlignItems.flexStart}
     >
       <Icon name={IconName.Warning} marginInlineEnd={1} />
-      {t('simulationPreviewFailed')}
+      {getMessage()}
     </Text>
   );
 };
@@ -61,7 +85,7 @@ const EmptyContent: React.FC = () => {
       display={Display.Flex}
       alignItems={AlignItems.flexStart}
     >
-      {t('simulationPreviewNoBalanceChanges')}
+      {t('simulationDetailsNoBalanceChanges')}
     </Text>
   );
 };
@@ -79,16 +103,23 @@ const HeaderLayout: React.FC = ({ children }) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
-      gap={1}
+      justifyContent={JustifyContent.spaceBetween}
     >
-      <Text variant={TextVariant.bodyMdMedium}>
-        {t('simulationPreviewTitle')}
-      </Text>
-      <InfoTooltip
-        position="right"
-        iconFillColor="var(--color-icon-muted)"
-        contentText={t('simulationPreviewTitleTooltip')}
-      />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={1}
+      >
+        <Text variant={TextVariant.bodyMdMedium}>
+          {t('simulationDetailsTitle')}
+        </Text>
+        <InfoTooltip
+          position="right"
+          iconFillColor="var(--color-icon-muted)"
+          contentText={t('simulationDetailsTitleTooltip')}
+        />
+      </Box>
       {children}
     </Box>
   );
@@ -101,7 +132,7 @@ const HeaderLayout: React.FC = ({ children }) => {
  * @param props.inHeader
  * @param props.children
  */
-const SimulationPreviewLayout: React.FC<{
+const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
 }> = ({ inHeader, children }) => (
   <Box
@@ -111,7 +142,7 @@ const SimulationPreviewLayout: React.FC<{
     borderColor={BorderColor.borderDefault}
     padding={3}
     margin={4}
-    gap={5}
+    gap={3}
   >
     <HeaderLayout>{inHeader}</HeaderLayout>
     {children}
@@ -137,63 +168,65 @@ function useLoadingTime() {
  * @param props
  * @param props.simulationData - The simulation data to display.
  */
-export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
+export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
   transactionId,
-}: SimulationPreviewProps) => {
+}: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { loadingTime, setLoadingComplete } = useLoadingTime();
-
-  const { pending: loading, value: balanceChanges } =
-    useBalanceChanges(simulationData);
+  const balanceChangesResult = useBalanceChanges(simulationData);
+  const loading = !simulationData || balanceChangesResult.pending;
 
   useSimulationMetrics({
-    balanceChanges,
+    balanceChanges: balanceChangesResult.value,
     loadingTime,
-    simulationData,
+    simulationData: simulationData as SimulationData,
     transactionId,
   });
 
   if (loading) {
     return (
-      <SimulationPreviewLayout
+      <SimulationDetailsLayout
         inHeader={<LoadingIndicator />}
-      ></SimulationPreviewLayout>
+      ></SimulationDetailsLayout>
     );
   }
 
   setLoadingComplete();
 
-  const error = !simulationData;
+  const { error } = simulationData;
   if (error) {
     return (
-      <SimulationPreviewLayout>
-        <ErrorContent />
-      </SimulationPreviewLayout>
+      <SimulationDetailsLayout>
+        <ErrorContent error={error} />
+      </SimulationDetailsLayout>
     );
   }
 
+  const balanceChanges = balanceChangesResult.value;
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (
-      <SimulationPreviewLayout>
+      <SimulationDetailsLayout>
         <EmptyContent />
-      </SimulationPreviewLayout>
+      </SimulationDetailsLayout>
     );
   }
 
   const outgoing = balanceChanges.filter((change) => change.amount.isNegative);
   const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
   return (
-    <SimulationPreviewLayout>
-      <BalanceChangeList
-        heading={t('simulationPreviewOutgoingHeading')}
-        balanceChanges={outgoing}
-      />
-      <BalanceChangeList
-        heading={t('simulationPreviewIncomingHeading')}
-        balanceChanges={incoming}
-      />
-    </SimulationPreviewLayout>
+    <SimulationDetailsLayout>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        <BalanceChangeList
+          heading={t('simulationDetailsOutgoingHeading')}
+          balanceChanges={outgoing}
+        />
+        <BalanceChangeList
+          heading={t('simulationDetailsIncomingHeading')}
+          balanceChanges={incoming}
+        />
+      </Box>
+    </SimulationDetailsLayout>
   );
 };

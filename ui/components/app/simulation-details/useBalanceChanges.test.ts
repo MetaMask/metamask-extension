@@ -74,9 +74,12 @@ describe('useBalanceChanges', () => {
     });
   });
 
-  it('returns empty array when no simulation data', () => {
-    const { result } = renderHook(() => useBalanceChanges(undefined));
-    expect(result.current).toEqual({ pending: false, value: [] });
+  it('handles no simulation data', async () => {
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBalanceChanges(undefined),
+    );
+    expect(result.current).toEqual({ pending: expect.any(Boolean), value: [] });
+    await waitForNextUpdate();
   });
 
   it('returns pending state when fetching token details', async () => {

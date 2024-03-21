@@ -1,6 +1,11 @@
 import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import { AvatarToken, AvatarTokenSize, Text } from '../../component-library';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  Text,
+} from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -14,8 +19,10 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 import { AssetIdentifier } from './types';
 
+const ETH_TICKER = 'ETH';
+
 const EthAssetPill: React.FC = () => (
-  <Text
+  <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
     borderRadius={BorderRadius.pill}
@@ -25,15 +32,14 @@ const EthAssetPill: React.FC = () => (
     style={{
       padding: '2px 8px 2px 4px',
     }}
-    variant={TextVariant.bodyMd}
   >
     <AvatarToken
       name="eth"
       size={AvatarTokenSize.Sm}
       src={ETH_TOKEN_IMAGE_URL}
     />
-    ETH
-  </Text>
+    <Text variant={TextVariant.bodyMd}>{ETH_TICKER}</Text>
+  </Box>
 );
 
 /**
