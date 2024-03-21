@@ -387,6 +387,8 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
+                  history={this.props.history}
+                  connectPath={connectPath}
                   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
                   snapsInstallPrivacyWarningShown={
                     snapsInstallPrivacyWarningShown
