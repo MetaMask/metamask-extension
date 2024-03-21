@@ -12,17 +12,24 @@ describe('confirmAlertsReducer', () => {
     confirmed: {},
   };
 
+  const ownerIdMocked = '123';
+
   it('should handle UPDATE_ALERTS action', () => {
-    const ownerId = '123';
     const alerts: Alert[] = [
-      { key: '1', severity: Severity.Warning, message: 'Alert 1' },
-      { key: '2', severity: Severity.Danger, message: 'Alert 2' },
+      {
+        key: 'from',
+        severity: Severity.Warning,
+        message: 'Alert 1',
+        reason: 'Reason 1',
+        alertDetails: ['Detail 1', 'Detail 2'],
+      },
+      { key: 'to', severity: Severity.Danger, message: 'Alert 2' },
     ];
-    const action = updateAlerts(ownerId, alerts);
+    const action = updateAlerts(ownerIdMocked, alerts);
 
     const expectedState = {
       alerts: {
-        [ownerId]: alerts,
+        [ownerIdMocked]: alerts,
       },
       confirmed: {},
     };
@@ -31,15 +38,14 @@ describe('confirmAlertsReducer', () => {
   });
 
   it('should handle SET_ALERT_CONFIRMED action', () => {
-    const ownerId = '123';
     const alertKey = '1';
     const isConfirmed = true;
-    const action = setAlertConfirmed(ownerId, alertKey, isConfirmed);
+    const action = setAlertConfirmed(ownerIdMocked, alertKey, isConfirmed);
 
     const expectedState = {
       alerts: {},
       confirmed: {
-        [ownerId]: {
+        [ownerIdMocked]: {
           [alertKey]: isConfirmed,
         },
       },
@@ -49,15 +55,14 @@ describe('confirmAlertsReducer', () => {
   });
 
   it('should handle CLEAR_ALERTS action', () => {
-    const ownerId = '123';
-    const action = clearAlerts(ownerId);
+    const action = clearAlerts(ownerIdMocked);
 
     const expectedState = {
       alerts: {
-        [ownerId]: [],
+        [ownerIdMocked]: [],
       },
       confirmed: {
-        [ownerId]: {},
+        [ownerIdMocked]: {},
       },
     };
 

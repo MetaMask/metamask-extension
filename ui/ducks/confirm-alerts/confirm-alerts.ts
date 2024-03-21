@@ -5,6 +5,8 @@ export type Alert = {
   field?: string;
   severity: Severity.Danger | Severity.Warning | Severity.Info;
   message: string;
+  reason?: string;
+  alertDetails?: string[];
 };
 
 export type ConfirmAlertsState = {
