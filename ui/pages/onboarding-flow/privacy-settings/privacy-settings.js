@@ -276,14 +276,16 @@ export default function PrivacySettings() {
               </>
             }
           />
-          {/* ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation) */}
-          <Setting
-            value={isTransactionSimulationsEnabled}
-            setValue={setTransactionSimulationsEnabled}
-            title={t('simulationsSettingSubHeader')}
-            description={t('simulationsSettingDescription')}
-          />
-          {/* ///: END:ONLY_INCLUDE_IF */}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+            <Setting
+              value={isTransactionSimulationsEnabled}
+              setValue={setTransactionSimulationsEnabled}
+              title={t('simulationsSettingSubHeader')}
+              description={t('simulationsSettingDescription')}
+            />
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Setting
             value={addressBarResolution}
             setValue={setAddressBarResolution}
