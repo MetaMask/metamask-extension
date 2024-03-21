@@ -5,7 +5,22 @@ import thunk from 'redux-thunk';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import PrivacySettings from './privacy-settings';
+
+const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
+  return {
+    type: SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
+  };
+});
+
+jest.mock('../../../ducks/app/app.ts', () => {
+  return {
+    openBasicFunctionalityModal: () => {
+      return mockOpenBasicFunctionalityModal();
+    },
+  };
+});
 
 describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
@@ -31,7 +46,12 @@ describe('Privacy Settings Onboarding View', () => {
       useMultiAccountBalanceChecker: true,
       ipfsGateway: 'test.link',
       useAddressBarEnsResolution: true,
+      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       useTransactionSimulations: true,
+      ///: END:ONLY_INCLUDE_IF
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
     },
   };
 
@@ -48,7 +68,11 @@ describe('Privacy Settings Onboarding View', () => {
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
   const setIncomingTransactionsPreferencesStub = jest.fn();
+  const onboardingToggleBasicFunctionalityOnStub = jest.fn();
+  const setDisableExternalServicesStub = jest.fn();
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   const setUseTransactionSimulationsStub = jest.fn();
+  ///: END:ONLY_INCLUDE_IF
   const setPreferenceStub = jest.fn();
 
   setBackgroundConnection({
@@ -62,7 +86,12 @@ describe('Privacy Settings Onboarding View', () => {
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
     setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
+    setDisableExternalServices: setDisableExternalServicesStub,
+    onboardingToggleBasicFunctionalityOn:
+      onboardingToggleBasicFunctionalityOnStub,
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
+    ///: END:ONLY_INCLUDE_IF
     setPreference: setPreferenceStub,
   });
 
@@ -86,17 +115,25 @@ describe('Privacy Settings Onboarding View', () => {
     const submitButton = getByText('Done');
     // toggle to false
     fireEvent.click(toggles[0]);
-    fireEvent.click(toggles[3]);
+    fireEvent.click(toggles[1]);
     fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
+    fireEvent.click(toggles[10]);
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    fireEvent.click(toggles[11]);
+    ///: END:ONLY_INCLUDE_IF
+
+    expect(mockOpenBasicFunctionalityModal).toHaveBeenCalledTimes(1);
+    fireEvent.click(toggles[12]);
 
     fireEvent.click(submitButton);
 
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
+    expect(setDisableExternalServicesStub).toHaveBeenCalledTimes(1);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(1);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
@@ -111,7 +148,9 @@ describe('Privacy Settings Onboarding View', () => {
       false,
       expect.anything(),
     );
-
+    expect(setDisableExternalServicesStub.mock.calls[0][0]).toStrictEqual(
+      false,
+    ); // the modal hasn't been interacted with yet, so this is still ends up being false.
     expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);

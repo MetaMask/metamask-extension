@@ -220,7 +220,8 @@ export default class PreferencesController {
     this.setUseCurrencyRateCheck(disableExternalServices);
     this.setUsePhishDetect(disableExternalServices);
     this.setUseAddressBarEnsResolution(disableExternalServices);
-    // TODO: add any other services that should be disabled
+    this.setOpenSeaEnabled(disableExternalServices);
+    this.setUseNftDetection(disableExternalServices);
   }
 
   /**
