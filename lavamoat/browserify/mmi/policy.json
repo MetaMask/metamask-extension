@@ -443,7 +443,8 @@
         "@ngraveio/bc-ur": true,
         "@trezor/connect-web>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true,
+        "ganache>abstract-level>buffer": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -716,7 +717,8 @@
       "packages": {
         "@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true
+        "@metamask-institutional/sdk>@metamask-institutional/types": true,
+        "gulp-sass>lodash.clonedeep": true
       }
     },
     "@metamask-institutional/institutional-features": {
@@ -2758,7 +2760,7 @@
     },
     "@ngraveio/bc-ur": {
       "packages": {
-        "@ngraveio/bc-ur>@apocentre/alias-sampling": true,
+        "@ngraveio/bc-ur>@keystonehq/alias-sampling": true,
         "@ngraveio/bc-ur>bignumber.js": true,
         "@ngraveio/bc-ur>cbor-sync": true,
         "@ngraveio/bc-ur>crc": true,
