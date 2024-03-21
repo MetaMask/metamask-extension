@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -8,7 +9,18 @@ import { ConnectedAccountsMenu } from '.';
 const DEFAULT_PROPS = {
   isOpen: true,
   onClose: jest.fn(),
-  identity: { address: '0x123' },
+  identity: {
+    address: 'mockAddress',
+    balance: 'mockBalance',
+    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    metadata: {
+      name: 'mockName',
+      keyring: {
+        type: 'HD Key Tree',
+      },
+    },
+    label: '',
+  },
   anchorElement: null,
   disableAccountSwitcher: false,
   closeMenu: jest.fn(),
@@ -19,7 +31,94 @@ const renderComponent = (props = {}, stateChanges = {}) => {
     ...mockState,
     ...stateChanges,
     activeTab: {
-      origin: 'https://example.com',
+      origin: 'https://remix.ethereum.org',
+    },
+    metamask: {
+      identities: {
+        '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
+          address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+          name: 'Really Long Name That Should Be Truncated',
+        },
+        '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
+          address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+          name: 'Account 1',
+        },
+        '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
+          address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+          name: 'Account 2',
+        },
+      },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Really Long Name That Should Be Truncated',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+            id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1586359844192,
+              lastActive: 1586359844192,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
+      subjects: {
+        'https://remix.ethereum.org': {
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                    '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                  ],
+                },
+              ],
+              date: 1586359844177,
+              id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
+              invoker: 'https://remix.ethereum.org',
+              parentCapability: 'eth_accounts',
+            },
+          },
+        },
+      },
+      subjectMetadata: {
+        'https://remix.ethereum.org': {
+          iconUrl: 'https://remix.ethereum.org/icon.png',
+          name: 'Remix - Ethereum IDE',
+        },
+      },
+      permissionHistory: {
+        'https://remix.ethereum.org': {
+          eth_accounts: {
+            accounts: {
+              '0x7250739de134d33ec7ab1ee592711e15098c9d2d': 1586359844192,
+              '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': 1586359844192,
+            },
+            lastApproved: 1586359844192,
+          },
+        },
+      },
     },
   });
   document.body.innerHTML = '<div id="anchor"></div>';

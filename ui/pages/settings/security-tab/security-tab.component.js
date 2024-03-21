@@ -17,8 +17,8 @@ import {
   COINGECKO_LINK,
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
-  OPENSEA_TERMS_OF_USE,
   PRIVACY_POLICY_LINK,
+  SECURITY_ALERTS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
@@ -26,7 +26,6 @@ import {
   BUTTON_SIZES,
   Box,
   Text,
-  Tag,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -83,8 +82,6 @@ export default class SecurityTab extends PureComponent {
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
-    transactionSecurityCheckEnabled: PropTypes.bool,
-    setTransactionSecurityCheckEnabled: PropTypes.func,
     securityAlertsEnabled: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
@@ -188,125 +185,48 @@ export default class SecurityTab extends PureComponent {
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const {
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      securityAlertsEnabled,
-      ///: END:ONLY_INCLUDE_IF
-      transactionSecurityCheckEnabled,
-    } = this.props;
+    const { securityAlertsEnabled } = this.props;
 
     return (
-      <>
-        <div
-          ref={this.settingsRefs[15]}
-          className="settings-page__security-tab-sub-header"
+      <div
+        ref={this.settingsRefs[15]}
+        className="settings-page__security-tab-sub-header"
+      >
+        <Box
+          ref={this.settingsRefs[2]}
+          className="settings-page__content-row"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={4}
         >
-          <span ref={this.settingsRefs[16]} />
-          <Text
-            ref={this.settingsRefs[17]}
-            variant={TextVariant.inherit}
-            color={TextColor.textAlternative}
-          >
-            {t('securityAlerts')}
-          </Text>
-          <div className="settings-page__content-padded">
-            <Text variant={TextVariant.bodySm}>
-              {t('securityAlertsDescription')}
-            </Text>
-
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-              <>
-                <Text
-                  variant={TextVariant.bodySmBold}
-                  color={TextColor.textAlternative}
-                  marginTop={4}
+          <div className="settings-page__content-item">
+            <span>{t('securityAlerts')}</span>
+            <div className="settings-page__content-description">
+              {t('securityAlertsDescription', [
+                <a
+                  key="learn_more_link"
+                  href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                  rel="noreferrer"
+                  target="_blank"
                 >
-                  {t('preferredProvider')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Row}
-                  justifyContent={JustifyContent.spaceBetween}
-                  gap={4}
-                  marginTop={3}
-                  marginBottom={3}
-                  data-testid="settings-toggle-security-alert-blockaid"
-                >
-                  <div>
-                    <Box display={Display.Flex}>
-                      <Text
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textDefault}
-                      >
-                        {t('blockaid')}
-                      </Text>
-                      <Tag marginLeft={2} label="Recommended" />
-                    </Box>
-                    <Text
-                      variant={TextVariant.bodySm}
-                      as="h6"
-                      color={TextColor.textAlternative}
-                      marginTop={0}
-                      marginRight={1}
-                    >
-                      {t('blockaidMessage')}
-                    </Text>
-                  </div>
-                  <div data-testid="securityAlert">
-                    <ToggleButton
-                      value={securityAlertsEnabled}
-                      onToggle={this.toggleSecurityAlert.bind(this)}
-                    />
-                  </div>
-                </Box>
-              </>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
-              gap={4}
-              marginTop={3}
-              marginBottom={3}
-            >
-              <div>
-                <Box display={Display.Flex}>
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textDefault}
-                  >
-                    {t('openSeaLabel')}
-                  </Text>
-                  <Tag marginLeft={2} label="Beta" />
-                </Box>
-                <div
-                  className="settings-page__content-description"
-                  data-testid="termsOfUse"
-                >
-                  {t('openSeaMessage', [
-                    <a
-                      key="opensea-terms-of-use"
-                      href={OPENSEA_TERMS_OF_USE}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {t('terms')}
-                    </a>,
-                  ])}
-                </div>
-              </div>
-              <div data-testid="transactionSecurityCheck">
-                <ToggleButton
-                  value={transactionSecurityCheckEnabled}
-                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
-                />
-              </div>
-            </Box>
+                  {t('learnMoreUpperCase')}
+                </a>,
+              ])}
+            </div>
           </div>
-        </div>
-      </>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="securityAlert"
+          >
+            <ToggleButton
+              value={securityAlertsEnabled}
+              onToggle={this.toggleSecurityAlert.bind(this)}
+            />
+          </div>
+        </Box>
+      </div>
     );
   }
 
@@ -995,8 +915,7 @@ export default class SecurityTab extends PureComponent {
    */
   toggleSecurityAlert(oldValue) {
     const newValue = !oldValue;
-    const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
-      this.props;
+    const { setSecurityAlertsEnabled } = this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.SettingsUpdated,
@@ -1004,35 +923,9 @@ export default class SecurityTab extends PureComponent {
         blockaid_alerts_enabled: newValue,
       },
     });
-    console.log('Dickie: SSAE: ', { setSecurityAlertsEnabled, newValue });
     setSecurityAlertsEnabled(newValue);
-    if (newValue && transactionSecurityCheckEnabled) {
-      this.toggleTransactionSecurityCheck(true);
-    }
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * toggleTransactionSecurityCheck
-   *
-   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
-   */
-  toggleTransactionSecurityCheck(oldValue) {
-    const newValue = !oldValue;
-    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
-      this.props;
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        opensea_alerts_enabled: newValue,
-      },
-    });
-    setTransactionSecurityCheckEnabled(newValue);
-    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
-      this.toggleSecurityAlert(true);
-    }
-  }
 
   render() {
     const { warning, petnamesEnabled } = this.props;
@@ -1044,7 +937,9 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {/* ///: BEGIN:ONLY_INCLUDE_IF(blockaid) */}
         {this.renderSecurityAlertsToggle()}
+        {/* ///: END:ONLY_INCLUDE_IF */}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>

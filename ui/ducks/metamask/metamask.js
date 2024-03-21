@@ -540,7 +540,3 @@ export function doesUserHaveALedgerAccount(state) {
     return kr.type === KeyringType.ledger;
   });
 }
-
-export function isLineaMainnetNetworkReleased(state) {
-  return state.metamask.isLineaMainnetReleased;
-}
