@@ -6,6 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../store/actions';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
@@ -63,11 +64,10 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-const render = (
-  selectedAddress = mockState.metamask.selectedAddress,
-  balance = ETH_BALANCE,
-  chainId = CHAIN_IDS.MAINNET,
-) => {
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
+const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
   const state = {
     ...mockState,
     metamask: {
@@ -80,7 +80,7 @@ const render = (
       },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: { balance },
+          [mockSelectedInternalAccount.address]: { balance },
         },
       },
       contractExchangeRates: {
@@ -88,7 +88,6 @@ const render = (
         [LINK_CONTRACT]: 0.00423239,
         [WBTC_CONTRACT]: 16.66575,
       },
-      selectedAddress,
     },
   };
   const store = configureStore(state);

@@ -30,7 +30,6 @@ describe('selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
-          selectedAddress: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
           subjectMetadata: {
             'peepeth.com': {
               iconUrl: 'https://peepeth.com/favicon-32x32.png',
@@ -97,7 +96,6 @@ describe('selectors', () => {
     it('should return the list of connected subjects when there are 2 connected accounts', () => {
       const mockState = {
         metamask: {
-          selectedAddress: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -330,31 +328,6 @@ describe('selectors', () => {
             },
           },
         },
-        identities: {
-          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
-            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-            name: 'Really Long Name That Should Be Truncated',
-          },
-          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
-            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-            lastSelected: 1586359844192,
-            name: 'Account 1',
-          },
-          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
-            lastSelected: 1586359844193,
-            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-            name: 'Account 2',
-          },
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            lastSelected: 1586359844192,
-            name: 'Account 3',
-          },
-          '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4': {
-            address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-            name: 'Account 4',
-          },
-        },
         keyrings: [
           {
             accounts: [
@@ -503,20 +476,6 @@ describe('selectors', () => {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
-        identities: {
-          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
-            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-            name: 'Really Long Name That Should Be Truncated',
-          },
-          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
-            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-            name: 'Account 1',
-          },
-          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
-            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-            name: 'Account 2',
-          },
-        },
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

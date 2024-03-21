@@ -329,7 +329,6 @@ describe('Institutional selectors', () => {
           },
           keyrings: [],
           custodianSupportedChains: {},
-          selectedAddress: accountAddress,
           providerConfig: {},
         },
       });
@@ -371,7 +370,6 @@ describe('Institutional selectors', () => {
             },
           ],
           custodianSupportedChains: {},
-          selectedAddress: accountAddress,
           providerConfig: null,
         },
       });
@@ -415,7 +413,6 @@ describe('Institutional selectors', () => {
           custodianSupportedChains: {
             [accountAddress]: null,
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: toHex(1),
           },
@@ -463,7 +460,6 @@ describe('Institutional selectors', () => {
               supportedChains: [],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: toHex(1),
           },
@@ -511,7 +507,6 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: 1,
           },
@@ -559,7 +554,6 @@ describe('Institutional selectors', () => {
               supportedChains: ['1'],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: 'not a hex number',
           },

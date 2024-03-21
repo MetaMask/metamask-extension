@@ -16,6 +16,7 @@ import {
   decGWEIToHexWEI,
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';
@@ -78,6 +79,9 @@ jest.mock('../../../contexts/transaction-modal', () => ({
 
 jest.mock('../../ui/info-tooltip', () => jest.fn(() => null));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = (
   props,
   maxFeePerGas = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
@@ -86,8 +90,8 @@ const render = (
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },
