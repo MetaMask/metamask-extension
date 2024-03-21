@@ -87,6 +87,7 @@ export default class SecurityTab extends PureComponent {
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
+    setTransactionSecurityCheckEnabled: PropTypes.func,
     disableExternalServices: PropTypes.bool,
     setDisableExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

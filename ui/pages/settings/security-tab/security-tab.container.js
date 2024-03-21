@@ -21,6 +21,7 @@ import {
   setUseTransactionSimulations,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
+  setTransactionSecurityCheckEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
