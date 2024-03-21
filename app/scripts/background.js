@@ -274,6 +274,7 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     const initData = await loadStateFromPersistence();
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
@@ -307,7 +308,12 @@ async function initialize() {
       isFirstMetaMaskControllerSetup,
       initData.meta,
     );
-    if (!isManifestV3) {
+
+    if (
+      !isManifestV3 &&
+      initState?.OnboardingController?.completedOnboarding &&
+      initState?.PreferencesController?.usePhishDetect
+    ) {
       await loadPhishingWarningPage();
     }
     await sendReadyMessageToTabs();
@@ -335,6 +341,15 @@ class PhishingWarningPageTimeoutError extends Error {
 async function loadPhishingWarningPage() {
   let iframe;
   try {
+    // Check session storage for whether we've already initialized the phishing warning
+    // service worker in this session and do not attempt to re-initialize if so.
+    const { phishingWarningPageLoaded } =
+      await controller.appStateController.store.getState();
+
+    if (phishingWarningPageLoaded) {
+      return;
+    }
+
     const extensionStartupPhishingPageUrl = new URL(
       process.env.PHISHING_WARNING_PAGE_URL,
     );
@@ -370,6 +385,8 @@ async function loadPhishingWarningPage() {
       PHISHING_WARNING_PAGE_TIMEOUT,
     );
     await loadComplete;
+
+    controller.appStateController.setPhishingWarningPageLoaded(true);
   } catch (error) {
     if (error instanceof PhishingWarningPageTimeoutError) {
       console.warn(
@@ -540,6 +557,7 @@ export function setupController(
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
+    loadPhishingWarningPage,
   });
 
   setupEnsIpfsResolver({

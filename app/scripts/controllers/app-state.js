@@ -67,6 +67,7 @@ export default class AppStateController extends EventEmitter {
       },
       surveyLinkLastClickedOrClosed: null,
       signatureSecurityAlertResponses: {},
+      phishingWarningPageLoaded: false,
     });
     this.timer = null;
 
@@ -399,6 +400,15 @@ export default class AppStateController extends EventEmitter {
    */
   setShowAccountBanner(showAccountBanner) {
     this.store.updateState({ showAccountBanner });
+  }
+
+  /**
+   * Sets whether the phishing warning page has been loaded
+   *
+   * @param phishingWarningPageLoaded
+   */
+  setPhishingWarningPageLoaded(phishingWarningPageLoaded) {
+    this.store.updateState({ phishingWarningPageLoaded });
   }
 
   /**

@@ -341,6 +341,7 @@ export default class MetamaskController extends EventEmitter {
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
+    this.loadPhishingWarningPage = opts.loadPhishingWarningPage;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -785,8 +786,6 @@ export default class MetamaskController extends EventEmitter {
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
     });
 
-    this.phishingController.maybeUpdateState();
-
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
@@ -899,8 +898,14 @@ export default class MetamaskController extends EventEmitter {
 
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
-        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
-        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+        const {
+          useCurrencyRateCheck: prevUseCurrencyRateCheck,
+          usePhishDetect: prevUsePhishDetect,
+        } = prevState;
+        const {
+          useCurrencyRateCheck: currUseCurrencyRateCheck,
+          usePhishDetect: currUsePhishDetect,
+        } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
           this.currencyRateController.startPollingByNetworkClientId(
             this.networkController.state.selectedNetworkClientId,
@@ -909,6 +914,11 @@ export default class MetamaskController extends EventEmitter {
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
           this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
+        }
+
+        if (currUsePhishDetect && !prevUsePhishDetect) {
+          this.phishingController.maybeUpdateState();
+          this.loadPhishingWarningPage();
         }
       }, this.preferencesController.store.getState()),
     );
@@ -1428,6 +1438,11 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           this.networkController.lookupNetwork();
           this.triggerNetworkrequests();
+
+          if (this.preferencesController.store.getState().usePhishDetect) {
+            this.phishingController.maybeUpdateState();
+            this.loadPhishingWarningPage();
+          }
         }
       }, this.onboardingController.store.getState()),
     );
@@ -2192,6 +2207,10 @@ export default class MetamaskController extends EventEmitter {
 
     if (this.onboardingController.store.getState().completedOnboarding) {
       this.networkController.lookupNetwork();
+
+      if (this.preferencesController.store.getState().usePhishDetect) {
+        this.phishingController.maybeUpdateState();
+      }
     }
   }
 
@@ -4557,6 +4576,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
     const { usePhishDetect } = this.preferencesController.store.getState();
+    const { completedOnboarding } = this.onboardingController.store.getState();
 
     let _subjectType;
     if (subjectType) {
@@ -4567,12 +4587,12 @@ export default class MetamaskController extends EventEmitter {
       _subjectType = SubjectType.Website;
     }
 
-    if (sender.url) {
+    if (sender.url && completedOnboarding && usePhishDetect) {
       const { hostname } = new URL(sender.url);
       this.phishingController.maybeUpdateState();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
-      if (usePhishDetect && phishingTestResponse?.result) {
+      if (phishingTestResponse?.result) {
         this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PhishingPageDisplayed,
