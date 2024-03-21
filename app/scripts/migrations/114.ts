@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 113;
+export const version = 114;
 
 /**
  * This migration sets preference securityAlertsEnabled to true if transactionSecurityCheckEnabled is true and removes transactionSecurityCheckEnabled

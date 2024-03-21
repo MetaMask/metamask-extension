@@ -233,19 +233,13 @@ export default function createRPCMethodTrackingMiddleware({
         // merge the snapAndHardwareInfo into eventProperties
         Object.assign(eventProperties, snapAndHardwareInfo);
 
-        try {
-          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
-            const { isSIWEMessage } = detectSIWE({ data });
-            if (isSIWEMessage) {
-              eventProperties.ui_customizations = (
-                eventProperties.ui_customizations || []
-              ).concat(MetaMetricsEventUiCustomization.Siwe);
-            }
+        if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+          const { isSIWEMessage } = detectSIWE({ data });
+          if (isSIWEMessage) {
+            eventProperties.ui_customizations = (
+              eventProperties.ui_customizations || []
+            ).concat(MetaMetricsEventUiCustomization.Siwe);
           }
-        } catch (e) {
-          console.warn(
-            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
-          );
         }
       } else {
         eventProperties.method = method;
