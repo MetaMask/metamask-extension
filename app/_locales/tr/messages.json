@@ -3264,9 +3264,6 @@
   "securityAlerts": {
     "message": "Güvenlik uyarıları"
   },
-  "securityAlertsDescription": {
-    "message": "Bu özellik, işlem ve imza taleplerinizi aktif bir şekilde incelerken gizliliğinizi koruyarak Ethereum Ana Ağındaki kötü amaçlı faaliyetlere karşı sizi uyarır. Verileriniz, bu hizmeti sunan üçüncü taraf ile paylaşılmaz. Talepleri onaylamadan önce her zaman gereken özeni kendiniz gösterin. Bu özelliğin tüm kötü amaçlı faaliyetleri algılayacağına dair herhangi bir garanti bulunmamaktadır."
-  },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
   },
