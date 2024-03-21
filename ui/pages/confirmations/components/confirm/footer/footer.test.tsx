@@ -1,5 +1,4 @@
 import React from 'react';
-
 import mockState from '../../../../../../test/data/mock-state.json';
 import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as Actions from '../../../../../store/actions';
@@ -26,6 +25,7 @@ const render = (args = {}) => {
           from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         },
       },
+      isScrollToBottomNeeded: false,
     },
     ...args,
   });
