@@ -194,9 +194,8 @@ export default class Routes extends Component {
     setSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
-    allNetworks: PropTypes.arrayOf(PropTypes.object),
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
-    autoSwitchNetwork: PropTypes.func.isRequired,
+    automaticallySwitchNetwork: PropTypes.func.isRequired,
     unapprovedTransactions: PropTypes.number.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
@@ -254,7 +253,6 @@ export default class Routes extends Component {
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
       unapprovedTransactions,
-      allNetworks,
       isUnlocked,
     } = this.props;
     if (theme !== prevProps.theme) {
@@ -272,14 +270,13 @@ export default class Routes extends Component {
     if (!neverShowSwitchedNetworkMessage) {
       if (
         networkToAutomaticallySwitchTo &&
-        ((prevProps.unapprovedTransactions > 0 &&
-          unapprovedTransactions === 0) ||
+        unapprovedTransactions === 0 &&
+        (prevProps.unapprovedTransactions > 0 ||
           (prevProps.isUnlocked === false && isUnlocked))
       ) {
-        this.props.autoSwitchNetwork(
+        this.props.automaticallySwitchNetwork(
           networkToAutomaticallySwitchTo,
           activeTabOrigin,
-          allNetworks,
         );
       }
     }
@@ -795,12 +792,12 @@ export default class Routes extends Component {
                 <AvatarNetwork
                   size={AvatarAccountSize.Md}
                   borderColor={BorderColor.transparent}
-                  src={switchedNetworkDetails.network.rpcPrefs?.imageUrl}
+                  src={switchedNetworkDetails?.imageUrl}
                 />
               }
               text={this.context.t('switchedNetworkToastMessage', [
-                switchedNetworkDetails.network.nickname.toUpperCase(),
-                getURLHost(switchedNetworkDetails.siteName).toUpperCase(),
+                switchedNetworkDetails.nickname.toUpperCase(),
+                getURLHost(switchedNetworkDetails.origin).toUpperCase(),
               ])}
               actionText={this.context.t('switchedNetworkToastDecline')}
               onActionClick={() => setSwitchedNetworkNeverShowMessage()}

@@ -16,13 +16,12 @@ import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getAllNetworks,
   getNeverShowSwitchedNetworkMessage,
   getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getAutomaticSwitchNetwork,
+  getNetworkToAutomaticallySwitchTo,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -182,18 +181,19 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   // This block autoswitches chains based on the last chain used
-  // for a given dapp.  This allows the user to be connected on one chain
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
   const state = store.getState();
-  const networkIdToSwitchTo = getAutomaticSwitchNetwork(state);
+  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
   const neverShowSwitchedNetworkMessage =
     getNeverShowSwitchedNetworkMessage(state);
+
   if (networkIdToSwitchTo && !neverShowSwitchedNetworkMessage) {
     await store.dispatch(
-      actions.autoSwitchNetwork(
+      actions.automaticallySwitchNetwork(
         networkIdToSwitchTo,
         getOriginOfCurrentTab(state),
-        getAllNetworks(state),
       ),
     );
   }

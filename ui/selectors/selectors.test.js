@@ -209,7 +209,7 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getAutomaticSwitchNetwork', () => {
+  describe('#getNetworkToAutomaticallySwitchTo', () => {
     const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
     const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
     const state = {
@@ -240,14 +240,15 @@ describe('Selectors', () => {
 
     it('should return the network to switch to', () => {
       process.env.MULTICHAIN = 1;
-      const networkToSwitchTo = selectors.getAutomaticSwitchNetwork(state);
+      const networkToSwitchTo =
+        selectors.getNetworkToAutomaticallySwitchTo(state);
       expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
       delete process.env.MULTICHAIN;
     });
 
     it('should return no network to switch to because we are already on it', () => {
       process.env.MULTICHAIN = 1;
-      const networkToSwitchTo = selectors.getAutomaticSwitchNetwork({
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
           ...state.metamask,
