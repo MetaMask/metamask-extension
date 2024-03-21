@@ -192,7 +192,7 @@ export default function NewNetworkInfo() {
                 <Text
                   variant={TextVariant.bodySm}
                   as="h6"
-                  color={Color.textDefault}
+                  color={TextColor.textDefault}
                   display={Display.InlineBlock}
                 >
                   {isBridgeChain
