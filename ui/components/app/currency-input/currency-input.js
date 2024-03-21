@@ -20,6 +20,7 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -78,7 +79,8 @@ export default function CurrencyInput({
           numberOfDecimals: 8,
         });
 
-    return Number(decimalValueString) || 0;
+    // decimalToBigNumber
+    return new Numeric(decimalValueString, 10).toString() || 0;
   };
 
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
