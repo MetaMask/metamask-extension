@@ -286,7 +286,6 @@
     "@metamask/ens-controller": "^9.0.0",
     "@metamask/eth-json-rpc-filters": "^7.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.0",
-    "@metamask/eth-keyring-controller": "^16.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^2.0.1",
     "@metamask/eth-query": "^4.0.0",
     "@metamask/eth-sig-util": "^7.0.1",
