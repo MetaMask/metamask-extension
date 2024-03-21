@@ -4342,6 +4342,24 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "simulationPreviewFailed": {
+    "message": "There was an error loading your estimation."
+  },
+  "simulationPreviewIncomingHeading": {
+    "message": "You receive"
+  },
+  "simulationPreviewNoBalanceChanges": {
+    "message": "No changes predicted for your wallet"
+  },
+  "simulationPreviewOutgoingHeading": {
+    "message": "You send"
+  },
+  "simulationPreviewTitle": {
+    "message": "Estimated changes"
+  },
+  "simulationPreviewTitleTooltip": {
+    "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
   "siteConnections": {
     "message": "Site Connections"
   },
