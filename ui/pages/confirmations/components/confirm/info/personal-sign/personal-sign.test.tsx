@@ -2,21 +2,19 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { unapprovedPersonalMsg } from '../../../../../../../test/data/confirmations/personal_sign';
-import PersonalSign from './personalSign';
+import { unapprovedPersonalSignMsg } from '../../../../../../../test/data/confirmations/personal_sign';
+import PersonalSignInfo from './personal-sign';
 
-describe('personalSign', () => {
-  it('renders origin for personal sign request', () => {
+describe('PersonalSignInfo', () => {
+  it('renders correctly for personal sign request', () => {
     const mockState = {
       confirm: {
-        currentConfirmation: unapprovedPersonalMsg,
+        currentConfirmation: unapprovedPersonalSignMsg,
       },
     };
     const mockStore = configureMockStore([])(mockState);
-    const { getByText } = renderWithProvider(<PersonalSign />, mockStore);
-
-    expect(getByText('Request from')).toBeInTheDocument();
-    expect(getByText('https://metamask.github.io')).toBeInTheDocument();
+    const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    expect(container).toMatchSnapshot();
   });
 
   it('does not render if required data is not present in the transaction', () => {
@@ -31,8 +29,7 @@ describe('personalSign', () => {
       },
     };
     const mockStore = configureMockStore([])(mockState);
-    const { queryByText } = renderWithProvider(<PersonalSign />, mockStore);
-
-    expect(queryByText('Request from')).not.toBeInTheDocument();
+    const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    expect(container).toMatchSnapshot();
   });
 });
