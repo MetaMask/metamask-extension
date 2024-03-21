@@ -87,6 +87,7 @@ describe('Simulation Details', () => {
     }
     await withFixturesForSimulationDetails({ title: this.test?.fullTitle(), testSpecificMock }, async ({ driver, mockServer }: TestArgs) => {
       await createDappTransaction(driver, BUY_DAI_WITH_ETH_TRANSACTION);
+      await driver.delay(10000);
     });
   });
 });
