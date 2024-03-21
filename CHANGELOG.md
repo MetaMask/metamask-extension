@@ -143,6 +143,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced site connections with account avatar groups and a new account group for non-snap items ([#23080](https://github.com/MetaMask/metamask-extension/pull/23080))
 - Implemented updated Linea gas fee estimates for more accurate transaction costs ([#22918](https://github.com/MetaMask/metamask-extension/pull/22918))
 - Introduced a new Palm network logo with support for both light and dark modes ([#23191](https://github.com/MetaMask/metamask-extension/pull/23191))
+- Enhanced confirmation templates with an option to hide the submit button ([#23085](https://github.com/MetaMask/metamask-extension/pull/23085))
+- Introduced a currency value component to display user balances in selected currency ([#23260](https://github.com/MetaMask/metamask-extension/pull/23260))
 
 ### Changed
 - Removed Goerli network from settings and added warning modal for manual attempts to add it ([#22995](https://github.com/MetaMask/metamask-extension/pull/22995))
@@ -168,6 +170,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue ensuring account avatars are displayed in both popup and full screen views ([#23265](https://github.com/MetaMask/metamask-extension/pull/23265))
 - Improved send flow by ensuring pinned accounts are prominently displayed at the top and correctly labeled ([#23176](https://github.com/MetaMask/metamask-extension/pull/23176))
 - Updated the Connections Page to include tabs and show connected accounts when an account is connected ([#23125](https://github.com/MetaMask/metamask-extension/pull/23125))
+- Resolved text highlight color conflicts by reverting to hex code usage ([#23188](https://github.com/MetaMask/metamask-extension/pull/23188))
 - [MMI] Simplified the home screen by removing the Buy, Sell, and NFT options ([#23199](https://github.com/MetaMask/metamask-extension/pull/23199))
 
 ## [11.10.0]
