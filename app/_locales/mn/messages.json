@@ -3053,7 +3053,7 @@
   },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox нь U2F-ийг дэмжихээ больсон тул Ledger Firefox дээр MetaMask-тай ажиллахгүй. Оронд нь Google Chrome дээр MetaMask ашиглаж үзээрэй.",
-     "description": "'Шинэ зүйлс юу байгааг харнах' попап цонхон дээрх мэдэгдлийн тайлбар. Ledger нь firefox хэрэглэгчдэд цаашид дэмжигдэхгүй бөгөөд оронд нь ledger-т дэмжлэг үзүүлэхийн тулд Chrome дээр MetaMask ашиглах ёстойг тайлбарлав."
+    "description": "'Шинэ зүйлс юу байгааг харнах' попап цонхон дээрх мэдэгдлийн тайлбар. Ledger нь firefox хэрэглэгчдэд цаашид дэмжигдэхгүй бөгөөд оронд нь ledger-т дэмжлэг үзүүлэхийн тулд Chrome дээр MetaMask ашиглах ёстойг тайлбарлав."
   },
   "notificationsDropLedgerFirefoxTitle": {
     "message": "Firefox-д зориулсан дэвтэрийн дэмжлэгийг хасаж байна",
