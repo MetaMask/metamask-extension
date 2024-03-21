@@ -404,17 +404,17 @@ describe('preferences controller', () => {
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-  describe('setUseSimulations', () => {
+  describe('setUseTransactionSimulations', () => {
     it('should default to true', () => {
       expect(
         preferencesController.store.getState().useExternalNameSources,
       ).toStrictEqual(true);
     });
 
-    it('should set the setUseSimulations property in state', () => {
-      preferencesController.setUseSimulations(false);
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
       expect(
-        preferencesController.store.getState().useSimulations,
+        preferencesController.store.getState().useTransactionSimulations,
       ).toStrictEqual(false);
     });
   });

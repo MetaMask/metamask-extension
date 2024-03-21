@@ -112,7 +112,7 @@ export default class PreferencesController {
       isLineaMainnetReleased: false,
       useExternalNameSources: true,
       ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-      useSimulations: true,
+      useTransactionSimulations: true,
       ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
@@ -310,13 +310,13 @@ export default class PreferencesController {
 
   ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   /**
-   * Setter for the `useSimulations` property
+   * Setter for the `useTransactionSimulations` property
    *
-   * @param {boolean} useSimulations - Whether or not to use simulations in the transaction confirmations.
+   * @param {boolean} useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
    */
-  setUseSimulations(useSimulations) {
+  setUseTransactionSimulations(useTransactionSimulations) {
     this.store.updateState({
-      useSimulations,
+      useTransactionSimulations,
     });
   }
   ///: END:ONLY_INCLUDE_IF

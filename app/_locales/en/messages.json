@@ -3110,7 +3110,7 @@
     "message": "Now you can see the potential outcome of your transactions before you make them!"
   },
   "notificationsSimulationsDescriptionTwo": {
-    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in Settings > Security & Privacy. "
+    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
   },
   "notificationsStakingPortfolioActionText": {
     "message": "Got it",

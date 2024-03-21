@@ -82,8 +82,8 @@ export default class SecurityTab extends PureComponent {
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-    setUseSimulations: PropTypes.func.isRequired,
-    useSimulations: PropTypes.bool.isRequired,
+    setUseTransactionSimulations: PropTypes.func.isRequired,
+    useTransactionSimulations: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
@@ -914,7 +914,8 @@ export default class SecurityTab extends PureComponent {
   ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   renderSimulationsToggle() {
     const { t } = this.context;
-    const { useSimulations, setUseSimulations } = this.props;
+    const { useTransactionSimulations, setUseTransactionSimulations } =
+      this.props;
 
     return (
       <Box
@@ -937,8 +938,8 @@ export default class SecurityTab extends PureComponent {
           data-testid="useExternalNameSources"
         >
           <ToggleButton
-            value={useSimulations}
-            onToggle={(value) => setUseSimulations(!value)}
+            value={useTransactionSimulations}
+            onToggle={(value) => setUseTransactionSimulations(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />

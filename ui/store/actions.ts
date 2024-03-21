@@ -4742,9 +4742,9 @@ export function setUseExternalNameSources(val: boolean): void {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-export function setUseSimulations(val: boolean): void {
+export function setUseTransactionSimulations(val: boolean): void {
   try {
-    submitRequestToBackground('setUseSimulations', [val]);
+    submitRequestToBackground('setUseTransactionSimulations', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }
