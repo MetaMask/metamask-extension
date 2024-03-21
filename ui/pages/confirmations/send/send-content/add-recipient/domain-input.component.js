@@ -72,16 +72,17 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    resetDomainResolution();
-
     if ((IS_FLASK && !isHexString(input)) || isValidDomainName(input)) {
       lookupDomainName(input);
-    } else if (
-      onValidAddressTyped &&
-      !isBurnAddress(input) &&
-      isValidHexAddress(input, { mixedCaseUseChecksum: true })
-    ) {
-      onValidAddressTyped(addHexPrefix(input));
+    } else {
+      resetDomainResolution();
+      if (
+        onValidAddressTyped &&
+        !isBurnAddress(input) &&
+        isValidHexAddress(input, { mixedCaseUseChecksum: true })
+      ) {
+        onValidAddressTyped(addHexPrefix(input));
+      }
     }
 
     return null;

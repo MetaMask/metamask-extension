@@ -61,7 +61,10 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    domainLookup: (state, action) => {
+    lookupStart: (state, action) => {
+      state.domainName = action.payload;
+    },
+    lookupEnd: (state, action) => {
       // first clear out the previous state
       state.resolution = null;
       state.error = null;
@@ -104,14 +107,11 @@ const slice = createSlice({
         } else {
           state.error = ENS_NO_ADDRESS_FOR_NAME;
         }
-      } else {
-        if (!address) {
-          state.error = NO_RESOLUTION_FOR_DOMAIN;
-        }
-        if (address) {
-          state.resolution = address;
-          state.resolvingSnap = resolvingSnap;
-        }
+      } else if (address) {
+        state.resolution = address;
+        state.resolvingSnap = resolvingSnap;
+      } else if (domainName.length > 0) {
+        state.error = NO_RESOLUTION_FOR_DOMAIN;
       }
     },
     enableDomainLookup: (state, action) => {
@@ -157,7 +157,8 @@ const { reducer, actions } = slice;
 export default reducer;
 
 const {
-  domainLookup,
+  lookupStart,
+  lookupEnd,
   enableDomainLookup,
   domainNotSupported,
   resetDomainResolution,
@@ -201,7 +202,7 @@ export async function fetchResolutions({ domain, chainId, state }) {
   // since reverse resolution is not supported in the send screen flow,
   // the logic was changed to cancel the request, because otherwise a snap can erroneously
   // check for the domain property without checking domain length and return faulty results.
-  if (!domain.length) {
+  if (domain.length === 0) {
     return [];
   }
 
@@ -260,6 +261,7 @@ export function lookupDomainName(domainName) {
     ) {
       await dispatch(domainNotSupported());
     } else {
+      await dispatch(lookupStart(trimmedDomainName));
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
       let address;
       let fetchedResolutions;
@@ -290,8 +292,15 @@ export function lookupDomainName(domainName) {
       const snapId = fetchedResolutions?.[0]?.snapId;
       const snapName = getSnapMetadata(state, snapId)?.name;
 
+      // Due to the asynchronous nature of looking up domains, we could reach this point
+      // while a new lookup has started, if so we don't use the found result.
+      state = getState();
+      if (trimmedDomainName !== state[name].domainName) {
+        return;
+      }
+
       await dispatch(
-        domainLookup({
+        lookupEnd({
           address,
           error,
           chainId,
