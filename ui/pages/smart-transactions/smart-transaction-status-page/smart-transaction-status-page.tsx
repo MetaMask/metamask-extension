@@ -43,11 +43,11 @@ type RequestState = {
   isDapp: boolean;
 };
 
-export interface SmartTransactionStatusPageProps {
+export type SmartTransactionStatusPageProps = {
   requestState: RequestState;
   onCloseExtension: () => void;
   onViewActivity: () => void;
-}
+};
 
 export const showRemainingTimeInMinAndSec = (
   remainingTimeInSec: number,

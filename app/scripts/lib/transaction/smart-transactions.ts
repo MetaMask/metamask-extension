@@ -49,8 +49,9 @@ export async function submitSmartTransactionHook(
     );
     return useRegularTransactionSubmit;
   }
-  const { id } = controllerMessenger.call('ApprovalController:startFlow');
-  const smartTransactionStatusApprovalId: string = id;
+  const { id: approvalFlowId } = controllerMessenger.call(
+    'ApprovalController:startFlow',
+  );
   try {
     const feesResponse = await smartTransactionsController.getFees(
       { ...txParams, chainId },
@@ -88,7 +89,7 @@ export async function submitSmartTransactionHook(
     let approvalFlowEnded = false;
     const onApproveOrReject = async () => {
       controllerMessenger.call('ApprovalController:endFlow', {
-        id: smartTransactionStatusApprovalId,
+        id: approvalFlowId,
       });
       approvalFlowEnded = true;
     };
@@ -100,7 +101,7 @@ export async function submitSmartTransactionHook(
       .call(
         'ApprovalController:addRequest',
         {
-          id: smartTransactionStatusApprovalId,
+          id: approvalFlowId,
           origin,
           type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
           requestState: {
@@ -141,7 +142,7 @@ export async function submitSmartTransactionHook(
         await controllerMessenger.call(
           'ApprovalController:updateRequestState',
           {
-            id: smartTransactionStatusApprovalId,
+            id: approvalFlowId,
             requestState: {
               smartTransaction,
               isDapp,
