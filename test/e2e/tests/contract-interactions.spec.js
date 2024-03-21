@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -6,6 +5,7 @@ const {
   unlockWallet,
   largeDelayMs,
   WINDOW_TITLES,
+  locateAccountBalanceDOM,
 } = require('../helpers');
 
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
@@ -25,7 +25,7 @@ describe('Deploy contract and call contract methods', function () {
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
@@ -87,10 +87,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.equal(await balance.getText(), '$37,399.05\nUSD');
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });

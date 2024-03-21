@@ -1,6 +1,6 @@
-import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 
 import {
   Button,
@@ -15,11 +15,12 @@ import {
   rejectPendingApproval,
   resolvePendingApproval,
 } from '../../../../../store/actions';
-import { currentConfirmationSelector } from '../../../selectors';
+import { confirmSelector } from '../../../selectors';
 
 const Footer = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const confirm = useSelector(confirmSelector);
+  const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmationInfo();
   ///: END:ONLY_INCLUDE_IF
@@ -72,12 +73,14 @@ const Footer = () => {
       </Button>
       <Button
         block
+        data-testid="confirm-footer-confirm-button"
         onClick={onSubmit}
         size={ButtonSize.Lg}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||
           ///: END:ONLY_INCLUDE_IF
+          isScrollToBottomNeeded ||
           hardwareWalletRequiresConnection
         }
       >

@@ -515,9 +515,9 @@ export default class ConfirmTransactionBase extends Component {
         />
       </div>
     );
-    let simulationPreview = null;
+    let simulationDetails = null;
     ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-    simulationPreview = (
+    simulationDetails = (
       <SimulationDetails simulationData={txData.simulationData} />
     );
     ///: END:ONLY_INCLUDE_IF
@@ -537,7 +537,7 @@ export default class ConfirmTransactionBase extends Component {
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
         />
-        {simulationPreview}
+        {simulationDetails}
         <TransactionDetail
           disableEditGasFeeButton
           disabled={isDisabled()}
