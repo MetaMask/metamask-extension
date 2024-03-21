@@ -919,7 +919,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[14]}
+        ref={this.settingsRefs[18]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -935,7 +935,7 @@ export default class SecurityTab extends PureComponent {
 
         <div
           className="settings-page__content-item-col"
-          data-testid="useExternalNameSources"
+          data-testid="useTransactionSimulations"
         >
           <ToggleButton
             value={useTransactionSimulations}
