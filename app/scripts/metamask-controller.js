@@ -3474,7 +3474,7 @@ export default class MetamaskController extends EventEmitter {
       rejectPendingApproval: this.rejectPendingApproval,
 
       // Notifications
-      resetViewedNotifications: announcementController.resetIsShownStates.bind(
+      resetViewedNotifications: announcementController.resetViewed.bind(
         announcementController,
       ),
       updateViewedNotifications: announcementController.updateViewed.bind(
