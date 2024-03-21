@@ -764,10 +764,7 @@ export default class MetaMetricsController {
         : null;
     ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.store.getState();
-    let securityProvider;
-    if (metamaskState.securityAlertsEnabled) {
-      securityProvider = 'blockaid';
-    }
+
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -813,9 +810,8 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IF
-      [MetaMetricsUserTrait.SecurityProviders]: securityProvider
-        ? [securityProvider]
-        : [],
+      [MetaMetricsUserTrait.SecurityProviders]:
+        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
     };

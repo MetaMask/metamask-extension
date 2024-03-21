@@ -189,11 +189,7 @@ export default class SecurityTab extends PureComponent {
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const {
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      securityAlertsEnabled,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.props;
+    const { securityAlertsEnabled } = this.props;
 
     return (
       <div
