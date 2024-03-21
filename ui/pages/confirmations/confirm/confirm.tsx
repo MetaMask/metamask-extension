@@ -7,7 +7,6 @@ import { Info } from '../components/confirm/info';
 import { MMISignatureMismatchBanner } from '../components/confirm/mmi-signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
 import { Nav } from '../components/confirm/nav';
-import { SignatureMessage } from '../components/confirm/signature-message';
 import { Title } from '../components/confirm/title';
 import { Box } from '../../../components/component-library';
 import { Content, Page } from '../../../components/multichain/pages/page';
@@ -33,7 +32,6 @@ const Confirm = () => {
         <ScrollToBottom>
           <Box padding={4}>
             <Info />
-            <SignatureMessage />
           </Box>
         </ScrollToBottom>
       </Content>

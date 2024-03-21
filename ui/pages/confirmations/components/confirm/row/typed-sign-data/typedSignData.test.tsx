@@ -1,5 +1,5 @@
 import React from 'react';
-import { unapprovedTypedSignMsg } from '../../../../../../../test/data/confirmations/typed_sign';
+import { unapprovedTypedSignMsgV4 } from '../../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../../store/store';
@@ -7,11 +7,9 @@ import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
 describe('ConfirmInfoRowTypedSignData', () => {
   const renderWithComponentData = (
-    data: string = unapprovedTypedSignMsg.msgParams.data,
+    data: string = unapprovedTypedSignMsgV4.msgParams.data,
   ) => {
-    const store = configureStore({
-      metamask: { ...mockState.metamask },
-    });
+    const store = configureStore(mockState);
 
     return renderWithProvider(
       <ConfirmInfoRowTypedSignData data={data} />,
@@ -21,7 +19,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithComponentData(
-      unapprovedTypedSignMsg.msgParams.data,
+      unapprovedTypedSignMsgV4.msgParams.data,
     );
     expect(container).toMatchSnapshot();
   });

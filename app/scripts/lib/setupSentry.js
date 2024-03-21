@@ -209,7 +209,6 @@ export const SENTRY_BACKGROUND_STATE = {
     incomingTransactionsPreferences: true,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
-    isLineaMainnetReleased: true,
     knownMethodData: false,
     ledgerTransportType: true,
     lostIdentities: false,
