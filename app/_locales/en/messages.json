@@ -1843,7 +1843,7 @@
     "description": "$1 represents the Dapp's origin"
   },
   "gasIsETH": {
-    "message": "Gas is $1"
+    "message": "Gas is $1 "
   },
   "gasLimit": {
     "message": "Gas limit"
@@ -2696,7 +2696,7 @@
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
-    "message": "The native token on this network is $1. It is the token used for gas fees.",
+    "message": "The native token on this network is $1. It is the token used for gas fees. ",
     "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {

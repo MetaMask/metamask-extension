@@ -116,7 +116,7 @@ describe('NewNetworkInfo', () => {
       expect(
         getByTestId('new-network-info__bullet-paragraph').textContent,
       ).toMatchInlineSnapshot(
-        `"Gas is ETHThe native token on this network is ETH. It is the token used for gas fees."`,
+        `"Gas is ETH The native token on this network is ETH. It is the token used for gas fees. "`,
       );
     });
 
