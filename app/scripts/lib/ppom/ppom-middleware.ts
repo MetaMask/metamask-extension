@@ -1,8 +1,13 @@
 import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
-import { Hex, Json, JsonRpcParams } from '@metamask/utils';
-import { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-engine';
+import {
+  Hex,
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 
 import {
