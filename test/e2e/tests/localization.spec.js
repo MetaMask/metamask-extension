@@ -27,7 +27,7 @@ describe('Localization', function () {
         await unlockWallet(driver);
 
         const secondaryBalance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
+          '[data-testid="eth-overview__secondary-currency"]',
         );
         const secondaryBalanceText = await secondaryBalance.getText();
         const [fiatAmount, fiatUnit] = secondaryBalanceText
