@@ -8,16 +8,6 @@ import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
 
-// const UNAVAILABLE_FIAT = -1;
-
-// function getFiatValue(bc: BalanceChange): number | typeof UNAVAILABLE_FIAT {
-//   if (bc.asset === NATIVE_ASSET) {
-
-//   }
-// }
-
-// function use
-
 /**
  * Displays a list of incoming or outgoing balance changes, along with a heading and a
  * total fiat amount.
@@ -34,7 +24,7 @@ export const BalanceChangeList: React.FC<{
   if (balanceChanges.length === 0) {
     return null; // Hide this component.
   }
-  const showIndividualFiat = balanceChanges.length === 1;
+  const showFiatSummary = balanceChanges.length > 1;
 
   return (
     <Box>
@@ -44,11 +34,11 @@ export const BalanceChangeList: React.FC<{
             key={index}
             label={index === 0 ? heading : undefined}
             balanceChange={balanceChange}
-            showFiat={showIndividualFiat}
+            showFiat={!showFiatSummary}
           />
         ))}
       </Box>
-      {balanceChanges.length > 1 && (
+      {showFiatSummary && (
         <Box display={Display.Flex} flexDirection={FlexDirection.RowReverse}>
           <TotalFiatDisplay balanceChanges={balanceChanges} />
         </Box>
