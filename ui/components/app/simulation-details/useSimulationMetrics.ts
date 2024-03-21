@@ -3,7 +3,7 @@ import { BalanceChange } from './types';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { calculateTotalFiat } from './fiat-display';
 import { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../pages/confirmations/hooks/useTransactionEventFragment';
 import {
   UseDisplayNameRequest,
@@ -24,7 +24,7 @@ export type UseSimulationMetricsProps = {
   transactionId: string;
 };
 
-enum SimulationResponseType {
+export enum SimulationResponseType {
   Failed = 'failed',
   Reverted = 'transaction_revert',
   NoChanges = 'no_balance_change',
@@ -32,19 +32,19 @@ enum SimulationResponseType {
   InProgress = 'simulation_in_progress',
 }
 
-enum AssetType {
+export enum AssetType {
   Native = 'native',
   ERC20 = 'erc20',
   ERC721 = 'erc721',
   ERC1155 = 'erc1155',
 }
 
-enum FiatType {
+export enum FiatType {
   Available = 'available',
   NotAvailable = 'not_available',
 }
 
-enum PetnameType {
+export enum PetnameType {
   Saved = 'saved',
   Default = 'default',
   Unknown = 'unknown',
@@ -166,21 +166,28 @@ function getProperties(
 ) {
   const quantity = changes.length;
 
-  const type = changes.map((change) => getAssetType(change.asset.standard));
-
-  const value = changes.map((change) =>
-    change.fiatAmount ? FiatType.Available : FiatType.NotAvailable,
+  const type = unique(
+    changes.map((change) => getAssetType(change.asset.standard)),
   );
 
-  const petname = changes.map((change) =>
-    getPetnameType(change, displayNamesByAddress[change.asset.address ?? '']),
+  const value = unique(
+    changes.map((change) =>
+      change.fiatAmount ? FiatType.Available : FiatType.NotAvailable,
+    ),
+  );
+
+  const petname = unique(
+    changes.map((change) =>
+      getPetnameType(change, displayNamesByAddress[change.asset.address ?? '']),
+    ),
   );
 
   return getPrefixProperties({ petname, quantity, type, value }, prefix);
 }
 
 function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
-  const total_value = calculateTotalFiat(changes);
+  const totalFiat = calculateTotalFiat(changes);
+  const total_value = totalFiat ? Math.abs(totalFiat) : undefined;
 
   return getPrefixProperties({ total_value }, prefix);
 }
@@ -250,4 +257,8 @@ function getSimulationResponseType(
   }
 
   return SimulationResponseType.Changes;
+}
+
+function unique<T>(list: T[]): T[] {
+  return Array.from(new Set(list));
 }
