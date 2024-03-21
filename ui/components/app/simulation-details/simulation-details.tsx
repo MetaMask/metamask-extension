@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SimulationData } from '@metamask/transaction-controller';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import {
@@ -15,9 +15,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
+import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type SimulationPreviewProps = {
   simulationData?: SimulationData;
+  transactionId: string;
 };
 
 /**
@@ -124,10 +126,21 @@ const SimulationPreviewLayout: React.FC<{
  */
 export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
   simulationData,
+  transactionId,
 }: SimulationPreviewProps) => {
   const t = useI18nContext();
+  const [loadingStart] = useState(Date.now());
+  const [loadingTime, setLoadingTime] = useState<number | undefined>();
+
   const { pending: loading, value: balanceChanges } =
     useBalanceChanges(simulationData);
+
+  useSimulationMetrics({
+    balanceChanges,
+    loadingTime,
+    simulationData,
+    transactionId,
+  });
 
   if (loading) {
     return (
@@ -135,6 +148,10 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
         inHeader={<LoadingIndicator />}
       ></SimulationPreviewLayout>
     );
+  }
+
+  if (loadingTime == null) {
+    setLoadingTime((Date.now() - loadingStart) / 1000);
   }
 
   const error = !simulationData;

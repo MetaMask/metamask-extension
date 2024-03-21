@@ -1,9 +1,67 @@
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { getMemoizedMetadataContract } from '../selectors';
+import { getMemoizedMetadataContracts } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
-import { useName } from './useName';
-import { useFirstPartyContractName } from './useFirstPartyContractName';
+import { useNames } from './useName';
+import { useFirstPartyContractNames } from './useFirstPartyContractName';
+
+export type UseDisplayNameRequest = {
+  value: string;
+  type: NameType;
+  preferContractSymbol?: boolean;
+};
+
+export type UseDisplayNameResponse = {
+  name: string | null;
+  hasPetname: boolean;
+  contractDisplayName?: string;
+};
+
+export function useDisplayNames(
+  requests: UseDisplayNameRequest[],
+): UseDisplayNameResponse[] {
+  const nameRequests = requests.map(({ value, type }) => ({
+    value,
+    type,
+  }));
+
+  const nameEntries = useNames(nameRequests);
+  const firstPartyContractNames = useFirstPartyContractNames(nameRequests);
+  const values = requests.map(({ value }) => value);
+
+  const contractInfo = useSelector((state) =>
+    (getMemoizedMetadataContracts as any)(state, values),
+  );
+
+  const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);
+
+  return requests.map(({ value, preferContractSymbol }, index) => {
+    const nameEntry = nameEntries[index];
+    const firstPartyContractName = firstPartyContractNames[index];
+    const singleContractInfo = contractInfo[index];
+    const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
+
+    const contractDisplayName =
+      preferContractSymbol && singleContractInfo?.symbol
+        ? singleContractInfo.symbol
+        : singleContractInfo?.name;
+
+    const name =
+      nameEntry?.name ||
+      firstPartyContractName ||
+      contractDisplayName ||
+      watchedNftName ||
+      null;
+
+    const hasPetname = Boolean(nameEntry?.name);
+
+    return {
+      name,
+      hasPetname,
+      contractDisplayName,
+    };
+  });
+}
 
 /**
  * Attempts to resolve the name for the given parameters.
@@ -20,35 +78,6 @@ export function useDisplayName(
   value: string,
   type: NameType,
   preferContractSymbol: boolean = false,
-): { name: string | null; hasPetname: boolean } {
-  const nameEntry = useName(value, type);
-
-  const firstPartyContractName = useFirstPartyContractName(value, type);
-
-  const contractInfo = useSelector((state) =>
-    (getMemoizedMetadataContract as any)(state, value),
-  );
-
-  const contractDisplayName =
-    preferContractSymbol && contractInfo?.symbol
-      ? contractInfo.symbol
-      : contractInfo?.name;
-
-  const watchedNftName = useSelector(getNftContractsByAddressOnCurrentChain)[
-    value.toLowerCase()
-  ]?.name;
-
-  const name =
-    nameEntry?.name ||
-    firstPartyContractName ||
-    contractDisplayName ||
-    watchedNftName ||
-    null;
-
-  const hasPetname = Boolean(nameEntry?.name);
-
-  return {
-    name,
-    hasPetname,
-  };
+): UseDisplayNameResponse {
+  return useDisplayNames([{ value, type, preferContractSymbol }])[0];
 }

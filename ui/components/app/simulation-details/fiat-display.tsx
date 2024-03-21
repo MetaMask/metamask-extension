@@ -37,6 +37,12 @@ const useFiatFormatter = () => {
   };
 };
 
+export function calculateTotalFiat(balanceChanges: BalanceChange[]): number {
+  return balanceChanges.reduce((total, { fiatAmount }) => {
+    return fiatAmount === FIAT_UNAVAILABLE ? total : total + fiatAmount;
+  }, 0);
+}
+
 /**
  * Displays the fiat value of a single balance change.
  *
@@ -65,10 +71,7 @@ export const TotalFiatDisplay: React.FC<{
 }> = ({ balanceChanges }) => {
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
-
-  const totalFiat = balanceChanges.reduce((total, { fiatAmount }) => {
-    return fiatAmount === FIAT_UNAVAILABLE ? total : total + fiatAmount;
-  }, 0);
+  const totalFiat = calculateTotalFiat(balanceChanges);
 
   return totalFiat === 0 ? (
     <FiatNotAvailableDisplay />

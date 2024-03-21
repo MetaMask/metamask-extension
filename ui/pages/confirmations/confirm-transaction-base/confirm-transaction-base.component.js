@@ -518,7 +518,10 @@ export default class ConfirmTransactionBase extends Component {
     let simulationPreview = null;
     ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     simulationPreview = (
-      <SimulationDetails simulationData={txData.simulationData} />
+      <SimulationDetails
+        simulationData={txData.simulationData}
+        transactionId={txData.id}
+      />
     );
     ///: END:ONLY_INCLUDE_IF
 

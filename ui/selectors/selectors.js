@@ -7,7 +7,7 @@ import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
 } from '@metamask/snaps-utils';
-import { memoize } from 'lodash';
+import { add, memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
 import { createSelector } from 'reselect';
@@ -1155,6 +1155,18 @@ export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
 export const getMemoizedAddressBook = createDeepEqualSelector(
   getAddressBook,
   (addressBook) => addressBook,
+);
+
+export const getMemoizedMetadataContracts = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, addresses) => addresses,
+  (tokenList, addresses) => {
+    return addresses.map((address) =>
+      Object.values(tokenList).find((identity) =>
+        isEqualCaseInsensitive(identity.address, address),
+      ),
+    );
+  },
 );
 
 export const getMemoizedMetadataContract = createDeepEqualSelector(

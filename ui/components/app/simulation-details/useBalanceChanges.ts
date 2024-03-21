@@ -145,12 +145,13 @@ export const useBalanceChanges = (
   const nativeFiatRate = useSelector(getConversionRate);
   const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
+  const erc20Addresses = tokenBalanceChanges
+    .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
+    .map((tbc) => tbc.address.toLowerCase() as Hex);
+
   const erc20Decimals = useAsyncResultOrThrow(() => {
-    const erc20Addresses = tokenBalanceChanges
-      .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
-      .map((tbc) => tbc.address.toLowerCase() as Hex);
     return fetchErc20Decimals(erc20Addresses);
-  }, [tokenBalanceChanges]);
+  }, [JSON.stringify(erc20Addresses)]);
 
   if (erc20Decimals.pending) {
     return { pending: true, value: [] };
