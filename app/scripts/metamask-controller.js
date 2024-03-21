@@ -313,6 +313,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
   // TODO: Add this and similar enums to the `controllers` repo and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
+  QUEUED_REQUEST_STATE_CHANGE: 'QueuedRequestController:stateChange',
 };
 
 // stream channels
@@ -405,6 +406,11 @@ export default class MetamaskController extends EventEmitter {
     this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'QueuedRequestController',
+        allowedActions: [
+          'NetworkController:getState',
+          'NetworkController:setActiveNetwork',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+        ],
       }),
     });
 
@@ -1582,7 +1588,14 @@ export default class MetamaskController extends EventEmitter {
         updateTransactions: false,
       },
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-      isSimulationEnabled: () => false,
+      isSimulationEnabled: () => {
+        let enabled = false;
+        ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+        // Only support transaction simulation on mainnet.
+        enabled = true;
+        ///: END:ONLY_INCLUDE_IF
+        return enabled;
+      },
       messenger: transactionControllerMessenger,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
@@ -4839,7 +4852,9 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
-      messenger: this.controllerMessenger,
+      enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
+        this.queuedRequestController,
+      ),
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetBalanceText matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+    title="undefined"
+  >
+    <span
+      class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-textColor"
+    >
+      prefix-fiat value
+    </span>
+    <span
+      class="mm-box mm-text currency-display-component__suffix mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-textColor"
+    >
+      suffix
+    </span>
+  </div>
+</DocumentFragment>
+`;

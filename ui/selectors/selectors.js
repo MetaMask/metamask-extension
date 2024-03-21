@@ -717,6 +717,9 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getSendInputCurrencySwitched({ appState }) {
+  return appState.sendInputCurrencySwitched;
+}
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
