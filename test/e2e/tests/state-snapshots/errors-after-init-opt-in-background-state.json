@@ -177,7 +177,6 @@
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
     "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
