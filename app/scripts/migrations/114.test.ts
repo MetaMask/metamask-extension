@@ -82,5 +82,4 @@ describe('migration #114', () => {
     const newStorage = await migrate(oldStorage);
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
-
 });

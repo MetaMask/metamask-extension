@@ -1,6 +1,5 @@
-import { hasProperty, isObject } from '@metamask/utils';
-import { captureException } from '@sentry/browser';
 import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -10,7 +9,7 @@ type VersionedData = {
 export const version = 113;
 
 /**
- * Remove preferences controller `isLineaMainnetReleased` state.
+ * This migration sets preference securityAlertsEnabled to true if transactionSecurityCheckEnabled is true and removes transactionSecurityCheckEnabled
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -27,22 +26,29 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(
-  state: Record<string, unknown>,
-): Record<string, unknown> {
-  if (
-    !hasProperty(state, 'PreferencesController') ||
-    !isObject(state.PreferencesController)
-  ) {
-    captureException(
-      `Migration ${version}: Invalid PreferencesController state: ${typeof state.PreferencesController}`,
-    );
-
+function transformState(state: Record<string, any>) {
+  if (!hasProperty(state, 'PreferencesController')) {
     return state;
   }
 
-  if (hasProperty(state.PreferencesController, 'isLineaMainnetReleased')) {
-    delete state.PreferencesController.isLineaMainnetReleased;
+  if (!isObject(state.PreferencesController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController is type: ${typeof state.PreferencesController}`,
+      ),
+    );
+    state.PreferencesController = {};
+  } else if (
+    !hasProperty(state.PreferencesController, 'transactionSecurityCheckEnabled')
+  ) {
+    delete state.PreferencesController.transactionSecurityCheckEnabled;
   }
+
+  if (state.PreferencesController.transactionSecurityCheckEnabled) {
+    state.PreferencesController.securityAlertsEnabled = true;
+  }
+
+  delete state.PreferencesController.transactionSecurityCheckEnabled;
+
   return state;
 }
