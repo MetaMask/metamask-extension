@@ -11,6 +11,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
+import { normalizePPOMRequest } from './ppom-util';
 
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,7 +83,12 @@ export function createPPOMMiddleware(
         ppomController
           .usePPOM(async (ppom: PPOM) => {
             try {
-              const securityAlertResponse = await ppom.validateJsonRpc(req);
+              const normalizedRequest = normalizePPOMRequest(req);
+
+              const securityAlertResponse = await ppom.validateJsonRpc(
+                normalizedRequest,
+              );
+
               securityAlertResponse.securityAlertId = securityAlertId;
               return securityAlertResponse;
               // TODO: Replace `any` with type

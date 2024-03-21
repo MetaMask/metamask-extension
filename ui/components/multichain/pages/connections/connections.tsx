@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,6 +24,7 @@ import {
   getInternalAccounts,
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
+  getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
 } from '../../../../selectors';
@@ -48,8 +50,19 @@ import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import { AccountListItem, AccountListItemMenuTypes } from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
-import { requestAccountsPermissionWithId } from '../../../../store/actions';
-import { AccountType, ConnectedSites } from './components/connections.types';
+import {
+  requestAccountsPermissionWithId,
+  removePermissionsFor,
+} from '../../../../store/actions';
+import {
+  DisconnectAllModal,
+  DisconnectType,
+} from '../../disconnect-all-modal/disconnect-all-modal';
+import {
+  AccountType,
+  ConnectedSites,
+  SubjectsType,
+} from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
@@ -58,8 +71,9 @@ export const Connections = () => {
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
+  const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -83,7 +97,7 @@ export const Connections = () => {
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as { [key: string]: any[] };
-
+  const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
   // TODO: Replace `any` with type
@@ -101,6 +115,30 @@ export const Connections = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
+  const disconnectAllAccounts = () => {
+    const subject = (subjects as SubjectsType)[activeTabOrigin];
+
+    if (subject) {
+      const permissionMethodNames = Object.values(subject.permissions).map(
+        ({ parentCapability }: { parentCapability: string }) =>
+          parentCapability,
+      ) as string[];
+      if (permissionMethodNames.length > 0) {
+        const permissionsRecord: Record<string, string[]> = {
+          [activeTabOrigin]: permissionMethodNames,
+        };
+
+        dispatch(
+          removePermissionsFor(
+            permissionsRecord as Record<string, NonEmptyArray<string>>,
+          ),
+        );
+      }
+
+      setShowDisconnectAllModal(false);
+    }
+  };
 
   return (
     <Page data-testid="connections-page" className="connections-page">
@@ -192,6 +230,14 @@ export const Connections = () => {
             onClose={() => setShowConnectAccountsModal(false)}
           />
         ) : null}
+        {showDisconnectAllModal ? (
+          <DisconnectAllModal
+            type={DisconnectType.Account}
+            hostname={activeTabOrigin}
+            onClose={() => setShowDisconnectAllModal(false)}
+            onClick={() => disconnectAllAccounts()}
+          />
+        ) : null}
       </Content>
       <Footer>
         {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
@@ -217,6 +263,7 @@ export const Connections = () => {
               variant={ButtonVariant.Secondary}
               startIconName={IconName.Logout}
               danger
+              onClick={() => setShowDisconnectAllModal(true)}
             >
               {t('disconnectAllAccounts')}
             </Button>

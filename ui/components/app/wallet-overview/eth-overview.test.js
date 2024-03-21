@@ -172,7 +172,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('$0.00USD');
+      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -203,7 +203,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('$0.02USD');
+      expect(primaryBalance).toHaveTextContent('0.0104ETH');
       expect(queryByText('*')).toBeInTheDocument();
     });
 
