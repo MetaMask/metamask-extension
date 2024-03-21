@@ -27,6 +27,7 @@ import {
 const NATIVE_ASSET: NativeAssetIdentifier = { standard: TokenStandard.none };
 const NATIVE_DECIMALS = 18;
 const ERC20_DEFAULT_DECIMALS = 18;
+const EMPTY_TOKEN_BALANCE_CHANGES: SimulationTokenBalanceChange[] = [];
 
 // Converts a SimulationTokenStandard to a TokenStandard
 const convertStandard = (standard: SimulationTokenStandard) => {
@@ -141,7 +142,7 @@ export const useBalanceChanges = (
   const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData ?? {
-    tokenBalanceChanges: [],
+    tokenBalanceChanges: EMPTY_TOKEN_BALANCE_CHANGES,
     nativeBalanceChange: undefined,
   };
 
