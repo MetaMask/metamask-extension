@@ -142,6 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added badge status indicators in the Account List ([#23006](https://github.com/MetaMask/metamask-extension/pull/23006))
 - Enhanced site connections with account avatar groups and a new account group for non-snap items ([#23080](https://github.com/MetaMask/metamask-extension/pull/23080))
 - Implemented updated Linea gas fee estimates for more accurate transaction costs ([#22918](https://github.com/MetaMask/metamask-extension/pull/22918))
+- Introduced a new Palm network logo with support for both light and dark modes ([#23191](https://github.com/MetaMask/metamask-extension/pull/23191))
 
 ### Changed
 - Removed Goerli network from settings and added warning modal for manual attempts to add it ([#22995](https://github.com/MetaMask/metamask-extension/pull/22995))
