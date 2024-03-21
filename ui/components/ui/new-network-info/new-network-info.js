@@ -12,6 +12,7 @@ import {
   Display,
   FlexDirection,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -34,6 +35,7 @@ import {
 } from '../../component-library';
 import Popover from '../popover';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function NewNetworkInfo() {
   const t = useContext(I18nContext);
@@ -81,7 +83,7 @@ export default function NewNetworkInfo() {
           <>
             <Button
               variant="secondary"
-              href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+              href={ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS}
               externalLink
               rel="noreferrer"
               size={ButtonPrimarySize.Md}
@@ -100,7 +102,7 @@ export default function NewNetworkInfo() {
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"
-                color={Color.textDefault}
+                color={TextColor.textDefault}
               >
                 {t('recoveryPhraseReminderConfirm')}
               </Text>
@@ -153,14 +155,14 @@ export default function NewNetworkInfo() {
                   <Text
                     variant={TextVariant.bodySmBold}
                     as="h6"
-                    color={Color.textDefault}
+                    color={TextColor.textDefault}
                   >
                     {t('gasIsETH', [providerConfig.ticker])}
                   </Text>
                   <Text
                     variant={TextVariant.bodySm}
                     as="h6"
-                    color={Color.textDefault}
+                    color={TextColor.textDefault}
                     display={Display.InlineBlock}
                     key="nativeTokenInfo"
                   >
@@ -183,7 +185,7 @@ export default function NewNetworkInfo() {
                 <Text
                   variant={TextVariant.bodySmBold}
                   as="h6"
-                  color={Color.textDefault}
+                  color={TextColor.textDefault}
                 >
                   {t('bridgeDontSend')}
                 </Text>
@@ -208,7 +210,7 @@ export default function NewNetworkInfo() {
                           <Text
                             variant={TextVariant.bodySm}
                             as="h6"
-                            color={Color.infoDefault}
+                            color={TextColor.infoDefault}
                             className="new-network-info__button"
                           >
                             {t('metamaskPortfolio')}
@@ -236,7 +238,7 @@ export default function NewNetworkInfo() {
                   <Text
                     variant={TextVariant.bodySmBold}
                     as="h6"
-                    color={Color.textDefault}
+                    color={TextColor.textDefault}
                   >
                     {t('addingTokens')}
                   </Text>
