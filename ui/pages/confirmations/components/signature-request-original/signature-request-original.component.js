@@ -54,8 +54,6 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
@@ -91,14 +89,14 @@ export default class SignatureRequestOriginal extends Component {
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     warnings: PropTypes.array,
     ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     showSignatureRequestWarning: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     showSignatureInsights: false,
     ///: END:ONLY_INCLUDE_IF
   };
@@ -306,7 +304,7 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -332,7 +330,7 @@ export default class SignatureRequestOriginal extends Component {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             return this.setState({ showSignatureRequestWarning: true });
           }
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }
@@ -376,7 +374,7 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -404,7 +402,7 @@ export default class SignatureRequestOriginal extends Component {
             senderAddress={address}
             name={name}
             onSubmit={async () => {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(snaps)
               if (warnings?.length >= 1) {
                 return this.setState({
                   showSignatureInsights: true,
@@ -418,7 +416,7 @@ export default class SignatureRequestOriginal extends Component {
           />
         )}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         }
         {this.state.showSignatureInsights && (
           <InsightWarnings
