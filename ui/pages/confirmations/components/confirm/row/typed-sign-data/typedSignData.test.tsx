@@ -9,9 +9,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
   const renderWithComponentData = (
     data: string = unapprovedTypedSignMsgV4.msgParams.data,
   ) => {
-    const store = configureStore({
-      metamask: { ...mockState.metamask },
-    });
+    const store = configureStore(mockState);
 
     return renderWithProvider(
       <ConfirmInfoRowTypedSignData data={data} />,
