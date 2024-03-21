@@ -1003,6 +1003,8 @@ export default class ConfirmTransactionBase extends Component {
       }
     });
 
+    window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
+
     if (smartTransactionsOptInStatus && isAllowedStxChainId) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
@@ -1010,8 +1012,6 @@ export default class ConfirmTransactionBase extends Component {
       await setSwapsFeatureFlags(swapsFeatureFlags);
       await fetchSmartTransactionsLiveness();
     }
-
-    window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
   }
 
   componentWillUnmount() {
