@@ -319,13 +319,6 @@ export const NetworkListMenu = ({ onClose }) => {
                       ref={provided.innerRef}
                     >
                       {searchResults.map((network, index) => {
-                        if (
-                          !lineaMainnetReleased &&
-                          network.providerType === 'linea-mainnet'
-                        ) {
-                          return null;
-                        }
-
                         const isCurrentNetwork =
                           currentNetwork.id === network.id;
 
