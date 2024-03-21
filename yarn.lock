@@ -4147,9 +4147,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/controller-utils@npm:9.0.1"
+"@metamask/controller-utils@npm:^9.0.1, @metamask/controller-utils@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "@metamask/controller-utils@npm:9.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
@@ -4160,7 +4160,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 9bee25c1e846e7cecbc0188ec57810461ee618eb0f869afd0d39a297bdcb78594e101753e1b085db68f0949fd4b3986ebc4863763128af0283ac8fab01322fea
+  checksum: edf8f23d349da01bb9e9906bc2825612eaa422f5c13d19b820ee84c3366d79900f9cd98e6e89b02b9ffd241510c1d7615b99b4263ce79a43d88ad4dffdb028f7
   languageName: node
   linkType: hard
 
@@ -5640,18 +5640,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^25.0.0, @metamask/transaction-controller@npm:^25.1.0":
-  version: 25.1.0
-  resolution: "@metamask/transaction-controller@npm:25.1.0"
+"@metamask/transaction-controller@npm:^25.1.0, @metamask/transaction-controller@npm:^25.2.0":
+  version: 25.2.0
+  resolution: "@metamask/transaction-controller@npm:25.2.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/approval-controller": "npm:^6.0.1"
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^9.0.2"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/gas-fee-controller": "npm:^14.0.1"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
@@ -5670,7 +5669,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.0
     "@metamask/gas-fee-controller": ^14.0.0
     "@metamask/network-controller": ^18.0.0
-  checksum: 45ef39db7a99f4d41d8edd79995029890c0cbad12bec0c716824f5f21659a097386ce53bef1a37cdf99b9086f3fe71be2d22a1d8f20ffffe4a5df6ad1b496c90
+  checksum: 83db5bb73017fee80ddde54666841bcbe59afd1e7ad2257d9faa5635b953e7c1349a5499056606d104238a41500742abec9be1ad4a672a9753649324c06ebb90
   languageName: node
   linkType: hard
 
@@ -24846,7 +24845,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.3.0"
-    "@metamask/transaction-controller": "npm:^25.0.0"
+    "@metamask/transaction-controller": "npm:^25.2.0"
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"

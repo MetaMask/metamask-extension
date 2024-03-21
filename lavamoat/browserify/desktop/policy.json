@@ -2518,6 +2518,7 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
+        "fetch": true,
         "setTimeout": true
       },
       "packages": {
@@ -2525,7 +2526,6 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
-        "@ethersproject/providers": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
