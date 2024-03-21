@@ -4361,6 +4361,9 @@
   "simulationPreviewTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
   },
+  "simulationPreviewTransactionReverted": {
+    "message": "This transaction is likely to fail"
+  },
   "siteConnections": {
     "message": "Site Connections"
   },

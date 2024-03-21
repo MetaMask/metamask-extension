@@ -1,5 +1,8 @@
 import React from 'react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationError,
+} from '@metamask/transaction-controller';
 import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
@@ -7,6 +10,7 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -31,9 +35,20 @@ const LoadingIndicator: React.FC = () => {
 
 /**
  * Content when simulation has failed.
+ *
+ * @param props
+ * @param props.error
  */
-const ErrorContent: React.FC = () => {
+const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
   const t = useI18nContext();
+
+  function getMessage() {
+    if (error.isReverted) {
+      return t('simulationPreviewTransactionReverted');
+    }
+    return t('simulationPreviewFailed');
+  }
+
   return (
     <Text
       color={TextColor.warningDefault}
@@ -42,7 +57,7 @@ const ErrorContent: React.FC = () => {
       alignItems={AlignItems.flexStart}
     >
       <Icon name={IconName.Warning} marginInlineEnd={1} />
-      {t('simulationPreviewFailed')}
+      {getMessage()}
     </Text>
   );
 };
@@ -77,16 +92,18 @@ const HeaderLayout: React.FC = ({ children }) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
-      gap={1}
+      justifyContent={JustifyContent.spaceBetween}
     >
-      <Text variant={TextVariant.bodyMdMedium}>
-        {t('simulationPreviewTitle')}
-      </Text>
-      <InfoTooltip
-        position="right"
-        iconFillColor="var(--color-icon-muted)"
-        contentText={t('simulationPreviewTitleTooltip')}
-      />
+      <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
+        <Text variant={TextVariant.bodyMdMedium}>
+          {t('simulationPreviewTitle')}
+        </Text>
+        <InfoTooltip
+          position="right"
+          iconFillColor="var(--color-icon-muted)"
+          contentText={t('simulationPreviewTitleTooltip')}
+        />
+      </Box>
       {children}
     </Box>
   );
@@ -126,9 +143,9 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
   simulationData,
 }: SimulationPreviewProps) => {
   const t = useI18nContext();
-  const { pending: loading, value: balanceChanges } =
-    useBalanceChanges(simulationData);
+  const balanceChangesResult = useBalanceChanges(simulationData);
 
+  const loading = !simulationData || balanceChangesResult.pending;
   if (loading) {
     return (
       <SimulationPreviewLayout
@@ -137,15 +154,16 @@ export const SimulationDetails: React.FC<SimulationPreviewProps> = ({
     );
   }
 
-  const error = !simulationData;
+  const { error } = simulationData;
   if (error) {
     return (
       <SimulationPreviewLayout>
-        <ErrorContent />
+        <ErrorContent error={error} />
       </SimulationPreviewLayout>
     );
   }
 
+  const balanceChanges = balanceChangesResult.value;
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (

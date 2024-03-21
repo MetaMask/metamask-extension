@@ -137,13 +137,13 @@ const getTokenToFiatConversionRates = createSelector(
 export const useBalanceChanges = (
   simulationData?: SimulationData,
 ): { pending: boolean; value: BalanceChange[] } => {
+  const nativeFiatRate = useSelector(getConversionRate);
+  const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
+
   if (!simulationData) {
     return { pending: false, value: [] };
   }
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
-
-  const nativeFiatRate = useSelector(getConversionRate);
-  const tokenFiatRates = useSelector(getTokenToFiatConversionRates);
 
   const erc20Decimals = useAsyncResultOrThrow(() => {
     const erc20Addresses = tokenBalanceChanges

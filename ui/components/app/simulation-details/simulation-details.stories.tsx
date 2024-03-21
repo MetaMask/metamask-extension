@@ -6,6 +6,7 @@ import { SimulationDetails } from './simulation-details';
 import mockState from '../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
+import { NameType } from '@metamask/name-controller';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -60,6 +61,15 @@ const storeMock = configureStore({
           `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `
       }
     },
+    names: {
+      [NameType.ETHEREUM_ADDRESS]: {
+        [ERC20_TOKEN_2_MOCK]: {
+          [CHAIN_ID_MOCK]: {
+            name: 'USDC with a saved name',
+          },
+        },
+      },
+    },
   },
 });
 
@@ -72,7 +82,7 @@ const meta: Meta<typeof SimulationDetails> = {
 export default meta;
 type Story = StoryObj<typeof SimulationDetails>;
 
-export const BuyMultipleTokens: Story = {
+export const MultipleTokens: Story = {
   args: {
     simulationData: {
       nativeBalanceChange: {
@@ -112,7 +122,7 @@ export const BuyMultipleTokens: Story = {
 };
 
 
-export const PositiveNativeChange: Story = {
+export const ReceiveOnly: Story = {
   args: {
     simulationData: {
       nativeBalanceChange: {
@@ -126,7 +136,7 @@ export const PositiveNativeChange: Story = {
   },
 };
 
-export const NegativeNativeChange: Story = {
+export const SendOnly: Story = {
   args: {
     simulationData: {
       nativeBalanceChange: {
@@ -149,6 +159,29 @@ export const NoBalanceChanges: Story = {
   },
 };
 
+
+export const Loading: Story = {
+  args: {
+    simulationData: undefined,
+  },
+}
+
+export const TransactionReverted: Story = {
+  args: {
+    simulationData: {
+      error: { isReverted: true },
+      nativeBalanceChange: undefined,
+      tokenBalanceChanges: [],
+    },
+  },
+}
+
 export const SimulationFailed: Story = {
-  args: {},
+  args: {
+    simulationData: {
+      error: { isReverted: false },
+      nativeBalanceChange: undefined,
+      tokenBalanceChanges: [],
+    },
+  },
 }
