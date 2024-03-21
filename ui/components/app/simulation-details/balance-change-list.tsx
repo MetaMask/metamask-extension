@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box } from '../../component-library';
 import {
   Display,
@@ -21,6 +21,10 @@ export const BalanceChangeList: React.FC<{
   heading: string;
   balanceChanges: BalanceChange[];
 }> = ({ heading, balanceChanges }) => {
+  const fiatAmounts = useMemo(() => {
+    return balanceChanges.map((bc) => bc.fiatAmount);
+  }, [balanceChanges]);
+
   if (balanceChanges.length === 0) {
     return null; // Hide this component.
   }
@@ -40,7 +44,7 @@ export const BalanceChangeList: React.FC<{
       </Box>
       {showFiatTotal && (
         <Box display={Display.Flex} flexDirection={FlexDirection.RowReverse}>
-          <TotalFiatDisplay balanceChanges={balanceChanges} />
+          <TotalFiatDisplay fiatAmounts={fiatAmounts} />
         </Box>
       )}
     </Box>

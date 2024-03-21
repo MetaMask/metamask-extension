@@ -29,8 +29,8 @@ describe('BalanceChangeList', () => {
 
   describe('multiple balance changes', () => {
     const balanceChanges = [
-      { asset: { address: '0x123' } },
-      { asset: { address: '0x456' } },
+      { asset: { address: '0x123' }, fiatAmount: 100 },
+      { asset: { address: '0x456' }, fiatAmount: 200 },
     ] as unknown as BalanceChange[];
 
     it('renders BalanceChangeRow components without fiat', () => {
@@ -64,7 +64,7 @@ describe('BalanceChangeList', () => {
       );
 
       expect(TotalFiatDisplay).toHaveBeenCalledWith(
-        expect.objectContaining({ balanceChanges }),
+        expect.objectContaining({ fiatAmounts: [100, 200] }),
         expect.anything(),
       );
     });
