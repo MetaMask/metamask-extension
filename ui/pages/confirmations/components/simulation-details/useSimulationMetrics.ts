@@ -1,20 +1,20 @@
 import { SimulationData } from '@metamask/transaction-controller';
-import { BalanceChange } from './types';
-import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { calculateTotalFiat } from './fiat-display';
 import { useContext, useEffect, useState } from 'react';
-import { useTransactionEventFragment } from '../../../../pages/confirmations/hooks/useTransactionEventFragment';
+import { NameType } from '@metamask/name-controller';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
   UseDisplayNameRequest,
   UseDisplayNameResponse,
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
-import { NameType } from '@metamask/name-controller';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { calculateTotalFiat } from './fiat-display';
+import { BalanceChange } from './types';
 
 export type UseSimulationMetricsProps = {
   balanceChanges: BalanceChange[];
@@ -85,12 +85,12 @@ export function useSimulationMetrics({
     (change) => change.amount.isNegative,
   );
 
-  const simulation_response = getSimulationResponseType(simulationData);
-  const simulation_latency = loadingTime;
+  const simulationResponse = getSimulationResponseType(simulationData);
+  const simulationLatency = loadingTime;
 
   const properties = {
-    simulation_response,
-    simulation_latency,
+    simulation_response: simulationResponse,
+    simulation_latency: simulationLatency,
     ...getProperties(
       receivingAssets,
       'simulation_receiving_assets_',
@@ -184,9 +184,9 @@ function getProperties(
 function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
   const fiatAmounts = changes.map((change) => change.fiatAmount);
   const totalFiat = calculateTotalFiat(fiatAmounts);
-  const total_value = totalFiat ? Math.abs(totalFiat) : undefined;
+  const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
-  return getPrefixProperties({ total_value }, prefix);
+  return getPrefixProperties({ total_value: totalValue }, prefix);
 }
 
 function getPrefixProperties(properties: Record<string, any>, prefix: string) {
@@ -201,14 +201,14 @@ function getPrefixProperties(properties: Record<string, any>, prefix: string) {
 
 function getAssetType(standard: TokenStandard) {
   switch (standard) {
-    case TokenStandard.none:
-      return AssetType.Native;
     case TokenStandard.ERC20:
       return AssetType.ERC20;
     case TokenStandard.ERC721:
       return AssetType.ERC721;
     case TokenStandard.ERC1155:
       return AssetType.ERC1155;
+    default:
+      return AssetType.Native;
   }
 }
 

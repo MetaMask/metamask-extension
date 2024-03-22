@@ -1,13 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import { useTransactionEventFragment } from '../../../../pages/confirmations/hooks/useTransactionEventFragment';
-import {
-  AssetType,
-  FiatType,
-  PetnameType,
-  useSimulationMetrics,
-} from './useSimulationMetrics';
 import { SimulationData } from '@metamask/transaction-controller';
-import { BalanceChange } from './types';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
   UseDisplayNameResponse,
@@ -17,6 +10,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { BalanceChange } from './types';
+import {
+  AssetType,
+  FiatType,
+  PetnameType,
+  useSimulationMetrics,
+} from './useSimulationMetrics';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -138,7 +138,7 @@ describe('useSimulationMetrics', () => {
       ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
     ])(
       'with simulation response if %s',
-      (_, simulationData, simulation_response) => {
+      (_, simulationData, simulationResponse) => {
         useDisplayNamesMock.mockReset();
         useDisplayNamesMock.mockReturnValue([]);
 
@@ -148,7 +148,7 @@ describe('useSimulationMetrics', () => {
           },
           expect.objectContaining({
             properties: expect.objectContaining({
-              simulation_response,
+              simulation_response: simulationResponse,
             }),
           }),
         );

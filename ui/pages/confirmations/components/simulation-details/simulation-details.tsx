@@ -3,7 +3,12 @@ import {
   SimulationData,
   SimulationError,
 } from '@metamask/transaction-controller';
-import { Box, Icon, IconName, Text } from '../../../../components/component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  Text,
+} from '../../../../components/component-library';
 import {
   AlignItems,
   BorderColor,
@@ -153,7 +158,7 @@ function useLoadingTime() {
   const [loadingTime, setLoadingTime] = useState<number | undefined>();
 
   const setLoadingComplete = () => {
-    if (loadingTime == null) {
+    if (loadingTime === null) {
       setLoadingTime((Date.now() - loadingStart) / 1000);
     }
   };
@@ -166,6 +171,7 @@ function useLoadingTime() {
  *
  * @param props
  * @param props.simulationData - The simulation data to display.
+ * @param props.transactionId - The ID of the transaction being simulated.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
