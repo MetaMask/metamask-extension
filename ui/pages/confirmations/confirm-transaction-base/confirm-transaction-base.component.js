@@ -64,9 +64,7 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
-///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
 import { SimulationDetails } from '../../../components/app/simulation-details';
-///: END:ONLY_INCLUDE_IF
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -515,15 +513,13 @@ export default class ConfirmTransactionBase extends Component {
         />
       </div>
     );
-    let simulationDetails = null;
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-    simulationDetails = (
+
+    const simulationDetails = (
       <SimulationDetails
         simulationData={txData.simulationData}
         transactionId={txData.id}
       />
     );
-    ///: END:ONLY_INCLUDE_IF
 
     return (
       <div className="confirm-page-container-content__details">
