@@ -261,10 +261,10 @@ const render = async ({ props, state } = {}) => {
 
   await act(
     async () =>
-    (result = renderWithProvider(
-      <ConfirmTransactionBase {...componentProps} />,
-      store,
-    )),
+      (result = renderWithProvider(
+        <ConfirmTransactionBase {...componentProps} />,
+        store,
+      )),
   );
 
   return result;
