@@ -2,18 +2,18 @@ const fs = require('fs');
 
 const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
 
-const CDN_CONFIG_PATH = 'test/e2e/tests/mock-cdn/cdn-config.txt';
-const CDN_STALE_DIFF_PATH = 'test/e2e/tests/mock-cdn/cdn-stale-diff.txt';
-const CDN_STALE_PATH = 'test/e2e/tests/mock-cdn/cdn-stale.txt';
-const PPOM_VERSION_PATH = 'test/e2e/tests/mock-cdn/ppom-version.json';
-const PPOM_VERSION_HEADERS_PATH = 'test/e2e/tests/mock-cdn/ppom-version-headers.json';
+const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
+const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
+const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
+const PPOM_VERSION_PATH = 'test/e2e/mock-cdn/ppom-version.json';
+const PPOM_VERSION_HEADERS_PATH = 'test/e2e/mock-cdn/ppom-version-headers.json';
 
 const CDN_CONFIG_RES_HEADERS_PATH =
-  'test/e2e/tests/mock-cdn/cdn-config-res-headers.json';
+  'test/e2e/mock-cdn/cdn-config-res-headers.json';
 const CDN_STALE_DIFF_RES_HEADERS_PATH =
-  'test/e2e/tests/mock-cdn/cdn-stale-diff-res-headers.json';
+  'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
 const CDN_STALE_RES_HEADERS_PATH =
-  'test/e2e/tests/mock-cdn/cdn-stale-res-headers.json';
+  'test/e2e/mock-cdn/cdn-stale-res-headers.json';
 
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
