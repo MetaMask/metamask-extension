@@ -20,6 +20,12 @@ const FiatNotAvailableDisplay: React.FC = () => {
   return <Text {...textStyle}>{t('simulationDetailsFiatNotAvailable')}</Text>;
 };
 
+export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
+  return fiatAmounts.reduce((total: number, fiat) => {
+    return total + (fiat === FIAT_UNAVAILABLE ? 0 : fiat);
+  }, 0);
+}
+
 /**
  * Displays the fiat value of a single balance change.
  *
@@ -49,10 +55,7 @@ export const TotalFiatDisplay: React.FC<{
 }> = ({ fiatAmounts }) => {
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
-
-  const totalFiat = fiatAmounts.reduce((total: number, fiat) => {
-    return total + (fiat === FIAT_UNAVAILABLE ? 0 : fiat);
-  }, 0);
+  const totalFiat = calculateTotalFiat(fiatAmounts);
 
   return totalFiat === 0 ? (
     <FiatNotAvailableDisplay />

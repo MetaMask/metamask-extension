@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SimulationData,
   SimulationError,
@@ -24,9 +24,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
+import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
+  transactionId: string;
 };
 
 /**
@@ -151,19 +153,42 @@ const SimulationDetailsLayout: React.FC<{
   </Box>
 );
 
+function useLoadingTime() {
+  const [loadingStart] = useState(Date.now());
+  const [loadingTime, setLoadingTime] = useState<number | undefined>();
+
+  const setLoadingComplete = () => {
+    if (loadingTime === undefined) {
+      setLoadingTime((Date.now() - loadingStart) / 1000);
+    }
+  };
+
+  return { loadingTime, setLoadingComplete };
+}
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
  * @param props
  * @param props.simulationData - The simulation data to display.
+ * @param props.transactionId - The ID of the transaction being simulated.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
+  transactionId,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
+  const { loadingTime, setLoadingComplete } = useLoadingTime();
   const balanceChangesResult = useBalanceChanges(simulationData);
-
   const loading = !simulationData || balanceChangesResult.pending;
+
+  useSimulationMetrics({
+    balanceChanges: balanceChangesResult.value,
+    loadingTime,
+    simulationData: simulationData as SimulationData,
+    transactionId,
+  });
+
   if (loading) {
     return (
       <SimulationDetailsLayout
@@ -171,6 +196,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       ></SimulationDetailsLayout>
     );
   }
+
+  setLoadingComplete();
 
   const { error } = simulationData;
   if (error) {

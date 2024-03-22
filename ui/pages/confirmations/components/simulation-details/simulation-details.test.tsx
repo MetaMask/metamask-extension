@@ -19,9 +19,14 @@ jest.mock('./balance-change-list', () => ({
   BalanceChangeList: jest.fn(() => null),
 }));
 
+jest.mock('./useSimulationMetrics');
+
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
-    <SimulationDetails simulationData={simulationData as SimulationData} />,
+    <SimulationDetails
+      simulationData={simulationData as SimulationData}
+      transactionId="testTransactionId"
+    />,
     store,
   );
 
