@@ -20,7 +20,8 @@ import { TotalFiatDisplay } from './fiat-display';
 export const BalanceChangeList: React.FC<{
   heading: string;
   balanceChanges: BalanceChange[];
-}> = ({ heading, balanceChanges }) => {
+  testId?: string;
+}> = ({ heading, balanceChanges, testId }) => {
   const fiatAmounts = useMemo(() => {
     return balanceChanges.map((bc) => bc.fiatAmount);
   }, [balanceChanges]);
@@ -32,7 +33,12 @@ export const BalanceChangeList: React.FC<{
 
   return (
     <Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+      <Box
+        data-testid={testId}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={3}
+      >
         {balanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
             key={index}

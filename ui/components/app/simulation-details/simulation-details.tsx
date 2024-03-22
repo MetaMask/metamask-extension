@@ -195,10 +195,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}
+          testId='simulation-rows-outgoing'
         />
         <BalanceChangeList
           heading={t('simulationDetailsIncomingHeading')}
           balanceChanges={incoming}
+          testId='simulation-rows-incoming'
         />
       </Box>
     </SimulationDetailsLayout>
