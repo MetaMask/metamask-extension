@@ -50,7 +50,7 @@ export const unapprovedTypedSignMsgV3 = {
   },
 };
 
-const rawMessageV4 = {
+export const rawMessageV4 = {
   domain: {
     chainId: 97,
     name: 'Ether Mail',
