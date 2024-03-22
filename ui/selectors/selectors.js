@@ -97,6 +97,9 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  NOTIFICATION_SIMULATIONS,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1542,6 +1545,9 @@ function getAllowedAnnouncementIds(state) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
     [NOTIFICATION_PORTFOLIO_V2]: true,
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    [NOTIFICATION_SIMULATIONS]: true,
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 
