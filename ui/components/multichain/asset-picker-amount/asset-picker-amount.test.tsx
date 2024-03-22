@@ -30,7 +30,7 @@ describe('AssetPickerAmount', () => {
             asset: {
               balance: '0x3635c9adc5dea00000',
               type: AssetType.NFT,
-              // Replace `any` with type
+              // TODO: Replace `any` with type
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               error: null as any,
               details: {

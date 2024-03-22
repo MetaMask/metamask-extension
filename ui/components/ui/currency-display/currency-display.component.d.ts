@@ -16,13 +16,13 @@ export type CurrencyDisplayProps = OverridingUnion<
     prefixComponent?: ReactElement;
     suffix?: string | boolean;
     value?: string;
-    // Replace `any` with type
+    // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prefixComponentWrapperProps?: Record<string, any>;
-    // Replace `any` with type
+    // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     textProps?: Record<string, any>;
-    // Replace `any` with type
+    // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     suffixProps?: Record<string, any>;
   }

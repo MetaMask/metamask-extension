@@ -26,7 +26,7 @@ const mockRowConfigs: ConfirmInfoRowConfig[] = [
 ];
 
 describe('ConfirmInfo', () => {
-  // Replace `any` with type
+  // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (storeOverrides: Record<string, any> = {}) => {
     const store = configureStore({

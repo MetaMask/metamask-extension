@@ -8,7 +8,7 @@ describe('confirm util', () => {
     it('returns true for signature approval requests', () => {
       const result = isSignatureApprovalRequest({
         type: ApprovalType.PersonalSign,
-        // Replace `any` with type
+        // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as ApprovalRequest<any>);
       expect(result).toStrictEqual(true);
@@ -16,7 +16,7 @@ describe('confirm util', () => {
     it('returns false for request not of type signature', () => {
       const result = isSignatureApprovalRequest({
         type: ApprovalType.Transaction,
-        // Replace `any` with type
+        // TODO: Replace `any` with type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as ApprovalRequest<any>);
       expect(result).toStrictEqual(false);

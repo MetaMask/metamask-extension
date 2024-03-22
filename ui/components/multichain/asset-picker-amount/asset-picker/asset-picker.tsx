@@ -40,7 +40,7 @@ export type AssetPickerProps = {
 export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
-  // Replace `any` with type
+  // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenList: Record<string, any> = useSelector(getTokenList);
 

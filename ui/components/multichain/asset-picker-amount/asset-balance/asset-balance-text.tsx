@@ -41,7 +41,7 @@ export function AssetBalanceText({
     tokens: [{ address: asset.details?.address }],
     address: undefined,
   });
-  // Replace `any` with type
+  // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const balanceString = (tokensWithBalances[0] as any)?.string;
 

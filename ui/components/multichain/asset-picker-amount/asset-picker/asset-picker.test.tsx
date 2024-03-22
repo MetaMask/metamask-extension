@@ -8,10 +8,10 @@ import { AssetPicker } from './asset-picker';
 
 const store = (
   nativeTicker = 'NATIVE TICKER',
-  // Replace `any` with type
+  // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
-  // Replace `any` with type
+  // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   contractExchangeRates = {} as any,
 ) =>
