@@ -1,26 +1,26 @@
-import type { Mockttp } from "mockttp";
+import { RECIPIENT_ADDRESS_MOCK, MockRequestResponse, SENDER_ADDRESS_MOCK } from "./types";
 
-const SENDER_ADDRESS_MOCK = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-export const RECIPIENT_ADDRESS_MOCK = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
+export const SEND_ETH_TRANSACTION_MOCK = {
+  "data": "0x",
+  "from": SENDER_ADDRESS_MOCK,
+  "maxFeePerGas": "0x0",
+  "maxPriorityFeePerGas": "0x0",
+  "to": RECIPIENT_ADDRESS_MOCK,
+  "value": "0x38d7ea4c68000"
+};
 
-const SIMULATION_REQUEST_NATIVE_CHANGE_MOCK = {
+export const SEND_ETH_REQUEST_MOCK: MockRequestResponse = {
   request: {
+    "id": "0",
+    "jsonrpc": "2.0",
     "method": "infura_simulateTransactions",
     "params": [
       {
-        "transactions": [
-          {
-            "from": SENDER_ADDRESS_MOCK,
-            "to": RECIPIENT_ADDRESS_MOCK,
-            "value": "0x38d7ea4c68000" // 0.001 ETH
-          }
-        ],
+        "transactions": [SEND_ETH_TRANSACTION_MOCK],
         "withCallTrace": true,
         "withLogs": true
       }
-    ],
-    "id": 42,
-    "jsonrpc": "2.0"
+    ]
   },
   response: {
     "jsonrpc": "2.0",
@@ -82,9 +82,3 @@ const SIMULATION_REQUEST_NATIVE_CHANGE_MOCK = {
     "id": 42
   }
 };
-
-export async function mockSimulationServer(server: Mockttp) {
-  await server.forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/')
-  .withJsonBody(SIMULATION_REQUEST_NATIVE_CHANGE_MOCK.request)
-  .thenJson(200, SIMULATION_REQUEST_NATIVE_CHANGE_MOCK.response);
-}
