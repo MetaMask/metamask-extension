@@ -4433,7 +4433,7 @@
     "message": "Accounts controlled by third-party Snaps."
   },
   "snapConnectionWarning": {
-    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
   "snapConnections": {

@@ -7,6 +7,7 @@ import AccountList from '../../../components/ui/account-list';
 import { PageContainerFooter } from '../../../components/ui/page-container';
 import {
   AlignItems,
+  BackgroundColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -72,7 +73,10 @@ const ChooseAccount = ({
 
   return (
     <>
-      <Box className="permissions-connect-choose-account__content">
+      <Box
+        className="permissions-connect-choose-account__content"
+        backgroundColor={BackgroundColor.backgroundAlternative}
+      >
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -98,7 +102,7 @@ const ChooseAccount = ({
           handleAccountClick={handleAccountClick}
         />
       </Box>
-      <div className="permissions-connect-choose-account__footer-container">
+      <Box backgroundColor={BackgroundColor.backgroundAlternative}>
         {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
           <PermissionsConnectFooter />
         )}
@@ -110,7 +114,7 @@ const ChooseAccount = ({
           submitText={t('next')}
           disabled={selectedAccounts.size === 0}
         />
-      </div>
+      </Box>
     </>
   );
 };
