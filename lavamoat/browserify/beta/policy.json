@@ -4344,6 +4344,23 @@
         "sinon>nise>path-to-regexp>isarray": true
       }
     },
+    "sjcl": {
+      "globals": {
+        "addEventListener": true,
+        "console": true,
+        "crypto": true,
+        "define": true,
+        "document.attachEvent": true,
+        "document.detachEvent": true,
+        "msCrypto": true,
+        "orientation": true,
+        "performance": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "browserify>crypto-browserify": true
+      }
+    },
     "stream-browserify": {
       "packages": {
         "pumpify>inherits": true,

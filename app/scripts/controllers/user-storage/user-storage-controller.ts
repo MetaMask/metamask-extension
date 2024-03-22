@@ -94,7 +94,7 @@ export default class UserStorageController extends BaseController<
   }) {
     super({
       messenger: params.messenger,
-      metadata: metadata,
+      metadata,
       name: controllerName,
       state: { ...defaultState, ...params.state },
     });
