@@ -177,7 +177,7 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "useExternalNameSources": "boolean",
-    "useTransactionSimulations": "boolean",
+    "useTransactionSimulations": true,
     "selectedAddress": "string"
   },
   "SelectedNetworkController": { "domains": "object" },
