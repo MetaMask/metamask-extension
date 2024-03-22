@@ -2,11 +2,11 @@ import React from 'react';
 import {
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text } from '../../component-library';
-import { SizeNumber } from '../../component-library/box/box.types';
-import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Text } from '../../../../components/component-library';
+import { SizeNumber } from '../../../../components/component-library/box/box.types';
+import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {

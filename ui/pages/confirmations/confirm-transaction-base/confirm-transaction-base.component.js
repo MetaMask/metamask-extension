@@ -65,7 +65,7 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-import { SimulationDetails } from '../../../components/app/simulation-details';
+import { SimulationDetails } from '../components/simulation-details';
 ///: END:ONLY_INCLUDE_IF
 
 export default class ConfirmTransactionBase extends Component {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '../../component-library';
+import { Text } from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -8,9 +8,9 @@ import {
   FlexDirection,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { TokenStandard } from '../../../../shared/constants/transaction';
+} from '../../../../helpers/constants/design-system';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { Amount, AssetIdentifier } from './types';
 
 /**

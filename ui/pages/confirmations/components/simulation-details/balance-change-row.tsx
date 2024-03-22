@@ -4,8 +4,8 @@ import {
   Display,
   FlexDirection,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+} from '../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../../components/component-library';
 import { AssetPill } from './asset-pill';
 import { AmountPill } from './amount-pill';
 import { BalanceChange } from './types';

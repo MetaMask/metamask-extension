@@ -1,15 +1,15 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
+import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
 import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 
 const store = configureStore()(mockState);
 
-jest.mock('../../../hooks/useFiatFormatter');
+jest.mock('../../../../hooks/useFiatFormatter');
 (useFiatFormatter as jest.Mock).mockReturnValue((value: number) => `$${value}`);
 
 describe('IndividualFiatDisplay', () => {

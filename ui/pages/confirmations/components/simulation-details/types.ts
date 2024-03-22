@@ -1,6 +1,6 @@
 import { Hex } from '@metamask/utils';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 
 /**
  * Describes an amount of fiat.

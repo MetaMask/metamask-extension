@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { Box } from '../../component-library';
+import { Box } from '../../../../components/component-library';
 import {
   Display,
   FlexDirection,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';

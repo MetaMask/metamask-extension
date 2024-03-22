@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import { AmountPill } from './amount-pill';
 import { Amount, TokenAssetIdentifier } from './types';
 

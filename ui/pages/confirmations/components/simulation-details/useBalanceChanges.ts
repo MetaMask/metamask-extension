@@ -7,15 +7,15 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
-import { useAsyncResultOrThrow } from '../../../hooks/useAsyncResult';
-import { getTokenStandardAndDetails } from '../../../store/actions';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
+import { getTokenStandardAndDetails } from '../../../../store/actions';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { Numeric } from '../../../../../shared/modules/Numeric';
+import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import {
   getConfirmationExchangeRates,
   getTokenExchangeRates,
-} from '../../../selectors';
+} from '../../../../selectors';
 import {
   Amount,
   BalanceChange,

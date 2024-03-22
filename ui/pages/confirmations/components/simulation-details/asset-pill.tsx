@@ -5,7 +5,7 @@ import {
   AvatarTokenSize,
   Box,
   Text,
-} from '../../component-library';
+} from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -13,10 +13,10 @@ import {
   Display,
   FlexDirection,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import Name from '../name';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { ETH_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
+} from '../../../../helpers/constants/design-system';
+import Name from '../../../../components/app/name';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
 import { AssetIdentifier } from './types';
 
 const ETH_TICKER = 'ETH';

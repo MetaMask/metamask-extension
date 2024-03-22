@@ -1,4 +1,4 @@
-import { TokenStandard } from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { BalanceChange, FIAT_UNAVAILABLE } from './types';
 
 /** Comparator function for comparing two BalanceChange objects. */

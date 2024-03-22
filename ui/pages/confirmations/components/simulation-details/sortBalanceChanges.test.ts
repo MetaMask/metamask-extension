@@ -1,4 +1,4 @@
-import { TokenStandard } from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { sortBalanceChanges } from './sortBalanceChanges';
 import { BalanceChange, FIAT_UNAVAILABLE } from './types';
 

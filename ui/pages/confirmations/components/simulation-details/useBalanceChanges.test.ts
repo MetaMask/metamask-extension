@@ -4,11 +4,11 @@ import {
   SimulationData,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
-import { getTokenExchangeRates } from '../../../selectors';
-import { getTokenStandardAndDetails } from '../../../store/actions';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { getConversionRate } from '../../../../ducks/metamask/metamask';
+import { getTokenExchangeRates } from '../../../../selectors';
+import { getTokenStandardAndDetails } from '../../../../store/actions';
+import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
@@ -16,16 +16,16 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
-jest.mock('../../../ducks/metamask/metamask', () => ({
+jest.mock('../../../../ducks/metamask/metamask', () => ({
   getConversionRate: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../../selectors', () => ({
   getTokenExchangeRates: jest.fn(),
   getConfirmationExchangeRates: jest.fn().mockReturnValue({}),
 }));
 
-jest.mock('../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),
 }));
 

@@ -3,7 +3,7 @@ import {
   SimulationData,
   SimulationError,
 } from '@metamask/transaction-controller';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../../../components/component-library';
 import {
   AlignItems,
   BorderColor,
@@ -13,10 +13,10 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+} from '../../../../helpers/constants/design-system';
+import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 

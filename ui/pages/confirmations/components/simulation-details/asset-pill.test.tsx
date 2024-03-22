@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
-import { TokenStandard } from '../../../../shared/constants/transaction';
-import Name from '../name';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import Name from '../../../../components/app/name';
 import { AssetPill } from './asset-pill';
 import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 
-jest.mock('../name', () => ({
+jest.mock('../../../../components/app/name', () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
