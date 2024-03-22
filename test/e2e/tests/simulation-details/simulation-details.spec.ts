@@ -1,10 +1,11 @@
-import { By, WebElement } from "selenium-webdriver";
 import FixtureBuilder from "../../fixture-builder";
 import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow, createDappTransaction, switchToNotificationWindow } from "../../helpers";
 import { Driver } from '../../webdriver/driver';
-import { BUY_DAI_WITH_ETH_REQUEST_1_MOCK, BUY_DAI_WITH_ETH_REQUEST_2_MOCK, BUY_DAI_WITH_ETH_TRANSACTION, RECIPIENT_ADDRESS_MOCK, RequestResponse, SEND_NATIVE_REQUEST_MOCK } from "./simulation-details.mocks";
 import { CHAIN_IDS } from "../../../../shared/constants/network";
 import { Mockttp, MockttpServer } from "mockttp";
+import { SEND_ETH_REQUEST_MOCK } from "./mock-request-send-eth";
+import { BUY_DAI_WITH_ETH_TRANSACTION, BUY_DAI_WITH_ETH_REQUEST_1_MOCK, BUY_DAI_WITH_ETH_REQUEST_2_MOCK } from "./mock-request-buy-dai-with-eth";
+import { RECIPIENT_ADDRESS_MOCK, RequestResponse } from "./types";
 
 const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress: string, quantity: string) => {
   await openActionMenuAndStartSendFlow(driver);
@@ -91,7 +92,7 @@ describe('Simulation Details', () => {
       return;
     }
     const testSpecificMock = async (mockServer: MockttpServer) => {
-      await mockRequest(mockServer, SEND_NATIVE_REQUEST_MOCK);
+      await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     }
     await withFixturesForSimulationDetails({ title: this.test?.fullTitle(), testSpecificMock }, async ({ driver, mockServer}) => {
       await prepareSendTransactionSimulation(driver, RECIPIENT_ADDRESS_MOCK, '0.001');
