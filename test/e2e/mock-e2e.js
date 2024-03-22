@@ -467,7 +467,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   );
 
   await server
-    .forHead('https://static.metafi.codefi.network/api/v1/confirmations/ppom/ppom_version.json')
+    .forHead(
+      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -475,7 +477,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet('https://static.metafi.codefi.network/api/v1/confirmations/ppom/ppom_version.json')
+    .forGet(
+      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -486,7 +490,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await server
     .forGet(
-      /^https:\/\/static.metafi.codefi.network\/api\/v1\/confirmations\/ppom\/config\/0x1\/(.*)/u,
+      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/config\/0x1\/(.*)/u,
     )
     .thenCallback(() => {
       return {
@@ -498,7 +502,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await server
     .forGet(
-      /^https:\/\/static.metafi.codefi.network\/api\/v1\/confirmations\/ppom\/stale_diff\/0x1\/(.*)/u,
+      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale_diff\/0x1\/(.*)/u,
     )
     .thenCallback(() => {
       return {
@@ -510,7 +514,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await server
     .forGet(
-      /^https:\/\/static.metafi.codefi.network\/api\/v1\/confirmations\/ppom\/stale\/0x1\/(.*)/u,
+      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale\/0x1\/(.*)/u,
     )
     .thenCallback(() => {
       return {
