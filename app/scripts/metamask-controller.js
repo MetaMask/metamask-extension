@@ -3492,13 +3492,15 @@ export default class MetamaskController extends EventEmitter {
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId: (...args) => {
-        const pollingToken = gasFeeController.startPollingByNetworkClientId(...args)
-        this.addPollingToken(pollingToken)
-        return pollingToken
+        const pollingToken = gasFeeController.startPollingByNetworkClientId(
+          ...args,
+        );
+        this.addPollingToken(pollingToken);
+        return pollingToken;
       },
       gasFeeStopPollingByPollingToken: (pollingToken) => {
-        gasFeeController.stopPollingByPollingToken(gasFeeController)
-        this.removePollingToken(pollingToken)
+        gasFeeController.stopPollingByPollingToken(gasFeeController);
+        this.removePollingToken(pollingToken);
       },
       getGasFeeEstimatesAndStartPolling:
         gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
