@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import mockState from '../../../../test/data/mock-state.json';
@@ -67,8 +68,9 @@ mockState.confirmTransaction = {
 const store = configureStore(mockState);
 
 describe('ConfirmSendEther', () => {
-  it('should render correct information for for confirm send ether', () => {
+  it('should render correct information for for confirm send ether', async () => {
     const { getAllByTestId } = renderWithProvider(<ConfirmSendEther />, store);
     expect(getAllByTestId('page-container')).toMatchSnapshot();
+    await act(async () => 0);
   });
 });

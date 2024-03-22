@@ -22,7 +22,7 @@ import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type SimulationDetailsProps = {
-  simulationData?: Partial<SimulationData>;
+  simulationData?: SimulationData;
   transactionId: string;
 };
 
@@ -49,13 +49,14 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
   const t = useI18nContext();
 
   function getMessage() {
-    if (error.isReverted) {
+    if (
+      error.isReverted ||
+      error.message?.includes('insufficient funds for gas')
+    ) {
       return t('simulationDetailsTransactionReverted');
     }
-    if (error.message) {
-      if (error.message.includes('Chain is not supported')) {
-        return t('simulationDetailsChainNotSupported');
-      }
+    if (error.message?.includes('Chain is not supported')) {
+      return t('simulationDetailsChainNotSupported');
     }
     return t('simulationDetailsFailed');
   }
@@ -65,7 +66,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
       color={TextColor.warningDefault}
       variant={TextVariant.bodyMd}
       display={Display.Flex}
-      alignItems={AlignItems.flexStart}
+      alignItems={AlignItems.center}
     >
       <Icon name={IconName.Warning} marginInlineEnd={1} />
       {getMessage()}
@@ -221,10 +222,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}
+          testId="simulation-rows-outgoing"
         />
         <BalanceChangeList
           heading={t('simulationDetailsIncomingHeading')}
           balanceChanges={incoming}
+          testId="simulation-rows-incoming"
         />
       </Box>
     </SimulationDetailsLayout>

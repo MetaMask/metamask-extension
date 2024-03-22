@@ -4,6 +4,7 @@ import { BalanceChangeList } from './balance-change-list';
 import { BalanceChangeRow } from './balance-change-row';
 import { TotalFiatDisplay } from './fiat-display';
 import { BalanceChange } from './types';
+import { sortBalanceChanges } from './sortBalanceChanges';
 
 const HEADING_MOCK = 'Mock Heading';
 
@@ -43,14 +44,14 @@ describe('BalanceChangeList', () => {
 
       expect(BalanceChangeRow).toHaveBeenCalledTimes(balanceChanges.length);
 
-      balanceChanges.forEach((balanceChange, index) => {
+      sortBalanceChanges(balanceChanges).forEach((balanceChange, index) => {
         expect(BalanceChangeRow).toHaveBeenCalledWith(
           expect.objectContaining({
             label: index === 0 ? HEADING_MOCK : undefined,
             balanceChange,
             showFiat: false,
           }),
-          expect.anything(),
+          {},
         );
       });
     });
@@ -64,8 +65,8 @@ describe('BalanceChangeList', () => {
       );
 
       expect(TotalFiatDisplay).toHaveBeenCalledWith(
-        expect.objectContaining({ fiatAmounts: [100, 200] }),
-        expect.anything(),
+        expect.objectContaining({ fiatAmounts: [200, 100] }),
+        {},
       );
     });
   });
@@ -92,7 +93,7 @@ describe('BalanceChangeList', () => {
             balanceChange,
             showFiat: true,
           }),
-          expect.anything(),
+          {},
         );
       });
     });

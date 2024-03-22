@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { AssetPill } from './asset-pill';
+import { NameType } from '@metamask/name-controller';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import Name from '../name';
-import { NameType } from '@metamask/name-controller';
+import { AssetPill } from './asset-pill';
 import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 
 jest.mock('../name', () => ({

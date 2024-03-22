@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux";
-import { getCurrentLocale } from "../ducks/locale/locale";
-import { getCurrentCurrency } from "../selectors";
+import { useSelector } from 'react-redux';
+import { getCurrentLocale } from '../ducks/locale/locale';
+import { getCurrentCurrency } from '../selectors';
 
 /**
  * Returns a function that formats a fiat amount as a localized string.
