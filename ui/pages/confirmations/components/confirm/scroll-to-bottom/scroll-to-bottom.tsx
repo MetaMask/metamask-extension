@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
@@ -18,6 +18,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { updateConfirm } from '../../../../../ducks/confirm/confirm';
+import { currentConfirmationSelector } from '../../../selectors';
 
 type ContentProps = {
   /**
@@ -29,6 +30,7 @@ type ContentProps = {
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const {
     hasScrolledToBottom,
@@ -37,7 +39,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     onScroll,
     scrollToBottom,
     ref,
-  } = useScrollRequired([]);
+  } = useScrollRequired([currentConfirmation?.id]);
 
   useEffect(() => {
     dispatch(
