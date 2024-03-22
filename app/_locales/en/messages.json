@@ -802,8 +802,11 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleDescSignature": {
+  "confirmTitleDescPersonalSignature": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleDescTypedDataSignature": {
+    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -2215,6 +2218,9 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
+  "interactingWith": {
+    "message": "Interacting with"
+  },
   "invalidAddress": {
     "message": "Invalid address"
   },
@@ -2737,6 +2743,9 @@
   },
   "networkNameBSC": {
     "message": "BSC"
+  },
+  "networkNameBase": {
+    "message": "Base"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -3686,9 +3695,6 @@
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
   },
-  "preferredProvider": {
-    "message": "Select your preferred provider"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -4077,7 +4083,8 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1",
+    "description": "Link to learn more about security alerts"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -4337,6 +4344,24 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationPreviewFailed": {
+    "message": "There was an error loading your estimation."
+  },
+  "simulationPreviewIncomingHeading": {
+    "message": "You receive"
+  },
+  "simulationPreviewNoBalanceChanges": {
+    "message": "No changes predicted for your wallet"
+  },
+  "simulationPreviewOutgoingHeading": {
+    "message": "You send"
+  },
+  "simulationPreviewTitle": {
+    "message": "Estimated changes"
+  },
+  "simulationPreviewTitleTooltip": {
+    "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
   },
   "siteConnections": {
     "message": "Site Connections"
