@@ -695,6 +695,9 @@ export default class Routes extends Component {
       );
     ///: END:ONLY_INCLUDE_IF
 
+    const showAutoNetworkSwitchToast =
+      switchedNetworkDetails && !neverShowSwitchedNetworkMessage;
+
     return (
       <div
         className={classnames('app', {
@@ -702,6 +705,11 @@ export default class Routes extends Component {
           [`browser-${browser}`]: browser,
         })}
         dir={textDirection}
+        onMouseUp={
+          showAutoNetworkSwitchToast
+            ? () => setSwitchedNetworkDetails(null)
+            : undefined
+        }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
@@ -788,7 +796,7 @@ export default class Routes extends Component {
               onClose={() => this.setState({ hideConnectAccountToast: true })}
             />
           ) : null}
-          {switchedNetworkDetails && !neverShowSwitchedNetworkMessage ? (
+          {showAutoNetworkSwitchToast ? (
             <Toast
               key="switched-network-toast"
               startAdornment={
