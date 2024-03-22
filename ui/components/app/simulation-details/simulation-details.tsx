@@ -53,9 +53,6 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
     ) {
       return t('simulationDetailsTransactionReverted');
     }
-    if (error.message?.includes('Chain is not supported')) {
-      return t('simulationDetailsChainNotSupported');
-    }
     return t('simulationDetailsFailed');
   }
 
@@ -135,6 +132,7 @@ const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
 }> = ({ inHeader, children }) => (
   <Box
+    data-testid="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
     borderRadius={BorderRadius.MD}
@@ -171,7 +169,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   const { error } = simulationData;
   if (error) {
-    return (
+    // Hide simulation details if the chain is not supported.
+    return error?.message?.includes('Chain is not supported') ? null : (
       <SimulationDetailsLayout>
         <ErrorContent error={error} />
       </SimulationDetailsLayout>

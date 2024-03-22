@@ -57,14 +57,12 @@ describe('SimulationDetails', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders error content when simulation error is due to unsupported chain', () => {
-    renderSimulationDetails({
+  it('renders no content when simulation error is due to unsupported chain', () => {
+    const { container } = renderSimulationDetails({
       error: { isReverted: false, message: 'Chain is not supported' },
     });
 
-    expect(
-      screen.getByText(/current chain does not support simulations/u),
-    ).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders error content when simulation error has a generic message', () => {
