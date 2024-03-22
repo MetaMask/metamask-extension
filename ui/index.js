@@ -193,6 +193,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
         getOriginOfCurrentTab(state),
       ),
     );
+  } else if (process.env.MULTICHAIN) {
+    await actions.setSwitchedNetworkDetails(null);
   }
 
   // global metamask api - used by tooling
