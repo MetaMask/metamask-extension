@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import {
   Box,
@@ -40,6 +40,11 @@ export type AlertModalProps = {
   alertKey: string;
   /** The function to be executed when the modal needs to be closed */
   onClose: () => void;
+  /**
+   * The navigation between alerts when passed override `startAccessory` of ModalHeader
+   * Default no navigation button is present
+   */
+  multipleAlerts?: React.ReactNode;
 };
 
 function getSeverityStyle(severity: Severity) {
@@ -67,6 +72,7 @@ export function AlertModal({
   handleButtonClick,
   alertKey,
   onClose,
+  multipleAlerts,
 }: AlertModalProps) {
   const t = useI18nContext();
   const handleClose = useCallback(() => {
@@ -80,18 +86,28 @@ export function AlertModal({
     return null;
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
+  const [isAlertAcknowledged, setIsAlertAcknowledged] = useState({
+    [selectedAlert.key]: isConfirmed,
+  });
   const severityStyle = getSeverityStyle(selectedAlert.severity);
 
   return (
     <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>
+        <ModalHeader
+          onClose={handleClose}
+          startAccessory={multipleAlerts}
+          className={'alert-modal__header'}
+          borderWidth={1}
+        />
+        <ModalBody>
           <Box
             gap={3}
             display={Display.Block}
             alignItems={AlignItems.center}
             textAlign={TextAlign.Center}
+            marginTop={3}
           >
             <Icon
               name={
@@ -106,12 +122,11 @@ export function AlertModal({
               variant={TextVariant.headingSm}
               color={TextColor.inherit}
               marginTop={3}
+              marginBottom={4}
             >
               {selectedAlert.reason || t('alerts')}
             </Text>
           </Box>
-        </ModalHeader>
-        <ModalBody>
           <Box
             key={selectedAlert.key}
             display={Display.InlineBlock}
@@ -153,8 +168,12 @@ export function AlertModal({
             <Checkbox
               label={t('alertModalAcknowledge')}
               data-testid="alert-modal-acknowledge-checkbox"
-              isChecked={isConfirmed}
-              onClick={() => setAlertConfirmed(selectedAlert.key, !isConfirmed)}
+              isChecked={isAlertAcknowledged[selectedAlert.key]}
+              onClick={() =>
+                setIsAlertAcknowledged({
+                  [selectedAlert.key]: !isAlertAcknowledged[selectedAlert.key],
+                })
+              }
               alignItems={AlignItems.flexStart}
               className={'alert-modal__acknowledge-checkbox'}
             />
@@ -164,10 +183,13 @@ export function AlertModal({
           <Button
             variant={ButtonVariant.Primary}
             width={BlockSize.Full}
-            onClick={handleButtonClick}
+            onClick={() => {
+              setAlertConfirmed(selectedAlert.key, !isConfirmed);
+              handleButtonClick();
+            }}
             size={ButtonSize.Lg}
             data-testid="alert-modal-button"
-            disabled={!isAlertConfirmed(selectedAlert.key)}
+            disabled={!isAlertAcknowledged[selectedAlert.key]}
           >
             {t('gotIt')}
           </Button>
