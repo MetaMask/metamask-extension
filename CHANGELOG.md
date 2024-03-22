@@ -6,6 +6,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.12.3]
+### Fixed
+- [MMI] Fixes an error related with a missing code fence, when the MMI build didn't have the blockaid feature ([#23516](https://github.com/MetaMask/metamask-extension/pull/23516))
+- [MMI] Fixes a bug for some custodians that don't send us the env property when connection to MMI ([#23494](https://github.com/MetaMask/metamask-extension/pull/23494))
+
+## [11.12.2]
+### Fixed
+- Fix transaction confirmations so that they correctly show estimated fees instead of max possible fees
+    - For non-layer 2 network, and non-token send, transactions([#23203](https://github.com/MetaMask/metamask-extension/pull/23203))
+    - For layer 2 networks and for erc20 transfers ([#23511](https://github.com/MetaMask/metamask-extension/pull/23511))
+
+## [11.12.1]
+### Changed
+- Updated styling for missing petnames to prevent misinterpretation as malicious ([#23458](https://github.com/MetaMask/metamask-extension/pull/23458))
+
+## [11.12.0]
+### Added
+- Introduced deprecation warnings for Arbitrum Goerli and OP Goerli test networks ([#23071](https://github.com/MetaMask/metamask-extension/pull/23071))
+- Added origin details to personal sign page ([#22763](https://github.com/MetaMask/metamask-extension/pull/22763))
+- Enhanced snap functionality with dynamic interfaces, customizable timeouts, and faster installations ([#22828](https://github.com/MetaMask/metamask-extension/pull/22828))
+- Added a 'Connect Account' button in the account list menu for easier account connections ([#22941](https://github.com/MetaMask/metamask-extension/pull/22941))
+- [FLASK] Added signature insights ([#22485](https://github.com/MetaMask/metamask-extension/pull/22485))
+- [MMI] Enhanced error tracking in MMI controllers ([#22994](https://github.com/MetaMask/metamask-extension/pull/22994))
+- [MMI] Updated MMI dependencies and refactored code ([#22546](https://github.com/MetaMask/metamask-extension/pull/22546))
+
+### Changed
+- Updated Confirm/Sign button to red for malicious requests ([#23004](https://github.com/MetaMask/metamask-extension/pull/23004))
+- Updated the 'Discover Snaps' link to direct users to snaps.metamask.io ([#22909](https://github.com/MetaMask/metamask-extension/pull/22909))
+- Displayed total account balances on Accounts Menu and home screen ([#22186](https://github.com/MetaMask/metamask-extension/pull/22186))
+- Updated style of app header ([#22637](https://github.com/MetaMask/metamask-extension/pull/22637))
+- Enhanced settings search for better navigation ([#22967](https://github.com/MetaMask/metamask-extension/pull/22967))
+- Enhanced Send Flow by displaying account names during search ([#22824](https://github.com/MetaMask/metamask-extension/pull/22824))
+- Improved send flow by directly showing NFTs tab when sending an NFT ([#23033](https://github.com/MetaMask/metamask-extension/pull/23033))
+- Simplified send flow by removing outdated gas options ([#22951](https://github.com/MetaMask/metamask-extension/pull/22951))
+- [MMI] Improved custodian search by using environment names for unique identification ([#23073](https://github.com/MetaMask/metamask-extension/pull/23073))
+- [MMI] Enhanced MMI keyring configuration for improved mv3 version compatibility ([#22968](https://github.com/MetaMask/metamask-extension/pull/22968))
+
+### Fixed
+- Improved accuracy of fee details for Optimism transactions ([#22997](https://github.com/MetaMask/metamask-extension/pull/22997))
+- Ensured password prompt appears every time 'Show private key' is selected ([#22867](https://github.com/MetaMask/metamask-extension/pull/22867))
+- Adjusted menu positioning ensuring visibility of all options ([#22889](https://github.com/MetaMask/metamask-extension/pull/22889))
+- Corrected asset list to display native currency symbols instead of fiat on the home page ([#22760](https://github.com/MetaMask/metamask-extension/pull/22760))
+- Fixed tokens being added to incorrect networks after switching networks ([#22814](https://github.com/MetaMask/metamask-extension/pull/22814))
+- Fixed an issue where NFTs disappeared or couldn't be re-imported after account switching ([#22856](https://github.com/MetaMask/metamask-extension/pull/22856))
+- Fixed an issue with saving very low default gas fees ([#22790](https://github.com/MetaMask/metamask-extension/pull/22790))
+- Removed the subtle background behind setting icons ([#22982](https://github.com/MetaMask/metamask-extension/pull/22982))
+- Improved 'See Details' in alerts to stop auto-scrolling ([#22932](https://github.com/MetaMask/metamask-extension/pull/22932))
+- Improved security checks for transactions ([#22978](https://github.com/MetaMask/metamask-extension/pull/22978))
+- Ensured gas fee editing remains accessible even when currency rate checks are disabled ([#22890](https://github.com/MetaMask/metamask-extension/pull/22890))
+- Updated modal overlay for better visibility and focus on content in both light and dark modes ([#23102](https://github.com/MetaMask/metamask-extension/pull/23102))
+- Fixed behavior for manually added networks to show a modal with the option to switch, rather than auto-switching ([#22832](https://github.com/MetaMask/metamask-extension/pull/22832))
+- Corrected link alignment in Snap UI ([#23045](https://github.com/MetaMask/metamask-extension/pull/23045))
+- Resolved an issue that prevented cancelling permission requests without crashing the extension ([#22915](https://github.com/MetaMask/metamask-extension/pull/22915))
+- Fixed badge color in app-header to accurately reflect connection status ([#23126](https://github.com/MetaMask/metamask-extension/pull/23126))
+- Fixed a glitch in the Product Tour where step numbers were not displaying correctly ([#23100](https://github.com/MetaMask/metamask-extension/pull/23100))
+- Enhanced handling of long account names ([#23096](https://github.com/MetaMask/metamask-extension/pull/23096))
+- Resolved issue with tabs overlapping content in the send flow ([#23028](https://github.com/MetaMask/metamask-extension/pull/23028))
+- Ensured consistent balance display in Eth Overview and account list ([#23059](https://github.com/MetaMask/metamask-extension/pull/23059))
+- [MMI] Corrected custody type determination to support various types ([#22950](https://github.com/MetaMask/metamask-extension/pull/22950))
+
 ## [11.11.4]
 ### Changed
 - Enable Snaps home pages ([#23383](https://github.com/MetaMask/metamask-extension/pull/23383))
@@ -4447,7 +4507,11 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.11.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.12.3...HEAD
+[11.12.3]: https://github.com/MetaMask/metamask-extension/compare/v11.12.2...v11.12.3
+[11.12.2]: https://github.com/MetaMask/metamask-extension/compare/v11.12.1...v11.12.2
+[11.12.1]: https://github.com/MetaMask/metamask-extension/compare/v11.12.0...v11.12.1
+[11.12.0]: https://github.com/MetaMask/metamask-extension/compare/v11.11.4...v11.12.0
 [11.11.4]: https://github.com/MetaMask/metamask-extension/compare/v11.11.3...v11.11.4
 [11.11.3]: https://github.com/MetaMask/metamask-extension/compare/v11.11.2...v11.11.3
 [11.11.2]: https://github.com/MetaMask/metamask-extension/compare/v11.11.1...v11.11.2
