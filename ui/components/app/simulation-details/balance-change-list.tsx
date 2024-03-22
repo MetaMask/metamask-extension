@@ -7,6 +7,7 @@ import {
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
+import { sortBalanceChanges } from './sortBalanceChanges';
 
 /**
  * Displays a list of incoming or outgoing balance changes, along with a heading and a
@@ -15,6 +16,7 @@ import { TotalFiatDisplay } from './fiat-display';
  * @param props
  * @param props.heading
  * @param props.balanceChanges
+ * @param props.testId
  * @returns
  */
 export const BalanceChangeList: React.FC<{
@@ -22,14 +24,18 @@ export const BalanceChangeList: React.FC<{
   balanceChanges: BalanceChange[];
   testId?: string;
 }> = ({ heading, balanceChanges, testId }) => {
-  const fiatAmounts = useMemo(() => {
-    return balanceChanges.map((bc) => bc.fiatAmount);
+  const sortedBalanceChanges = useMemo(() => {
+    return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);
 
-  if (balanceChanges.length === 0) {
+  const fiatAmounts = useMemo(() => {
+    return sortedBalanceChanges.map((bc) => bc.fiatAmount);
+  }, [sortedBalanceChanges]);
+
+  if (sortedBalanceChanges.length === 0) {
     return null; // Hide this component.
   }
-  const showFiatTotal = balanceChanges.length > 1;
+  const showFiatTotal = sortedBalanceChanges.length > 1;
 
   return (
     <Box>
@@ -39,7 +45,7 @@ export const BalanceChangeList: React.FC<{
         flexDirection={FlexDirection.Column}
         gap={3}
       >
-        {balanceChanges.map((balanceChange, index) => (
+        {sortedBalanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
             key={index}
             label={index === 0 ? heading : undefined}
