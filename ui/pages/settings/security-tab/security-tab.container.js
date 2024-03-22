@@ -16,17 +16,18 @@ import {
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  setUseTransactionSimulations,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
   ///: END:ONLY_INCLUDE_IF
-  setTransactionSecurityCheckEnabled,
 } from '../../../store/actions';
 import {
   getAllNetworks,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   getIsSecurityAlertsEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getIsTransactionSecurityCheckEnabled,
   getPetnamesEnabled,
 } from '../../../selectors';
 import SecurityTab from './security-tab.component';
@@ -74,10 +75,11 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalNameSources,
     petnamesEnabled,
-    transactionSecurityCheckEnabled:
-      getIsTransactionSecurityCheckEnabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    useTransactionSimulations: metamask.useTransactionSimulations,
     ///: END:ONLY_INCLUDE_IF
   };
 };
@@ -107,8 +109,11 @@ const mapDispatchToProps = (dispatch) => {
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
-    setTransactionSecurityCheckEnabled: (value) =>
-      dispatch(setTransactionSecurityCheckEnabled(value)),
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    setUseTransactionSimulations: (value) => {
+      return dispatch(setUseTransactionSimulations(value));
+    },
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
     ///: END:ONLY_INCLUDE_IF
