@@ -199,7 +199,7 @@ function getPrefixProperties(properties: Record<string, any>, prefix: string) {
   );
 }
 
-function getAssetType(standard: TokenStandard): AssetType {
+function getAssetType(standard: TokenStandard) {
   switch (standard) {
     case TokenStandard.ERC20:
       return AssetType.ERC20;
