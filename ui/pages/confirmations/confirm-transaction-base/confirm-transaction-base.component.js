@@ -369,10 +369,12 @@ export default class ConfirmTransactionBase extends Component {
 
   updateValueToMax() {
     const { maxValue: value, txData, updateTransaction } = this.props;
-    const { status: _status, txDataWithoutStatus } = txData;
+
+    // Remove status from txData to avoid overwriting the txData.status
+    delete txData.status;
 
     updateTransaction({
-      ...txDataWithoutStatus,
+      ...txData,
       txParams: {
         ...txData.txParams,
         value,
