@@ -21,7 +21,7 @@ import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 
 export type SimulationDetailsProps = {
-  simulationData?: Partial<SimulationData>;
+  simulationData?: SimulationData;
 };
 
 /**

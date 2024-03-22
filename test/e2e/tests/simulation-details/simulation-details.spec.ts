@@ -5,24 +5,13 @@ import { CHAIN_IDS } from "../../../../shared/constants/network";
 import { Mockttp, MockttpServer } from "mockttp";
 import { SEND_ETH_REQUEST_MOCK, SEND_ETH_TRANSACTION_MOCK } from "./mock-request-send-eth";
 import { BUY_ERC20_TRANSACTION, BUY_ERC20_REQUEST_1_MOCK, BUY_ERC20_REQUEST_2_MOCK } from "./mock-request-buy-erc20";
-import { RECIPIENT_ADDRESS_MOCK, MockRequestResponse } from "./types";
+import { MockRequestResponse } from "./types";
 import { INSUFFICIENT_GAS_REQUEST_MOCK, INSUFFICIENT_GAS_TRANSACTION_MOCK } from "./mock-request-error-insuffient-gas";
 import { BUY_ERC1155_REQUEST_1_MOCK, BUY_ERC1155_REQUEST_2_MOCK, BUY_ERC1155_TRANSACTION_MOCK } from "./mock-request-buy-erc1155";
 import { BUY_ERC721_REQUEST_1_MOCK, BUY_ERC721_REQUEST_2_MOCK, BUY_ERC721_TRANSACTION_MOCK } from "./mock-request-buy-erc721";
 import { NO_CHANGES_REQUEST_MOCK, NO_CHANGES_TRANSACTION_MOCK } from "./mock-request-no-changes";
 import { hexToNumber } from "@metamask/utils";
 import { MALFORMED_TRANSACTION_MOCK, MALFORMED_TRANSACTION_REQUEST_MOCK } from "./mock-request-error-malformed-transaction";
-
-const prepareSendTransactionSimulation = async (driver: Driver, recipientAddress: string, quantity: string) => {
-  await openActionMenuAndStartSendFlow(driver);
-  await driver.fill('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
-};
 
 const TX_SENTINEL_URL = 'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/';
 
