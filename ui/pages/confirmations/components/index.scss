@@ -11,6 +11,7 @@
 @import 'confirmation-warning-modal/index';
 @import 'confirm-page-container/index';
 ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
+@import 'confirm/footer';
 @import 'confirm/header/header.scss';
 @import 'confirm/scroll-to-bottom';
 @import 'confirm/nav/nav.scss';
