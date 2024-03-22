@@ -27,6 +27,7 @@ import {
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
+  getSubjectMetadata,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -93,6 +94,8 @@ export const Connections = () => {
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
+  const siteMetadata = useSelector(getSubjectMetadata);
+  const connectedSiteMetadata = siteMetadata[activeTabOrigin];
   const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
   const { id } = useSelector((state: any) => state.activeTab);
 
@@ -348,7 +351,13 @@ export const Connections = () => {
                 onClose={() =>
                   setShowDisconnectedAllAccountsUpdatedToast(false)
                 }
-                startAdornment={''}
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSiteMetadata.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSiteMetadata.iconUrl}
+                  />
+                }
                 actionText={''}
                 onActionClick={() => null}
               />
