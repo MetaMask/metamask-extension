@@ -30,6 +30,6 @@ describe('TypedSignInfo', () => {
     };
     const mockStore = configureMockStore([])(mockState);
     const { container } = renderWithProvider(<TypedSignInfoV1 />, mockStore);
-    expect(container).toMatchSnapshot();
+    expect(container).toMatchInlineSnapshot();
   });
 });

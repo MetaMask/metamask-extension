@@ -28,7 +28,7 @@ const Footer = () => {
   let from: string | undefined;
   // todo: extend to other confirmation types
   if (currentConfirmation?.msgParams) {
-    from = currentConfirmation?.msgParams?.from;
+    from = currentConfirmation.msgParams.from;
   }
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {

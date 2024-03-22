@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
@@ -8,13 +8,6 @@ import PersonalSignInfo from './personal-sign/personal-sign';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 
-const ConfirmationInfoConponentMap = {
-  [TransactionType.personalSign]: PersonalSignInfo,
-  [TransactionType.signTypedData]: TypedSignInfo,
-};
-
-type ConfirmationType = keyof typeof ConfirmationInfoConponentMap;
-
 const Info: React.FC = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
@@ -22,15 +15,24 @@ const Info: React.FC = () => {
     return null;
   }
 
-  let InfoComponent =
-    ConfirmationInfoConponentMap[currentConfirmation?.type as ConfirmationType];
+  const ConfirmationInfoComponentMap = useMemo(
+    () => ({
+      [TransactionType.personalSign]: () => PersonalSignInfo,
+      [TransactionType.signTypedData]: () => {
+        const { version } = currentConfirmation?.msgParams ?? {};
+        if (version === 'V1') {
+          return TypedSignV1Info;
+        }
+        return TypedSignInfo;
+      },
+    }),
+    [currentConfirmation],
+  );
 
-  if (currentConfirmation.type === TransactionType.signTypedData) {
-    const { version } = currentConfirmation?.msgParams ?? {};
-    if (version === 'V1') {
-      InfoComponent = TypedSignV1Info;
-    }
-  }
+  const InfoComponent =
+    ConfirmationInfoComponentMap[
+      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+    ]();
 
   return <InfoComponent />;
 };

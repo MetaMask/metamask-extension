@@ -39,7 +39,7 @@ const TypedSignV1Info: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
+          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>
       </Box>
       <Box
