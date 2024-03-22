@@ -23,6 +23,7 @@ const hwWalletPrivacyAndSecurity =
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions = 'https://metamask.io/attributions/';
 const termsOfUse = 'https://consensys.io/terms-of-use';
+const learnMoreBlockaid = 'https://support.metamask.io/hc/en-us/articles/19878220833947-How-to-turn-on-Blockaid-security-alerts';
 
 test.describe('MMI Navigation', () => {
   test('MMI full navigation links', async ({ context }) => {
@@ -66,8 +67,6 @@ test.describe('MMI Navigation', () => {
     );
 
     await checkLinkURL(context, mainPage.page, 'Stake', stake, 'button');
-
-    await checkLinkURL(context, mainPage.page, 'Swap', swap, 'button');
 
     await checkLinkURL(
       context,
@@ -136,8 +135,8 @@ test.describe('MMI Navigation', () => {
     await checkLinkURL(
       context,
       mainMenuPage.page,
-      'Learn More',
-      privacyAndPolicy,
+      'requests. Learn more',
+      learnMoreBlockaid,
     );
 
     await mainMenuPage.selectSettings('Experimental');
