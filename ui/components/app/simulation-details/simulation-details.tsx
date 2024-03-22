@@ -64,7 +64,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
       color={TextColor.warningDefault}
       variant={TextVariant.bodyMd}
       display={Display.Flex}
-      alignItems={AlignItems.flexStart}
+      alignItems={AlignItems.center}
     >
       <Icon name={IconName.Warning} marginInlineEnd={1} />
       {getMessage()}
