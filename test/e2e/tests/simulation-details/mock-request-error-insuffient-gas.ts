@@ -1,4 +1,4 @@
-import { RECIPIENT_ADDRESS_MOCK, RequestResponse, SENDER_ADDRESS_MOCK, SENDER_ADDRESS_NO_0x_MOCK } from "./types";
+import { RECIPIENT_ADDRESS_MOCK, MockRequestResponse, SENDER_ADDRESS_MOCK, SENDER_ADDRESS_NO_0x_MOCK } from "./types";
 
 export const INSUFFICIENT_GAS_TRANSACTION_MOCK = {
   "from": SENDER_ADDRESS_MOCK,
@@ -8,7 +8,7 @@ export const INSUFFICIENT_GAS_TRANSACTION_MOCK = {
   "value": "0x6BC75E2D63100000"
 };
 
-export const INSUFFICIENT_GAS_REQUEST_MOCK: RequestResponse = {
+export const INSUFFICIENT_GAS_REQUEST_MOCK: MockRequestResponse = {
   request: {
     "id": "0",
     "jsonrpc": "2.0",
