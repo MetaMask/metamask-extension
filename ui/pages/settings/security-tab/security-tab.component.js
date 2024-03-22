@@ -1010,9 +1010,11 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
-          {/* ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation) */}
-          {this.renderSimulationsToggle()}
-          {/* ///: END:ONLY_INCLUDE_IF */}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+            this.renderSimulationsToggle()
+            ///: END:ONLY_INCLUDE_IF
+          }
         </div>
 
         <span
