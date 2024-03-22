@@ -158,7 +158,7 @@ function useLoadingTime() {
   const [loadingTime, setLoadingTime] = useState<number | undefined>();
 
   const setLoadingComplete = () => {
-    if (loadingTime === null) {
+    if (loadingTime === undefined) {
       setLoadingTime((Date.now() - loadingStart) / 1000);
     }
   };
