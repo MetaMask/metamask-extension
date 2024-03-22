@@ -2937,6 +2937,9 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
+  "noDomainResolution": {
+    "message": "No resolution for domain provided."
+  },
   "noNFTs": {
     "message": "No NFTs yet"
   },
