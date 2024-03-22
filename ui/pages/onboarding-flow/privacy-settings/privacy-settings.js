@@ -41,6 +41,9 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  setUseTransactionSimulations,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
@@ -60,6 +63,9 @@ export default function PrivacySettings() {
     useMultiAccountBalanceChecker,
     ipfsGateway,
     useAddressBarEnsResolution,
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    useTransactionSimulations,
+    ///: END:ONLY_INCLUDE_IF
   } = defaultState;
 
   const [usePhishingDetection, setUsePhishingDetection] =
@@ -75,6 +81,10 @@ export default function PrivacySettings() {
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(useMultiAccountBalanceChecker);
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  const [isTransactionSimulationsEnabled, setTransactionSimulationsEnabled] =
+    useState(useTransactionSimulations);
+  ///: END:ONLY_INCLUDE_IF
   const [ipfsURL, setIPFSURL] = useState(ipfsGateway);
   const [ipfsError, setIPFSError] = useState(null);
   const [addressBarResolution, setAddressBarResolution] = useState(
@@ -95,6 +105,9 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
+    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+    setUseTransactionSimulations(isTransactionSimulationsEnabled);
+    ///: END:ONLY_INCLUDE_IF
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -263,6 +276,16 @@ export default function PrivacySettings() {
               </>
             }
           />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+            <Setting
+              value={isTransactionSimulationsEnabled}
+              setValue={setTransactionSimulationsEnabled}
+              title={t('simulationsSettingSubHeader')}
+              description={t('simulationsSettingDescription')}
+            />
+            ///: END:ONLY_INCLUDE_IF
+          }
           <Setting
             value={addressBarResolution}
             setValue={setAddressBarResolution}

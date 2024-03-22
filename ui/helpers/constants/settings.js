@@ -287,6 +287,16 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-opensea`,
     icon: 'fa fa-lock',
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  // securityAndPrivacy settingsRefs[18]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('simulationsSettingSubHeader'),
+    descriptionMessage: (t) => t('simulationsSettingDescription'),
+    route: `${SECURITY_ROUTE}#transaction-simulations`,
+    icon: 'fa fa-lock',
+  },
+  ///: END:ONLY_INCLUDE_IF
   {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),

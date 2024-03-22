@@ -65,7 +65,7 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-import { SimulationDetails } from '../../../components/app/simulation-details';
+import { SimulationDetails } from '../components/simulation-details';
 ///: END:ONLY_INCLUDE_IF
 
 export default class ConfirmTransactionBase extends Component {
@@ -163,6 +163,7 @@ export default class ConfirmTransactionBase extends Component {
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
+    updateTransactionValue: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
@@ -368,15 +369,9 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   updateValueToMax() {
-    const { maxValue: value, txData, updateTransaction } = this.props;
+    const { maxValue: value, txData, updateTransactionValue } = this.props;
 
-    updateTransaction({
-      ...txData,
-      txParams: {
-        ...txData.txParams,
-        value,
-      },
-    });
+    updateTransactionValue(txData.id, value);
   }
 
   renderDetails() {

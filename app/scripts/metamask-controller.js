@@ -2921,6 +2921,12 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+      setUseTransactionSimulations:
+        preferencesController.setUseTransactionSimulations.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
