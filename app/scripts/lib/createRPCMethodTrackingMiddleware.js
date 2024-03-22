@@ -1,7 +1,6 @@
 import { detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
-import { TransactionStatus } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -132,7 +131,6 @@ const rateLimitTimeouts = {};
  *  MetaMetricsController
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
- * @param opts.securityProviderRequest
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
@@ -140,11 +138,11 @@ const rateLimitTimeouts = {};
  * @returns {Function}
  */
 ///: END:ONLY_INCLUDE_IF
+
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds = 60 * 5,
-  securityProviderRequest,
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
@@ -206,15 +204,11 @@ export default function createRPCMethodTrackingMiddleware({
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
         let data;
-        let from;
         if (isValidAddress(req?.params?.[1])) {
           data = req?.params?.[0];
-          from = req?.params?.[1];
         } else {
           data = req?.params?.[1];
-          from = req?.params?.[0];
         }
-        const paramsExamplePassword = req?.params?.[2];
 
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         if (req.securityAlertResponse?.providerRequestsCount) {
@@ -248,33 +242,7 @@ export default function createRPCMethodTrackingMiddleware({
         // merge the snapAndHardwareInfo into eventProperties
         Object.assign(eventProperties, snapAndHardwareInfo);
 
-        const msgData = {
-          msgParams: {
-            ...paramsExamplePassword,
-            from,
-            data,
-            origin,
-          },
-          status: TransactionStatus.unapproved,
-          type: req.method,
-        };
-
         try {
-          const securityProviderResponse = await securityProviderRequest(
-            msgData,
-            req.method,
-          );
-
-          if (securityProviderResponse?.flagAsDangerous === 1) {
-            eventProperties.ui_customizations = [
-              MetaMetricsEventUiCustomization.FlaggedAsMalicious,
-            ];
-          } else if (securityProviderResponse?.flagAsDangerous === 2) {
-            eventProperties.ui_customizations = [
-              MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
-            ];
-          }
-
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
@@ -284,9 +252,7 @@ export default function createRPCMethodTrackingMiddleware({
             }
           }
         } catch (e) {
-          console.warn(
-            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
-          );
+          console.warn(`createRPCMethodTrackingMiddleware: Errored - ${e}`);
         }
       } else {
         eventProperties.method = method;

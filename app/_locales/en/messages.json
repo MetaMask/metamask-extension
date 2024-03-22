@@ -302,6 +302,9 @@
   "addingCustomNetwork": {
     "message": "Adding Network"
   },
+  "addingTokens": {
+    "message": "Adding tokens"
+  },
   "address": {
     "message": "Address"
   },
@@ -488,7 +491,10 @@
     "message": "Asset options"
   },
   "attemptSendingAssets": {
-    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
+    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
+  },
+  "attemptSendingAssetsWithPortfolio": {
+    "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge, like $1"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -654,6 +660,9 @@
   "bridge": {
     "message": "Bridge"
   },
+  "bridgeDontSend": {
+    "message": "Bridge, don't send"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
@@ -757,7 +766,7 @@
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clickToManuallyAdd": {
-    "message": "Click here to manually add the tokens."
+    "message": "You can always add tokens manually."
   },
   "close": {
     "message": "Close"
@@ -1833,6 +1842,9 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
+  "gasIsETH": {
+    "message": "Gas is $1 "
+  },
   "gasLimit": {
     "message": "Gas limit"
   },
@@ -2371,6 +2383,9 @@
   "learnScamRisk": {
     "message": "scams and security risks."
   },
+  "learnToBridge": {
+    "message": "Learn to bridge"
+  },
   "leaveMetaMask": {
     "message": "Leave MetaMask?"
   },
@@ -2554,6 +2569,9 @@
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
+  "metamaskPortfolio": {
+    "message": "MetaMask Portfolio."
+  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
   },
@@ -2678,7 +2696,7 @@
     "description": "Placeholder text for name input field in name component modal."
   },
   "nativeToken": {
-    "message": "The native token on this network is $1. It is the token used for gas fees.",
+    "message": "The native token on this network is $1. It is the token used for gas fees. ",
     "description": "$1 represents the name of the native token on the current network"
   },
   "nativeTokenScamWarningConversion": {
@@ -3320,12 +3338,6 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
-  },
-  "openSeaLabel": {
-    "message": "OpenSea + Blockaid"
-  },
-  "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -4347,26 +4359,36 @@
   "signing": {
     "message": "Signing"
   },
-  "simulationErrorMessageV2": {
-    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
-  },
-  "simulationPreviewFailed": {
+  "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
-  "simulationPreviewIncomingHeading": {
+  "simulationDetailsFiatNotAvailable": {
+    "message": "Not Available"
+  },
+  "simulationDetailsIncomingHeading": {
     "message": "You receive"
   },
-  "simulationPreviewNoBalanceChanges": {
+  "simulationDetailsNoBalanceChanges": {
     "message": "No changes predicted for your wallet"
   },
-  "simulationPreviewOutgoingHeading": {
+  "simulationDetailsOutgoingHeading": {
     "message": "You send"
   },
-  "simulationPreviewTitle": {
+  "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
-  "simulationPreviewTitleTooltip": {
+  "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTotalFiat": {
+    "message": "Total = $1",
+    "description": "$1 is the total amount in fiat currency on one side of the transaction"
+  },
+  "simulationDetailsTransactionReverted": {
+    "message": "This transaction is likely to fail"
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
@@ -5298,7 +5320,7 @@
     "message": "Switch to this account"
   },
   "switchedTo": {
-    "message": "You have switched to"
+    "message": "You're now using"
   },
   "switcherTitle": {
     "message": "Network switcher"
@@ -5343,7 +5365,7 @@
     "message": "Choose your preferred MetaMask theme."
   },
   "thingsToKeep": {
-    "message": "Things to keep in mind:"
+    "message": "Keep in mind:"
   },
   "thirdPartySoftware": {
     "message": "Third-party software notice",
@@ -5460,7 +5482,7 @@
     "message": "token scams and security risks"
   },
   "tokenShowUp": {
-    "message": "Your tokens may not automatically show up in your wallet."
+    "message": "Your tokens may not automatically show up in your wallet. "
   },
   "tokenSymbol": {
     "message": "Token symbol"

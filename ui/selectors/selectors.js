@@ -1167,15 +1167,31 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getMemoizedMetadataContractName = createDeepEqualSelector(
+export const getMemoizedMetadataContracts = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, addresses) => addresses,
+  (tokenList, addresses) => {
+    return addresses.map((address) =>
+      Object.values(tokenList).find((identity) =>
+        isEqualCaseInsensitive(identity.address, address),
+      ),
+    );
+  },
+);
+
+export const getMemoizedMetadataContract = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
-    const entry = Object.values(tokenList).find((identity) =>
+    return Object.values(tokenList).find((identity) =>
       isEqualCaseInsensitive(identity.address, address),
     );
-    return entry && entry.name !== '' ? entry.name : '';
   },
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getMemoizedMetadataContract,
+  (entry) => entry?.name ?? '',
 );
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -2053,16 +2069,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
-}
-
-/**
- * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsTransactionSecurityCheckEnabled(state) {
-  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 /**
