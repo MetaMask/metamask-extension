@@ -22,7 +22,7 @@ jest.mock('./balance-change-list', () => ({
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
     <SimulationDetails
-      simulationData={simulationData}
+      simulationData={simulationData as SimulationData}
       transactionId="testTransactionId"
     />,
     store,
