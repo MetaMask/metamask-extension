@@ -50,7 +50,7 @@ describe('BalanceChangeList', () => {
             balanceChange,
             showFiat: false,
           }),
-          expect.anything(),
+          {},
         );
       });
     });
@@ -65,7 +65,7 @@ describe('BalanceChangeList', () => {
 
       expect(TotalFiatDisplay).toHaveBeenCalledWith(
         expect.objectContaining({ fiatAmounts: [100, 200] }),
-        expect.anything(),
+        {},
       );
     });
   });
@@ -92,7 +92,7 @@ describe('BalanceChangeList', () => {
             balanceChange,
             showFiat: true,
           }),
-          expect.anything(),
+          {},
         );
       });
     });

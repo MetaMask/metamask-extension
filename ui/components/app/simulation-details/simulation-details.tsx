@@ -50,10 +50,8 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
     if (error.isReverted) {
       return t('simulationDetailsTransactionReverted');
     }
-    if (error.message) {
-      if (error.message.includes('Chain is not supported')) {
-        return t('simulationDetailsChainNotSupported');
-      }
+    if (error.message?.includes('Chain is not supported')) {
+      return t('simulationDetailsChainNotSupported');
     }
     return t('simulationDetailsFailed');
   }
@@ -195,12 +193,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}
-          testId='simulation-rows-outgoing'
+          testId="simulation-rows-outgoing"
         />
         <BalanceChangeList
           heading={t('simulationDetailsIncomingHeading')}
           balanceChanges={incoming}
-          testId='simulation-rows-incoming'
+          testId="simulation-rows-incoming"
         />
       </Box>
     </SimulationDetailsLayout>

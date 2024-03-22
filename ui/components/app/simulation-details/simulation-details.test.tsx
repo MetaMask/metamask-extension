@@ -104,7 +104,7 @@ describe('SimulationDetails', () => {
         heading: 'You send',
         balanceChanges: [balanceChangesMock[0]],
       }),
-      expect.anything(),
+      {},
     );
 
     expect(BalanceChangeList).toHaveBeenCalledWith(
@@ -112,7 +112,7 @@ describe('SimulationDetails', () => {
         heading: 'You receive',
         balanceChanges: [balanceChangesMock[1]],
       }),
-      expect.anything(),
+      {},
     );
   });
 });
