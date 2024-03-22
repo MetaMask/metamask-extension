@@ -3133,6 +3133,12 @@
   "notificationsPortfolioV2Title": {
     "message": "MetaMask Portfolio - join millions"
   },
+  "notificationsSimulationsDescriptionOne": {
+    "message": "Now you can see the potential outcome of your transactions before you make them!"
+  },
+  "notificationsSimulationsDescriptionTwo": {
+    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
+  },
   "notificationsStakingPortfolioActionText": {
     "message": "Got it",
     "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
@@ -4107,10 +4113,6 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderPoweredBy": {
-    "message": "Powered by $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "See details"
   },
@@ -4380,6 +4382,12 @@
   },
   "simulationPreviewTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationsSettingDescription": {
+    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
+  },
+  "simulationsSettingSubHeader": {
+    "message": "Estimate balance changes"
   },
   "siteConnections": {
     "message": "Site Connections"
