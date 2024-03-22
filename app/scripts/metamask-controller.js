@@ -3460,15 +3460,17 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // CurrencyRateController
-      currencyRateStartPollingByNetworkClientId:
-        currencyRateController.startPollingByNetworkClientId.bind(
-          currencyRateController,
-        ),
-
-      currencyRateStopPollingByPollingToken:
-        currencyRateController.stopPollingByPollingToken.bind(
-          currencyRateController,
-        ),
+      currencyRateStartPollingByNetworkClientId: (...args) => {
+        const pollingToken = currencyRateController.startPollingByNetworkClientId(
+          ...args,
+        );
+        this.addPollingToken(pollingToken);
+        return pollingToken;
+      },
+      currencyRateStopPollingByPollingToken:  (pollingToken) => {
+        currencyRateController.stopPollingByPollingToken(gasFeeController);
+        this.removePollingToken(pollingToken);
+      },
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
@@ -5644,6 +5646,7 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopPolling();
+      this.currencyRateController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -5663,6 +5666,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.disconnectPoller(pollingToken);
+      this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,
