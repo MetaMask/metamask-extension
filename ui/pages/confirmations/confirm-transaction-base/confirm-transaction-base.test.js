@@ -29,6 +29,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 const middleware = [thunk];
 
 setBackgroundConnection({
@@ -259,10 +261,10 @@ const render = async ({ props, state } = {}) => {
 
   await act(
     async () =>
-      (result = renderWithProvider(
-        <ConfirmTransactionBase {...componentProps} />,
-        store,
-      )),
+    (result = renderWithProvider(
+      <ConfirmTransactionBase {...componentProps} />,
+      store,
+    )),
   );
 
   return result;
