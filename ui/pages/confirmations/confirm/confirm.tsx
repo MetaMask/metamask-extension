@@ -18,7 +18,7 @@ const Confirm = () => {
   syncConfirmPath();
 
   return (
-    <Page backgroundColor={BackgroundColor.backgroundAlternative}>
+    <Page>
       <Nav />
       <Header />
       {
