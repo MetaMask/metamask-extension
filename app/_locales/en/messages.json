@@ -4365,9 +4365,6 @@
   "signing": {
     "message": "Signing"
   },
-  "simulationDetailsChainNotSupported": {
-    "message": "The current chain does not support simulations."
-  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
