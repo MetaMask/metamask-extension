@@ -16,9 +16,7 @@ import {
   setUse4ByteResolution,
   setUseSafeChainsListValidation,
   setUseExternalNameSources,
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   setUseTransactionSimulations,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -78,9 +76,7 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     useTransactionSimulations: metamask.useTransactionSimulations,
-    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -109,11 +105,9 @@ const mapDispatchToProps = (dispatch) => {
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));
     },
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
     ///: END:ONLY_INCLUDE_IF

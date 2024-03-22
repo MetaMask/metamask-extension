@@ -81,10 +81,8 @@ export default class SecurityTab extends PureComponent {
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: PropTypes.func.isRequired,
     useTransactionSimulations: PropTypes.bool.isRequired,
-    ///: END:ONLY_INCLUDE_IF
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -911,7 +909,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   renderSimulationsToggle() {
     const { t } = this.context;
     const { useTransactionSimulations, setUseTransactionSimulations } =
@@ -947,7 +944,6 @@ export default class SecurityTab extends PureComponent {
       </Box>
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
@@ -1010,11 +1006,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-            this.renderSimulationsToggle()
-            ///: END:ONLY_INCLUDE_IF
-          }
+          {this.renderSimulationsToggle()}
         </div>
 
         <span
