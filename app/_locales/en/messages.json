@@ -4089,10 +4089,6 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderPoweredBy": {
-    "message": "Powered by $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "See details"
   },
