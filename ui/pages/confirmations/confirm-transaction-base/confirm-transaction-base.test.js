@@ -466,12 +466,14 @@ describe('Confirm Transaction Base', () => {
       .fn()
       .mockResolvedValue(state.confirmTransaction.txData);
     const updateTransaction = jest.fn().mockResolvedValue();
+    const updateTransactionValue = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
     const props = {
       sendTransaction,
       updateTransaction,
+      updateTransactionValue,
       showCustodianDeepLink,
       setWaitForConfirmDeepLinkDialog,
       toAddress: mockPropsToAddress,
