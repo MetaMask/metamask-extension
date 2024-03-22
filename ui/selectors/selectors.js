@@ -1167,6 +1167,18 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
+export const getMemoizedMetadataContracts = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, addresses) => addresses,
+  (tokenList, addresses) => {
+    return addresses.map((address) =>
+      Object.values(tokenList).find((identity) =>
+        isEqualCaseInsensitive(identity.address, address),
+      ),
+    );
+  },
+);
+
 export const getMemoizedMetadataContract = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,

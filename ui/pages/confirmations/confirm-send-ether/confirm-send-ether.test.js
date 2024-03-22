@@ -7,6 +7,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import ConfirmSendEther from './confirm-send-ether';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 setBackgroundConnection({
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
