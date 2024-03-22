@@ -287,7 +287,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-opensea`,
     icon: 'fa fa-lock',
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulations)
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   // securityAndPrivacy settingsRefs[18]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
