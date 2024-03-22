@@ -228,6 +228,8 @@ describe('PPOMMiddleware', () => {
       validateJsonRpc: validateMock,
     };
 
+    // Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };

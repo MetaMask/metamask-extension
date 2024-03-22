@@ -21,6 +21,8 @@ export function useMMIConfirmationInfo() {
     }
     try {
       dispatch(completedTx(currentConfirmation.id));
+      // Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       dispatch(
         showModal({
