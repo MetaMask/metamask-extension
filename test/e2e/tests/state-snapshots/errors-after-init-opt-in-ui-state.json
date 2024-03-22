@@ -119,7 +119,6 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "useExternalNameSources": "boolean",
-    "useTransactionSimulations": "boolean",
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
