@@ -4298,13 +4298,15 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
  * @param networkClientId - unique identifier for the network client
  * @returns polling token that can be used to stop polling
  */
-export function currencyRateStartPollingByNetworkClientId(
+export async function currencyRateStartPollingByNetworkClientId(
   networkClientId: string,
 ) {
-  return submitRequestToBackground<string>(
+  const pollingToken = await submitRequestToBackground(
     'currencyRateStartPollingByNetworkClientId',
     [networkClientId],
   );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
 }
 
 /**
@@ -4314,10 +4316,13 @@ export function currencyRateStartPollingByNetworkClientId(
  *
  * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
  */
-export function currencyRateStopPollingByPollingToken(pollingToken: string) {
-  return submitRequestToBackground('currencyRateStopPollingByPollingToken', [
+export async function currencyRateStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
     pollingToken,
   ]);
+  await removePollingTokenFromAppState(pollingToken);
 }
 
 /**

@@ -3460,16 +3460,14 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // CurrencyRateController
-      currencyRateStartPollingByNetworkClientId: (...args) => {
-        const pollingToken =
-          currencyRateController.startPollingByNetworkClientId(...args);
-        this.addPollingToken(pollingToken);
-        return pollingToken;
-      },
-      currencyRateStopPollingByPollingToken: (pollingToken) => {
-        currencyRateController.stopPollingByPollingToken(gasFeeController);
-        this.removePollingToken(pollingToken);
-      },
+      currencyRateStartPollingByNetworkClientId:
+        currencyRateController.startPollingByNetworkClientId.bind(
+          currencyRateController,
+        ),
+      currencyRateStopPollingByPollingToken:
+        currencyRateController.stopPollingByPollingToken.bind(
+          currencyRateController,
+        ),
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
