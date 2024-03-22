@@ -3267,10 +3267,6 @@
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
   },
-  "securityProviderPoweredBy": {
-    "message": "$1 द्वारा पावर्ड",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "ब्यौरा देखें"
   },

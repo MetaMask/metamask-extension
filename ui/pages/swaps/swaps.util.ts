@@ -5,6 +5,7 @@ import {
   ALLOWED_CONTRACT_ADDRESSES,
   ARBITRUM,
   AVALANCHE,
+  BASE,
   BSC,
   ETHEREUM,
   GOERLI,
@@ -637,6 +638,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return ZKSYNC_ERA;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA;
+    case CHAIN_IDS.BASE:
+      return BASE;
     default:
       return '';
   }
