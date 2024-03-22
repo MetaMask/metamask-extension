@@ -178,11 +178,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await sendScreenToConfirmScreen(
-          driver,
-          '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-          '1',
-        );
+        await sendScreenToConfirmScreen(driver, mockMaliciousAddress, '1');
 
         // Find element by title
         const bannerAlertFoundByTitle = await driver.findElement({
