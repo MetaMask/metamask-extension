@@ -8,7 +8,6 @@ import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signatur
 ///: END:ONLY_INCLUDE_IF
 import { Nav } from '../components/confirm/nav';
 import { Title } from '../components/confirm/title';
-import { Box } from '../../../components/component-library';
 import { Content, Page } from '../../../components/multichain/pages/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
@@ -30,9 +29,7 @@ const Confirm = () => {
       <Content backgroundColor={BackgroundColor.backgroundAlternative}>
         <Title />
         <ScrollToBottom>
-          <Box padding={4}>
-            <Info />
-          </Box>
+          <Info />
         </ScrollToBottom>
       </Content>
       <Footer />
