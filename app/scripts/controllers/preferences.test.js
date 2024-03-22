@@ -402,4 +402,21 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  describe('setUseTransactionSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
+      expect(
+        preferencesController.store.getState().useTransactionSimulations,
+      ).toStrictEqual(false);
+    });
+  });
+  ///: END:ONLY_INCLUDE_IF
 });

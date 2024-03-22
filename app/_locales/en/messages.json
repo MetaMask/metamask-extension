@@ -802,8 +802,11 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleDescSignature": {
+  "confirmTitleDescPersonalSignature": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  },
+  "confirmTitleDescTypedDataSignature": {
+    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
   },
   "confirmTitleSignature": {
     "message": "Signature request"
@@ -2215,6 +2218,9 @@
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
+  "interactingWith": {
+    "message": "Interacting with"
+  },
   "invalidAddress": {
     "message": "Invalid address"
   },
@@ -2738,6 +2744,9 @@
   "networkNameBSC": {
     "message": "BSC"
   },
+  "networkNameBase": {
+    "message": "Base"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },
@@ -2909,6 +2918,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
+  },
+  "noDomainResolution": {
+    "message": "No resolution for domain provided."
   },
   "noNFTs": {
     "message": "No NFTs yet"
@@ -3105,6 +3117,12 @@
   },
   "notificationsPortfolioV2Title": {
     "message": "MetaMask Portfolio - join millions"
+  },
+  "notificationsSimulationsDescriptionOne": {
+    "message": "Now you can see the potential outcome of your transactions before you make them!"
+  },
+  "notificationsSimulationsDescriptionTwo": {
+    "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
   },
   "notificationsStakingPortfolioActionText": {
     "message": "Got it",
@@ -4080,10 +4098,6 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityProviderPoweredBy": {
-    "message": "Powered by $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "See details"
   },
@@ -4335,6 +4349,30 @@
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
+  "simulationPreviewFailed": {
+    "message": "There was an error loading your estimation."
+  },
+  "simulationPreviewIncomingHeading": {
+    "message": "You receive"
+  },
+  "simulationPreviewNoBalanceChanges": {
+    "message": "No changes predicted for your wallet"
+  },
+  "simulationPreviewOutgoingHeading": {
+    "message": "You send"
+  },
+  "simulationPreviewTitle": {
+    "message": "Estimated changes"
+  },
+  "simulationPreviewTitleTooltip": {
+    "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationsSettingDescription": {
+    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
+  },
+  "simulationsSettingSubHeader": {
+    "message": "Estimate balance changes"
   },
   "siteConnections": {
     "message": "Site Connections"

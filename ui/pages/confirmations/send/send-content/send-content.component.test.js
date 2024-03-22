@@ -67,9 +67,7 @@ describe('SendContent Component', () => {
         showHexData: true,
       });
 
-      await waitFor(() => {
-        expect(container).toMatchSnapshot();
-      });
+      expect(container).toMatchSnapshot();
     });
   });
 
