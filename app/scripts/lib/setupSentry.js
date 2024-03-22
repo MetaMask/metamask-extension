@@ -384,7 +384,7 @@ export const SENTRY_UI_STATE = {
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
     switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: true,
+    switchedNetworkNeverShowMessage: false,
   },
   unconnectedAccount: true,
 };

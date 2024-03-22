@@ -249,7 +249,6 @@ export default class Routes extends Component {
     const {
       theme,
       account,
-      neverShowSwitchedNetworkMessage,
       networkToAutomaticallySwitchTo,
       activeTabOrigin,
       unapprovedTransactions,
@@ -267,18 +266,16 @@ export default class Routes extends Component {
     // no longer has unapprovedTransactions and they
     // should be on a different network for the
     // currently active tab's dapp
-    if (!neverShowSwitchedNetworkMessage) {
-      if (
-        networkToAutomaticallySwitchTo &&
-        unapprovedTransactions === 0 &&
-        (prevProps.unapprovedTransactions > 0 ||
-          (prevProps.isUnlocked === false && isUnlocked))
-      ) {
-        this.props.automaticallySwitchNetwork(
-          networkToAutomaticallySwitchTo,
-          activeTabOrigin,
-        );
-      }
+    if (
+      networkToAutomaticallySwitchTo &&
+      unapprovedTransactions === 0 &&
+      (prevProps.unapprovedTransactions > 0 ||
+        (prevProps.isUnlocked === false && isUnlocked))
+    ) {
+      this.props.automaticallySwitchNetwork(
+        networkToAutomaticallySwitchTo,
+        activeTabOrigin,
+      );
     }
   }
 
@@ -642,6 +639,7 @@ export default class Routes extends Component {
       switchedNetworkDetails,
       setSwitchedNetworkDetails,
       setSwitchedNetworkNeverShowMessage,
+      neverShowSwitchedNetworkMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -785,7 +783,7 @@ export default class Routes extends Component {
               onClose={() => this.setState({ hideConnectAccountToast: true })}
             />
           ) : null}
-          {switchedNetworkDetails ? (
+          {switchedNetworkDetails && !neverShowSwitchedNetworkMessage ? (
             <Toast
               key="switched-network-toast"
               startAdornment={

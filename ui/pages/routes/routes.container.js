@@ -76,15 +76,16 @@ function mapStateToProps(state) {
     getNetworkToAutomaticallySwitchTo(state);
   const allNetworks = getAllNetworks(state);
   const switchedNetworkDetailsObj = getSwitchedNetworkDetails(state);
+
   let switchedNetworkDetails = null;
   if (switchedNetworkDetailsObj) {
-    const switchedNetwork = allNetworks.find((network) => {
-      return switchedNetworkDetailsObj.networkClientId === network.id;
-    });
+    const switchedNetwork = allNetworks.find(
+      ({ id }) => switchedNetworkDetailsObj.networkClientId === id,
+    );
     switchedNetworkDetails = {
       nickname: switchedNetwork?.nickname,
       imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
-      origin: switchedNetworkDetails?.origin,
+      origin: switchedNetworkDetailsObj?.origin,
     };
   }
 
