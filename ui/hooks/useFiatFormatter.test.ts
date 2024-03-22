@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import {useFiatFormatter} from './useFiatFormatter';
 import { getCurrentLocale } from '../ducks/locale/locale';
 import { getCurrentCurrency } from '../selectors';
+import { useFiatFormatter } from './useFiatFormatter';
 
 // Mock the getCurrentLocale and getCurrentCurrency functions
 jest.mock('react-redux', () => ({
