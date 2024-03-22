@@ -39,16 +39,14 @@ function transformState(state: Record<string, any>) {
     );
     state.PreferencesController = {};
   } else if (
-    !hasProperty(state.PreferencesController, 'transactionSecurityCheckEnabled')
+    hasProperty(state.PreferencesController, 'transactionSecurityCheckEnabled')
   ) {
-    return state;
-  }
+    if (state.PreferencesController.transactionSecurityCheckEnabled) {
+      state.PreferencesController.securityAlertsEnabled = true;
+    }
 
-  if (state.PreferencesController.transactionSecurityCheckEnabled) {
-    state.PreferencesController.securityAlertsEnabled = true;
+    delete state.PreferencesController.transactionSecurityCheckEnabled;
   }
-
-  delete state.PreferencesController.transactionSecurityCheckEnabled;
 
   return state;
 }
