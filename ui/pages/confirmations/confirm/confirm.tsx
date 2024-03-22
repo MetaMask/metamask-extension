@@ -26,7 +26,10 @@ const Confirm = () => {
         <MMISignatureMismatchBanner />
         ///: END:ONLY_INCLUDE_IF
       }
-      <Content backgroundColor={BackgroundColor.backgroundAlternative}>
+      <Content
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        paddingBottom={0}
+      >
         <Title />
         <ScrollToBottom>
           <Info />
