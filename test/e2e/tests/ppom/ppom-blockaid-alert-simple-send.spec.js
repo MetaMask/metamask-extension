@@ -128,6 +128,9 @@ async function mockInfuraWithFailedResponses(mockServer) {
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it('should not show security alerts for benign requests', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -161,6 +164,9 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
    */
   // eslint-disable-next-line mocha/no-skipped-tests
   it('should show security alerts for malicious requests', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,

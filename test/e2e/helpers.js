@@ -741,16 +741,36 @@ const sendScreenToConfirmScreen = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-
-  // TODO: Update Test when Multichain Send Flow is added
   if (process.env.MULTICHAIN) {
-    return;
+    // check if element exists and click it
+    await driver
+      .findElement({
+        text: 'I understand',
+        tag: 'button',
+      })
+      .then(
+        (_found) => {
+          driver.clickElement({
+            text: 'I understand',
+            tag: 'button',
+          });
+        },
+        (error) => {
+          console.error('Element not found.', error);
+        },
+      );
+
+    await driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+  } else {
+    await driver.clickElement({
+      text: 'Next',
+      tag: 'button',
+      css: '[data-testid="page-container-footer-next"]',
+    });
   }
-  await driver.clickElement({
-    text: 'Next',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  });
 };
 
 const sendTransaction = async (
