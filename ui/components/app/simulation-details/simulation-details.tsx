@@ -47,7 +47,10 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
   const t = useI18nContext();
 
   function getMessage() {
-    if (error.isReverted) {
+    if (
+      error.isReverted ||
+      error.message?.includes('insufficient funds for gas')
+    ) {
       return t('simulationDetailsTransactionReverted');
     }
     if (error.message?.includes('Chain is not supported')) {

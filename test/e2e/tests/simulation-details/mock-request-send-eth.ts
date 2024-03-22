@@ -1,5 +1,14 @@
 import { RECIPIENT_ADDRESS_MOCK, RequestResponse, SENDER_ADDRESS_MOCK } from "./types";
 
+export const SEND_ETH_TRANSACTION_MOCK = {
+  "data": "0x",
+  "from": SENDER_ADDRESS_MOCK,
+  "maxFeePerGas": "0x0",
+  "maxPriorityFeePerGas": "0x0",
+  "to": RECIPIENT_ADDRESS_MOCK,
+  "value": "0x38d7ea4c68000"
+};
+
 export const SEND_ETH_REQUEST_MOCK: RequestResponse = {
   request: {
     "id": "0",
@@ -7,15 +16,7 @@ export const SEND_ETH_REQUEST_MOCK: RequestResponse = {
     "method": "infura_simulateTransactions",
     "params": [
       {
-        "transactions": [
-          {
-            "from": SENDER_ADDRESS_MOCK,
-            "maxFeePerGas": "0x0",
-            "maxPriorityFeePerGas": "0x0",
-            "to": RECIPIENT_ADDRESS_MOCK,
-            "value": "0x38d7ea4c68000"
-          }
-        ],
+        "transactions": [SEND_ETH_TRANSACTION_MOCK],
         "withCallTrace": true,
         "withLogs": true
       }

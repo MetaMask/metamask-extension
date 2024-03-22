@@ -2,7 +2,8 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import { sortBalanceChanges } from './sortBalanceChanges';
 import { BalanceChange, FIAT_UNAVAILABLE } from './types';
 
-describe('compareBalanceChanges', () => {
+describe('sortBalanceChanges', () => {
+  // Create a mock balance change object.
   const bc = (
     fiatAmount: number | typeof FIAT_UNAVAILABLE,
     standard: TokenStandard,
