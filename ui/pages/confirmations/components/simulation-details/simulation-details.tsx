@@ -171,7 +171,7 @@ function useLoadingTime() {
  *
  * @param props
  * @param props.simulationData - The simulation data to display.
- * @param props.transactionId
+ * @param props.transactionId - The ID of the transaction being simulated.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,

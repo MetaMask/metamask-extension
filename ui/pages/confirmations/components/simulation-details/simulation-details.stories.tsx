@@ -1,9 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
+import configureStore from '../../../../store/store';
 import { SimulationDetails } from './simulation-details';
-import mockState from '../../../../test/data/mock-state.json';
+import mockState from '../../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
