@@ -473,6 +473,10 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+export function getAllDomains(state) {
+  return state.metamask.domains;
+}
+
 export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
@@ -717,6 +721,9 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getSendInputCurrencySwitched({ appState }) {
+  return appState.sendInputCurrencySwitched;
+}
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
@@ -1250,7 +1257,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
-
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
@@ -1266,7 +1272,22 @@ export const getConnectedSitesList = createDeepEqualSelector(
         }
       });
     });
+    return sitesList;
+  },
+);
 
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  (sitesList, domains, networks) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      sitesList[siteKey].networkName = connectedNetwork.nickname;
+    });
     return sitesList;
   },
 );

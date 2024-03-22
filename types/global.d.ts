@@ -244,4 +244,9 @@ export declare global {
       toNeverResolve(): Promise<R>;
     }
   }
+
+  /**
+   * Unions T with U; U's properties will override T's properties
+   */
+  type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 }
