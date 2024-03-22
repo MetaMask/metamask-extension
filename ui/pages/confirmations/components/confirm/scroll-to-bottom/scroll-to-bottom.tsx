@@ -49,6 +49,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
 
   return (
     <Box
+      backgroundColor={BackgroundColor.backgroundAlternative}
       width={BlockSize.Full}
       height={BlockSize.Full}
       style={{
@@ -67,6 +68,8 @@ const ScrollToBottom = ({ children }: ContentProps) => {
         flexDirection={FlexDirection.Column}
         width={BlockSize.Full}
         height={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
         onScroll={onScroll}
         ref={ref}
         style={{ overflow: 'auto' }}
