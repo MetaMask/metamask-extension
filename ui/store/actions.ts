@@ -4741,6 +4741,14 @@ export function setUseExternalNameSources(val: boolean): void {
   }
 }
 
+export function setUseTransactionSimulations(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseTransactionSimulations', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }

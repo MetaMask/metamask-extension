@@ -3267,10 +3267,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at pagkapribado"
   },
-  "securityProviderPoweredBy": {
-    "message": "Pinapagana ng $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Tingnan ang mga detalye"
   },

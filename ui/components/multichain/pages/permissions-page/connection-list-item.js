@@ -16,6 +16,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AvatarFavicon,
+  AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -60,10 +62,12 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         ) : (
           <BadgeWrapper
             badge={
-              <Icon
-                name={IconName.Global}
-                color={IconColor.iconDefault}
-                size={IconSize.Xs}
+              <AvatarNetwork
+                data-testid="connection-list-item__avatar-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={connection.networkName}
+                src={connection.networkIconUrl}
+                borderWidth={1}
                 borderColor={BackgroundColor.backgroundDefault}
               />
             }

@@ -1,5 +1,5 @@
 import FixtureBuilder from "../../fixture-builder";
-import { unlockWallet, withFixtures, openActionMenuAndStartSendFlow, createDappTransaction, switchToNotificationWindow } from "../../helpers";
+import { unlockWallet, withFixtures, createDappTransaction, switchToNotificationWindow } from "../../helpers";
 import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from "../../../../shared/constants/network";
 import { Mockttp, MockttpServer } from "mockttp";
@@ -91,7 +91,7 @@ export async function mockRequest(
   }
 
 
-describe.skip('Simulation Details', () => {
+describe('Simulation Details', () => {
   it('renders send eth transaction', async function (this: Mocha.Context) {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
@@ -154,7 +154,10 @@ describe.skip('Simulation Details', () => {
       await createDappTransaction(driver, NO_CHANGES_TRANSACTION_MOCK);
 
       await switchToNotificationWindow(driver);
-      driver.findElement({ text: 'No changes predicted for your wallet'});
+      await driver.findElement({
+        css: '[data-testid="simulation-details-layout"]',
+        text: 'No changes predicted for your wallet',
+      });
     });
   });
 
@@ -166,11 +169,14 @@ describe.skip('Simulation Details', () => {
       await createDappTransaction(driver, INSUFFICIENT_GAS_TRANSACTION_MOCK);
 
       await switchToNotificationWindow(driver);
-      driver.findElement({ text: 'This transaction is likely to fail'});
+      await driver.findElement({
+        css: '[data-testid="simulation-details-layout"]',
+        text: 'This transaction is likely to fail',
+      });
     });
   });
 
-  it('displays error message if chain is not supported', async function (this: Mocha.Context) {
+  it('does not display if chain is not supported', async function (this: Mocha.Context) {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
     }
@@ -182,7 +188,10 @@ describe.skip('Simulation Details', () => {
       await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
 
       await switchToNotificationWindow(driver);
-      driver.findElement({ text: 'The current chain does not support simulations'});
+      await driver.assertElementNotPresent(
+        '[data-testid="simulation-details-layout"]',
+        { waitAtLeastGuard: 1000 },
+      );
     });
   });
 
@@ -197,7 +206,10 @@ describe.skip('Simulation Details', () => {
       await createDappTransaction(driver, MALFORMED_TRANSACTION_MOCK);
 
       await switchToNotificationWindow(driver);
-      driver.findElement({ text: 'There was an error loading your estimation'});
+      await driver.findElement({
+        css: '[data-testid="simulation-details-layout"]',
+        text: 'There was an error loading your estimation',
+      });
     });
   });
 });
