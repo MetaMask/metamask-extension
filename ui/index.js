@@ -16,7 +16,6 @@ import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getNeverShowSwitchedNetworkMessage,
   getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
@@ -186,10 +185,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   // for one dapp, and automatically change for another
   const state = store.getState();
   const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
-  const neverShowSwitchedNetworkMessage =
-    getNeverShowSwitchedNetworkMessage(state);
 
-  if (networkIdToSwitchTo && !neverShowSwitchedNetworkMessage) {
+  if (networkIdToSwitchTo) {
     await store.dispatch(
       actions.automaticallySwitchNetwork(
         networkIdToSwitchTo,

@@ -2174,19 +2174,15 @@ export function clearPendingTokens(): Action {
 }
 
 export function automaticallySwitchNetwork(
-  networkClientIdForThisDomain: NetworkType,
+  networkClientIdForThisDomain: string,
   selectedTabOrigin: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(setActiveNetwork(networkClientIdForThisDomain));
-
-    // Show toast notifying user of network change
-    if (!neverShowSwitchedNetworkMessage) {
-      await setSwitchedNetworkDetails({
-        networkClientId: networkClientIdForThisDomain,
-        origin: selectedTabOrigin,
-      });
-    }
+    await setSwitchedNetworkDetails({
+      networkClientId: networkClientIdForThisDomain,
+      origin: selectedTabOrigin,
+    });
   };
 }
 
