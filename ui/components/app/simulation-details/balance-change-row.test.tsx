@@ -50,14 +50,15 @@ describe('BalanceChangeRow', () => {
 
   it('renders AmountPill with the balance change', () => {
     render(<BalanceChangeRow showFiat={false} balanceChange={balanceChange} />);
-    expect(AmountPill).toHaveBeenCalledWith(balanceChange, expect.anything());
+    const { asset, amount } = balanceChange;
+    expect(AmountPill).toHaveBeenCalledWith({ asset, amount }, {});
   });
 
   it('renders AssetPill with the balance change asset', () => {
     render(<BalanceChangeRow showFiat={false} balanceChange={balanceChange} />);
     expect(AssetPill).toHaveBeenCalledWith(
       expect.objectContaining({ asset: balanceChange.asset }),
-      expect.anything(),
+      {},
     );
   });
 
@@ -65,7 +66,7 @@ describe('BalanceChangeRow', () => {
     render(<BalanceChangeRow showFiat balanceChange={balanceChange} />);
     expect(IndividualFiatDisplay).toHaveBeenCalledWith(
       expect.objectContaining({ fiatAmount: balanceChange.fiatAmount }),
-      expect.anything(),
+      {},
     );
   });
 

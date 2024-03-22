@@ -21,7 +21,7 @@ jest.mock('./balance-change-list', () => ({
 
 const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
   renderWithProvider(
-    <SimulationDetails simulationData={simulationData} />,
+    <SimulationDetails simulationData={simulationData as SimulationData} />,
     store,
   );
 
@@ -104,7 +104,7 @@ describe('SimulationDetails', () => {
         heading: 'You send',
         balanceChanges: [balanceChangesMock[0]],
       }),
-      expect.anything(),
+      {},
     );
 
     expect(BalanceChangeList).toHaveBeenCalledWith(
@@ -112,7 +112,7 @@ describe('SimulationDetails', () => {
         heading: 'You receive',
         balanceChanges: [balanceChangesMock[1]],
       }),
-      expect.anything(),
+      {},
     );
   });
 });

@@ -24,6 +24,7 @@ export const BalanceChangeRow: React.FC<{
   showFiat?: boolean;
   balanceChange: BalanceChange;
 }> = ({ label, showFiat, balanceChange }) => {
+  const { asset, amount, fiatAmount } = balanceChange;
   return (
     <Box
       data-testid="simulation-details-balance-change-row"
@@ -40,12 +41,10 @@ export const BalanceChangeRow: React.FC<{
         marginLeft={'auto'}
       >
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={1}>
-          <AmountPill {...balanceChange} />
-          <AssetPill asset={balanceChange.asset} />
+          <AmountPill asset={asset} amount={amount} />
+          <AssetPill asset={asset} />
         </Box>
-        {showFiat && (
-          <IndividualFiatDisplay fiatAmount={balanceChange.fiatAmount} />
-        )}
+        {showFiat && <IndividualFiatDisplay fiatAmount={fiatAmount} />}
       </Box>
     </Box>
   );
