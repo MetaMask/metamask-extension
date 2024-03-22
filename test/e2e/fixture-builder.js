@@ -189,7 +189,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
-        useTransactionSimulations: true,
       },
       SelectedNetworkController: {
         domains: {},
