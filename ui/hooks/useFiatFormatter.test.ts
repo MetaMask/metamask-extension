@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import { getCurrentLocale } from '../ducks/locale/locale';
 import { getCurrentCurrency } from '../selectors';
