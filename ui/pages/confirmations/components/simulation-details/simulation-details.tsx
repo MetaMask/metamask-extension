@@ -3,7 +3,12 @@ import {
   SimulationData,
   SimulationError,
 } from '@metamask/transaction-controller';
-import { Box, Icon, IconName, Text } from '../../../../components/component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  Text,
+} from '../../../../components/component-library';
 import {
   AlignItems,
   BorderColor,
