@@ -3,7 +3,6 @@ import { BalanceChange } from './types';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { calculateTotalFiat } from './fiat-display';
 import { useContext, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../pages/confirmations/hooks/useTransactionEventFragment';
 import {
   UseDisplayNameRequest,
@@ -56,8 +55,6 @@ export function useSimulationMetrics({
   simulationData,
   transactionId,
 }: UseSimulationMetricsProps) {
-  const dispatch = useDispatch();
-
   const displayNameRequests: UseDisplayNameRequest[] = balanceChanges.map(
     ({ asset }) => ({
       value: asset.address ?? '',
@@ -111,12 +108,11 @@ export function useSimulationMetrics({
     ...getSensitiveProperties(sendingAssets, 'simulation_sending_assets_'),
   };
 
+  const params = { properties, sensitiveProperties };
+
   useEffect(() => {
-    updateTransactionEventFragment(
-      { properties, sensitiveProperties },
-      transactionId,
-    );
-  }, [dispatch, transactionId, JSON.stringify(properties)]);
+    updateTransactionEventFragment(params, transactionId);
+  }, [transactionId, JSON.stringify(params)]);
 }
 
 function useIncompleteAssetEvent(
