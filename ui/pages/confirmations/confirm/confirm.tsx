@@ -4,7 +4,7 @@ import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';
 import { Info } from '../components/confirm/info';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { MMISignatureMismatchBanner } from '../components/confirm/mmi-signature-mismatch-banner';
+import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signature-mismatch-banner';
 ///: END:ONLY_INCLUDE_IF
 import { Nav } from '../components/confirm/nav';
 import { Title } from '../components/confirm/title';

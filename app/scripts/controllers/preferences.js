@@ -109,6 +109,9 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
+      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+      useTransactionSimulations: true,
+      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -300,6 +303,19 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
+  /**
+   * Setter for the `useTransactionSimulations` property
+   *
+   * @param {boolean} useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
+   */
+  setUseTransactionSimulations(useTransactionSimulations) {
+    this.store.updateState({
+      useTransactionSimulations,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property
