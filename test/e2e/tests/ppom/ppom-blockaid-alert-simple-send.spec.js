@@ -127,7 +127,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should not show security alerts for benign requests', async function () {
+  it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -160,7 +160,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show security alerts for malicious requests', async function () {
+  it('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -180,7 +180,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
 
         await sendScreenToConfirmScreen(
           driver,
-          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
+          '0x5FbDB2315678afecb367f032d93F642f64180aa3',
           '1',
         );
 
