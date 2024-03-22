@@ -32,6 +32,15 @@ import ConfirmTransactionBase from './confirm-transaction-base.container';
 const middleware = [thunk];
 
 setBackgroundConnection({
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      chainId: '0x5',
+    }),
+  ),
   getGasFeeTimeEstimate: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),
@@ -200,43 +209,87 @@ const baseStore = {
   },
 };
 
-const mockedStore = jest.mocked(baseStore);
+const mockedStoreWithConfirmTxParams = (
+  store,
+  _mockTxParams = mockTxParams,
+) => {
+  const [firstTx, ...restTxs] = store.metamask.transactions;
 
-const mockedStoreWithConfirmTxParams = (_mockTxParams = mockTxParams) => {
-  mockedStore.metamask.transactions[0].txParams = { ..._mockTxParams };
-  mockedStore.confirmTransaction.txData.txParams = { ..._mockTxParams };
+  return {
+    ...store,
+    metamask: {
+      ...store.metamask,
+      transactions: [
+        {
+          ...firstTx,
+          txParams: {
+            ..._mockTxParams,
+          },
+        },
+        ...restTxs,
+      ],
+    },
+    confirmTransaction: {
+      ...store.confirmTransaction,
+      txData: {
+        ...store.confirmTransaction.txData,
+        txParams: {
+          ..._mockTxParams,
+        },
+      },
+    },
+  };
 };
 
 const sendToRecipientSelector =
   '.sender-to-recipient__party--recipient .sender-to-recipient__name';
 
+const render = async ({ props, state } = {}) => {
+  const store = configureMockStore(middleware)({
+    ...baseStore,
+    ...state,
+  });
+
+  const componentProps = {
+    actionKey: 'confirm',
+    ...props,
+  };
+
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <ConfirmTransactionBase {...componentProps} />,
+        store,
+      )),
+  );
+
+  return result;
+};
+
 describe('Confirm Transaction Base', () => {
-  it('should match snapshot', () => {
-    const store = configureMockStore(middleware)(baseStore);
-    const { container } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
+  it('should match snapshot', async () => {
+    const { container } = await render();
     expect(container).toMatchSnapshot();
   });
 
-  it('should not contain L1 L2 fee details for chains that are not optimism', () => {
-    const store = configureMockStore(middleware)(baseStore);
-    const { queryByText } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
+  it('should not contain L1 L2 fee details for chains that are not optimism', async () => {
+    const { queryByText } = await render();
+
     expect(queryByText('Layer 1 fees')).not.toBeInTheDocument();
     expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
   });
 
-  it('should render only total fee details if simulation fails', () => {
-    mockedStore.send.hasSimulationError = true;
-    const store = configureMockStore(middleware)(mockedStore);
-    const { queryByText } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
+  it('should render only total fee details if simulation fails', async () => {
+    const state = {
+      send: {
+        ...baseStore.send,
+        hasSimulationError: true,
+      },
+    };
+
+    const { queryByText } = await render({ state });
 
     expect(queryByText('Total')).toBeInTheDocument();
     expect(queryByText('Amount + gas fee')).toBeInTheDocument();
@@ -244,19 +297,18 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Estimated fee')).not.toBeInTheDocument();
   });
 
-  it('renders blockaid security alert if recipient is a malicious address', () => {
-    const newMockedStore = {
-      ...mockedStore,
+  it('renders blockaid security alert if recipient is a malicious address', async () => {
+    const state = {
       send: {
-        ...mockedStore.send,
+        ...baseStore.send,
         hasSimulationError: false,
       },
       confirmTransaction: {
-        ...mockedStore.confirmTransaction,
+        ...baseStore.confirmTransaction,
         txData: {
-          ...mockedStore.confirmTransaction.txData,
+          ...baseStore.confirmTransaction.txData,
           txParams: {
-            ...mockedStore.confirmTransaction.txData.txParams,
+            ...baseStore.confirmTransaction.txData.txParams,
             to: mockMaliciousToAddress,
           },
           securityAlertResponse: {
@@ -268,12 +320,7 @@ describe('Confirm Transaction Base', () => {
       },
     };
 
-    const store = configureMockStore(middleware)(newMockedStore);
-
-    const { getByTestId } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
+    const { getByTestId } = await render({ state });
 
     const securityProviderBanner = getByTestId(
       'security-provider-banner-alert',
@@ -281,63 +328,74 @@ describe('Confirm Transaction Base', () => {
     expect(securityProviderBanner).toBeInTheDocument();
   });
 
-  it('should contain L1 L2 fee details for optimism', () => {
-    mockedStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
-    mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
-    const store = configureMockStore(middleware)(mockedStore);
-    const { queryByText } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
+  it('should contain L1 L2 fee details for optimism', async () => {
+    const state = {
+      metamask: {
+        ...baseStore.metamask,
+        providerConfig: {
+          ...baseStore.metamask.providerConfig,
+          chainId: CHAIN_IDS.OPTIMISM,
+        },
+      },
+      confirmTransaction: {
+        ...baseStore.confirmTransaction,
+        txData: {
+          ...baseStore.confirmTransaction.txData,
+          chainId: CHAIN_IDS.OPTIMISM,
+        },
+      },
+    };
+
+    const { queryByText } = await render({ state });
+
     expect(queryByText('Layer 1 fees')).toBeInTheDocument();
     expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
   });
 
-  it('should render NoteToTrader when isNoteToTraderSupported is true', () => {
-    mockedStore.metamask.custodyAccountDetails = {
-      [mockTxParamsFromAddress]: {
-        address: mockTxParamsFromAddress,
-        details: 'details',
-        custodyType: 'testCustody - Saturn',
-        custodianName: 'saturn-dev',
+  it('should render NoteToTrader when isNoteToTraderSupported is true', async () => {
+    const state = {
+      metamask: {
+        ...baseStore.metamask,
+        custodyAccountDetails: {
+          [mockTxParamsFromAddress]: {
+            address: mockTxParamsFromAddress,
+            details: 'details',
+            custodyType: 'testCustody - Saturn',
+            custodianName: 'saturn-dev',
+          },
+        },
+        mmiConfiguration: {
+          custodians: [
+            {
+              envName: 'saturn-dev',
+              displayName: 'Saturn Custody',
+              isNoteToTraderSupported: true,
+            },
+          ],
+        },
       },
     };
 
-    mockedStore.metamask.mmiConfiguration = {
-      custodians: [
-        {
-          envName: 'saturn-dev',
-          displayName: 'Saturn Custody',
-          isNoteToTraderSupported: true,
-        },
-      ],
-    };
-
-    const store = configureMockStore(middleware)(mockedStore);
-    const { getByTestId } = renderWithProvider(
-      <ConfirmTransactionBase actionKey="confirm" />,
-      store,
-    );
+    const { getByTestId } = await render({ state });
 
     expect(getByTestId('note-tab')).toBeInTheDocument();
   });
 
   it('handleMMISubmit calls sendTransaction correctly when isNoteToTraderSupported is false', async () => {
-    const newMockedStore = {
-      ...mockedStore,
+    const state = {
       appState: {
-        ...mockedStore.appState,
+        ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
       },
       confirmTransaction: {
-        ...mockedStore.confirmTransaction,
+        ...baseStore.confirmTransaction,
         txData: {
-          ...mockedStore.confirmTransaction.txData,
+          ...baseStore.confirmTransaction.txData,
           custodyStatus: true,
         },
       },
       metamask: {
-        ...mockedStore.metamask,
+        ...baseStore.metamask,
         accounts: {
           [mockTxParamsFromAddress]: {
             balance: '0x1000000000000000000',
@@ -347,7 +405,7 @@ describe('Confirm Transaction Base', () => {
         gasEstimateType: GasEstimateTypes.feeMarket,
         selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
-          ...mockedStore.metamask.networksMetadata,
+          ...baseStore.metamask.networksMetadata,
           [NetworkType.mainnet]: {
             EIPS: {
               1559: true,
@@ -385,9 +443,9 @@ describe('Confirm Transaction Base', () => {
         },
       },
       send: {
-        ...mockedStore.send,
+        ...baseStore.send,
         gas: {
-          ...mockedStore.send.gas,
+          ...baseStore.send.gas,
           gasEstimateType: GasEstimateTypes.legacy,
           gasFeeEstimates: {
             low: '0',
@@ -404,27 +462,24 @@ describe('Confirm Transaction Base', () => {
       },
     };
 
-    const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest
       .fn()
-      .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+      .mockResolvedValue(state.confirmTransaction.txData);
     const updateTransaction = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
-    const { getByTestId } = renderWithProvider(
-      <ConfirmTransactionBase
-        actionKey="confirm"
-        sendTransaction={sendTransaction}
-        updateTransaction={updateTransaction}
-        showCustodianDeepLink={showCustodianDeepLink}
-        setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
-        toAddress={mockPropsToAddress}
-        toAccounts={[{ address: mockPropsToAddress }]}
-        isMainBetaFlask={false}
-      />,
-      store,
-    );
+    const props = {
+      sendTransaction,
+      updateTransaction,
+      showCustodianDeepLink,
+      setWaitForConfirmDeepLinkDialog,
+      toAddress: mockPropsToAddress,
+      toAccounts: [{ address: mockPropsToAddress }],
+      isMainBetaFlask: false,
+    };
+
+    const { getByTestId } = await render({ props, state });
 
     const confirmButton = getByTestId('page-container-footer-next');
 
@@ -436,14 +491,13 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('handleMainSubmit calls sendTransaction correctly', async () => {
-    const newMockedStore = {
-      ...mockedStore,
+    const state = {
       appState: {
-        ...mockedStore.appState,
+        ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
       },
       metamask: {
-        ...mockedStore.metamask,
+        ...baseStore.metamask,
         accounts: {
           [mockTxParamsFromAddress]: {
             balance: '0x1000000000000000000',
@@ -453,7 +507,7 @@ describe('Confirm Transaction Base', () => {
         gasEstimateType: GasEstimateTypes.feeMarket,
         selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
-          ...mockedStore.metamask.networksMetadata,
+          ...baseStore.metamask.networksMetadata,
           [NetworkType.mainnet]: {
             EIPS: { 1559: true },
             status: NetworkStatus.Available,
@@ -466,9 +520,9 @@ describe('Confirm Transaction Base', () => {
         noGasPrice: false,
       },
       send: {
-        ...mockedStore.send,
+        ...baseStore.send,
         gas: {
-          ...mockedStore.send.gas,
+          ...baseStore.send.gas,
           gasEstimateType: GasEstimateTypes.legacy,
           gasFeeEstimates: {
             low: '0',
@@ -485,39 +539,38 @@ describe('Confirm Transaction Base', () => {
       },
     };
 
-    const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest.fn().mockResolvedValue();
 
-    const { getByTestId } = renderWithProvider(
-      <ConfirmTransactionBase
-        actionKey="confirm"
-        sendTransaction={sendTransaction}
-        toAddress={mockPropsToAddress}
-        toAccounts={[{ address: mockPropsToAddress }]}
-      />,
-      store,
-    );
+    const props = {
+      sendTransaction,
+      toAddress: mockPropsToAddress,
+      toAccounts: [{ address: mockPropsToAddress }],
+    };
+
+    const { getByTestId } = await render({ props, state });
+
     const confirmButton = getByTestId('page-container-footer-next');
-    fireEvent.click(confirmButton);
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
     expect(sendTransaction).toHaveBeenCalled();
   });
 
   it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
-    const newMockedStore = {
-      ...mockedStore,
+    const state = {
       appState: {
-        ...mockedStore.appState,
+        ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
       },
       confirmTransaction: {
-        ...mockedStore.confirmTransaction,
+        ...baseStore.confirmTransaction,
         txData: {
-          ...mockedStore.confirmTransaction.txData,
+          ...baseStore.confirmTransaction.txData,
           custodyStatus: true,
         },
       },
       metamask: {
-        ...mockedStore.metamask,
+        ...baseStore.metamask,
         accounts: {
           [mockTxParamsFromAddress]: {
             balance: '0x1000000000000000000',
@@ -527,7 +580,7 @@ describe('Confirm Transaction Base', () => {
         gasEstimateType: GasEstimateTypes.feeMarket,
         selectedNetworkClientId: NetworkType.mainnet,
         networksMetadata: {
-          ...mockedStore.metamask.networksMetadata,
+          ...baseStore.metamask.networksMetadata,
           [NetworkType.mainnet]: {
             EIPS: {
               1559: true,
@@ -542,9 +595,9 @@ describe('Confirm Transaction Base', () => {
         noGasPrice: false,
       },
       send: {
-        ...mockedStore.send,
+        ...baseStore.send,
         gas: {
-          ...mockedStore.send.gas,
+          ...baseStore.send.gas,
           gasEstimateType: GasEstimateTypes.legacy,
           gasFeeEstimates: {
             low: '0',
@@ -561,27 +614,27 @@ describe('Confirm Transaction Base', () => {
       },
     };
 
-    const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest
       .fn()
-      .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+      .mockResolvedValue(state.confirmTransaction.txData);
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
-    const { getByTestId } = renderWithProvider(
-      <ConfirmTransactionBase
-        actionKey="confirm"
-        sendTransaction={sendTransaction}
-        showCustodianDeepLink={showCustodianDeepLink}
-        setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
-        toAddress={mockPropsToAddress}
-        toAccounts={[{ address: mockPropsToAddress }]}
-        isMainBetaFlask={false}
-      />,
-      store,
-    );
+    const props = {
+      sendTransaction,
+      showCustodianDeepLink,
+      setWaitForConfirmDeepLinkDialog,
+      toAddress: mockPropsToAddress,
+      toAccounts: [{ address: mockPropsToAddress }],
+      isMainBetaFlask: false,
+    };
+
+    const { getByTestId } = await render({ props, state });
+
     const confirmButton = getByTestId('page-container-footer-next');
-    fireEvent.click(confirmButton);
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
     expect(setWaitForConfirmDeepLinkDialog).toHaveBeenCalled();
     await expect(sendTransaction).toHaveBeenCalled();
     expect(showCustodianDeepLink).toHaveBeenCalled();
@@ -589,27 +642,19 @@ describe('Confirm Transaction Base', () => {
 
   describe('when rendering the recipient value', () => {
     describe(`when the transaction is a ${TransactionType.simpleSend} type`, () => {
-      it(`should use txParams.to address`, () => {
-        const store = configureMockStore(middleware)(mockedStore);
-        const { container } = renderWithProvider(
-          <ConfirmTransactionBase actionKey="confirm" />,
-          store,
-        );
+      it(`should use txParams.to address`, async () => {
+        const { container } = await render();
 
         const recipientElem = container.querySelector(sendToRecipientSelector);
         expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
       });
 
-      it(`should use txParams.to address even if there is no amount sent`, () => {
-        mockedStoreWithConfirmTxParams({
+      it(`should use txParams.to address even if there is no amount sent`, async () => {
+        const state = mockedStoreWithConfirmTxParams(baseStore, {
           ...mockTxParams,
           value: '0x0',
         });
-        const store = configureMockStore(middleware)(mockedStore);
-        const { container } = renderWithProvider(
-          <ConfirmTransactionBase actionKey="confirm" />,
-          store,
-        );
+        const { container } = await render({ state });
 
         const recipientElem = container.querySelector(sendToRecipientSelector);
         expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
@@ -617,21 +662,22 @@ describe('Confirm Transaction Base', () => {
     });
     describe(`when the transaction is NOT a ${TransactionType.simpleSend} type`, () => {
       beforeEach(() => {
-        mockedStore.confirmTransaction.txData.type =
+        baseStore.confirmTransaction.txData.type =
           TransactionType.contractInteraction;
       });
 
       describe('when there is an amount being sent (it should be treated as a general contract intereaction rather than custom one)', () => {
-        it('should use txParams.to address (contract address)', () => {
-          mockedStoreWithConfirmTxParams({
+        it('should use txParams.to address (contract address)', async () => {
+          const state = mockedStoreWithConfirmTxParams(baseStore, {
             ...mockTxParams,
             value: '0x45666',
           });
-          const store = configureMockStore(middleware)(mockedStore);
-          const { container } = renderWithProvider(
-            <ConfirmTransactionBase actionKey="confirm" />,
-            store,
-          );
+          state.confirmTransaction.txData = {
+            ...state.confirmTransaction.txData,
+            type: TransactionType.contractInteraction,
+          };
+
+          const { container } = await render({ state });
 
           const recipientElem = container.querySelector(
             sendToRecipientSelector,
@@ -641,23 +687,24 @@ describe('Confirm Transaction Base', () => {
       });
 
       describe(`when there is no amount being sent`, () => {
-        it('should use propToAddress (toAddress passed as prop)', () => {
-          mockedStoreWithConfirmTxParams({
+        it('should use propToAddress (toAddress passed as prop)', async () => {
+          const state = mockedStoreWithConfirmTxParams(baseStore, {
             ...mockTxParams,
             value: '0x0',
           });
-          const store = configureMockStore(middleware)(mockedStore);
+          state.confirmTransaction.txData = {
+            ...state.confirmTransaction.txData,
+            type: TransactionType.contractInteraction,
+          };
 
-          const { container } = renderWithProvider(
-            <ConfirmTransactionBase
-              // we want to test toAddress provided by ownProps in mapStateToProps, but this
-              // currently overrides toAddress this should pan out fine when we refactor the
-              // component into a functional component and remove the container.js file
-              toAddress={mockPropsToAddress}
-              actionKey="confirm"
-            />,
-            store,
-          );
+          const props = {
+            // we want to test toAddress provided by ownProps in mapStateToProps, but this
+            // currently overrides toAddress this should pan out fine when we refactor the
+            // component into a functional component and remove the container.js file
+            toAddress: mockPropsToAddress,
+          };
+
+          const { container } = await render({ props, state });
 
           const recipientElem = container.querySelector(
             sendToRecipientSelector,
@@ -665,16 +712,19 @@ describe('Confirm Transaction Base', () => {
           expect(recipientElem).toHaveTextContent(mockPropsToAddressConcat);
         });
 
-        it('should use address parsed from transaction data if propToAddress is not provided', () => {
-          mockedStoreWithConfirmTxParams({
+        it('should use address parsed from transaction data if propToAddress is not provided', async () => {
+          const state = mockedStoreWithConfirmTxParams(baseStore, {
             ...mockTxParams,
             value: '0x0',
           });
-          const store = configureMockStore(middleware)(mockedStore);
-          const { container } = renderWithProvider(
-            <ConfirmTransactionBase actionKey="confirm" />,
-            store,
-          );
+          state.confirmTransaction.txData = {
+            ...state.confirmTransaction.txData,
+            type: TransactionType.contractInteraction,
+          };
+
+          const props = {};
+
+          const { container } = await render({ props, state });
 
           const recipientElem = container.querySelector(
             sendToRecipientSelector,
@@ -682,17 +732,20 @@ describe('Confirm Transaction Base', () => {
           expect(recipientElem).toHaveTextContent(mockParsedTxDataToAddress);
         });
 
-        it('should use txParams.to if neither propToAddress is not provided nor the transaction data to address were provided', () => {
-          mockedStoreWithConfirmTxParams({
+        it('should use txParams.to if neither propToAddress is not provided nor the transaction data to address were provided', async () => {
+          const state = mockedStoreWithConfirmTxParams(baseStore, {
             ...mockTxParams,
             data: '0x',
             value: '0x0',
           });
-          const store = configureMockStore(middleware)(mockedStore);
-          const { container } = renderWithProvider(
-            <ConfirmTransactionBase actionKey="confirm" />,
-            store,
-          );
+          state.confirmTransaction.txData = {
+            ...state.confirmTransaction.txData,
+            type: TransactionType.contractInteraction,
+          };
+
+          const props = {};
+
+          const { container } = await render({ props, state });
 
           const recipientElem = container.querySelector(
             sendToRecipientSelector,
@@ -700,6 +753,51 @@ describe('Confirm Transaction Base', () => {
           expect(recipientElem).toHaveTextContent(mockTxParamsToAddressConcat);
         });
       });
+    });
+  });
+  describe('user op contract deploy attempt', () => {
+    it('should show error and disable Confirm button', async () => {
+      const txParams = {
+        ...mockTxParams,
+        to: undefined,
+        data: '0xa22cb46500000000000000',
+      };
+      const state = {
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          transactions: [
+            {
+              id: baseStore.confirmTransaction.txData.id,
+              chainId: '0x5',
+              status: 'unapproved',
+              txParams,
+            },
+          ],
+        },
+        confirmTransaction: {
+          ...baseStore.confirmTransaction,
+          txData: {
+            ...baseStore.confirmTransaction.txData,
+            type: TransactionType.deployContract,
+            value: '0x0',
+            isUserOperation: true,
+            txParams,
+          },
+        },
+      };
+
+      const { getByTestId } = await render({ state });
+
+      const banner = getByTestId(
+        'confirm-page-container-content-error-banner-2',
+      );
+      expect(banner).toHaveTextContent(
+        /Contract deployment from a smart contract account is not supported/u,
+      );
+
+      const confirmButton = getByTestId('page-container-footer-next');
+      expect(confirmButton).toBeDisabled();
     });
   });
 });

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .unlock-page {
   color: var(--color-text-default);
   display: flex;
@@ -35,7 +37,7 @@
   }
 
   &__title {
-    @include H2;
+    @include design-system.H2;
 
     margin-top: 5px;
     font-weight: 800;

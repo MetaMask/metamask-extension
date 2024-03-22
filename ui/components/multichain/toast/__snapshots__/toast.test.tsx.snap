@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Toast should render Toast component 1`] = `
+<div>
+  <div
+    class="mm-box mm-banner-base mm-box--padding-3 mm-box--display-flex mm-box--gap-2 mm-box--background-color-background-default mm-box--rounded-sm"
+    data-theme="light"
+  >
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-4"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          <div
+            class="mm-avatar-account__jazzicon"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 165, 242);"
+            >
+              <svg
+                height="32"
+                width="32"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#018E8C"
+                  height="32"
+                  transform="translate(6.427263444332595 -1.7203295797723996) rotate(470.8 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F93301"
+                  height="32"
+                  transform="translate(1.1564119766476293 16.128853746500315) rotate(198.5 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FA6800"
+                  height="32"
+                  transform="translate(22.348080171264016 5.115369684577057) rotate(148.9 16 16)"
+                  width="32"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            This is the Toast text
+          </p>
+          <button
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          >
+            Take some action
+          </button>
+        </div>
+      </div>
+    </div>
+    <button
+      aria-label="[close]"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/close.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;

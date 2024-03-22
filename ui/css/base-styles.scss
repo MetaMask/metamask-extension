@@ -1,4 +1,4 @@
-
+@use "design-system";
 
 * {
   box-sizing: border-box;
@@ -18,7 +18,7 @@ body {
 html {
   min-height: 500px;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     &:not([data-theme]) {
       background-color: var(--color-background-default);
     }
@@ -35,7 +35,7 @@ html {
       background-color: var(--brand-colors-grey-grey900);
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       &:not([data-theme]) {
         background-color: var(--brand-colors-grey-grey800);
       }
@@ -66,7 +66,7 @@ html {
     background: var(--color-background-alternative);
   }
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     html[data-theme] & {
       background-color: var(--color-background-default);
     }
@@ -126,5 +126,5 @@ input.form-control {
 
 /** Default Typography on base elements **/
 * {
-  font-family: $font-family;
+  font-family: design-system.$font-family;
 }

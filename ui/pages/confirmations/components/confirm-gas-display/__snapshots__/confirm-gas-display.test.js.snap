@@ -42,12 +42,12 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             </button>
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              title="0"
+              title="0.001197"
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
-                0
+                0.001197
               </span>
             </div>
           </div>
@@ -60,12 +60,12 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              title="0 ETH"
+              title="0.001197 ETH"
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
-                0
+                0.001197
               </span>
               <span
                 class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
@@ -87,7 +87,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
           >
-            Advanced
+            Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-success-default"
@@ -96,7 +96,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
               data-testid="gas-timing-time"
             >
               ~
-              1 sec
+              5 min
             </span>
           </p>
         </div>
@@ -119,12 +119,12 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              title="0 ETH"
+              title="0.00147 ETH"
             >
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
-                0
+                0.00147
               </span>
               <span
                 class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"

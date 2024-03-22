@@ -263,11 +263,30 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#proposed-nicknames`,
     icon: 'fa fa-lock',
   },
-  /**
-   * settingsRefs 15-17 will be handled in a future PR
-   *
-   * @see {@link https://github.com/MetaMask/metamask-extension/pull/22967}
-   */
+  // securityAndPrivacy settingsRefs[15]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${SECURITY_ROUTE}#security-alerts`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[16]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('blockaid'),
+    descriptionMessage: (t) => t('blockaidMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[17]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('openSeaLabel'),
+    descriptionMessage: (t) => t('openSeaMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-opensea`,
+    icon: 'fa fa-lock',
+  },
   {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
@@ -405,11 +424,24 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
+  // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('securityAlerts'),
-    descriptionMessage: (t) => t('securityAlertsDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#security-alerts`,
-    icon: 'fa fa-flask',
+    sectionMessage: (t) => t('petnamesEnabledToggle'),
+    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
+    icon: 'fas fa-flask',
   },
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
+  // experimental settingsRefs[1]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('snaps'),
+    descriptionMessage: (t) => t('addSnapAccountToggle'),
+    route: `${EXPERIMENTAL_ROUTE}#snaps`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];

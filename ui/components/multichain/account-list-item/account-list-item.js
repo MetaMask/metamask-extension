@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu, AvatarGroup } from '..';
+import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -48,12 +48,17 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  getAddressConnectedSubjectMap,
   getCurrentNetwork,
   getNativeCurrencyImage,
+  getShowFiatInTestnets,
   getUseBlockie,
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
+import { ConnectedStatus } from '../connected-status/connected-status';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -63,30 +68,39 @@ export const AccountListItem = ({
   selected = false,
   onClick,
   closeMenu,
+  accountsCount,
   connectedAvatar,
   connectedAvatarName,
   isPinned = false,
-  showOptions = false,
+  menuType = AccountListItemMenuTypes.None,
   isHidden = false,
+  currentTabOrigin,
+  isActive = false,
+  startAccessory,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
-
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
-
+  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const showFiat =
+    TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-
-  const balanceToTranslate = TEST_NETWORKS.includes(currentNetwork?.nickname)
-    ? totalWeiBalance
-    : identity.balance;
+  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
+    avatarValue: item.iconUrl,
+  }));
+  let balanceToTranslate = totalWeiBalance;
+  if (showFiat) {
+    balanceToTranslate = identity.balance;
+  }
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -100,6 +114,15 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
+  const selectedAddressSubjectMap =
+    addressConnectedSubjectMap[identity.address];
+  const currentTabIsConnectedToSelectedAddress = Boolean(
+    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  );
+  const isConnected =
+    currentTabOrigin && currentTabIsConnectedToSelectedAddress;
+  const isSingleAccount = accountsCount === 1;
 
   return (
     <Box
@@ -119,6 +142,11 @@ export const AccountListItem = ({
         }
       }}
     >
+      {startAccessory ? (
+        <Box marginInlineEnd={2} marginTop={1}>
+          {startAccessory}
+        </Box>
+      ) : null}
       {selected && (
         <Box
           className="multichain-account-list-item__selected-indicator"
@@ -126,17 +154,41 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      <AvatarAccount
-        borderColor={BorderColor.transparent}
-        size={Size.SM}
-        address={identity.address}
-        variant={
-          useBlockie
-            ? AvatarAccountVariant.Blockies
-            : AvatarAccountVariant.Jazzicon
-        }
-        marginInlineEnd={2}
-      />
+      {process.env.MULTICHAIN ? (
+        <>
+          <Box
+            display={[Display.Flex, Display.None]}
+            data-testid="account-list-item-badge"
+          >
+            <ConnectedStatus address={identity.address} isActive={isActive} />
+          </Box>
+          <Box display={[Display.None, Display.Flex]}>
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={Size.MD}
+              address={identity.address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+          </Box>
+        </>
+      ) : (
+        <AvatarAccount
+          borderColor={BorderColor.transparent}
+          size={Size.MD}
+          address={identity.address}
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          marginInlineEnd={2}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -182,16 +234,17 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                {identity.metadata.name.length >
+                MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={identity.name}
+                    title={identity.metadata.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {identity.name}
+                    {identity.metadata.name}
                   </Tooltip>
                 ) : (
-                  identity.name
+                  identity.metadata.name
                 )}
               </Text>
             </Box>
@@ -209,7 +262,9 @@ export const AccountListItem = ({
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={balanceToTranslate}
                 type={PRIMARY}
-                showFiat={!TEST_NETWORKS.includes(currentNetwork?.nickname)}
+                showFiat={
+                  !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
+                }
               />
             </Text>
           </Box>
@@ -231,8 +286,8 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          {orderedTokenList.length > 1 ? (
-            <AvatarGroup members={orderedTokenList} limit={4} />
+          {mappedOrderedTokenList.length > 1 ? (
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
               display={Display.Flex}
@@ -271,14 +326,17 @@ export const AccountListItem = ({
               color: Color.textAlternative,
             }}
             startIconName={
-              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
+              identity.metadata.keyring.type === KeyringType.snap
+                ? IconName.Snaps
+                : null
             }
           />
         ) : null}
       </Box>
-      {showOptions ? (
+
+      {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
-          ariaLabel={`${identity.name} ${t('options')}`}
+          ariaLabel={`${identity.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountListItemMenuRef}
@@ -297,8 +355,8 @@ export const AccountListItem = ({
           }}
           data-testid="account-list-item-menu-button"
         />
-      ) : null}
-      {showOptions ? (
+      )}
+      {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
           identity={identity}
@@ -308,20 +366,42 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
+          isConnected={isConnected}
         />
-      ) : null}
+      )}
+      {menuType === AccountListItemMenuTypes.Connection && (
+        <ConnectedAccountsMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          closeMenu={closeMenu}
+          disableAccountSwitcher={isSingleAccount}
+          isOpen={accountOptionsMenuOpen}
+        />
+      )}
     </Box>
   );
 };
 
 AccountListItem.propTypes = {
   /**
-   * Identity of the account
+   * An account object that has name, address, and balance data
    */
   identity: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
     keyring: PropTypes.shape({
       type: PropTypes.string.isRequired,
     }).isRequired,
@@ -336,6 +416,10 @@ AccountListItem.propTypes = {
    */
   onClick: PropTypes.func,
   /**
+   * Represents how many accounts are being listed
+   */
+  accountsCount: PropTypes.number,
+  /**
    * Function that closes the menu
    */
   closeMenu: PropTypes.func,
@@ -348,9 +432,9 @@ AccountListItem.propTypes = {
    */
   connectedAvatarName: PropTypes.string,
   /**
-   * Represents if the "Options" 3-dot menu should display
+   * Represents the type of menu to be rendered
    */
-  showOptions: PropTypes.bool,
+  menuType: PropTypes.string,
   /**
    * Represents pinned accounts
    */
@@ -359,6 +443,18 @@ AccountListItem.propTypes = {
    * Represents hidden accounts
    */
   isHidden: PropTypes.bool,
+  /**
+   * Represents current tab origin
+   */
+  currentTabOrigin: PropTypes.string,
+  /**
+   * Represents active accounts
+   */
+  isActive: PropTypes.bool,
+  /**
+   * Represents start accessory
+   */
+  startAccessory: PropTypes.node,
 };
 
 AccountListItem.displayName = 'AccountListItem';

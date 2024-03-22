@@ -10,6 +10,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../../selectors', () => ({
+  ...jest.requireActual('../../../../../selectors'),
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
   getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
   getInternalAccountsSortedByKeyring: () => [

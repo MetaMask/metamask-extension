@@ -1,24 +1,47 @@
-function getValues(pendingApproval, t, actions, _history) {
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../../shared/constants/metametrics';
+
+function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName } = pendingApproval;
   const { url, message, isBlockedUrl } = pendingApproval.requestData;
+  const { trackEvent } = contexts;
 
-  const getConditionalProps = () => {
-    if (
+  const trackSnapAccountEvent = (event) => {
+    trackEvent({
+      event,
+      category: MetaMetricsEventCategory.Transactions,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: snapId,
+        snap_name: snapName,
+      },
+    });
+  };
+
+  const hasValidNonBlockedUrl = () => {
+    return (
       url !== undefined &&
       url !== null &&
       url.length > 0 &&
       isBlockedUrl === false
-    ) {
-      return {
-        submitText: t('goToSite'),
-        onSubmit: () =>
-          actions.resolvePendingApproval(pendingApproval.id, true),
-      };
-    }
-    return {};
+    );
   };
 
-  const conditionalProps = getConditionalProps();
+  // We can only submit if the URL is valid and non-blocked
+  const onSubmit = (event) => {
+    return hasValidNonBlockedUrl()
+      ? {
+          submitText: t('goToSite'),
+          onSubmit: () => {
+            trackSnapAccountEvent(event);
+            actions.resolvePendingApproval(pendingApproval.id, true);
+          },
+        }
+      : {};
+  };
 
   return {
     content: [
@@ -31,13 +54,26 @@ function getValues(pendingApproval, t, actions, _history) {
           snapId,
           snapName,
           isBlockedUrl,
-          ...conditionalProps,
+          ...onSubmit(
+            MetaMetricsEventName.SnapAccountTransactionFinalizeRedirectSnapUrlClicked,
+          ),
         },
       },
     ],
     cancelText: t('close'),
-    onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
-    ...conditionalProps,
+    onLoad: () =>
+      trackSnapAccountEvent(
+        MetaMetricsEventName.SnapAccountTransactionFinalizeViewed,
+      ),
+    onCancel: () => {
+      trackSnapAccountEvent(
+        MetaMetricsEventName.SnapAccountTransactionFinalizeClosed,
+      );
+      actions.resolvePendingApproval(pendingApproval.id, false);
+    },
+    ...onSubmit(
+      MetaMetricsEventName.SnapAccountTransactionFinalizeRedirectGoToSiteClicked,
+    ),
   };
 }
 

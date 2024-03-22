@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "このリクエストを承認すると、Blurに登録されている資産を誰かに盗まれる可能性があります。"
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "エラーが発生したため、このリクエストはセキュリティプロバイダーにより確認されませんでした。慎重に進めてください。"
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -3263,9 +3263,6 @@
   },
   "securityAlerts": {
     "message": "セキュリティアラート"
-  },
-  "securityAlertsDescription": {
-    "message": "この機能は、ユーザーのプライバシーを守りつつ、トランザクションと署名リクエストをアクティブに確認することで、イーサリアムメインネットでの悪質な行為に対する警告を発します。ユーザーのデータはこのサービスを提供するサードパーティと共有されません。リクエストを承認する前に、必ず独自のデューデリジェンスを行ってください。この機能がすべての悪質な行為を検出するという保証はありません。"
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"

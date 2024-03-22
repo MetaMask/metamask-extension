@@ -1,6 +1,25 @@
-function getValues(pendingApproval, t, actions, _history) {
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../../shared/constants/metametrics';
+
+function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName } = pendingApproval;
   const { publicAddress } = pendingApproval.requestData;
+  const { trackEvent } = contexts;
+
+  const trackSnapAccountEvent = (event) => {
+    trackEvent({
+      event,
+      category: MetaMetricsEventCategory.Accounts,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Snap,
+        snap_id: snapId,
+        snap_name: snapName,
+      },
+    });
+  };
 
   return {
     content: [
@@ -16,13 +35,21 @@ function getValues(pendingApproval, t, actions, _history) {
     ],
     cancelText: t('cancel'),
     submitText: t('remove'),
-    onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, true),
-    onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
+    onLoad: () =>
+      trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountViewed),
+    onSubmit: () => {
+      trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountConfirmed);
+      actions.resolvePendingApproval(pendingApproval.id, true);
+    },
+    onCancel: () => {
+      trackSnapAccountEvent(MetaMetricsEventName.RemoveSnapAccountCanceled);
+      actions.resolvePendingApproval(pendingApproval.id, false);
+    },
   };
 }
 
-const createSnapAccount = {
+const removeSnapAccount = {
   getValues,
 };
 
-export default createSnapAccount;
+export default removeSnapAccount;

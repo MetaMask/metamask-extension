@@ -1,11 +1,5 @@
 import classnames from 'classnames';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Content, Header, Page } from '../page';
@@ -28,15 +22,19 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONNECTIONS,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 import {
   getOnboardedInThisUISession,
   getShowPermissionsTour,
-  getConnectedSitesList,
+  getConnectedSitesListWithNetworkInfo,
   getConnectedSnapsList,
 } from '../../../../selectors';
 import { Tab, Tabs } from '../../../ui/tabs';
 import { ProductTour } from '../../product-tour-popover';
+import { getURLHost } from '../../../../helpers/utils/util';
 import { hidePermissionsTour } from '../../../../store/actions';
 import { ConnectionListItem } from './connection-list-item';
 
@@ -47,7 +45,9 @@ export const PermissionsPage = () => {
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(getConnectedSitesList);
+  const sitesConnectionsList = useSelector(
+    getConnectedSitesListWithNetworkInfo,
+  );
   const snapsConnectionsList = useSelector(getConnectedSnapsList);
   const showPermissionsTour = useSelector(getShowPermissionsTour);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -67,10 +67,11 @@ export const PermissionsPage = () => {
     );
   }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
 
-  const handleConnectionClick = useCallback((connection) => {
-    // TODO: go to connection details page
-    console.log('connection clicked: ', connection);
-  }, []);
+  const handleConnectionClick = (connection) => {
+    const hostName = getURLHost(connection.origin);
+    const safeEncodedHost = encodeURIComponent(hostName);
+    history.push(`${CONNECTIONS}/${safeEncodedHost}`);
+  };
 
   const renderConnectionsList = (connectionList) =>
     Object.entries(connectionList).map(([itemKey, connection]) => {

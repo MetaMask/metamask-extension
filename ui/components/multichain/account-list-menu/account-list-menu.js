@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  BannerBase,
   Box,
   ButtonLink,
   ButtonSecondary,
@@ -18,34 +17,34 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import { AccountListItem, CreateAccount, ImportAccount } from '..';
+import {
+  AccountListItem,
+  CreateAccount,
+  ImportAccount,
+  AccountListItemMenuTypes,
+} from '..';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
-  JustifyContent,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getInternalAccounts,
-  getOnboardedInThisUISession,
-  getShowAccountBanner,
 } from '../../../selectors';
-import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
+import { setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -60,7 +59,6 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -90,7 +88,6 @@ export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
       return {
         ...account,
         ...internalAccount,
-        name: internalAccount.metadata.name || account.name,
         keyring: internalAccount.metadata.keyring,
         label: getAccountLabel(
           internalAccount.metadata.keyring.type,
@@ -110,8 +107,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -124,11 +120,6 @@ export const AccountListMenu = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
-  const showAccountBanner = useSelector(getShowAccountBanner);
-  const showBanner =
-    completedOnboarding && !onboardedInThisUISession && showAccountBanner;
 
   let searchResults = updatedAccountsList;
   if (searchQuery) {
@@ -138,12 +129,12 @@ export const AccountListMenu = ({
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address'],
+      keys: ['metadata.name', 'address'],
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, internalAccounts);
+  searchResults = mergeAccounts(searchResults, accounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
@@ -284,6 +275,14 @@ export const AccountListMenu = ({
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          account_type: MetaMetricsEventAccountType.Snap,
+                          location: 'Main Menu',
+                        },
+                      });
                       global.platform.openTab({
                         url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
                       });
@@ -348,27 +347,6 @@ export const AccountListMenu = ({
                 />
               </Box>
             ) : null}
-            {/* Accounts Pinning Update Banner */}
-            {showBanner ? (
-              <BannerBase
-                className="network-list-menu__banner"
-                marginLeft={4}
-                marginRight={4}
-                backgroundColor={BackgroundColor.backgroundAlternative}
-                startAccessory={
-                  <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                  >
-                    <img src="./images/pinning-animation.svg" alt="pinning" />
-                  </Box>
-                }
-                onClose={() => hideAccountBanner()}
-                description={t('accountsPinningBannerDescription')}
-                marginBottom={4}
-              />
-            ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
               {searchResults.length === 0 && searchQuery !== '' ? (
@@ -419,9 +397,11 @@ export const AccountListMenu = ({
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
-                      showOptions
+                      menuType={AccountListItemMenuTypes.Account}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}
+                      currentTabOrigin={currentTabOrigin}
+                      isActive={Boolean(account.active)}
                       {...accountListItemProps}
                     />
                   </Box>

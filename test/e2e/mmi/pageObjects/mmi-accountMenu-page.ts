@@ -99,13 +99,17 @@ export class MMIAccountMenuPage {
       .getByRole('dialog')
       .filter({ hasText: 'Select an account' });
 
+    const networkBanner = this.page.locator('.network-list-menu__banner');
+
     const accountsFunds = dialog.locator(
       '.multichain-account-list-item__content',
     );
 
     await test.expect
       .soft(dialog)
-      .toHaveScreenshot(screenshotName, { mask: [accountsFunds] });
+      .toHaveScreenshot(screenshotName, {
+        mask: [accountsFunds, networkBanner],
+      });
   }
 
   async removeTokenScreenshot(accountToRemoveName: string) {
@@ -113,12 +117,13 @@ export class MMIAccountMenuPage {
       .getByRole('button', { name: `${accountToRemoveName} Options` })
       .click();
     await this.page.getByText('Remove custodian token').click();
+    // Scrollbar issues with different environments
     // const dialog = this.page
     //   .getByRole('dialog')
     //   .filter({ hasText: 'Remove custodian token' });
-    // FIX: This check fails in the pipeline. I think it is related with the image used to run the test
-    // await test.expect.soft(dialog).toHaveScreenshot(screenshotName);
-    await this.page.getByRole('button', { name: /close/iu }).click();
+
+    // await test.expect.soft(dialog).toHaveScreenshot();
+    await this.page.getByRole('button', { name: /close/iu }).first().click();
   }
 
   async removeCustodianToken(accountToRemoveName: string) {

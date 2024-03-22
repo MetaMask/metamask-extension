@@ -16,6 +16,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AvatarFavicon,
+  AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -25,6 +27,7 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
+import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
@@ -32,6 +35,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
 
   return (
     <Box
+      data-testid="connection-list-item"
       as="button"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -42,68 +46,74 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       padding={4}
       gap={4}
     >
-      {isSnap ? (
-        <SnapAvatar
-          snapId={connection.id}
-          badgeSize={IconSize.Xs}
-          avatarSize={IconSize.Md}
-          borderWidth={0}
-        />
-      ) : (
-        <BadgeWrapper
-          badge={
-            <Icon
-              name={IconName.Global}
-              color={IconColor.iconDefault}
-              size={IconSize.Xs}
-              borderColor={BackgroundColor.backgroundDefault}
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        style={{ alignSelf: 'center' }}
+      >
+        {isSnap ? (
+          <SnapAvatar
+            className="connection-list-item__snap-avatar"
+            snapId={connection.id}
+            badgeSize={IconSize.Xs}
+            avatarSize={IconSize.Md}
+            borderWidth={0}
+          />
+        ) : (
+          <BadgeWrapper
+            badge={
+              <AvatarNetwork
+                data-testid="connection-list-item__avatar-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={connection.networkName}
+                src={connection.networkIconUrl}
+                borderWidth={1}
+                borderColor={BackgroundColor.backgroundDefault}
+              />
+            }
+          >
+            <AvatarFavicon
+              data-testid="connection-list-item__avatar-favicon"
+              src={connection.iconUrl}
             />
-          }
-        >
-          <AvatarFavicon src={connection.iconUrl} />
-        </BadgeWrapper>
-      )}
+          </BadgeWrapper>
+        )}
+      </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         width={BlockSize.FiveTwelfths}
-        style={{ flexGrow: '1' }}
+        style={{ alignSelf: 'center', flexGrow: '1' }}
       >
-        <Text
-          variant={TextVariant.bodyLgMedium}
-          textAlign={TextAlign.Left}
-          ellipsis
-        >
-          {connection.name}
-        </Text>
-        <Text
-          display={Display.Flex}
-          alignItems={AlignItems.flexStart}
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodyMd}
-        >
+        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
           {isSnap ? connection.packageName : getURLHost(connection.origin)}
         </Text>
+        {isSnap ? null : (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={1}
+          >
+            <Text
+              as="span"
+              width={BlockSize.Max}
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMd}
+            >
+              {t('connectedWith')}
+            </Text>
+            <ConnectionListTooltip connection={connection} />
+          </Box>
+        )}
       </Box>
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}
         alignItems={AlignItems.center}
-        style={{ flex: '1' }}
+        style={{ flex: '1', alignSelf: 'center' }}
         gap={2}
       >
-        {!isSnap && (
-          <Text
-            width={BlockSize.Max}
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyMd}
-          >
-            {connection.addresses?.length}{' '}
-            {connection.addresses?.length > 1
-              ? t('connectedaccounts')
-              : t('connectedaccount')}
-          </Text>
-        )}
         <Icon
           display={Display.Flex}
           name={IconName.ArrowRight}

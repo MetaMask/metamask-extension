@@ -48,7 +48,11 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />
-        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
+        <Text
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          data-testid="network-switch-from-network"
+        >
           {fromNetworkDetails.nickname}
         </Text>
       </Box>
@@ -71,7 +75,11 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />
-        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
+        <Text
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          data-testid="network-switch-to-network"
+        >
           {toNetworkDetails.nickname}
         </Text>
       </Box>

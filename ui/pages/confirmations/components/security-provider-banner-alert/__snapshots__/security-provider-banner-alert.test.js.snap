@@ -25,6 +25,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary
@@ -104,6 +105,7 @@ exports[`Security Provider Banner Alert should render disclosure component if no
       </p>
       <div
         class="disclosure"
+        data-testid="disclosure"
       >
         <details>
           <summary

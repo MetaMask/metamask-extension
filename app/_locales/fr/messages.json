@@ -556,7 +556,7 @@
   "blockaidDescriptionBlurFarming": {
     "message": "Si vous approuvez cette demande, quelqu’un pourrait s'emparer de vos actifs répertoriés sur Blur."
   },
-  "blockaidDescriptionFailed": {
+  "blockaidDescriptionErrored": {
     "message": "À la suite d’une erreur, cette demande n’a pas été vérifiée par le fournisseur de services de sécurité. Veuillez agir avec prudence."
   },
   "blockaidDescriptionMaliciousDomain": {
@@ -3266,9 +3266,6 @@
   },
   "securityAlerts": {
     "message": "Alertes de sécurité"
-  },
-  "securityAlertsDescription": {
-    "message": "Cette fonctionnalité vous avertit de toute activité malveillante sur le réseau principal Ethereum en examinant activement les transactions et les demandes de signature tout en protégeant vos données personnelles. Vos données ne sont pas partagées avec la tierce partie qui fournit ce service. Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
   },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"

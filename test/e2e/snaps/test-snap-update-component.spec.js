@@ -162,11 +162,21 @@ describe('Test Snap update via snaps component', function () {
           text: 'BIP-32 Example Snap',
           tag: 'p',
         });
-        await driver.assertElementNotPresent({
-          css: '.mm-button-link',
-          text: 'Update',
-          tag: 'button',
-        });
+
+        await driver.assertElementNotPresent(
+          {
+            css: '.mm-button-link',
+            text: 'Update',
+            tag: 'button',
+          },
+          {
+            // make sure the Snap page has loaded
+            findElementGuard: {
+              text: 'Description from BIP-32 Example Snap',
+              tag: 'p',
+            },
+          },
+        );
       },
     );
   });

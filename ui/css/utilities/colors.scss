@@ -1,3 +1,8 @@
+/*
+Disabling Stylelint's hex color rule so this file is ignored.
+Before adding a color here make sure that there isn't a design token available.
+*/
+/* stylelint-disable color-no-hex */
 :root {
   // Accents
   // Everything below this line is part of the new color system

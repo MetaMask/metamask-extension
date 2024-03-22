@@ -5,8 +5,6 @@
 
   &__spinner {
     width: 30px;
-    margin-top: 4px;
-    margin-bottom: 4px;
   }
 
   &__divider {
@@ -16,21 +14,10 @@
 
   &__panel {
     height: 100%;
+    gap: 8px;
   }
 
-  &__content > *:first-child {
-    margin-top: 0;
-  }
-
-  &__content > &__panel > *:first-child {
-    margin-top: 0;
-  }
-
-  &__content > *:last-child {
-    margin-bottom: 0;
-  }
-
-  &__content > &__panel > *:last-child {
-    margin-bottom: 0;
+  &__content > &__panel:has(.snap-ui-renderer__panel) {
+    gap: 16px;
   }
 }

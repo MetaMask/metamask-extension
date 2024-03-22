@@ -380,7 +380,11 @@ export default class TransactionListItemDetails extends PureComponent {
               }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
-                <Disclosure title={t('activityLog')} size="small">
+                <Disclosure
+                  title={t('activityLog')}
+                  size="small"
+                  isScrollToBottomOnOpen
+                >
                   <TransactionActivityLog
                     transactionGroup={transactionGroup}
                     className="transaction-list-item-details__transaction-activity-log"

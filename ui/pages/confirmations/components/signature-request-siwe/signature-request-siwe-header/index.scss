@@ -1,3 +1,5 @@
+@use "design-system";
+
 .signature-request-siwe-header {
   display: flex;
   padding: 16px;
@@ -18,7 +20,7 @@
     }
 
     &__account-name {
-      @include H5;
+      @include design-system.H5;
 
       font-weight: 500;
     }

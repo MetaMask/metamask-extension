@@ -1,5 +1,7 @@
+@use "design-system";
+
 .multichain-account-list-item-menu__popover {
-  z-index: $popover-in-modal-z-index;
+  z-index: design-system.$popover-in-modal-z-index;
   overflow: hidden;
   min-width: 225px;
   max-width: 225px;

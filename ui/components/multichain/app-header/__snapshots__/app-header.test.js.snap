@@ -228,7 +228,7 @@ exports[`App Header should match snapshot 1`] = `
         </button>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--color-text-default"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"

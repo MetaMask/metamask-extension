@@ -280,7 +280,16 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "webpack>eslint-scope": true
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+      }
+    },
+    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true,
+        "eslint>eslint-scope>esrecurse": true
       }
     },
     "@babel/eslint-parser>semver": {
@@ -1295,24 +1304,24 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/utils>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
+      }
+    },
+    "@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@sentry/cli>which": {
@@ -1399,7 +1408,6 @@
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
-        "madge>debug": true,
         "nock>debug": true,
         "typescript": true
       }
@@ -2289,8 +2297,8 @@
     },
     "del>p-map>aggregate-error": {
       "packages": {
-        "@testing-library/jest-dom>redent>indent-string": true,
-        "del>p-map>aggregate-error>clean-stack": true
+        "del>p-map>aggregate-error>clean-stack": true,
+        "prettier-eslint>indent-string": true
       }
     },
     "del>p-map>aggregate-error>clean-stack": {
@@ -2360,17 +2368,6 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
-      }
-    },
-    "depcheck>cosmiconfig>yaml": {
-      "globals": {
-        "Buffer": true,
-        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
-        "YAML_SILENCE_WARNINGS": true,
-        "atob": true,
-        "btoa": true,
-        "console.warn": true,
-        "process": true
       }
     },
     "depcheck>is-core-module": {
@@ -2472,6 +2469,7 @@
         "eslint>@eslint/js": true,
         "eslint>@humanwhocodes/config-array": true,
         "eslint>@nodelib/fs.walk": true,
+        "eslint>@ungap/structured-clone": true,
         "eslint>ajv": true,
         "eslint>doctrine": true,
         "eslint>eslint-scope": true,
@@ -2483,10 +2481,9 @@
         "eslint>file-entry-cache": true,
         "eslint>glob-parent": true,
         "eslint>globals": true,
-        "eslint>grapheme-splitter": true,
+        "eslint>graphemer": true,
         "eslint>ignore": true,
         "eslint>imurmurhash": true,
-        "eslint>js-sdsl": true,
         "eslint>json-stable-stringify-without-jsonify": true,
         "eslint>levn": true,
         "eslint>lodash.merge": true,
@@ -3073,9 +3070,37 @@
         "nock>debug": true
       }
     },
+    "eslint>@eslint/eslintrc>import-fresh": {
+      "builtin": {
+        "path.dirname": true
+      },
+      "globals": {
+        "__filename": true
+      },
+      "packages": {
+        "eslint>@eslint/eslintrc>import-fresh>parent-module": true,
+        "eslint>@eslint/eslintrc>import-fresh>resolve-from": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh>parent-module": {
+      "packages": {
+        "@metamask/test-bundler>ow>callsites": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh>resolve-from": {
+      "builtin": {
+        "fs.realpathSync": true,
+        "module._nodeModulePaths": true,
+        "module._resolveFilename": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
     "eslint>@humanwhocodes/config-array": {
       "builtin": {
-        "path": true
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true
       },
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
@@ -3123,6 +3148,11 @@
     "eslint>@nodelib/fs.walk>fastq": {
       "packages": {
         "eslint>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
+    "eslint>@ungap/structured-clone": {
+      "globals": {
+        "structuredClone": true
       }
     },
     "eslint>ajv": {
@@ -3224,32 +3254,6 @@
         "process": true
       }
     },
-    "eslint>import-fresh": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "globals": {
-        "__filename": true
-      },
-      "packages": {
-        "eslint>import-fresh>parent-module": true,
-        "eslint>import-fresh>resolve-from": true
-      }
-    },
-    "eslint>import-fresh>parent-module": {
-      "packages": {
-        "eslint>import-fresh>parent-module>callsites": true
-      }
-    },
-    "eslint>import-fresh>resolve-from": {
-      "builtin": {
-        "fs.realpathSync": true,
-        "module._nodeModulePaths": true,
-        "module._resolveFilename": true,
-        "path.join": true,
-        "path.resolve": true
-      }
-    },
     "eslint>levn": {
       "packages": {
         "eslint>levn>prelude-ls": true,
@@ -3281,6 +3285,15 @@
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
+      }
+    },
+    "eta": {
+      "builtin": {
+        "node:fs": true,
+        "node:path": true
+      },
+      "globals": {
+        "define": true
       }
     },
     "fancy-log": {
@@ -3740,8 +3753,8 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "depcheck>cosmiconfig>yaml": true,
         "gulp-postcss>postcss-load-config>lilconfig": true,
+        "gulp-postcss>postcss-load-config>yaml": true,
         "ts-node": true
       }
     },
@@ -3760,6 +3773,17 @@
       },
       "globals": {
         "process.cwd": true
+      }
+    },
+    "gulp-postcss>postcss-load-config>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "gulp-sass": {
@@ -6182,21 +6206,6 @@
         "loose-envify>js-tokens": true
       }
     },
-    "madge>detective-less>gonzales-pe": {
-      "globals": {
-        "console.error": true,
-        "define": true
-      }
-    },
-    "madge>ora>is-unicode-supported": {
-      "globals": {
-        "process.env.CI": true,
-        "process.env.TERM": true,
-        "process.env.TERM_PROGRAM": true,
-        "process.env.WT_SESSION": true,
-        "process.platform": true
-      }
-    },
     "mocha>find-up": {
       "builtin": {
         "path.dirname": true,
@@ -6232,7 +6241,16 @@
     "mocha>log-symbols": {
       "packages": {
         "chalk": true,
-        "madge>ora>is-unicode-supported": true
+        "mocha>log-symbols>is-unicode-supported": true
+      }
+    },
+    "mocha>log-symbols>is-unicode-supported": {
+      "globals": {
+        "process.env.CI": true,
+        "process.env.TERM": true,
+        "process.env.TERM_PROGRAM": true,
+        "process.env.WT_SESSION": true,
+        "process.platform": true
       }
     },
     "mocha>supports-color": {
@@ -7432,37 +7450,77 @@
     },
     "sass": {
       "builtin": {
-        "fs": true,
-        "readline": true,
         "url": true
       },
       "env": "unfrozen",
       "globals": {
-        "Buffer": true,
-        "HTMLElement": true,
-        "InternalError": true,
-        "TextDecoder": true,
-        "WorkerGlobalScope": true,
+        "Buffer": true
+      }
+    },
+    "sass-embedded": {
+      "builtin": {
+        "assert.strict": true,
+        "child_process.spawn": true,
+        "events.EventEmitter": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.delimiter": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "stream.Writable": true,
+        "url.URL": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true,
+        "util.inspect": true,
+        "worker_threads.MessageChannel": true,
+        "worker_threads.Worker": true,
+        "worker_threads.receiveMessageOnPort": true
+      },
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.from": true,
+        "URL": true,
         "__dirname": true,
         "__filename": true,
-        "__non_webpack_require__": true,
-        "__webpack_require__": true,
-        "console": true,
-        "dartExperimentalFixupGetTag": true,
-        "dartMainRunner": true,
-        "dartNativeDispatchHooksTransformer": true,
-        "dartPrint": true,
-        "document": true,
-        "load": true,
-        "navigator": true,
-        "print": true,
-        "process": true,
-        "setImmediate": true,
-        "setTimeout": true,
-        "version": true
+        "console.error": true,
+        "process.arch": true,
+        "process.cwd": true,
+        "process.execPath": true,
+        "process.platform": true,
+        "process.stderr.write": true
       },
       "packages": {
-        "chokidar": true
+        "mocha>supports-color": true,
+        "sass-embedded>@bufbuild/protobuf": true,
+        "sass-embedded>buffer-builder": true,
+        "sass-embedded>immutable": true,
+        "sass-embedded>varint": true,
+        "wait-on>rxjs": true
+      }
+    },
+    "sass-embedded>@bufbuild/protobuf": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "__values": true,
+        "process": true
+      }
+    },
+    "sass-embedded>buffer-builder": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "sass-embedded>immutable": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "semver": {
@@ -7491,15 +7549,6 @@
         "console.time": true,
         "console.timeEnd": true,
         "fetch": true
-      }
-    },
-    "squirrelly": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.resolve": true
       }
     },
     "string.prototype.matchall": {
@@ -7856,9 +7905,20 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json": true,
-        "depcheck>cosmiconfig>yaml": true,
-        "eslint>import-fresh": true,
-        "globby>dir-glob>path-type": true
+        "eslint>@eslint/eslintrc>import-fresh": true,
+        "globby>dir-glob>path-type": true,
+        "stylelint>cosmiconfig>yaml": true
+      }
+    },
+    "stylelint>cosmiconfig>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "stylelint>execall": {
@@ -8144,8 +8204,14 @@
     },
     "stylelint>postcss-sass": {
       "packages": {
-        "madge>detective-less>gonzales-pe": true,
+        "stylelint>postcss-sass>gonzales-pe": true,
         "stylelint>postcss-sass>postcss": true
+      }
+    },
+    "stylelint>postcss-sass>gonzales-pe": {
+      "globals": {
+        "console.error": true,
+        "define": true
       }
     },
     "stylelint>postcss-sass>postcss": {
@@ -8766,6 +8832,17 @@
         "path.join": true
       }
     },
+    "wait-on>rxjs": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setInterval.apply": true,
+        "setTimeout.apply": true
+      }
+    },
     "watchify": {
       "builtin": {
         "path.join": true
@@ -8802,18 +8879,20 @@
         "webpack>browserslist>node-releases": true
       }
     },
-    "webpack>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "webpack>eslint-scope>estraverse": true
-      }
-    },
     "webpack>json-parse-even-better-errors": {
       "globals": {
         "Buffer.isBuffer": true
+      }
+    },
+    "yaml": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.dir": true,
+        "console.log": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "yargs": {

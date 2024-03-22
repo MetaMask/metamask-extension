@@ -140,31 +140,36 @@ export const TokenListItem = ({
       data-testid="multichain-token-list-item"
     >
       <Box
-        className="multichain-token-list-item__container-cell"
+        className={classnames('multichain-token-list-item__container-cell', {
+          'multichain-token-list-item__container-cell--clickable':
+            onClick !== undefined,
+        })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         padding={4}
-        as="a"
         data-testid="multichain-token-list-button"
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
+        {...(onClick && {
+          as: 'a',
+          href: '#',
+          onClick: (e) => {
+            e.preventDefault();
 
-          if (showScamWarningModal) {
-            return;
-          }
+            if (showScamWarningModal) {
+              return;
+            }
 
-          onClick();
-          trackEvent({
-            category: MetaMetricsEventCategory.Tokens,
-            event: MetaMetricsEventName.TokenDetailsOpened,
-            properties: {
-              location: 'Home',
-              chain_id: chainId,
-              token_symbol: tokenSymbol,
-            },
-          });
-        }}
+            onClick();
+            trackEvent({
+              category: MetaMetricsEventCategory.Tokens,
+              event: MetaMetricsEventName.TokenDetailsOpened,
+              properties: {
+                location: 'Home',
+                chain_id: chainId,
+                token_symbol: tokenSymbol,
+              },
+            });
+          },
+        })}
       >
         <BadgeWrapper
           badge={
@@ -186,9 +191,7 @@ export const TokenListItem = ({
             name={tokenSymbol}
             src={tokenImage}
             showHalo
-            borderColor={
-              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
-            }
+            borderColor={tokenImage ? undefined : BorderColor.borderDefault}
           />
         </BadgeWrapper>
         <Box
@@ -300,7 +303,7 @@ export const TokenListItem = ({
                 variant={TextVariant.bodyMd}
                 textAlign={TextAlign.End}
               >
-                {primary} {tokenSymbol}{' '}
+                {primary} {isNativeCurrency ? '' : tokenSymbol}
               </Text>
             </Box>
           </Box>

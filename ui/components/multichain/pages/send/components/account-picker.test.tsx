@@ -7,6 +7,34 @@ import { SendPageAccountPicker } from '.';
 const render = (props = {}) => {
   const store = configureStore({
     ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      permissionHistory: {
+        'https://test.dapp': {
+          eth_accounts: {
+            accounts: {
+              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+            },
+          },
+        },
+      },
+      subjects: {
+        'https://test.dapp': {
+          permissions: {
+            eth_accounts: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                },
+              ],
+              invoker: 'https://test.dapp',
+              parentCapability: 'eth_accounts',
+            },
+          },
+        },
+      },
+    },
     activeTab: {
       origin: 'https://test.dapp',
     },

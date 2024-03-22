@@ -1,12 +1,11 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from 'eth-sig-util';
+import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -24,6 +23,7 @@ export default class PreferencesController {
    *
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
+   * @property {object} messenger - The controller messenger
    * @property {object} store The stored object containing a users preferences, stored in local storage
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
@@ -108,7 +108,6 @@ export default class PreferencesController {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
-      isLineaMainnetReleased: false,
       useExternalNameSources: true,
       ...opts.initState,
     };
@@ -119,11 +118,31 @@ export default class PreferencesController {
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
 
+    opts.onKeyringStateChange((state) => {
+      const accounts = new Set();
+      for (const keyring of state.keyrings) {
+        for (const address of keyring.accounts) {
+          accounts.add(address);
+        }
+      }
+      if (accounts.size > 0) {
+        this.syncAddresses(Array.from(accounts));
+      }
+    });
+
+    this.messagingSystem = opts.messenger;
+    this.messagingSystem?.registerActionHandler(
+      `PreferencesController:getState`,
+      () => this.store.getState(),
+    );
+    this.messagingSystem?.registerInitialEventPayload({
+      eventType: `PreferencesController:stateChange`,
+      getPayload: () => [this.store.getState(), []],
+    });
+
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
-
-    this._showShouldLineaMainnetNetwork();
   }
   // PUBLIC METHODS
 
@@ -660,12 +679,4 @@ export default class PreferencesController {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * A method to check is the linea mainnet network should be displayed
-   */
-  _showShouldLineaMainnetNetwork() {
-    const showLineaMainnet = shouldShowLineaMainnet();
-    this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
-  }
 }

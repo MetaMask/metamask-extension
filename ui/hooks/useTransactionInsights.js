@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IF
+  useSelector,
+} from 'react-redux';
 
 import { SeverityLevel } from '@metamask/snaps-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -10,8 +15,11 @@ import { SnapInsight } from '../components/app/snaps/snap-insight/snap-insight';
 import {
   getInsightSnapIds,
   getInsightSnaps,
-  getSubjectMetadataDeepEqual,
+  getSnapsMetadata,
 } from '../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { deleteInterface } from '../store/actions';
+///: END:ONLY_INCLUDE_IF
 import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
@@ -26,11 +34,16 @@ const isAllowedTransactionTypes = (transactionType) =>
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const dispatch = useDispatch();
+  ///: END:ONLY_INCLUDE_IF
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
-  const subjectMetadata = useSelector(getSubjectMetadataDeepEqual);
   const insightSnapIds = useSelector(getInsightSnapIds);
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const snapsNameGetter = getSnapName(snapsMetadata);
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -59,6 +72,17 @@ const useTransactionInsights = ({ txData }) => {
     }
   }, [insightSnapIds, selectedInsightSnapId, setSelectedInsightSnapId]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useEffect(() => {
+    return () => {
+      data?.map(
+        ({ response }) =>
+          response?.id && dispatch(deleteInterface(response.id)),
+      );
+    };
+  }, [data]);
+  ///: END:ONLY_INCLUDE_IF
+
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;
   }
@@ -75,7 +99,7 @@ const useTransactionInsights = ({ txData }) => {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
+        name={snapsNameGetter(selectedSnap.id)}
       >
         <SnapInsight
           snapId={selectedInsightSnapId}
@@ -91,7 +115,7 @@ const useTransactionInsights = ({ txData }) => {
     );
   } else if (insightSnaps.length > 1) {
     const dropdownOptions = insightSnaps?.map(({ id }) => {
-      const name = getSnapName(id, subjectMetadata[id]);
+      const name = snapsNameGetter(id);
       return {
         value: id,
         name,
@@ -129,9 +153,9 @@ const useTransactionInsights = ({ txData }) => {
     if (promise.response?.severity === SeverityLevel.Critical) {
       const {
         snapId,
-        response: { content },
+        response: { id },
       } = promise;
-      warningsArr.push({ snapId, content });
+      warningsArr.push({ snapId, id });
     }
     return warningsArr;
   }, []);

@@ -5,10 +5,12 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
+import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 import {
   getCurrentChainId,
   getNameLookupSnapsIds,
   getPermissionSubjects,
+  getSnapMetadata,
 } from '../selectors';
 import { handleSnapRequest } from '../store/actions';
 import {
@@ -24,7 +26,7 @@ import {
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
 } from '../pages/confirmations/send/send.constants';
-import { getSnapName, isValidDomainName } from '../helpers/utils/util';
+import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,
@@ -185,9 +187,8 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
 
   const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
-    // TODO: add a caveat getter to the snaps monorepo for name lookup similar to the other caveat getters
-    const nameLookupCaveat = permission.caveats[0].value;
-    return nameLookupCaveat.includes(chainId);
+    const chainIdCaveat = getChainIdsCaveat(permission);
+    return chainIdCaveat?.includes(chainId) ?? true;
   });
 
   const snapRequestArgs = domain
@@ -215,10 +216,13 @@ export async function fetchResolutions({ domain, address, chainId, state }) {
   const filteredResults = results.reduce(
     (successfulResolutions, result, idx) => {
       if (result.status !== 'rejected' && result.value !== null) {
-        successfulResolutions.push({
-          ...result.value,
-          snapId: filteredNameLookupSnapsIds[idx],
-        });
+        const resolutions = result.value.resolvedAddresses.map(
+          (resolution) => ({
+            ...resolution,
+            snapId: filteredNameLookupSnapsIds[idx],
+          }),
+        );
+        return successfulResolutions.concat(resolutions);
       }
       return successfulResolutions;
     },
@@ -273,6 +277,9 @@ export function lookupDomainName(domainName) {
         }
       }
 
+      const snapId = fetchedResolutions?.[0].snapId;
+      const snapName = getSnapMetadata(state, snapId)?.name;
+
       await dispatch(
         domainLookup({
           address,
@@ -281,9 +288,7 @@ export function lookupDomainName(domainName) {
           network: chainIdInt,
           domainType: hasSnapResolution ? 'Other' : ENS,
           domainName: trimmedDomainName,
-          ...(hasSnapResolution
-            ? { resolvingSnap: getSnapName(fetchedResolutions[0].snapId) }
-            : {}),
+          ...(hasSnapResolution ? { resolvingSnap: snapName } : {}),
         }),
       );
     }

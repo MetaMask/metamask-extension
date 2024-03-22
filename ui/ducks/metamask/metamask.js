@@ -1,4 +1,6 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { createSelector } from 'reselect';
+import { mergeGasFeeEstimates } from '@metamask/transaction-controller';
 import { AlertTypes } from '../../../shared/constants/alerts';
 import {
   GasEstimateTypes,
@@ -26,6 +28,7 @@ const initialState = {
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   identities: {},
+  internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
@@ -97,7 +100,26 @@ export default function reduceMetamask(state = initialState, action) {
       const id = {};
       id[account] = { ...metamaskState.identities[account], name };
       const identities = { ...metamaskState.identities, ...id };
-      return Object.assign(metamaskState, { identities });
+      const accountToUpdate = Object.values(
+        metamaskState.internalAccounts.accounts,
+      ).find((internalAccount) => {
+        return internalAccount.address.toLowerCase() === account.toLowerCase();
+      });
+
+      const internalAccounts = {
+        ...metamaskState.internalAccounts,
+        accounts: {
+          ...metamaskState.internalAccounts.accounts,
+          [accountToUpdate.id]: {
+            ...accountToUpdate,
+            metadata: {
+              ...accountToUpdate.metadata,
+              name,
+            },
+          },
+        },
+      };
+      return Object.assign(metamaskState, { identities, internalAccounts });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
@@ -331,12 +353,14 @@ export function isNotEIP1559Network(state) {
  * Function returns true if network details are fetched and it is found to support EIP-1559
  *
  * @param state
+ * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
-export function isEIP1559Network(state) {
+export function isEIP1559Network(state, networkClientId) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
-    state.metamask.networksMetadata?.[selectedNetworkClientId].EIPS[1559] ===
-    true
+    state.metamask.networksMetadata?.[
+      networkClientId ?? selectedNetworkClientId
+    ].EIPS[1559] === true
   );
 }
 
@@ -344,12 +368,51 @@ export function getGasEstimateType(state) {
   return state.metamask.gasEstimateType;
 }
 
-export function getGasFeeEstimates(state) {
+export function getGasFeeControllerEstimates(state) {
   return state.metamask.gasFeeEstimates;
 }
 
+export function getTransactionGasFeeEstimates(state) {
+  const transactionMetadata = state.confirmTransaction?.txData;
+  return transactionMetadata?.gasFeeEstimates;
+}
+
+export const getGasFeeEstimates = createSelector(
+  getGasEstimateType,
+  getGasFeeControllerEstimates,
+  getTransactionGasFeeEstimates,
+  (
+    gasFeeControllerEstimateType,
+    gasFeeControllerEstimates,
+    transactionGasFeeEstimates,
+  ) => {
+    if (transactionGasFeeEstimates) {
+      return mergeGasFeeEstimates({
+        gasFeeControllerEstimateType,
+        gasFeeControllerEstimates,
+        transactionGasFeeEstimates,
+      });
+    }
+
+    return gasFeeControllerEstimates;
+  },
+);
+
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;
+}
+
+export function getGasEstimateTypeByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
+}
+
+export function getGasFeeEstimatesByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
+}
+
+export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]
+    ?.estimatedGasFeeTimeBounds;
 }
 
 export function getIsGasEstimatesLoading(state) {
@@ -372,8 +435,38 @@ export function getIsGasEstimatesLoading(state) {
   return isGasEstimatesLoading;
 }
 
+export function getIsGasEstimatesLoadingByChainId(
+  state,
+  { chainId, networkClientId },
+) {
+  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+    state,
+    networkClientId,
+  );
+  const gasEstimateType = getGasEstimateTypeByChainId(state, chainId);
+
+  // We consider the gas estimate to be loading if the gasEstimateType is
+  // 'NONE' or if the current gasEstimateType cannot be supported by the current
+  // network
+  const isEIP1559TolerableEstimateType =
+    gasEstimateType === GasEstimateTypes.feeMarket ||
+    gasEstimateType === GasEstimateTypes.ethGasPrice;
+  const isGasEstimatesLoading =
+    gasEstimateType === GasEstimateTypes.none ||
+    (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
+    (!networkAndAccountSupports1559 &&
+      gasEstimateType === GasEstimateTypes.feeMarket);
+
+  return isGasEstimatesLoading;
+}
+
 export function getIsNetworkBusy(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
+  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
+}
+
+export function getIsNetworkBusyByChainId(state, chainId) {
+  const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);
   return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
@@ -446,8 +539,4 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
-}
-
-export function isLineaMainnetNetworkReleased(state) {
-  return state.metamask.isLineaMainnetReleased;
 }

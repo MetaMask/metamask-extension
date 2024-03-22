@@ -54,18 +54,18 @@ describe('getBlockaidMetricsProps', () => {
     );
   });
 
-  it('includes "security_alert_failed" ui_customization when type is failed', () => {
+  it('includes "security_alert_error" ui_customization when type is error', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
-        result_type: BlockaidResultType.Failed,
+        result_type: BlockaidResultType.Errored,
       },
     });
 
     expect(result).toStrictEqual({
       security_alert_reason: BlockaidReason.setApprovalForAll,
-      security_alert_response: BlockaidResultType.Failed,
-      ui_customizations: ['security_alert_failed'],
+      security_alert_response: BlockaidResultType.Errored,
+      ui_customizations: ['security_alert_error'],
     });
   });
 
@@ -129,6 +129,21 @@ describe('getBlockaidMetricsProps', () => {
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
       security_alert_reason: BlockaidReason.setApprovalForAll,
+    });
+  });
+
+  it('includes "security_alert_error" ui_customization when type is an error', () => {
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        result_type: BlockaidResultType.Errored,
+        reason: 'error: error message',
+      },
+    });
+    expect(result).toStrictEqual({
+      ui_customizations: ['security_alert_error'],
+      security_alert_response: BlockaidResultType.Errored,
+      security_alert_reason: 'error: error message',
     });
   });
 

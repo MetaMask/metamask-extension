@@ -35,12 +35,12 @@ export function formatAccountType(accountType) {
 const getBlockaidMetricUiCustomization = (resultType) => {
   let uiCustomization;
 
-  if (resultType === BlockaidResultType.Failed) {
-    uiCustomization = [MetaMetricsEventUiCustomization.SecurityAlertFailed];
-  } else if (resultType === BlockaidResultType.Malicious) {
+  if (resultType === BlockaidResultType.Malicious) {
     uiCustomization = [MetaMetricsEventUiCustomization.FlaggedAsMalicious];
   } else if (resultType === BlockaidResultType.Warning) {
     uiCustomization = [MetaMetricsEventUiCustomization.FlaggedAsWarning];
+  } else if (resultType === BlockaidResultType.Errored) {
+    uiCustomization = [MetaMetricsEventUiCustomization.SecurityAlertError];
   }
 
   return uiCustomization;
@@ -60,6 +60,7 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
     providerRequestsCount,
     reason,
     result_type: resultType,
+    description,
   } = securityAlertResponse;
 
   const uiCustomization = getBlockaidMetricUiCustomization(resultType);
@@ -70,6 +71,11 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
   if (resultType !== BlockaidResultType.Benign) {
     params.security_alert_reason = reason ?? BlockaidReason.notApplicable;
   }
+
+  if (description) {
+    params.security_alert_description = description;
+  }
+
   params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
 

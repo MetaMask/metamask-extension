@@ -31,7 +31,11 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { NetworkClientId } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { InterfaceState } from '@metamask/snaps-sdk';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -56,6 +60,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getInternalAccountByAddress,
   getSelectedInternalAccount,
+  getInternalAccounts,
+  getSelectedNetworkClientId,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -105,6 +111,7 @@ import {
   logErrorWithMessage,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -444,13 +451,13 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldIdentities = getState().metamask.identities;
+    const oldAccounts = getInternalAccounts(getState());
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
     try {
       addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldIdentities).length,
+        Object.keys(oldAccounts).length,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -1806,12 +1813,33 @@ export function setSelectedAccount(
 
 export function addPermittedAccount(
   origin: string,
-  address: string,
+  address: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'addPermittedAccount',
+        [origin, address],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+export function addMorePermittedAccounts(
+  origin: string,
+  address: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'addMorePermittedAccounts',
         [origin, address],
         (error) => {
           if (error) {
@@ -2164,7 +2192,7 @@ export function createCancelTransaction(
   customGasSettings: CustomGasSettings,
   options: { estimatedBaseFee?: string } = {},
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug('background.cancelTransaction');
+  log.debug('background.createCancelTransaction');
   let newTxId: string;
 
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2175,6 +2203,18 @@ export function createCancelTransaction(
         [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
+            if (
+              err?.message?.includes(
+                'Previous transaction is already confirmed',
+              )
+            ) {
+              dispatch(
+                showModal({
+                  name: 'TRANSACTION_ALREADY_CONFIRMED',
+                  originalTransactionId: txId,
+                }),
+              );
+            }
             dispatch(displayWarning(err));
             reject(err);
             return;
@@ -2588,16 +2628,28 @@ export function hideAlert(): Action {
   };
 }
 
+export function showDeprecatedNetworkModal(): Action {
+  return {
+    type: actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN,
+  };
+}
+
+export function hideDeprecatedNetworkModal(): Action {
+  return {
+    type: actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE,
+  };
+}
+
 /**
  * TODO: this should be moved somewhere else when it makese sense to do so
  */
-interface NftDropDownState {
+type NftDropDownState = {
   [address: string]: {
     [chainId: string]: {
       [nftAddress: string]: boolean;
     };
   };
-}
+};
 
 export function updateNftDropDownState(
   value: NftDropDownState,
@@ -2608,12 +2660,12 @@ export function updateNftDropDownState(
   };
 }
 
-interface QrCodeData {
+type QrCodeData = {
   // Address when a Ethereum Address has been detected
   type?: 'address' | string;
   // contains an address key when Ethereum Address detected
   values?: { address?: string } & Json;
-}
+};
 
 /**
  * This action will receive two types of values via qrCodeData
@@ -2831,12 +2883,12 @@ export function showSendTokenPage(): Action {
 }
 
 // TODO: Lift to shared folder when it makes sense
-interface TemporaryFeatureFlagDef {
+type TemporaryFeatureFlagDef = {
   [feature: string]: boolean;
-}
-interface TemporaryPreferenceFlagDef {
+};
+type TemporaryPreferenceFlagDef = {
   [preference: string]: boolean | object;
-}
+};
 
 export function setFeatureFlag(
   feature: string,
@@ -3205,8 +3257,8 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// DetectTokenController
-export function detectNewTokens(): ThunkAction<
+// TokenDetectionController
+export function detectTokens(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -3214,8 +3266,8 @@ export function detectNewTokens(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectNewTokens`);
-    await submitRequestToBackground('detectNewTokens');
+    log.debug(`background.detectTokens`);
+    await submitRequestToBackground('detectTokens');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -3807,7 +3859,7 @@ export function rejectAllMessages(
 }
 
 export function setFirstTimeFlowType(
-  type: 'create' | 'import',
+  type: FirstTimeFlowType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setFirstTimeFlowType`);
@@ -4086,10 +4138,12 @@ export function getNextNonce(): ThunkAction<
 > {
   return async (dispatch, getState) => {
     const { address } = getSelectedInternalAccount(getState());
+    const networkClientId = getSelectedNetworkClientId(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
         address,
+        networkClientId,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -4235,6 +4289,31 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
   return submitRequestToBackground('removePollingTokenFromAppState', [
     pollingToken,
     POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  ]);
+}
+
+/**
+ * Informs the GasFeeController that the UI requires gas fee polling
+ *
+ * @param networkClientId - unique identifier for the network client
+ * @returns polling token that can be used to stop polling
+ */
+export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
+  return submitRequestToBackground('gasFeeStartPollingByNetworkClientId', [
+    networkClientId,
+  ]);
+}
+
+/**
+ * Informs the GasFeeController that the UI no longer requires gas fee polling
+ * for the given network client.
+ * If all network clients unsubscribe, the controller stops polling.
+ *
+ * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ */
+export function gasFeeStopPollingByPollingToken(pollingToken: string) {
+  return submitRequestToBackground('gasFeeStopPollingByPollingToken', [
+    pollingToken,
   ]);
 }
 
@@ -4404,12 +4483,12 @@ export function fetchSmartTransactionFees(
   };
 }
 
-interface TemporarySmartTransactionGasFees {
+type TemporarySmartTransactionGasFees = {
   maxFeePerGas: string;
   maxPriorityFeePerGas: string;
   gas: string;
   value: string;
-}
+};
 
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },
@@ -4745,6 +4824,22 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   return networkEIP1559Compatibility;
 }
 
+export async function getNetworkConfigurationByNetworkClientId(
+  networkClientId: NetworkClientId,
+): Promise<NetworkConfiguration | undefined> {
+  let networkConfiguration;
+  try {
+    networkConfiguration =
+      await submitRequestToBackground<NetworkConfiguration>(
+        'getNetworkConfigurationByNetworkClientId',
+        [networkClientId],
+      );
+  } catch (error) {
+    console.error(error);
+  }
+  return networkConfiguration;
+}
+
 export function updateProposedNames(
   request: UpdateProposedNamesRequest,
 ): ThunkAction<
@@ -4796,6 +4891,38 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       [shown],
     );
   };
+}
+
+/**
+ * Update the state of a given Snap interface.
+ *
+ * @param id - The Snap interface ID.
+ * @param state - The interface state.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function updateInterfaceState(
+  id: string,
+  state: InterfaceState,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('updateInterfaceState', [id, state]);
+    await forceUpdateMetamaskState(dispatch);
+  }) as any;
+}
+
+/**
+ * Delete the Snap interface from state.
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function deleteInterface(
+  id: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('deleteInterface', [id]);
+    await forceUpdateMetamaskState(dispatch);
+  }) as any;
 }
 ///: END:ONLY_INCLUDE_IF
 

@@ -17,8 +17,6 @@ import SnapLinkWarning from '../snap-link-warning';
 const Paragraph = (props) => (
   <Text
     {...props}
-    marginTop={1}
-    marginBottom={1}
     variant={TextVariant.bodyMd}
     className="snap-ui-markdown__text"
     overflowWrap={OverflowWrap.Anywhere}

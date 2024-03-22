@@ -1,3 +1,5 @@
+@use "design-system";
+
 .permissions-connect-footer {
   display: flex;
   flex-direction: column;
@@ -5,7 +7,7 @@
   align-items: center;
 
   &__text {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-alternative);
     display: flex;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
@@ -17,15 +17,17 @@ import configureStore from '../../../../store/store';
 import EditGasFeeButton from './edit-gas-fee-button';
 
 jest.mock('../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
   createTransactionEventFragment: jest.fn(),
 }));
 
-const render = ({ componentProps, contextProps } = {}) => {
+const render = async ({ componentProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -35,46 +37,62 @@ const render = ({ componentProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      gasFeeEstimates:
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 
-  return renderWithProvider(
-    <GasFeeContextProvider {...contextProps}>
-      <EditGasFeeButton {...componentProps} />
-    </GasFeeContextProvider>,
-    store,
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider {...contextProps}>
+          <EditGasFeeButton {...componentProps} />
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
+
+  return result;
 };
 
 describe('EditGasFeeButton', () => {
-  it('should render edit link with text low if low gas estimates are selected', () => {
-    render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
+  it('should render edit link with text low if low gas estimates are selected', async () => {
+    await render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
   });
 
-  it('should render edit link with text market if medium gas estimates are selected', () => {
-    render({ contextProps: { transaction: { userFeeLevel: 'medium' } } });
+  it('should render edit link with text market if medium gas estimates are selected', async () => {
+    await render({ contextProps: { transaction: { userFeeLevel: 'medium' } } });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
   });
 
-  it('should render edit link with text aggressive if high gas estimates are selected', () => {
-    render({ contextProps: { transaction: { userFeeLevel: 'high' } } });
+  it('should render edit link with text aggressive if high gas estimates are selected', async () => {
+    await render({ contextProps: { transaction: { userFeeLevel: 'high' } } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
   });
 
-  it('should render edit link with text 10% increase if tenPercentIncreased gas estimates are selected', () => {
-    render({
+  it('should render edit link with text 10% increase if tenPercentIncreased gas estimates are selected', async () => {
+    await render({
       contextProps: { transaction: { userFeeLevel: 'tenPercentIncreased' } },
     });
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
-  it('should render edit link with text Site suggested if site suggested estimated are used', () => {
-    render({
+  it('should render edit link with text Site suggested if site suggested estimated are used', async () => {
+    await render({
       contextProps: {
         transaction: {
           userFeeLevel: PriorityLevels.dAppSuggested,
@@ -88,8 +106,8 @@ describe('EditGasFeeButton', () => {
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
 
-  it('should render edit link with text swap suggested if high gas estimates are selected for swaps', () => {
-    render({
+  it('should render edit link with text swap suggested if high gas estimates are selected for swaps', async () => {
+    await render({
       contextProps: {
         transaction: { userFeeLevel: 'high' },
         editGasMode: EditGasModes.swaps,
@@ -99,8 +117,8 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
   });
 
-  it('should render edit link with text advance if custom gas estimates are used', () => {
-    render({
+  it('should render edit link with text advance if custom gas estimates are used', async () => {
+    await render({
       contextProps: {
         defaultEstimateToUse: 'custom',
         transaction: {},
@@ -111,8 +129,8 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Edit')).toBeInTheDocument();
   });
 
-  it('should not render edit link if transaction has simulation error and prop userAcknowledgedGasMissing is false', () => {
-    render({
+  it('should not render edit link if transaction has simulation error and prop userAcknowledgedGasMissing is false', async () => {
+    await render({
       contextProps: {
         transaction: {
           simulationFails: true,
@@ -125,8 +143,8 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
-  it('should render edit link if userAcknowledgedGasMissing is true even if transaction has simulation error', () => {
-    render({
+  it('should render edit link if userAcknowledgedGasMissing is true even if transaction has simulation error', async () => {
+    await render({
       contextProps: {
         transaction: {
           simulationFails: true,
@@ -139,8 +157,8 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Low')).toBeInTheDocument();
   });
 
-  it('should render null for legacy transactions', () => {
-    const { container } = render({
+  it('should render null for legacy transactions', async () => {
+    const { container } = await render({
       contextProps: {
         transaction: {
           userFeeLevel: 'low',

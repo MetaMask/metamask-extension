@@ -1,7 +1,9 @@
+@use "design-system";
+
 .callout {
   $self: &;
 
-  @include H7;
+  @include design-system.H7;
 
   padding: 16px;
   display: grid;

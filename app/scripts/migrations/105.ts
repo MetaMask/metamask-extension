@@ -12,11 +12,11 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-interface Identity {
+type Identity = {
   name: string;
   address: string;
   lastSelected?: number;
-}
+};
 
 export const version = 105;
 
@@ -101,6 +101,14 @@ function createSelectedAccountForAccountsController(
   state: Record<string, any>,
 ) {
   const selectedAddress = state.PreferencesController?.selectedAddress;
+
+  if (typeof selectedAddress !== 'string') {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
+      ),
+    );
+  }
 
   const selectedAccount = Object.values<InternalAccount>(
     state.AccountsController.internalAccounts.accounts,

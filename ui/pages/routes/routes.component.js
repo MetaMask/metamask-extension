@@ -37,6 +37,8 @@ import {
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
+  ToastContainer,
+  Toast,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -121,17 +123,28 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { Box } from '../../components/component-library';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  Box,
+} from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
 
 import { SendPage } from '../../components/multichain/pages/send';
+import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
+import { getURLHost } from '../../helpers/utils/util';
+import { BorderColor } from '../../helpers/constants/design-system';
+import { MILLISECOND } from '../../../shared/constants/time';
 
 export default class Routes extends Component {
   static propTypes = {
     currentCurrency: PropTypes.string,
+    account: PropTypes.object,
+    activeTabOrigin: PropTypes.string,
+    showConnectAccountToast: PropTypes.bool.isRequired,
     setCurrentCurrencyToUSD: PropTypes.func,
     isLoading: PropTypes.bool,
     loadingMessage: PropTypes.string,
@@ -173,6 +186,9 @@ export default class Routes extends Component {
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
+    isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
+    hideDeprecatedNetworkModal: PropTypes.func.isRequired,
+    addPermittedAccount: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -185,12 +201,24 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  handleOsTheme() {
-    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
-      ? ThemeType.dark
-      : ThemeType.light;
+  state = {
+    hideConnectAccountToast: false,
+  };
 
-    document.documentElement.setAttribute('data-theme', osTheme);
+  getTheme() {
+    const { theme } = this.props;
+    if (theme === ThemeType.os) {
+      if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
+        return ThemeType.dark;
+      }
+      return ThemeType.light;
+    }
+    return theme;
+  }
+
+  setTheme() {
+    const theme = this.getTheme();
+    document.documentElement.setAttribute('data-theme', theme);
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -210,14 +238,14 @@ export default class Routes extends Component {
   ///: END:ONLY_INCLUDE_IF
 
   componentDidUpdate(prevProps) {
-    const { theme } = this.props;
+    const { theme, account } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === ThemeType.os) {
-        this.handleOsTheme();
-      } else {
-        document.documentElement.setAttribute('data-theme', theme);
-      }
+      this.setTheme();
+    }
+
+    if (prevProps.account?.address !== account?.address) {
+      this.setState({ hideConnectAccountToast: false });
     }
   }
 
@@ -227,7 +255,6 @@ export default class Routes extends Component {
       pageChanged,
       setCurrentCurrencyToUSD,
       history,
-      theme,
       showExtensionInFullSizeView,
     } = this.props;
 
@@ -245,11 +272,8 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    if (theme === ThemeType.os) {
-      this.handleOsTheme();
-    } else {
-      document.documentElement.setAttribute('data-theme', theme);
-    }
+
+    this.setTheme();
   }
 
   renderRoutes() {
@@ -323,7 +347,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={CONFIRMATION_V_NEXT_ROUTE}
+          path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
           component={ConfirmationPage}
         />
         {
@@ -378,7 +402,10 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         {process.env.MULTICHAIN && (
-          <Authenticated path={CONNECTIONS} component={Connections} />
+          <Authenticated
+            path={`${CONNECTIONS}/:origin`}
+            component={Connections}
+          />
         )}
         {process.env.MULTICHAIN && (
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
@@ -484,8 +511,27 @@ export default class Routes extends Component {
       return true;
     }
 
+    const isConnectionsPage = Boolean(
+      matchPath(location.pathname, {
+        path: CONNECTIONS,
+        exact: false,
+      }),
+    );
+
+    if (isConnectionsPage) {
+      return true;
+    }
+
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
+    }
+
+    if (matchPath(location.pathname, { path: ASSET_ROUTE, exact: false })) {
+      let hideAppHeader = true;
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      hideAppHeader = false;
+      ///: END:ONLY_INCLUDE_IF
+      return hideAppHeader;
     }
 
     const isHandlingPermissionsRequest = Boolean(
@@ -535,6 +581,9 @@ export default class Routes extends Component {
 
   render() {
     const {
+      account,
+      activeTabOrigin,
+      showConnectAccountToast,
       isLoading,
       isUnlocked,
       alertMessage,
@@ -556,12 +605,15 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
+      isDeprecatedNetworkModalOpen,
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
+      hideDeprecatedNetworkModal,
+      addPermittedAccount,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -574,10 +626,16 @@ export default class Routes extends Component {
         ? this.getConnectingLabel(loadingMessage)
         : null;
 
+    // Conditions for displaying the Send route
+    const isSendRoute = matchPath(location.pathname, {
+      path: SEND_ROUTE,
+      exact: false,
+    });
     const shouldShowNetworkInfo =
       isUnlocked &&
       currentChainId &&
       !isTestNet &&
+      !isSendRoute &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
       completedOnboarding &&
@@ -640,6 +698,11 @@ export default class Routes extends Component {
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
+        {isDeprecatedNetworkModalOpen ? (
+          <DeprecatedNetworkModal
+            onClose={() => hideDeprecatedNetworkModal()}
+          />
+        ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
@@ -656,6 +719,40 @@ export default class Routes extends Component {
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
+        <ToastContainer>
+          {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+            <Toast
+              startAdornment={
+                <AvatarAccount
+                  address={account.address}
+                  size={AvatarAccountSize.Md}
+                  borderColor={BorderColor.transparent}
+                />
+              }
+              text={this.context.t('accountIsntConnectedToastText', [
+                account?.metadata?.name,
+                getURLHost(activeTabOrigin),
+              ])}
+              actionText={this.context.t('connectAccount')}
+              onActionClick={() => {
+                // Connect this account
+                addPermittedAccount(activeTabOrigin, account.address);
+                // Use setTimeout to prevent React re-render from
+                // hiding the tooltip
+                setTimeout(() => {
+                  // Trigger a mouseenter on the header's connection icon
+                  // to display the informative connection tooltip
+                  document
+                    .querySelector(
+                      '[data-testid="connection-menu"] [data-tooltipped]',
+                    )
+                    ?.dispatchEvent(new CustomEvent('mouseenter', {}));
+                }, 250 * MILLISECOND);
+              }}
+              onClose={() => this.setState({ hideConnectAccountToast: true })}
+            />
+          ) : null}
+        </ToastContainer>
       </div>
     );
   }

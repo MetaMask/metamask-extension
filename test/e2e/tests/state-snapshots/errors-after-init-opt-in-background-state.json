@@ -32,7 +32,6 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
-    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showPermissionsTour": true,
     "showProductTour": true,
@@ -45,7 +44,8 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "surveyLinkLastClickedOrClosed": "object"
+    "surveyLinkLastClickedOrClosed": "object",
+    "signatureSecurityAlertResponses": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -71,7 +71,10 @@
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
-  "EnsController": { "ensResolutionsByAddress": "object" },
+  "EnsController": {
+    "ensEntries": "object",
+    "ensResolutionsByAddress": "object"
+  },
   "GasFeeController": {
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
@@ -128,11 +131,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": {
-    "storageMetadata": {},
-    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
-    "versionFileETag": "string"
-  },
+  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -178,14 +177,10 @@
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
     "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
-  "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean"
-  },
+  "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -206,7 +201,12 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
-  "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
+  "SnapInterfaceController": "object",
+  "SnapsRegistry": {
+    "database": "object",
+    "lastUpdated": "object",
+    "databaseUnavailable": "boolean"
+  },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
     "swapsState": {

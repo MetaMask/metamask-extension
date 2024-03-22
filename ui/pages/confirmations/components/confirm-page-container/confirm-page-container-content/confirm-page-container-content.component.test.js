@@ -7,6 +7,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   IS_SIGNING_OR_SUBMITTING,
   TRANSACTION_ERROR_KEY,
+  USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../../../helpers/constants/error-keys';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
@@ -186,6 +187,21 @@ describe('Confirm Page Container Content', () => {
     );
     expect(
       queryByText('A previous transaction is still being signed or submitted'),
+    ).toBeInTheDocument();
+  });
+
+  it('should show user op contract deploy error', () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent
+        {...props}
+        errorKey={USER_OP_CONTRACT_DEPLOY_ERROR_KEY}
+      />,
+      store,
+    );
+    expect(
+      queryByText(
+        'Contract deployment from a smart contract account is not supported',
+      ),
     ).toBeInTheDocument();
   });
 });

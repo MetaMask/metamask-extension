@@ -156,6 +156,7 @@ export enum IconName {
   TrendDown = 'trend-down',
   TrendUp = 'trend-up',
   UserCircleAdd = 'user-circle-add',
+  UserCircleLink = 'user-circle-link',
   UserCircleRemove = 'user-circle-remove',
   UserCircle = 'user-circle',
   User = 'user',
@@ -183,6 +184,8 @@ export enum IconName {
   PlusMinus = 'plus-minus',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IconStyleUtilityProps extends StyleUtilityProps {
   /**
    * The name of the icon to display. Use the IconName enum

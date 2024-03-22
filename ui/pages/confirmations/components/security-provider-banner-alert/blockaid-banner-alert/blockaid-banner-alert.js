@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
+import { useSelector } from 'react-redux';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import {
   OverflowWrap,
@@ -19,6 +20,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 import LoadingIndicator from '../../../../../components/ui/loading-indicator';
+import { getCurrentChainId } from '../../../../../selectors';
 import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
@@ -31,7 +33,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
-  [BlockaidReason.failed]: 'blockaidDescriptionFailed',
+  [BlockaidReason.errored]: 'blockaidDescriptionErrored', // TODO: change in i8n
 
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
@@ -49,13 +51,15 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
 /** Reason to title translation key mapping. */
 const REASON_TO_TITLE_TKEY = Object.freeze({
-  [BlockaidReason.failed]: 'blockaidTitleMayNotBeSafe',
+  [BlockaidReason.errored]: 'blockaidTitleMayNotBeSafe',
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
 function BlockaidBannerAlert({ txData, ...props }) {
   const { securityAlertResponse, origin, msgParams, type, txParams, chainId } =
     txData;
+
+  const selectorChainId = useSelector(getCurrentChainId);
 
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -96,7 +100,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     </Text>
   ) : null;
 
-  const isFailedResultType = resultType === BlockaidResultType.Failed;
+  const isFailedResultType = resultType === BlockaidResultType.Errored;
 
   const severity =
     resultType === BlockaidResultType.Malicious
@@ -110,7 +114,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     const reportData = {
       blockNumber: block,
       blockaidVersion: BlockaidPackage.version,
-      chain: NETWORK_TO_NAME_MAP[chainId],
+      chain: NETWORK_TO_NAME_MAP[chainId ?? selectorChainId],
       classification: isFailedResultType ? 'error' : reason,
       domain: origin ?? msgParams?.origin ?? txParams?.origin,
       jsonRpcMethod: type,

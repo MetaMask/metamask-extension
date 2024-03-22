@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'info-tab/index';
 @import 'alerts-tab/alerts-tab';
 @import 'networks-tab/index';
@@ -15,7 +17,7 @@
   }
 
   &__error-text {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-error-default);
   }
@@ -26,7 +28,7 @@
       align-items: center;
       grid-template-columns: 197px 1fr 1fr;
 
-      @include screen-sm-max {
+      @include design-system.screen-sm-max {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 0.5fr 2fr 0.5fr;
         gap: 16px;
@@ -53,11 +55,11 @@
       }
 
       &__title {
-        @include screen-sm-min {
+        @include design-system.screen-sm-min {
           width: 197px;
         }
 
-        @include screen-sm-max {
+        @include design-system.screen-sm-max {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
@@ -95,7 +97,6 @@
           gap: 8px;
 
           &__icon {
-            background: var(--color-background-alternative);
             height: 15px;
             width: 15px;
             margin-right: 16px;
@@ -105,13 +106,18 @@
           &__tab,
           &__section,
           &__no-matching {
-            @include H6;
+            @include design-system.H6;
 
             color: var(--color-icon-default);
           }
 
+          &__highlight {
+            color: var(--color-warning-inverse);
+            background-color: var(--color-warning-default);
+          }
+
           &__section-multiple-lines {
-            @include screen-sm-max {
+            @include design-system.screen-sm-max {
               margin-left: 10px;
             }
           }
@@ -123,7 +129,7 @@
           }
 
           &__link {
-            @include H6;
+            @include design-system.H6;
 
             display: inline;
             color: var(--color-primary-default);
@@ -144,7 +150,7 @@
 
   &__subheader,
   &__subheader--link {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       display: none;
     }
   }
@@ -176,7 +182,7 @@
     align-items: center;
     padding: 16px 0;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: 69px;
       position: relative;
       text-align: center;
@@ -184,10 +190,10 @@
   }
 
   &__sub-header-text {
-    @include H4;
+    @include design-system.H4;
 
-    @include screen-sm-max {
-      @include H5;
+    @include design-system.screen-sm-max {
+      @include design-system.H5;
 
       width: 100%;
     }
@@ -225,18 +231,18 @@
       flex-direction: column;
       flex: 1 1 auto;
 
-      @include screen-sm-min {
+      @include design-system.screen-sm-min {
         flex: 0 0 40%;
         max-width: 197px;
       }
 
       .tab-bar__tab {
-        @include screen-sm-min {
+        @include design-system.screen-sm-min {
           max-height: 50px;
         }
 
         &__caret {
-          @include screen-sm-min {
+          @include design-system.screen-sm-min {
             display: none;
           }
         }
@@ -249,7 +255,7 @@
       display: flex;
       flex-flow: column;
 
-      @include screen-sm-max {
+      @include design-system.screen-sm-max {
         display: none;
       }
     }
@@ -268,7 +274,7 @@
     display: flex;
     flex-direction: column;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: initial;
     }
 
@@ -313,7 +319,7 @@
     }
 
     &__description {
-      @include H6;
+      @include design-system.H6;
 
       margin-top: 8px;
       margin-bottom: 12px;
@@ -338,7 +344,7 @@
   }
 
   &__content-description {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-alternative);
 
@@ -353,7 +359,7 @@
     flex-direction: column;
     margin-top: 8px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       max-width: 100%;
     }
 
@@ -377,7 +383,7 @@
   }
 
   &__address-book-button {
-    @include H5;
+    @include design-system.H5;
 
     padding: 0;
   }
@@ -387,7 +393,7 @@
   }
 
   &__inline-link {
-    @include H6;
+    @include design-system.H6;
 
     display: initial;
     padding: 0;
@@ -397,13 +403,13 @@
     .settings-page {
       &__content {
         &__tabs {
-          @include screen-sm-max {
+          @include design-system.screen-sm-max {
             display: none;
           }
         }
 
         &__modules {
-          @include screen-sm-max {
+          @include design-system.screen-sm-max {
             display: block;
           }
         }

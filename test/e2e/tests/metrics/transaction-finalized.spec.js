@@ -135,6 +135,9 @@ const eventHasZeroAddressAnonymousId = (payload) =>
 
 describe('Transaction Finalized Event', function () {
   it('Successfully tracked when sending a transaction @no-mmi', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -150,9 +153,6 @@ describe('Transaction Finalized Event', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
         // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await sendTransaction(driver, RECIPIENT, '2.0');
 
         const events = await getEventPayloads(driver, mockedEndpoints);

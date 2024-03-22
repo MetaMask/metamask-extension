@@ -28,4 +28,16 @@ describe('DetectedTokensBanner', () => {
     );
     expect(prevIcon).toBeInTheDocument();
   });
+  it('should render correct steps', () => {
+    const { getByText } = render(
+      <ProductTour
+        anchorElement={document.body}
+        {...props}
+        prevIcon
+        currentStep={2}
+        totalSteps={5}
+      />,
+    );
+    expect(getByText('2 / 5')).toBeInTheDocument();
+  });
 });

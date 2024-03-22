@@ -1,0 +1,15 @@
+name: Validate Conventional Commit Title
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [opened, edited, reopened]
+
+jobs:
+  pr-title-linter:
+    runs-on: ubuntu-latest
+    steps:
+    # this is a hash for amannn/action-semantic-pull-request@v5.2.0
+    - uses: amannn/action-semantic-pull-request@c3cd5d1ea3580753008872425915e343e351ab54
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

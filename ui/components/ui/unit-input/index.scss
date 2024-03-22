@@ -1,5 +1,7 @@
+@use "design-system";
+
 .unit-input {
-  @include Paragraph;
+  @include design-system.Paragraph;
 
   display: flex;
   flex-flow: row nowrap;
@@ -35,7 +37,7 @@
   }
 
   &__input {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-default);
     background: transparent;
@@ -54,7 +56,7 @@
   }
 
   &__suffix {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     margin-left: 3px;
   }

@@ -12,14 +12,14 @@ import {
  * _getCreds method calls into window.open to open a new window for the lattice
  * connector. The solution here is to split the keyring execution so that the
  * portion that requires a normal functioning DOM is executed in the offscreen
- * document. The lattice-iframe.ts file in the offscreen directory is
- * responsible for the latter half of the original keyrings execution. The main
- * difference in the first half that this overwritten method is responsible for
- * is just to use the chrome.runtime.sendMessage method to send a message to
- * the offscreen document which picks up on the execution of opening the new
- * window to the lattice connector. Note that this file differs from the
- * ledger and trezor offscreen bridges because this keyring requires no bridge
- * to function appropriately.
+ * document. The lattice.ts file in the offscreen directory is responsible for
+ * the latter half of the original keyrings execution. The main difference in
+ * the first half that this overwritten method is responsible for is just to
+ * use the chrome.runtime.sendMessage method to send a message to the offscreen
+ * document which picks up on the execution of opening the new window to the
+ * lattice connector. Note that this file differs from the ledger and trezor
+ * offscreen bridges because this keyring requires no bridge to function
+ * appropriately.
  */
 class LatticeKeyringOffscreen extends LatticeKeyring {
   static type: string;

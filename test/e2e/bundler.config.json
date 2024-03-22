@@ -1,0 +1,11 @@
+{
+  "autoBundleInterval": 0,
+  "autoBundleMempoolSize": 1,
+  "beneficiary": "0xe18035bf8712672935fdb4e5e431b1a0183d2dfc",
+  "entryPoint": "0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b",
+  "maxBundleGas": 5e6,
+  "minBalance": "0",
+  "mnemonic": "./test/e2e/bundler.mnemonic.txt",
+  "network": "http://127.0.0.1:8545",
+  "port": "3000"
+}

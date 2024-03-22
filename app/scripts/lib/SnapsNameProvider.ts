@@ -12,7 +12,6 @@ import {
   AddressLookupResult,
   Snap as TruncatedSnap,
 } from '@metamask/snaps-sdk';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
 import {
@@ -135,9 +134,12 @@ export class SnapsNameProvider implements NameProvider {
         },
       )) as AddressLookupResult;
 
-      const domain = result?.resolvedDomain;
+      const domains = result?.resolvedDomains;
 
-      proposedNames = domain ? [domain] : [];
+      // TODO: Determine if this is what we want.
+      proposedNames = domains
+        ? [...new Set(domains.map((domain) => domain.resolvedDomain))]
+        : [];
     } catch (error) {
       log.error('Snap name provider request failed', {
         snapId: snap.id,

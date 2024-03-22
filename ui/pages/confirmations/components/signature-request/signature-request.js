@@ -45,7 +45,10 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../contract-details-modal';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
+import {
+  BlockaidResultType,
+  SECURITY_PROVIDER_MESSAGE_SEVERITY,
+} from '../../../../../shared/constants/security-provider';
 
 import {
   TextAlign,
@@ -152,6 +155,11 @@ const SignatureRequest = ({
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
   });
+
+  const submitButtonType =
+    txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious
+      ? 'danger-primary'
+      : 'primary';
 
   const onSign = async () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -337,6 +345,7 @@ const SignatureRequest = ({
             hardwareWalletRequiresConnection ||
             (messageIsScrollable && !hasScrolledMessage)
           }
+          submitButtonType={submitButtonType}
         />
         {showContractDetails && (
           <ContractDetailsModal

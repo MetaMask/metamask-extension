@@ -196,7 +196,7 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history, _, data) {
+function getValues(pendingApproval, t, actions, history, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
   return {

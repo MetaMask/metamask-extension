@@ -1,17 +1,8 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import {
-  useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useDispatch,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Text } from '../../../component-library';
 import {
   AlignItems,
@@ -26,12 +17,16 @@ import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../copyable';
-import { getTargetSubjectMetadata } from '../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-import { trackInsightSnapUsage } from '../../../../store/actions';
-///: END:ONLY_INCLUDE_IF
+import { getSnapMetadata } from '../../../../selectors';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
+  deleteInterface,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  trackInsightSnapUsage,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
 import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransactionInsightSnaps';
 ///: END:ONLY_INCLUDE_IF
@@ -46,13 +41,13 @@ export const SnapInsight = ({
   insightHookParams,
   ///: END:ONLY_INCLUDE_IF
 }) => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
-  let error, content;
+  let error, interfaceId;
   let isLoading = loading;
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   error = data?.error;
-  content = data?.response?.content;
-  const dispatch = useDispatch();
+  interfaceId = data?.response?.id;
   useEffect(() => {
     const trackInsightUsage = async () => {
       try {
@@ -68,17 +63,22 @@ export const SnapInsight = ({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
   error = insights.data?.[0]?.error;
-  content = insights.data?.[0]?.response?.content;
+  interfaceId = insights.data?.[0]?.response?.id;
   isLoading = insights.loading;
+
+  useEffect(() => {
+    return () => {
+      interfaceId && dispatch(deleteInterface(interfaceId));
+    };
+  }, [interfaceId]);
   ///: END:ONLY_INCLUDE_IF
 
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
 
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
+  const hasNoData = !error && !isLoading && !interfaceId;
 
-  const hasNoData = !error && !isLoading && !content;
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -97,10 +97,10 @@ export const SnapInsight = ({
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {isLoading || content ? (
+          {isLoading || interfaceId ? (
             <SnapUIRenderer
               snapId={snapId}
-              data={content}
+              interfaceId={interfaceId}
               delineatorType={DelineatorType.Insights}
               isLoading={isLoading}
             />

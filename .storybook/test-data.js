@@ -4,6 +4,8 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
+import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
+import { FirstTimeFlowType } from '../shared/constants/onboarding';
 
 const state = {
   invalidCustomNetwork: {
@@ -277,6 +279,24 @@ const state = {
         ],
       },
     },
+    interfaces: {
+      'test-interface': {
+        content: panel([
+          heading('Foo bar'),
+          text('Description'),
+          divider(),
+          text('More text'),
+          copyable('Text you can copy'),
+        ]),
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+      'error-interface': {
+        content: 'foo',
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+    },
     accountArray: [
       {
         name: 'This is a Really Long Account Name',
@@ -344,6 +364,19 @@ const state = {
             name: 'Account 4',
             keyring: {
               type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        'b990b846-b384-4508-93d9-587461f1123e': {
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          id: 'b990b846-b384-4508-93d9-587461f1123e',
+          metadata: {
+            name: 'Test Account 1',
+            keyring: {
+              type: 'Test Keyring',
             },
           },
           options: {},
@@ -454,7 +487,7 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5': {
+      '0xaa36a7': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -638,7 +671,7 @@ const state = {
       [CHAIN_IDS.OPTIMISM_TESTNET]: false,
       [CHAIN_IDS.AVALANCHE_TESTNET]: true,
     },
-    firstTimeFlowType: 'create',
+    firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
     knownMethodData: {
       '0x60806040': {
@@ -654,11 +687,11 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     providerConfig: {
-      type: 'goerli',
+      type: 'sepolia',
       ticker: 'ETH',
-      nickname: 'Goerli',
+      nickname: 'Sepolia',
       rpcUrl: '',
-      chainId: '0x5',
+      chainId: '0xaa36a7',
     },
     network: '5',
     accounts: {
