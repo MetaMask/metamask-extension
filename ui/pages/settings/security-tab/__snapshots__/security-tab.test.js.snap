@@ -828,7 +828,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="useExternalNameSources"
+          data-testid="useTransactionSimulations"
         >
           <label
             class="toggle-button toggle-button--off"
