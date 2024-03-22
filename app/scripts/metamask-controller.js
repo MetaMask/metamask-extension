@@ -1588,7 +1588,8 @@ export default class MetamaskController extends EventEmitter {
         updateTransactions: false,
       },
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-      isSimulationEnabled: () => false,
+      isSimulationEnabled: () =>
+        this.preferencesController.store.getState().useTransactionSimulations,
       messenger: transactionControllerMessenger,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
