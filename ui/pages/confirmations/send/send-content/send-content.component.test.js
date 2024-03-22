@@ -13,8 +13,6 @@ import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalN
 import SendContent from '.';
 
 jest.mock('../../../../store/actions', () => ({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
@@ -69,9 +67,7 @@ describe('SendContent Component', () => {
         showHexData: true,
       });
 
-      await waitFor(() => {
-        expect(container).toMatchSnapshot();
-      });
+      expect(container).toMatchSnapshot();
     });
   });
 

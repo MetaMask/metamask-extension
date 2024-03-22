@@ -12,11 +12,11 @@ import {
 
 import ConfirmTransaction from './confirm-transaction.component';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 const middleware = [thunk];
 
 setBackgroundConnection({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   getGasFeeTimeEstimate: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),

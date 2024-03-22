@@ -17,8 +17,6 @@ import {
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

@@ -18,6 +18,7 @@ export type Confirmation = SignatureRequestType;
 export type ConfirmMetamaskState = {
   confirm: {
     currentConfirmation?: Confirmation;
+    isScrollToBottomNeeded?: boolean;
   };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];

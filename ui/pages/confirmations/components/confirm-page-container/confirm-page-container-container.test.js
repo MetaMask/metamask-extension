@@ -159,7 +159,6 @@ const props = {
 };
 
 jest.mock('../../../../store/actions', () => ({
-  removePollingTokenFromAppState: jest.fn(),
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()

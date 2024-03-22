@@ -29,11 +29,11 @@ import {
 } from '../../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 const middleware = [thunk];
 
 setBackgroundConnection({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
@@ -468,12 +468,14 @@ describe('Confirm Transaction Base', () => {
       .fn()
       .mockResolvedValue(state.confirmTransaction.txData);
     const updateTransaction = jest.fn().mockResolvedValue();
+    const updateTransactionValue = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
     const props = {
       sendTransaction,
       updateTransaction,
+      updateTransactionValue,
       showCustodianDeepLink,
       setWaitForConfirmDeepLinkDialog,
       toAddress: mockPropsToAddress,

@@ -13,8 +13,6 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import ConfirmGasDisplay from './confirm-gas-display';
 
 jest.mock('../../../../store/actions', () => ({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

@@ -21,8 +21,6 @@ import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 const TEXT_SELECTOR = 'Save these values as my default for the Goerli network.';
 
 jest.mock('../../../../../store/actions', () => ({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),

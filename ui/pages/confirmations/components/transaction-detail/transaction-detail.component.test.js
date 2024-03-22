@@ -13,8 +13,6 @@ import configureStore from '../../../../store/store';
 import TransactionDetail from './transaction-detail.component';
 
 jest.mock('../../../../store/actions', () => ({
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
