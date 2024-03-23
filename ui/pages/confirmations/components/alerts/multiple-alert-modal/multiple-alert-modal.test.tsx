@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import {
@@ -45,5 +46,29 @@ describe('MultipleAlertModal', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+  describe('Navigation', () => {
+    it('calls next alert when the next button is clicked', () => {
+      const { getByTestId, getByText } = renderWithProvider(
+        <MultipleAlertModal {...defaultProps} />,
+        mockStore,
+      );
+
+      fireEvent.click(getByTestId('alert-modal-next-button'));
+
+      expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+    });
+
+    it('calls back alert when the back button is clicked', () => {
+      const selectSecondAlertMock = { ...defaultProps, alertKey: 'data' };
+      const { getByTestId, getByText } = renderWithProvider(
+        <MultipleAlertModal {...selectSecondAlertMock} />,
+        mockStore,
+      );
+
+      fireEvent.click(getByTestId('alert-modal-back-button'));
+
+      expect(getByText(alertsMock[0].message)).toBeInTheDocument();
+    });
   });
 });

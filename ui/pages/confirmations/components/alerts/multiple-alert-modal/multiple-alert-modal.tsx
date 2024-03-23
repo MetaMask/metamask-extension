@@ -81,6 +81,7 @@ export function MultipleAlertModal({
                 size={ButtonIconSize.Sm}
                 onClick={onBack}
                 className={'multiple-alert-modal__arrow-buttons'}
+                data-testid="alert-modal-back-button"
               />
             ) : null}
             <Text
@@ -95,10 +96,11 @@ export function MultipleAlertModal({
                 size={ButtonIconSize.Sm}
                 onClick={onNext}
                 className={'multiple-alert-modal__arrow-buttons'}
+                data-testid="alert-modal-next-button"
               />
             ) : null}
           </Box>
-        ) : undefined
+        ) : null
       }
     />
   );

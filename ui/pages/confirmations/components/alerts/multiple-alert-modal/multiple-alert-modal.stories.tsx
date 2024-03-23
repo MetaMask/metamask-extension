@@ -10,8 +10,8 @@ const alertsMock: Alert[] = [
   { key: 'from', severity: Severity.Danger, message: 'Description of what may happen if this alert was ignored', reason: 'Reason for the alert 1', alertDetails: ['We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
   'Operator is an externally owned account (EOA) ',
   'Operator is untrusted according to previous activity',]},
-  // { key: 'data', severity: Severity.Warning, message: 'Alert 2', alertDetails:['detail 1 warning', 'detail 2 warning'] },
-  // { key: 'contract', severity: Severity.Info, message: 'Alert Info', alertDetails:['detail 1 info', 'detail  info'] },
+  { key: 'data', severity: Severity.Warning, message: 'Alert 2', alertDetails:['detail 1 warning', 'detail 2 warning'] },
+  { key: 'contract', severity: Severity.Info, message: 'Alert Info', alertDetails:['detail 1 info', 'detail  info'] },
 ];
 const ownerIdMock = '123';
 const storeMock = configureStore({ confirmAlerts: {

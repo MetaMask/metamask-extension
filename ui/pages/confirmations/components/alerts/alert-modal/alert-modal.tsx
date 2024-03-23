@@ -100,6 +100,7 @@ export function AlertModal({
           startAccessory={multipleAlerts}
           className={'alert-modal__header'}
           borderWidth={1}
+          display={multipleAlerts ? Display.InlineFlex : Display.Block}
         />
         <ModalBody>
           <Box
