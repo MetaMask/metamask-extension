@@ -485,7 +485,7 @@
     "@typescript-eslint/parser": "^6.21.0",
     "@whitespace/storybook-addon-html": "^5.1.6",
     "addons-linter": "^6.24.0",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.19",
     "axios": "^1.1.3",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",

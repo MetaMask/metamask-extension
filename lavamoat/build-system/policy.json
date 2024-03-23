@@ -8866,6 +8866,7 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
