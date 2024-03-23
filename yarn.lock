@@ -25024,7 +25024,7 @@ __metadata:
     nanoid: "npm:^2.1.6"
     nock: "npm:^13.2.9"
     node-fetch: "npm:^2.6.1"
-    nyc: "npm:^15.0.0"
+    nyc: "npm:^15.1.0"
     obj-multiplex: "npm:^1.0.0"
     pify: "npm:^5.0.0"
     polyfill-crypto.getrandomvalues: "npm:^1.0.0"
@@ -26718,7 +26718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nyc@npm:^15.0.0, nyc@npm:^15.1.0":
+"nyc@npm:^15.1.0":
   version: 15.1.0
   resolution: "nyc@npm:15.1.0"
   dependencies:
