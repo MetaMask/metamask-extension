@@ -602,7 +602,7 @@
     "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
-    "webpack": "^5.75.0",
+    "webpack": "^5.91.0",
     "yaml": "^2.4.1",
     "yargs": "^17.0.1"
   },
