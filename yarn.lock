@@ -10248,12 +10248,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yargs@npm:^17.0.8":
-  version: 17.0.8
-  resolution: "@types/yargs@npm:17.0.8"
+"@types/yargs@npm:^17.0.32, @types/yargs@npm:^17.0.8":
+  version: 17.0.32
+  resolution: "@types/yargs@npm:17.0.32"
   dependencies:
     "@types/yargs-parser": "npm:*"
-  checksum: 3c062686a4741a9b53b75c9d602e366c34f49e372453028e526b9c576686b322bea0682cb086547b66c99c72ee3fe48df793e8bf0a86e168cda044c5b9107529
+  checksum: 1e2b2673847011ce43607df690d392f137d95a2d6ea85aa319403eadda2ef4277365efd4982354d8843f2611ef3846c88599660aaeb537fa9ccddae83c2a89de
   languageName: node
   linkType: hard
 
@@ -24910,7 +24910,7 @@ __metadata:
     "@types/w3c-web-hid": "npm:^1.0.3"
     "@types/watchify": "npm:^3.11.1"
     "@types/webextension-polyfill": "npm:^0.10.4"
-    "@types/yargs": "npm:^17.0.8"
+    "@types/yargs": "npm:^17.0.32"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     "@whitespace/storybook-addon-html": "npm:^5.1.6"
@@ -25106,7 +25106,7 @@ __metadata:
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:^5.75.0"
     yaml: "npm:^2.4.1"
-    yargs: "npm:^17.0.1"
+    yargs: "npm:^17.7.2"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
   linkType: soft

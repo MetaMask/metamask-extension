@@ -480,7 +480,7 @@
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/webextension-polyfill": "^0.10.4",
-    "@types/yargs": "^17.0.8",
+    "@types/yargs": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@whitespace/storybook-addon-html": "^5.1.6",
@@ -604,7 +604,7 @@
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.75.0",
     "yaml": "^2.4.1",
-    "yargs": "^17.0.1"
+    "yargs": "^17.7.2"
   },
   "engines": {
     "node": ">= 20",
