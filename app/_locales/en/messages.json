@@ -4840,7 +4840,8 @@
     "message": "Submitted"
   },
   "suggestedBy": {
-    "message": "Suggested by"
+    "message": "Suggested by $1",
+    "description": "$1 is the snap name"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
