@@ -324,6 +324,13 @@ export function lookupDomainName(domainName) {
         return;
       }
 
+      // Due to the asynchronous nature of looking up domains, we could reach this point
+      // while a new lookup has started, if so we don't use the found result.
+      state = getState();
+      if (trimmedDomainName !== state[name].domainName) {
+        return;
+      }
+
       await dispatch(
         lookupEnd({
           resolutions,
