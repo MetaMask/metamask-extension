@@ -3515,13 +3515,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kurkle/color@npm:^0.3.0":
-  version: 0.3.2
-  resolution: "@kurkle/color@npm:0.3.2"
-  checksum: 079c4b7688061070f1d570cee4cf0e7c4085867b940688ff80356a56825a5ace7077257c9ec5863eb344a8eae78379388ab57cdf9d75c491389fad56f411cd43
-  languageName: node
-  linkType: hard
-
 "@kwsites/file-exists@npm:^1.1.1":
   version: 1.1.1
   resolution: "@kwsites/file-exists@npm:1.1.1"
@@ -13634,15 +13627,6 @@ __metadata:
   version: 0.0.2
   resolution: "charenc@npm:0.0.2"
   checksum: 81dcadbe57e861d527faf6dd3855dc857395a1c4d6781f4847288ab23cffb7b3ee80d57c15bba7252ffe3e5e8019db767757ee7975663ad2ca0939bb8fcaf2e5
-  languageName: node
-  linkType: hard
-
-"chart.js@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "chart.js@npm:4.4.1"
-  dependencies:
-    "@kurkle/color": "npm:^0.3.0"
-  checksum: bb58247349ed04b6a38c4c4b45d953d87dab40ecd70dd796da302cbcebf866dfc1ecf7bd32d95ecb44b89dccf9a4cfc6ff84f74ba69b024be9b5bd19b2930fbc
   languageName: node
   linkType: hard
 
@@ -24931,7 +24915,6 @@ __metadata:
     brfs: "npm:^2.0.2"
     browserify: "npm:^17.0.0"
     chalk: "npm:^4.1.2"
-    chart.js: "npm:^4.4.1"
     chokidar: "npm:^3.5.3"
     classnames: "npm:^2.2.6"
     concurrently: "npm:^8.2.2"
@@ -25044,7 +25027,6 @@ __metadata:
     randomcolor: "npm:^0.5.4"
     react: "npm:^16.12.0"
     react-beautiful-dnd: "npm:^13.1.1"
-    react-chartjs-2: "npm:^5.2.0"
     react-devtools: "npm:^4.11.0"
     react-dom: "npm:^16.12.0"
     react-focus-lock: "npm:^2.9.4"
@@ -29075,16 +29057,6 @@ __metadata:
     react: ^16.8.5 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.5 || ^17.0.0 || ^18.0.0
   checksum: 2de8162a74f7fc78294e5a928b92d3fff02c579d137a25d53b1ab4313abeb108709bb7281512f7f94d18257de3122b8c85cb5a8375113cb8657088b1a9bda65b
-  languageName: node
-  linkType: hard
-
-"react-chartjs-2@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "react-chartjs-2@npm:5.2.0"
-  peerDependencies:
-    chart.js: ^4.1.1
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 0a70b60e1a0d1f0cecdd69d70d9ac1c191618c1033d8f942d4728f5eb84c893c82c9e3318be8a3158eb3a7186c0251a8fe0356c9610ea0f0f3f2d4a9c4a0b388
   languageName: node
   linkType: hard
 

@@ -3366,53 +3366,6 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "chart.js": {
-      "globals": {
-        "$animations": true,
-        "Intl.NumberFormat": true,
-        "MutationObserver": true,
-        "OffscreenCanvas": true,
-        "Path2D": true,
-        "ResizeObserver": true,
-        "active": true,
-        "addEventListener": true,
-        "circumference": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "dataElementType": true,
-        "datasetElementType": true,
-        "defaultRoutes": true,
-        "defaults": true,
-        "descriptors": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "endAngle": true,
-        "fullCircles": true,
-        "id": true,
-        "innerRadius": true,
-        "options": true,
-        "outerRadius": true,
-        "overrides": true,
-        "parsed": true,
-        "pixelMargin": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true,
-        "startAngle": true,
-        "stop": true,
-        "x": true,
-        "y": true
-      },
-      "packages": {
-        "chart.js>@kurkle/color": true
-      }
-    },
-    "chart.js>@kurkle/color": {
-      "globals": {
-        "define": true
-      }
-    },
     "classnames": {
       "globals": {
         "classNames": "write",
@@ -4230,15 +4183,6 @@
     },
     "react-beautiful-dnd>use-memo-one": {
       "packages": {
-        "react": true
-      }
-    },
-    "react-chartjs-2": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "chart.js": true,
         "react": true
       }
     },
