@@ -1386,6 +1386,11 @@
         "define": true
       }
     },
+    "@storybook/test-runner>jest-circus>p-limit": {
+      "packages": {
+        "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
+      }
+    },
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
@@ -2177,11 +2182,6 @@
       },
       "packages": {
         "chokidar>anymatch>picomatch": true
-      }
-    },
-    "copy-webpack-plugin>p-limit": {
-      "packages": {
-        "copy-webpack-plugin>p-limit>yocto-queue": true
       }
     },
     "cross-spawn": {
@@ -3344,6 +3344,7 @@
         "fs.stat": true,
         "fs.statSync": true,
         "os.cpus": true,
+        "os.platform": true,
         "path.basename": true,
         "path.resolve": true,
         "stream.PassThrough": true,
@@ -6246,7 +6247,7 @@
     },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
-        "copy-webpack-plugin>p-limit": true
+        "@storybook/test-runner>jest-circus>p-limit": true
       }
     },
     "mocha>log-symbols": {
