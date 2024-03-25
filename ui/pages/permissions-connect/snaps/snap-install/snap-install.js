@@ -186,6 +186,7 @@ export default function SnapInstall({
             <Box marginLeft={4} marginRight={4} display={Display.Flex}>
               <SnapPermissionsList
                 snapId={targetSubjectMetadata.origin}
+                snapName={snapName}
                 permissions={requestState.permissions || {}}
               />
             </Box>

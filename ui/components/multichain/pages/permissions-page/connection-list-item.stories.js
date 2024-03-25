@@ -1,5 +1,6 @@
 import React from 'react';
 import { PERMISSIONS } from '../../../../helpers/constants/routes';
+import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
 import { ConnectionListItem } from './connection-list-item';
 
 export default {
@@ -29,6 +30,8 @@ export default {
         '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress1',
         '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress2',
       },
+      networkIconUrl: ETH_TOKEN_IMAGE_URL,
+      networkName: 'Test Dapp Network',
     },
     onClick: () => console.log('clicked'),
   },
@@ -82,6 +85,8 @@ ChaosStory.args = {
       '0x777F07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress9',
       '0x666D671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress10',
     },
+    networkIconUrl: ETH_TOKEN_IMAGE_URL,
+    networkName: 'Test Dapp Network',
   },
   onClick: () => {
     console.log(
