@@ -879,9 +879,6 @@ describe('MetaMaskController', () => {
           .mockResolvedValueOnce(['0x2'])
           .mockResolvedValueOnce(['0x3']);
         jest
-          .spyOn(metamaskController.preferencesController, 'setAddresses')
-          .mockReturnValue();
-        jest
           .spyOn(metamaskController.preferencesController, 'setSelectedAddress')
           .mockReturnValue();
         jest

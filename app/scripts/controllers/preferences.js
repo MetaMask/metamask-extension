@@ -386,24 +386,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Updates identities to only include specified addresses. Removes identities
-   * not included in addresses array
-   *
-   * @param {string[]} addresses - An array of hex addresses
-   */
-  setAddresses(addresses) {
-    const oldIdentities = this.store.getState().identities;
-
-    const identities = addresses.reduce((ids, address, index) => {
-      const oldId = oldIdentities[address] || {};
-      ids[address] = { name: `Account ${index + 1}`, address, ...oldId };
-      return ids;
-    }, {});
-
-    this.store.updateState({ identities });
-  }
-
-  /**
    * Removes an address from state
    *
    * @param {string} address - A hex address

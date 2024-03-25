@@ -76,44 +76,15 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setAddresses', () => {
-    it('should keep a map of addresses to names and addresses in the store', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-
-      const { identities } = preferencesController.store.getState();
-      expect(identities).toStrictEqual({
-        '0xda22le': {
-          name: 'Account 1',
-          address: '0xda22le',
-        },
-        '0x7e57e2': {
-          name: 'Account 2',
-          address: '0x7e57e2',
-        },
-      });
-    });
-
-    it('should replace its list of addresses', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-      preferencesController.setAddresses(['0xda22le77', '0x7e57e277']);
-
-      const { identities } = preferencesController.store.getState();
-      expect(identities).toStrictEqual({
-        '0xda22le77': {
-          name: 'Account 1',
-          address: '0xda22le77',
-        },
-        '0x7e57e277': {
-          name: 'Account 2',
-          address: '0x7e57e277',
-        },
-      });
-    });
-  });
-
   describe('removeAddress', () => {
     it('should remove an address from state', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
+      onKeyringStateChangeListener({
+        keyrings: [
+          {
+            accounts: ['0xda22le', '0x7e57e2'],
+          },
+        ],
+      });
 
       preferencesController.removeAddress('0xda22le');
 
@@ -123,10 +94,17 @@ describe('preferences controller', () => {
     });
 
     it('should switch accounts if the selected address is removed', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-
+      onKeyringStateChangeListener({
+        keyrings: [
+          {
+            accounts: ['0xda22le', '0x7e57e2'],
+          },
+        ],
+      });
       preferencesController.setSelectedAddress('0x7e57e2');
+
       preferencesController.removeAddress('0x7e57e2');
+
       expect(preferencesController.getSelectedAddress()).toStrictEqual(
         '0xda22le',
       );
@@ -135,7 +113,13 @@ describe('preferences controller', () => {
 
   describe('setAccountLabel', () => {
     it('should update a label for the given account', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
+      onKeyringStateChangeListener({
+        keyrings: [
+          {
+            accounts: ['0xda22le', '0x7e57e2'],
+          },
+        ],
+      });
 
       expect(
         preferencesController.store.getState().identities['0xda22le'],
