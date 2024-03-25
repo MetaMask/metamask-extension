@@ -503,7 +503,7 @@
     "depcheck": "^1.4.3",
     "dependency-tree": "^10.0.9",
     "detect-port": "^1.5.1",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "duplexify": "^4.1.1",
     "eslint": "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch",
     "eslint-config-prettier": "^8.5.0",
