@@ -80,6 +80,7 @@ describe('Privacy Settings Onboarding View', () => {
     const submitButton = getByText('Done');
     // toggle to false
     fireEvent.click(toggles[0]);
+    fireEvent.click(toggles[3]);
     fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
