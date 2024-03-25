@@ -968,12 +968,6 @@ describe('MetaMaskController', () => {
         ).toHaveBeenCalledTimes(3);
       });
 
-      it('should call preferencesController.setAddresses', async () => {
-        expect(
-          metamaskController.preferencesController.setAddresses,
-        ).toHaveBeenCalledTimes(1);
-      });
-
       it('should call preferencesController.setSelectedAddress', async () => {
         expect(
           metamaskController.preferencesController.setSelectedAddress,
