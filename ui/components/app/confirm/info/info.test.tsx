@@ -28,6 +28,7 @@ const mockRowConfigs: ConfirmInfoRowConfig[] = [
 describe('ConfirmInfo', () => {
   const render = (storeOverrides: Record<string, any> = {}) => {
     const store = configureStore({
+      ...mockState.metamask,
       metamask: { ...mockState.metamask },
       ...storeOverrides,
     });
@@ -39,12 +40,12 @@ describe('ConfirmInfo', () => {
   };
 
   it('should match snapshot', () => {
-    const { container } = render(<ConfirmInfo rowConfigs={mockRowConfigs} />);
+    const { container } = render(mockRowConfigs);
     expect(container).toMatchSnapshot();
   });
 
   it('renders the correct number of rows provided', () => {
-    const { container } = render(<ConfirmInfo rowConfigs={mockRowConfigs} />);
+    const { container } = render(mockRowConfigs);
     const numOfDividers = mockRowConfigs.filter(
       (rowConfig) => rowConfig.type === ConfirmInfoRowType.Divider,
     ).length;
