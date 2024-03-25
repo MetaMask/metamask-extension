@@ -20,24 +20,24 @@ import {
   ButtonVariant,
   ModalHeader,
   ModalContent,
-} from '../../../components/component-library';
+} from '../../component-library';
 
-interface Props {
-  onContinue: () => void;
-  onNoRightNow: () => void;
+type Props = {
+  onEnable: () => void;
+  onNotRightNow: () => void;
   isOpen: boolean;
-}
+};
 
 export default function SmartTransactionsModal({
-  onContinue,
-  onNoRightNow,
+  onEnable,
+  onNotRightNow,
   isOpen,
 }: Props) {
   const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onContinue}
+      onClose={onEnable}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       className="mm-modal__custom-scrollbar"
@@ -81,7 +81,7 @@ export default function SmartTransactionsModal({
             marginTop={6}
             type="link"
             variant={ButtonVariant.Link}
-            onClick={onNoRightNow}
+            onClick={onNotRightNow}
             width={BlockSize.Full}
           >
             {t('notRightNow')}
@@ -89,10 +89,10 @@ export default function SmartTransactionsModal({
           <Button
             marginTop={4}
             variant={ButtonVariant.Primary}
-            onClick={onContinue}
+            onClick={onEnable}
             width={BlockSize.Full}
           >
-            {t('continue')}
+            {t('enable')}
           </Button>
         </Box>
       </ModalContent>
