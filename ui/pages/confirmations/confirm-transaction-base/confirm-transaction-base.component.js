@@ -60,9 +60,11 @@ import { ConfirmGasDisplay } from '../components/confirm-gas-display';
 import updateTxData from '../../../../shared/modules/updateTxData';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../../shared/constants/keyring';
+import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-loading-screen/snap-account-transaction-loading-screen';
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
+import { SimulationDetails } from '../components/simulation-details';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -104,6 +106,9 @@ export default class ConfirmTransactionBase extends Component {
     unapprovedTxCount: PropTypes.number,
     customGas: PropTypes.object,
     addToAddressBookIfNew: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    fromInternalAccount: PropTypes.object,
+    ///: END:ONLY_INCLUDE_IF
     keyringForAccount: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
@@ -156,6 +161,7 @@ export default class ConfirmTransactionBase extends Component {
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
+    updateTransactionValue: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
@@ -361,15 +367,9 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   updateValueToMax() {
-    const { maxValue: value, txData, updateTransaction } = this.props;
+    const { maxValue: value, txData, updateTransactionValue } = this.props;
 
-    updateTransaction({
-      ...txData,
-      txParams: {
-        ...txData.txParams,
-        value,
-      },
-    });
+    updateTransactionValue(txData.id, value);
   }
 
   renderDetails() {
@@ -509,6 +509,13 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    const simulationDetails = (
+      <SimulationDetails
+        simulationData={txData.simulationData}
+        transactionId={txData.id}
+      />
+    );
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -524,6 +531,7 @@ export default class ConfirmTransactionBase extends Component {
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
         />
+        {simulationDetails}
         <TransactionDetail
           disableEditGasFeeButton
           disabled={isDisabled()}
@@ -691,6 +699,9 @@ export default class ConfirmTransactionBase extends Component {
       toAccounts,
       toAddress,
       keyringForAccount,
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      fromInternalAccount,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     let loadingIndicatorMessage;
@@ -698,7 +709,11 @@ export default class ConfirmTransactionBase extends Component {
     switch (keyringForAccount?.type) {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       case KeyringType.snap:
-        loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
+        loadingIndicatorMessage = (
+          <SnapAccountTransactionLoadingScreen
+            internalAccount={fromInternalAccount}
+          ></SnapAccountTransactionLoadingScreen>
+        );
         break;
       ///: END:ONLY_INCLUDE_IF
       default:

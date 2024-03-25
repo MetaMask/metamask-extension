@@ -347,7 +347,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={CONFIRMATION_V_NEXT_ROUTE}
+          path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
           component={ConfirmationPage}
         />
         {
@@ -524,6 +524,14 @@ export default class Routes extends Component {
 
     if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
       return true;
+    }
+
+    if (matchPath(location.pathname, { path: ASSET_ROUTE, exact: false })) {
+      let hideAppHeader = true;
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      hideAppHeader = false;
+      ///: END:ONLY_INCLUDE_IF
+      return hideAppHeader;
     }
 
     const isHandlingPermissionsRequest = Boolean(

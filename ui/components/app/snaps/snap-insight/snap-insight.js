@@ -17,9 +17,8 @@ import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../copyable';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   deleteInterface,
@@ -74,11 +73,9 @@ export const SnapInsight = ({
   }, [interfaceId]);
   ///: END:ONLY_INCLUDE_IF
 
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const hasNoData = !error && !isLoading && !interfaceId;
 
