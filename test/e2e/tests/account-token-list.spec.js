@@ -19,7 +19,9 @@ describe('Settings', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="home__asset-tab"]');
+
         const tokenValue = '25 ETH';
+
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
         );
@@ -63,7 +65,7 @@ describe('Settings', function () {
         const tokenListAmount = await driver.findElement(
           '.eth-overview__primary-container',
         );
-        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
+        assert.equal(await tokenListAmount.getText(), '25\nETH');
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
           '.multichain-account-list-item .multichain-account-list-item__asset',

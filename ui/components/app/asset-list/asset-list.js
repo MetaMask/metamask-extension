@@ -66,6 +66,7 @@ const AssetList = ({ onClickAsset }) => {
   const showFiat = useSelector(getShouldShowFiat);
   const currentNetwork = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
+
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);

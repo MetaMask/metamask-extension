@@ -267,6 +267,9 @@ const mapStateToProps = (state, ownProps) => {
 
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isSigningOrSubmitting = false;
+  ///: END:ONLY_INCLUDE_IF
 
   return {
     balance,

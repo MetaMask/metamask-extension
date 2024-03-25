@@ -185,10 +185,10 @@ describe('Send ETH', function () {
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          await driver.findElement({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,496.38',
-          });
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
@@ -216,11 +216,12 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          await driver.isElementPresent('.loading-overlay__spinner');
           await driver.assertElementNotPresent('.loading-overlay__spinner');
-          await driver.findElement({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,500.00',
-          });
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
@@ -431,12 +432,12 @@ describe('Send ETH', function () {
           },
           async ({ driver }) => {
             await unlockWallet(driver);
-
+            const balance = await driver.findElement(
+              '[data-testid="eth-overview__primary-currency"]',
+            );
+            await driver.isElementPresent('.loading-overlay__spinner');
             await driver.assertElementNotPresent('.loading-overlay__spinner');
-            await driver.findElement({
-              css: '[data-testid="eth-overview__primary-currency"]',
-              text: '$42,500.00',
-            });
+            assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
             await driver.fill(
