@@ -27,9 +27,7 @@ describe('Privacy Settings Onboarding View', () => {
       useMultiAccountBalanceChecker: true,
       ipfsGateway: 'test.link',
       useAddressBarEnsResolution: true,
-      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       useTransactionSimulations: true,
-      ///: END:ONLY_INCLUDE_IF
     },
   };
 
@@ -46,9 +44,7 @@ describe('Privacy Settings Onboarding View', () => {
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
   const setIncomingTransactionsPreferencesStub = jest.fn();
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   const setUseTransactionSimulationsStub = jest.fn();
-  ///: END:ONLY_INCLUDE_IF
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -61,9 +57,7 @@ describe('Privacy Settings Onboarding View', () => {
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
     setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
-    ///: END:ONLY_INCLUDE_IF
   });
 
   it('should update preferences', () => {
@@ -79,9 +73,7 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(0);
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
-    ///: END:ONLY_INCLUDE_IF
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
@@ -93,9 +85,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     fireEvent.click(toggles[10]);
-    ///: END:ONLY_INCLUDE_IF
 
     fireEvent.click(submitButton);
 
@@ -106,9 +96,7 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
-    ///: END:ONLY_INCLUDE_IF
 
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
       CHAIN_IDS.MAINNET,

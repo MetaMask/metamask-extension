@@ -1586,14 +1586,8 @@ export default class MetamaskController extends EventEmitter {
         updateTransactions: false,
       },
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-      isSimulationEnabled: () => {
-        let enabled = false;
-        ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-        // Only support transaction simulation on mainnet.
-        enabled = true;
-        ///: END:ONLY_INCLUDE_IF
-        return enabled;
-      },
+      isSimulationEnabled: () =>
+        this.preferencesController.store.getState().useTransactionSimulations,
       messenger: transactionControllerMessenger,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
@@ -2918,12 +2912,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       setUseTransactionSimulations:
         preferencesController.setUseTransactionSimulations.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
