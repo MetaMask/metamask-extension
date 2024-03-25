@@ -149,29 +149,29 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
-/**
- * Builds a locator object for the given element. This function exemplifies a sophisticated
- * approach to element location, catering to various scenarios and preferences in locator
- * specification. By encapsulating multiple locator strategies into a single, unified
- * interface, it significantly streamlines the test writing process.
- *
- * @param {string | object} - This could be 'css' or 'xpath' and value to use with the locator strategy.
- * @returns {Object} - By object that can be used to locate elements.
- * @throws {Error} - Will throw an error if an invalid locator strategy is provided.
- * @example <caption>Example usage of buildLocator</caption>
- *
- * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
- * await driver.findElement('.unit-input__input’); //Syntax for CSS selector by class name
- *
- * To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
- * await driver.findElement('#password'); // Syntax for CSS selector by ID
- *
- * To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.
- * await driver.findElement('[data-testid="eth-overview-buy"]'); // Syntax for CSS selector by data-testid(HTML attribute and value)
- *
- * To locate an element by XPath, use a path expression to navigate through elements and attributes in the HTML document.
- * await driver.findClickableElement({ text: 'Confirm', tag: 'button' }); // Syntax for locating the button element that contains text ‘Confirm’
- */
+  /**
+   * Builds a locator object for the given element. This function exemplifies a sophisticated
+   * approach to element location, catering to various scenarios and preferences in locator
+   * specification. By encapsulating multiple locator strategies into a single, unified
+   * interface, it significantly streamlines the test writing process.
+   *
+   * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
+   * @returns {object} By object that can be used to locate elements.
+   * @throws {Error} Will throw an error if an invalid locator strategy is provided.
+   * @example <caption>Example usage of buildLocator</caption>
+   *
+   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
+   * await driver.findElement('.unit-input__input’); //Syntax for CSS selector by class name
+   *
+   * To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
+   * await driver.findElement('#password'); // Syntax for CSS selector by ID
+   *
+   * To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.
+   * await driver.findElement('[data-testid="eth-overview-buy"]'); // Syntax for CSS selector by data-testid(HTML attribute and value)
+   *
+   * To locate an element by XPath, use a path expression to navigate through elements and attributes in the HTML document.
+   * await driver.findClickableElement({ text: 'Confirm', tag: 'button' }); // Syntax for locating the button element that contains text ‘Confirm’
+   */
   buildLocator(locator) {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
@@ -257,10 +257,27 @@ class Driver {
    * Function to wait for a specific condition to be met within a given timeout period,
    * with an option to catch and handle any errors that occur during the wait.
    *
-   * @param {function} condition - function or a condition that the method waits to be fulfilled or to return true.
-   * @param {number} ms - Optional parameter specifies the maximum milliseconds to wait.
+   * @param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.
+   * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
+   * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
    * @returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.
-   * @throws {Error} - Will throw an error if the condition is not met within the timeout period.
+   * @throws {Error} Will throw an error if the condition is not met within the timeout period.
+   * @example <caption>Example wait until a condition occurs</caption>
+   * await driver.wait(async () => {
+   *  let info = await getBackupJson();
+   *   return info !== null;}, 10000);
+   * @example <caption>Example wait until the condition for finding the elements is met and ensuring that the length validation is also satisfied</caption>
+   * await driver.wait(async () => {
+   *     const confirmedTxes = await driver.findElements(
+   *      '.transaction-list__completed-transactions .transaction-list-item',
+   *     );
+   *     return confirmedTxes.length === 1;
+   *   }, 10000);
+   * @example <caption>Example wait until a mock condition occurs</caption>
+   *  await driver.wait(async () => {
+   *   const isPending = await mockedEndpoint.isPending();
+   *   return isPending === false;
+   *  }, 3000);
    */
   async wait(condition, timeout = this.timeout, catchError = false) {
     try {
@@ -278,12 +295,11 @@ class Driver {
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
    * @param {string | object} rawLocator - The locator to use for finding the element.
-   * @param {number} [options.timeout=this.timeout] - The maximum milliseconds to wait.
-   * @param {string} [options.state='visible'] - defines the desired state of the element to wait for.
+   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds) to wait for the condition to be met and desired state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @returns {Promise} A promise that will be fulfilled when the element reaches the specified state or the timeout expires.
-   * @throws {Error} - Will throw an error if the element does not reach the specified state within the timeout period.
+   * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
     rawLocator,
@@ -315,10 +331,9 @@ class Driver {
    * Waits for an element that matches the given locator to become non-empty within the timeout period.
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *
-   * @param {string | object} locator - The locator to use for finding the element.
-   * @param {number} [timeout=5000] - The maximum milliseconds to wait. Defaults to 5000.
+   * @param {string | object} element - The locator to use for finding the element.
    * @returns {Promise} A promise that will be fulfilled when the element becomes non-empty or the timeout expires.
-   * @throws {Error} - Will throw an error if the element does not become non-empty within the timeout period.
+   * @throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
    */
   async waitForNonEmptyElement(element) {
     await this.driver.wait(async () => {
@@ -379,7 +394,6 @@ class Driver {
       );
     }
   }
-
 
   /**
    * Quits the browser session, closing all windows and tabs.
@@ -529,6 +543,7 @@ class Driver {
   /**
    * Simulates a click at the given x and y coordinates.
    *
+   * @param rawLocator
    * @param {number} x - The x coordinate to click at.
    * @param {number} y - The y coordinate to click at.
    * @returns {Promise} A promise that will be fulfilled when the click command has completed.
@@ -635,10 +650,10 @@ class Driver {
   /**
    * Navigates to the specified page within a browser session.
    *
-   * @param {string} [page=PAGES.HOME] - its optional parameter to specify the page you want to navigate.
+   * @param {string} [page] - its optional parameter to specify the page you want to navigate.
    * Defaults to home if no other page is specified.
    * @returns {Promise} A promise that will be fulfilled when the navigation command has completed and the page has loaded.
-   * @throws {Error} - Will throw an error if the navigation fails or the page does not load within the timeout period.
+   * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
   async navigate(page = PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
@@ -669,7 +684,7 @@ class Driver {
 
   /**
    * Opens a new URL in the browser window controlled by the driver
-   * 
+   *
    * @param {string} url - Any URL
    */
   async openNewURL(url) {
@@ -680,8 +695,7 @@ class Driver {
    * Opens a new window or tab in the browser session and navigates to the given URL.
    *
    * @param {string} url - The URL to navigate to in the new window or tab.
-   * @returns {newHandle} - The handle of the new window or tab.
-   * This handle can be used later to switch between different windows/tabs during the test.
+   * @returns {newHandle} The handle of the new window or tab. This handle can be used later to switch between different windows/tabs during the test.
    * @returns {Promise<string>} A promise that will be fulfilled with the handle of the new window or tab when the command has completed.
    */
   async openNewPage(url) {
@@ -744,9 +758,10 @@ class Driver {
    * Waits until the specified number of windows or tabs are open in the browser session.
    *
    * @param {number} x - The number of windows or tabs to wait for.
-   * @param {number} [timeout=5000] - The amount of time in milliseconds to wait before timing out.
+   * @param delayStep
+   * @param {number} [timeout] - The amount of time in milliseconds to wait before timing out.
    * @returns {Promise} A promise that will be fulfilled when the specified number of windows or tabs are open.
-   * @throws {Error} - Will throw an error if the specified number of windows or tabs are not open within the timeout period.
+   * @throws {Error} Will throw an error if the specified number of windows or tabs are not open within the timeout period.
    */
   async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
     let timeElapsed = 0;
@@ -766,7 +781,7 @@ class Driver {
   /**
    * Retrieves the title of the window or tab with the given handle ID.
    *
-   * @param {int} handleId - representing the unique identifier (handle) of the browser window or tab
+   * @param {int} handlerId - representing the unique identifier (handle) of the browser window or tab
    *  whose title you want to retrieve.
    * @returns {Promise<string>} A promise that will be fulfilled with the title of the window or tab when the command has completed.
    */
@@ -785,9 +800,9 @@ class Driver {
    * If not provided, the function fetches all current window handles.
    * @param {int} delayStep -optional defaults to 1000 milliseconds
    * @param {int} timeout -optional set to the defaults to 1000 milliseconds in the file
-   * @param {int} retries, retryDelay -options for retrying the title fetch operation, with defaults 8 and 2500 milliseconds respectively.
+   * @param {int} retries, - retryDelay -options for retrying the title fetch operation, with defaults 8 and 2500 milliseconds respectively.
    * @returns {Promise} A promise that will be fulfilled when the switch command has completed.
-   * @throws {Error} - Will throw an error if the switch fails or the window or tab with the given title does not exist.
+   * @throws {Error} Will throw an error if the switch fails or the window or tab with the given title does not exist.
    */
   async switchToWindowWithTitle(
     title,
