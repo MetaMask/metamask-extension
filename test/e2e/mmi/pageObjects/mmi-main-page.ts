@@ -48,6 +48,13 @@ export class MMIMainPage {
       .getAttribute('data-custodiantransactionid')) as string;
   }
 
+  async getSecondCustodianTXId() {
+    return (await this.page
+      .locator('.test-transaction-meta')
+      .nth(1)
+      .getAttribute('data-custodiantransactionid')) as string;
+  }
+
   async selectMainAction(action: string) {
     await this.page
       .locator(`.wallet-overview__buttons >> text=${action}`)
