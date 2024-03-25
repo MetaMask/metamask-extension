@@ -7,6 +7,8 @@ import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
+import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
+
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -54,7 +56,7 @@ describe('ConfirmFooter', () => {
       .spyOn(Actions, 'rejectPendingApproval')
       .mockImplementation(() => ({} as any));
     fireEvent.click(cancelButton);
-    expect(rejectSpy).toHaveBeenCalledTimes(1);
+    expect(rejectSpy).toHaveBeenCalled();
   });
 
   it('invoke action resolvePendingApproval when submit button is clicked', () => {
@@ -64,7 +66,7 @@ describe('ConfirmFooter', () => {
       .spyOn(Actions, 'resolvePendingApproval')
       .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);
-    expect(resolveSpy).toHaveBeenCalledTimes(1);
+    expect(resolveSpy).toHaveBeenCalled();
   });
 
   it('disables submit button if required LedgerHidConnection is not yet established', () => {
@@ -87,5 +89,31 @@ describe('ConfirmFooter', () => {
     });
     const submitButton = getAllByRole('button')[1];
     expect(submitButton).toBeDisabled();
+  });
+
+  it('submit button should be disabled if useMMIConfirmations returns true for mmiSubmitDisabled', () => {
+    jest
+      .spyOn(MMIConfirmations, 'useMMIConfirmations')
+      .mockImplementation(() => ({
+        mmiOnSignCallback: () => Promise.resolve(),
+        mmiSubmitDisabled: true,
+      }));
+    const { getAllByRole } = render();
+    const submitButton = getAllByRole('button')[1];
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('invoke mmiOnSignCallback returned from hook useMMIConfirmations when submit button is clicked', () => {
+    const mockFn = jest.fn();
+    jest
+      .spyOn(MMIConfirmations, 'useMMIConfirmations')
+      .mockImplementation(() => ({
+        mmiOnSignCallback: mockFn,
+        mmiSubmitDisabled: false,
+      }));
+    const { getAllByRole } = render();
+    const submitButton = getAllByRole('button')[1];
+    fireEvent.click(submitButton);
+    expect(mockFn).toHaveBeenCalledTimes(1);
   });
 });

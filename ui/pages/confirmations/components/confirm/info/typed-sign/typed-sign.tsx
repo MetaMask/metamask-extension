@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { isValidAddress } from 'ethereumjs-util';
 
 import {
   ConfirmInfoRow,
@@ -36,9 +37,11 @@ const TypedSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
           <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
         </ConfirmInfoRow>
-        <ConfirmInfoRow label={t('interactingWith')}>
-          <ConfirmInfoRowAddress address={domain.verifyingContract} />
-        </ConfirmInfoRow>
+        {isValidAddress(domain.verifyingContract) && (
+          <ConfirmInfoRow label={t('interactingWith')}>
+            <ConfirmInfoRowAddress address={domain.verifyingContract} />
+          </ConfirmInfoRow>
+        )}
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
