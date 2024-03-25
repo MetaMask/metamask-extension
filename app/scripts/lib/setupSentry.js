@@ -209,7 +209,6 @@ export const SENTRY_BACKGROUND_STATE = {
     incomingTransactionsPreferences: true,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
-    isLineaMainnetReleased: true,
     knownMethodData: false,
     ledgerTransportType: true,
     lostIdentities: false,
@@ -227,7 +226,6 @@ export const SENTRY_BACKGROUND_STATE = {
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,
-    transactionSecurityCheckEnabled: true,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
     useBlockie: true,
@@ -238,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE = {
     usePhishDetect: true,
     useTokenDetection: true,
     useRequestQueue: true,
+    useTransactionSimulations: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
