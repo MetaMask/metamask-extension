@@ -2,6 +2,10 @@ import { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 
+export const NATIVE_ASSET_IDENTIFIER: NativeAssetIdentifier = {
+  standard: TokenStandard.none,
+};
+
 /**
  * Describes an amount of fiat.
  */
