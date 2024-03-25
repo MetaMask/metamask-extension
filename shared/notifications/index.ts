@@ -12,9 +12,7 @@ export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
 export const NOTIFICATION_STAKING_PORTFOLIO = 30;
 export const NOTIFICATION_PETNAMES = 31;
 export const NOTIFICATION_PORTFOLIO_V2 = 32;
-///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
 export const NOTIFICATION_SIMULATIONS = 33;
-///: END:ONLY_INCLUDE_IF
 
 type NotificationImage = {
   src: string;
@@ -100,12 +98,10 @@ export const UI_NOTIFICATIONS: UINotifications = {
       width: '100%',
     },
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   [NOTIFICATION_SIMULATIONS]: {
     id: Number(NOTIFICATION_SIMULATIONS),
     date: null,
   },
-  ///: END:ONLY_INCLUDE_IF
 };
 
 type TranslationFunction = (key: string) => string;
@@ -292,7 +288,6 @@ export const getTranslatedUINotifications = (
       actionText: t('notificationsPortfolioV2ActionText'),
       date: '',
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     [NOTIFICATION_SIMULATIONS]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_SIMULATIONS],
       title: t('simulationsSettingSubHeader'),
@@ -313,6 +308,5 @@ export const getTranslatedUINotifications = (
               width: '100%',
             },
     },
-    ///: END:ONLY_INCLUDE_IF
   };
 };

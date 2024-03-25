@@ -31,6 +31,12 @@ export type SimulationDetailsProps = {
   transactionId: string;
 };
 
+/** Error messages that will cause the simulation details to be hidden. */
+const HIDE_SIMULATION_ERRORS = [
+  'Chain is not supported',
+  'Simulation disabled',
+];
+
 /**
  * Displayed while loading the simulation preview.
  *
@@ -201,8 +207,9 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   const { error } = simulationData;
   if (error) {
-    // Hide simulation details if the chain is not supported.
-    return error?.message?.includes('Chain is not supported') ? null : (
+    return HIDE_SIMULATION_ERRORS.some((errorMessage) =>
+      error?.message?.includes(errorMessage),
+    ) ? null : (
       <SimulationDetailsLayout>
         <ErrorContent error={error} />
       </SimulationDetailsLayout>

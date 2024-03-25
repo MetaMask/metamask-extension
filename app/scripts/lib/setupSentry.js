@@ -236,6 +236,7 @@ export const SENTRY_BACKGROUND_STATE = {
     usePhishDetect: true,
     useTokenDetection: true,
     useRequestQueue: true,
+    useTransactionSimulations: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
