@@ -4,7 +4,7 @@ import {
   abiERC721,
   abiERC20,
   abiERC1155,
-  USDC_ABI,
+  abiFiatTokenV2,
 } from '@metamask/metamask-eth-abis';
 import type EthQuery from '@metamask/eth-query';
 import log from 'loglevel';
@@ -38,7 +38,7 @@ type InferTransactionTypeResult = {
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
-const USDCInterface = new Interface(USDC_ABI);
+const USDCInterface = new Interface(abiFiatTokenV2);
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
