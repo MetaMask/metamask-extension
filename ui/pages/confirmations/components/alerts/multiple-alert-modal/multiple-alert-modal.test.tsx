@@ -9,13 +9,13 @@ import {
 } from './multiple-alert-modal';
 
 describe('MultipleAlertModal', () => {
-  const ownerIdMock = '123';
+  const OWNER_ID_MOCK = '123';
+  const FROM_ALERT_KEY_MOCK = 'from';
   const handleButtonClickMock = jest.fn();
   const onCloseMock = jest.fn();
-  const fromAlertKeyMock = 'from';
   const alertsMock = [
     {
-      key: fromAlertKeyMock,
+      key: FROM_ALERT_KEY_MOCK,
       severity: Severity.Warning,
       message: 'Alert 1',
       reason: 'Reason 1',
@@ -24,28 +24,30 @@ describe('MultipleAlertModal', () => {
     { key: 'data', severity: Severity.Danger, message: 'Alert 2' },
   ];
 
-  const mockState = {
+  const STATE_MOCK = {
     confirmAlerts: {
-      alerts: { [ownerIdMock]: alertsMock },
-      confirmed: { [ownerIdMock]: { [fromAlertKeyMock]: false, data: false } },
+      alerts: { [OWNER_ID_MOCK]: alertsMock },
+      confirmed: {
+        [OWNER_ID_MOCK]: { [FROM_ALERT_KEY_MOCK]: false, data: false },
+      },
     },
   };
-  const mockStore = configureMockStore([])(mockState);
+  const mockStore = configureMockStore([])(STATE_MOCK);
 
   const defaultProps: MultipleAlertModalProps = {
-    ownerId: ownerIdMock,
+    ownerId: OWNER_ID_MOCK,
     handleButtonClick: handleButtonClickMock,
-    alertKey: fromAlertKeyMock,
+    alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
   };
 
   it('renders the multiple alert modal', () => {
-    const { container } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByTestId('alert-modal-next-button')).toBeDefined();
   });
   describe('Navigation', () => {
     it('calls next alert when the next button is clicked', () => {

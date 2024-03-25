@@ -16,13 +16,13 @@ import useAlerts from '../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 
 export type MultipleAlertModalProps = {
-  /** The unique identifier of the entity that owns the alert */
+  /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
-  /** The function to be executed when the button in the alert modal is clicked */
+  /** The function to be executed when the button in the alert modal is clicked. */
   handleButtonClick: () => void;
-  /** The unique key representing the specific alert field */
+  /** The unique key representing the specific alert field. */
   alertKey: string;
-  /** The function to be executed when the modal needs to be closed */
+  /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
 };
 

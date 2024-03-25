@@ -32,17 +32,17 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../hooks/useAlerts';
 
 export type AlertModalProps = {
-  /** The unique identifier of the entity that owns the alert */
+  /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
-  /** The function to be executed when the button in the alert modal is clicked */
+  /** The function to be executed when the button in the alert modal is clicked. */
   handleButtonClick: () => void;
-  /** The unique key representing the specific alert field */
+  /** The unique key representing the specific alert field. */
   alertKey: string;
-  /** The function to be executed when the modal needs to be closed */
+  /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
   /**
-   * The navigation between alerts when passed override `startAccessory` of ModalHeader
-   * Default no navigation button is present
+   * The navigation component passed when more exists more than one alert.
+   * It override `startAccessory` of ModalHeaderDefault and by default no navigation button is present.
    */
   multipleAlerts?: React.ReactNode;
 };
@@ -170,10 +170,11 @@ export function AlertModal({
               label={t('alertModalAcknowledge')}
               data-testid="alert-modal-acknowledge-checkbox"
               isChecked={isAlertAcknowledged[selectedAlert.key]}
-              onClick={() =>
-                setIsAlertAcknowledged({
-                  [selectedAlert.key]: !isAlertAcknowledged[selectedAlert.key],
-                })
+              onChange={() =>
+                setIsAlertAcknowledged((prevState) => ({
+                  ...prevState,
+                  [selectedAlert.key]: !prevState[selectedAlert.key],
+                }))
               }
               alignItems={AlignItems.flexStart}
               className={'alert-modal__acknowledge-checkbox'}
