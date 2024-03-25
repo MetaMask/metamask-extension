@@ -134,7 +134,7 @@ export default class PreferencesController {
         }
       }
       if (accounts.size > 0) {
-        this.syncAddresses(Array.from(accounts));
+        this.#syncAddresses(Array.from(accounts));
       }
     });
 
@@ -431,51 +431,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Synchronizes identity entries with known accounts.
-   * Removes any unknown identities, and returns the resulting selected address.
-   *
-   * @param {Array<string>} addresses - known to the vault.
-   * @returns {string} selectedAddress the selected address.
-   */
-  syncAddresses(addresses) {
-    if (!Array.isArray(addresses) || addresses.length === 0) {
-      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
-      throw new Error('Expected non-empty array of addresses. Error #11201'); // not a hex color value
-    }
-
-    const { identities, lostIdentities } = this.store.getState();
-
-    const newlyLost = {};
-    Object.keys(identities).forEach((identity) => {
-      if (!addresses.includes(identity)) {
-        newlyLost[identity] = identities[identity];
-        delete identities[identity];
-      }
-    });
-
-    // Identities are no longer present.
-    if (Object.keys(newlyLost).length > 0) {
-      // store lost accounts
-      Object.keys(newlyLost).forEach((key) => {
-        lostIdentities[key] = newlyLost[key];
-      });
-    }
-
-    this.store.updateState({ identities, lostIdentities });
-    this.addAddresses(addresses);
-
-    // If the selected account is no longer valid,
-    // select an arbitrary other account:
-    let selected = this.getSelectedAddress();
-    if (!addresses.includes(selected)) {
-      [selected] = addresses;
-      this.setSelectedAddress(selected);
-    }
-
-    return selected;
-  }
-
-  /**
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address - A new hex address for an account
@@ -685,4 +640,48 @@ export default class PreferencesController {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
   ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Synchronizes identity entries with known accounts.
+   * Removes any unknown identities, and returns the resulting selected address.
+   *
+   * @param {Array<string>} addresses - known to the vault.
+   * @returns {string} selectedAddress the selected address.
+   */
+  #syncAddresses(addresses) {
+    if (!Array.isArray(addresses) || addresses.length === 0) {
+      throw new Error('Expected non-empty array of addresses. Error #11201');
+    }
+
+    const { identities, lostIdentities } = this.store.getState();
+
+    const newlyLost = {};
+    Object.keys(identities).forEach((identity) => {
+      if (!addresses.includes(identity)) {
+        newlyLost[identity] = identities[identity];
+        delete identities[identity];
+      }
+    });
+
+    // Identities are no longer present.
+    if (Object.keys(newlyLost).length > 0) {
+      // store lost accounts
+      Object.keys(newlyLost).forEach((key) => {
+        lostIdentities[key] = newlyLost[key];
+      });
+    }
+
+    this.store.updateState({ identities, lostIdentities });
+    this.addAddresses(addresses);
+
+    // If the selected account is no longer valid,
+    // select an arbitrary other account:
+    let selected = this.getSelectedAddress();
+    if (!addresses.includes(selected)) {
+      [selected] = addresses;
+      this.setSelectedAddress(selected);
+    }
+
+    return selected;
+  }
 }
