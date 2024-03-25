@@ -3267,10 +3267,6 @@
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
-  "securityProviderPoweredBy": {
-    "message": "На основе $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "См. подробности"
   },

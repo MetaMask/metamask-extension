@@ -103,12 +103,12 @@ export default class PreferencesController {
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
       snapRegistryList: {},
-      transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
+      useTransactionSimulations: true,
       ...opts.initState,
     };
 
@@ -302,6 +302,17 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useTransactionSimulations` property
+   *
+   * @param {boolean} useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
+   */
+  setUseTransactionSimulations(useTransactionSimulations) {
+    this.store.updateState({
+      useTransactionSimulations,
+    });
+  }
+
+  /**
    * Setter for the `advancedGasFee` property
    *
    * @param {object} options
@@ -325,17 +336,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `transactionSecurityCheckEnabled` property
-   *
-   * @param transactionSecurityCheckEnabled
-   */
-  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
-    this.store.updateState({
-      transactionSecurityCheckEnabled,
-    });
   }
 
   /**
