@@ -129,28 +129,21 @@ async function updateMockCdnFiles() {
     JSON.stringify(etagStaleDiffObject, null, 2)
   );
 
-  const CDN_CONFIG_REGEX =  /cdn-config(-\d+(\.\d+){0,2})?\.txt/;
-  const CDN_STALE_DIFF_REGEX =  /cdn-stale-diff(-\d+(\.\d+){0,2})?\.txt/;
-  const CDN_STALE_REGEX =  /cdn-stale(-\d+(\.\d+){0,2})?\.txt/;
-
-  // cleaning up old brotli data files
-  const directoryPath = 'test/e2e/mock-cdn';
-
-  deleteFileMatchingPattern(directoryPath, CDN_CONFIG_REGEX);
-  deleteFileMatchingPattern(directoryPath, CDN_STALE_DIFF_REGEX);
-  deleteFileMatchingPattern(directoryPath, CDN_STALE_REGEX);
+  const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
+  const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
+  const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
 
   // exporting the brotli data to files
   exec(
-    `curl ${PPOM_CONFIG_URL}${mainnetConfigVersion} -o ${MOCK_CDN_FOLDER_URL}cdn-config-${mainnetConfigVersion}.txt`,
+    `curl ${PPOM_CONFIG_URL}${mainnetConfigVersion} -o ${CDN_CONFIG_PATH}`,
   );
 
   exec(
-    `curl ${PPOM_STALE_URL}${mainnetStaleVersion} -o ${MOCK_CDN_FOLDER_URL}cdn-stale-${mainnetStaleVersion}.txt`,
+    `curl ${PPOM_STALE_URL}${mainnetStaleVersion} -o ${CDN_STALE_DIFF_PATH}`,
   );
 
   exec(
-    `curl ${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion} -o ${MOCK_CDN_FOLDER_URL}cdn-stale-diff-${mainnetStaleDiffVersion}.txt`,
+    `curl ${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion} -o ${CDN_STALE_PATH}`,
   );
 }
 
