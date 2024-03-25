@@ -587,6 +587,7 @@ export enum MetaMetricsEventName {
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
   SimulationFails = 'Simulation Fails',
+  SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',

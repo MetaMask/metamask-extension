@@ -18,12 +18,12 @@ import {
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapAvatar from '../snap-avatar/snap-avatar';
-import { getSnapManifest } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 
 export default function SnapConnectCell({ origin, snapId }) {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
-    getSnapManifest(state, snapId),
+    getSnapMetadata(state, snapId),
   );
 
   return (
