@@ -3,6 +3,8 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
+process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
+
 const mockState = {
   metamask: {
     unapprovedPersonalMsgs: {
