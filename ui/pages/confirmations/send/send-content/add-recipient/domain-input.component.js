@@ -32,7 +32,6 @@ export default class DomainInput extends Component {
     internalSearch: PropTypes.bool,
     userInput: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    chainId: PropTypes.string.isRequired,
     onReset: PropTypes.func.isRequired,
     lookupDomainName: PropTypes.func.isRequired,
     initializeDomainSlice: PropTypes.func.isRequired,
@@ -42,13 +41,6 @@ export default class DomainInput extends Component {
   componentDidMount() {
     this.props.initializeDomainSlice();
   }
-
-  componentDidUpdate = (prevProps) => {
-    const { chainId, userInput } = this.props;
-    if (prevProps.chainId !== chainId) {
-      this.onChange({ target: { value: userInput } });
-    }
-  };
 
   onPaste = (event) => {
     if (event.clipboardData.items?.length) {
