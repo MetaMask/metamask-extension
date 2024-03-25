@@ -192,6 +192,9 @@ workflows:
       - test-unit-mocha:
           requires:
             - prep-deps
+      - test-unit-webpack:
+          requires:
+            - prep-deps
       - test-unit-jest-main:
           requires:
             - prep-deps
@@ -203,6 +206,7 @@ workflows:
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-mocha
+            - test-unit-webpack
       - test-unit-global:
           requires:
             - prep-deps
@@ -257,6 +261,7 @@ workflows:
             - test-unit-jest-development
             - test-unit-global
             - test-unit-mocha
+            - test-unit-webpack
             - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
@@ -1395,6 +1400,20 @@ jobs:
           root: .
           paths:
             - .nyc_output
+            - coverage
+
+  test-unit-webpack:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:coverage:webpack
+          command: yarn test:coverage:webpack
+      - persist_to_workspace:
+          root: .
+          paths:
             - coverage
 
   test-unit-jest-development:
