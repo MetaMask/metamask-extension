@@ -220,10 +220,10 @@ describe('preferences controller', () => {
   });
 
   describe('setUseTokenDetection', function () {
-    it('should default to false', function () {
+    it('should default to true for new users', function () {
       const state = preferencesController.store.getState();
 
-      expect(state.useTokenDetection).toStrictEqual(false);
+      expect(state.useTokenDetection).toStrictEqual(true);
     });
 
     it('should set the useTokenDetection property in state', () => {
@@ -232,13 +232,30 @@ describe('preferences controller', () => {
         preferencesController.store.getState().useTokenDetection,
       ).toStrictEqual(true);
     });
+
+    it('should keep initial value of useTokenDetection for existing users', function () {
+      const preferencesControllerExistingUser = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        initState: {
+          useTokenDetection: false,
+          // useNftDetection: false,
+        },
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+        onKeyringStateChange: (listener) => {
+          onKeyringStateChangeListener = listener;
+        },
+      });
+      const state = preferencesControllerExistingUser.store.getState();
+      expect(state.useTokenDetection).toStrictEqual(false);
+    });
   });
 
   describe('setUseNftDetection', () => {
-    it('should default to false', () => {
+    it('should default to true for new users', () => {
       expect(
         preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
     });
 
     it('should set the useNftDetection property in state', () => {
@@ -247,6 +264,21 @@ describe('preferences controller', () => {
       expect(
         preferencesController.store.getState().useNftDetection,
       ).toStrictEqual(true);
+    });
+    it('should keep initial value of useNftDetection for existing users', function () {
+      const preferencesControllerExistingUser = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        initState: {
+          useNftDetection: false,
+        },
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+        onKeyringStateChange: (listener) => {
+          onKeyringStateChangeListener = listener;
+        },
+      });
+      const state = preferencesControllerExistingUser.store.getState();
+      expect(state.useNftDetection).toStrictEqual(false);
     });
   });
 
