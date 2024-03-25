@@ -4859,9 +4859,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-signing-snap@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/message-signing-snap@npm:0.3.0"
+"@metamask/message-signing-snap@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/message-signing-snap@npm:0.3.1"
   dependencies:
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/snaps-sdk": "npm:^3.1.1"
@@ -4870,7 +4870,7 @@ __metadata:
     "@noble/curves": "npm:^1.4.0"
     "@noble/hashes": "npm:^1.4.0"
     zod: "npm:^3.22.4"
-  checksum: 3277750d9abb21d48fc02f51ac4142843e9e7793d4ccac845a831dfc197a809cbb293589c7c969e5db21c300daef9fe31b237f4b15f026db5a3cb2da5b355153
+  checksum: e8971fa1facbc4a63adf37dc4dfd95ab99b69c0c70aba76d4ef3c7de272a05c5618848ceb1ddc5357daf1361d88391d280fff27497640b341d8f2de7851dc5bb
   languageName: node
   linkType: hard
 
@@ -24837,7 +24837,7 @@ __metadata:
     "@metamask/logging-controller": "npm:^2.0.2"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
-    "@metamask/message-signing-snap": "npm:^0.3.0"
+    "@metamask/message-signing-snap": "npm:^0.3.1"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^4.2.0"
     "@metamask/network-controller": "npm:^18.0.0"

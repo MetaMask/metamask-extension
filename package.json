@@ -291,7 +291,7 @@
     "@metamask/logging-controller": "^2.0.2",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
-    "@metamask/message-signing-snap": "^0.3.0",
+    "@metamask/message-signing-snap": "^0.3.1",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/name-controller": "^4.2.0",
     "@metamask/network-controller": "^18.0.0",

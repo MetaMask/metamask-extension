@@ -307,9 +307,7 @@ import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscree
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(notifications)
 import AuthenticationController from './controllers/authentication/authentication-controller';
-///: END:ONLY_INCLUDE_IF
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1399,7 +1397,6 @@ export default class MetamaskController extends EventEmitter {
 
     ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(notifications)
     // Notification Controllers
     this.authenticationController = new AuthenticationController({
       state: initState.AuthenticationController,
@@ -1408,7 +1405,6 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [`${this.snapController.name}:handleRequest`],
       }),
     });
-    ///: END:ONLY_INCLUDE_IF
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({

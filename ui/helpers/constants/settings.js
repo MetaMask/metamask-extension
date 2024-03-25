@@ -432,6 +432,13 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#nicknames`,
     icon: 'fas fa-flask',
   },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('notificationsFeatureToggle'),
+    descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#notifications`,
+    icon: 'fas fa-flask',
+  },
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
