@@ -1,4 +1,7 @@
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationErrorCode,
+} from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
@@ -76,6 +79,16 @@ export function useSimulationMetrics({
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   useIncompleteAssetEvent(balanceChanges, displayNamesByAddress);
+
+  // Skip metrics if simulation disabled or chain not supported.
+  if (
+    [
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+    ].includes(simulationData?.error?.code as SimulationErrorCode)
+  ) {
+    return;
+  }
 
   const receivingAssets = balanceChanges.filter(
     (change) => !change.amount.isNegative,
