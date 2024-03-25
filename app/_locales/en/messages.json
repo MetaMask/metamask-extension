@@ -3018,14 +3018,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notificationsFeatureToggle": {
-    "message": "Enable Wallet Notifications",
-    "description": "Experimental feature title"
-  },
-  "notificationsFeatureToggleDescription": {
-    "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
-    "description": "Description of the experimental notifications feature"
-  },
   "notifications20ActionText": {
     "message": "Learn more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
@@ -3094,6 +3086,14 @@
   },
   "notificationsEmptyText": {
     "message": "This is where you can find notifications from your installed snaps."
+  },
+  "notificationsFeatureToggle": {
+    "message": "Enable Wallet Notifications",
+    "description": "Experimental feature title"
+  },
+  "notificationsFeatureToggleDescription": {
+    "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
+    "description": "Description of the experimental notifications feature"
   },
   "notificationsHeader": {
     "message": "Notifications"
