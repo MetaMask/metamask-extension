@@ -78,7 +78,10 @@ const TransactionAlerts = ({
           setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
         />
       )}
-      {supportsEIP1559 && pendingTransactions?.length > 0 && (
+
+      {
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      supportsEIP1559 && pendingTransactions?.length > 0 && (
         <BannerAlert severity={SEVERITIES.WARNING}>
           <Text as="p">
             <strong>
@@ -101,7 +104,10 @@ const TransactionAlerts = ({
             ])}
           </Text>
         </BannerAlert>
-      )}
+      )
+      ///: END:ONLY_INCLUDE_IF
+      }
+
       {estimateUsed === PriorityLevels.low && (
         <BannerAlert
           data-testid="low-gas-fee-alert"
