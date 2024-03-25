@@ -135,6 +135,30 @@
           text-overflow: ellipsis;
         }
       }
+
+      &__title-tooltip > * {
+        display: inline;
+      }
+
+      &__title-tooltip {
+        white-space: nowrap;
+      }
+
+      &__title-tooltip-container {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__title-confusable-wrapper {
+        display: inline-block;
+      }
+
+      &__avatar {
+        width: 20px;
+        height: 20px;
+        max-width: 20px;
+        border-radius: 10px;
+      }
     }
 
     &__group-item--selected {

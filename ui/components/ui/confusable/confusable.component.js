@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { confusables } from 'unicode-confusables';
+import { v4 as uuidv4 } from 'uuid';
 import Tooltip from '../tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Text } from '../../component-library';
 
-const Confusable = ({ input }) => {
+const Confusable = ({ input, asText, confusableWrapperName = '' }) => {
   const t = useI18nContext();
   const confusableData = useMemo(() => {
     return confusables(input);
@@ -13,11 +15,11 @@ const Confusable = ({ input }) => {
   return confusableData.map(({ point, similarTo }, index) => {
     const zeroWidth = similarTo === '';
     if (similarTo === undefined) {
-      return point;
+      return asText ? <Text>{point}</Text> : point;
     }
     return (
       <Tooltip
-        key={index.toString()}
+        key={uuidv4()}
         tag="span"
         position="top"
         title={
@@ -25,8 +27,13 @@ const Confusable = ({ input }) => {
             ? t('confusableZeroWidthUnicode')
             : t('confusableUnicode', [point, similarTo])
         }
+        wrapperClassName={confusableWrapperName}
       >
-        <span className="confusable__point">{zeroWidth ? '?' : point}</span>
+        {asText ? (
+          <Text className="confusable__point">{zeroWidth ? '?' : point}</Text>
+        ) : (
+          <span className="confusable__point">{zeroWidth ? '?' : point}</span>
+        )}
       </Tooltip>
     );
   });
@@ -34,6 +41,8 @@ const Confusable = ({ input }) => {
 
 Confusable.propTypes = {
   input: PropTypes.string.isRequired,
+  asText: PropTypes.bool,
+  textProps: PropTypes.object,
 };
 
 export default Confusable;
