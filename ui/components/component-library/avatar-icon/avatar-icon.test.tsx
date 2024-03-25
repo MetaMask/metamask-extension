@@ -83,7 +83,10 @@ describe('AvatarIcon', () => {
     const { getByTestId } = render(
       <AvatarIcon
         iconName={IconName.SwapHorizontal}
-        iconProps={{ 'data-testid': 'avatar-icon' }}
+        iconProps={{
+          'data-testid': 'avatar-icon',
+          name: IconName.SwapHorizontal,
+        }}
       />,
     );
 

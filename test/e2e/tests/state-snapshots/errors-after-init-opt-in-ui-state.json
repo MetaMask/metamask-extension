@@ -162,8 +162,7 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean",
+    "domains": "object",
     "logs": "object",
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
@@ -217,6 +216,7 @@
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2
     },
+    "ensEntries": "object",
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",

@@ -73,7 +73,7 @@ describe('Import flow @no-mmi', function () {
         await driver.findElement('[data-testid="app-header-copy-button"]');
 
         await driver.clickElement('button[aria-label="Close"]');
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="account-details-modal"]',
         );
         // logs out of the account
@@ -127,9 +127,6 @@ describe('Import flow @no-mmi', function () {
         // Send ETH from inside MetaMask
         // starts a send transaction
         await openActionMenuAndStartSendFlow(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',

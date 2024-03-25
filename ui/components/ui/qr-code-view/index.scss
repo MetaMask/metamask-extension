@@ -1,3 +1,5 @@
+@use "design-system";
+
 .qr-code {
   display: flex;
   flex-direction: column;
@@ -5,14 +7,14 @@
   align-items: center;
 
   &__message-container > div:first-child {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     margin-top: 18px;
     color: var(--color-text-muted);
   }
 
   &__message {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-warning-default);
   }
@@ -37,7 +39,7 @@
   }
 
   &__address {
-    @include H7;
+    @include design-system.H7;
 
     background-color: var(--color-background-alternative);
     width: 76%;

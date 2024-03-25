@@ -46,7 +46,7 @@ describe('processError', () => {
 
 describe('processString', () => {
   it('returns string when input is not defined', () => {
-    const result = processString(undefined, FALLBACK_MESSAGE);
+    const result = processString(undefined, FALLBACK_MESSAGE) as string[];
     expect(result[0]).toEqual(FALLBACK_MESSAGE);
   });
 

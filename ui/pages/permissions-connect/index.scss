@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'choose-account/index';
 @import 'snaps/snap-install/index';
 @import 'snaps/snap-update/index';
@@ -13,7 +15,7 @@
   display: flex;
   flex-direction: column;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     .page-container {
       max-height: none;
       min-height: auto;
@@ -28,7 +30,7 @@
   }
 
   &__back {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-icon-default);
     font-weight: bold;
@@ -36,7 +38,7 @@
   }
 
   &__page-count {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-default);
     grid-column: 2;

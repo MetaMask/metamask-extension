@@ -46,6 +46,6 @@ describe('NetworksListItem Component', () => {
 
   it('should render a test network item correctly', () => {
     const { queryByText } = renderComponent(testNetProps);
-    expect(queryByText('Goerli test network')).toBeInTheDocument();
+    expect(queryByText('Sepolia test network')).toBeInTheDocument();
   });
 });

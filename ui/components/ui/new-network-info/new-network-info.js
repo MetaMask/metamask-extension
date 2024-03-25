@@ -43,21 +43,14 @@ export default function NewNetworkInfo() {
   };
 
   const checkTokenDetection = useCallback(async () => {
-    try {
-      const fetchedTokenData = await fetchWithCache({
-        url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
-        functionName: 'getIsTokenDetectionSupported',
-      });
-      const isTokenDetectionSupported = !fetchedTokenData?.error;
-      setTokenDetectionSupported(isTokenDetectionSupported);
-      setIsLoading(false);
-    } catch {
-      // If there's any error coming from getIsTokenDetectionSupported
-      // we would like to catch this error and simply return false for the state
-      // and this will be handled in UI naturally
-      setTokenDetectionSupported(false);
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    const fetchedTokenData = await fetchWithCache({
+      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
+      functionName: 'getIsTokenDetectionSupported',
+    });
+    const isTokenDetectionSupported = !fetchedTokenData?.error;
+    setTokenDetectionSupported(isTokenDetectionSupported);
+    setIsLoading(false);
   }, [providerConfig.chainId]);
 
   useEffect(() => {

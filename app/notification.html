@@ -4,13 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
 
-    {{ @if (it.isTest) }}
+    <% if (it.isTest) { %>
     <title>MetaMask Dialog</title>
-    {{ #elif (it.isMMI) }}
+    <% } else if (it.isMMI) { %>
     <title>MetaMask Institutional</title>
-    {{ #else }}
+    <% } else { %>
     <title>MetaMask</title>
-    {{/if}}
+    <% } %>
 
     <style>
       #app-content {

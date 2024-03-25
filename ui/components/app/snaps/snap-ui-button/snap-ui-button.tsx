@@ -17,7 +17,7 @@ export const SnapUIButton: FunctionComponent<
       event.preventDefault();
     }
 
-    handleEvent(UserInputEventType.ButtonClickEvent, name);
+    handleEvent({ event: UserInputEventType.ButtonClickEvent, name });
   };
 
   return (

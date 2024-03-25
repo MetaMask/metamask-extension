@@ -86,7 +86,7 @@ describe('Incremental Security', function () {
         await driver.clickElement('button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="account-details-modal"]',
         );
 
@@ -134,7 +134,7 @@ describe('Incremental Security', function () {
         await driver.fill('[placeholder="Password"]', WALLET_PASSWORD);
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="reveal-srp-modal"]',
         );
 
@@ -169,7 +169,7 @@ describe('Incremental Security', function () {
 
         assert.strictEqual(balance, '1');
 
-        // should not show a backup reminder
+        // The previous currencyDisplay wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent('.backup-notification');
       },
     );

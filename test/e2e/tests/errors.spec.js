@@ -827,6 +827,10 @@ describe('Sentry errors', function () {
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
+      // MMI properties
+      opts: true,
+      store: true,
+      configurationClient: true,
     };
     await withFixtures(
       {

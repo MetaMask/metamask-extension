@@ -1,3 +1,5 @@
+@use "design-system";
+
 .selected-account {
   display: flex;
   flex-direction: column;
@@ -10,7 +12,7 @@
   }
 
   &__name {
-    @include H5;
+    @include design-system.H5;
 
     width: 100%;
     font-weight: 500;
@@ -23,7 +25,7 @@
   }
 
   &__address {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-alternative);
     display: flex;

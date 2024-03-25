@@ -71,7 +71,10 @@
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
-  "EnsController": { "ensResolutionsByAddress": "object" },
+  "EnsController": {
+    "ensEntries": "object",
+    "ensResolutionsByAddress": "object"
+  },
   "GasFeeController": {
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
@@ -182,8 +185,7 @@
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean"
+    "domains": "object"
   },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -258,5 +260,7 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": { "userOperations": "object" }
+  "UserOperationController": {
+    "userOperations": "object"
+  }
 }

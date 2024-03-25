@@ -1,3 +1,5 @@
+@use "design-system";
+
 .confirm-detail-row {
   padding: 14px 0;
   margin: 15px;
@@ -7,7 +9,7 @@
   align-items: center;
 
   &__label {
-    @include H7;
+    @include design-system.H7;
 
     font-weight: 500;
     color: var(--color-text-alternative);
@@ -21,7 +23,7 @@
   }
 
   &__primary {
-    @include H3;
+    @include design-system.H3;
 
     justify-content: flex-end;
   }
@@ -32,7 +34,7 @@
   }
 
   &__header-text {
-    @include H7;
+    @include design-system.H7;
 
     text-transform: uppercase;
     margin-bottom: 6px;
@@ -44,7 +46,7 @@
     }
 
     &--total {
-      @include H8;
+      @include design-system.H8;
     }
   }
 
@@ -54,7 +56,7 @@
 
   .custom-nonce-input {
     input {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       width: 90px;
     }

@@ -60,6 +60,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
+              data-testid="network-switch-from-network"
             >
               Test initial state
             </p>
@@ -84,6 +85,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
+              data-testid="network-switch-to-network"
             >
               Test chain
             </p>
@@ -177,6 +179,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             </div>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
+              data-testid="network-switch-from-network"
             >
               Test initial state
             </p>
@@ -201,6 +204,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             </div>
             <p
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
+              data-testid="network-switch-to-network"
             >
               Test chain
             </p>

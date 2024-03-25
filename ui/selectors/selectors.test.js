@@ -86,6 +86,41 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#checkIfMethodIsEnabled', () => {
+    it('returns true if the method is enabled', () => {
+      expect(
+        selectors.checkIfMethodIsEnabled(mockState, EthMethod.SignTransaction),
+      ).toBe(true);
+    });
+
+    it('returns false if the method is not enabled', () => {
+      expect(
+        selectors.checkIfMethodIsEnabled(
+          {
+            metamask: {
+              internalAccounts: {
+                accounts: {
+                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                    ...mockState.metamask.internalAccounts.accounts[
+                      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+                    ],
+                    methods: [
+                      ...Object.values(EthMethod).filter(
+                        (method) => method !== EthMethod.SignTransaction,
+                      ),
+                    ],
+                  },
+                },
+                selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              },
+            },
+          },
+          EthMethod.SignTransaction,
+        ),
+      ).toBe(false);
+    });
+  });
+
   describe('#getInternalAccounts', () => {
     it('returns a list of internal accounts', () => {
       expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
@@ -646,14 +681,16 @@ describe('Selectors', () => {
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
     const accountsWithSendEther =
       selectors.accountsWithSendEtherInfoSelector(mockState);
-    expect(accountsWithSendEther).toHaveLength(5);
+    expect(accountsWithSendEther).toHaveLength(6);
     expect(accountsWithSendEther[0].balance).toStrictEqual(
       '0x346ba7725f412cbfdb',
     );
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
-    expect(accountsWithSendEther[0].name).toStrictEqual('Test Account');
+    expect(accountsWithSendEther[0].metadata.name).toStrictEqual(
+      'Test Account',
+    );
   });
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
@@ -665,7 +702,9 @@ describe('Selectors', () => {
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
-    expect(currentAccountwithSendEther.name).toStrictEqual('Test Account');
+    expect(currentAccountwithSendEther.metadata.name).toStrictEqual(
+      'Test Account',
+    );
   });
 
   it('#getGasIsLoading', () => {
@@ -993,36 +1032,62 @@ describe('Selectors', () => {
         accounts: {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            name: 'Test Account',
             balance: '0x0',
           },
           '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
             address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-            name: 'Test Account 2',
             balance: '0x0',
           },
           '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
             address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-            name: 'Test Ledger 1',
             balance: '0x0',
           },
           '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
-            name: 'Test Account 3',
             address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
             balance: '0x0',
           },
           '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-            name: 'Custody test',
             address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
             balance: '0x0',
           },
         },
+        permissionHistory: {
+          'https://test.dapp': {
+            eth_accounts: {
+              accounts: {
+                '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
+              },
+            },
+          },
+        },
+        subjects: {
+          'https://test.dapp': {
+            permissions: {
+              eth_accounts: {
+                caveats: [
+                  {
+                    type: 'restrictReturnedAccounts',
+                    value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                  },
+                ],
+                invoker: 'https://test.dapp',
+                parentCapability: 'eth_accounts',
+              },
+            },
+          },
+        },
+      },
+      activeTab: {
+        origin: 'https://test.dapp',
+      },
+      unconnectedAccount: {
+        state: 'OPEN',
       },
     };
     const expectedResult = [
       {
         address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-        name: 'Test Account 2',
+        balance: '0x0',
         id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
         metadata: {
           name: 'Test Account 2',
@@ -1040,13 +1105,14 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        balance: '0x0',
         pinned: true,
         hidden: false,
+        active: false,
       },
+
       {
-        name: 'Test Account 3',
         address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        balance: '0x0',
         id: '784225f4-d30b-4e77-a900-c8bbce735b88',
         metadata: {
           name: 'Test Account 3',
@@ -1064,13 +1130,13 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        balance: '0x0',
         pinned: true,
         hidden: false,
+        active: false,
       },
+
       {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        name: 'Test Account',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
           name: 'Test Account',
@@ -1091,10 +1157,10 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
+        active: true,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-        name: 'Test Ledger 1',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
           name: 'Ledger Hardware 2',
@@ -1115,10 +1181,37 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
+        active: false,
       },
       {
-        name: 'Custody test',
-        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+        balance: '0x0',
+        id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+        metadata: {
+          keyring: {
+            type: 'Snap Keyring',
+          },
+          name: 'Snap Account 1',
+          snap: {
+            id: 'snap-id',
+            name: 'snap-name',
+          },
+        },
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        options: {},
+        hidden: false,
+        pinned: false,
+        active: false,
+        type: 'eip155:eoa',
+      },
+      {
         id: '694225f4-d30b-4e77-a900-c8bbce735b42',
         metadata: {
           name: 'Test Account 4',
@@ -1136,9 +1229,11 @@ describe('Selectors', () => {
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
+        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
         balance: '0x0',
         pinned: false,
         hidden: false,
+        active: false,
       },
     ];
     expect(

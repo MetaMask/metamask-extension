@@ -286,7 +286,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="add-network-modal"]',
         );
         await driver.clickElement({ text: 'Done', tag: 'button' });

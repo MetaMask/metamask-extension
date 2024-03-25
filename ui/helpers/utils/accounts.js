@@ -16,7 +16,7 @@ export function getAccountNameErrorMessage(
   defaultAccountName,
 ) {
   const isDuplicateAccountName = accounts.some(
-    (item) => item.name.toLowerCase() === newAccountName.toLowerCase(),
+    (item) => item.metadata.name.toLowerCase() === newAccountName.toLowerCase(),
   );
 
   const isEmptyAccountName = newAccountName === '';

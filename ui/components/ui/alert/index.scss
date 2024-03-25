@@ -1,10 +1,12 @@
+@use "design-system";
+
 .global-alert {
   position: relative;
   width: 100%;
   background-color: var(--color-primary-default);
 
   .msg {
-    @include H7;
+    @include design-system.H7;
 
     width: 100%;
     display: block;

@@ -9,6 +9,9 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -19,9 +22,6 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -78,6 +78,9 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -88,9 +91,6 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );

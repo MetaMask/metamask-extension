@@ -172,7 +172,7 @@ async function switchToAccount2(driver: Driver) {
     text: 'Snap Account 1',
   });
 
-  await driver.waitForElementNotPresent({
+  await driver.assertElementNotPresent({
     tag: 'header',
     text: 'Select an account',
   });

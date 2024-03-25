@@ -1,3 +1,5 @@
+@use "design-system";
+
 .gas-display {
   overflow-y: auto;
   flex: 1;
@@ -39,7 +41,7 @@
 
   &__confirm-approve-content {
     &__warning {
-      @media screen and (max-width: $break-small) {
+      @media screen and (max-width: design-system.$break-small) {
         padding: 0 32px 16px 16px;
         position: fixed;
         bottom: 80px;

@@ -7,10 +7,12 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   className?: string;
   /** * Limit to show only a certain number of tokens and extras in Text */
   limit: number;
+  /** * Type of Avatar: Token/Account */
+  avatarType?: AvatarType;
   /** * List of Avatar Tokens */
   members: {
     /** * Image of Avatar Token */
-    iconUrl: string;
+    avatarValue: string;
     /** * Symbol of Avatar Token */
     symbol?: string;
   }[];
@@ -18,4 +20,9 @@ export interface AvatarGroupProps extends StyleUtilityProps {
   size?: AvatarTokenSize;
   /** * Border Color of Avatar Tokens */
   borderColor?: BorderColor;
+}
+
+export enum AvatarType {
+  TOKEN = 'TOKEN',
+  ACCOUNT = 'ACCOUNT',
 }

@@ -20,18 +20,6 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://etherscan.io',
   },
   {
-    labelKey: NETWORK_TYPES.GOERLI,
-    iconColor: '#3099f2',
-    providerType: NETWORK_TYPES.GOERLI,
-    rpcUrl: getRpcUrl({
-      network: NETWORK_TYPES.GOERLI,
-      excludeProjectId: true,
-    }),
-    chainId: CHAIN_IDS.GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
-    blockExplorerUrl: 'https://goerli.etherscan.io',
-  },
-  {
     labelKey: NETWORK_TYPES.SEPOLIA,
     iconColor: '#CFB5F0',
     providerType: NETWORK_TYPES.SEPOLIA,

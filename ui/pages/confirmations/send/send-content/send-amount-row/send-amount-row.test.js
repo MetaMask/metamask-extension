@@ -9,6 +9,7 @@ import {
   TokenStandard,
 } from '../../../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
 import SendAmountRow from '.';
 
 const mockUpdateSendAmount = jest.fn();
@@ -23,6 +24,13 @@ jest.mock('../../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
     useIsOriginalNativeTokenSymbol: jest.fn(),
   };
 });
+
+jest.mock('../../../../../../shared/modules/conversion.utils', () => ({
+  ...jest.requireActual('../../../../../../shared/modules/conversion.utils'),
+  decimalToHex: jest
+    .fn()
+    .mockImplementation((decimal) => `mockedHex-${decimal}`),
+}));
 
 describe('SendAmountRow Component', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
@@ -146,6 +154,40 @@ describe('SendAmountRow Component', () => {
         target: { value: 0.5 },
       });
 
+      expect(mockUpdateSendAmount).toHaveBeenCalled();
+    });
+  });
+
+  describe('SendAmountRow', () => {
+    it('calls decimalToHex on handleChange for erc1155 token', () => {
+      const erc1155State = {
+        ...mockSendState,
+        send: {
+          currentTransactionUUID: '1-tx',
+          draftTransactions: {
+            '1-tx': {
+              asset: {
+                balance: '',
+                details: {
+                  standard: TokenStandard.ERC1155,
+                },
+                error: null,
+                type: AssetType.NFT,
+              },
+            },
+          },
+        },
+      };
+      const mockStoreErc1155 = configureMockStore([thunk])(erc1155State);
+      const { queryByTestId } = renderWithProvider(
+        <SendAmountRow />,
+        mockStoreErc1155,
+      );
+
+      const input = queryByTestId('token-input');
+      fireEvent.change(input, { target: { value: '456' } });
+
+      expect(decimalToHex).toHaveBeenCalledWith('456');
       expect(mockUpdateSendAmount).toHaveBeenCalled();
     });
   });

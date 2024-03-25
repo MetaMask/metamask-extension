@@ -52,7 +52,7 @@ describe('Import flow', function () {
         const networkSelectionModal = await driver.findVisibleElement(
           '.mm-modal',
         );
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 
@@ -81,7 +81,7 @@ describe('Import flow', function () {
         );
 
         // Wait for "loading tokens" to be gone
-        await driver.waitForElementNotPresent(
+        await driver.assertElementNotPresent(
           '[data-testid="token-list-loading-message"]',
         );
 

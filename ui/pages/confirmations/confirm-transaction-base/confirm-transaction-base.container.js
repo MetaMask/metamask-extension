@@ -261,6 +261,10 @@ const mapStateToProps = (state, ownProps) => {
     getApprovedAndSignedTransactions(state).length,
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isSigningOrSubmitting = false;
+  ///: END:ONLY_INCLUDE_IF
+
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

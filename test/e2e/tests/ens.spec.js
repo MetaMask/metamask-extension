@@ -71,6 +71,10 @@ describe('ENS', function () {
   }
 
   it('domain resolves to a correct address', async function () {
+    // TODO: Update Test when Multichain Send Flow is added
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
@@ -81,13 +85,9 @@ describe('ENS', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.assertElementNotPresent('.loading-overlay');
 
         await openActionMenuAndStartSendFlow(driver);
-        // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           sampleEnsDomain,

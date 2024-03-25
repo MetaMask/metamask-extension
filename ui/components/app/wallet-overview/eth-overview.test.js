@@ -142,6 +142,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
 
   afterEach(() => {
@@ -470,5 +471,41 @@ describe('EthOverview', () => {
         }),
       );
     });
+  });
+
+  describe('Disabled buttons when an account cannot sign transactions', () => {
+    const buttonTestCases = [
+      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy & Sell' },
+      { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
+      { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
+      { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
+    ];
+
+    it.each(buttonTestCases)(
+      'should have the $buttonText button disabled when an account cannot sign transactions or user operations',
+      ({ testId, buttonText }) => {
+        mockStore.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ].methods = Object.values(EthMethod).filter(
+          (method) =>
+            method !== EthMethod.SignTransaction &&
+            method !== EthMethod.SignUserOperation,
+        );
+
+        const mockedStore = configureMockStore([thunk])(mockStore);
+        const { queryByTestId, queryByText } = renderWithProvider(
+          <EthOverview />,
+          mockedStore,
+        );
+
+        const button = queryByTestId(testId);
+        expect(button).toBeInTheDocument();
+        expect(button).toBeDisabled();
+        expect(queryByText(buttonText).parentElement).toHaveAttribute(
+          'data-original-title',
+          'Not supported with this account.',
+        );
+      },
+    );
   });
 });

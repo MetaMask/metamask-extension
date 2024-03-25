@@ -64,13 +64,13 @@ function documentElementCheck() {
  * @returns {boolean} {@code true} if the current domain is blocked
  */
 function blockedDomainCheck() {
+  // If making any changes, please also update the same list found in the MetaMask-Mobile & SDK repositories
   const blockedDomains = [
     'execution.consensys.io',
     'execution.metamask.io',
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
     'harbourair.com',
@@ -79,17 +79,28 @@ function blockedDomainCheck() {
     'sharefile.com',
     'battle.net',
   ];
-  const currentUrl = window.location.href;
-  let currentRegex;
-  for (let i = 0; i < blockedDomains.length; i++) {
-    const blockedDomain = blockedDomains[i].replaceAll('.', '\\.');
-    currentRegex = new RegExp(
-      `(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`,
-      'u',
-    );
-    if (!currentRegex.test(currentUrl)) {
-      return true;
-    }
-  }
-  return false;
+
+  // Matching will happen based on the hostname, and path
+  const blockedUrlPaths = [
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+  ];
+
+  const { hostname: currentHostname, pathname: currentPathname } =
+    window.location;
+
+  const trimTrailingSlash = (str) =>
+    str.endsWith('/') ? str.slice(0, -1) : str;
+
+  return (
+    blockedDomains.some(
+      (blockedDomain) =>
+        blockedDomain === currentHostname ||
+        currentHostname.endsWith(`.${blockedDomain}`),
+    ) ||
+    blockedUrlPaths.some(
+      (blockedUrlPath) =>
+        trimTrailingSlash(blockedUrlPath) ===
+        trimTrailingSlash(currentHostname + currentPathname),
+    )
+  );
 }

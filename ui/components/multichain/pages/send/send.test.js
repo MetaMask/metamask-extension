@@ -182,6 +182,15 @@ describe('SendPage', () => {
             occurrences: null,
           },
         },
+        permissionHistory: {
+          'https://uniswap.org/': {
+            eth_accounts: {
+              accounts: {
+                '0x0': 1709225290848,
+              },
+            },
+          },
+        },
       },
       activeTab: {
         origin: 'https://uniswap.org/',
@@ -192,7 +201,17 @@ describe('SendPage', () => {
     };
 
     it('should initialize the ENS slice on render', () => {
-      const store = configureMockStore(middleware)(baseStore);
+      const store = configureMockStore(middleware)({
+        ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
+      });
       renderWithProvider(<SendPage />, store);
       const actions = store.getActions();
       expect(actions).toStrictEqual(
@@ -207,6 +226,14 @@ describe('SendPage', () => {
     it('should render correctly even when a draftTransaction does not exist', () => {
       const modifiedStore = {
         ...baseStore,
+        metamask: {
+          ...baseStore.metamask,
+          pinnedAccountList: [
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          ],
+          hiddenAccountList: [],
+        },
         send: {
           ...baseStore.send,
           currentTransactionUUID: null,

@@ -6,6 +6,7 @@ import { MMINetworkPage } from '../pageObjects/mmi-network-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { DummyAppPage } from '../pageObjects/mmi-dummyApp-page';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
+import { SEPOLIA_DISPLAY_NAME } from './utils';
 
 export async function callTestDappBtn(
   page: Page,
@@ -40,7 +41,7 @@ export async function callTestDappBtn(
   // Check network
   const networkPage = new MMINetworkPage(page);
   await networkPage.open();
-  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK ?? 'Goerli');
+  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK ?? SEPOLIA_DISPLAY_NAME);
 
   // get token to access saturn
   // changed to get it from Saturn endpoint to avoid calling Auth0 API

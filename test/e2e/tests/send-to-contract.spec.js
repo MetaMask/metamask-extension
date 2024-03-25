@@ -11,6 +11,9 @@ describe('Send ERC20 token to contract address', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
   it('should display the token contract warning to the user', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -30,9 +33,6 @@ describe('Send ERC20 token to contract address', function () {
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Type contract address

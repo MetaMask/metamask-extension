@@ -17,7 +17,7 @@ $text-variants: (
   line-height: var(--typography-s-#{$type}-#{$size}-line-height);
   letter-spacing: var(--typography-s-#{$type}-#{$size}-letter-spacing);
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     font-family: var(--typography-l-#{$type}-#{$size}-font-family);
     font-weight: var(--typography-l-#{$type}-#{$size}-font-weight);
     font-size: var(--typography-l-#{$type}-#{$size}-font-size);
@@ -56,7 +56,7 @@ $text-variants: (
     letter-spacing: inherit;
   }
 
-  @each $weight in $font-weight {
+  @each $weight in design-system.$font-weight {
     &--font-weight-#{$weight} {
       @if $weight == "medium" {
         font-weight: var(--font-weight-medium);
@@ -68,19 +68,19 @@ $text-variants: (
     }
   }
 
-  @each $style in $font-style {
+  @each $style in design-system.$font-style {
     &--font-style-#{$style} {
       font-style: $style;
     }
   }
 
-  @each $alignment in $text-align {
+  @each $alignment in design-system.$text-align {
     &--text-align-#{$alignment} {
       text-align: $alignment;
     }
   }
 
-  @each $overflow in $overflow-wrap {
+  @each $overflow in design-system.$overflow-wrap {
     &--overflow-wrap-#{$overflow} {
       overflow-wrap: $overflow;
     }

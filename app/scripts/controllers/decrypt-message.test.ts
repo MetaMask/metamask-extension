@@ -1,5 +1,7 @@
-import { DecryptMessageManager } from '@metamask/message-manager';
-import { AbstractMessage } from '@metamask/message-manager/dist/AbstractMessageManager';
+import {
+  DecryptMessageManager,
+  DecryptMessageParams,
+} from '@metamask/message-manager';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import DecryptMessageController, {
   DecryptMessageControllerMessenger,
@@ -8,15 +10,17 @@ import DecryptMessageController, {
 } from './decrypt-message';
 
 const messageIdMock = '12345';
+const messageDataMock =
+  '0x7b2276657273696f6e223a227832353531392d7873616c736132302d706f6c7931333035222c226e6f6e6365223a226b45586143524c3045646142766f77756e35675979357175784a4a6967304548222c22657068656d5075626c69634b6579223a224863334636506d314734385a567955424763365866537839682b77784b6958587238456a51434253466e553d222c2263697068657274657874223a22546a41556b68554a5968656e7a2f655a6e57454a2b31456c7861354f77765939613830507a62746c7a7a48746934634175525941227d';
 const messageMock = {
   metamaskId: messageIdMock,
   time: 123,
   status: 'unapproved',
   type: 'testType',
   rawSig: undefined,
-} as any as AbstractMessage;
-const messageDataMock =
-  '0x7b2276657273696f6e223a227832353531392d7873616c736132302d706f6c7931333035222c226e6f6e6365223a226b45586143524c3045646142766f77756e35675979357175784a4a6967304548222c22657068656d5075626c69634b6579223a224863334636506d314734385a567955424763365866537839682b77784b6958587238456a51434253466e553d222c2263697068657274657874223a22546a41556b68554a5968656e7a2f655a6e57454a2b31456c7861354f77765939613830507a62746c7a7a48746934634175525941227d';
+  data: messageDataMock,
+  from: '0x0',
+} as DecryptMessageParams & { metamaskId: string };
 
 const mockExtState = {};
 
@@ -56,7 +60,14 @@ const createDecryptMessageManagerMock = <T>() =>
   } as any as jest.Mocked<T>);
 
 describe('DecryptMessageController', () => {
-  let decryptMessageController: DecryptMessageController;
+  class MockDecryptMessageController extends DecryptMessageController {
+    // update is protected, so we expose it for typechecking here
+    public update(callback: Parameters<DecryptMessageController['update']>[0]) {
+      return super.update(callback);
+    }
+  }
+
+  let decryptMessageController: MockDecryptMessageController;
 
   const decryptMessageManagerConstructorMock =
     DecryptMessageManager as jest.MockedClass<typeof DecryptMessageManager>;
@@ -88,7 +99,7 @@ describe('DecryptMessageController', () => {
       decryptMessageManagerMock,
     );
 
-    decryptMessageController = new DecryptMessageController({
+    decryptMessageController = new MockDecryptMessageController({
       getState: getStateMock as any,
       keyringController: keyringControllerMock as any,
       messenger: messengerMock as any,
@@ -118,7 +129,10 @@ describe('DecryptMessageController', () => {
     expect(decryptMessageManagerMock.update).toBeCalledTimes(1);
   });
   it('should add unapproved messages', async () => {
-    await decryptMessageController.newRequestDecryptMessage(messageMock);
+    await decryptMessageController.newRequestDecryptMessage(
+      messageMock,
+      undefined as any,
+    );
 
     expect(decryptMessageManagerMock.addUnapprovedMessageAsync).toBeCalledTimes(
       1,
@@ -206,7 +220,7 @@ describe('DecryptMessageController', () => {
     const messageToDecrypt = {
       ...messageMock,
       data: messageDataMock,
-    };
+    } as any;
     decryptMessageManagerMock.getMessage.mockReturnValue(messageToDecrypt);
     mockMessengerAction(
       'KeyringController:decryptMessage',
@@ -238,7 +252,9 @@ describe('DecryptMessageController', () => {
   });
 
   it('should be able to cancel decrypt message', async () => {
-    decryptMessageManagerMock.rejectMessage.mockResolvedValue(messageMock);
+    decryptMessageManagerMock.rejectMessage.mockResolvedValue(
+      messageMock as never,
+    );
     getStateMock.mockReturnValue(mockExtState);
 
     const result = await decryptMessageController.cancelDecryptMessage(
@@ -255,7 +271,7 @@ describe('DecryptMessageController', () => {
   it('should be able to reject all unapproved messages', async () => {
     decryptMessageManagerMock.getUnapprovedMessages.mockReturnValue({
       [messageIdMock]: messageMock,
-    });
+    } as any);
 
     await decryptMessageController.rejectUnapproved('reason to cancel');
 

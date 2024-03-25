@@ -79,7 +79,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support @no-mmi', function () 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.waitForElementNotPresent('.loading-indicator');
+        await driver.assertElementNotPresent('.loading-indicator');
 
         const bannerAlertSelector =
           '[data-testid="security-provider-banner-alert"]';

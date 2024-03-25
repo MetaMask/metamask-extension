@@ -125,7 +125,16 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case getMemoizedAddressBook:
       return [];
     case accountsWithSendEtherInfoSelector:
-      return Object.values(opts.metamask.accounts);
+      return Object.values(opts.metamask.internalAccounts.accounts).map(
+        (internalAccount) => {
+          return {
+            ...internalAccount,
+            ...(opts.metamask.accounts[internalAccount.address] ?? {}),
+            balance:
+              opts.metamask.accounts[internalAccount.address]?.balance ?? 0,
+          };
+        },
+      );
     case getAccountType:
       return 'custody';
     case unconfirmedTransactionsHashSelector:

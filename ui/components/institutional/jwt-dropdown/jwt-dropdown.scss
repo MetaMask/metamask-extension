@@ -1,3 +1,5 @@
+@use "design-system";
+
 .custody-search-jwt__select {
   height: 54px;
   width: 100%;
@@ -5,6 +7,6 @@
   align-items: center;
 
   &-title {
-    @include Paragraph;
+    @include design-system.Paragraph;
   }
 }

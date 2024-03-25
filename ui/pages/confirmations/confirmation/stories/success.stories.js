@@ -115,8 +115,26 @@ export const TemplateStory = () => {
                 key: 'accountListItem',
                 properties: {
                   identity: {
-                    address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-                    balance: '0xFFFFFFFFFFFFFFFFFF',
+                    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                    metadata: {
+                      name: 'Test Account',
+                      keyring: {
+                        type: 'HD Key Tree',
+                      },
+                    },
+                    options: {},
+                    methods: [
+                      'personal_sign',
+                      'eth_sign',
+                      'eth_signTransaction',
+                      'eth_signTypedData_v1',
+                      'eth_signTypedData_v3',
+                      'eth_signTypedData_v4',
+                    ],
+                    type: 'eip155:eoa',
+                    keyring: 'HD Key Tree',
+                    label: null,
                     name: 'Test Account',
                   },
                 },
@@ -173,9 +191,27 @@ export const TemplateOnlyStory = () => {
           key: 'accountListItem',
           properties: {
             identity: {
-              address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              keyring: 'HD Key Tree',
+              label: null,
               balance: '0xFFFFFFFFFFFFFFFFFF',
-              name: 'Test Account',
             },
           },
         },
