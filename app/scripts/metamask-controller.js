@@ -1432,8 +1432,7 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this.updateDeprecatedNetworkId();
-          this.networkController.lookupNetwork();
+          this.postOnboardingInitialization();
           this.triggerNetworkrequests();
         }
       }, this.onboardingController.store.getState()),
@@ -2198,9 +2197,13 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
 
     if (this.onboardingController.store.getState().completedOnboarding) {
-      this.updateDeprecatedNetworkId();
-      this.networkController.lookupNetwork();
+      this.postOnboardingInitialization();
     }
+  }
+
+  postOnboardingInitialization() {
+    this.updateDeprecatedNetworkId();
+    this.networkController.lookupNetwork();
   }
 
   triggerNetworkrequests() {
