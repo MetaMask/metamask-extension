@@ -19,7 +19,7 @@ export type SignatureRequestType = {
   };
   type: TransactionType;
   custodyId?: string;
-  securityAlertResponse: SecurityAlertResponse;
+  securityAlertResponse?: SecurityAlertResponse;
 };
 
 export type Confirmation = SignatureRequestType;
