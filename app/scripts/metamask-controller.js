@@ -481,7 +481,7 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
     });
-    this.networkController.initializeProvider(false);
+    this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
