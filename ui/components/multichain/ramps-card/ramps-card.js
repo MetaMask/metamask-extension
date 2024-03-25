@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -60,7 +60,7 @@ export const RampsCard = ({ variant }) => {
   const { openBuyCryptoInPdapp } = useRamps();
   const trackEvent = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const { chainId, nickname } = useSelector(getCurrentNetwork);
   const { symbol = 'ETH' } = useSelector(getSwapsDefaultToken);
 
   useEffect(() => {
@@ -68,20 +68,15 @@ export const RampsCard = ({ variant }) => {
       event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        chain_id: currentNetwork.chainId,
+        chain_id: chainId,
         locale: currentLocale,
-        network: currentNetwork.nickname,
+        network: nickname,
         referrer: ORIGIN_METAMASK,
       },
     });
-  }, [
-    currentLocale,
-    currentNetwork.chainId,
-    currentNetwork.nickname,
-    trackEvent,
-  ]);
+  }, [currentLocale, chainId, nickname, trackEvent]);
 
-  const onClick = () => {
+  const onClick = useCallback(() => {
     openBuyCryptoInPdapp();
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -89,11 +84,11 @@ export const RampsCard = ({ variant }) => {
       properties: {
         location: `${variant} tab`,
         text: `Buy ${symbol}`,
-        chain_id: currentNetwork.chainId,
+        chain_id: chainId,
         token_symbol: symbol,
       },
     });
-  };
+  }, [chainId, openBuyCryptoInPdapp, symbol, trackEvent, variant]);
 
   return (
     <Box

@@ -51,12 +51,12 @@ const AssetList = ({ onClickAsset }) => {
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const { chainId } = useSelector(getCurrentNetwork);
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    currentNetwork.chainId,
+    chainId,
     ticker,
     type,
   );
@@ -106,7 +106,6 @@ const AssetList = ({ onClickAsset }) => {
   const shouldShowBuy = isBuyableChain && balanceIsZero;
 
   let isStakeable = isMainnet;
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
