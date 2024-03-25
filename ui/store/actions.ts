@@ -4300,7 +4300,7 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
  */
 export async function currencyRateStartPollingByNetworkClientId(
   networkClientId: string,
-) {
+): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'currencyRateStartPollingByNetworkClientId',
     [networkClientId],
