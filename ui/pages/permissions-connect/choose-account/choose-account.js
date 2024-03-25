@@ -8,6 +8,7 @@ import { PageContainerFooter } from '../../../components/ui/page-container';
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
@@ -75,7 +76,13 @@ const ChooseAccount = ({
     <>
       <Box
         className="permissions-connect-choose-account__content"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
+        width={BlockSize.Full}
+        height={BlockSize.Full}
+        paddingLeft={6}
+        paddingRight={6}
       >
         <Box
           display={Display.Flex}
@@ -102,7 +109,11 @@ const ChooseAccount = ({
           handleAccountClick={handleAccountClick}
         />
       </Box>
-      <Box backgroundColor={BackgroundColor.backgroundAlternative}>
+      <Box
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        className="permissions-connect-choose-account__footer"
+        paddingTop={4}
+      >
         {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
           <PermissionsConnectFooter />
         )}

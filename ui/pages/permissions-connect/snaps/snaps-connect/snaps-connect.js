@@ -67,7 +67,6 @@ export default function SnapsConnect({
     if (isLoading) {
       return (
         <Box
-          className="snap-connect__loader-container"
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
@@ -80,18 +79,19 @@ export default function SnapsConnect({
     if (snaps?.length > 1) {
       return (
         <Box
-          className="snaps-connect__content"
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={8}
+          paddingTop={4}
           width={BlockSize.Full}
           style={{ overflowY: 'hidden' }}
           backgroundColor={BackgroundColor.backgroundAlternative}
         >
-          <Text paddingBottom={2} variant={TextVariant.headingLg}>
+          <Text
+            paddingBottom={2}
+            variant={TextVariant.headingLg}
+            textAlign={TextAlign.Center}
+          >
             {t('connectionRequest')}
           </Text>
           <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
@@ -115,7 +115,6 @@ export default function SnapsConnect({
             ])}
           </Text>
           <Box
-            className="snaps-connect__content__snaps-list"
             flexDirection={FlexDirection.Column}
             display={Display.Flex}
             marginTop={4}
@@ -189,10 +188,12 @@ export default function SnapsConnect({
 
   return (
     <Box
+      className="snaps-connect"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       height={BlockSize.Full}
+      width={BlockSize.Full}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
       {isShowingSnapsPrivacyWarning && (
@@ -204,7 +205,13 @@ export default function SnapsConnect({
           onCanceled={onCancel}
         />
       )}
-      <Box display={Display.Flex} height={BlockSize.Full}>
+      <Box
+        display={Display.Flex}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
+      >
         <SnapsConnectContent />
       </Box>
       <PageContainerFooter
