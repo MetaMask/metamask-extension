@@ -13,6 +13,10 @@ const PPOM_STALE_DIFF_URL =
   'https://static.metafi.codefi.network/api/v1/confirmations/ppom/stale_diff/0x1/';
 const MOCK_CDN_FOLDER_URL = 'test/e2e/mock-cdn/';
 
+const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
+const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
+const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
+
 async function getFileVersions() {
 
   let ppomVersionDataHeaders;
@@ -58,27 +62,6 @@ async function getFileVersions() {
     mainnetStaleDiffVersion,
   };
 }
-
-async function deleteFileMatchingPattern (dirPath, regexPattern) {
-  fs.readdir(dirPath, (err, files) => {
-    if (err) {
-      console.error(`Error reading directory ${dirPath}:`, err);
-      return;
-    }
-    files.forEach((file) => {
-      if (regexPattern.test(file)) {
-        const filePath = path.join(dirPath, file);
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(`Error deleting file ${filePath}:`, err);
-          } else {
-            console.log(`File ${filePath} deleted successfully.`);
-          }
-        });
-      }
-    });
-  });
-};
 
 async function updateMockCdnFiles() {
   const { mainnetConfigVersion, mainnetStaleVersion, mainnetStaleDiffVersion } =
@@ -128,10 +111,6 @@ async function updateMockCdnFiles() {
     `${MOCK_CDN_FOLDER_URL}cdn-stale-diff-res-headers.json`,
     JSON.stringify(etagStaleDiffObject, null, 2)
   );
-
-  const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
-  const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
-  const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
 
   // exporting the brotli data to files
   exec(
