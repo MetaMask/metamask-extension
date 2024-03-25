@@ -25,7 +25,7 @@ type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
 if (args.cache === false || args.help === true || args.watch === true) {
-  // there are no time savings to running the build in a child process if the
+  // there are no time savings to running the build in a child process if: the
   // cache is disabled, we need to output "help", or we're in watch mode.
   require('./build.ts').build();
 } else {
