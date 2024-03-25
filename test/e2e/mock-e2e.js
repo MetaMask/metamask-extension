@@ -2,9 +2,9 @@ const fs = require('fs');
 
 const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
 
-const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
-const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
-const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
+const CDN_CONFIG_PATH =  /test\/e2e\/mock-cdn\/cdn-config(-\d+(\.\d+){0,2})?\.txt/;
+const CDN_STALE_DIFF_PATH =  /test\/e2e\/mock-cdn\/cdn-stale-diff(-\d+(\.\d+){0,2})?\.txt/;
+const CDN_STALE_PATH =  /test\/e2e\/mock-cdn\/cdn-stale(-\d+(\.\d+){0,2})?\.txt/;
 const PPOM_VERSION_PATH = 'test/e2e/mock-cdn/ppom-version.json';
 const PPOM_VERSION_HEADERS_PATH = 'test/e2e/mock-cdn/ppom-version-headers.json';
 
