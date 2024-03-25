@@ -125,6 +125,7 @@ export enum TextColor {
   primaryDefault = 'primary-default',
   primaryInverse = 'primary-inverse',
   errorDefault = 'error-default',
+  errorAlternative = 'error-alternative',
   errorInverse = 'error-inverse',
   successDefault = 'success-default',
   successInverse = 'success-inverse',

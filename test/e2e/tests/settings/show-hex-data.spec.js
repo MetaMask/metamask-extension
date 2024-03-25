@@ -29,7 +29,7 @@ const selectors = {
 
 const inputData = {
   recipientAddress: '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-  hexDataText: '0xabc',
+  hexDataText: '0x0abc',
 };
 
 // Function to click elements in sequence
