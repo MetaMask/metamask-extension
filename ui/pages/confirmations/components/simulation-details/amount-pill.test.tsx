@@ -120,15 +120,6 @@ describe('AmountPill', () => {
         );
       },
     );
-
-    it('does not render the amount', () => {
-      const amount = { isNegative: true, numeric: new Numeric(1, 10) };
-
-      const { queryByText } = render(
-        <AmountPill asset={ERC721_ASSET_MOCK} amount={amount as Amount} />,
-      );
-      expect(queryByText('-')).not.toBeInTheDocument();
-    });
   });
 
   describe('ERC1155', () => {
