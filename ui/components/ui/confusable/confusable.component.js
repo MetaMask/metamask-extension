@@ -12,10 +12,10 @@ const Confusable = ({ input, asText, confusableWrapperName = '' }) => {
     return confusables(input);
   }, [input]);
 
-  return confusableData.map(({ point, similarTo }, index) => {
+  return confusableData.map(({ point, similarTo }) => {
     const zeroWidth = similarTo === '';
     if (similarTo === undefined) {
-      return asText ? <Text>{point}</Text> : point;
+      return asText ? <Text key={uuidv4()}>{point}</Text> : point;
     }
     return (
       <Tooltip

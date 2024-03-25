@@ -25,7 +25,7 @@ export default class AddContact extends PureComponent {
     qrCodeData:
       PropTypes.object /* eslint-disable-line react/no-unused-prop-types */,
     qrCodeDetected: PropTypes.func,
-    domainResolution: PropTypes.string,
+    domainResolutions: PropTypes.arrayOf(PropTypes.object),
     domainError: PropTypes.string,
     resetDomainResolution: PropTypes.func,
   };
@@ -45,7 +45,7 @@ export default class AddContact extends PureComponent {
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
-        const { domainResolution } = this.props;
+        const { domainResolutions } = this.props;
         const scannedAddress =
           nextProps.qrCodeData.values.address.toLowerCase();
         const currentAddress = domainResolution || this.state.ethAddress;
@@ -99,7 +99,7 @@ export default class AddContact extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { history, addToAddressBook, domainError, domainResolution } =
+    const { history, addToAddressBook, domainError, domainResolutions } =
       this.props;
 
     const errorToRender = domainError || this.state.error;
