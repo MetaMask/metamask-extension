@@ -29,14 +29,30 @@ export default function DomainInputResolutionCell({
 }) {
   const t = useContext(I18nContext);
   const titleRef = useRef(null);
+  const breakpointRef = useRef(null);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
 
   useEffect(() => {
-    console.log(titleRef.current.offsetWidth);
-    console.log(titleRef.current.scrollWidth);
-    setIsTitleOverflowing(
-      titleRef.current.offsetWidth < titleRef.current.scrollWidth,
-    );
+    let isOverflowing =
+      titleRef.current.offsetWidth < titleRef.current.scrollWidth;
+    const breakpointLength = titleRef.current.textContent.length;
+
+    if (isOverflowing) {
+      breakpointRef.current = breakpointLength;
+    }
+
+    if (!isOverflowing) {
+      if (breakpointRef.current) {
+        if (domainName.length >= breakpointRef.current) {
+          isOverflowing = true;
+        } else {
+          isOverflowing = false;
+          breakpointRef.current = null;
+        }
+      }
+    }
+
+    setIsTitleOverflowing(isOverflowing);
   }, [domainName]);
 
   const OverflowingTitle = () => (
