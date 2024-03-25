@@ -80,6 +80,7 @@ const storeMockPolygon = configureStore({
     providerConfig: {
       ...mockState.metamask.providerConfig,
       chainId: CHAIN_IDS.POLYGON,
+      ticker: 'MATIC',
     },
   },
 });
@@ -150,7 +151,7 @@ export const MaticNativeAsset: Story = {
     simulationData: {
       nativeBalanceChange: {
         ...DUMMY_BALANCE_CHANGE,
-        difference: '0x1234567891234567',
+        difference: '0x123456',
         isDecrease: true,
       },
       tokenBalanceChanges: [],
