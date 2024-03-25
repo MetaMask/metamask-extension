@@ -142,6 +142,10 @@ export const SendPage = () => {
     (isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR) ||
     requireContractAddressAcknowledgement;
 
+  const isSendFormShown =
+    draftTransactionExists &&
+    [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage);
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -159,8 +163,7 @@ export const SendPage = () => {
       <Content>
         <SendPageAccountPicker />
         <SendPageRecipientInput />
-        {draftTransactionExists &&
-        [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
+        {isSendFormShown ? (
           <SendPageContent
             requireContractAddressAcknowledgement={
               requireContractAddressAcknowledgement
