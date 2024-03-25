@@ -279,12 +279,12 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[17]
+  // securityAndPrivacy settingsRefs[18]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('openSeaLabel'),
-    descriptionMessage: (t) => t('openSeaMessage'),
-    route: `${SECURITY_ROUTE}#security-alerts-opensea`,
+    sectionMessage: (t) => t('simulationsSettingSubHeader'),
+    descriptionMessage: (t) => t('simulationsSettingDescription'),
+    route: `${SECURITY_ROUTE}#transaction-simulations`,
     icon: 'fa fa-lock',
   },
   {

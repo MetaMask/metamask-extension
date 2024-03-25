@@ -39,3 +39,4 @@ export { NotificationDetailInfo } from './notification-detail-info';
 export { NotificationDetailNft } from './notification-detail-nft';
 export { NotificationDetailTitle } from './notification-detail-title';
 export { Toast, ToastContainer } from './toast';
+export { PermissionDetailsModal } from './permission-details-modal';
