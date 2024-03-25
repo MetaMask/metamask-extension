@@ -430,7 +430,7 @@ export default class Home extends PureComponent {
     setStxOptIn(false);
   };
 
-  onStxContinue = () => {
+  onEnableStx = () => {
     const { setStxOptIn } = this.props;
     setStxOptIn(true);
   };
@@ -903,8 +903,8 @@ export default class Home extends PureComponent {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
           <SmartTransactionsModal
-            onContinue={this.onStxContinue}
-            onNoRightNow={this.onStxNotRightNow}
+            onEnable={this.onEnableStx}
+            onNotRightNow={this.onStxNotRightNow}
             isOpen={stxOptIn === null}
           />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
