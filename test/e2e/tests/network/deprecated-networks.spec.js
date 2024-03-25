@@ -273,8 +273,7 @@ describe('Deprecated networks', function () {
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-        const deprecationWarningText =
-          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.';
+        const deprecationWarningText = 'This network is deprecated';
         const isDeprecationWarningDisplayed = await driver.isElementPresent({
           text: deprecationWarningText,
         });
