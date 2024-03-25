@@ -85,8 +85,10 @@ export const SendPageContent = ({
   //          - double border weight for dropdowns
   // TODO: 3. create/add data flows for swap+send
   // TODO: 4. enable destination swap button (i.e., allow 1-to-any swaps) on send page; integrate data flows
-  // TODO: 5. add analytics
-  // TODO: 6. final design and technical review + revisions
+  // TODO: 5 add error states
+  // TODO: 6. add analytics
+  //       - use transaction lifecycle events
+  // TODO: 8. final design and technical review + revisions
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
