@@ -29,6 +29,9 @@ const useCurrentConfirmation = () => {
     useState<Record<string, unknown>>();
 
   useEffect(() => {
+    if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
+      return;
+    }
     let pendingConfirmation: Approval | undefined;
     if (paramsTransactionId) {
       if (paramsTransactionId === currentConfirmation?.id) {
