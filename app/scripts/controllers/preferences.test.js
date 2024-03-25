@@ -78,12 +78,17 @@ describe('preferences controller', () => {
 
   describe('removeAddress', () => {
     it('should remove an address from state', () => {
-      onKeyringStateChangeListener({
-        keyrings: [
-          {
-            accounts: ['0xda22le', '0x7e57e2'],
+      preferencesController.store.updateState({
+        identities: {
+          '0xda22le': {
+            name: 'Account 1',
+            address: '0xda22le',
           },
-        ],
+          '0x7e57e2': {
+            name: 'Account 2',
+            address: '0x7e57e2',
+          },
+        },
       });
 
       preferencesController.removeAddress('0xda22le');
@@ -94,12 +99,17 @@ describe('preferences controller', () => {
     });
 
     it('should switch accounts if the selected address is removed', () => {
-      onKeyringStateChangeListener({
-        keyrings: [
-          {
-            accounts: ['0xda22le', '0x7e57e2'],
+      preferencesController.store.updateState({
+        identities: {
+          '0xda22le': {
+            name: 'Account 1',
+            address: '0xda22le',
           },
-        ],
+          '0x7e57e2': {
+            name: 'Account 2',
+            address: '0x7e57e2',
+          },
+        },
       });
       preferencesController.setSelectedAddress('0x7e57e2');
 
@@ -113,22 +123,21 @@ describe('preferences controller', () => {
 
   describe('setAccountLabel', () => {
     it('should update a label for the given account', () => {
-      onKeyringStateChangeListener({
-        keyrings: [
-          {
-            accounts: ['0xda22le', '0x7e57e2'],
+      preferencesController.store.updateState({
+        identities: {
+          '0xda22le': {
+            name: 'Account 1',
+            address: '0xda22le',
           },
-        ],
-      });
-
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual({
-        name: 'Account 1',
-        address: '0xda22le',
+          '0x7e57e2': {
+            name: 'Account 2',
+            address: '0x7e57e2',
+          },
+        },
       });
 
       preferencesController.setAccountLabel('0xda22le', 'Dazzle');
+
       expect(
         preferencesController.store.getState().identities['0xda22le'],
       ).toStrictEqual({
