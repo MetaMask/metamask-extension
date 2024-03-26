@@ -62,7 +62,9 @@ export class MMIMainPage {
     await expect(
       this.page.locator('.ens-input__selected-input__title'),
     ).toHaveText(`${account}`);
-    await this.page.locator('input.unit-input__input').type(`${amount}`);
+    await this.page
+      .locator('.unit-input__input')
+      .pressSequentially(`${amount}`);
     await this.page.locator('text="Next"').click();
     await this.page.locator('text="Confirm"').click();
     await this.page.locator('text="Approve"').click();

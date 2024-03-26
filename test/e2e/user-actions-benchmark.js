@@ -2,6 +2,7 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const { By } = require('selenium-webdriver');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const {
   isWritable,
@@ -75,8 +76,11 @@ async function confirmTx() {
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.fill('1');
+      const inputAmount = await driver.findElement(
+        By.className('unit-input__input'),
+      );
+
+      await inputAmount.press('1');
 
       await driver.waitForSelector({ text: 'Continue', tag: 'button' });
       await driver.clickElement({ text: 'Continue', tag: 'button' });
