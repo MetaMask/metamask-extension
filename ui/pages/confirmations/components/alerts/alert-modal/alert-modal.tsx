@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import {
   Box,
@@ -32,13 +32,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../hooks/useAlerts';
 
 export type AlertModalProps = {
-  /** The unique identifier of the entity that owns the alert */
+  /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
-  /** The function to be executed when the button in the alert modal is clicked */
+  /** The function to be executed when the button in the alert modal is clicked. */
   handleButtonClick: () => void;
-  /** The unique key representing the specific alert field */
+  /** The unique key representing the specific alert field. */
   alertKey: string;
-  /** The function to be executed when the modal needs to be closed */
+  /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
   /** Customizable button  */
   customButton?: {
@@ -49,6 +49,11 @@ export type AlertModalProps = {
     /** The variant of the custom button. */
     variant?: string;
   };
+  /**
+   * The navigation component passed when more exists more than one alert.
+   * It override `startAccessory` of ModalHeaderDefault and by default no navigation button is present.
+   */
+  multipleAlerts?: React.ReactNode;
 };
 
 function getSeverityStyle(severity: Severity) {
@@ -77,6 +82,7 @@ export function AlertModal({
   alertKey,
   onClose,
   customButton,
+  multipleAlerts,
 }: AlertModalProps) {
   const t = useI18nContext();
   const handleClose = useCallback(() => {
@@ -90,18 +96,29 @@ export function AlertModal({
     return null;
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
+  const [isAlertAcknowledged, setIsAlertAcknowledged] = useState({
+    [selectedAlert.key]: isConfirmed,
+  });
   const severityStyle = getSeverityStyle(selectedAlert.severity);
 
   return (
     <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>
+        <ModalHeader
+          onClose={handleClose}
+          startAccessory={multipleAlerts}
+          className={'alert-modal__header'}
+          borderWidth={1}
+          display={multipleAlerts ? Display.InlineFlex : Display.Block}
+        />
+        <ModalBody>
           <Box
             gap={3}
             display={Display.Block}
             alignItems={AlignItems.center}
             textAlign={TextAlign.Center}
+            marginTop={3}
           >
             <Icon
               name={
@@ -116,12 +133,11 @@ export function AlertModal({
               variant={TextVariant.headingSm}
               color={TextColor.inherit}
               marginTop={3}
+              marginBottom={4}
             >
               {selectedAlert.reason || t('alerts')}
             </Text>
           </Box>
-        </ModalHeader>
-        <ModalBody>
           <Box
             key={selectedAlert.key}
             display={Display.InlineBlock}
@@ -163,8 +179,13 @@ export function AlertModal({
             <Checkbox
               label={t('alertModalAcknowledge')}
               data-testid="alert-modal-acknowledge-checkbox"
-              isChecked={isConfirmed}
-              onClick={() => setAlertConfirmed(selectedAlert.key, !isConfirmed)}
+              isChecked={isAlertAcknowledged[selectedAlert.key]}
+              onChange={() =>
+                setIsAlertAcknowledged((prevState) => ({
+                  ...prevState,
+                  [selectedAlert.key]: !prevState[selectedAlert.key],
+                }))
+              }
               alignItems={AlignItems.flexStart}
               className={'alert-modal__acknowledge-checkbox'}
             />
@@ -174,10 +195,13 @@ export function AlertModal({
           <Button
             variant={ButtonVariant.Primary}
             width={BlockSize.Full}
-            onClick={handleButtonClick}
+            onClick={() => {
+              setAlertConfirmed(selectedAlert.key, !isConfirmed);
+              handleButtonClick();
+            }}
             size={ButtonSize.Lg}
             data-testid="alert-modal-button"
-            disabled={!isAlertConfirmed(selectedAlert.key)}
+            disabled={!isAlertAcknowledged[selectedAlert.key]}
           >
             {t('gotIt')}
           </Button>
