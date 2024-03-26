@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -13,15 +12,23 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { hexToText } from '../../../../../../helpers/utils/util';
+import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
+import { TypedSignDataV1Type } from '../../../../types/confirm';
 
-const PersonalSignInfo: React.FC = () => {
+const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   if (!currentConfirmation?.msgParams) {
     return null;
   }
+
+  const data = (
+    currentConfirmation.msgParams?.data as TypedSignDataV1Type
+  ).reduce(
+    (val, { name, value, type }) => ({ ...val, [name]: { type, value } }),
+    {},
+  );
 
   return (
     <>
@@ -42,13 +49,11 @@ const PersonalSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('message')}>
-          <ConfirmInfoRowText
-            text={hexToText(currentConfirmation.msgParams?.data)}
-          />
+          <ConfirmInfoRowTypedSignDataV1 data={data} />
         </ConfirmInfoRow>
       </Box>
     </>
   );
 };
 
-export default PersonalSignInfo;
+export default TypedSignV1Info;
