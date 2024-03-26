@@ -2196,7 +2196,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   postOnboardingInitialization() {
-    this.updateDeprecatedNetworkId();
     this.networkController.lookupNetwork();
   }
 
