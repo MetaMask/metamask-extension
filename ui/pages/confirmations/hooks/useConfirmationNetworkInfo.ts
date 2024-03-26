@@ -31,7 +31,7 @@ function useConfirmationNetworkInfo() {
     confirmationNetwork = allNetworks.find(
       ({ id, chainId }) =>
         chainId === currentChainId &&
-        (providerConfig.type === 'rpc'
+        (providerConfig.type === NETWORK_TYPES.RPC
           ? id === providerConfig.id
           : id === providerConfig.type),
     );
