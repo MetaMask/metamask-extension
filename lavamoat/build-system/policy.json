@@ -6375,6 +6375,13 @@
         "process.argv": true
       }
     },
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
+      }
+    },
     "nock>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -8091,14 +8098,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "mockttp>portfinder>mkdirp": true
       }
     },
     "stylelint>global-modules": {
