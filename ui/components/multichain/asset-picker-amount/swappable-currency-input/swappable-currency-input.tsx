@@ -19,7 +19,7 @@ import SwapIcon from './swap-icon';
 
 type BaseProps = {
   assetType: AssetType;
-  onAmountChange: (newAmount: string) => void;
+  onAmountChange?: (newAmount: string) => void;
   asset?: Asset;
   amount: Amount;
 };
