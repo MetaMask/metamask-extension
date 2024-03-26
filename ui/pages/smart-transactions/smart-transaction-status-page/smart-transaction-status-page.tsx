@@ -281,7 +281,7 @@ export const SmartTransactionStatusPage = ({
             {t('closeExtension')}
           </ButtonSecondary>
         )}
-        {!isDapp && !isSmartTransactionPending && (
+        {!isDapp && (
           <ButtonSecondary
             data-testid="smart-transaction-status-page-footer-close-button"
             onClick={onViewActivity}
