@@ -5642,12 +5642,8 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopPolling();
-<<<<<<< HEAD
-      this.currencyRateController.stopAllPolling();
-||||||| b3d93fada4
-=======
       this.gasFeeController.stopAllPolling();
->>>>>>> develop
+      this.currencyRateController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -5667,12 +5663,8 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.disconnectPoller(pollingToken);
-<<<<<<< HEAD
-      this.currencyRateController.stopPollingByPollingToken(pollingToken);
-||||||| b3d93fada4
-=======
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
->>>>>>> develop
+      this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,
