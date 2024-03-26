@@ -2,18 +2,18 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { unapprovedPersonalSignMsg } from '../../../../../../../test/data/confirmations/personal_sign';
-import PersonalSignInfo from './personal-sign';
+import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
+import TypedSignInfoV1 from './typed-sign-v1';
 
-describe('PersonalSignInfo', () => {
-  it('renders correctly for personal sign request', () => {
+describe('TypedSignInfo', () => {
+  it('correctly renders typed sign data request', () => {
     const mockState = {
       confirm: {
-        currentConfirmation: unapprovedPersonalSignMsg,
+        currentConfirmation: unapprovedTypedSignMsgV1,
       },
     };
     const mockStore = configureMockStore([])(mockState);
-    const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    const { container } = renderWithProvider(<TypedSignInfoV1 />, mockStore);
     expect(container).toMatchSnapshot();
   });
 
@@ -29,7 +29,7 @@ describe('PersonalSignInfo', () => {
       },
     };
     const mockStore = configureMockStore([])(mockState);
-    const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    const { container } = renderWithProvider(<TypedSignInfoV1 />, mockStore);
     expect(container).toMatchInlineSnapshot(`<div />`);
   });
 });

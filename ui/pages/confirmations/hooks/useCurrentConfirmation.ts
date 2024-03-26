@@ -65,13 +65,6 @@ const useCurrentConfirmation = () => {
           return;
         }
       }
-      if (pendingConfirmation.type === ApprovalType.EthSignTypedData) {
-        const { version } = unconfirmedTransaction.msgParams;
-        if (version !== 'V3' && version !== 'V4') {
-          setCurrentConfirmation(undefined);
-          return;
-        }
-      }
       setCurrentConfirmation(unconfirmedTransaction);
     }
   }, [latestPendingConfirmation, paramsTransactionId, unconfirmedTransactions]);

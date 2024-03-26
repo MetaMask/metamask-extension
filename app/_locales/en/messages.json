@@ -929,6 +929,9 @@
   "connectingToLineaMainnet": {
     "message": "Connecting to Linea Mainnet"
   },
+  "connectingToLineaSepolia": {
+    "message": "Connecting to Linea Sepolia test network"
+  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
@@ -2449,6 +2452,9 @@
   },
   "lineaMainnet": {
     "message": "Linea Mainnet"
+  },
+  "lineaSepolia": {
+    "message": "Linea Sepolia test network"
   },
   "link": {
     "message": "Link"
