@@ -1,6 +1,13 @@
 import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
+import {
+  Hex,
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  JsonRpcResponse,
+} from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 
 import {
@@ -13,9 +20,7 @@ import { PreferencesController } from '../../controllers/preferences';
 import { SecurityAlertResponse } from '../transaction/util';
 import { normalizePPOMRequest } from './ppom-util';
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const { sentry } = global as any;
+const { sentry } = global;
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -23,7 +28,7 @@ const CONFIRMATION_METHODS = Object.freeze([
   ...SIGNING_METHODS,
 ]);
 
-export const SUPPORTED_CHAIN_IDS: string[] = [
+export const SUPPORTED_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.AVALANCHE,
   CHAIN_IDS.BASE,
@@ -51,7 +56,10 @@ export const SUPPORTED_CHAIN_IDS: string[] = [
  * @param updateSecurityAlertResponseByTxId
  * @returns PPOMMiddleware function.
  */
-export function createPPOMMiddleware(
+export function createPPOMMiddleware<
+  Params extends JsonRpcParams,
+  Result extends Json,
+>(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
@@ -59,15 +67,19 @@ export function createPPOMMiddleware(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appStateController: any,
   updateSecurityAlertResponseByTxId: (
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    req: any,
+    req: JsonRpcRequest<JsonRpcParams> & {
+      securityAlertResponse: SecurityAlertResponse;
+    },
     securityAlertResponse: SecurityAlertResponse,
   ) => void,
 ) {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return async (req: any, _res: any, next: () => void) => {
+  return async (
+    req: JsonRpcRequest<Params> & {
+      securityAlertResponse: SecurityAlertResponse;
+    },
+    _res: JsonRpcResponse<Result>,
+    next: () => void,
+  ) => {
     try {
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
@@ -79,34 +91,59 @@ export function createPPOMMiddleware(
       ) {
         // eslint-disable-next-line require-atomic-updates
         const securityAlertId = uuid();
+        let securityAlertResponse: SecurityAlertResponse = {
+          reason: BlockaidResultType.Loading,
+          result_type: BlockaidReason.inProgress,
+          securityAlertId,
+        };
 
         ppomController
           .usePPOM(async (ppom: PPOM) => {
             try {
               const normalizedRequest = normalizePPOMRequest(req);
 
-              const securityAlertResponse = await ppom.validateJsonRpc(
+              securityAlertResponse = await ppom.validateJsonRpc(
                 normalizedRequest,
               );
-
               securityAlertResponse.securityAlertId = securityAlertId;
-              return securityAlertResponse;
-              // TODO: Replace `any` with type
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error: any) {
+            } catch (error: unknown) {
               sentry?.captureException(error);
-              const errorObject = error as unknown as Error;
-              console.error('Error validating JSON RPC using PPOM: ', error);
-              const securityAlertResponse = {
+              console.error(
+                'Error validating JSON RPC using PPOM: ',
+                typeof error === 'object' || typeof error === 'string'
+                  ? error
+                  : JSON.stringify(error),
+              );
+
+              securityAlertResponse = {
                 result_type: BlockaidResultType.Errored,
                 reason: BlockaidReason.errored,
-                description: `${errorObject.name}: ${errorObject.message}`,
+                description:
+                  error instanceof Error
+                    ? `${error.name}: ${error.message}`
+                    : JSON.stringify(error),
               };
-
-              return securityAlertResponse;
             }
           })
-          .then((securityAlertResponse) => {
+          .catch((error: unknown) => {
+            sentry?.captureException(error);
+            console.error(
+              'Error createPPOMMiddleware#usePPOM: ',
+              typeof error === 'object' || typeof error === 'string'
+                ? error
+                : JSON.stringify(error),
+            );
+
+            securityAlertResponse = {
+              result_type: BlockaidResultType.Errored,
+              reason: BlockaidReason.errored,
+              description:
+                error instanceof Error
+                  ? `${error.name}: ${error.message}`
+                  : JSON.stringify(error),
+            };
+          })
+          .finally(() => {
             updateSecurityAlertResponseByTxId(req, {
               ...securityAlertResponse,
               securityAlertId,
@@ -114,34 +151,31 @@ export function createPPOMMiddleware(
           });
 
         if (SIGNING_METHODS.includes(req.method)) {
-          req.securityAlertResponse = {
-            reason: BlockaidResultType.Loading,
-            result_type: BlockaidReason.inProgress,
-            securityAlertId,
-          };
           appStateController.addSignatureSecurityAlertResponse({
             reason: BlockaidResultType.Loading,
             result_type: BlockaidReason.inProgress,
             securityAlertId,
           });
-        } else {
-          req.securityAlertResponse = {
-            reason: BlockaidResultType.Loading,
-            result_type: BlockaidReason.inProgress,
-            securityAlertId,
-          };
         }
+
+        req.securityAlertResponse = { ...securityAlertResponse };
       }
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      const errorObject = error as unknown as Error;
+    } catch (error: unknown) {
       sentry?.captureException(error);
-      console.error('Error validating JSON RPC using PPOM: ', error);
+      console.error(
+        'Error createPPOMMiddleware: ',
+        typeof error === 'object' || typeof error === 'string'
+          ? error
+          : JSON.stringify(error),
+      );
+
       req.securityAlertResponse = {
         result_type: BlockaidResultType.Errored,
         reason: BlockaidReason.errored,
-        description: `${errorObject.name}: ${errorObject.message}`,
+        description:
+          error instanceof Error
+            ? `${error.name}: ${error.message}`
+            : JSON.stringify(error),
       };
     } finally {
       next();
