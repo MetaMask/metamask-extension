@@ -51,25 +51,37 @@ const LoadingIndicator: React.FC = () => {
  * @param props
  * @param props.error
  */
-const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
+const SimulationDetailsError: React.FC<{ error: SimulationError }> = ({
+  error,
+}) => {
   const t = useI18nContext();
 
-  function getMessage() {
-    return error.code === SimulationErrorCode.Reverted
-      ? t('simulationDetailsTransactionReverted')
-      : t('simulationDetailsFailed');
+  if (
+    [
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+    ].includes(error?.code as SimulationErrorCode)
+  ) {
+    return null;
   }
 
+  const message =
+    error.code === SimulationErrorCode.Reverted
+      ? t('simulationDetailsTransactionReverted')
+      : t('simulationDetailsFailed');
+
   return (
-    <Text
-      color={TextColor.warningDefault}
-      variant={TextVariant.bodyMd}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-    >
-      <Icon name={IconName.Warning} marginInlineEnd={1} />
-      {getMessage()}
-    </Text>
+    <SimulationDetailsLayout>
+      <Text
+        color={TextColor.warningDefault}
+        variant={TextVariant.bodyMd}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+      >
+        <Icon name={IconName.Warning} marginInlineEnd={1} />
+        {message}
+      </Text>
+    </SimulationDetailsLayout>
   );
 };
 
@@ -197,22 +209,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   setLoadingComplete();
 
   const { error } = simulationData;
-
-  if (
-    [
-      SimulationErrorCode.ChainNotSupported,
-      SimulationErrorCode.Disabled,
-    ].includes(error?.code as SimulationErrorCode)
-  ) {
-    return null;
-  }
-
   if (error) {
-    return (
-      <SimulationDetailsLayout>
-        <ErrorContent error={error} />
-      </SimulationDetailsLayout>
-    );
+    return <SimulationDetailsError error={error} />;
   }
 
   const balanceChanges = balanceChangesResult.value;
