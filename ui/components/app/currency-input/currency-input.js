@@ -121,8 +121,8 @@ export default function CurrencyInput({
   }, [asset?.address]);
 
   useEffect(() => {
-    // do not override the input when it is using fiat, since it is imprecise
-    if (!isTokenPrimary) {
+    // do not override the input when it is using fiat – since it is imprecise – or when it is inert
+    if (!(isTokenPrimary || isInert)) {
       return;
     }
 
@@ -132,11 +132,17 @@ export default function CurrencyInput({
       .toString();
 
     const { newTokenDecimalValue, newFiatDecimalValue } =
-      processNewDecimalValue(decimalizedHexValue);
+      processNewDecimalValue(decimalizedHexValue, isInert ? true : undefined);
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
-  }, [hexValue, assetDecimals, processNewDecimalValue, isTokenPrimary]);
+  }, [
+    hexValue,
+    assetDecimals,
+    processNewDecimalValue,
+    isTokenPrimary,
+    isInert,
+  ]);
 
   const renderSwapButton = () => {
     if (swapIcon) {

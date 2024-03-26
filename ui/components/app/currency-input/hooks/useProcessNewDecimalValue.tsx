@@ -17,7 +17,7 @@ export default function useProcessNewDecimalValue(
   tokenToFiatConversionRate: Numeric | undefined,
 ) {
   return useCallback(
-    (newDecimalValue) => {
+    (newDecimalValue, isTokenPrimaryOverride) => {
       let newFiatDecimalValue, newTokenDecimalValue;
 
       const truncateToDecimals = (
@@ -38,7 +38,7 @@ export default function useProcessNewDecimalValue(
 
       const numericDecimalValue = new Numeric(newDecimalValue, 10);
 
-      if (isTokenPrimary) {
+      if (isTokenPrimaryOverride ?? isTokenPrimary) {
         newFiatDecimalValue = tokenToFiatConversionRate
           ? numericDecimalValue.times(tokenToFiatConversionRate).toFixed(2)
           : undefined;
