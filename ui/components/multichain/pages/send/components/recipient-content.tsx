@@ -49,6 +49,7 @@ export const SendPageRecipientContent = ({
   // Gas data
   const dispatch = useDispatch();
 
+  // TODO: replace this with dest logic, then abstract both usages to a util
   const handleSelectToken = async (token: any) => {
     if (token.type === AssetType.native) {
       dispatch(
