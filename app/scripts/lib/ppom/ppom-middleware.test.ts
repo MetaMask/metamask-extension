@@ -108,7 +108,7 @@ describe('PPOMMiddleware', () => {
     );
   });
 
-  it('adds validation response to confirmation requests for supported networks', async () => {
+  it('adds validation response to confirmation requests on supported networks', async () => {
     const validateMock = jest.fn().mockImplementation(() =>
       Promise.resolve({
         result_type: BlockaidResultType.Malicious,
