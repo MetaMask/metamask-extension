@@ -108,7 +108,7 @@ describe('PPOMMiddleware', () => {
     );
   });
 
-  it('adds validation response to confirmation requests', async () => {
+  it('adds validation response to confirmation requests for supported networks', async () => {
     const validateMock = jest.fn().mockImplementation(() =>
       Promise.resolve({
         result_type: BlockaidResultType.Malicious,
@@ -124,6 +124,7 @@ describe('PPOMMiddleware', () => {
     };
     const mockUpdateSecurityAlertResponseByTxId = jest.fn();
     const middlewareFunction = createMiddleWare(usePPOM, {
+      chainId: '0xa',
       mockUpdateSecurityAlertResponseByTxId,
     });
     const req = {
