@@ -10,6 +10,7 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
+  Box,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
 import {
@@ -209,16 +210,18 @@ export const SendPage = () => {
             }
           />
         )}
-        <SendPageRecipientInput />
-        {isSendFormShown ? (
-          <SendPageRecipientContent
-            requireContractAddressAcknowledgement={
-              requireContractAddressAcknowledgement
-            }
-          />
-        ) : (
-          <SendPageRecipient />
-        )}
+        <Box marginTop={6}>
+          <SendPageRecipientInput />
+          {isSendFormShown ? (
+            <SendPageRecipientContent
+              requireContractAddressAcknowledgement={
+                requireContractAddressAcknowledgement
+              }
+            />
+          ) : (
+            <SendPageRecipient />
+          )}
+        </Box>
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
