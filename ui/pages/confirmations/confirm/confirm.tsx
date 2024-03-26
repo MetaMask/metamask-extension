@@ -11,6 +11,7 @@ import { Title } from '../components/confirm/title';
 import { Page } from '../../../components/multichain/pages/page';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
+import { BlockaidAlert } from '../components/confirm/blockaid-alert';
 
 const Confirm = () => {
   setCurrentConfirmation();
@@ -26,6 +27,12 @@ const Confirm = () => {
         ///: END:ONLY_INCLUDE_IF
       }
       <ScrollToBottom>
+        {
+          // todo: section below is to be removed once new alerts implementation is there
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+          <BlockaidAlert />
+          ///: END:ONLY_INCLUDE_IF
+        }
         <Title />
         <Info />
       </ScrollToBottom>

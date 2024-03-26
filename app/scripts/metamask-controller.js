@@ -210,7 +210,6 @@ import { parseStandardTokenTransactionData } from '../../shared/modules/transact
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -293,7 +292,6 @@ import {
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { securityProviderCheck } from './lib/security-provider-helpers';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IF
@@ -1588,14 +1586,8 @@ export default class MetamaskController extends EventEmitter {
         updateTransactions: false,
       },
       isMultichainEnabled: process.env.TRANSACTION_MULTICHAIN,
-      isSimulationEnabled: () => {
-        let enabled = false;
-        ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-        // Only support transaction simulation on mainnet.
-        enabled = true;
-        ///: END:ONLY_INCLUDE_IF
-        return enabled;
-      },
+      isSimulationEnabled: () =>
+        this.preferencesController.store.getState().useTransactionSimulations,
       messenger: transactionControllerMessenger,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
@@ -1700,7 +1692,6 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store.getState()
           ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
     });
@@ -2921,12 +2912,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
-      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       setUseTransactionSimulations:
         preferencesController.setUseTransactionSimulations.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
@@ -3056,10 +3045,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      setTransactionSecurityCheckEnabled:
-        preferencesController.setTransactionSecurityCheckEnabled.bind(
-          preferencesController,
-        ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -3598,11 +3583,9 @@ export default class MetamaskController extends EventEmitter {
     let details;
     if (tokenCanBeTreatedAsAnERC20) {
       try {
-        const balance = await fetchTokenBalance(
-          address,
-          userAddress,
-          this.provider,
-        );
+        const balance = userAddress
+          ? await fetchTokenBalance(address, userAddress, this.provider)
+          : undefined;
 
         details = {
           address,
@@ -4910,7 +4893,6 @@ export default class MetamaskController extends EventEmitter {
         getMetricsState: this.metaMetricsController.store.getState.bind(
           this.metaMetricsController.store,
         ),
-        securityProviderRequest: this.securityProviderRequest.bind(this),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
@@ -5818,33 +5800,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
-
-  async securityProviderRequest(requestData, methodName) {
-    const { currentLocale, transactionSecurityCheckEnabled } =
-      this.preferencesController.store.getState();
-
-    if (transactionSecurityCheckEnabled) {
-      const chainId = Number(
-        hexToDecimal(this.networkController.state.providerConfig.chainId),
-      );
-
-      try {
-        const securityProviderResponse = await securityProviderCheck(
-          requestData,
-          methodName,
-          chainId,
-          currentLocale,
-        );
-
-        return securityProviderResponse;
-      } catch (err) {
-        log.error(err.message);
-        throw err;
-      }
-    }
-
-    return null;
-  }
 
   async _onAccountChange(newAddress) {
     const permittedAccountsMap = getPermittedAccountsByOrigin(

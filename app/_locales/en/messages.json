@@ -358,9 +358,6 @@
   "alerts": {
     "message": "Alerts"
   },
-  "all": {
-    "message": "ALL"
-  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -373,12 +370,6 @@
   },
   "allPermissions": {
     "message": "All Permissions"
-  },
-  "allTimeHigh": {
-    "message": "All time high"
-  },
-  "allTimeLow": {
-    "message": "All time low"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -592,10 +583,6 @@
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -742,9 +729,6 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
-  },
-  "circulatingSupply": {
-    "message": "Circulating supply"
   },
   "clear": {
     "message": "Clear"
@@ -2009,9 +1993,6 @@
   "highLowercase": {
     "message": "high"
   },
-  "historicalPricesWereNotFound": {
-    "message": "Historical prices were not found"
-  },
   "history": {
     "message": "History"
   },
@@ -2151,6 +2132,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
+  "inlineAlert": {
+    "message": "Alert"
   },
   "inputLogicEmptyState": {
     "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
@@ -2522,12 +2506,6 @@
   "manageInSettings": {
     "message": "Manage in settings"
   },
-  "marketCap": {
-    "message": "Market cap"
-  },
-  "marketDetails": {
-    "message": "Market details"
-  },
   "max": {
     "message": "Max"
   },
@@ -2583,10 +2561,6 @@
   },
   "metrics": {
     "message": "Metrics"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
@@ -3306,22 +3280,6 @@
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
-  "oneDayAbbreviation": {
-    "message": "1D",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1W",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Y",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
@@ -3338,12 +3296,6 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
-  },
-  "openSeaLabel": {
-    "message": "OpenSea + Blockaid"
-  },
-  "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3727,9 +3679,6 @@
   },
   "prev": {
     "message": "Prev"
-  },
-  "pricingIsNotSupportedOnThisNetwork": {
-    "message": "Pricing is not supported on this network"
   },
   "primaryCurrencySetting": {
     "message": "Primary currency"
@@ -4365,26 +4314,36 @@
   "signing": {
     "message": "Signing"
   },
-  "simulationErrorMessageV2": {
-    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
-  },
-  "simulationPreviewFailed": {
+  "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
-  "simulationPreviewIncomingHeading": {
+  "simulationDetailsFiatNotAvailable": {
+    "message": "Not Available"
+  },
+  "simulationDetailsIncomingHeading": {
     "message": "You receive"
   },
-  "simulationPreviewNoBalanceChanges": {
+  "simulationDetailsNoBalanceChanges": {
     "message": "No changes predicted for your wallet"
   },
-  "simulationPreviewOutgoingHeading": {
+  "simulationDetailsOutgoingHeading": {
     "message": "You send"
   },
-  "simulationPreviewTitle": {
+  "simulationDetailsTitle": {
     "message": "Estimated changes"
   },
-  "simulationPreviewTitleTooltip": {
+  "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+  },
+  "simulationDetailsTotalFiat": {
+    "message": "Total = $1",
+    "description": "$1 is the total amount in fiat currency on one side of the transaction"
+  },
+  "simulationDetailsTransactionReverted": {
+    "message": "This transaction is likely to fail"
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "simulationsSettingDescription": {
     "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
@@ -5370,10 +5329,6 @@
   "thisCollection": {
     "message": "this collection"
   },
-  "threeMonthsAbbreviation": {
-    "message": "3M",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Time"
   },
@@ -5453,9 +5408,6 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
-  "tokenDecimal": {
-    "message": "Token decimal"
-  },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
@@ -5472,7 +5424,7 @@
     "message": "Token ID"
   },
   "tokenList": {
-    "message": "Token lists"
+    "message": "Token lists:"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -5504,9 +5456,6 @@
   },
   "total": {
     "message": "Total"
-  },
-  "totalVolume": {
-    "message": "Total volume"
   },
   "transaction": {
     "message": "transaction"
@@ -5612,10 +5561,6 @@
   },
   "transferFrom": {
     "message": "Transfer from"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
@@ -5948,12 +5893,6 @@
   },
   "yourAccounts": {
     "message": "Your accounts"
-  },
-  "yourActivity": {
-    "message": "Your activity"
-  },
-  "yourBalance": {
-    "message": "Your balance"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"

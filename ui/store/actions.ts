@@ -2149,8 +2149,8 @@ type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
   address: string,
-  userAddress: string,
-  tokenId: string,
+  userAddress?: string,
+  tokenId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
@@ -4665,21 +4665,6 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
-export function setTransactionSecurityCheckEnabled(
-  transactionSecurityCheckEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
-        transactionSecurityCheckEnabled,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
-}
-
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
@@ -4741,7 +4726,6 @@ export function setUseExternalNameSources(val: boolean): void {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
 export function setUseTransactionSimulations(val: boolean): void {
   try {
     submitRequestToBackground('setUseTransactionSimulations', [val]);
@@ -4749,7 +4733,6 @@ export function setUseTransactionSimulations(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);

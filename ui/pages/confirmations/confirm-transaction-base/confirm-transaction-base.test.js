@@ -29,6 +29,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 const middleware = [thunk];
 
 setBackgroundConnection({
