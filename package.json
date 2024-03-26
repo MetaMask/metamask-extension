@@ -273,7 +273,7 @@
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.3.1",
-    "@metamask/controller-utils": "patch:@metamask/controller-utils@patch%3A@metamask/controller-utils@npm%253A8.0.4%23~/.yarn/patches/@metamask-controller-utils-npm-8.0.4-077edd6162.patch%3A%3Aversion=8.0.4&hash=0d2618#~/.yarn/patches/@metamask-controller-utils-patch-a87ddc3d4b.patch",
+    "@metamask/controller-utils": "^9.0.2",
     "@metamask/design-tokens": "^2.1.1",
     "@metamask/desktop": "^0.3.0",
     "@metamask/ens-controller": "^9.0.0",
