@@ -166,10 +166,9 @@ describe('PPOMMiddleware', () => {
     expect(req.securityAlertResponse).toBeUndefined();
   });
 
-  it('should not do validation if user is not on mainnet', async () => {
+  it('does not do validation if user is not on a supported network', async () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM, {
-      securityAlertsEnabled: false,
       chainId: '0x2',
     });
     const req = {
