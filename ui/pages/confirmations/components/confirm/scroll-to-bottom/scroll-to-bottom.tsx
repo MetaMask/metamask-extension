@@ -57,6 +57,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       style={{
         /** As a flex child, this ensures the element stretches the full available space without overflowing */
         minHeight: '0',
+        overflow: 'hidden',
         /**
          * This is for the scroll button. If we placed position: relative on the element below, with overflow: 'auto',
          * the button would be positioned absolute to the entire content relative the scroll container. Thus, it would
