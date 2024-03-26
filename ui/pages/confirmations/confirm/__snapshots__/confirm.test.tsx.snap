@@ -125,7 +125,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
       </div>
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
-        style="min-height: 0; position: relative;"
+        style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
@@ -357,7 +357,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
       </div>
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
-        style="min-height: 0; position: relative;"
+        style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
