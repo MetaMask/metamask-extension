@@ -347,6 +347,7 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
 
@@ -364,6 +365,7 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
   });
@@ -402,4 +404,19 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('setUseTransactionSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
+      expect(
+        preferencesController.store.getState().useTransactionSimulations,
+      ).toStrictEqual(false);
+    });
+  });
 });

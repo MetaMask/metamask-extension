@@ -40,6 +40,8 @@ import {
   BASE_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+  LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -97,6 +99,7 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
+  NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -1164,15 +1167,31 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getMemoizedMetadataContractName = createDeepEqualSelector(
+export const getMemoizedMetadataContracts = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, addresses) => addresses,
+  (tokenList, addresses) => {
+    return addresses.map((address) =>
+      Object.values(tokenList).find((identity) =>
+        isEqualCaseInsensitive(identity.address, address),
+      ),
+    );
+  },
+);
+
+export const getMemoizedMetadataContract = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
-    const entry = Object.values(tokenList).find((identity) =>
+    return Object.values(tokenList).find((identity) =>
       isEqualCaseInsensitive(identity.address, address),
     );
-    return entry && entry.name !== '' ? entry.name : '';
   },
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getMemoizedMetadataContract,
+  (entry) => entry?.name ?? '',
 );
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -1542,6 +1561,7 @@ function getAllowedAnnouncementIds(state) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
     [NOTIFICATION_PORTFOLIO_V2]: true,
+    [NOTIFICATION_SIMULATIONS]: true,
   };
 }
 
@@ -1801,6 +1821,18 @@ export function getTestNetworks(state) {
       id: NETWORK_TYPES.LINEA_GOERLI,
       removable: false,
     },
+    {
+      chainId: CHAIN_IDS.LINEA_SEPOLIA,
+      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+      rpcPrefs: {
+        imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+      id: NETWORK_TYPES.LINEA_SEPOLIA,
+      removable: false,
+    },
     // Localhosts
     ...Object.values(networkConfigurations)
       .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
@@ -1941,6 +1973,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return AVALANCHE_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_GOERLI:
       return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_SEPOLIA:
+      return LINEA_SEPOLIA_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.ARBITRUM:
@@ -1971,6 +2005,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_SEPOLIA,
     CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.ARBITRUM,
     CHAIN_IDS.OPTIMISM,
@@ -2047,16 +2082,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
-}
-
-/**
- * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsTransactionSecurityCheckEnabled(state) {
-  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 /**

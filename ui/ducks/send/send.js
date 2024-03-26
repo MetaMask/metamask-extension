@@ -78,6 +78,7 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
+  IS_FLASK,
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
@@ -1370,6 +1371,7 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
+              !IS_FLASK &&
               !isValidDomainName(state.recipientInput))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)

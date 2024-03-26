@@ -1,6 +1,14 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 
+export type SecurityAlertResponse = {
+  reason: string;
+  features?: string[];
+  result_type: string;
+  providerRequestsCount?: Record<string, number>;
+  securityAlertId?: string;
+};
+
 export type SignatureRequestType = {
   chainId?: string;
   id: string;
@@ -11,6 +19,7 @@ export type SignatureRequestType = {
   };
   type: TransactionType;
   custodyId?: string;
+  securityAlertResponse?: SecurityAlertResponse;
 };
 
 export type Confirmation = SignatureRequestType;
