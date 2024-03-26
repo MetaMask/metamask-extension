@@ -163,6 +163,8 @@ export const Connections = () => {
 
   // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
   const latestSelected = mergedAccounts.findIndex(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
         index ===
@@ -170,6 +172,8 @@ export const Connections = () => {
           (
             acc: string | number,
             cur: { metadata: { lastSelected: number } },
+            // TODO: Replace `any` with type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
           ) =>
             cur.metadata.lastSelected >
@@ -238,6 +242,8 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
+                {/* TODO: Replace `any` with type */}
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {mergedAccounts.map((account: AccountType, index: any) => {
                   const connectedSites: ConnectedSites = {};
                   const connectedSite = connectedSites[account.address]?.find(
