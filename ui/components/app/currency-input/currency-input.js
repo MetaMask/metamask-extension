@@ -115,6 +115,10 @@ export default function CurrencyInput({
 
   // align input to upstream value
   useEffect(() => {
+    if (!isInert) {
+      return;
+    }
+
     const decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
       .shiftedBy(assetDecimals)
@@ -125,7 +129,7 @@ export default function CurrencyInput({
     }
 
     const { newTokenDecimalValue, newFiatDecimalValue } =
-      processNewDecimalValue(decimalizedHexValue, true);
+      processNewDecimalValue(decimalizedHexValue, isInert ? true : undefined);
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
@@ -137,6 +141,7 @@ export default function CurrencyInput({
     processNewDecimalValue,
     isTokenPrimary,
     assetDecimals,
+    isInert,
   ]);
 
   const renderSwapButton = () => {
