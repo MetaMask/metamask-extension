@@ -83,7 +83,7 @@ export default function CurrencyInput({
     tokenToFiatConversionRate,
   );
 
-  const isInert = !onChange;
+  const isDisabled = !onChange;
 
   const swap = async () => {
     await onPreferenceToggle();
@@ -115,7 +115,7 @@ export default function CurrencyInput({
 
   // align input to upstream value
   useEffect(() => {
-    if (!isInert) {
+    if (!isDisabled) {
       return;
     }
 
@@ -129,7 +129,10 @@ export default function CurrencyInput({
     }
 
     const { newTokenDecimalValue, newFiatDecimalValue } =
-      processNewDecimalValue(decimalizedHexValue, isInert ? true : undefined);
+      processNewDecimalValue(
+        decimalizedHexValue,
+        isDisabled ? true : undefined,
+      );
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
@@ -141,7 +144,7 @@ export default function CurrencyInput({
     processNewDecimalValue,
     isTokenPrimary,
     assetDecimals,
-    isInert,
+    isDisabled,
   ]);
 
   const renderSwapButton = () => {
@@ -203,7 +206,7 @@ export default function CurrencyInput({
 
   return (
     <UnitInput
-      isDisabled={isInert}
+      isDisabled={isDisabled}
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
       suffix={isTokenPrimary ? primarySuffix : secondarySuffix}
