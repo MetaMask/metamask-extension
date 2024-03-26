@@ -27,6 +27,7 @@ import {
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
+  getSubjectMetadata,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -47,7 +48,12 @@ import {
 import { Tab } from '../../../ui/tabs';
 import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
-import { AccountListItem, AccountListItemMenuTypes } from '../..';
+import {
+  AccountListItem,
+  AccountListItemMenuTypes,
+  Toast,
+  ToastContainer,
+} from '../..';
 import { Content, Footer, Header, Page } from '../page';
 import { ConnectAccountsModal } from '../../connect-accounts-modal/connect-accounts-modal';
 import {
@@ -72,11 +78,24 @@ export const Connections = () => {
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
+  const [showAccountDisconnectedToast, setShowAccountDisconnectedToast] =
+    useState(''); // This is not boolean because we need the account name from the menu when a single account is disconnected
+  const [
+    showConnectedAccountsUpdatedToast,
+    setShowConnectedAccountsUpdatedToast,
+  ] = useState(false);
+  const [
+    showDisconnectedAllAccountsUpdatedToast,
+    setShowDisconnectedAllAccountsUpdatedToast,
+  ] = useState(false);
+
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
+  const siteMetadata = useSelector(getSubjectMetadata);
+  const connectedSiteMetadata = siteMetadata[activeTabOrigin];
   const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
   const { id } = useSelector((state: any) => state.activeTab);
 
@@ -128,6 +147,7 @@ export const Connections = () => {
       }
 
       setShowDisconnectAllModal(false);
+      setShowDisconnectedAllAccountsUpdatedToast(true);
     }
   };
 
@@ -235,6 +255,7 @@ export const Connections = () => {
                       isActive={
                         mergedAccountsProps.isAccountActive ? t('active') : null
                       }
+                      onActionClick={setShowAccountDisconnectedToast}
                     />
                   );
                 })}
@@ -247,6 +268,7 @@ export const Connections = () => {
         {showConnectAccountsModal ? (
           <ConnectAccountsModal
             onClose={() => setShowConnectAccountsModal(false)}
+            onAccountsUpdate={() => setShowConnectedAccountsUpdatedToast(true)}
           />
         ) : null}
         {showDisconnectAllModal ? (
@@ -259,44 +281,103 @@ export const Connections = () => {
         ) : null}
       </Content>
       <Footer>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-          <Box
-            display={Display.Flex}
-            gap={2}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-            data-test-id="connections-button"
-          >
-            <Button
-              size={ButtonSize.Lg}
-              block
-              variant={ButtonVariant.Secondary}
-              startIconName={IconName.Add}
-              onClick={() => setShowConnectAccountsModal(true)}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          gap={4}
+        >
+          {showConnectedAccountsUpdatedToast ? (
+            <ToastContainer>
+              <Toast
+                text={t('connectedAccountsToast')}
+                onClose={() => setShowConnectedAccountsUpdatedToast(false)}
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSubjectsMetadata.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSubjectsMetadata.iconUrl}
+                  />
+                }
+              />
+            </ToastContainer>
+          ) : null}
+          {showDisconnectedAllAccountsUpdatedToast ? (
+            <ToastContainer>
+              <Toast
+                text={t('disconnectedAllAccountsToast', [
+                  getURLHost(activeTabOrigin),
+                ])}
+                onClose={() =>
+                  setShowDisconnectedAllAccountsUpdatedToast(false)
+                }
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSiteMetadata.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSiteMetadata.iconUrl}
+                  />
+                }
+              />
+            </ToastContainer>
+          ) : null}
+          {showAccountDisconnectedToast.length > 0 ? (
+            <ToastContainer>
+              <Toast
+                text={t('disconnectedSingleAccountToast', [
+                  showAccountDisconnectedToast,
+                  getURLHost(activeTabOrigin),
+                ])}
+                onClose={() => setShowAccountDisconnectedToast('')}
+                startAdornment={
+                  <AvatarFavicon
+                    name={connectedSubjectsMetadata.name}
+                    size={AvatarFaviconSize.Sm}
+                    src={connectedSubjectsMetadata.iconUrl}
+                  />
+                }
+              />
+            </ToastContainer>
+          ) : null}
+          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+            <Box
+              display={Display.Flex}
+              gap={2}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              data-test-id="connections-button"
             >
-              {t('connectMoreAccounts')}
-            </Button>
-            <Button
-              size={ButtonSize.Lg}
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                startIconName={IconName.Add}
+                onClick={() => setShowConnectAccountsModal(true)}
+              >
+                {t('connectMoreAccounts')}
+              </Button>
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                startIconName={IconName.Logout}
+                danger
+                onClick={() => setShowDisconnectAllModal(true)}
+              >
+                {t('disconnectAllAccounts')}
+              </Button>
+            </Box>
+          ) : (
+            <ButtonPrimary
+              size={ButtonPrimarySize.Lg}
               block
-              variant={ButtonVariant.Secondary}
-              startIconName={IconName.Logout}
-              danger
-              onClick={() => setShowDisconnectAllModal(true)}
+              data-test-id="no-connections-button"
+              onClick={() => dispatch(requestAccountsPermission())}
             >
-              {t('disconnectAllAccounts')}
-            </Button>
-          </Box>
-        ) : (
-          <ButtonPrimary
-            size={ButtonPrimarySize.Lg}
-            block
-            data-test-id="no-connections-button"
-            onClick={() => dispatch(requestAccountsPermission())}
-          >
-            {t('connectAccounts')}
-          </ButtonPrimary>
-        )}
+              {t('connectAccounts')}
+            </ButtonPrimary>
+          )}
+        </Box>
       </Footer>
     </Page>
   );
