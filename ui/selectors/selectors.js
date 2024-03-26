@@ -2212,17 +2212,37 @@ export function getUpdatedAndSortedAccounts(state) {
   const hiddenAddresses = getHiddenAccountsList(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
 
+  connectedAccounts.forEach((connection) => {
+    // Find if the connection exists in accounts
+    const matchingAccount = accounts.find(
+      (account) => account.id === connection.id,
+    );
+
+    // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
+    if (matchingAccount && connection.metadata) {
+      matchingAccount.connections = true;
+      matchingAccount.lastSelected = connection.metadata.lastSelected;
+    }
+  });
+
+  // Find the account with the most recent lastSelected timestamp among accounts with metadata
+  const accountsWithLastSelected = accounts.filter(
+    (account) => account.connections && account.lastSelected,
+  );
+
+  const mostRecentAccount =
+    accountsWithLastSelected.length > 0
+      ? accountsWithLastSelected.reduce((prev, current) => {
+          return prev.lastSelected > current.lastSelected ? prev : current;
+        })
+      : null;
+
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses.includes(account.address));
     account.hidden = Boolean(hiddenAddresses.includes(account.address));
-    if (
-      connectedAccounts.length > 0 &&
-      account.address === connectedAccounts[0].address
-    ) {
-      // Update the active property of the matched account to true
+    if (mostRecentAccount && account.id === mostRecentAccount.id) {
       account.active = true;
     } else {
-      // If not the first element or no match found, set active to false
       account.active = false;
     }
   });

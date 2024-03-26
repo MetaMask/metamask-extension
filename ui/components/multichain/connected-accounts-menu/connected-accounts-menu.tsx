@@ -38,6 +38,7 @@ export const ConnectedAccountsMenu = ({
   disableAccountSwitcher = false,
   onClose,
   closeMenu,
+  onActionClick,
 }: {
   isOpen: boolean;
   identity: Identity;
@@ -45,6 +46,7 @@ export const ConnectedAccountsMenu = ({
   disableAccountSwitcher: boolean;
   onClose: () => void;
   closeMenu: () => void;
+  onActionClick: (message: string) => void;
 }) => {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
@@ -136,6 +138,7 @@ export const ConnectedAccountsMenu = ({
               iconColor={IconColor.errorDefault}
               data-testid="disconnect-menu-item"
               onClick={() => {
+                onActionClick(identity.metadata.name);
                 dispatch(
                   removePermittedAccount(activeTabOrigin, identity.address),
                 );
