@@ -73,7 +73,7 @@ export const AssetPickerAmount = ({
       <Box display={Display.Flex}>
         <Label variant={TextVariant.bodyMdMedium}>{t('amount')}</Label>
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {!isFiatPrimary && <MaxClearButton asset={asset} />}
+        {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
       </Box>
       <Box
         onFocus={() => setIsFocused(true)}
