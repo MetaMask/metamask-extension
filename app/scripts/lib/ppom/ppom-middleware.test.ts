@@ -108,6 +108,50 @@ describe('PPOMMiddleware', () => {
     );
   });
 
+  it('adds validation response to confirmation requests', async () => {
+    const validateMock = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.permitFarming,
+      }),
+    );
+
+    const ppom = {
+      validateJsonRpc: validateMock,
+    };
+    const usePPOM = async (callback: any) => {
+      callback(ppom);
+    };
+    const mockUpdateSecurityAlertResponseByTxId = jest.fn();
+    const middlewareFunction = createMiddleWare(usePPOM, {
+      mockUpdateSecurityAlertResponseByTxId,
+    });
+    const req = {
+      ...JsonRpcRequestStruct,
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
+
+    await waitFor(() => {
+      const mockCallSecurityAlertResponse =
+        mockUpdateSecurityAlertResponseByTxId.mock.calls[0][1];
+
+      expect(mockCallSecurityAlertResponse.result_type).toBe(
+        BlockaidResultType.Malicious,
+      );
+      expect(mockCallSecurityAlertResponse.reason).toBe(
+        BlockaidReason.permitFarming,
+      );
+      expect(mockCallSecurityAlertResponse.securityAlertId).toBeDefined();
+      expect(req.securityAlertResponse).toBeDefined();
+    });
+  });
+
   it('should not do validation if user has not enabled preference', async () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM, {
