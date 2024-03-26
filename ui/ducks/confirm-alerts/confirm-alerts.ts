@@ -3,6 +3,7 @@ export type Alert = {
   field?: string;
   severity: 'warning' | 'alert';
   message: string;
+  actions?: { key: string; label: string }[];
 };
 
 export type ConfirmAlertsState = {

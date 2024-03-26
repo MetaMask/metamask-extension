@@ -20,6 +20,7 @@ import useAlerts from '../../../../../pages/confirmations/hooks/useAlerts';
 import { InlineAlert } from '../../../../../pages/confirmations/components/alerts/inline-alert';
 import { AlertModal } from '../../../../../pages/confirmations/components/alerts/alert-modal/alert-modal';
 import { currentConfirmationSelector } from '../../../../../selectors';
+import useConfirmationAlertActions from '../../../../../pages/confirmations/hooks/useConfirmationAlertActions';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -68,6 +69,7 @@ function Alert({ alertKey }: { alertKey: string | undefined }) {
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const alertOwnerId = currentConfirmation?.id as string;
   const { getFieldAlerts } = useAlerts(alertOwnerId);
+  const processAlertAction = useConfirmationAlertActions();
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
@@ -80,7 +82,10 @@ function Alert({ alertKey }: { alertKey: string | undefined }) {
       {alertModalVisible && (
         <AlertModal
           ownerId={alertOwnerId}
-          handleButtonClick={() => {
+          onActionClick={(actionKey) => {
+            processAlertAction(actionKey);
+          }}
+          onButtonClick={() => {
             setAlertModalVisible(false);
           }}
         />

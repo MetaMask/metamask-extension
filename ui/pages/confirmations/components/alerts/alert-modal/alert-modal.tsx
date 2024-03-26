@@ -22,10 +22,12 @@ import useAlerts from '../../../hooks/useAlerts';
 
 export function AlertModal({
   ownerId,
-  handleButtonClick,
+  onButtonClick,
+  onActionClick,
 }: {
   ownerId: string;
-  handleButtonClick: () => void;
+  onButtonClick: () => void;
+  onActionClick: (actionKey: string) => void;
 }) {
   const { alerts, isAlertConfirmed, setAlertConfirmed } = useAlerts(ownerId);
 
@@ -64,14 +66,35 @@ export function AlertModal({
           })}
         </ModalBody>
         <ModalFooter>
-          <Button
-            variant={ButtonVariant.Primary}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={3}
             width={BlockSize.Full}
-            onClick={handleButtonClick}
-            size={ButtonSize.Lg}
           >
-            Got It
-          </Button>
+            {alerts
+              .flatMap((alert) => alert.actions || [])
+              .map((action) => (
+                <Button
+                  key={action.key}
+                  variant={ButtonVariant.Secondary}
+                  width={BlockSize.Full}
+                  onClick={() => {
+                    onActionClick(action.key);
+                  }}
+                >
+                  {action.label}
+                </Button>
+              ))}
+            <Button
+              variant={ButtonVariant.Primary}
+              width={BlockSize.Full}
+              onClick={onButtonClick}
+              size={ButtonSize.Lg}
+            >
+              Got It
+            </Button>
+          </Box>
         </ModalFooter>
       </ModalContent>
     </Modal>

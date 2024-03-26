@@ -2,6 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 import useCurrentConfirmation from '../useCurrentConfirmation';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { PersonalSignAlertAction } from './usePersonalSignAlertActions';
 
 const usePersonalSignAlerts = (): Alert[] => {
   const { currentConfirmation } = useCurrentConfirmation();
@@ -28,6 +29,13 @@ const usePersonalSignAlerts = (): Alert[] => {
         field: 'from',
         severity: 'alert',
         message: 'Test 3',
+        actions: [
+          { key: PersonalSignAlertAction.GoToPage, label: 'Redirect Test' },
+          {
+            key: PersonalSignAlertAction.DispatchAction,
+            label: 'Dispatch Test',
+          },
+        ],
       },
     ];
   }, [currentConfirmation]);
