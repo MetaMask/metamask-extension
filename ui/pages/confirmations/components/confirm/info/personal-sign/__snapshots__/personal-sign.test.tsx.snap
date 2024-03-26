@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PersonalSignInfo does not render if required data is not present in the transaction 1`] = `<div />`;
-
 exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
 <div>
   <div

@@ -875,7 +875,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -902,7 +902,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 5m
           environment:
@@ -931,7 +931,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
+              timeout 20m yarn test:e2e:chrome --retries 2 || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1009,7 +1009,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:rpc --retries 2 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1029,7 +1029,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2 --debug
+              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2
             fi
           no_output_timeout: 5m
 
@@ -1051,7 +1051,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox:flask --retries 2 --debug
+              timeout 20m yarn test:e2e:firefox:flask --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1078,7 +1078,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:flask --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome:flask --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1105,7 +1105,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:mmi --retries 2 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1172,7 +1172,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox --retries 2 --debug
+              timeout 20m yarn test:e2e:firefox --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1307,9 +1307,11 @@ jobs:
       # important: generate lavamoat viz AFTER uploading builds as artifacts
       # Temporarily disabled until we can update to a version of `sesify` with
       # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
-      - run:
-          name: build:lavamoat-viz
-          command: ./.circleci/scripts/create-lavamoat-viz.sh
+      # Disabled 2024-03-25 due to flakiness.
+      #   - see: https://github.com/MetaMask/metamask-extension/issues/23704
+      #- run:
+      #    name: build:lavamoat-viz
+      #    command: ./.circleci/scripts/create-lavamoat-viz.sh
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
