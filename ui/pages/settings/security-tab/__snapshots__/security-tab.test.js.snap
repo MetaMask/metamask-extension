@@ -51,8 +51,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-
-              This feature alerts you to malicious activity by actively reviewing transaction and signature requests.
+               
+              This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
               <a
                 href="https://support.metamask.io/hc/en-us/articles/19878220833947"
                 rel="noreferrer"
@@ -60,8 +60,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Learn more
               </a>
-
-
+              
+               
             </span>
           </div>
         </div>
@@ -297,8 +297,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-
-              We use
+               
+              We use 
               <a
                 href="https://www.coingecko.com/"
                 rel="noreferrer"
@@ -306,7 +306,7 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 CoinGecko
               </a>
-               and
+               and 
               <a
                 href="https://www.cryptocompare.com/"
                 rel="noreferrer"
@@ -314,7 +314,7 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 CryptoCompare
               </a>
-               APIs to display your balance and token price.
+               APIs to display your balance and token price. 
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noreferrer"
@@ -322,8 +322,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Privacy policy
               </a>
-
-
+              
+               
             </span>
           </div>
         </div>
@@ -733,93 +733,6 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="network-toggle-0xe704"
-        >
-          <div
-            class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
-          >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-            >
-              <img
-                alt="Linea Goerli logo"
-                class="mm-avatar-network__network-image"
-                src="./images/linea-logo-testnet.png"
-              />
-            </div>
-            <div
-              class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
-              >
-                Linea Goerli
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-primary-default mm-box--background-color-transparent"
-              >
-                <a
-                  href="https://lineascan.build"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Lineascan.build
-                </a>
-              </p>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-left-auto"
-          >
-            <label
-              class="toggle-button toggle-button--on"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-              >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="true"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
-              </div>
-            </label>
-          </div>
-        </div>
-        <div
-          class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
           data-testid="network-toggle-0xe705"
         >
           <div
@@ -918,7 +831,7 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions.
+            Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
           </div>
         </div>
         <div
@@ -995,8 +908,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-
-              We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our
+               
+              We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -1005,7 +918,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 Privacy policy
               </a>
                to learn more about how Infura handles data.
-
+               
             </span>
           </div>
         </div>
@@ -1037,13 +950,13 @@ exports[`Security Tab should match snapshot 1`] = `
               class="settings-page__content-description"
             >
               <span>
-
-                MetaMask uses a third-party service called
+                 
+                MetaMask uses a third-party service called 
                 <b>
                   chainid.network
                 </b>
                  to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network.
-
+                 
               </span>
             </div>
           </div>
@@ -1192,7 +1105,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   value="dweb.link"
                 />
               </div>
-
+              
             </div>
           </div>
         </div>
@@ -1308,8 +1221,8 @@ exports[`Security Tab should match snapshot 1`] = `
             class="settings-page__content-description"
           >
             <span>
-
-              We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services.
+               
+              We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. 
               <a
                 href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
@@ -1317,8 +1230,8 @@ exports[`Security Tab should match snapshot 1`] = `
               >
                 Learn More
               </a>
-
-
+              
+               
             </span>
           </div>
         </div>

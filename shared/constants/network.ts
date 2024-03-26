@@ -423,24 +423,15 @@ export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.SEPOLIA,
-<<<<<<< HEAD
-  NETWORK_TYPES.LINEA_GOERLI,
   NETWORK_TYPES.LINEA_SEPOLIA,
   NETWORK_TYPES.LINEA_MAINNET,
 ] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
 ];
-=======
-  NETWORK_TYPES.LINEA_MAINNET,
-] as const;
-
-export const TEST_CHAINS = [CHAIN_IDS.SEPOLIA, CHAIN_IDS.LOCALHOST];
->>>>>>> c41ffaa3a0 (fix: deprecate linea goerli)
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
@@ -475,19 +466,11 @@ export const BUILT_IN_NETWORKS = {
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
-<<<<<<< HEAD
-  [NETWORK_TYPES.LINEA_GOERLI]: {
-    chainId: CHAIN_IDS.LINEA_GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-    blockExplorerUrl: 'https://goerli.lineascan.build',
-  },
   [NETWORK_TYPES.LINEA_SEPOLIA]: {
     chainId: CHAIN_IDS.LINEA_SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
     blockExplorerUrl: 'https://sepolia.lineascan.build',
   },
-=======
->>>>>>> c41ffaa3a0 (fix: deprecate linea goerli)
   [NETWORK_TYPES.MAINNET]: {
     chainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
