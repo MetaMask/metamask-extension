@@ -1,3 +1,8 @@
+import {
+  type Hex,
+  JsonRpcRequestStruct,
+  JsonRpcResponseStruct,
+} from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BlockaidReason,
@@ -21,7 +26,7 @@ Object.defineProperty(globalThis, 'performance', {
 const createMiddleWare = (
   usePPOM?: any,
   securityAlertsEnabled?: boolean,
-  chainId?: string,
+  chainId?: Hex,
 ) => {
   const usePPOMMock = jest.fn();
   const ppomController = {
@@ -64,8 +69,8 @@ describe('PPOMMiddleware', () => {
     const usePPOMMock = jest.fn();
     const middlewareFunction = createMiddleWare(usePPOMMock);
     await middlewareFunction(
-      { method: 'eth_sendTransaction' },
-      undefined,
+      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct },
       () => undefined,
     );
     expect(usePPOMMock).toHaveBeenCalledTimes(1);
@@ -75,10 +80,15 @@ describe('PPOMMiddleware', () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM);
     const req = {
+      ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
-    await middlewareFunction(req, undefined, () => undefined);
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
     expect(req.securityAlertResponse).toBeDefined();
   });
 
@@ -86,6 +96,7 @@ describe('PPOMMiddleware', () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM, false);
     const req = {
+      ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
@@ -97,10 +108,15 @@ describe('PPOMMiddleware', () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM, false, '0x2');
     const req = {
+      ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
-    await middlewareFunction(req, undefined, () => undefined);
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
     expect(req.securityAlertResponse).toBeUndefined();
   });
 
@@ -110,10 +126,15 @@ describe('PPOMMiddleware', () => {
     };
     const middlewareFunction = createMiddleWare({ usePPOM });
     const req = {
+      ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       securityAlertResponse: undefined,
     };
-    await middlewareFunction(req, undefined, () => undefined);
+    await middlewareFunction(
+      req,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
     expect((req.securityAlertResponse as any)?.result_type).toBe(
       BlockaidResultType.Errored,
     );
@@ -132,8 +153,8 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleWare(usePPOM);
     const nextMock = jest.fn();
     await middlewareFunction(
-      { method: 'eth_sendTransaction' },
-      undefined,
+      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct },
       nextMock,
     );
     expect(nextMock).toHaveBeenCalledTimes(1);
@@ -146,8 +167,8 @@ describe('PPOMMiddleware', () => {
     const middlewareFunction = createMiddleWare(usePPOM);
     const nextMock = jest.fn();
     await middlewareFunction(
-      { method: 'eth_sendTransaction' },
-      undefined,
+      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct },
       nextMock,
     );
     expect(nextMock).toHaveBeenCalledTimes(1);
@@ -163,8 +184,8 @@ describe('PPOMMiddleware', () => {
     };
     const middlewareFunction = createMiddleWare(usePPOM);
     await middlewareFunction(
-      { method: 'eth_sendTransaction' },
-      undefined,
+      { ...JsonRpcRequestStruct, method: 'eth_sendTransaction' },
+      { ...JsonRpcResponseStruct },
       () => undefined,
     );
     expect(validateMock).toHaveBeenCalledTimes(1);
@@ -180,7 +201,7 @@ describe('PPOMMiddleware', () => {
     };
     const middlewareFunction = createMiddleWare(usePPOM);
     await middlewareFunction(
-      { method: 'eth_someRequest' },
+      { ...JsonRpcRequestStruct, method: 'eth_someRequest' },
       undefined,
       () => undefined,
     );
@@ -189,6 +210,7 @@ describe('PPOMMiddleware', () => {
 
   it('normalizes transaction requests before validation', async () => {
     const requestMock1 = {
+      ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
       params: [{ data: '0x1' }],
     };
@@ -212,7 +234,11 @@ describe('PPOMMiddleware', () => {
 
     const middlewareFunction = createMiddleWare(usePPOM);
 
-    await middlewareFunction(requestMock1, undefined, () => undefined);
+    await middlewareFunction(
+      requestMock1,
+      { ...JsonRpcResponseStruct },
+      () => undefined,
+    );
 
     expect(normalizePPOMRequestMock).toHaveBeenCalledTimes(1);
     expect(normalizePPOMRequestMock).toHaveBeenCalledWith(requestMock1);
