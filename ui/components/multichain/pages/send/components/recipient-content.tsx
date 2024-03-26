@@ -51,6 +51,7 @@ export const SendPageRecipientContent = ({
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: replace this with dest logic, then abstract both usages to a util
   const handleSelectToken = async (token: any) => {
     if (token.type === AssetType.native) {
       dispatch(
