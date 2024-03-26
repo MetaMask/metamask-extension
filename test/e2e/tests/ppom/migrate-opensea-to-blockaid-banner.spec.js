@@ -112,7 +112,7 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
     );
   });
 
-  it.only('Shows up on contract interaction', async function () {
+  it('Shows up on contract interaction', async function () {
     await withFixtures(
       {
         dapp: true,
