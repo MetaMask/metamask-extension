@@ -23,6 +23,7 @@ export function NFTInput({ integerValue, onChange, className }: NFTInputProps) {
 
   return (
     <UnitInput
+      isDisabled={!onChange}
       type="number"
       step={1}
       min={0}
