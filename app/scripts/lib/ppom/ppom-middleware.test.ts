@@ -153,7 +153,7 @@ describe('PPOMMiddleware', () => {
     });
   });
 
-  it('should not do validation if user has not enabled preference', async () => {
+  it('does not do validation if the user has not enabled the preference', async () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM, {
       securityAlertsEnabled: false,
@@ -219,7 +219,7 @@ describe('PPOMMiddleware', () => {
     });
   });
 
-  it('should call next method when ppomController.usePPOM completes', async () => {
+  it('calls next method when ppomController.usePPOM completes', async () => {
     const ppom = {
       validateJsonRpc: () => undefined,
     };
@@ -236,7 +236,7 @@ describe('PPOMMiddleware', () => {
     expect(nextMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should call next method when ppomController.usePPOM throws error', async () => {
+  it('calls next method when ppomController.usePPOM throws error', async () => {
     const usePPOM = async (_callback: any) => {
       throw Error('Some error');
     };
@@ -249,8 +249,7 @@ describe('PPOMMiddleware', () => {
     );
     expect(nextMock).toHaveBeenCalledTimes(1);
   });
-
-  it('should call ppom.validateJsonRpc when invoked', async () => {
+  it('calls ppom.validateJsonRpc when invoked', async () => {
     const validateMock = jest.fn();
     const ppom = {
       validateJsonRpc: validateMock,
@@ -267,7 +266,7 @@ describe('PPOMMiddleware', () => {
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should not call ppom.validateJsonRpc when request is not for confirmation method', async () => {
+  it('does not call ppom.validateJsonRpc when request is not for confirmation method', async () => {
     const validateMock = jest.fn();
     const ppom = {
       validateJsonRpc: validateMock,
