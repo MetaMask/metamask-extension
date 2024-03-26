@@ -86,6 +86,7 @@ export const Connections = () => {
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
+  console.log(mergedAccounts);
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
   ) as { [key: string]: any[] };
@@ -129,6 +130,27 @@ export const Connections = () => {
       setShowDisconnectAllModal(false);
     }
   };
+
+  // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
+  const latestSelected = mergedAccounts.findIndex(
+    (_account: any, index: any) => {
+      return (
+        index ===
+        mergedAccounts.reduce(
+          (
+            acc: string | number,
+            cur: { metadata: { lastSelected: number } },
+            i: any,
+          ) =>
+            cur.metadata.lastSelected >
+            mergedAccounts[acc].metadata.lastSelected
+              ? i
+              : acc,
+          0,
+        )
+      );
+    },
+  );
 
   return (
     <Page data-testid="connections-page" className="connections-page">
@@ -186,18 +208,23 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
-                {mergedAccounts.map((account: AccountType) => {
+                {mergedAccounts.map((account: AccountType, index: any) => {
                   const connectedSites: ConnectedSites = {};
-
                   const connectedSite = connectedSites[account.address]?.find(
                     ({ origin }) => origin === activeTabOrigin,
                   );
-                  // Since this list renders only connected accounts, selected account will be the active account
                   const isSelectedAccount =
                     selectedAccount.address === account.address;
+                  // Match the index of latestSelected Account with the index of all the accounts and set the active status
+                  let mergedAccountsProps;
+                  if (index === latestSelected) {
+                    mergedAccountsProps = { ...account, isAccountActive: true };
+                  } else {
+                    mergedAccountsProps = { ...account };
+                  }
                   return (
                     <AccountListItem
-                      identity={account}
+                      identity={mergedAccountsProps}
                       key={account.address}
                       accountsCount={mergedAccounts.length}
                       selected={isSelectedAccount}
@@ -205,7 +232,9 @@ export const Connections = () => {
                       connectedAvatarName={connectedSite?.name}
                       menuType={AccountListItemMenuTypes.Connection}
                       currentTabOrigin={activeTabOrigin}
-                      isActive={isSelectedAccount ? t('active') : null}
+                      isActive={
+                        mergedAccountsProps.isAccountActive ? t('active') : null
+                      }
                     />
                   );
                 })}
