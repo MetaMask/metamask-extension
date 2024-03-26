@@ -7,6 +7,14 @@ export type TypedSignDataV1Type = {
   type: string;
 }[];
 
+export type SecurityAlertResponse = {
+  reason: string;
+  features?: string[];
+  result_type: string;
+  providerRequestsCount?: Record<string, number>;
+  securityAlertId?: string;
+};
+
 export type SignatureRequestType = {
   chainId?: string;
   id: string;
@@ -18,6 +26,7 @@ export type SignatureRequestType = {
   };
   type: TransactionType;
   custodyId?: string;
+  securityAlertResponse?: SecurityAlertResponse;
 };
 
 export type Confirmation = SignatureRequestType;

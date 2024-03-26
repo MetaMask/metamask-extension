@@ -359,6 +359,20 @@ describe('Numeric', () => {
       });
     });
 
+    describe('Absolute value', () => {
+      it('should return the absolute value of a positive number', () => {
+        expect(new Numeric(10, 10).abs().toString()).toStrictEqual('10');
+      });
+
+      it('should return the absolute value of a negative number', () => {
+        expect(new Numeric(-10, 10).abs().toString()).toStrictEqual('10');
+      });
+
+      it('should handle the absolute value of 0', () => {
+        expect(new Numeric(0, 10).abs().toString()).toStrictEqual('0');
+      });
+    });
+
     describe('applyConversionRate', () => {
       it('should multiply the value by the conversionRate supplied', () => {
         expect(

@@ -102,7 +102,6 @@ const groupTransactionsByDate = (transactionGroups) => {
 export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
-  boxProps,
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
@@ -206,7 +205,7 @@ export default function TransactionList({
     dateGroup.transactionGroups.length > 0;
 
   return (
-    <Box className="transaction-list" {...boxProps}>
+    <Box className="transaction-list" paddingTop={4}>
       <Box className="transaction-list__transactions">
         {pendingTransactions.length > 0 && (
           <Box className="transaction-list__pending-transactions">
@@ -304,11 +303,9 @@ export default function TransactionList({
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
-  boxProps: PropTypes.object,
 };
 
 TransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
-  boxProps: undefined,
 };

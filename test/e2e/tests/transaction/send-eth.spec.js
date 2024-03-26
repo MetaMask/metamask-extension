@@ -35,7 +35,11 @@ describe('Send ETH', function () {
           );
 
           const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1000');
+
+          await inputAmount.press('1');
+          await inputAmount.press('0');
+          await inputAmount.press('0');
+          await inputAmount.press('0');
 
           await driver.findElement({
             css: '.send-v2__error-amount',
@@ -113,7 +117,7 @@ describe('Send ETH', function () {
           );
 
           const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1');
+          await inputAmount.press('1');
 
           const inputValue = await inputAmount.getProperty('value');
           assert.equal(inputValue, '1');
@@ -170,7 +174,7 @@ describe('Send ETH', function () {
           );
 
           const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1');
+          await inputAmount.press('1');
 
           if (!process.env.MULTICHAIN) {
             // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing

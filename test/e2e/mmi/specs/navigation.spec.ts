@@ -13,9 +13,9 @@ import { MMIMainPage } from '../pageObjects/mmi-main-page';
 const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
 const swap = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/swap`;
 const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
-const support = 'https://mmi-support.zendesk.com/hc/en-us';
+const support = 'https://mmi-support.metamask.io/hc/en-us';
 const supportContactUs =
-  'https://mmi-support.zendesk.com/hc/en-us/requests/new';
+  'https://mmi-support.metamask.io/hc/en-us/requests/new';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndPolicy = 'https://consensys.io/privacy-policy';
 const hwWalletPrivacyAndSecurity =
