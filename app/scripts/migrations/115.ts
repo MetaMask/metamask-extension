@@ -54,7 +54,7 @@ function transformState(state: Record<string, any>) {
     state.NetworkController.providerConfig.chainId === CHAIN_IDS.LINEA_GOERLI
   ) {
       networkControllerState.providerConfig = {
-      type: 'linea-sepolia', //TODO create a patch for controller utils to get this from NetworkType
+      type: NetworkType['linea-sepolia'],
       rpcPrefs: {},
       chainId: CHAIN_IDS.LINEA_SEPOLIA,
       nickname: LINEA_SEPOLIA_DISPLAY_NAME,
