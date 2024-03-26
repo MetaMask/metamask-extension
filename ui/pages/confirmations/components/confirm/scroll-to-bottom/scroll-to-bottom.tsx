@@ -74,7 +74,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
         paddingRight={4}
         onScroll={onScroll}
         ref={ref}
-        style={{ overflow: 'auto' }}
+        style={{ overflow: 'hidden' }}
       >
         {children}
 
