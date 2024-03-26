@@ -3,7 +3,9 @@ import {
   JsonRpcRequestStruct,
   JsonRpcResponseStruct,
 } from '@metamask/utils';
+import { waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -28,9 +30,16 @@ const createMiddleWare = (
   options: {
     securityAlertsEnabled?: boolean;
     chainId?: Hex;
-  } = {},
+    mockUpdateSecurityAlertResponseByTxId?: any;
+  } = {
+    mockUpdateSecurityAlertResponseByTxId: () => undefined,
+  },
 ) => {
-  const { securityAlertsEnabled, chainId } = options;
+  const {
+    securityAlertsEnabled,
+    chainId,
+    mockUpdateSecurityAlertResponseByTxId,
+  } = options;
   const usePPOMMock = jest.fn();
   const ppomController = {
     usePPOM: usePPOM || usePPOMMock,
@@ -128,27 +137,38 @@ describe('PPOMMiddleware', () => {
     expect(req.securityAlertResponse).toBeUndefined();
   });
 
-  it('should set error type in response if usePPOM throw error', async () => {
+  it('sets error types in the response if usePPOM throws an error', async () => {
     const usePPOM = async () => {
       throw new Error('some error');
     };
-    const middlewareFunction = createMiddleWare({ usePPOM });
+    const mockUpdateSecurityAlertResponseByTxId = jest.fn();
+    const middlewareFunction = createMiddleWare(usePPOM, {
+      mockUpdateSecurityAlertResponseByTxId,
+    });
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
-      securityAlertResponse: undefined,
     };
     await middlewareFunction(
       req,
       { ...JsonRpcResponseStruct },
       () => undefined,
     );
-    expect((req.securityAlertResponse as any)?.result_type).toBe(
-      BlockaidResultType.Errored,
-    );
-    expect((req.securityAlertResponse as any)?.reason).toBe(
-      BlockaidReason.errored,
-    );
+
+    await waitFor(() => {
+      const mockCallSecurityAlertResponse =
+        mockUpdateSecurityAlertResponseByTxId.mock.calls[0][1];
+      expect(mockCallSecurityAlertResponse.description).toBe(
+        'Error: some error',
+      );
+      expect(mockCallSecurityAlertResponse.result_type).toBe(
+        BlockaidResultType.Errored,
+      );
+      expect(mockCallSecurityAlertResponse.result_type).toBe(
+        BlockaidReason.errored,
+      );
+      expect(mockCallSecurityAlertResponse.securityAlertId).toBeDefined();
+    });
   });
 
   it('should call next method when ppomController.usePPOM completes', async () => {
