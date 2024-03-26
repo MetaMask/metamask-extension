@@ -2232,6 +2232,9 @@
   "interactingWith": {
     "message": "Interacting with"
   },
+  "introducingSmartTransctions": {
+    "message": "Introducing smart transactions"
+  },
   "invalidAddress": {
     "message": "Invalid address"
   },
@@ -2976,6 +2979,9 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "notRightNow": {
+    "message": "Not right now"
   },
   "note": {
     "message": "Note"
@@ -4459,6 +4465,13 @@
   "smartTransactions": {
     "message": "Smart transactions"
   },
+  "smartTransactionsDescription": {
+    "message": "Smart transactions enhance the reliability, privacy, and cost-effectiveness of MetaMask."
+  },
+  "smartTransactionsDescription2": {
+    "message": "Right now, smart transactions are only available on ETH Mainnet. You can turn them off at any time in settings.",
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
+  },
   "snapAccountCreated": {
     "message": "Account created"
   },
@@ -5937,6 +5950,9 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
+  },
+  "whatAreSmartTransactions": {
+    "message": "What are smart transactions?"
   },
   "whatsNew": {
     "message": "What's new",
