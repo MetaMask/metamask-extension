@@ -167,6 +167,12 @@ const render = ({
       },
       providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       selectedAddress,
+      accounts: {
+        [selectedAddress]: {
+          address: selectedAddress,
+          balance: '0x0',
+        },
+      },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -278,6 +284,7 @@ describe('NFT Items', () => {
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
+
   describe('NFTs options', () => {
     it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
@@ -316,23 +323,21 @@ describe('NFT Items', () => {
     });
   });
 
-  describe('nft conversion banner', () => {
-    it('shows the NFT conversion banner when there are no NFTs', () => {
+  describe('NFT Tab Ramps Card', () => {
+    it('shows the ramp card when there are no NFTs', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
         nfts: [],
       });
-
-      expect(queryByText('Learn more about NFTs')).toBeInTheDocument();
+      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
     });
 
-    it('does not show the NFT conversion banner when there are NFTs', () => {
+    it('does not show the ramp card when the account has a balance', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-
-      expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
+      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
   });
 });
