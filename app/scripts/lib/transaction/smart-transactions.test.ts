@@ -151,7 +151,7 @@ describe('submitSmartTransactionHook', () => {
         {
           status: 'cancelled',
           statusMetadata: {
-            minedHash: undefined,
+            minedHash: '',
           },
         },
       );
