@@ -86,7 +86,7 @@ export const Connections = () => {
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
   const mergedAccounts = mergeAccounts(connectedAccounts, internalAccounts);
-  console.log(mergedAccounts);
+
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
   ) as { [key: string]: any[] };
