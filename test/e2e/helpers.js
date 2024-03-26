@@ -172,6 +172,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
       bundlerServer,
+      mockServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -640,6 +641,16 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const createDappTransaction = async (driver, transaction) => {
+  await openDapp(
+    driver,
+    null,
+    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
+      transaction,
+    ])}`,
+  );
+};
+
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -833,16 +844,11 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
-    undefined,
-    {
-      minimumFractionDigits: 2,
-    },
-  );
+  const balance = await ganacheServer.getBalance();
 
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `$ ${balance} USD`,
+    text: `${balance} ETH`,
   });
 };
 
@@ -1105,6 +1111,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,

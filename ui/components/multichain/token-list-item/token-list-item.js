@@ -140,36 +140,31 @@ export const TokenListItem = ({
       data-testid="multichain-token-list-item"
     >
       <Box
-        className={classnames('multichain-token-list-item__container-cell', {
-          'multichain-token-list-item__container-cell--clickable':
-            onClick !== undefined,
-        })}
+        className="multichain-token-list-item__container-cell"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         padding={4}
+        as="a"
         data-testid="multichain-token-list-button"
-        {...(onClick && {
-          as: 'a',
-          href: '#',
-          onClick: (e) => {
-            e.preventDefault();
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
 
-            if (showScamWarningModal) {
-              return;
-            }
+          if (showScamWarningModal) {
+            return;
+          }
 
-            onClick();
-            trackEvent({
-              category: MetaMetricsEventCategory.Tokens,
-              event: MetaMetricsEventName.TokenDetailsOpened,
-              properties: {
-                location: 'Home',
-                chain_id: chainId,
-                token_symbol: tokenSymbol,
-              },
-            });
-          },
-        })}
+          onClick();
+          trackEvent({
+            category: MetaMetricsEventCategory.Tokens,
+            event: MetaMetricsEventName.TokenDetailsOpened,
+            properties: {
+              location: 'Home',
+              chain_id: chainId,
+              token_symbol: tokenSymbol,
+            },
+          });
+        }}
       >
         <BadgeWrapper
           badge={
@@ -191,9 +186,7 @@ export const TokenListItem = ({
             name={tokenSymbol}
             src={tokenImage}
             showHalo
-            borderColor={
-              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
-            }
+            borderColor={tokenImage ? undefined : BorderColor.borderDefault}
           />
         </BadgeWrapper>
         <Box
