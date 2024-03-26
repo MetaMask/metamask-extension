@@ -40,6 +40,8 @@ import {
   BASE_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+  LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1819,6 +1821,18 @@ export function getTestNetworks(state) {
       id: NETWORK_TYPES.LINEA_GOERLI,
       removable: false,
     },
+    {
+      chainId: CHAIN_IDS.LINEA_SEPOLIA,
+      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+      rpcPrefs: {
+        imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+      id: NETWORK_TYPES.LINEA_SEPOLIA,
+      removable: false,
+    },
     // Localhosts
     ...Object.values(networkConfigurations)
       .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
@@ -1959,6 +1973,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return AVALANCHE_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_GOERLI:
       return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_SEPOLIA:
+      return LINEA_SEPOLIA_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.ARBITRUM:
@@ -1989,6 +2005,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_SEPOLIA,
     CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.ARBITRUM,
     CHAIN_IDS.OPTIMISM,
