@@ -110,6 +110,7 @@ export class SmartTransactionHook {
       {
         id: this.approvalFlowId,
         requestState: {
+          // @ts-expect-error: TODO: this line will be removed once we publish and use the latest STX controller.
           smartTransaction,
           isDapp,
         },
