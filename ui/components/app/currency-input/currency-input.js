@@ -84,6 +84,8 @@ export default function CurrencyInput({
     tokenToFiatConversionRate,
   );
 
+  const isInert = !onChange;
+
   const swap = async () => {
     await onPreferenceToggle();
   };
@@ -195,6 +197,7 @@ export default function CurrencyInput({
 
   return (
     <UnitInput
+      isDisabled={isInert}
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
       suffix={isTokenPrimary ? primarySuffix : secondarySuffix}
