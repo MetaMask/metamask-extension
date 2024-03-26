@@ -4,7 +4,6 @@ import { hasProperty } from '@metamask/utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import {
   CHAIN_IDS,
-  SEPOLIA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
@@ -53,7 +52,7 @@ function transformState(state: Record<string, any>) {
     hasProperty(state.NetworkController.providerConfig, 'chainId') &&
     state.NetworkController.providerConfig.chainId === CHAIN_IDS.LINEA_GOERLI
   ) {
-      networkControllerState.providerConfig = {
+    networkControllerState.providerConfig = {
       type: NetworkType['linea-sepolia'],
       rpcPrefs: {},
       chainId: CHAIN_IDS.LINEA_SEPOLIA,
@@ -64,7 +63,8 @@ function transformState(state: Record<string, any>) {
       id: NETWORK_TYPES.LINEA_SEPOLIA,
       removable: false,
     };
-    networkControllerState.selectedNetworkClientId = NETWORK_TYPES.LINEA_SEPOLIA;
+    networkControllerState.selectedNetworkClientId =
+      NETWORK_TYPES.LINEA_SEPOLIA;
     networkControllerState.networksMetadata = {
       ...networkControllerState.networksMetadata,
       'linea-sepolia': {

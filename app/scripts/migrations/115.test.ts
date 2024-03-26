@@ -1,3 +1,4 @@
+import { NetworkType } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -67,7 +68,7 @@ const lineaGoerliState = {
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
       type: NETWORK_TYPES.LINEA_GOERLI,
     },
-    selectedNetworkClientId:  NETWORK_TYPES.LINEA_GOERLI,
+    selectedNetworkClientId: NETWORK_TYPES.LINEA_GOERLI,
   },
 };
 
@@ -170,7 +171,7 @@ describe('migration #115', () => {
         },
       },
       providerConfig: {
-        type: 'linea-sepolia', //TODO create a patch for controller utils to get this from NetworkType
+        type: NetworkType['linea-sepolia'],
         rpcPrefs: {},
         chainId: CHAIN_IDS.LINEA_SEPOLIA,
         nickname: LINEA_SEPOLIA_DISPLAY_NAME,
