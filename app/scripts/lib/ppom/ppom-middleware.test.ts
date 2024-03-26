@@ -25,9 +25,12 @@ Object.defineProperty(globalThis, 'performance', {
 
 const createMiddleWare = (
   usePPOM?: any,
-  securityAlertsEnabled?: boolean,
-  chainId?: Hex,
+  options: {
+    securityAlertsEnabled?: boolean;
+    chainId?: Hex;
+  } = {},
 ) => {
+  const { securityAlertsEnabled, chainId } = options;
   const usePPOMMock = jest.fn();
   const ppomController = {
     usePPOM: usePPOM || usePPOMMock,
@@ -52,7 +55,7 @@ const createMiddleWare = (
     preferenceController as any,
     networkController as any,
     appStateController as any,
-    () => undefined,
+    mockUpdateSecurityAlertResponseByTxId,
   );
 };
 
@@ -94,7 +97,9 @@ describe('PPOMMiddleware', () => {
 
   it('should not do validation if user has not enabled preference', async () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
-    const middlewareFunction = createMiddleWare(usePPOM, false);
+    const middlewareFunction = createMiddleWare(usePPOM, {
+      securityAlertsEnabled: false,
+    });
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
@@ -106,7 +111,10 @@ describe('PPOMMiddleware', () => {
 
   it('should not do validation if user is not on mainnet', async () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
-    const middlewareFunction = createMiddleWare(usePPOM, false, '0x2');
+    const middlewareFunction = createMiddleWare(usePPOM, {
+      securityAlertsEnabled: false,
+      chainId: '0x2',
+    });
     const req = {
       ...JsonRpcRequestStruct,
       method: 'eth_sendTransaction',
