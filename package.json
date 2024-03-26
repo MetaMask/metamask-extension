@@ -116,7 +116,8 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
-    "master-sync": "node development/master-sync.js"
+    "master-sync": "node development/master-sync.js",
+    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
@@ -272,7 +273,7 @@
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.3.1",
-    "@metamask/controller-utils": "patch:@metamask/controller-utils@npm%3A8.0.4#~/.yarn/patches/@metamask-controller-utils-npm-8.0.4-077edd6162.patch",
+    "@metamask/controller-utils": "^9.0.2",
     "@metamask/design-tokens": "^2.1.1",
     "@metamask/desktop": "^0.3.0",
     "@metamask/ens-controller": "^9.0.0",

@@ -1165,7 +1165,9 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
-        active: true,
+        active: false,
+        connections: true,
+        lastSelected: undefined,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
