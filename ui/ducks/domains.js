@@ -201,8 +201,8 @@ export async function fetchResolutions({ domain, chainId, state }) {
     if (lookupMatchersCaveat) {
       const { tlds, schemes } = lookupMatchersCaveat;
       if (
-        tlds?.some((tld) => domain.endsWith(tld)) ||
-        schemes?.some((scheme) => domain.startsWith(scheme))
+        tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
+        schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
       ) {
         return true;
       }
