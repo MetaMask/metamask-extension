@@ -65,6 +65,8 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
+import { BannerAlert, BannerBase } from '../../../components/component-library';
+import { Severity } from '../../../helpers/constants/design-system';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -182,6 +184,7 @@ export default class ConfirmTransactionBase extends Component {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
     ///: END:ONLY_INCLUDE_IF
+    showBanner: true,
   };
 
   componentDidUpdate(prevProps) {
@@ -516,8 +519,32 @@ export default class ConfirmTransactionBase extends Component {
       />
     );
 
+    // migratedTheUserFromOpensea && !seenAndDismissed
+    const showBlockaidBannerAlert = this.state.showBanner;
+    const handleCloseBlockaidBannerAlert = () => {
+      // dispatch seenAndDismissed=  true
+      this.setState({ showBanner: false });
+    };
+
     return (
       <div className="confirm-page-container-content__details">
+        {showBlockaidBannerAlert ? (
+          <BannerAlert
+            severity={Severity.Info}
+            title="We are moving you over"
+            description="We are deprecating this feature. 1-3 lines. Can contain a "
+            actionButtonLabel="Read more here"
+            actionButtonProps={{
+              href: 'https://github.com/MetaMask/metamask-extension/issues/20485',
+              externalLink: true,
+            }}
+            marginBottom={4}
+            marginLeft={4}
+            marginTop={4}
+            marginRight={4}
+            onClose={handleCloseBlockaidBannerAlert}
+          />
+        ) : null}
         <TransactionAlerts
           txData={txData}
           setUserAcknowledgedGasMissing={() =>
