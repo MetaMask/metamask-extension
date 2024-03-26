@@ -52,7 +52,6 @@ export default class AdvancedTab extends PureComponent {
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
     stxOptIn: PropTypes.bool,
-    isStxOptInAvailable: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
@@ -246,7 +245,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { stxOptIn, setStxOptIn, isStxOptInAvailable } = this.props;
+    const { stxOptIn, setStxOptIn } = this.props;
 
     const learMoreLink = (
       <ButtonLink
@@ -298,7 +297,6 @@ export default class AdvancedTab extends PureComponent {
             offLabel={t('off')}
             onLabel={t('on')}
             dataTestId="settings-page-stx-opt-in-toggle"
-            disabled={!isStxOptInAvailable}
           />
         </div>
       </Box>
