@@ -1,5 +1,5 @@
 const util = require('util');
-const { promises: fs, writeFileSync, } = require('fs');
+const { writeFileSync } = require('fs');
 
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -18,15 +18,13 @@ const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
 const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
 
 async function getFileVersions() {
-
-  let ppomVersionDataHeaders;
   let ppomVersionData;
 
   ppomVersionData = await fetch(PPOM_VERSION_URL, {
     method: 'GET',
   });
 
-  ppomVersionDataHeaders = ppomVersionData.headers;
+  const ppomVersionDataHeaders = ppomVersionData.headers;
   ppomVersionData = await ppomVersionData.json();
 
   const etagVersion = ppomVersionDataHeaders.get('etag');
@@ -35,13 +33,13 @@ async function getFileVersions() {
   // updating ppom-version-headers.json file
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}ppom-version-headers.json`,
-    JSON.stringify(etagVersionObject, null, 2)
+    JSON.stringify(etagVersionObject, null, 2),
   );
 
   // updating ppom-version.json file
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}ppom-version.json`,
-    JSON.stringify(ppomVersionData, null, 2)
+    JSON.stringify(ppomVersionData, null, 2),
   );
 
   const mainnetConfigVersion = ppomVersionData.find(
@@ -68,61 +66,61 @@ async function updateMockCdnFiles() {
     await getFileVersions();
 
   // updating cdn-config-res-headers.json file
-  let configResponse = await fetch(`${PPOM_CONFIG_URL}${mainnetConfigVersion}`, {
-    method: 'GET',
-  });
+  const configResponse = await fetch(
+    `${PPOM_CONFIG_URL}${mainnetConfigVersion}`,
+    {
+      method: 'GET',
+    },
+  );
 
-  let configHeaders = configResponse.headers;
+  const configHeaders = configResponse.headers;
 
   const etagConfig = configHeaders.get('etag');
   const etagConfigObject = { Etag: etagConfig };
 
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}cdn-config-res-headers.json`,
-    JSON.stringify(etagConfigObject, null, 2)
+    JSON.stringify(etagConfigObject, null, 2),
   );
 
   // updating cdn-stale-res-headers.json file
-  let staleResponse = await fetch(`${PPOM_STALE_URL}${mainnetStaleVersion}`, {
+  const staleResponse = await fetch(`${PPOM_STALE_URL}${mainnetStaleVersion}`, {
     method: 'GET',
   });
 
-  let staleHeaders = staleResponse.headers;
+  const staleHeaders = staleResponse.headers;
 
   const etagStale = staleHeaders.get('etag');
   const etagStaleObject = { Etag: etagStale };
 
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}cdn-stale-res-headers.json`,
-    JSON.stringify(etagStaleObject, null, 2)
+    JSON.stringify(etagStaleObject, null, 2),
   );
 
-  // updating cdn-stale-res-headers.json file
-  let staleDiffResponse = await fetch(`${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion}`, {
-    method: 'GET',
-  });
+  // updating cdn-stale-diff-res-headers.json file
+  const staleDiffResponse = await fetch(
+    `${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion}`,
+    {
+      method: 'GET',
+    },
+  );
 
-  let staleDiffHeaders = staleDiffResponse.headers;
+  const staleDiffHeaders = staleDiffResponse.headers;
 
   const etagStaleDiff = staleDiffHeaders.get('etag');
   const etagStaleDiffObject = { Etag: etagStaleDiff };
 
   writeFileSync(
     `${MOCK_CDN_FOLDER_URL}cdn-stale-diff-res-headers.json`,
-    JSON.stringify(etagStaleDiffObject, null, 2)
+    JSON.stringify(etagStaleDiffObject, null, 2),
   );
 
   // exporting the brotli data to files
+  exec(`curl ${PPOM_CONFIG_URL}${mainnetConfigVersion} -o ${CDN_CONFIG_PATH}`);
+  exec(`curl ${PPOM_STALE_URL}${mainnetStaleVersion} -o ${CDN_STALE_PATH}`);
   exec(
-    `curl ${PPOM_CONFIG_URL}${mainnetConfigVersion} -o ${CDN_CONFIG_PATH}`,
-  );
-
-  exec(
-    `curl ${PPOM_STALE_URL}${mainnetStaleVersion} -o ${CDN_STALE_DIFF_PATH}`,
-  );
-
-  exec(
-    `curl ${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion} -o ${CDN_STALE_PATH}`,
+    `curl ${PPOM_STALE_DIFF_URL}${mainnetStaleDiffVersion} -o ${CDN_STALE_DIFF_PATH}`,
   );
 }
 
