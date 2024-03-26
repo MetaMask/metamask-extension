@@ -78,4 +78,24 @@ describe('AlertModal', () => {
     fireEvent.click(getByTestId('alert-modal-button'));
     expect(handleButtonClickMock).toHaveBeenCalledTimes(1);
   });
+
+  it('calls custom button', () => {
+    const customButton = {
+      label: 'Custom Button',
+      onClick: jest.fn(),
+    };
+    const { getByText } = renderWithProvider(
+      <AlertModal
+        ownerId={ownerIdMock}
+        handleButtonClick={handleButtonClickMock}
+        onClose={onCloseMock}
+        alertKey={fromAlertKeyMock}
+        customButton={customButton}
+      />,
+      mockStore,
+    );
+
+    fireEvent.click(getByText(customButton.label));
+    expect(customButton.onClick).toBeCalledTimes(1);
+  });
 });

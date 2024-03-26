@@ -40,6 +40,15 @@ export type AlertModalProps = {
   alertKey: string;
   /** The function to be executed when the modal needs to be closed */
   onClose: () => void;
+  /** Customizable button  */
+  customButton?: {
+    /** The label for the custom button. */
+    label: string;
+    /** The function to be executed when the custom button is clicked. */
+    onClick: () => void;
+    /** The variant of the custom button. */
+    variant?: string;
+  };
 };
 
 function getSeverityStyle(severity: Severity) {
@@ -67,6 +76,7 @@ export function AlertModal({
   handleButtonClick,
   alertKey,
   onClose,
+  customButton,
 }: AlertModalProps) {
   const t = useI18nContext();
   const handleClose = useCallback(() => {
@@ -171,6 +181,17 @@ export function AlertModal({
           >
             {t('gotIt')}
           </Button>
+          {customButton && (
+            <Button
+              variant={ButtonVariant.Secondary}
+              className={customButton.variant}
+              width={BlockSize.Full}
+              onClick={customButton.onClick}
+              size={ButtonSize.Lg}
+            >
+              {customButton.label}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
