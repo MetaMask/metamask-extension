@@ -67,6 +67,7 @@ import FeeDetailsComponent from '../components/fee-details-component/fee-details
 import { SimulationDetails } from '../components/simulation-details';
 import { BannerAlert, BannerBase } from '../../../components/component-library';
 import { Severity } from '../../../helpers/constants/design-system';
+import { SUPPORTED_CHAIN_IDS } from '../../../../app/scripts/lib/ppom/ppom-middleware';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -396,6 +397,10 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isMultiLayerFeeNetwork,
+      hasMigratedFromOpenSeaToBlockaid,
+      hasDismissedOpenSeaToBlockaidBanner,
+      dismissOpenSeaToBlockaidBanner,
+      isNetworkSupportedByBlockaid,
     } = this.props;
 
     const { t } = this.context;
@@ -519,30 +524,31 @@ export default class ConfirmTransactionBase extends Component {
       />
     );
 
-    // migratedTheUserFromOpensea && !seenAndDismissed
-    const showBlockaidBannerAlert = this.state.showBanner;
-    const handleCloseBlockaidBannerAlert = () => {
-      // dispatch seenAndDismissed=  true
-      this.setState({ showBanner: false });
+    const showOpenSeaToBlockaidBannerAlert =
+      hasMigratedFromOpenSeaToBlockaid &&
+      !isNetworkSupportedByBlockaid &&
+      !hasDismissedOpenSeaToBlockaidBanner;
+    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+      dismissOpenSeaToBlockaidBanner();
     };
 
     return (
       <div className="confirm-page-container-content__details">
-        {showBlockaidBannerAlert ? (
+        {showOpenSeaToBlockaidBannerAlert ? (
           <BannerAlert
             severity={Severity.Info}
-            title="We are moving you over"
-            description="We are deprecating this feature. 1-3 lines. Can contain a "
-            actionButtonLabel="Read more here"
+            title={t('openSeaToBlockaidTitle')}
+            description={t('openSeaToBlockaidDescription')}
+            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
             actionButtonProps={{
-              href: 'https://github.com/MetaMask/metamask-extension/issues/20485',
+              href: 'https://snaps.metamask.io/transaction-insights',
               externalLink: true,
             }}
             marginBottom={4}
             marginLeft={4}
             marginTop={4}
             marginRight={4}
-            onClose={handleCloseBlockaidBannerAlert}
+            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
           />
         ) : null}
         <TransactionAlerts

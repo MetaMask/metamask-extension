@@ -119,6 +119,7 @@ import {
   getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
+import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
@@ -1788,6 +1789,13 @@ export function getCurrentNetwork(state) {
   return allNetworks.find(filter);
 }
 
+export function getIsNetworkSupportedByBlockaid(state) {
+  const currentNetwork = getCurrentNetwork(state);
+  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentNetwork.chainId);
+
+  return isSupported;
+}
+
 export function getAllEnabledNetworks(state) {
   const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
@@ -2287,6 +2295,20 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
+}
+
+export function getHasMigratedFromOpenSeaToBlockaid(state) {
+  const { hasMigratedFromOpenSeaToBlockaid } = getPreferences(state);
+  return Boolean(hasMigratedFromOpenSeaToBlockaid);
+}
+
+export function getHasDismissedOpenSeaToBlockaidBanner(state) {
+  console.log({
+    state,
+    hasDismissedOpenSeaToBlockaidBanner:
+      state.metamask.hasDismissedOpenSeaToBlockaidBanner,
+  });
+  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**
