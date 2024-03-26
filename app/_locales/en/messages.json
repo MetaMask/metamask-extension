@@ -2527,12 +2527,6 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "marketCap": {
-    "message": "Market cap"
-  },
-  "marketDetails": {
-    "message": "Market details"
-  },
   "max": {
     "message": "Max"
   },
