@@ -46,7 +46,7 @@ export default function InlineAlert({
   return (
     <Box>
       <Box
-        data-testid="inlineAlert"
+        data-testid="inline-alert"
         backgroundColor={getSeverityBackground(severity)}
         borderRadius={BorderRadius.SM}
         gap={1}

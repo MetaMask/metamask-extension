@@ -7,7 +7,7 @@ exports[`Inline Alert renders alert with danger severity 1`] = `
   >
     <div
       class="mm-box inline-alert inline-alert__danger mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-error-muted mm-box--rounded-sm"
-      data-testid="inlineAlert"
+      data-testid="inline-alert"
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -34,7 +34,7 @@ exports[`Inline Alert renders alert with informative severity 1`] = `
   >
     <div
       class="mm-box inline-alert inline-alert__info mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-primary-muted mm-box--rounded-sm"
-      data-testid="inlineAlert"
+      data-testid="inline-alert"
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -61,7 +61,7 @@ exports[`Inline Alert renders alert with warning severity 1`] = `
   >
     <div
       class="mm-box inline-alert inline-alert__warning mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-warning-muted mm-box--rounded-sm"
-      data-testid="inlineAlert"
+      data-testid="inline-alert"
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
