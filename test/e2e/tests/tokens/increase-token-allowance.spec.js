@@ -172,7 +172,7 @@ describe('Increase Token Allowance', function () {
       const pollInsufficientAllowanceError = setInterval(async () => {
         try {
           const tokenAddressesElement = await driver.findElement(
-            '#tokenAddresses',
+            '#tokenMethodsResult',
           );
           const tokenAddressesMsgText = await tokenAddressesElement.getText();
           const isErrorThrown =
