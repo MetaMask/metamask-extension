@@ -299,8 +299,6 @@ export const Connections = () => {
                     src={connectedSubjectsMetadata.iconUrl}
                   />
                 }
-                actionText={''}
-                onActionClick={() => null}
               />
             </ToastContainer>
           ) : null}
@@ -320,8 +318,6 @@ export const Connections = () => {
                     src={connectedSiteMetadata.iconUrl}
                   />
                 }
-                actionText={''}
-                onActionClick={() => null}
               />
             </ToastContainer>
           ) : null}
@@ -340,8 +336,6 @@ export const Connections = () => {
                     src={connectedSubjectsMetadata.iconUrl}
                   />
                 }
-                actionText={''}
-                onActionClick={() => null}
               />
             </ToastContainer>
           ) : null}
