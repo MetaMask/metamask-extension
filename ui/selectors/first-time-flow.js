@@ -33,7 +33,8 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
  * asks the user to opt into MetaMetrics. This function returns the route the
  * user should be directed to after they opt in or out of MetaMetrics. Note
  * that this differs from getFirstTimeFlowTypeRouteAfterUnlock only for the
- * restore option because the restore option because the restore option is
+ * restore option because the restore option is atypical from the other two
+ * options and removes an entire screen from the onboarding flow.
  *
  * @param {object} state - MetaMask state tree
  * @returns {string} Route to redirect the user to
