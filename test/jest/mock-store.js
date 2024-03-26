@@ -1,7 +1,7 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
 export const createGetSmartTransactionFeesApiResponse = () => {
@@ -362,7 +362,13 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {},
+      networkConfigurations: {
+        'network-configuration-id-1': {
+          chainId: CHAIN_IDS.MAINNET,
+          ticker: CURRENCY_SYMBOLS.ETH,
+          rpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+      },
       tokens: [
         {
           erc20: true,
