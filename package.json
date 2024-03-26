@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.12.3",
+  "version": "11.13.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -116,7 +116,8 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
-    "master-sync": "node development/master-sync.js"
+    "master-sync": "node development/master-sync.js",
+    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
@@ -231,7 +232,12 @@
     "@babel/runtime@npm:^7.4.0": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.18.3": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.8.3": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@babel/runtime@npm:^7.8.4": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
+    "@babel/runtime@npm:^7.8.4": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
+    "@metamask/network-controller@npm:^17.2.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^15.0.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^18.0.1": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^17.2.1": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -293,7 +299,7 @@
     "@metamask/message-manager": "^7.3.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/name-controller": "^4.2.0",
-    "@metamask/network-controller": "^18.0.0",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^8.0.0",
@@ -336,7 +342,6 @@
     "blo": "1.1.1",
     "bn.js": "^5.2.1",
     "bowser": "^2.11.0",
-    "chart.js": "^4.4.1",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.3",
     "currency-formatter": "^1.4.2",
@@ -374,7 +379,6 @@
     "qrcode.react": "^1.0.1",
     "react": "^16.12.0",
     "react-beautiful-dnd": "^13.1.1",
-    "react-chartjs-2": "^5.2.0",
     "react-dom": "^16.12.0",
     "react-focus-lock": "^2.9.4",
     "react-idle-timer": "^4.2.5",
@@ -602,7 +606,7 @@
     "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
-    "webpack": "^5.75.0",
+    "webpack": "^5.91.0",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2"
   },
