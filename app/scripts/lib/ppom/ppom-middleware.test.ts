@@ -88,7 +88,7 @@ describe('PPOMMiddleware', () => {
     expect(usePPOMMock).toHaveBeenCalledTimes(1);
   });
 
-  it('should add validation response on confirmation requests', async () => {
+  it('adds loading response to confirmation requests while validation is in progress', async () => {
     const usePPOM = async () => Promise.resolve('VALIDATION_RESULT');
     const middlewareFunction = createMiddleWare(usePPOM);
     const req = {
@@ -101,7 +101,11 @@ describe('PPOMMiddleware', () => {
       { ...JsonRpcResponseStruct },
       () => undefined,
     );
-    expect(req.securityAlertResponse).toBeDefined();
+
+    expect(req.securityAlertResponse.reason).toBe(BlockaidResultType.Loading);
+    expect(req.securityAlertResponse.result_type).toBe(
+      BlockaidReason.inProgress,
+    );
   });
 
   it('should not do validation if user has not enabled preference', async () => {
