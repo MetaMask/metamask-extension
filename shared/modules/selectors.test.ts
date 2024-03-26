@@ -1,5 +1,5 @@
 import { createSwapsMockStore } from '../../test/jest';
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../constants/network';
 import {
   getSmartTransactionsOptInStatus,
   getIsAllowedStxChainId,
@@ -38,6 +38,13 @@ describe('Selectors', () => {
         },
         smartTransactionsState: {
           liveness: true,
+        },
+        networkConfigurations: {
+          'network-configuration-id-1': {
+            chainId: CHAIN_IDS.MAINNET,
+            ticker: CURRENCY_SYMBOLS.ETH,
+            rpcUrl: 'https://mainnet.infura.io/v3/',
+          },
         },
       },
     };
@@ -132,7 +139,7 @@ describe('Selectors', () => {
       expect(getSmartTransactionsEnabled(newState)).toBe(false);
     });
 
-    it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
+    it('returns false if feature flag is enabled, not a HW and is Linea network', () => {
       const state = createSwapsMockStore();
       const newState = {
         ...state,
@@ -140,11 +147,11 @@ describe('Selectors', () => {
           ...state.metamask,
           providerConfig: {
             ...state.metamask.providerConfig,
-            chainId: CHAIN_IDS.GOERLI,
+            chainId: CHAIN_IDS.LINEA_MAINNET,
           },
         },
       };
-      expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      expect(getSmartTransactionsEnabled(newState)).toBe(false);
     });
 
     it('returns false if a snap account is used', () => {
