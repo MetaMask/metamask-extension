@@ -5655,7 +5655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^25.0.0":
+"@metamask/transaction-controller@npm:25.2.1":
   version: 25.2.1
   resolution: "@metamask/transaction-controller@npm:25.2.1"
   dependencies:
@@ -5688,18 +5688,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^25.1.0":
-  version: 25.1.0
-  resolution: "@metamask/transaction-controller@npm:25.1.0"
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A25.2.1#~/.yarn/patches/@metamask-transaction-controller-npm-25.2.1-5f7164d3f9.patch":
+  version: 25.2.1
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A25.2.1#~/.yarn/patches/@metamask-transaction-controller-npm-25.2.1-5f7164d3f9.patch::version=25.2.1&hash=7db857"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
     "@metamask/approval-controller": "npm:^6.0.1"
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^9.0.2"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/gas-fee-controller": "npm:^14.0.1"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
@@ -5718,7 +5717,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.0
     "@metamask/gas-fee-controller": ^14.0.0
     "@metamask/network-controller": ^18.0.0
-  checksum: 45ef39db7a99f4d41d8edd79995029890c0cbad12bec0c716824f5f21659a097386ce53bef1a37cdf99b9086f3fe71be2d22a1d8f20ffffe4a5df6ad1b496c90
+  checksum: 53332587556c2ccd0736d1c6924c608e921603d971197dea4c6922570789045d1644ece000f7828c3675c9547d8e12b3180e24397fd50e7ea206a9aa2558199e
   languageName: node
   linkType: hard
 
@@ -24884,7 +24883,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.0.3"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.3.0"
-    "@metamask/transaction-controller": "npm:^25.0.0"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A25.2.1#~/.yarn/patches/@metamask-transaction-controller-npm-25.2.1-5f7164d3f9.patch"
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
