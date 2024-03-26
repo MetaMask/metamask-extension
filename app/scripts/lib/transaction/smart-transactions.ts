@@ -1,6 +1,7 @@
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
   Fee,
+  Fees,
   SmartTransactionStatuses,
   SmartTransaction,
 } from '@metamask/smart-transactions-controller/dist/types';
@@ -11,97 +12,75 @@ import {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
+import {
+  RestrictedControllerMessenger,
+  EventConstraint,
+} from '@metamask/base-controller';
+import {
+  AddApprovalRequest,
+  UpdateRequestState,
+  StartFlow,
+  EndFlow,
+} from '@metamask/approval-controller';
 
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
 import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
+
+const namespace = 'SmartTransactions';
+
+type AllowedActions =
+  | AddApprovalRequest
+  | UpdateRequestState
+  | StartFlow
+  | EndFlow;
+
+export type SmartTransactionsControllerMessenger =
+  RestrictedControllerMessenger<
+    typeof namespace,
+    AllowedActions,
+    EventConstraint,
+    AllowedActions['type'],
+    never
+  >;
 
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
-  controllerMessenger: any;
+  controllerMessenger: SmartTransactionsControllerMessenger;
   featureFlags: Record<string, any>;
 };
 
-export async function submitSmartTransactionHook(
-  request: SubmitSmartTransactionRequest,
-) {
-  const {
-    transactionMeta,
-    smartTransactionsController,
-    transactionController,
-    isSmartTransaction,
-    controllerMessenger,
-    featureFlags,
-  } = request;
-  log.debug('Smart Transaction - Executing publish hook', transactionMeta);
-  const isDapp = transactionMeta?.origin !== ORIGIN_METAMASK;
-  const { chainId, txParams } = transactionMeta;
-  // Will cause TransactionController to publish to the RPC provider as normal.
-  const useRegularTransactionSubmit = { transactionHash: undefined };
-  if (!isSmartTransaction) {
-    log.debug(
-      `Smart Transaction - Skipping hook as it is not a smart transaction on chainId: ${chainId}`,
-    );
-    return useRegularTransactionSubmit;
+export class SmartTransactionHook {
+  private approvalFlowEnded: boolean;
+
+  private approvalFlowId: string;
+
+  constructor() {
+    this.approvalFlowId = '';
+    this.approvalFlowEnded = false;
   }
-  const { id: approvalFlowId } = controllerMessenger.call(
-    'ApprovalController:startFlow',
-  );
-  try {
-    const feesResponse = await smartTransactionsController.getFees(
-      { ...txParams, chainId },
-      undefined,
-    );
-    log.debug('Smart Transaction - Retrieved fees', feesResponse);
-    const signedTransactions = await createSignedTransactions(
-      txParams,
-      feesResponse.tradeTxFees?.fees ?? [],
-      false,
-      transactionController,
-      chainId,
-    );
-    const signedCanceledTransactions = await createSignedTransactions(
-      txParams,
-      feesResponse.tradeTxFees?.cancelFees || [],
-      true,
-      transactionController,
-      chainId,
-    );
-    log.debug('Smart Transaction - Generated signed transactions', {
-      signedTransactions,
-      signedCanceledTransactions,
-    });
-    log.debug('Smart Transaction - Submitting signed transactions');
-    const submitTransactionResponse =
-      await smartTransactionsController.submitSignedTransactions({
-        signedTransactions,
-        signedCanceledTransactions,
-        txParams,
-        transactionMeta,
-      });
-    const uuid = submitTransactionResponse?.uuid;
-    const returnTxHashAsap = featureFlags?.smartTransactions?.returnTxHashAsap;
-    let approvalFlowEnded = false;
-    const onApproveOrReject = async () => {
-      controllerMessenger.call('ApprovalController:endFlow', {
-        id: approvalFlowId,
-      });
-      approvalFlowEnded = true;
+
+  private addApprovalRequest({
+    controllerMessenger,
+    isDapp,
+  }: {
+    controllerMessenger: SmartTransactionsControllerMessenger;
+    isDapp: boolean;
+  }) {
+    const onApproveOrRejectWrapper = () => {
+      this.onApproveOrReject(controllerMessenger);
     };
-    if (!uuid) {
-      throw new Error('No smart transaction UUID');
-    }
-    log.debug('Smart Transaction - Received UUID', uuid);
     controllerMessenger
       .call(
         'ApprovalController:addRequest',
         {
-          id: approvalFlowId,
+          id: this.approvalFlowId,
           origin,
           type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
           requestState: {
@@ -114,105 +93,242 @@ export async function submitSmartTransactionHook(
         },
         true,
       )
-      .then(onApproveOrReject, onApproveOrReject);
-    let transactionHash: string | undefined | null;
-    if (returnTxHashAsap && submitTransactionResponse?.txHash) {
-      transactionHash = submitTransactionResponse.txHash;
-    }
+      .then(onApproveOrRejectWrapper, onApproveOrRejectWrapper);
+  }
+
+  private async updateApprovalRequest({
+    controllerMessenger,
+    isDapp,
+    smartTransaction,
+  }: {
+    controllerMessenger: SmartTransactionsControllerMessenger;
+    isDapp: boolean;
+    smartTransaction: SmartTransaction;
+  }) {
+    return await controllerMessenger.call(
+      'ApprovalController:updateRequestState',
+      {
+        id: this.approvalFlowId,
+        requestState: {
+          smartTransaction,
+          isDapp,
+        },
+      },
+    );
+  }
+
+  private async updateStxStatusPageOnStatusChange({
+    smartTransactionsController,
+    uuid,
+    controllerMessenger,
+    isDapp,
+  }: {
+    smartTransactionsController: SmartTransactionsController;
+    uuid: string;
+    controllerMessenger: SmartTransactionsControllerMessenger;
+    isDapp: boolean;
+  }) {
     (smartTransactionsController as any).eventEmitter.on(
       `${uuid}:smartTransaction`,
       async (smartTransaction: SmartTransaction) => {
-        log.debug('Smart Transaction: ', smartTransaction);
-        const { status, statusMetadata } = smartTransaction;
+        const { status } = smartTransaction;
         if (!status || status === SmartTransactionStatuses.PENDING) {
           return;
         }
-        if (statusMetadata?.minedHash) {
-          log.debug(
-            'Smart Transaction - Received tx hash: ',
-            statusMetadata?.minedHash,
-          );
-          transactionHash = statusMetadata.minedHash;
-        } else {
-          transactionHash = null;
+        if (!this.approvalFlowEnded) {
+          await this.updateApprovalRequest({
+            controllerMessenger,
+            isDapp,
+            smartTransaction,
+          });
         }
-        if (approvalFlowEnded) {
-          return;
-        }
-        await controllerMessenger.call(
-          'ApprovalController:updateRequestState',
-          {
-            id: approvalFlowId,
-            requestState: {
-              smartTransaction,
-              isDapp,
-            },
-          },
-        );
       },
     );
-    const waitForTransactionHashChange = () => {
-      return new Promise((resolve) => {
-        const checkVariable = () => {
-          if (transactionHash === undefined) {
-            setTimeout(checkVariable, 100); // Check again after 100ms
-          } else {
-            resolve(`transactionHash has changed to: ${transactionHash}`);
+  }
+
+  private waitForTransactionHash({
+    smartTransactionsController,
+    uuid,
+  }: {
+    smartTransactionsController: SmartTransactionsController;
+    uuid: string;
+  }): Promise<string | null> {
+    return new Promise((resolve) => {
+      (smartTransactionsController as any).eventEmitter.on(
+        `${uuid}:smartTransaction`,
+        async (smartTransaction: SmartTransaction) => {
+          const { status, statusMetadata } = smartTransaction;
+          if (!status || status === SmartTransactionStatuses.PENDING) {
+            return;
           }
-        };
-
-        checkVariable();
-      });
-    };
-    await waitForTransactionHashChange();
-    if (transactionHash === null) {
-      throw new Error(
-        'Transaction does not have a transaction hash, there was a problem',
+          log.debug('Smart Transaction: ', smartTransaction);
+          if (statusMetadata?.minedHash) {
+            log.debug(
+              'Smart Transaction - Received tx hash: ',
+              statusMetadata?.minedHash,
+            );
+            resolve(statusMetadata.minedHash);
+          } else {
+            resolve(null);
+          }
+        },
       );
+    });
+  }
+
+  private async signAndSubmitTransactions({
+    txParams,
+    getFeesResponse,
+    transactionController,
+    chainId,
+    smartTransactionsController,
+    transactionMeta,
+  }: {
+    txParams: TransactionParams;
+    getFeesResponse: Fees;
+    transactionController: TransactionController;
+    chainId: Hex;
+    smartTransactionsController: SmartTransactionsController;
+    transactionMeta: TransactionMeta;
+  }) {
+    const signedTransactions = await this.createSignedTransactions(
+      txParams,
+      getFeesResponse.tradeTxFees?.fees ?? [],
+      false,
+      transactionController,
+      chainId,
+    );
+    const signedCanceledTransactions = await this.createSignedTransactions(
+      txParams,
+      getFeesResponse.tradeTxFees?.cancelFees || [],
+      true,
+      transactionController,
+      chainId,
+    );
+    return await smartTransactionsController.submitSignedTransactions({
+      signedTransactions,
+      signedCanceledTransactions,
+      txParams,
+      transactionMeta,
+    });
+  }
+
+  private applyFeeToTransaction(
+    txParams: TransactionParams,
+    fee: Fee,
+    isCancel: boolean,
+  ): TransactionParams {
+    const unsignedTransaction = {
+      ...txParams,
+      maxFeePerGas: `0x${decimalToHex(fee.maxFeePerGas)}`,
+      maxPriorityFeePerGas: `0x${decimalToHex(fee.maxPriorityFeePerGas)}`,
+      gas: isCancel
+        ? `0x${decimalToHex(CANCEL_GAS_LIMIT_DEC)}` // It has to be 21000 for cancel transactions, otherwise the API would reject it.
+        : txParams.gas,
+    };
+    if (isCancel) {
+      unsignedTransaction.to = unsignedTransaction.from;
+      unsignedTransaction.data = '0x';
     }
-    return { transactionHash };
-  } catch (error) {
-    log.error(error);
-    throw error;
+    return unsignedTransaction;
   }
-}
 
-async function createSignedTransactions(
-  txParams: TransactionParams,
-  fees: Fee[],
-  isCancel: boolean,
-  transactionController: TransactionController,
-  chainId: Hex,
-): Promise<string[]> {
-  const unsignedTransactions = fees.map((fee) => {
-    return applyFeeToTransaction(txParams, fee, isCancel);
-  });
-  const transactionsWithChainId = unsignedTransactions.map((tx) => ({
-    ...tx,
-    chainId: tx.chainId || chainId,
-  }));
-  return (await transactionController.approveTransactionsWithSameNonce(
-    transactionsWithChainId,
-    { hasNonce: true },
-  )) as string[];
-}
-
-export function applyFeeToTransaction(
-  txParams: TransactionParams,
-  fee: Fee,
-  isCancel: boolean,
-): TransactionParams {
-  const unsignedTransaction = {
-    ...txParams,
-    maxFeePerGas: `0x${decimalToHex(fee.maxFeePerGas)}`,
-    maxPriorityFeePerGas: `0x${decimalToHex(fee.maxPriorityFeePerGas)}`,
-    gas: isCancel
-      ? `0x${decimalToHex(21000)}` // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-      : txParams.gas,
-  };
-  if (isCancel) {
-    unsignedTransaction.to = unsignedTransaction.from;
-    unsignedTransaction.data = '0x';
+  private async createSignedTransactions(
+    txParams: TransactionParams,
+    fees: Fee[],
+    isCancel: boolean,
+    transactionController: TransactionController,
+    chainId: Hex,
+  ): Promise<string[]> {
+    const unsignedTransactions = fees.map((fee) => {
+      return this.applyFeeToTransaction(txParams, fee, isCancel);
+    });
+    const transactionsWithChainId = unsignedTransactions.map((tx) => ({
+      ...tx,
+      chainId: tx.chainId || chainId,
+    }));
+    return (await transactionController.approveTransactionsWithSameNonce(
+      transactionsWithChainId,
+      { hasNonce: true },
+    )) as string[];
   }
-  return unsignedTransaction;
+
+  async onApproveOrReject(
+    controllerMessenger: SmartTransactionsControllerMessenger,
+  ) {
+    controllerMessenger.call('ApprovalController:endFlow', {
+      id: this.approvalFlowId,
+    });
+    this.approvalFlowEnded = true;
+  }
+
+  async submit(request: SubmitSmartTransactionRequest) {
+    const {
+      transactionMeta,
+      smartTransactionsController,
+      transactionController,
+      isSmartTransaction,
+      controllerMessenger,
+      featureFlags,
+    } = request;
+    const isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
+    const { chainId, txParams } = transactionMeta;
+    // Will cause TransactionController to publish to the RPC provider as normal.
+    const useRegularTransactionSubmit = { transactionHash: undefined };
+    if (!isSmartTransaction) {
+      return useRegularTransactionSubmit;
+    }
+    const { id: approvalFlowId } = await controllerMessenger.call(
+      'ApprovalController:startFlow',
+    );
+    this.approvalFlowId = approvalFlowId;
+    try {
+      const getFeesResponse = await smartTransactionsController.getFees(
+        { ...txParams, chainId },
+        undefined,
+      );
+      const submitTransactionResponse = await this.signAndSubmitTransactions({
+        txParams,
+        getFeesResponse,
+        transactionController,
+        chainId,
+        smartTransactionsController,
+        transactionMeta,
+      });
+      const uuid = submitTransactionResponse?.uuid;
+      if (!uuid) {
+        throw new Error('No smart transaction UUID');
+      }
+      const returnTxHashAsap =
+        featureFlags?.smartTransactions?.returnTxHashAsap;
+      this.addApprovalRequest({
+        controllerMessenger,
+        isDapp,
+      });
+      this.updateStxStatusPageOnStatusChange({
+        smartTransactionsController,
+        uuid,
+        controllerMessenger,
+        isDapp,
+      });
+      let transactionHash: string | undefined | null;
+      if (returnTxHashAsap && submitTransactionResponse?.txHash) {
+        transactionHash = submitTransactionResponse.txHash;
+      } else {
+        transactionHash = await this.waitForTransactionHash({
+          smartTransactionsController,
+          uuid,
+        });
+      }
+      if (transactionHash === null) {
+        throw new Error(
+          'Transaction does not have a transaction hash, there was a problem',
+        );
+      }
+      return { transactionHash };
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+  }
 }
