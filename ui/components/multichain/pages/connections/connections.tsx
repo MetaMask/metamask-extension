@@ -287,44 +287,6 @@ export const Connections = () => {
           width={BlockSize.Full}
           gap={4}
         >
-          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-            <Box
-              display={Display.Flex}
-              gap={2}
-              flexDirection={FlexDirection.Column}
-              width={BlockSize.Full}
-              data-test-id="connections-button"
-            >
-              <Button
-                size={ButtonSize.Lg}
-                block
-                variant={ButtonVariant.Secondary}
-                startIconName={IconName.Add}
-                onClick={() => setShowConnectAccountsModal(true)}
-              >
-                {t('connectMoreAccounts')}
-              </Button>
-              <Button
-                size={ButtonSize.Lg}
-                block
-                variant={ButtonVariant.Secondary}
-                startIconName={IconName.Logout}
-                danger
-                onClick={() => setShowDisconnectAllModal(true)}
-              >
-                {t('disconnectAllAccounts')}
-              </Button>
-            </Box>
-          ) : (
-            <ButtonPrimary
-              size={ButtonPrimarySize.Lg}
-              block
-              data-test-id="no-connections-button"
-              onClick={() => dispatch(requestAccountsPermission())}
-            >
-              {t('connectAccounts')}
-            </ButtonPrimary>
-          )}
           {showConnectedAccountsUpdatedToast ? (
             <ToastContainer>
               <Toast
@@ -383,6 +345,44 @@ export const Connections = () => {
               />
             </ToastContainer>
           ) : null}
+          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+            <Box
+              display={Display.Flex}
+              gap={2}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              data-test-id="connections-button"
+            >
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                startIconName={IconName.Add}
+                onClick={() => setShowConnectAccountsModal(true)}
+              >
+                {t('connectMoreAccounts')}
+              </Button>
+              <Button
+                size={ButtonSize.Lg}
+                block
+                variant={ButtonVariant.Secondary}
+                startIconName={IconName.Logout}
+                danger
+                onClick={() => setShowDisconnectAllModal(true)}
+              >
+                {t('disconnectAllAccounts')}
+              </Button>
+            </Box>
+          ) : (
+            <ButtonPrimary
+              size={ButtonPrimarySize.Lg}
+              block
+              data-test-id="no-connections-button"
+              onClick={() => dispatch(requestAccountsPermission())}
+            >
+              {t('connectAccounts')}
+            </ButtonPrimary>
+          )}
         </Box>
       </Footer>
     </Page>

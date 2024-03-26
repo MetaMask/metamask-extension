@@ -44,7 +44,7 @@ export const ConnectedAccountsMenu = ({
   disableAccountSwitcher: boolean;
   onClose: () => void;
   closeMenu: () => void;
-  onActionClick: (mesg: string) => void;
+  onActionClick: (message: string) => void;
 }) => {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();

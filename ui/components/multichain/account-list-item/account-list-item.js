@@ -428,7 +428,7 @@ AccountListItem.propTypes = {
   /**
    * Function to set account name to show disconnect toast when an account is disconnected
    */
-  onActionClick: PropTypes.func,
+  onActionClick: PropTypes.func.isRequired,
   /**
    * File location of the avatar icon
    */
