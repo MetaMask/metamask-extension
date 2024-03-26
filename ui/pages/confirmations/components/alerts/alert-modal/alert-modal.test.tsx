@@ -89,10 +89,10 @@ describe('AlertModal', () => {
     };
     const { getByText } = renderWithProvider(
       <AlertModal
-        ownerId={ownerIdMock}
+        ownerId={OWNER_ID_MOCK}
         handleButtonClick={handleButtonClickMock}
         onClose={onCloseMock}
-        alertKey={fromAlertKeyMock}
+        alertKey={FROM_ALERT_KEY_MOCK}
         customButton={customButton}
       />,
       mockStore,
