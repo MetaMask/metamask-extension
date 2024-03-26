@@ -2149,8 +2149,8 @@ type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
   address: string,
-  userAddress: string,
-  tokenId: string,
+  userAddress?: string,
+  tokenId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
@@ -4665,21 +4665,6 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
-export function setTransactionSecurityCheckEnabled(
-  transactionSecurityCheckEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
-        transactionSecurityCheckEnabled,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
-}
-
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
@@ -4736,6 +4721,14 @@ export function setUseRequestQueue(val: boolean): void {
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export function setUseTransactionSimulations(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseTransactionSimulations', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }

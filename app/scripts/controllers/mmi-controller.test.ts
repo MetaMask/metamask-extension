@@ -245,7 +245,6 @@ describe('MMIController', function () {
         }),
         isEthSignEnabled: jest.fn(),
         getAllState: jest.fn(),
-        securityProviderRequest: jest.fn(),
         getCurrentChainId: jest.fn(),
       }),
       appStateController: new AppStateController({
