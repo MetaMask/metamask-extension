@@ -40,7 +40,7 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import {
   SendPageAccountPicker,
-  SendPageContent,
+  SendPageRecipientContent,
   SendPageRecipient,
   SendPageRecipientInput,
 } from './components';
@@ -183,7 +183,7 @@ export const SendPage = () => {
         )}
         <SendPageRecipientInput />
         {isSendFormShown ? (
-          <SendPageContent
+          <SendPageRecipientContent
             requireContractAddressAcknowledgement={
               requireContractAddressAcknowledgement
             }
