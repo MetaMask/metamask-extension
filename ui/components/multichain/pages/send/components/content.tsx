@@ -11,7 +11,6 @@ import {
   acknowledgeRecipientWarning,
   getCurrentDraftTransaction,
   getSendAsset,
-  updateSendAmount,
   updateSendAsset,
 } from '../../../../../ducks/send';
 import {
@@ -121,9 +120,6 @@ export const SendPageContent = ({
           asset={transactionAsset}
           onAssetChange={handleSelectToken}
           amount={amount}
-          onAmountChange={(newAmount: string) =>
-            dispatch(updateSendAmount(newAmount))
-          }
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}

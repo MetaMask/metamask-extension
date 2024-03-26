@@ -14,6 +14,7 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import {
   SEND_STAGES,
+  getCurrentDraftTransaction,
   getDraftTransactionExists,
   getDraftTransactionID,
   getRecipient,
@@ -24,6 +25,7 @@ import {
   resetSendState,
   signTransaction,
   startNewDraftTransaction,
+  updateSendAmount,
 } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -35,6 +37,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
+import { AssetPickerAmount } from '../..';
 import {
   SendPageAccountPicker,
   SendPageContent,
@@ -48,6 +51,10 @@ export const SendPage = () => {
 
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
+
+  const { asset: transactionAsset, amount } = useSelector(
+    getCurrentDraftTransaction,
+  );
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
@@ -162,6 +169,18 @@ export const SendPage = () => {
       </Header>
       <Content>
         <SendPageAccountPicker />
+        {isSendFormShown && (
+          <AssetPickerAmount
+            asset={transactionAsset}
+            // TODO: update to dest asset
+            amount={amount}
+            // FIXME: no-op
+            onAssetChange={() => ({})}
+            onAmountChange={(newAmount) =>
+              dispatch(updateSendAmount(newAmount))
+            }
+          />
+        )}
         <SendPageRecipientInput />
         {isSendFormShown ? (
           <SendPageContent
