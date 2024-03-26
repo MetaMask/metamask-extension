@@ -1,46 +1,55 @@
+import React from 'react';
+import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { useSelector } from 'react-redux';
+import configureStore from '../../store/store';
 import useRamps from './useRamps';
 
-jest.mock('react-redux');
+const mockedMetametricsId = '0xtestMetaMetricsId';
 
-jest.mock('./../../selectors', () => ({
-  getCurrentChainId: jest.fn(),
-}));
-
-jest.mock('../../../shared/constants/network', () => ({
-  CHAIN_IDS: {
-    GOERLI: '5',
-    SEPOLIA: '10',
-    MAINNET: '1',
+let mockStoreState = {
+  metamask: {
+    providerConfig: {
+      chainId: '0x1',
+    },
+    metaMetricsId: mockedMetametricsId,
   },
-}));
+};
+
+const wrapper = ({ children }) => (
+  <Provider store={configureStore(mockStoreState)}>{children}</Provider>
+);
 
 describe('useRamps', () => {
-  beforeAll(() => {
-    jest.clearAllMocks();
-    Object.defineProperty(global, 'platform', {
-      value: {
-        openTab: jest.fn(),
-      },
-    });
+  beforeEach(() => {
+    global.platform = { openTab: jest.fn() };
   });
 
-  it('should open the buy crypto URL for MAINNET chain ID', () => {
-    const mockChainId = '1';
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&metametricsId=1`;
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    useSelector.mockReturnValue(mockChainId);
-    const openTabSpy = jest.spyOn(global.platform, 'openTab');
+  ['0x1', '0x38', '0xa'].forEach((mockChainId) => {
+    it(`should open the buy crypto URL with the currently connected chain ID of ${mockChainId}`, () => {
+      mockStoreState = {
+        ...mockStoreState,
+        metamask: {
+          ...mockStoreState.metamask,
+          providerConfig: {
+            chainId: mockChainId,
+          },
+        },
+      };
 
-    const { result } = renderHook(() => useRamps());
+      const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}`;
 
-    expect(typeof result.current.openBuyCryptoInPdapp).toBe('function');
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
-    result.current.openBuyCryptoInPdapp();
+      const { result } = renderHook(() => useRamps(), { wrapper });
 
-    expect(openTabSpy).toHaveBeenCalledWith({
-      url: mockBuyURI,
+      result.current.openBuyCryptoInPdapp();
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: mockBuyURI,
+      });
     });
   });
 });
