@@ -172,6 +172,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
       bundlerServer,
+      mockServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -229,7 +230,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
+      if (
+        process.env.E2E_LEAVE_RUNNING !== 'true' &&
+        (driver.errors.length > 0 || driver.exceptions.length > 0)
+      ) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
@@ -637,6 +641,16 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const createDappTransaction = async (driver, transaction) => {
+  await openDapp(
+    driver,
+    null,
+    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
+      transaction,
+    ])}`,
+  );
+};
+
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -783,6 +797,10 @@ const sendTransaction = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
+
+  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
+  await driver.findElement({ text: '0.000', tag: 'span' });
+
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
@@ -826,16 +844,11 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
-    undefined,
-    {
-      minimumFractionDigits: 2,
-    },
-  );
+  const balance = await ganacheServer.getBalance();
 
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `$ ${balance} USD`,
+    text: `${balance} ETH`,
   });
 };
 
@@ -868,7 +881,7 @@ async function unlockWallet(
   await driver.press('#password', driver.Key.ENTER);
 
   if (options.waitLoginSuccess !== false) {
-    // No guard is neccessary here, because it goes from present to absent
+    // No guard is necessary here, because it goes from present to absent
     await driver.assertElementNotPresent('[data-testid="unlock-page"]');
   }
 }
@@ -1098,6 +1111,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,

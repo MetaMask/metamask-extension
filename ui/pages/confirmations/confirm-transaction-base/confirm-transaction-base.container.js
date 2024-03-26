@@ -24,6 +24,7 @@ import {
   setDefaultHomeActiveTabName,
   addToAddressBook,
   updateTransaction,
+  updateEditableParams,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -159,8 +160,8 @@ const mapStateToProps = (state, ownProps) => {
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];
-  const fromName = getInternalAccountByAddress(state, fromAddress)?.metadata
-    .name;
+  const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
+  const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
@@ -319,6 +320,9 @@ const mapStateToProps = (state, ownProps) => {
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    fromInternalAccount,
+    ///: END:ONLY_INCLUDE_IF
     isUsingPaymaster,
     isSigningOrSubmitting,
     isUserOpContractDeployError,
@@ -374,6 +378,9 @@ export const mapDispatchToProps = (dispatch) => {
       ),
     updateTransaction: (txMeta) => {
       dispatch(updateTransaction(txMeta, true));
+    },
+    updateTransactionValue: (id, value) => {
+      dispatch(updateEditableParams(id, { value }));
     },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>

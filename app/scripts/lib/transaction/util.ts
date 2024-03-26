@@ -12,6 +12,7 @@ import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
+import type { Hex } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
 import { captureException } from '@sentry/browser';
@@ -22,6 +23,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { normalizePPOMRequest } from '../ppom/ppom-util';
 ///: END:ONLY_INCLUDE_IF
 
 /**
@@ -33,6 +35,7 @@ export type SecurityAlertResponse = {
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
+  description?: string;
 };
 
 export type AddTransactionOptions = NonNullable<
@@ -58,7 +61,7 @@ export type AddTransactionOptions = NonNullable<
 >;
 
 type BaseAddTransactionRequest = {
-  chainId: string;
+  chainId: Hex;
   networkClientId: string;
   ppomController: PPOMController;
   securityAlertsEnabled: boolean;
@@ -144,7 +147,7 @@ export async function addTransaction(
     !typeIsExcludedFromPPOM
   ) {
     try {
-      const ppomRequest = {
+      const ppomRequest = normalizePPOMRequest({
         method: 'eth_sendTransaction',
         id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
         origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
@@ -156,7 +159,7 @@ export async function addTransaction(
             data: transactionParams.data,
           },
         ],
-      };
+      });
 
       const securityAlertId = uuid();
 

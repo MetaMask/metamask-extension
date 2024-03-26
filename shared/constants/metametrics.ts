@@ -587,6 +587,7 @@ export enum MetaMetricsEventName {
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
   SimulationFails = 'Simulation Fails',
+  SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -638,6 +639,7 @@ export enum MetaMetricsEventName {
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
+  AccountRemoveFailed = 'Account Remove Failed',
   TestNetworksDisplayed = 'Test Networks Displayed',
   AddNetworkButtonClick = 'Add Network Button Clicked',
   CustomNetworkAdded = 'Custom Network Added',
@@ -662,7 +664,7 @@ export enum MetaMetricsEventName {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
-  SnapInstallRejected = 'Snap Update Rejected',
+  SnapInstallRejected = 'Snap Install Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
   SnapUpdateStarted = 'Snap Update Started',
@@ -676,6 +678,21 @@ export enum MetaMetricsEventName {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
+  AddSnapAccountViewed = 'Add Snap Account Viewed',
+  AddSnapAccountConfirmed = 'Add Snap Account Confirmed',
+  AddSnapAccountCanceled = 'Add Snap Account Canceled',
+  AddSnapAccountSuccessViewed = 'Add Snap Account Success Viewed',
+  AddSnapAccountSuccessClicked = 'Add Snap Account Success Clicked',
+  RemoveSnapAccountViewed = 'Remove Snap Account Viewed',
+  RemoveSnapAccountConfirmed = 'Remove Snap Account Confirmed',
+  RemoveSnapAccountCanceled = 'Remove Snap Account Canceled',
+  RemoveSnapAccountSuccessViewed = 'Remove Snap Account Success Viewed',
+  RemoveSnapAccountSuccessClicked = 'Remove Snap Account Success Clicked',
+  SnapAccountTransactionLoadingViewed = 'Snap Account Transaction Loading Viewed',
+  SnapAccountTransactionFinalizeViewed = 'Snap Account Transaction Finalize Viewed',
+  SnapAccountTransactionFinalizeRedirectGoToSiteClicked = 'Snap Account Transaction Finalize Redirect "Go To Site" Clicked',
+  SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
+  SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
   ///: END:ONLY_INCLUDE_IF
 }
 
@@ -683,6 +700,9 @@ export enum MetaMetricsEventAccountType {
   Default = 'metamask',
   Hardware = 'hardware',
   Imported = 'imported',
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  Snap = 'snap',
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum MetaMetricsEventAccountImportType {

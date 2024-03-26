@@ -347,7 +347,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={CONFIRMATION_V_NEXT_ROUTE}
+          path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
           component={ConfirmationPage}
         />
         {
@@ -618,10 +618,16 @@ export default class Routes extends Component {
         ? this.getConnectingLabel(loadingMessage)
         : null;
 
+    // Conditions for displaying the Send route
+    const isSendRoute = matchPath(location.pathname, {
+      path: SEND_ROUTE,
+      exact: false,
+    });
     const shouldShowNetworkInfo =
       isUnlocked &&
       currentChainId &&
       !isTestNet &&
+      !isSendRoute &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
       completedOnboarding &&
@@ -634,11 +640,12 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-    let isLoadingShown = isLoading;
+    let isLoadingShown = isLoading && completedOnboarding;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
       isLoading &&
+      completedOnboarding &&
       !pendingConfirmations.some(
         (confirmation) =>
           confirmation.type ===
@@ -701,7 +708,9 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
+          {!isLoading && isNetworkLoading && completedOnboarding ? (
+            <LoadingNetwork />
+          ) : null}
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
@@ -773,6 +782,8 @@ export default class Routes extends Component {
         return t('connectingToSepolia');
       case NETWORK_TYPES.LINEA_GOERLI:
         return t('connectingToLineaGoerli');
+      case NETWORK_TYPES.LINEA_SEPOLIA:
+        return t('connectingToLineaSepolia');
       case NETWORK_TYPES.LINEA_MAINNET:
         return t('connectingToLineaMainnet');
       default:

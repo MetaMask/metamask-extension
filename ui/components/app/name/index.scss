@@ -1,6 +1,6 @@
 .name {
   border-radius: 36px;
-  padding: 6px 9px 6px 9px;
+  padding: 2px 8px 2px 4px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -8,10 +8,10 @@
   max-width: 100%;
 
   &__missing {
-    background-color: var(--color-error-muted);
+    background-color: var(--color-background-alternative);
 
     .name__value {
-      color: var(--color-error-default);
+      color: var(--color-text-default);
     }
   }
 
@@ -32,7 +32,7 @@
   }
 
   &__missing &__icon {
-    color: var(--color-error-default);
+    color: var(--color-text-default);
   }
 
   &__saved &__icon {
