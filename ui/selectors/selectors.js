@@ -2209,22 +2209,27 @@ export function getUpdatedAndSortedAccounts(state) {
   });
 
   // Find the account with the most recent lastSelected timestamp among accounts with metadata
+  const accountsWithLastSelected = accounts.filter(
+    (account) => account.connections && account.lastSelected,
+  );
 
-  const mostRecentAccount = accounts
-    .filter((account) => account.connections && account.lastSelected)
-    .reduce((prev, current) => {
-      return prev.lastSelected > current.lastSelected ? prev : current;
-    });
+  const mostRecentAccount =
+    accountsWithLastSelected.length > 0
+      ? accountsWithLastSelected.reduce((prev, current) => {
+          return prev.lastSelected > current.lastSelected ? prev : current;
+        })
+      : null;
 
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses.includes(account.address));
     account.hidden = Boolean(hiddenAddresses.includes(account.address));
-    if (account.id === mostRecentAccount.id) {
+    if (mostRecentAccount && account.id === mostRecentAccount.id) {
       account.active = true;
     } else {
       account.active = false;
     }
   });
+
   const sortedPinnedAccounts = pinnedAddresses
     ?.map((address) => accounts.find((account) => account.address === address))
     .filter((account) =>
