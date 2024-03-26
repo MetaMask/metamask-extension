@@ -26,14 +26,19 @@ import {
   signTransaction,
   startNewDraftTransaction,
   updateSendAmount,
+  updateSendAsset,
 } from '../../../../ducks/send';
-import { AssetType } from '../../../../../shared/constants/transaction';
+import {
+  TokenStandard,
+  AssetType,
+} from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
+  SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
@@ -62,6 +67,30 @@ export const SendPage = () => {
   const history = useHistory();
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleSelectToken = async (token) => {
+    if (token.type === AssetType.native) {
+      dispatch(
+        updateSendAsset({
+          type: token.type,
+          details: token,
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    } else {
+      dispatch(
+        updateSendAsset({
+          type: token.type ?? AssetType.token,
+          details: {
+            ...token,
+            standard: token.standard ?? TokenStandard.ERC20,
+          },
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    }
+    history.push(SEND_ROUTE);
+  };
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
@@ -174,8 +203,7 @@ export const SendPage = () => {
             asset={transactionAsset}
             // TODO: update to dest asset
             amount={amount}
-            // FIXME: no-op
-            onAssetChange={() => ({})}
+            onAssetChange={handleSelectToken}
             onAmountChange={(newAmount) =>
               dispatch(updateSendAmount(newAmount))
             }
