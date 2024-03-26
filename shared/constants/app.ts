@@ -81,6 +81,11 @@ export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
 };
 ///: END:ONLY_INCLUDE_IF
 
+export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
+  showSmartTransactionStatusPage:
+    'smartTransaction:showSmartTransactionStatusPage',
+};
+
 /**
  * Custom messages to send and be received by the extension
  */

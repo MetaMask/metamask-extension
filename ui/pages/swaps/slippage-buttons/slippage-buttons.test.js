@@ -36,32 +36,6 @@ describe('SlippageButtons', () => {
     );
   });
 
-  it('renders the component with the smart transaction opt-in button available, opt into STX', () => {
-    const setSmartTransactionsOptInStatus = jest.fn();
-    const { getByText } = renderWithProvider(
-      <SlippageButtons
-        {...createProps({
-          smartTransactionsEnabled: true,
-          setSmartTransactionsOptInStatus,
-        })}
-      />,
-    );
-    expect(getByText('2%')).toBeInTheDocument();
-    expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('custom')).toBeInTheDocument();
-    expect(getByText('Advanced options')).toBeInTheDocument();
-    expect(
-      document.querySelector('.slippage-buttons__header'),
-    ).toMatchSnapshot();
-    expect(
-      document.querySelector('.slippage-buttons__button-group'),
-    ).toMatchSnapshot();
-    expect(getByText('Smart Swaps')).toBeInTheDocument();
-    expect(document.querySelector('.toggle-button--off')).toBeInTheDocument();
-    fireEvent.click(document.querySelector('.toggle-button'));
-    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true, false);
-  });
-
   it('renders slippage with a custom value', () => {
     const { getByText } = renderWithProvider(
       <SlippageButtons {...createProps({ currentSlippage: 2.5 })} />,

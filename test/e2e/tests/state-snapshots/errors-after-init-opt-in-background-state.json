@@ -166,6 +166,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "stxOptIn": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },

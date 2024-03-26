@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
@@ -17,6 +17,7 @@ import {
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_SMART_TRANSACTIONS,
   getTranslatedUINotifications,
   NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
@@ -25,16 +26,29 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  TextVariant,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { useTheme } from '../../../hooks/useTheme';
 ///: END:ONLY_INCLUDE_IF
-import { getSortedAnnouncementsToShow } from '../../../selectors';
-import { updateViewedNotifications } from '../../../store/actions';
-import { ButtonPrimary, Text } from '../../component-library';
+import {
+  getSortedAnnouncementsToShow,
+  getSmartTransactionsOptInStatus,
+} from '../../../selectors';
+import { updateViewedNotifications, setStxOptIn } from '../../../store/actions';
+import {
+  ButtonPrimary,
+  Text,
+  Button,
+  ButtonVariant,
+  Box,
+} from '../../component-library';
 import Popover from '../../ui/popover';
 
 function getActionFunctionById(id, history) {
@@ -66,6 +80,9 @@ function getActionFunctionById(id, history) {
       global.platform.openTab({
         url: 'https://portfolio.metamask.io/sell/build-quote',
       });
+    },
+    [NOTIFICATION_SMART_TRANSACTIONS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_SMART_TRANSACTIONS]: true });
     },
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
@@ -119,12 +136,41 @@ const renderDescription = (description) => {
   );
 };
 
+const renderExtraSection = ({ id, history, t }) => {
+  switch (id) {
+    case NOTIFICATION_SMART_TRANSACTIONS:
+      return (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          marginBottom={4}
+        >
+          <Button
+            type="link"
+            variant={ButtonVariant.Link}
+            onClick={() => {
+              updateViewedNotifications({
+                [NOTIFICATION_SMART_TRANSACTIONS]: true,
+              });
+              history.push(`${ADVANCED_ROUTE}#smart-transactions`);
+            }}
+          >
+            {t('notificationsStxManageInSettings')}
+          </Button>
+        </Box>
+      );
+    default:
+      return null;
+  }
+};
+
 const renderFirstNotification = ({
   notification,
   idRefMap,
   history,
   isLast,
   trackEvent,
+  t,
 }) => {
   const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id, history);
@@ -161,6 +207,11 @@ const renderFirstNotification = ({
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
       {placeImageBelowDescription && imageComponent}
+      {renderExtraSection({
+        id,
+        history,
+        t,
+      })}
       {actionText && (
         <ButtonPrimary
           className="whats-new-popup__button"
@@ -223,15 +274,29 @@ const renderSubsequentNotification = ({
 export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
   const locale = useSelector(getCurrentLocale);
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const theme = useTheme();
   ///: END:ONLY_INCLUDE_IF
 
+  const [stxOptInSent, setStxOptInSent] = useState(false);
   const [seenNotifications, setSeenNotifications] = useState({});
+
+  const stxNotification = notifications.find(
+    (notification) => notification.id === NOTIFICATION_SMART_TRANSACTIONS,
+  );
+  if (stxNotification && !smartTransactionsOptInStatus && !stxOptInSent) {
+    setStxOptInSent(true);
+    dispatch(setStxOptIn(true));
+  }
+
   const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 
   const popoverRef = useRef();
@@ -310,6 +375,7 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
+    [NOTIFICATION_SMART_TRANSACTIONS]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
     [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -363,6 +429,7 @@ export default function WhatsNewPopup({ onClose }) {
             history,
             isLast,
             trackEvent,
+            t,
           });
         })}
       </div>

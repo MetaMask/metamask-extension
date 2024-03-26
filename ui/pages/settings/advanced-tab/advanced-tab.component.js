@@ -9,6 +9,8 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
+  ButtonLink,
+  ButtonLinkSize,
 } from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import TextField from '../../../components/ui/text-field';
@@ -19,6 +21,7 @@ import {
   JustifyContent,
   Severity,
   TextVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ExportableContentType,
@@ -48,12 +51,12 @@ export default class AdvancedTab extends PureComponent {
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    showExtensionInFullSizeView: PropTypes.bool,
+    stxOptIn: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setShowExtensionInFullSizeView: PropTypes.func.isRequired,
+    setStxOptIn: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
@@ -62,6 +65,8 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
+    showExtensionInFullSizeView: PropTypes.bool,
+    setShowExtensionInFullSizeView: PropTypes.func.isRequired,
   };
 
   state = {
@@ -238,13 +243,63 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderToggleStxOptIn() {
+    const { t } = this.context;
+    const { stxOptIn, setStxOptIn } = this.props;
+
+    const learMoreLink = (
+      <ButtonLink
+        size={ButtonLinkSize.Inherit}
+        textProps={{
+          variant: TextVariant.bodyMd,
+          alignItems: AlignItems.flexStart,
+        }}
+        as="a"
+        href="https://support.metamask.io/hc/en-us/articles/9184393821211"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('learnMoreUpperCase')}
+      </ButtonLink>
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-enable-smart-transactions"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('smartTransactions')}</span>
+          <div className="settings-page__content-description">
+            {t('stxOptInDescription', [learMoreLink])}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={stxOptIn}
+            onToggle={(value) => setStxOptIn(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-stx-opt-in-toggle"
+          />
+        </div>
+      </Box>
+    );
+  }
+
   renderHexDataOptIn() {
     const { t } = this.context;
     const { sendHexData, setHexDataFeatureFlag } = this.props;
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -277,7 +332,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -312,7 +367,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
         display={Display.Flex}
@@ -346,7 +401,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-extension-in-full-size-view"
         display={Display.Flex}
@@ -379,7 +434,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
         display={Display.Flex}
@@ -413,7 +468,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
         display={Display.Flex}
@@ -462,7 +517,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
         display={Display.Flex}
@@ -509,7 +564,7 @@ export default class AdvancedTab extends PureComponent {
     };
     return (
       <Box
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-toggle-ethsign"
         display={Display.Flex}
@@ -589,7 +644,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <Box
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
         display={Display.Flex}
@@ -631,7 +686,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[12]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-restore"
         display={Display.Flex}
@@ -694,6 +749,7 @@ export default class AdvancedTab extends PureComponent {
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
+        {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
