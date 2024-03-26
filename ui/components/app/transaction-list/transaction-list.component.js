@@ -25,9 +25,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { RampsCard } from '../../multichain/ramps-card';
 import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const PAGE_INCREMENT = 10;
 
@@ -110,7 +110,6 @@ const groupTransactionsByDate = (transactionGroups) => {
 export default function TransactionList({
   hideTokenTransactions,
   tokenAddress,
-  boxProps,
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
@@ -230,7 +229,8 @@ export default function TransactionList({
       {showRampsCard && (
         <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
       )}
-      <Box className="transaction-list" {...boxProps}>
+
+      <Box className="transaction-list" paddingTop={4}>
         <Box className="transaction-list__transactions">
           {pendingTransactions.length > 0 && (
             <Box className="transaction-list__pending-transactions">
@@ -331,11 +331,9 @@ export default function TransactionList({
 TransactionList.propTypes = {
   hideTokenTransactions: PropTypes.bool,
   tokenAddress: PropTypes.string,
-  boxProps: PropTypes.object,
 };
 
 TransactionList.defaultProps = {
   hideTokenTransactions: false,
   tokenAddress: undefined,
-  boxProps: undefined,
 };
