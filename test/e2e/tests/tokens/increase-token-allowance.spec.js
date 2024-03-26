@@ -75,7 +75,7 @@ describe('Increase Token Allowance', function () {
   ) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-    let approveToFillEl = await driver.findElement('[id="approveTo"]');
+    const approveToFillEl = await driver.findElement('[id="approveTo"]');
     await approveToFillEl.clear();
     await approveToFillEl.fill(accountToApproveFor);
 
@@ -91,7 +91,7 @@ describe('Increase Token Allowance', function () {
     );
     pendingTransactions[0].click();
 
-    let setSpendingCap = await driver.findElement(
+    const setSpendingCap = await driver.findElement(
       '[data-testid="custom-spending-cap-input"]',
     );
     await setSpendingCap.fill(initialSpendingCap);
@@ -142,13 +142,13 @@ describe('Increase Token Allowance', function () {
     recipientAccount,
   ) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-    let transferFromSenderInputEl = await driver.findElement(
+    const transferFromSenderInputEl = await driver.findElement(
       '[id="transferFromSenderInput"]',
     );
     await transferFromSenderInputEl.clear();
     await transferFromSenderInputEl.fill(senderAccount);
 
-    let transferFromRecipientInputEl = await driver.findElement(
+    const transferFromRecipientInputEl = await driver.findElement(
       '[id="transferFromRecipientInput"]',
     );
     await transferFromRecipientInputEl.clear();
@@ -227,7 +227,7 @@ describe('Increase Token Allowance', function () {
     });
 
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    let setSpendingCap = await driver.findElement(
+    const setSpendingCap = await driver.findElement(
       '[data-testid="custom-spending-cap-input"]',
     );
     await setSpendingCap.fill(finalSpendingCap);
