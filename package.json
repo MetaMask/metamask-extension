@@ -116,7 +116,8 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
-    "master-sync": "node development/master-sync.js"
+    "master-sync": "node development/master-sync.js",
+    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
@@ -231,7 +232,12 @@
     "@babel/runtime@npm:^7.4.0": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.18.3": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.8.3": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@babel/runtime@npm:^7.8.4": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
+    "@babel/runtime@npm:^7.8.4": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
+    "@metamask/network-controller@npm:^17.2.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^17.0.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^15.0.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^18.0.1": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
+    "@metamask/network-controller@npm:^17.2.1": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -267,7 +273,7 @@
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.3.1",
-    "@metamask/controller-utils": "patch:@metamask/controller-utils@npm%3A8.0.4#~/.yarn/patches/@metamask-controller-utils-npm-8.0.4-077edd6162.patch",
+    "@metamask/controller-utils": "patch:@metamask/controller-utils@patch%3A@metamask/controller-utils@npm%253A8.0.4%23~/.yarn/patches/@metamask-controller-utils-npm-8.0.4-077edd6162.patch%3A%3Aversion=8.0.4&hash=0d2618#~/.yarn/patches/@metamask-controller-utils-patch-a87ddc3d4b.patch",
     "@metamask/design-tokens": "^2.1.1",
     "@metamask/desktop": "^0.3.0",
     "@metamask/ens-controller": "^9.0.0",
@@ -293,7 +299,7 @@
     "@metamask/message-manager": "^7.3.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/name-controller": "^4.2.0",
-    "@metamask/network-controller": "^18.0.0",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^8.0.0",
