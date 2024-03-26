@@ -24,7 +24,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { SendHexData, SendPageRow } from '.';
 
-export const SendPageContent = ({
+export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
 }: {
   requireContractAddressAcknowledgement: boolean;
