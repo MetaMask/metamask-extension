@@ -492,9 +492,17 @@
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": {
       "packages": {
+        "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>@metamask/safe-event-emitter": true,
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": true,
-        "@metamask/safe-event-emitter": true,
         "stream-browserify": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store>through2": {
@@ -965,9 +973,9 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-filters>@metamask/eth-query": true,
-        "@metamask/eth-json-rpc-filters>@metamask/safe-event-emitter": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/safe-event-emitter": true,
         "pify": true
       }
     },
@@ -975,14 +983,6 @@
       "packages": {
         "@metamask/eth-query>json-rpc-random-id": true,
         "watchify>xtend": true
-      }
-    },
-    "@metamask/eth-json-rpc-filters>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "@metamask/eth-json-rpc-middleware": {
@@ -1003,16 +1003,8 @@
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/safe-event-emitter": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -1102,21 +1094,13 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "@metamask/eth-token-tracker>@metamask/safe-event-emitter": true,
         "@metamask/eth-token-tracker>deep-equal": true,
         "@metamask/eth-token-tracker>eth-block-tracker": true,
         "@metamask/ethjs-contract": true,
         "@metamask/ethjs-query": true,
+        "@metamask/safe-event-emitter": true,
         "bn.js": true,
         "human-standard-token-abi": true
-      }
-    },
-    "@metamask/eth-token-tracker>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "@metamask/eth-token-tracker>deep-equal": {
@@ -1215,17 +1199,9 @@
       },
       "packages": {
         "@metamask/eth-query>json-rpc-random-id": true,
-        "@metamask/eth-token-tracker>eth-block-tracker>@metamask/safe-event-emitter": true,
+        "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
         "pify": true
-      }
-    },
-    "@metamask/eth-token-tracker>eth-block-tracker>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "@metamask/eth-trezor-keyring": {
@@ -1672,22 +1648,14 @@
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/network-controller>@metamask/json-rpc-engine": true,
-        "@metamask/network-controller>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/safe-event-emitter": true
       }
     },
     "@metamask/network-controller>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/network-controller>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
-      }
-    },
-    "@metamask/network-controller>@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "@metamask/notification-controller": {
@@ -1724,9 +1692,17 @@
     },
     "@metamask/obs-store": {
       "packages": {
+        "@metamask/obs-store>@metamask/safe-event-emitter": true,
         "@metamask/obs-store>through2": true,
-        "@metamask/safe-event-emitter": true,
         "stream-browserify": true
+      }
+    },
+    "@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
       }
     },
     "@metamask/obs-store>through2": {
@@ -1910,17 +1886,9 @@
     },
     "@metamask/providers>@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
         "@metamask/utils": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "@metamask/providers>@metamask/object-multiplex": {
@@ -1951,29 +1919,25 @@
     },
     "@metamask/queued-request-controller": {
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/queued-request-controller>@metamask/controller-utils": true,
-        "@metamask/selected-network-controller": true
+        "@metamask/queued-request-controller>@metamask/base-controller": true,
+        "@metamask/queued-request-controller>@metamask/json-rpc-engine": true,
+        "@metamask/utils": true
       }
     },
-    "@metamask/queued-request-controller>@metamask/controller-utils": {
+    "@metamask/queued-request-controller>@metamask/base-controller": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
+        "immer": true
+      }
+    },
+    "@metamask/queued-request-controller>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2679,6 +2643,7 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
+        "fetch": true,
         "setTimeout": true
       },
       "packages": {
@@ -2686,9 +2651,6 @@
         "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
@@ -4164,8 +4126,16 @@
     },
     "json-rpc-engine": {
       "packages": {
-        "@metamask/safe-event-emitter": true,
-        "eth-rpc-errors": true
+        "eth-rpc-errors": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true
+      }
+    },
+    "json-rpc-engine>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
       }
     },
     "json-rpc-middleware-stream": {
@@ -4174,16 +4144,8 @@
         "setTimeout": true
       },
       "packages": {
-        "json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
+        "@metamask/safe-event-emitter": true,
         "json-rpc-middleware-stream>readable-stream": true
-      }
-    },
-    "json-rpc-middleware-stream>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "json-rpc-middleware-stream>readable-stream": {
