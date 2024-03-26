@@ -280,7 +280,16 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "webpack>eslint-scope": true
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+      }
+    },
+    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true,
+        "eslint>eslint-scope>esrecurse": true
       }
     },
     "@babel/eslint-parser>semver": {
@@ -1453,35 +1462,13 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
-        "autoprefixer>browserslist": true,
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>fraction.js": true,
         "autoprefixer>normalize-range": true,
         "postcss": true,
         "postcss>picocolors": true,
-        "stylelint>postcss-value-parser": true
-      }
-    },
-    "autoprefixer>browserslist": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.env": true,
-        "process.versions.node": true
-      },
-      "packages": {
-        "autoprefixer>browserslist>electron-to-chromium": true,
-        "autoprefixer>caniuse-lite": true,
-        "webpack>browserslist>node-releases": true
+        "stylelint>postcss-value-parser": true,
+        "webpack>browserslist": true
       }
     },
     "babelify": {
@@ -3373,6 +3360,7 @@
         "fs.stat": true,
         "fs.statSync": true,
         "os.cpus": true,
+        "os.platform": true,
         "path.basename": true,
         "path.resolve": true,
         "stream.PassThrough": true,
@@ -6573,6 +6561,11 @@
         "process.platform": true
       }
     },
+    "postcss>source-map-js": {
+      "globals": {
+        "console": true
+      }
+    },
     "prettier": {
       "builtin": {
         "assert": true,
@@ -8008,13 +8001,13 @@
         "process.env.AUTOPREFIXER_GRID": true
       },
       "packages": {
+        "autoprefixer>caniuse-lite": true,
         "autoprefixer>normalize-range": true,
         "stylelint>autoprefixer>num2fraction": true,
         "stylelint>postcss": true,
         "stylelint>postcss-value-parser": true,
         "stylelint>postcss>picocolors": true,
-        "webpack>browserslist": true,
-        "webpack>browserslist>caniuse-lite": true
+        "webpack>browserslist": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -8566,10 +8559,9 @@
       }
     },
     "terser>@jridgewell/source-map": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -8994,6 +8986,7 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
@@ -9002,18 +8995,9 @@
         "process.versions.node": true
       },
       "packages": {
-        "webpack>browserslist>caniuse-lite": true,
+        "autoprefixer>caniuse-lite": true,
         "webpack>browserslist>electron-to-chromium": true,
         "webpack>browserslist>node-releases": true
-      }
-    },
-    "webpack>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "webpack>eslint-scope>estraverse": true
       }
     },
     "webpack>json-parse-even-better-errors": {
