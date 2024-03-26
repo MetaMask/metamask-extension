@@ -30,7 +30,10 @@ type AssetPickerAmountProps = OverridingUnion<
     // all of these props should be explicitly received
     asset: Asset;
     amount: Amount;
-    onAmountChange: (newAmount: string) => void;
+    /**
+     * Callback for when the amount changes; disables the input when undefined
+     */
+    onAmountChange?: (newAmount: string) => void;
   }
 >;
 
