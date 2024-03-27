@@ -2,10 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { memoize } from 'lodash';
 
-import {
-  BREAKPOINTS,
-  BorderColor,
-} from '../../../helpers/constants/design-system';
+import { BREAKPOINTS } from '../../../helpers/constants/design-system';
 
 import type {
   BoxComponent,
@@ -227,10 +224,7 @@ export const Box: BoxComponent = React.forwardRef(
         'box--border-style-solid':
           !borderStyle && (Boolean(borderWidth) || Boolean(borderColor)),
         // if borderColor supplied w/o width, default to 1
-        'box--border-width-1':
-          borderWidth === undefined &&
-          borderColor !== BorderColor.transparent &&
-          Boolean(borderColor),
+        'box--border-width-1': !borderWidth && Boolean(borderColor),
       },
     );
     return (
