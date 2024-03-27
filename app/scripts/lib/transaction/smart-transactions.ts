@@ -53,6 +53,7 @@ export type SubmitSmartTransactionRequest = {
   transactionController: TransactionController;
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionsControllerMessenger;
+  featureFlags: Record<string, any>;
 };
 
 export class SmartTransactionHook {
@@ -256,13 +257,10 @@ export class SmartTransactionHook {
   async onApproveOrReject(
     controllerMessenger: SmartTransactionsControllerMessenger,
   ) {
-    if (this.approvalFlowEnded) {
-      return;
-    }
-    this.approvalFlowEnded = true;
     controllerMessenger.call('ApprovalController:endFlow', {
       id: this.approvalFlowId,
     });
+    this.approvalFlowEnded = true;
   }
 
   async submit(request: SubmitSmartTransactionRequest) {
@@ -272,6 +270,7 @@ export class SmartTransactionHook {
       transactionController,
       isSmartTransaction,
       controllerMessenger,
+      featureFlags,
     } = request;
     const isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
     const { chainId, txParams } = transactionMeta;
@@ -301,6 +300,8 @@ export class SmartTransactionHook {
       if (!uuid) {
         throw new Error('No smart transaction UUID');
       }
+      const returnTxHashAsap =
+        featureFlags?.smartTransactions?.returnTxHashAsap;
       this.addApprovalRequest({
         controllerMessenger,
         isDapp,
@@ -311,10 +312,15 @@ export class SmartTransactionHook {
         controllerMessenger,
         isDapp,
       });
-      const transactionHash = await this.waitForTransactionHash({
-        smartTransactionsController,
-        uuid,
-      });
+      let transactionHash: string | undefined | null;
+      if (returnTxHashAsap && submitTransactionResponse?.txHash) {
+        transactionHash = submitTransactionResponse.txHash;
+      } else {
+        transactionHash = await this.waitForTransactionHash({
+          smartTransactionsController,
+          uuid,
+        });
+      }
       if (transactionHash === null) {
         throw new Error(
           'Transaction does not have a transaction hash, there was a problem',
@@ -323,7 +329,6 @@ export class SmartTransactionHook {
       return { transactionHash };
     } catch (error) {
       log.error(error);
-      this.onApproveOrReject(controllerMessenger);
       throw error;
     }
   }
