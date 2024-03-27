@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import { Box, Icon, IconName, Text } from '../../../../component-library';
@@ -20,6 +20,7 @@ import {
 import InlineAlert from '../../../../../pages/confirmations/components/alerts/inline-alert/inline-alert';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import useAlerts from '../../../../../pages/confirmations/hooks/useAlerts';
+import { MultipleAlertModal } from '../../../../../pages/confirmations/components/alerts/multiple-alert-modal';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -91,6 +92,7 @@ function RowAlert({
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const alertOwnerId = currentConfirmation?.id as string;
   const { getFieldAlerts } = useAlerts(alertOwnerId);
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
   if (!hasFieldAlert) {
@@ -99,9 +101,21 @@ function RowAlert({
 
   return (
     <>
+      {alertModalVisible && alertKey && (
+        <MultipleAlertModal
+          alertKey={alertKey}
+          ownerId={alertOwnerId}
+          onButtonClick={() => {
+            setAlertModalVisible(false);
+          }}
+          onClose={() => {
+            setAlertModalVisible(false);
+          }}
+        />
+      )}
       <InlineAlert
         onClick={() => {
-          // intentionally empty
+          setAlertModalVisible(true);
         }}
         severity={severity}
       />

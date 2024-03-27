@@ -36,7 +36,7 @@ describe('AlertModal', () => {
     const { getByText } = renderWithProvider(
       <AlertModal
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
+        onButtonClick={handleButtonClickMock}
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
       />,
@@ -50,7 +50,7 @@ describe('AlertModal', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
+        onButtonClick={handleButtonClickMock}
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
       />,
@@ -71,7 +71,7 @@ describe('AlertModal', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
+        onButtonClick={handleButtonClickMock}
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
       />,
@@ -90,7 +90,7 @@ describe('AlertModal', () => {
     const { getByText } = renderWithProvider(
       <AlertModal
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
+        onButtonClick={handleButtonClickMock}
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
         customButton={customButton}

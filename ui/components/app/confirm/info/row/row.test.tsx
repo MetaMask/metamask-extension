@@ -1,14 +1,19 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
 import { Text } from '../../../../component-library';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from './row';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
 
-describe('ConfirmInfoRow', () => {
-  const OWNER_ID_MOCK = '123';
-  const KEY_ALERT_KEY_MOCK = 'Key';
-  const ALERT_MESSAGE_MOCK = 'Alert 1';
+const OWNER_ID_MOCK = '123';
+const KEY_ALERT_KEY_MOCK = 'Key';
+const ALERT_MESSAGE_MOCK = 'Alert 1';
+
+const renderConfirmInfoRow = (
+  props?: Partial<ConfirmInfoRowProps>,
+  state?: Record<string, unknown>,
+) => {
   const alertsMock = [
     {
       key: KEY_ALERT_KEY_MOCK,
@@ -21,6 +26,7 @@ describe('ConfirmInfoRow', () => {
   ];
 
   const STATE_MOCK = {
+    ...state,
     confirmAlerts: {
       alerts: { [OWNER_ID_MOCK]: alertsMock },
       confirmed: {
@@ -36,28 +42,38 @@ describe('ConfirmInfoRow', () => {
       },
     },
   };
-  const mockStore = configureMockStore([])(STATE_MOCK);
 
+  const mockStore = configureMockStore([])(STATE_MOCK);
+  return renderWithProvider(
+    <ConfirmInfoRow
+      label={KEY_ALERT_KEY_MOCK}
+      children={<Text>value</Text>}
+      {...props}
+    />,
+    mockStore,
+  );
+};
+
+describe('ConfirmInfoRow', () => {
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <ConfirmInfoRow
-        label={KEY_ALERT_KEY_MOCK}
-        children={<Text>value</Text>}
-      />,
-      mockStore,
-    );
+    const { container } = renderConfirmInfoRow();
     expect(container).toMatchSnapshot();
   });
 
-  it('renders row with alert', () => {
-    const { getAllByTestId } = renderWithProvider(
-      <ConfirmInfoRow
-        label={KEY_ALERT_KEY_MOCK}
-        children={<Text>value</Text>}
-        alertKey={KEY_ALERT_KEY_MOCK}
-      />,
-      mockStore,
-    );
-    expect(getAllByTestId('inline-alert')).toBeDefined();
+  describe('Alerts', () => {
+    it('renders row with alert', () => {
+      const { getByTestId } = renderConfirmInfoRow({
+        alertKey: KEY_ALERT_KEY_MOCK,
+      });
+      expect(getByTestId('inline-alert')).toBeDefined();
+    });
+
+    it('sets alert modal to visible', () => {
+      const { getByTestId } = renderConfirmInfoRow({
+        alertKey: KEY_ALERT_KEY_MOCK,
+      });
+      fireEvent.click(getByTestId('inline-alert'));
+      expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
   });
 });

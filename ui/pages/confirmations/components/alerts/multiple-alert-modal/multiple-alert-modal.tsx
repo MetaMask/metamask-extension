@@ -19,7 +19,7 @@ export type MultipleAlertModalProps = {
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
   /** The function to be executed when the button in the alert modal is clicked. */
-  handleButtonClick: () => void;
+  onButtonClick: () => void;
   /** The unique key representing the specific alert field. */
   alertKey: string;
   /** The function to be executed when the modal needs to be closed. */
@@ -28,51 +28,59 @@ export type MultipleAlertModalProps = {
 
 export function MultipleAlertModal({
   ownerId,
-  handleButtonClick,
+  onButtonClick,
   alertKey,
   onClose,
 }: MultipleAlertModalProps) {
   const t = useI18nContext();
-  const { alerts } = useAlerts(ownerId);
+  const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+
+  const unconfirmedAlerts = useMemo(() => {
+    return alerts.filter((alert) => !isAlertConfirmed(alert.key));
+  }, [alerts, isAlertConfirmed]);
 
   const [selectedIndex, setSelectedIndex] = useState(
-    alerts.findIndex((alert) => alert.key === alertKey),
+    unconfirmedAlerts.findIndex((alert) => alert.key === alertKey),
   );
 
   const selectedAlert = useMemo(
-    () => alerts[selectedIndex],
-    [alerts, selectedIndex],
+    () => unconfirmedAlerts[selectedIndex],
+    [unconfirmedAlerts, selectedIndex],
   );
 
   const onBack = useCallback(() => {
     setSelectedIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : alerts.length - 1,
+      prevIndex > 0 ? prevIndex - 1 : unconfirmedAlerts.length - 1,
     );
-  }, [alerts]);
+  }, [unconfirmedAlerts]);
 
   const onNext = useCallback(() => {
     setSelectedIndex((prevIndex) =>
-      prevIndex < alerts.length - 1 ? prevIndex + 1 : 0,
+      prevIndex < unconfirmedAlerts.length - 1 ? prevIndex + 1 : 0,
     );
-  }, [alerts]);
+  }, [unconfirmedAlerts]);
 
-  const onButtonClick = useCallback(() => {
-    if (selectedIndex + 1 === alerts.length) {
-      handleButtonClick();
+  const handleButtonClick = useCallback(() => {
+    if (unconfirmedAlerts.length === 1) {
+      onButtonClick();
       return;
     }
 
-    onNext();
-  }, [handleButtonClick, onNext, selectedIndex, alerts]);
+    setSelectedIndex(
+      selectedIndex >= unconfirmedAlerts.length - 1
+        ? selectedIndex - 1
+        : selectedIndex,
+    );
+  }, [onButtonClick, onNext, selectedIndex, alerts, unconfirmedAlerts]);
 
   return (
     <AlertModal
       ownerId={ownerId}
-      handleButtonClick={onButtonClick}
+      onButtonClick={handleButtonClick}
       alertKey={selectedAlert.key}
       onClose={onClose}
       multipleAlerts={
-        alerts.length > 1 ? (
+        unconfirmedAlerts.length > 1 ? (
           <Box display={Display.Flex}>
             {selectedIndex + 1 > 1 ? (
               <ButtonIcon
@@ -88,8 +96,10 @@ export function MultipleAlertModal({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
               className={'multiple-alert-modal__text'}
-            >{`${selectedIndex + 1} ${t('ofTextNofM')} ${alerts.length}`}</Text>
-            {selectedIndex + 1 < alerts.length ? (
+            >{`${selectedIndex + 1} ${t('ofTextNofM')} ${
+              unconfirmedAlerts.length
+            }`}</Text>
+            {selectedIndex + 1 < unconfirmedAlerts.length ? (
               <ButtonIcon
                 iconName={IconName.ArrowRight}
                 ariaLabel={t('next')}
