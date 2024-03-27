@@ -106,6 +106,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -1788,6 +1789,13 @@ export function getCurrentNetwork(state) {
   return allNetworks.find(filter);
 }
 
+export function getIsNetworkSupportedByBlockaid(state) {
+  const currentChainId = getCurrentChainId(state);
+  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+
+  return isSupported;
+}
+
 export function getAllEnabledNetworks(state) {
   const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
@@ -2287,6 +2295,14 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
+}
+
+export function getHasMigratedFromOpenSeaToBlockaid(state) {
+  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
+}
+
+export function getHasDismissedOpenSeaToBlockaidBanner(state) {
+  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**
