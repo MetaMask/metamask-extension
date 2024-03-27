@@ -40,6 +40,8 @@ import {
   BASE_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+  LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -97,12 +99,14 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
+  NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -473,6 +477,10 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+export function getAllDomains(state) {
+  return state.metamask.domains;
+}
+
 export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
@@ -717,6 +725,9 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getSendInputCurrencySwitched({ appState }) {
+  return appState.sendInputCurrencySwitched;
+}
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
@@ -926,6 +937,23 @@ export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
   getTargetSubjectMetadata,
   (interfaces) => interfaces,
 );
+
+/**
+ * Get a memoized version of the unapproved confirmations.
+ */
+export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
+  getUnapprovedConfirmations,
+  (confirmations) => confirmations,
+);
+
+/**
+ * Get a memoized version of the unapproved templated confirmations.
+ */
+export const getMemoizedUnapprovedTemplatedConfirmations =
+  createDeepEqualSelector(
+    getUnapprovedTemplatedConfirmations,
+    (confirmations) => confirmations,
+  );
 
 /**
  * Get the Snap interfaces from the redux state.
@@ -1140,15 +1168,31 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getMemoizedMetadataContractName = createDeepEqualSelector(
+export const getMemoizedMetadataContracts = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, addresses) => addresses,
+  (tokenList, addresses) => {
+    return addresses.map((address) =>
+      Object.values(tokenList).find((identity) =>
+        isEqualCaseInsensitive(identity.address, address),
+      ),
+    );
+  },
+);
+
+export const getMemoizedMetadataContract = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
-    const entry = Object.values(tokenList).find((identity) =>
+    return Object.values(tokenList).find((identity) =>
       isEqualCaseInsensitive(identity.address, address),
     );
-    return entry && entry.name !== '' ? entry.name : '';
   },
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getMemoizedMetadataContract,
+  (entry) => entry?.name ?? '',
 );
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -1233,7 +1277,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
-
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
@@ -1249,7 +1292,22 @@ export const getConnectedSitesList = createDeepEqualSelector(
         }
       });
     });
+    return sitesList;
+  },
+);
 
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  (sitesList, domains, networks) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      sitesList[siteKey].networkName = connectedNetwork.nickname;
+    });
     return sitesList;
   },
 );
@@ -1504,6 +1562,7 @@ function getAllowedAnnouncementIds(state) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
     [NOTIFICATION_PORTFOLIO_V2]: true,
+    [NOTIFICATION_SIMULATIONS]: true,
   };
 }
 
@@ -1730,6 +1789,13 @@ export function getCurrentNetwork(state) {
   return allNetworks.find(filter);
 }
 
+export function getIsNetworkSupportedByBlockaid(state) {
+  const currentChainId = getCurrentChainId(state);
+  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+
+  return isSupported;
+}
+
 export function getAllEnabledNetworks(state) {
   const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
@@ -1761,6 +1827,18 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
       id: NETWORK_TYPES.LINEA_GOERLI,
+      removable: false,
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_SEPOLIA,
+      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+      rpcPrefs: {
+        imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+      id: NETWORK_TYPES.LINEA_SEPOLIA,
       removable: false,
     },
     // Localhosts
@@ -1903,6 +1981,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return AVALANCHE_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_GOERLI:
       return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_SEPOLIA:
+      return LINEA_SEPOLIA_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.ARBITRUM:
@@ -1933,6 +2013,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_SEPOLIA,
     CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.ARBITRUM,
     CHAIN_IDS.OPTIMISM,
@@ -2009,16 +2090,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
-}
-
-/**
- * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsTransactionSecurityCheckEnabled(state) {
-  return state.metamask.transactionSecurityCheckEnabled;
 }
 
 /**
@@ -2149,17 +2220,37 @@ export function getUpdatedAndSortedAccounts(state) {
   const hiddenAddresses = getHiddenAccountsList(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
 
+  connectedAccounts.forEach((connection) => {
+    // Find if the connection exists in accounts
+    const matchingAccount = accounts.find(
+      (account) => account.id === connection.id,
+    );
+
+    // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
+    if (matchingAccount && connection.metadata) {
+      matchingAccount.connections = true;
+      matchingAccount.lastSelected = connection.metadata.lastSelected;
+    }
+  });
+
+  // Find the account with the most recent lastSelected timestamp among accounts with metadata
+  const accountsWithLastSelected = accounts.filter(
+    (account) => account.connections && account.lastSelected,
+  );
+
+  const mostRecentAccount =
+    accountsWithLastSelected.length > 0
+      ? accountsWithLastSelected.reduce((prev, current) => {
+          return prev.lastSelected > current.lastSelected ? prev : current;
+        })
+      : null;
+
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses.includes(account.address));
     account.hidden = Boolean(hiddenAddresses.includes(account.address));
-    if (
-      connectedAccounts.length > 0 &&
-      account.address === connectedAccounts[0].address
-    ) {
-      // Update the active property of the matched account to true
+    if (mostRecentAccount && account.id === mostRecentAccount.id) {
       account.active = true;
     } else {
-      // If not the first element or no match found, set active to false
       account.active = false;
     }
   });
@@ -2204,6 +2295,14 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
+}
+
+export function getHasMigratedFromOpenSeaToBlockaid(state) {
+  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
+}
+
+export function getHasDismissedOpenSeaToBlockaidBanner(state) {
+  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**

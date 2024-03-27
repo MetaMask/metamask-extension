@@ -2149,8 +2149,8 @@ type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
   address: string,
-  userAddress: string,
-  tokenId: string,
+  userAddress?: string,
+  tokenId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
@@ -3183,6 +3183,23 @@ export function setUseMultiAccountBalanceChecker(
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
       dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
+export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    // skipping loading indication as it blips in the UI and looks weird
+    log.debug(`background.dismissOpenSeaToBlockaidBanner`);
+    callBackgroundMethod('dismissOpenSeaToBlockaidBanner', [], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }
@@ -4320,10 +4337,15 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
  * @param networkClientId - unique identifier for the network client
  * @returns polling token that can be used to stop polling
  */
-export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
-  return submitRequestToBackground('gasFeeStartPollingByNetworkClientId', [
-    networkClientId,
-  ]);
+export async function gasFeeStartPollingByNetworkClientId(
+  networkClientId: string,
+) {
+  const pollingToken = await submitRequestToBackground(
+    'gasFeeStartPollingByNetworkClientId',
+    [networkClientId],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
 }
 
 /**
@@ -4333,10 +4355,11 @@ export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
  *
  * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
  */
-export function gasFeeStopPollingByPollingToken(pollingToken: string) {
-  return submitRequestToBackground('gasFeeStopPollingByPollingToken', [
+export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
+  await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
     pollingToken,
   ]);
+  await removePollingTokenFromAppState(pollingToken);
 }
 
 export function getGasFeeTimeEstimate(
@@ -4691,21 +4714,6 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
-export function setTransactionSecurityCheckEnabled(
-  transactionSecurityCheckEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
-        transactionSecurityCheckEnabled,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
-}
-
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
@@ -4762,6 +4770,14 @@ export function setUseRequestQueue(val: boolean): void {
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export function setUseTransactionSimulations(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseTransactionSimulations', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }

@@ -3271,10 +3271,6 @@
   "securityAndPrivacy": {
     "message": "Segurança e Privacidade"
   },
-  "securityProviderPoweredBy": {
-    "message": "Com tecnologia da $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Ver detalhes"
   },
