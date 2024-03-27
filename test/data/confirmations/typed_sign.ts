@@ -1,3 +1,26 @@
+export const unapprovedTypedSignMsgV1 = {
+  id: '82ab2400-e2c6-11ee-9627-73cc88f00492',
+  securityAlertResponse: {
+    reason: 'loading',
+    result_type: 'validation_in_progress',
+    securityAlertId: '3a938cfc-301d-4af0-96c4-b51fe1a5d6ad',
+  },
+  status: 'unapproved',
+  time: 1710505271872,
+  type: 'eth_signTypedData',
+  securityProviderResponse: null,
+  msgParams: {
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    data: [
+      { type: 'string', name: 'Message', value: 'Hi, Alice!' },
+      { type: 'uint32', name: 'A number', value: '1337' },
+    ],
+    signatureMethod: 'eth_signTypedData',
+    version: 'V1',
+    origin: 'https://metamask.github.io',
+  },
+};
+
 const rawMessageV3 = {
   types: {
     EIP712Domain: [

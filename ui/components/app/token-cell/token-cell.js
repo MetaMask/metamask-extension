@@ -21,7 +21,7 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
 
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      onClick={() => onClick(address)}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       primary={`${string || 0}`}
@@ -36,6 +36,6 @@ TokenCell.propTypes = {
   address: PropTypes.string,
   symbol: PropTypes.string,
   string: PropTypes.string,
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   image: PropTypes.string,
 };
