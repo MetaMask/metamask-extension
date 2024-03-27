@@ -9,6 +9,7 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
@@ -45,7 +46,7 @@ export const SendPageAccountPicker = () => {
         }}
         labelProps={{
           style: { flexGrow: 1, textAlign: 'start' },
-          paddingInlineStart: 2,
+          variant: TextVariant.bodySmMedium,
         }}
         textProps={{
           display: Display.Flex,
