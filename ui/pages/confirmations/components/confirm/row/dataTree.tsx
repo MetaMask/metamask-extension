@@ -33,7 +33,10 @@ export const DataTree = ({
           style={{ paddingRight: 0 }}
           key={`tree-data-${label}-index-${i}`}
         >
-          <DataField value={value} type={type} />
+          {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            <DataField value={value} type={type} />
+          }
         </ConfirmInfoRow>
       );
     })}
