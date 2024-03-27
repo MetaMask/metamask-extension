@@ -70,7 +70,7 @@ export default class AppStateController extends EventEmitter {
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
-      currentExtensionPopupId: undefined,
+      currentExtensionPopupId: 0,
     });
     this.timer = null;
 

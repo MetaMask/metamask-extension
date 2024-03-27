@@ -47,7 +47,8 @@
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
-    "switchedNetworkNeverShowMessage": "boolean"
+    "switchedNetworkNeverShowMessage": "boolean",
+    "currentExtensionPopupId": "number"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
