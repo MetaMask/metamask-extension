@@ -2179,10 +2179,36 @@ export function automaticallySwitchNetwork(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(setActiveNetwork(networkClientIdForThisDomain));
-    await setSwitchedNetworkDetails({
-      networkClientId: networkClientIdForThisDomain,
-      origin: selectedTabOrigin,
-    });
+    await dispatch(
+      setSwitchedNetworkDetails({
+        networkClientId: networkClientIdForThisDomain,
+        origin: selectedTabOrigin,
+      }),
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwitchedNetworkDetails(
+  switchedNetworkDetails,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setSwitchedNetworkDetails', [
+      switchedNetworkDetails,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function clearSwitchedNetworkDetails(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('clearSwitchedNetworkDetails', []);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -4701,31 +4727,10 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
-export function setSwitchedNetworkDetails(switchedNetworkDetails) {
-  return submitRequestToBackground('setSwitchedNetworkDetails', [
-    switchedNetworkDetails,
-  ]);
-}
-
 export function neverShowSwitchedNetworkMessage() {
   return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
     true,
   ]);
-}
-
-// TODO: codeword NOT_A_THUNK @brad-decker
-export function setTransactionSecurityCheckEnabled(
-  transactionSecurityCheckEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
-        transactionSecurityCheckEnabled,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

@@ -191,7 +191,7 @@ export default class Routes extends Component {
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
     switchedNetworkDetails: PropTypes.oneOfType([PropTypes.object, null]),
-    setSwitchedNetworkDetails: PropTypes.func.isRequired,
+    clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
@@ -637,7 +637,7 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       addPermittedAccount,
       switchedNetworkDetails,
-      setSwitchedNetworkDetails,
+      clearSwitchedNetworkDetails,
       setSwitchedNetworkNeverShowMessage,
       neverShowSwitchedNetworkMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -700,7 +700,7 @@ export default class Routes extends Component {
         dir={textDirection}
         onMouseUp={
           showAutoNetworkSwitchToast
-            ? () => setSwitchedNetworkDetails(null)
+            ? () => clearSwitchedNetworkDetails()
             : undefined
         }
       >
@@ -807,7 +807,7 @@ export default class Routes extends Component {
               ])}
               actionText={this.context.t('switchedNetworkToastDecline')}
               onActionClick={() => setSwitchedNetworkNeverShowMessage()}
-              onClose={() => setSwitchedNetworkDetails(null)}
+              onClose={() => clearSwitchedNetworkDetails()}
             />
           ) : null}
         </ToastContainer>

@@ -19,7 +19,6 @@ import {
   getSelectedAccount,
   getPermittedAccountsForCurrentTab,
   getSwitchedNetworkDetails,
-  getAllNetworks,
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactions,
@@ -36,7 +35,7 @@ import {
   hideDeprecatedNetworkModal,
   addPermittedAccount,
   automaticallySwitchNetwork,
-  setSwitchedNetworkDetails,
+  clearSwitchedNetworkDetails,
   neverShowSwitchedNetworkMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
@@ -74,20 +73,7 @@ function mapStateToProps(state) {
 
   const networkToAutomaticallySwitchTo =
     getNetworkToAutomaticallySwitchTo(state);
-  const allNetworks = getAllNetworks(state);
-  const switchedNetworkDetailsObj = getSwitchedNetworkDetails(state);
-
-  let switchedNetworkDetails = null;
-  if (switchedNetworkDetailsObj) {
-    const switchedNetwork = allNetworks.find(
-      ({ id }) => switchedNetworkDetailsObj.networkClientId === id,
-    );
-    switchedNetworkDetails = {
-      nickname: switchedNetwork?.nickname,
-      imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
-      origin: switchedNetworkDetailsObj?.origin,
-    };
-  }
+  const switchedNetworkDetails = getSwitchedNetworkDetails(state);
 
   return {
     alertOpen,
@@ -151,8 +137,7 @@ function mapDispatchToProps(dispatch) {
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
-    setSwitchedNetworkDetails: (value = null) =>
-      dispatch(setSwitchedNetworkDetails(value)),
+    clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
     setSwitchedNetworkNeverShowMessage: () =>
       dispatch(neverShowSwitchedNetworkMessage()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>

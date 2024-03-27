@@ -415,6 +415,13 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Clears the switched network details in state
+   */
+  clearSwitchedNetworkDetails() {
+    this.store.updateState({ switchedNetworkDetails: null });
+  }
+
+  /**
    * Remembers if the user prefers to never see the
    * network switched message again
    *

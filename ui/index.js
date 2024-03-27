@@ -21,6 +21,7 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
+  getSwitchedNetworkDetails,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -179,22 +180,27 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
-  // This block autoswitches chains based on the last chain used
-  // for a given dapp, when there are no pending confimrations
-  // This allows the user to be connected on one chain
-  // for one dapp, and automatically change for another
-  const state = store.getState();
-  const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
-
-  if (networkIdToSwitchTo) {
-    await store.dispatch(
-      actions.automaticallySwitchNetwork(
-        networkIdToSwitchTo,
-        getOriginOfCurrentTab(state),
-      ),
-    );
-  } else if (process.env.MULTICHAIN) {
-    await actions.setSwitchedNetworkDetails(null);
+  if (process.env.MULTICHAIN) {
+    // This block autoswitches chains based on the last chain used
+    // for a given dapp, when there are no pending confimrations
+    // This allows the user to be connected on one chain
+    // for one dapp, and automatically change for another
+    const state = store.getState();
+    const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+    if (networkIdToSwitchTo) {
+      await store.dispatch(
+        actions.automaticallySwitchNetwork(
+          networkIdToSwitchTo,
+          getOriginOfCurrentTab(state),
+        ),
+      );
+    } else if (getSwitchedNetworkDetails(state)) {
+      // It's possible that old details could exist if the user
+      // opened the toast but then didn't close it
+      // Clear out any existing switchedNetworkDetails
+      // if the user didn't just change the dapp network
+      await store.dispatch(actions.clearSwitchedNetworkDetails(null));
+    }
   }
 
   // global metamask api - used by tooling

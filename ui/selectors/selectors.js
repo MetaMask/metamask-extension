@@ -638,7 +638,21 @@ export function getNeverShowSwitchedNetworkMessage(state) {
 }
 
 export function getSwitchedNetworkDetails(state) {
-  return state.metamask.switchedNetworkDetails;
+  const { switchedNetworkDetails } = state.metamask;
+  const allNetworks = getAllNetworks(state);
+
+  if (switchedNetworkDetails) {
+    const switchedNetwork = allNetworks.find(
+      ({ id }) => switchedNetworkDetails.networkClientId === id,
+    );
+    return {
+      nickname: switchedNetwork?.nickname,
+      imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
+      origin: switchedNetworkDetails?.origin,
+    };
+  }
+
+  return null;
 }
 
 export function getAppIsLoading(state) {
