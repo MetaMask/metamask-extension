@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import copyToClipboard from 'copy-to-clipboard';
 import { fireEvent } from '@testing-library/react';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
@@ -11,6 +10,7 @@ import {
   getIsCustodianSupportedChain,
   getCustodianIconForAddress,
 } from '../../../selectors/institutional/selectors';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AddressCopyButton } from '.';
 
 jest.mock('copy-to-clipboard');

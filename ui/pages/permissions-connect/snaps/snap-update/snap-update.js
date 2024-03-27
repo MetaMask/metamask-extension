@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -28,8 +29,9 @@ import {
   ValidTag,
   Text,
 } from '../../../../components/component-library';
-import { getSnapName } from '../../../../helpers/utils/util';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapUpdate({
   request,
@@ -44,6 +46,7 @@ export default function SnapUpdate({
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
+  const snapsMetadata = useSelector(getSnapsMetadata);
 
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
@@ -53,6 +56,10 @@ export default function SnapUpdate({
   const onSubmit = useCallback(
     () => approveSnapUpdate(request.metadata.id),
     [request, approveSnapUpdate],
+  );
+
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
   );
 
   const approvedPermissions = requestState.approvedPermissions ?? {};
@@ -65,16 +72,12 @@ export default function SnapUpdate({
 
   const warnings = getSnapInstallWarnings(
     newPermissions,
-    targetSubjectMetadata,
     t,
+    snapName,
+    getSnapName(snapsMetadata),
   );
 
   const shouldShowWarning = warnings.length > 0;
-
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
-  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {

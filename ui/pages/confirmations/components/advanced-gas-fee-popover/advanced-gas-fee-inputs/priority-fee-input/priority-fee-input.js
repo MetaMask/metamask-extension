@@ -66,19 +66,20 @@ const PriorityFeeInput = () => {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,
     priorityFeeTrend,
-  } = gasFeeEstimates;
+  } = gasFeeEstimates ?? {};
   const [priorityFeeError, setPriorityFeeError] = useState();
 
-  const [priorityFee, setPriorityFee] = useState(() => {
-    if (
-      estimateUsed !== PriorityLevels.custom &&
-      advancedGasFeeValues?.priorityFee &&
-      editGasMode !== EditGasModes.swaps
-    ) {
-      return advancedGasFeeValues.priorityFee;
-    }
-    return maxPriorityFeePerGas;
-  });
+  const defaultPriorityFee =
+    estimateUsed !== PriorityLevels.custom &&
+    advancedGasFeeValues?.priorityFee &&
+    editGasMode !== EditGasModes.swaps
+      ? advancedGasFeeValues.priorityFee
+      : maxPriorityFeePerGas;
+
+  const [priorityFee, setPriorityFee] = useState(defaultPriorityFee);
+  useEffect(() => {
+    setPriorityFee(defaultPriorityFee);
+  }, [defaultPriorityFee, setPriorityFee]);
 
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 

@@ -7,6 +7,7 @@ const {
   openDapp,
   waitForAccountRendered,
   WINDOW_TITLES,
+  DAPP_URL,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -268,6 +269,76 @@ describe('Dapp viewed Event @no-mmi', function () {
         assert.equal(dappViewedEventProperties.is_first_visit, true);
         assert.equal(dappViewedEventProperties.number_of_accounts, 2);
         assert.equal(dappViewedEventProperties.number_of_accounts_connected, 2);
+      },
+    );
+  });
+
+  it('is sent when reconnect to a dapp that has been connected before', async function () {
+    async function mockSegment(mockServer) {
+      return [
+        await mockedDappViewedEndpoint(mockServer),
+        await mockedDappViewedEndpoint(mockServer),
+      ];
+    }
+
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+        await waitForAccountRendered(driver);
+        await connectToDapp(driver);
+        await waitForDappConnected(driver);
+
+        // close test dapp window to avoid future confusion
+        const windowHandles = await driver.getAllWindowHandles();
+        await driver.closeWindowHandle(windowHandles[1]);
+        // disconnect dapp in fullscreen view
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.clickElement(
+          '[data-testid ="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+        await driver.findElement({
+          text: DAPP_URL,
+          tag: 'bdi',
+        });
+        await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+        await driver.clickElement({
+          text: `Disconnect ${DAPP_URL}`,
+          tag: 'h2',
+        });
+        await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+        // validate dapp is not connected
+        await driver.clickElement(
+          '[data-testid ="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+        await driver.findElement({
+          text: 'Account 1 is not connected to any sites.',
+          tag: 'p',
+        });
+        // reconnect again
+        await connectToDapp(driver);
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 2);
+        // events are original dapp viewed, new dapp viewed when reconnected
+        const dappViewedEventProperties = events[1].properties;
+        assert.equal(dappViewedEventProperties.is_first_visit, false);
+        assert.equal(dappViewedEventProperties.number_of_accounts, 1);
+        assert.equal(dappViewedEventProperties.number_of_accounts_connected, 1);
       },
     );
   });

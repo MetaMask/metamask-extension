@@ -6,6 +6,7 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
   static propTypes = {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     sendInputCurrencySwitched: PropTypes.bool,
+    ...CurrencyInput.propTypes,
   };
 
   render() {
@@ -18,7 +19,7 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
     return (
       <CurrencyInput
         {...restProps}
-        featureSecondary={Boolean(
+        isFiatPreferred={Boolean(
           (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
             (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
         )}

@@ -38,7 +38,6 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
   SendPageContent,
-  SendPageNetworkPicker,
   SendPageRecipient,
   SendPageRecipientInput,
 } from './components';
@@ -158,7 +157,6 @@ export const SendPage = () => {
         {t('sendAToken')}
       </Header>
       <Content>
-        <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
         {draftTransactionExists &&

@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { hideModal } from '../store/actions';
 
-interface ModalProps {
+type ModalProps = {
   props: Record<string, any>;
   hideModal: () => void;
-}
+};
 
 export function useModalProps(): ModalProps {
   const modalProps = useSelector((state: any) => {

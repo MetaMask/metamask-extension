@@ -79,7 +79,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     maxPriorityFeePerGas,
   });
 
-  if (gasFeeEstimates[priorityLevel]) {
+  if (gasFeeEstimates?.[priorityLevel]) {
     minWaitTime =
       priorityLevel === PriorityLevels.high
         ? gasFeeEstimates?.high.minWaitTimeEstimate

@@ -24,11 +24,11 @@ import { ModalContent } from '../../../components/component-library/modal-conten
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL } from '../../../../shared/constants/swaps';
 
-interface Props {
+type Props = {
   onStartSwapping: () => void;
   onManageStxInSettings: () => void;
   isOpen: boolean;
-}
+};
 
 export default function SmartTransactionsPopover({
   onStartSwapping,

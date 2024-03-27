@@ -97,7 +97,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 
-let popupIsOpen = false;
+let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
@@ -571,7 +571,7 @@ export function setupController(
 
   const isClientOpenStatus = () => {
     return (
-      popupIsOpen ||
+      openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen
     );
@@ -657,9 +657,9 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
-        popupIsOpen = true;
+        openPopupCount += 1;
         endOfStream(portStream, () => {
-          popupIsOpen = false;
+          openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
@@ -797,6 +797,11 @@ export function setupController(
     updateBadge,
   );
 
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.QUEUED_REQUEST_STATE_CHANGE,
+    updateBadge,
+  );
+
   controller.txController.initApprovals();
 
   /**
@@ -820,35 +825,19 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    let count = controller.appStateController.waitingForUnlock.length;
+    let count =
+      controller.appStateController.waitingForUnlock.length +
+      controller.approvalController.getTotalApprovalCount();
+
     if (controller.preferencesController.getUseRequestQueue()) {
-      count += controller.queuedRequestController.length();
-    } else {
-      count += controller.approvalController.getTotalApprovalCount();
+      count += controller.queuedRequestController.state.queuedRequestCount;
     }
     return count;
   }
 
-  controller.controllerMessenger.subscribe(
-    'QueuedRequestController:countChanged',
-    (count) => {
-      updateBadge();
-      if (count > 0) {
-        triggerUi();
-      }
-    },
-  );
-
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
     ({ automaticallyClosed }) => {
-      if (controller.preferencesController.getUseRequestQueue()) {
-        // when the feature flag is on, rejecting unnapproved notifications in this way does nothing (since the controllers havent seen the requests yet)
-        // Also, the updating of badge / triggering of UI happens from the countChanged event when the feature flag is on, so we dont need that here either.
-        // The only thing that we might want to add here is possibly calling a method to empty the queue / do the same thing as rejecting all confirmed?
-        return;
-      }
-
       if (!automaticallyClosed) {
         rejectUnapprovedNotifications();
       } else if (getUnapprovedTransactionCount() > 0) {
@@ -910,8 +899,12 @@ export function setupController(
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed.
-  if (Object.keys(controller.snapController.state.snaps).length > 0) {
+  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
+  if (
+    Object.values(controller.snapController.state.snaps).some(
+      (snap) => !snap.preinstalled,
+    )
+  ) {
     controller.snapController.updateBlockedSnaps();
   }
   ///: END:ONLY_INCLUDE_IF
@@ -929,7 +922,7 @@ async function triggerUi() {
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
   );
-  // Vivaldi is not closing port connection on popup close, so popupIsOpen does not work correctly
+  // Vivaldi is not closing port connection on popup close, so openPopupCount does not work correctly
   // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
   const isVivaldi =
     tabs.length > 0 &&
@@ -937,7 +930,7 @@ async function triggerUi() {
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
   if (
     !uiIsTriggering &&
-    (isVivaldi || !popupIsOpen) &&
+    (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab
   ) {
     uiIsTriggering = true;

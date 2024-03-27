@@ -17,13 +17,15 @@ const ConfirmTitle: React.FC = memo(() => {
   const typeToTitleTKey: Partial<Record<TransactionType, string>> = useMemo(
     () => ({
       [TransactionType.personalSign]: t('confirmTitleSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleSignature'),
     }),
     [],
   );
 
   const typeToDescTKey: Partial<Record<TransactionType, string>> = useMemo(
     () => ({
-      [TransactionType.personalSign]: t('confirmTitleDescSignature'),
+      [TransactionType.personalSign]: t('confirmTitleDescPersonalSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleDescTypedDataSignature'),
     }),
     [],
   );

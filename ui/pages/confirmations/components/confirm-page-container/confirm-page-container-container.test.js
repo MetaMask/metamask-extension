@@ -163,6 +163,13 @@ jest.mock('../../../../store/actions', () => ({
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
     .mockImplementation(() => Promise.resolve()),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() => {
+    return Promise.resolve({ chainId: '0x5' });
+  }),
+  gasFeeStartPollingByNetworkClientId: jest.fn().mockImplementation(() => {
+    return Promise.resolve('pollingToken');
+  }),
+  gasFeeStopPollingByPollingToken: jest.fn(),
   addPollingTokenToAppState: jest.fn(),
 }));
 
@@ -197,9 +204,11 @@ describe('Confirm Page Container Container Test', () => {
   });
 
   describe('Render and simulate button clicks', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const store = configureMockStore()(mockedState);
-      renderWithProvider(<ConfirmPageContainer {...props} />, store);
+      await act(async () => {
+        renderWithProvider(<ConfirmPageContainer {...props} />, store);
+      });
     });
 
     it('should render a confirm page container component', () => {
@@ -244,7 +253,7 @@ describe('Confirm Page Container Container Test', () => {
   });
 
   describe(`when type is '${TransactionType.tokenMethodSetApprovalForAll}'`, () => {
-    it('should display warning modal with total token balance', () => {
+    it('should display warning modal with total token balance', async () => {
       const mockValue12AsHexString = '0x0c'; // base-10 representation = 12
 
       TokenUtil.fetchTokenBalance.mockImplementation(() => {
@@ -253,16 +262,18 @@ describe('Confirm Page Container Container Test', () => {
       setMockedTransactionType(TransactionType.tokenMethodSetApprovalForAll);
       const store = configureMockStore()(mockedState);
 
-      renderWithProvider(
-        <ConfirmPageContainer
-          {...props}
-          showWarningModal
-          assetStandard={TokenStandard.ERC721}
-        />,
-        store,
-      );
+      await act(async () => {
+        renderWithProvider(
+          <ConfirmPageContainer
+            {...props}
+            showWarningModal
+            assetStandard={TokenStandard.ERC721}
+          />,
+          store,
+        );
+      });
 
-      act(() => {
+      await act(async () => {
         const confirmButton = screen.getByTestId('page-container-footer-next');
         fireEvent.click(confirmButton);
       });
@@ -281,25 +292,36 @@ describe('Confirm Page Container Container Test', () => {
   describe('Rendering NetworkAccountBalanceHeader', () => {
     const store = configureMockStore()(mockState);
 
-    it('should render NetworkAccountBalanceHeader if displayAccountBalanceHeader is true', () => {
-      const { getByText } = renderWithProvider(
-        <ConfirmPageContainer {...props} displayAccountBalanceHeader />,
-        store,
-      );
+    it('should render NetworkAccountBalanceHeader if displayAccountBalanceHeader is true', async () => {
+      let result;
+      await act(async () => {
+        result = renderWithProvider(
+          <ConfirmPageContainer {...props} displayAccountBalanceHeader />,
+          store,
+        );
+      });
+      const { getByText } = result;
       expect(getByText('Balance')).toBeInTheDocument();
     });
 
-    it('should not render NetworkAccountBalanceHeader if displayAccountBalanceHeader is false', () => {
-      const { queryByText } = renderWithProvider(
-        <ConfirmPageContainer {...props} displayAccountBalanceHeader={false} />,
-        store,
-      );
-      expect(queryByText('Balance')).toBeNull();
+    it('should not render NetworkAccountBalanceHeader if displayAccountBalanceHeader is false', async () => {
+      let result;
+      await act(async () => {
+        result = renderWithProvider(
+          <ConfirmPageContainer
+            {...props}
+            displayAccountBalanceHeader={false}
+          />,
+          store,
+        );
+      });
+      const { queryByText } = result;
+      expect(queryByText('Balance')).toBe(null);
     });
   });
 
   describe('Contact/AddressBook name should appear in recipient header', () => {
-    it('should not show add to address dialog if recipient is in contact list and should display contact name', () => {
+    it('should not show add to address dialog if recipient is in contact list and should display contact name', async () => {
       const addressBookName = 'test save name';
 
       const addressBook = {
@@ -320,7 +342,9 @@ describe('Confirm Page Container Container Test', () => {
 
       const store = configureMockStore()(mockState);
 
-      renderWithProvider(<ConfirmPageContainer {...props} />, store);
+      await act(async () => {
+        renderWithProvider(<ConfirmPageContainer {...props} />, store);
+      });
 
       // Does not display new address dialog banner
       const newAccountDetectDialog = screen.queryByText(

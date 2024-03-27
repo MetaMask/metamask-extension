@@ -19,13 +19,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { formatDate, getSnapName } from '../../../../helpers/utils/util';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import {
-  getSnapRegistryData,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+import { getSnapRegistryData, getSnapMetadata } from '../../../../selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
 import { Box, ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
@@ -51,16 +48,16 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
     ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
 
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
-  );
   const snapRegistryData = useSelector((state) =>
     getSnapRegistryData(state, snapId),
   );
+
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
   const { website = undefined } = snapRegistryData?.metadata ?? {};
   const safeWebsite = useSafeWebsite(website);
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length
@@ -105,7 +102,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           style={{ overflow: 'hidden' }}
         >
           <Text ellipsis fontWeight={FontWeight.Medium}>
-            {friendlyName}
+            {snapName}
           </Text>
           <Text
             ellipsis

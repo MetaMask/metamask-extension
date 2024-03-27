@@ -6,6 +6,7 @@
     appearance: none;
 
     + .show-hide-toggle__label {
+      display: flex;
       cursor: pointer;
       user-select: none;
     }

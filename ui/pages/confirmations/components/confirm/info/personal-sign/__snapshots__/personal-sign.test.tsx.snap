@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PersonalSignInfo does not render if required data is not present in the transaction 1`] = `<div />`;
+
+exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Request from
+        </p>
+        <div>
+          <div
+            aria-describedby="tippy-tooltip-1"
+            class=""
+            data-original-title="This is the site asking for your signature."
+            data-tooltipped=""
+            style="display: flex;"
+            tabindex="0"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          https://metamask.github.io
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+        >
+          Message
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          Example \`personal_sign\` message
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

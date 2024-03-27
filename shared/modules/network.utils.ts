@@ -64,10 +64,6 @@ function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
 }
 
-export function shouldShowLineaMainnet(): boolean {
-  return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
-}
-
 /**
  * TODO: Delete when ready to remove `networkVersion` from provider object
  * Convert the given value into a valid network ID. The ID is accepted

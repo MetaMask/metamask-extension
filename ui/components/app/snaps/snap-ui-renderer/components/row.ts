@@ -13,6 +13,8 @@ export const row: UIComponentFactory<Row> = ({ element, ...params }) => ({
       // We do this to cause an overhang with certain confirmation row variants
       marginLeft: '-8px',
       marginRight: '-8px',
+      marginTop: '0px',
+      marginBottom: '0px',
     },
   },
 });

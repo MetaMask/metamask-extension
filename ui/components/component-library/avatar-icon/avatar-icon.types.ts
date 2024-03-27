@@ -19,6 +19,8 @@ export const avatarIconSizeToIconSize: Record<AvatarIconSize, IconSize> = {
   [AvatarIconSize.Xl]: IconSize.Xl,
 };
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface AvatarIconStyleUtilityProps
   extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children' | 'color'> {
   /**

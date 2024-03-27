@@ -186,4 +186,69 @@ describe('PrepareSwapPage', () => {
     fireEvent.click(maxLink);
     expect(setFromTokenInputValue).toHaveBeenCalled();
   });
+
+  it('should have the Bridge link enabled if chain id is part of supported chains and there are no quotes', () => {
+    const mockStore = createSwapsMockStore();
+    mockStore.metamask.providerConfig = {
+      chainId: '0x1',
+    };
+    mockStore.metamask.swapsState.quotes = [];
+    const store = configureMockStore(middleware)(mockStore);
+
+    const props = createProps();
+    const { queryByTestId } = renderWithProvider(
+      <PrepareSwapPage {...props} />,
+      store,
+    );
+    const bridgeButton = queryByTestId(
+      'prepare-swap-page-cross-chain-swaps-link',
+    );
+    expect(bridgeButton).toBeInTheDocument();
+    expect(bridgeButton).toBeEnabled();
+  });
+
+  it('should not have the Bridge link enabled if chain id is part of supported chains but there are quotes', () => {
+    const mockStore = createSwapsMockStore();
+    mockStore.metamask.providerConfig = {
+      chainId: '0x1',
+    };
+    expect(
+      Object.keys(mockStore.metamask.swapsState.quotes).length,
+    ).toBeDefined();
+    const store = configureMockStore(middleware)(mockStore);
+
+    const props = createProps();
+    const { queryByTestId } = renderWithProvider(
+      <PrepareSwapPage {...props} />,
+      store,
+    );
+    const bridgeButton = queryByTestId(
+      'prepare-swap-page-cross-chain-swaps-link',
+    );
+
+    expect(bridgeButton).toBeNull();
+  });
+
+  it('should not have the Bridge link enabled if there are quotes but chain id is not part of supported chains', () => {
+    const mockStore = createSwapsMockStore();
+    mockStore.metamask.providerConfig = {
+      chainId: '0x539', // swaps testnet
+    };
+    expect(
+      Object.keys(mockStore.metamask.swapsState.quotes).length,
+    ).toBeDefined();
+
+    const store = configureMockStore(middleware)(mockStore);
+
+    const props = createProps();
+    const { queryByTestId } = renderWithProvider(
+      <PrepareSwapPage {...props} />,
+      store,
+    );
+    const bridgeButton = queryByTestId(
+      'prepare-swap-page-cross-chain-swaps-link',
+    );
+
+    expect(bridgeButton).toBeNull();
+  });
 });

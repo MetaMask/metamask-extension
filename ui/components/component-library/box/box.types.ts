@@ -83,9 +83,9 @@ export type StylePropValueType =
   | IconColorArray
   | undefined;
 
-export interface ClassNamesObject {
+export type ClassNamesObject = {
   [key: string]: any;
-}
+};
 
 export type FlexDirectionArray = [
   FlexDirection,
@@ -223,7 +223,7 @@ export type PolymorphicComponentPropWithRef<
 /**
  * Includes all style utility props. This should be used to extend the props of a component.
  */
-export interface StyleUtilityProps {
+export type StyleUtilityProps = {
   /**
    * The flex direction of the component.
    * Use the FlexDirection enum from '../../../helpers/constants/design-system';
@@ -422,10 +422,12 @@ export interface StyleUtilityProps {
    * TODO: Allow data- attributes.
    */
   'data-testid'?: string;
-}
+};
 /**
  * Box component props.
  */
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface Props extends StyleUtilityProps {
   /**
    * The content of the Box component.

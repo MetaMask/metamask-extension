@@ -3,16 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
 
-import { Box } from '../../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
 import { currentConfirmationSelector } from '../../../../../selectors';
-import PersonalSignInfo from './personal-sign/personalSign';
+import PersonalSignInfo from './personal-sign/personal-sign';
+import TypedSignInfo from './typed-sign/typed-sign';
 
 const ConfirmationInfoConponentMap = {
   [TransactionType.personalSign]: PersonalSignInfo,
+  [TransactionType.signTypedData]: TypedSignInfo,
 };
 
 type ConfirmationType = keyof typeof ConfirmationInfoConponentMap;
@@ -27,16 +24,7 @@ const Info: React.FC = memo(() => {
   const InfoComponent =
     ConfirmationInfoConponentMap[currentConfirmation?.type as ConfirmationType];
 
-  return (
-    <Box
-      backgroundColor={BackgroundColor.backgroundDefault}
-      borderRadius={BorderRadius.MD}
-      padding={2}
-      marginBottom={4}
-    >
-      <InfoComponent />
-    </Box>
-  );
+  return <InfoComponent />;
 });
 
 export default Info;

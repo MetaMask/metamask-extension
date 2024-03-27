@@ -32,12 +32,12 @@ import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin
 import { Text } from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingPinBillboard from './pin-billboard';
 ///: END:ONLY_INCLUDE_IF
 
@@ -62,10 +62,8 @@ export default function OnboardingPinExtension() {
         event: MetaMetricsEventName.OnboardingWalletSetupComplete,
         properties: {
           wallet_setup_type:
-            firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
-              ? 'import'
-              : 'new',
-          new_wallet: firstTimeFlowType === FIRST_TIME_FLOW_TYPES.CREATE,
+            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
+          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
         },
       });
       history.push(DEFAULT_ROUTE);

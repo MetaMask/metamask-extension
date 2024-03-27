@@ -31,6 +31,7 @@ import {
 } from '../../../components/component-library';
 
 import Box from '../../../components/ui/box/box';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -51,7 +52,7 @@ export default function OnboardingMetametrics() {
           event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
             account_type:
-              firstTimeFlowType === 'create'
+              firstTimeFlowType === FirstTimeFlowType.create
                 ? MetaMetricsEventAccountType.Default
                 : MetaMetricsEventAccountType.Imported,
           },

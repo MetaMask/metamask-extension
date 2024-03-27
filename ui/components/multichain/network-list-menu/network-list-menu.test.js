@@ -86,11 +86,11 @@ describe('NetworkListMenu', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
     render(false, CHAIN_IDS.MAINNET, 'testNetworkConfigurationId');
 
-    // Contains Mainnet and the two custom networks
+    // Contains Mainnet, Linea Mainnet and the two custom networks
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
-    expect(networkItems).toHaveLength(3);
+    expect(networkItems).toHaveLength(4);
 
     const selectedNodes = document.querySelectorAll(
       '.multichain-network-list-item--selected',
@@ -114,9 +114,9 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
   });
 
-  it('disables the "Add Network" button when MetaMask is locked', () => {
+  it('enables the "Add Network" button when MetaMask is locked', () => {
     const { queryByText } = render(false, '0x5', 'chain5', false);
-    expect(queryByText('Add network')).toBeDisabled();
+    expect(queryByText('Add network')).toBeEnabled();
   });
 
   it('enables the "Add Network" button when MetaMask is true', () => {

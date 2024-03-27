@@ -203,7 +203,6 @@ const ConfirmTxScreen = ({ match }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const { warnings } = useSignatureInsights({ txData });
   ///: END:ONLY_INCLUDE_IF
-
   const resolvedSecurityAlertResponse =
     signatureSecurityAlertResponses?.[
       txData.securityAlertResponse?.securityAlertId

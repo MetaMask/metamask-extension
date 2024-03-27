@@ -21,7 +21,7 @@ declare module 'react-tippy' {
   export type Size = 'small' | 'regular' | 'big';
   export type Theme = 'dark' | 'light' | 'transparent';
 
-  export interface TooltipProps {
+  export type TooltipProps = {
     title?: string;
     disabled?: boolean;
     open?: boolean;
@@ -60,7 +60,7 @@ declare module 'react-tippy' {
     theme?: Theme;
     className?: string;
     style?: React.CSSProperties;
-  }
+  };
 
   export class Tooltip extends React.Component<TooltipProps> {}
 

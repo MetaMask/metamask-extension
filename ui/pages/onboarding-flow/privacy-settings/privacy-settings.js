@@ -41,6 +41,7 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
+  setUseTransactionSimulations,
 } from '../../../store/actions';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
@@ -60,6 +61,7 @@ export default function PrivacySettings() {
     useMultiAccountBalanceChecker,
     ipfsGateway,
     useAddressBarEnsResolution,
+    useTransactionSimulations,
   } = defaultState;
 
   const [usePhishingDetection, setUsePhishingDetection] =
@@ -75,6 +77,8 @@ export default function PrivacySettings() {
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(useMultiAccountBalanceChecker);
+  const [isTransactionSimulationsEnabled, setTransactionSimulationsEnabled] =
+    useState(useTransactionSimulations);
   const [ipfsURL, setIPFSURL] = useState(ipfsGateway);
   const [ipfsError, setIPFSError] = useState(null);
   const [addressBarResolution, setAddressBarResolution] = useState(
@@ -95,6 +99,7 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
+    setUseTransactionSimulations(isTransactionSimulationsEnabled);
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -262,6 +267,12 @@ export default function PrivacySettings() {
                 </Box>
               </>
             }
+          />
+          <Setting
+            value={isTransactionSimulationsEnabled}
+            setValue={setTransactionSimulationsEnabled}
+            title={t('simulationsSettingSubHeader')}
+            description={t('simulationsSettingDescription')}
           />
           <Setting
             value={addressBarResolution}

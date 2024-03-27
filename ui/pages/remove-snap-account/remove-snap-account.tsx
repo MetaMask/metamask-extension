@@ -23,11 +23,11 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { SnapAccountCard } from './snap-account-card';
 
-export interface RemoveSnapAccountProps {
+export type RemoveSnapAccountProps = {
   snapId: string;
   snapName: string;
   publicAddress: string;
-}
+};
 
 const RemoveSnapAccount = ({
   snapId,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -7,15 +7,25 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import FeeDetailsComponent from './fee-details-component';
 
 jest.mock('../../../../store/actions', () => ({
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
 }));
 
-const render = (state = {}) => {
+const render = async (state = {}) => {
   const store = configureStore()({ ...mockState, ...state });
-  return renderWithProvider(<FeeDetailsComponent />, store);
+
+  let result;
+
+  await act(
+    async () => (result = renderWithProvider(<FeeDetailsComponent />, store)),
+  );
+
+  return result;
 };
 
 describe('FeeDetailsComponent', () => {

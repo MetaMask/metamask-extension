@@ -11,7 +11,7 @@ const dappsTest = async (
   // Connect to Saturn API
   const client = new CustodianTestClient();
   await client.setup();
-  const signedTransactionTime = await callTestDappBtn(
+  const { signedTransactionTime } = await callTestDappBtn(
     page,
     context,
     client,

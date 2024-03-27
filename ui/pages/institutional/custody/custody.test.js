@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import Fuse from 'fuse.js';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
 
@@ -27,6 +28,8 @@ jest.mock('../../../store/institutional/institution-background', () => ({
     connectCustodyAddresses: mockedConnectCustodyAddresses,
   }),
 }));
+
+jest.mock('fuse.js');
 
 describe('CustodyPage', function () {
   const mockStore = {
@@ -410,5 +413,84 @@ describe('CustodyPage', function () {
     expect(
       screen.queryByTestId('confirm-connect-custodian-modal'),
     ).toBeInTheDocument();
+  });
+
+  it('filters accounts based on search query', async () => {
+    const accounts = [
+      {
+        name: 'Saturn Test A',
+        address: '0x123',
+        balance: '0x1',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'testLabels' }],
+        chanId: 'chanId',
+      },
+      {
+        name: 'Saturn Test B',
+        address: '0x1234',
+        balance: '0x1',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'testLabels' }],
+        chanId: 'chanId',
+      },
+    ];
+
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      dispatch({ type: 'TYPE', payload: accounts });
+      return accounts;
+    });
+
+    Fuse.mockImplementation(() => ({
+      search: jest.fn().mockReturnValue([
+        {
+          name: 'Saturn Test A',
+          address: '0x123',
+        },
+      ]),
+    }));
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText('Search accounts'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('Search accounts'), {
+      target: { value: 'Saturn Test A' },
+    });
+
+    expect(Fuse).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        keys: ['name', 'address'],
+        tokenize: true,
+        matchAllTokens: true,
+        threshold: 0.0,
+      }),
+    );
+
+    expect(screen.getByText('Saturn Test A')).toBeDefined();
   });
 });

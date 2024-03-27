@@ -23,10 +23,9 @@ import {
   Text,
   Box,
 } from '../../component-library';
-import { formatDate } from '../../../helpers/utils/util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
 import { PermissionCellOptions } from './permission-cell-options';
+import { PermissionCellStatus } from './permission-cell-status';
 
 const PermissionCell = ({
   snapId,
@@ -39,9 +38,8 @@ const PermissionCell = ({
   revoked,
   showOptions,
   hideStatus,
+  accounts,
 }) => {
-  const t = useI18nContext();
-
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
   let iconColor = IconColor.primaryDefault;
@@ -110,17 +108,11 @@ const PermissionCell = ({
           {title}
         </Text>
         {!hideStatus && (
-          <Text
-            className="permission-cell__status"
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-          >
-            {!revoked &&
-              (dateApproved
-                ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
-                : t('permissionRequested'))}
-            {revoked ? t('permissionRevoked') : ''}
-          </Text>
+          <PermissionCellStatus
+            revoked={revoked}
+            dateApproved={dateApproved}
+            accounts={accounts}
+          />
         )}
       </Box>
       <Box display={Display.Flex}>
@@ -131,19 +123,21 @@ const PermissionCell = ({
             description={description}
           />
         ) : (
-          <Tooltip
-            html={
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                {description}
-              </Text>
-            }
-            position="bottom"
-          >
-            <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
-          </Tooltip>
+          description && (
+            <Tooltip
+              html={
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {description}
+                </Text>
+              }
+              position="bottom"
+            >
+              <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
+            </Tooltip>
+          )
         )}
       </Box>
     </Box>
@@ -165,6 +159,7 @@ PermissionCell.propTypes = {
   revoked: PropTypes.bool,
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
+  accounts: PropTypes.array,
 };
 
 export default PermissionCell;

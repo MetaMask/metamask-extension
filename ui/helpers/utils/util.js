@@ -11,8 +11,8 @@ import {
 import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
@@ -31,9 +31,6 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -565,21 +562,10 @@ export function isNullish(value) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-export const getSnapName = (snapId, subjectMetadata) => {
-  if (SNAPS_METADATA[snapId]?.name) {
-    return SNAPS_METADATA[snapId].name;
-  }
-
-  if (subjectMetadata) {
-    return subjectMetadata.name;
-  }
-
-  // Mirrors a legacy behaviour of stripSnapPrefix
-  if (!snapId) {
-    return null;
-  }
-
-  return stripSnapPrefix(snapId);
+export const getSnapName = (snapsMetadata) => {
+  return (snapId) => {
+    return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
+  };
 };
 
 export const getSnapRoute = (snapId) => {
@@ -606,6 +592,8 @@ export const getDedupedSnaps = (request, permissions) => {
 };
 
 ///: END:ONLY_INCLUDE_IF
+
+export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
 /**
  * The method escape RTL character in string

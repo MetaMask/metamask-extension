@@ -78,6 +78,14 @@ mockState.metamask.snaps = {
     },
   },
 };
+
+mockState.metamask.domains = {
+  'https://metamask.github.io': 'mainnet',
+  'npm:@metamask/testSnap1': 'mainnet',
+  'npm:@metamask/testSnap2': 'mainnet',
+  'npm:@metamask/testSnap3': 'mainnet',
+};
+
 let store = configureStore(mockState);
 
 describe('All Connections', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 
 import {
   EditGasModes,
@@ -18,15 +18,16 @@ import BaseFeeInput from './base-fee-input';
 const LOW_BASE_FEE = 0.000000001;
 
 jest.mock('../../../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
 }));
 
-const render = (txProps, contextProps) => {
+const render = async (txProps, contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -36,40 +37,55 @@ const render = (txProps, contextProps) => {
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { maxBaseFee: 100 },
+      advancedGasFee: { '0x5': { maxBaseFee: 100 } },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 
-  return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        userFeeLevel: 'custom',
-        ...txProps,
-      }}
-      {...contextProps}
-    >
-      <AdvancedGasFeePopoverContextProvider>
-        <BaseFeeInput />
-        <AdvancedGasFeeGasLimit />
-      </AdvancedGasFeePopoverContextProvider>
-    </GasFeeContextProvider>,
-    store,
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            userFeeLevel: 'custom',
+            ...txProps,
+          }}
+          {...contextProps}
+        >
+          <AdvancedGasFeePopoverContextProvider>
+            <BaseFeeInput />
+            <AdvancedGasFeeGasLimit />
+          </AdvancedGasFeePopoverContextProvider>
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
+
+  return result;
 };
 
 describe('BaseFeeInput', () => {
-  it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
-    render({
+  it('should renders advancedGasFee.baseFee value if current estimate used is not custom', async () => {
+    await render({
       userFeeLevel: 'high',
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
-  it('should not use advancedGasFee.baseFee value for swaps', () => {
-    render(
+  it('should not use advancedGasFee.baseFee value for swaps', async () => {
+    await render(
       {
         userFeeLevel: 'high',
       },
@@ -84,8 +100,8 @@ describe('BaseFeeInput', () => {
     );
   });
 
-  it('should renders baseFee values from transaction if current estimate used is custom', () => {
-    render({
+  it('should renders baseFee values from transaction if current estimate used is custom', async () => {
+    await render({
       txParams: {
         maxFeePerGas: '0x2E90EDD000',
       },
@@ -107,20 +123,23 @@ describe('BaseFeeInput', () => {
       },
     ];
 
-    it.each(testCases)('$description', ({ maxFeePerGas, expectedValue }) => {
-      render({
-        txParams: {
-          maxFeePerGas,
-        },
-      });
-      expect(document.getElementsByTagName('input')[0]).toHaveValue(
-        expectedValue,
-      );
-    });
+    it.each(testCases)(
+      '$description',
+      async ({ maxFeePerGas, expectedValue }) => {
+        await render({
+          txParams: {
+            maxFeePerGas,
+          },
+        });
+        expect(document.getElementsByTagName('input')[0]).toHaveValue(
+          expectedValue,
+        );
+      },
+    );
   });
 
-  it('should show current value of estimatedBaseFee in users primary currency in right side of input box', () => {
-    render({
+  it('should show current value of estimatedBaseFee in users primary currency in right side of input box', async () => {
+    await render({
       txParams: {
         gas: '0x5208',
         maxFeePerGas: '0x2E90EDD000',
@@ -129,18 +148,18 @@ describe('BaseFeeInput', () => {
     expect(screen.queryByText('≈ 0.0042 ETH')).toBeInTheDocument();
   });
 
-  it('should show current value of estimatedBaseFee in subtext', () => {
-    render();
+  it('should show current value of estimatedBaseFee in subtext', async () => {
+    await render();
     expect(screen.queryByText('50 GWEI')).toBeInTheDocument();
   });
 
-  it('should show 12hr range value in subtext', () => {
-    render();
+  it('should show 12hr range value in subtext', async () => {
+    await render();
     expect(screen.queryByText('50 - 100 GWEI')).toBeInTheDocument();
   });
 
-  it('should show error if base fee is less than suggested low value', () => {
-    render({
+  it('should show error if base fee is less than suggested low value', async () => {
+    await render({
       txParams: {
         maxFeePerGas: '0x174876E800',
       },
@@ -156,8 +175,8 @@ describe('BaseFeeInput', () => {
     });
   });
 
-  it('should show error if base if is more than suggested high value', () => {
-    render({
+  it('should show error if base if is more than suggested high value', async () => {
+    await render({
       txParams: {
         maxFeePerGas: '0x174876E800',
       },
@@ -177,8 +196,8 @@ describe('BaseFeeInput', () => {
   });
 
   describe('updateBaseFee', () => {
-    it('updates base fee correctly', () => {
-      const { getByTestId } = render(<BaseFeeInput />);
+    it('updates base fee correctly', async () => {
+      const { getByTestId } = await render(<BaseFeeInput />);
       const input = getByTestId('base-fee-input');
 
       fireEvent.change(input, { target: { value: '1' } });
@@ -186,8 +205,8 @@ describe('BaseFeeInput', () => {
       expect(input.value).toBe('1');
     });
 
-    it('handles low numbers', () => {
-      const { getByTestId } = render(<BaseFeeInput />);
+    it('handles low numbers', async () => {
+      const { getByTestId } = await render(<BaseFeeInput />);
       const input = getByTestId('base-fee-input');
 
       fireEvent.change(input, { target: { value: LOW_BASE_FEE } });

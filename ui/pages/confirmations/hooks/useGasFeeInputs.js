@@ -130,7 +130,7 @@ export function useGasFeeInputs(
     gasFeeEstimates,
     isGasEstimatesLoading,
     isNetworkBusy,
-  } = useGasFeeEstimates();
+  } = useGasFeeEstimates(transaction?.networkClientId);
 
   const userPrefersAdvancedGas = useSelector(getAdvancedInlineGasShown);
 

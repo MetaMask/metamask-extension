@@ -12,6 +12,8 @@ export enum SelectButtonSize {
   Lg = 'lg',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   /*
    * Additional classNames to be added to the SelectButton component

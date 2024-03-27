@@ -186,9 +186,7 @@ export const TokenListItem = ({
             name={tokenSymbol}
             src={tokenImage}
             showHalo
-            borderColor={
-              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
-            }
+            borderColor={tokenImage ? undefined : BorderColor.borderDefault}
           />
         </BadgeWrapper>
         <Box

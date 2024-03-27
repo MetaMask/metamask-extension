@@ -186,6 +186,8 @@ export type BackgroundColorArray = [
  *
  * Help to migrate this component by submitting a PR
  */
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The content of the Box component.

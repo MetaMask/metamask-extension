@@ -17,7 +17,7 @@ import type { NetworkStatus } from '../../shared/constants/network';
  *
  * TODO: Replace this
  */
-export interface TemporaryMessageDataType {
+export type TemporaryMessageDataType = {
   id: string;
   type: string;
   msgParams: {
@@ -30,11 +30,11 @@ export interface TemporaryMessageDataType {
   };
   status?: string;
   ///: END:ONLY_INCLUDE_IF
-}
+};
 
-export interface MessagesIndexedById {
+export type MessagesIndexedById = {
   [id: string]: TemporaryMessageDataType;
-}
+};
 
 /**
  * This interface is a temporary interface to describe the state tree that is
@@ -45,7 +45,7 @@ export interface MessagesIndexedById {
  * state received from the background takes precedence over anything in the
  * metamask reducer.
  */
-interface TemporaryBackgroundState {
+type TemporaryBackgroundState = {
   addressBook: {
     [chainId: string]: {
       name: string;
@@ -89,7 +89,7 @@ interface TemporaryBackgroundState {
     };
     selectedAccount: string;
   };
-}
+};
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 

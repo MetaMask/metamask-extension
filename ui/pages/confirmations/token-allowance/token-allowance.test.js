@@ -140,11 +140,20 @@ const mockedState = jest.mocked(state);
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      chainId: '0x5',
+    }),
+  ),
   updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),

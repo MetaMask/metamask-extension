@@ -29,7 +29,7 @@ import {
 import {
   getOnboardedInThisUISession,
   getShowPermissionsTour,
-  getConnectedSitesList,
+  getConnectedSitesListWithNetworkInfo,
   getConnectedSnapsList,
 } from '../../../../selectors';
 import { Tab, Tabs } from '../../../ui/tabs';
@@ -45,7 +45,9 @@ export const PermissionsPage = () => {
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(getConnectedSitesList);
+  const sitesConnectionsList = useSelector(
+    getConnectedSitesListWithNetworkInfo,
+  );
   const snapsConnectionsList = useSelector(getConnectedSnapsList);
   const showPermissionsTour = useSelector(getShowPermissionsTour);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);

@@ -108,6 +108,12 @@ async function requestEthereumAccountsHandler(
     res.result = accounts;
     const numberOfConnectedAccounts =
       getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
+      origin,
+    );
     sendMetrics({
       event: MetaMetricsEventName.DappViewed,
       category: MetaMetricsEventCategory.InpageProvider,
@@ -115,7 +121,7 @@ async function requestEthereumAccountsHandler(
         url: origin,
       },
       properties: {
-        is_first_visit: true,
+        is_first_visit: isFirstVisit,
         number_of_accounts: Object.keys(metamaskState.accounts).length,
         number_of_accounts_connected: numberOfConnectedAccounts,
       },

@@ -9,6 +9,8 @@ export enum BannerAlertSeverity {
   Warning = 'warning',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BannerAlertStyleUtilityProps
   extends BannerBaseStyleUtilityProps {
   /**

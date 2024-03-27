@@ -253,7 +253,7 @@ describe('MetaMaskController', function () {
           Promise.resolve({ supportsInterface: supportsInterfaceStub }),
         );
       sinon
-        .stub(metamaskController.tokensController, 'getNetworkClientById')
+        .stub(metamaskController.controllerMessenger, 'call')
         .callsFake(() => ({
           configuration: {
             chainId: '0xa',
@@ -266,10 +266,9 @@ describe('MetaMaskController', function () {
         decimals,
         networkClientId: 'networkClientId1',
       });
-      assert.strictEqual(
-        metamaskController.tokensController.getNetworkClientById.getCall(0)
-          .args[0],
-        'networkClientId1',
+      assert.deepStrictEqual(
+        metamaskController.controllerMessenger.call.getCall(0).args,
+        ['NetworkController:getNetworkClientById', 'networkClientId1'],
       );
     });
   });

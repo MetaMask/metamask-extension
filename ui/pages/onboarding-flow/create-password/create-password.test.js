@@ -7,7 +7,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreatePassword from './create-password';
 
 const mockHistoryPush = jest.fn();
@@ -55,7 +55,7 @@ describe('Onboarding Create Password', () => {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
-          firstTimeFlowType: 'import',
+          firstTimeFlowType: FirstTimeFlowType.import,
         },
       };
       const mockStore = configureMockStore()(importFirstTimeFlowState);
@@ -338,7 +338,7 @@ describe('Onboarding Create Password', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FIRST_TIME_FLOW_TYPES.IMPORT,
+        firstTimeFlowType: FirstTimeFlowType.import,
       },
     };
 

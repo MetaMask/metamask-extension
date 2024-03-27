@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 
 import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -13,15 +13,16 @@ import { AdvancedGasFeePopoverContextProvider } from '../context';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
 }));
 
-const render = (contextProps) => {
+const render = async (contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -31,44 +32,59 @@ const render = (contextProps) => {
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { priorityFee: 100 },
+      advancedGasFee: { '0x5': { priorityFee: 100 } },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 
-  return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{
-        userFeeLevel: 'custom',
-        txParams: { gas: '0x5208' },
-      }}
-      {...contextProps}
-    >
-      <AdvancedGasFeePopoverContextProvider>
-        <AdvancedGasFeeGasLimit />
-      </AdvancedGasFeePopoverContextProvider>
-    </GasFeeContextProvider>,
-    store,
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <GasFeeContextProvider
+          transaction={{
+            userFeeLevel: 'custom',
+            txParams: { gas: '0x5208' },
+          }}
+          {...contextProps}
+        >
+          <AdvancedGasFeePopoverContextProvider>
+            <AdvancedGasFeeGasLimit />
+          </AdvancedGasFeePopoverContextProvider>
+        </GasFeeContextProvider>,
+        store,
+      )),
   );
+
+  return result;
 };
 
 describe('AdvancedGasFeeGasLimit', () => {
-  it('should show GasLimit from transaction', () => {
-    render();
+  it('should show GasLimit from transaction', async () => {
+    await render();
     expect(screen.getByText('21000')).toBeInTheDocument();
   });
 
-  it('should show input when edit link is clicked', () => {
-    render();
+  it('should show input when edit link is clicked', async () => {
+    await render();
     expect(document.getElementsByTagName('input')).toHaveLength(0);
     fireEvent.click(screen.queryByText('Edit'));
     expect(document.getElementsByTagName('input')[0]).toHaveValue(21000);
   });
 
-  it('should show error if gas limit is not in range', () => {
-    render();
+  it('should show error if gas limit is not in range', async () => {
+    await render();
     fireEvent.click(screen.queryByText('Edit'));
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 20000 },
@@ -96,8 +112,8 @@ describe('AdvancedGasFeeGasLimit', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('should validate gas limit against minimumGasLimit it is passed to context', () => {
-    render({ minimumGasLimit: '0x7530' });
+  it('should validate gas limit against minimumGasLimit it is passed to context', async () => {
+    await render({ minimumGasLimit: '0x7530' });
     fireEvent.click(screen.queryByText('Edit'));
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 25000 },

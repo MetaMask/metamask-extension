@@ -15,13 +15,12 @@ import { SnapInsight } from '../components/app/snaps/snap-insight/snap-insight';
 import {
   getInsightSnapIds,
   getInsightSnaps,
-  getSubjectMetadataDeepEqual,
+  getSnapsMetadata,
 } from '../selectors';
-import { getSnapName } from '../helpers/utils/util';
-
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { deleteInterface } from '../store/actions';
 ///: END:ONLY_INCLUDE_IF
+import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -41,8 +40,10 @@ const useTransactionInsights = ({ txData }) => {
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
-  const subjectMetadata = useSelector(getSubjectMetadataDeepEqual);
   const insightSnapIds = useSelector(getInsightSnapIds);
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const snapsNameGetter = getSnapName(snapsMetadata);
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -98,7 +99,7 @@ const useTransactionInsights = ({ txData }) => {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
+        name={snapsNameGetter(selectedSnap.id)}
       >
         <SnapInsight
           snapId={selectedInsightSnapId}
@@ -114,7 +115,7 @@ const useTransactionInsights = ({ txData }) => {
     );
   } else if (insightSnaps.length > 1) {
     const dropdownOptions = insightSnaps?.map(({ id }) => {
-      const name = getSnapName(id, subjectMetadata[id]);
+      const name = snapsNameGetter(id);
       return {
         value: id,
         name,

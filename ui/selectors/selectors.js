@@ -3,7 +3,10 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { stripSnapPrefix } from '@metamask/snaps-utils';
+import {
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+} from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -59,9 +62,6 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getSnapName,
-  ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
@@ -96,6 +96,8 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
+  NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -183,9 +185,10 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
+ * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
  */
-export function checkNetworkAndAccountSupports1559(state) {
-  const networkSupports1559 = isEIP1559Network(state);
+export function checkNetworkAndAccountSupports1559(state, networkClientId) {
+  const networkSupports1559 = isEIP1559Network(state, networkClientId);
   return networkSupports1559;
 }
 
@@ -471,6 +474,10 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+export function getAllDomains(state) {
+  return state.metamask.domains;
+}
+
 export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
@@ -715,6 +722,9 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getSendInputCurrencySwitched({ appState }) {
+  return appState.sendInputCurrencySwitched;
+}
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
@@ -924,6 +934,23 @@ export const getMemoizedTargetSubjectMetadata = createDeepEqualSelector(
   getTargetSubjectMetadata,
   (interfaces) => interfaces,
 );
+
+/**
+ * Get a memoized version of the unapproved confirmations.
+ */
+export const getMemoizedUnapprovedConfirmations = createDeepEqualSelector(
+  getUnapprovedConfirmations,
+  (confirmations) => confirmations,
+);
+
+/**
+ * Get a memoized version of the unapproved templated confirmations.
+ */
+export const getMemoizedUnapprovedTemplatedConfirmations =
+  createDeepEqualSelector(
+    getUnapprovedTemplatedConfirmations,
+    (confirmations) => confirmations,
+  );
 
 /**
  * Get the Snap interfaces from the redux state.
@@ -1138,15 +1165,31 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-export const getMemoizedMetadataContractName = createDeepEqualSelector(
+export const getMemoizedMetadataContracts = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, addresses) => addresses,
+  (tokenList, addresses) => {
+    return addresses.map((address) =>
+      Object.values(tokenList).find((identity) =>
+        isEqualCaseInsensitive(identity.address, address),
+      ),
+    );
+  },
+);
+
+export const getMemoizedMetadataContract = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
-    const entry = Object.values(tokenList).find((identity) =>
+    return Object.values(tokenList).find((identity) =>
       isEqualCaseInsensitive(identity.address, address),
     );
-    return entry && entry.name !== '' ? entry.name : '';
   },
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getMemoizedMetadataContract,
+  (entry) => entry?.name ?? '',
 );
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -1224,21 +1267,44 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 );
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
+  getMetaMaskIdentities,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, connectedAddresses) => {
+  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
-
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
+          sitesList[siteKey].addressToNameMap[connectedAddress] =
+            identities[connectedAddress].name; // Map address to name
         } else {
-          sitesList[siteKey] = { ...app, addresses: [connectedAddress] };
+          sitesList[siteKey] = {
+            ...app,
+            addresses: [connectedAddress],
+            addressToNameMap: {
+              [connectedAddress]: identities[connectedAddress].name,
+            },
+          };
         }
       });
     });
+    return sitesList;
+  },
+);
 
+export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
+  getConnectedSitesList,
+  getAllDomains,
+  getAllNetworks,
+  (sitesList, domains, networks) => {
+    Object.keys(sitesList).forEach((siteKey) => {
+      const connectedNetwork = networks.find(
+        (network) => network.id === domains[siteKey],
+      );
+      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      sitesList[siteKey].networkName = connectedNetwork.nickname;
+    });
     return sitesList;
   },
 );
@@ -1293,6 +1359,70 @@ export const getSnap = createDeepEqualSelector(
   (_, snapId) => snapId,
   (snaps, snapId) => {
     return snaps[snapId];
+  },
+);
+
+/**
+ * Get a selector that returns the snap manifest for a given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the manifest for.
+ * @returns {object | undefined} The snap manifest.
+ */
+export const getSnapManifest = createDeepEqualSelector(
+  (state) => state.metamask.currentLocale,
+  (state, snapId) => getSnap(state, snapId),
+  (locale, snap) => {
+    if (!snap?.localizationFiles) {
+      return snap?.manifest;
+    }
+
+    return getLocalizedSnapManifest(
+      snap.manifest,
+      locale,
+      snap.localizationFiles,
+    );
+  },
+);
+
+/**
+ * Get a selector that returns the snap metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the metadata for.
+ * @returns {object} An object containing the snap name and description.
+ */
+export const getSnapMetadata = createDeepEqualSelector(
+  (state, snapId) => getSnapManifest(state, snapId),
+  (_, snapId) => snapId,
+  (manifest, snapId) => {
+    return {
+      // The snap manifest may not be available if the Snap is not installed, so
+      // we use the snap ID as the name in that case.
+      name: manifest?.proposedName ?? (snapId ? stripSnapPrefix(snapId) : null),
+      description: manifest?.description,
+    };
+  },
+);
+
+/**
+ * Get a selector that returns all snaps metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ */
+export const getSnapsMetadata = createDeepEqualSelector(
+  (state) => state,
+  (state) => {
+    return Object.keys(getSnaps(state));
+  },
+  (state, snapIds) => {
+    return snapIds.reduce((snapsMetadata, snapId) => {
+      snapsMetadata[snapId] = getSnapMetadata(state, snapId);
+      return snapsMetadata;
+    }, {});
   },
 );
 
@@ -1428,6 +1558,8 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
+    [NOTIFICATION_PORTFOLIO_V2]: true,
+    [NOTIFICATION_SIMULATIONS]: true,
   };
 }
 
@@ -1936,16 +2068,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 }
 
 /**
- * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsTransactionSecurityCheckEnabled(state) {
-  return state.metamask.transactionSecurityCheckEnabled;
-}
-
-/**
  * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
  *
  * @param {*} state
@@ -2054,6 +2176,17 @@ export function getShouldShowSeedPhraseReminder(state) {
 
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
+}
+
+export function getUnconnectedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const unConnectedAccounts = accounts.filter((account) => {
+    return !connectedAccounts.some(
+      (connectedAccount) => connectedAccount.address === account.address,
+    );
+  });
+  return unConnectedAccounts;
 }
 
 export function getUpdatedAndSortedAccounts(state) {
@@ -2172,7 +2305,7 @@ export function getSnapsList(state) {
         iconUrl: targetSubjectMetadata?.iconUrl,
         subjectType: targetSubjectMetadata?.subjectType,
         packageName: stripSnapPrefix(snap.id),
-        name: getSnapName(snap.id, targetSubjectMetadata),
+        name: getSnapMetadata(state, snap.id).name,
       };
     });
 }

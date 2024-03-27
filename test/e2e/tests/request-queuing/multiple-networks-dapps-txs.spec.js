@@ -14,7 +14,7 @@ const {
 const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should show switch network confirmations for per dapp selected networks when calling send transactions @no-mmi', async function () {
+  it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -107,29 +107,28 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.executeScript(`window.location.reload()`);
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
         await driver.delay(largeDelayMs);
 
         // Dapp two send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        await driver.executeScript(`window.location.reload()`);
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
-        await driver.delay(largeDelayMs);
-
-        // First switch network confirmation
+        // First switch network
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.findClickableElement({
-          text: 'Switch network',
-          tag: 'button',
-        });
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for confirm tx after switch network confirmation.
         await driver.delay(largeDelayMs);
 
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.delay(largeDelayMs);
 
         // Find correct network on confirm tx
         await driver.findElement({
@@ -151,23 +150,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // TODO: Reload fix to have the confirmations show
         await driver.executeScript(`window.location.reload()`);
 
-        // Second Switch Network Confirmation
+        // Second Switch Network
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        await driver.findElement({
-          css: '[data-testid="network-switch-from-network"]',
-          text: 'Localhost 8545',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="network-switch-to-network"]',
-          text: 'Localhost 8546',
-        });
-
-        // Switch Network
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Check for unconfirmed transaction in tx list
         await driver.wait(async () => {

@@ -39,7 +39,6 @@ import {
   getCurrentKeyring,
   getMetaMetricsId,
 } from '../../../selectors';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -52,6 +51,7 @@ import {
   IconName,
   Text,
 } from '../../../components/component-library';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function CreatePassword({
   createNewAccount,
@@ -92,7 +92,7 @@ export default function CreatePassword({
 
   useEffect(() => {
     if (currentKeyring) {
-      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+      if (firstTimeFlowType === FirstTimeFlowType.import) {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_COMPLETION_ROUTE);
         ///: END:ONLY_INCLUDE_IF
@@ -205,7 +205,7 @@ export default function CreatePassword({
     // If secretRecoveryPhrase is defined we are in import wallet flow
     if (
       secretRecoveryPhrase &&
-      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+      firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -253,7 +253,7 @@ export default function CreatePassword({
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         secretRecoveryPhrase &&
-        firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
+        firstTimeFlowType === FirstTimeFlowType.import ? (
           <TwoStepProgressBar
             stage={twoStepStages.PASSWORD_CREATE}
             marginBottom={4}
@@ -374,7 +374,7 @@ export default function CreatePassword({
             <Button
               data-testid={
                 secretRecoveryPhrase &&
-                firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                firstTimeFlowType === FirstTimeFlowType.import
                   ? 'create-password-import'
                   : 'create-password-wallet'
               }
@@ -385,7 +385,7 @@ export default function CreatePassword({
               onClick={handleCreate}
             >
               {secretRecoveryPhrase &&
-              firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+              firstTimeFlowType === FirstTimeFlowType.import
                 ? t('importMyWallet')
                 : t('createNewWallet')}
             </Button>

@@ -37,7 +37,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       <div className="permission-approval-container__content__requested">
         <PermissionsConnectPermissionList
           permissions={selectedPermissions}
-          targetSubjectMetadata={subjectMetadata}
+          subjectName={subjectMetadata.origin}
         />
       </div>
     );

@@ -24,6 +24,7 @@ import {
   SEVERITIES,
   TextVariant,
   BLOCK_SIZES,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   fetchQuotesAndSetQuoteState,
@@ -64,12 +65,15 @@ import {
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
+  getIsBridgeChain,
+  getMetaMetricsId,
 } from '../../../selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -197,6 +201,8 @@ export default function PrepareSwapPage({
   const numberOfAggregators = aggregatorMetadata
     ? Object.keys(aggregatorMetadata).length
     : 0;
+  const isBridgeChain = useSelector(getIsBridgeChain);
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -713,6 +719,11 @@ export default function PrepareSwapPage({
     !swapsErrorKey && !isReviewSwapButtonDisabled && !areQuotesPresent;
   const showNotEnoughTokenMessage =
     !fromTokenError && balanceError && fromTokenSymbol;
+  const showCrossChainSwapsLink =
+    isBridgeChain &&
+    !showReviewQuote &&
+    !showQuotesLoadingAnimation &&
+    !areQuotesPresent;
 
   const tokenVerifiedOn1Source = occurrences === 1;
 
@@ -1024,6 +1035,43 @@ export default function PrepareSwapPage({
             </div>
           </Box>
         </div>
+        {showCrossChainSwapsLink && (
+          <ButtonLink
+            endIconName={IconName.Export}
+            endIconProps={{
+              size: IconSize.Xs,
+            }}
+            variant={TextVariant.bodySm}
+            marginTop={2}
+            fontWeight={FontWeight.Normal}
+            onClick={() => {
+              const portfolioUrl = getPortfolioUrl(
+                'bridge',
+                'ext_bridge_prepare_swap_link',
+                metaMetricsId,
+              );
+
+              global.platform.openTab({
+                url: `${portfolioUrl}&token=${fromTokenAddress}`,
+              });
+
+              trackEvent({
+                category: MetaMetricsEventCategory.Swaps,
+                event: MetaMetricsEventName.BridgeLinkClicked,
+                properties: {
+                  location: 'Swaps',
+                  text: 'Swap across networks with MetaMask Portfolio',
+                  chain_id: chainId,
+                  token_symbol: fromTokenSymbol,
+                },
+              });
+            }}
+            target="_blank"
+            data-testid="prepare-swap-page-cross-chain-swaps-link"
+          >
+            {t('crossChainSwapsLink')}
+          </ButtonLink>
+        )}
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
             <BannerAlert

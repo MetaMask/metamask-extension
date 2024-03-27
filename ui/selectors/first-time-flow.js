@@ -1,3 +1,4 @@
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -8,9 +9,9 @@ export function getFirstTimeFlowTypeRoute(state) {
   const { firstTimeFlowType } = state.metamask;
 
   let nextRoute;
-  if (firstTimeFlowType === 'create') {
+  if (firstTimeFlowType === FirstTimeFlowType.create) {
     nextRoute = ONBOARDING_CREATE_PASSWORD_ROUTE;
-  } else if (firstTimeFlowType === 'import') {
+  } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     nextRoute = ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else {
     nextRoute = DEFAULT_ROUTE;

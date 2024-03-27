@@ -1,5 +1,6 @@
 import React from 'react';
 import { PERMISSIONS } from '../../../../helpers/constants/routes';
+import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
 import { ConnectionListItem } from './connection-list-item';
 
 export default {
@@ -21,7 +22,16 @@ export default {
       name: 'MetaMask Portfolio',
       origin: 'https://portfolio.metamask.io',
       subjectType: 'website',
-      addresses: ['0xTestAddress1', '0xTestAddress2'],
+      addresses: [
+        '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',
+        '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+      ],
+      addressToNameMap: {
+        '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress1',
+        '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress2',
+      },
+      networkIconUrl: ETH_TOKEN_IMAGE_URL,
+      networkName: 'Test Dapp Network',
     },
     onClick: () => console.log('clicked'),
   },
@@ -63,6 +73,20 @@ ChaosStory.args = {
       '0x777F07C80ce267F3132cE7e6048B66E6E669365B',
       '0x666D671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
     ],
+    addressToNameMap: {
+      '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress1',
+      '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress2',
+      '0xcccF07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress3',
+      '0xdddD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress4',
+      '0xeeeF07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress5',
+      '0xfffD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress6',
+      '0x999F07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress7',
+      '0x888D671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress8',
+      '0x777F07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress9',
+      '0x666D671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress10',
+    },
+    networkIconUrl: ETH_TOKEN_IMAGE_URL,
+    networkName: 'Test Dapp Network',
   },
   onClick: () => {
     console.log(
@@ -85,7 +109,14 @@ SnapStory.args = {
     name: 'Connect'.repeat(100),
     packageName: '@metamask/storybooksnap',
     subjectType: 'snap',
-    addresses: ['OxTestAddress1', 'OxTestAddress2'],
+    addresses: [
+      '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B',
+      '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1',
+    ],
+    addressToNameMap: {
+      '0xaaaF07C80ce267F3132cE7e6048B66E6E669365B': 'TestAddress1',
+      '0xbbbD671F1Fcc94bCF0ebC6Ec4790Da35E8d5e1E1': 'TestAddress2',
+    },
   },
   onClick: () =>
     console.log(

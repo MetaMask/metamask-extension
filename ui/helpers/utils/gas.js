@@ -25,7 +25,7 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   );
 
   const maxFeePerGasFromEstimate =
-    gasFeeEstimates[estimate]?.suggestedMaxFeePerGas;
+    gasFeeEstimates?.[estimate]?.suggestedMaxFeePerGas;
   return bnGreaterThan(maxFeePerGasFromEstimate, maxFeePerGasInTransaction);
 };
 

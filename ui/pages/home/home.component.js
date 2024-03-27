@@ -14,6 +14,7 @@ import NftsTab from '../../components/app/nfts-tab';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -815,7 +816,8 @@ export default class Home extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const showWhatsNew =
       completedOnboarding &&
-      (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
+      (!onboardedInThisUISession ||
+        firstTimeFlowType === FirstTimeFlowType.import) &&
       announcementsToShow &&
       showWhatsNewPopup &&
       !process.env.IN_TEST &&

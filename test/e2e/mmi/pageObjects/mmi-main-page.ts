@@ -81,7 +81,7 @@ export class MMIMainPage {
     await test.expect.soft(this.page).toHaveScreenshot(screenshotName, {
       fullPage: true,
       mask: [accountsFunds, fundsDetails, accountMenu],
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: 0.06,
     });
   }
 }

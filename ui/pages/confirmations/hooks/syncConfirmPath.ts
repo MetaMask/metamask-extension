@@ -1,12 +1,9 @@
 import { useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../helpers/constants/routes';
-import { currentConfirmationSelector } from '../../../selectors/confirm';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { currentConfirmationSelector } from '../selectors/confirm';
 
 const syncConfirmPath = () => {
   const history = useHistory();
@@ -19,13 +16,9 @@ const syncConfirmPath = () => {
     if (!currentConfirmation) {
       return;
     }
-    if (paramsTransactionId !== currentConfirmation.id) {
-      const isSignature = Boolean(currentConfirmation.msgParams);
-      if (isSignature) {
-        history.replace(
-          `${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}/${SIGNATURE_REQUEST_PATH}`,
-        );
-      }
+    if (!paramsTransactionId) {
+      history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}`);
+
       // todo: logic to replace url for rest of transactions to be added here
     }
   }, [currentConfirmation, paramsTransactionId]);

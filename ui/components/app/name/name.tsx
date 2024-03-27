@@ -14,7 +14,7 @@ import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
 
-export interface NameProps {
+export type NameProps = {
   /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
 
@@ -26,7 +26,13 @@ export interface NameProps {
 
   /** The raw value to display the name of. */
   value: string;
-}
+
+  /**
+   * Applies to recognized contracts with no petname saved:
+   * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
+   */
+  preferContractSymbol?: boolean;
+};
 
 function formatValue(value: string, type: NameType): string {
   switch (type) {
@@ -43,11 +49,16 @@ export default function Name({
   type,
   disableEdit,
   internal,
+  preferContractSymbol = false,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { name, hasPetname } = useDisplayName(value, type);
+  const { name, hasPetname } = useDisplayName(
+    value,
+    type,
+    preferContractSymbol,
+  );
 
   useEffect(() => {
     if (internal) {

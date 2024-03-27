@@ -1,4 +1,4 @@
-export * from './confirm';
+export * from '../pages/confirmations/selectors/confirm';
 export * from './confirm-transaction';
 export * from './custom-gas';
 export * from './first-time-flow';

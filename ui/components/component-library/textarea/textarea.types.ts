@@ -13,6 +13,8 @@ export enum TextareaResize {
   Inherit = 'inherit',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface TextareaStyleUtilityProps extends StyleUtilityProps {
   /**
    * If `true`, the textarea will be focused during the first mount.

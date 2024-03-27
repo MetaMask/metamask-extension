@@ -30,12 +30,12 @@ describe('AssetPickerAmount', () => {
             asset: {
               balance: '0x3635c9adc5dea00000',
               type: AssetType.NFT,
-              error: null,
+              error: null as any,
               details: {
                 address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
                 symbol: 'BAYC',
                 isERC721: true,
-                tokenId: '1',
+                tokenId: 12345,
                 standard: TokenStandard.ERC721,
               },
             },
@@ -54,11 +54,16 @@ describe('AssetPickerAmount', () => {
     const mockedNftStore = configureStore()(tokenAssetState);
 
     const { getByText } = renderWithProvider(
-      <AssetPickerAmount />,
+      <AssetPickerAmount
+        onAmountChange={() => ({})}
+        onAssetChange={() => ({})}
+        amount={{ value: '100' }}
+        asset={tokenAssetState.send.draftTransactions['1-tx'].asset}
+      />,
       mockedNftStore,
     );
 
-    expect(getByText('Token ID')).toBeInTheDocument();
+    expect(getByText('#12345')).toBeInTheDocument();
   });
 
   it('should send erc1155 token', () => {
@@ -72,12 +77,12 @@ describe('AssetPickerAmount', () => {
             asset: {
               balance: '0x3635c9adc5dea00000',
               type: AssetType.NFT,
-              error: null,
+              error: undefined,
               details: {
                 balance: '30',
                 address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
                 symbol: 'TST',
-                tokenId: '1',
+                tokenId: 1,
                 standard: TokenStandard.ERC1155,
               },
             },
@@ -96,11 +101,16 @@ describe('AssetPickerAmount', () => {
     const mockedNftStore = configureStore()(tokenAssetState);
 
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <AssetPickerAmount />,
+      <AssetPickerAmount
+        asset={tokenAssetState.send.draftTransactions['1-tx'].asset}
+        amount={{ value: '1' }}
+        onAmountChange={() => ({})}
+        onAssetChange={() => ({})}
+      />,
       mockedNftStore,
     );
 
-    expect(getByText('ID: #1')).toBeInTheDocument();
+    expect(getByText('#1')).toBeInTheDocument();
     expect(getByPlaceholderText('0')).toBeInTheDocument();
   });
 });

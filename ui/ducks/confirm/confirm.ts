@@ -1,11 +1,17 @@
-type ActionType = {
-  type: string;
-  currentConfirmation?: Record<string, unknown> | undefined;
-};
+type ActionType =
+  | {
+      type: 'metamask/confirm/UPDATE_CONFIRM';
+      payload?: Record<string, unknown>;
+    }
+  | {
+      type: 'metamask/confirm/UPDATE_CURRENT_CONFIRMATION';
+      currentConfirmation?: Record<string, unknown> | undefined;
+    };
 
 const createActionType = (action: string): string =>
   `metamask/confirm/${action}`;
 
+export const UPDATE_CONFIRM = createActionType('UPDATE_CONFIRM');
 export const UPDATE_CURRENT_CONFIRMATION = createActionType(
   'UPDATE_CURRENT_CONFIRMATION',
 );
@@ -15,17 +21,33 @@ const initState = {
 };
 
 export default function confirmReducer(
-  state = initState,
-  action: ActionType = { type: '' },
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  state: typeof initState = initState,
+  action: ActionType,
 ) {
   switch (action.type) {
-    case UPDATE_CURRENT_CONFIRMATION:
+    case 'metamask/confirm/UPDATE_CONFIRM': {
       return {
+        ...state,
+        ...action.payload,
+      };
+    }
+    case 'metamask/confirm/UPDATE_CURRENT_CONFIRMATION': {
+      return {
+        ...state,
         currentConfirmation: action.currentConfirmation,
       };
+    }
     default:
       return state;
   }
+}
+
+export function updateConfirm(payload: Record<string, unknown> | undefined) {
+  return {
+    type: UPDATE_CONFIRM,
+    payload: payload || initState,
+  };
 }
 
 export function updateCurrentConfirmation(

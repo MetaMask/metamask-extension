@@ -68,3 +68,31 @@ exports[`Identicon should match snapshot with default props 1`] = `
   />
 </div>
 `;
+
+exports[`Identicon should match snapshot with token icon 1`] = `
+<div>
+  <div
+    class="identicon test-address"
+    style="height: 46px; width: 46px; border-radius: 23px;"
+  >
+    <img
+      src="https://test.com/testTokenIcon.jpg"
+      style="width: 100%;"
+    />
+  </div>
+</div>
+`;
+
+exports[`Identicon should match snapshot with watched NFT logo 1`] = `
+<div>
+  <div
+    class="identicon test-address"
+    style="height: 46px; width: 46px; border-radius: 23px;"
+  >
+    <img
+      src="https://test.com/testNftLogo.jpg"
+      style="width: 100%;"
+    />
+  </div>
+</div>
+`;

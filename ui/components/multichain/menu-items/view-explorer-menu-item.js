@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import { MenuItem } from '../../ui/menu';
@@ -22,6 +21,7 @@ import {
 } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const ViewExplorerMenuItem = ({
   metricsLocation,

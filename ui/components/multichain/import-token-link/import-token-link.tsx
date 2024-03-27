@@ -9,7 +9,7 @@ import {
 } from '../../component-library';
 import { AlignItems, Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
+import { detectTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -71,7 +71,7 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
           size={ButtonLinkSize.Md}
           startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
-          onClick={() => dispatch(detectNewTokens())}
+          onClick={() => dispatch(detectTokens())}
         >
           {t('refreshList')}
         </ButtonLink>

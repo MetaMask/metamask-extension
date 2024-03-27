@@ -1,4 +1,4 @@
-export const unapprovedPersonalMsg = {
+export const unapprovedPersonalSignMsg = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
   status: 'unapproved',
   time: new Date().getTime(),

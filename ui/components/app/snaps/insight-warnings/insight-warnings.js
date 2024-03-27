@@ -13,15 +13,17 @@ import {
   ButtonSecondarySize,
   ButtonPrimarySize,
   ButtonVariant,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
 } from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
+  FontWeight,
   FlexDirection,
   IconColor,
   JustifyContent,
@@ -121,67 +123,89 @@ export default function InsightWarnings({
             {t('insightWarningHeader')}
           </Text>
         </ModalHeader>
-        <Text variant={TextVariant.bodyMd} paddingBottom={4}>
-          {warnings.length === 1
-            ? t('insightWarningContentSingular', [
-                action,
-                InsightWarningLanguage[action].noun,
-              ])
-            : t('insightWarningContentPlural', [
-                warnings.length,
-                action,
-                InsightWarningLanguage[action].noun,
+        <ModalBody>
+          <Text variant={TextVariant.bodyMd} paddingBottom={4}>
+            {warnings.length === 1
+              ? t('insightWarningContentSingular', [
+                  <Text
+                    variant={TextVariant.inherit}
+                    key={warnings.id}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {`${warnings.length} ${t('insightWarning')}`}
+                  </Text>,
+                  action,
+                  InsightWarningLanguage[action].noun,
+                ])
+              : t('insightWarningContentPlural', [
+                  <Text
+                    variant={TextVariant.inherit}
+                    key={warnings.id}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {`${warnings.length} ${t('insightWarnings')}`}
+                  </Text>,
+                  warnings.length,
+                  action,
+                  InsightWarningLanguage[action].noun,
+                ])}
+          </Text>
+          <Warnings />
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexStart}
+            alignItems={AlignItems.center}
+            marginTop={4}
+            marginBottom={4}
+            padding={4}
+            borderRadius={BorderRadius.SM}
+            style={{
+              backgroundColor: isChecked
+                ? 'var(--color-info-muted)'
+                : 'var(--color-background-default-hover)',
+            }}
+          >
+            <Checkbox
+              variant={TextVariant.bodyMd}
+              isChecked={isChecked}
+              onChange={handleOnChange}
+              label={t('insightWarningCheckboxMessage', [
+                t(InsightWarningLanguage[action].imperative),
+                <Text
+                  variant={TextVariant.inherit}
+                  key={action}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {stripHttpSchemes(origin)}
+                </Text>,
               ])}
-        </Text>
-        <Warnings />
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexStart}
-          alignItems={AlignItems.center}
-          marginTop={4}
-          marginBottom={4}
-          padding={4}
-          borderRadius={BorderRadius.SM}
-          style={{
-            backgroundColor: isChecked
-              ? 'var(--color-info-muted)'
-              : 'var(--color-background-default-hover)',
-          }}
-        >
-          <Checkbox
-            variant={TextVariant.bodySm}
-            isChecked={isChecked}
-            onChange={handleOnChange}
-            label={t('insightWarningCheckboxMessage', [
-              t(InsightWarningLanguage[action].imperative),
-              stripHttpSchemes(origin),
-            ])}
-          />
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          <Button
-            size={ButtonSecondarySize.Lg}
-            width={BlockSize.Half}
-            variant={ButtonVariant.Secondary}
-            onClick={onCancel}
-            marginRight={4}
+            />
+          </Box>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
           >
-            {t('cancel')}
-          </Button>
-          <Button
-            size={ButtonPrimarySize.Lg}
-            width={BlockSize.Half}
-            data-testid="snapInsightsButtonConfirm"
-            danger
-            onClick={onSubmit}
-            disabled={!isChecked}
-          >
-            {t(InsightWarningLanguage[action].imperative)}
-          </Button>
-        </Box>
+            <Button
+              size={ButtonSecondarySize.Lg}
+              width={BlockSize.Half}
+              variant={ButtonVariant.Secondary}
+              onClick={onCancel}
+              marginRight={4}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              size={ButtonPrimarySize.Lg}
+              width={BlockSize.Half}
+              data-testid="snapInsightsButtonConfirm"
+              danger
+              onClick={onSubmit}
+              disabled={!isChecked}
+            >
+              {t(InsightWarningLanguage[action].imperative)}
+            </Button>
+          </Box>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

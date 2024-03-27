@@ -22,63 +22,57 @@ exports[`ConfirmInfo should match snapshot 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-avatar-account__jazzicon"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
+              class="mm-avatar-account__jazzicon"
             >
-              <svg
-                height="16"
-                width="16"
-                x="0"
-                y="0"
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(1, 142, 116);"
               >
-                <rect
-                  fill="#FB1891"
+                <svg
                   height="16"
-                  transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
                   width="16"
                   x="0"
                   y="0"
-                />
-                <rect
-                  fill="#F90901"
-                  height="16"
-                  transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
-                  width="16"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#F26A02"
-                  height="16"
-                  transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
-                  width="16"
-                  x="0"
-                  y="0"
-                />
-              </svg>
+                >
+                  <rect
+                    fill="#FB1891"
+                    height="16"
+                    transform="translate(0.6335263099240563 1.7352552986765108) rotate(129.9 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F90901"
+                    height="16"
+                    transform="translate(-5.227286615169763 8.640359200885621) rotate(141.5 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26A02"
+                    height="16"
+                    transform="translate(10.585940898259892 -4.814122444807073) rotate(339.2 8 8)"
+                    width="16"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <div
-            aria-describedby="tippy-tooltip-1"
-            class=""
-            data-original-title="0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
+            data-testid="confirm-info-row-display-name"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-inherit"
-            >
-              0xCcCCc...ccccC
-            </p>
-          </div>
+            0xCcCCc...ccccC
+          </p>
         </div>
       </div>
     </div>

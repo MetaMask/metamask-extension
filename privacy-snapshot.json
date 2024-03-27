@@ -34,13 +34,14 @@
   "responsive-rpc.url",
   "sentry.io",
   "start.metamask.io",
+  "static.cx.metamask.io",
   "static.metafi-dev.codefi.network",
   "static.metafi.codefi.network",
-  "static.cx.metamask.io",
   "swap.metaswap.codefi.network",
   "test.metamask-phishing.io",
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
+  "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
   "unresponsive-rpc.url",
   "www.4byte.directory"
 ]

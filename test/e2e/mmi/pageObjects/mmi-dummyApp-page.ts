@@ -1,4 +1,9 @@
-import { type BrowserContext, type Locator, type Page } from '@playwright/test';
+import {
+  expect,
+  type BrowserContext,
+  type Locator,
+  type Page,
+} from '@playwright/test';
 
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
 export class DummyAppPage {
@@ -17,6 +22,10 @@ export class DummyAppPage {
 
   async goto() {
     await this.page.goto(process.env.MMI_E2E_MMI_TEST_DAPP_URL as string);
+  }
+
+  async bringToFront() {
+    await this.page.bringToFront();
   }
 
   async connectMMI(context: BrowserContext) {
@@ -61,5 +70,12 @@ export class DummyAppPage {
       // }
     }
     await popup.close();
+  }
+
+  async checkContractStatus(status: string | RegExp) {
+    await expect(this.page.locator('#contractStatus')).toHaveText(status, {
+      timeout: 60000,
+      ignoreCase: true,
+    });
   }
 }

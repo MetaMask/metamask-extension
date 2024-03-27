@@ -2,23 +2,6 @@ export enum SecurityProvider {
   Blockaid = 'blockaid',
 }
 
-type SecurityProviderConfig = Record<
-  SecurityProvider,
-  {
-    /** translation key for security provider name */
-    readonly tKeyName: string;
-    /** URL to securty provider website */
-    readonly url: string;
-  }
->;
-
-export const SECURITY_PROVIDER_CONFIG: Readonly<SecurityProviderConfig> = {
-  [SecurityProvider.Blockaid]: {
-    tKeyName: 'blockaid',
-    url: 'https://blockaid.io/',
-  },
-};
-
 /** The reason, also referred to as the attack type, provided in the PPOM Response  */
 export enum BlockaidReason {
   /** Approval for a malicious spender  */

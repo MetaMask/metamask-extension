@@ -1,0 +1,31 @@
+.confirm_nav {
+  &__reject_all {
+    background-color: var(--color-error-muted);
+    color: #d73847;
+    font-size: 12px;
+    height: 20px;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+
+    &:hover {
+      background-color: var(--color-error-muted) !important;
+      box-shadow: none !important;
+      color: #d73847 !important;
+    }
+
+    > span {
+      font-size: 10px;
+    }
+  }
+
+  &__left_btn,
+  &__right_btn {
+    height: 20px;
+    width: 20px;
+    min-width: 20px;
+
+    & > span {
+      font-size: 12px;
+    }
+  }
+}

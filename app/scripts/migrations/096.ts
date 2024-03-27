@@ -33,9 +33,9 @@ export async function migrate(
   return versionedData;
 }
 
-interface NetworkConfiguration {
+type NetworkConfiguration = {
   chainId: Record<string, any>;
-}
+};
 
 function transformState(state: Record<string, unknown>) {
   if (

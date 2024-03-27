@@ -6,7 +6,5 @@ export const copyable: UIComponentFactory<Copyable> = ({ element }) => ({
   props: {
     text: element.value,
     sensitive: element.sensitive,
-    marginTop: 1,
-    marginBottom: 1,
   },
 });

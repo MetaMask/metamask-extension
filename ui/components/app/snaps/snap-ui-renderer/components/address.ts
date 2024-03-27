@@ -5,5 +5,6 @@ export const address: UIComponentFactory<Address> = ({ element }) => ({
   element: 'ConfirmInfoRowAddress',
   props: {
     address: element.value,
+    isSnapUsingThis: true,
   },
 });

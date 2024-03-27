@@ -61,7 +61,6 @@ import {
 import {
   getCompletedOnboarding,
   getIsUnlocked,
-  isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -83,8 +82,6 @@ export const NetworkListMenu = ({ onClose }) => {
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
-
-  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -172,10 +169,6 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
-      if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
-        return null;
-      }
-
       const isCurrentNetwork =
         currentNetwork.id === network.id &&
         currentNetwork.rpcUrl === network.rpcUrl;
@@ -326,13 +319,6 @@ export const NetworkListMenu = ({ onClose }) => {
                       ref={provided.innerRef}
                     >
                       {searchResults.map((network, index) => {
-                        if (
-                          !lineaMainnetReleased &&
-                          network.providerType === 'linea-mainnet'
-                        ) {
-                          return null;
-                        }
-
                         const isCurrentNetwork =
                           currentNetwork.id === network.id;
 
@@ -414,7 +400,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork || !isUnlocked}
+              disabled={currentlyOnTestNetwork}
               onToggle={handleToggle}
             />
           </Box>
@@ -426,7 +412,6 @@ export const NetworkListMenu = ({ onClose }) => {
           <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
-              disabled={!isUnlocked}
               startIconName={IconName.Add}
               block
               onClick={() => {

@@ -94,8 +94,8 @@ const EthOverview = ({ className, showAddress }) => {
     ticker,
     type,
   );
-  const account = useSelector(getSelectedInternalAccount);
 
+  const account = useSelector(getSelectedInternalAccount);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||

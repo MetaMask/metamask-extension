@@ -13,7 +13,6 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BorderColor,
   BorderRadius,
   Display,
   TextColor,
@@ -27,7 +26,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   members = [],
   size = AvatarTokenSize.Xs,
   avatarType = AvatarType.TOKEN,
-  borderColor = BorderColor.borderDefault,
+  borderColor,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();

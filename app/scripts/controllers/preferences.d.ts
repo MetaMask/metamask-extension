@@ -9,6 +9,10 @@ export type PreferencesControllerState = {
 };
 
 export type PreferencesController = {
+  setSelectedAddress(addressToLowerCase: string): void;
+  getSelectedAddress(): string;
+  setAccountLabel(address: string, label: string): void;
+  setAddresses(allAccounts: string[]): void;
   store: {
     getState: () => PreferencesControllerState;
     subscribe: (callback: (state: PreferencesControllerState) => void) => void;

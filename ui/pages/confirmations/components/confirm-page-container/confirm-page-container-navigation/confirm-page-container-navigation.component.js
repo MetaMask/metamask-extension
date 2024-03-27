@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  unconfirmedTransactionsHashSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
+  unconfirmedTransactionsListSelector,
 } from '../../../../../selectors';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
@@ -23,9 +23,8 @@ const ConfirmPageContainerNavigation = () => {
   const unapprovedEncryptionPublicKeyMsgs = useSelector(
     unapprovedEncryptionPublicKeyMsgsSelector,
   );
-  const unconfirmedTransactions = useSelector(
-    unconfirmedTransactionsHashSelector,
-  );
+  const unconfirmedTransactions =
+    useSelector(unconfirmedTransactionsListSelector) ?? [];
 
   const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs || {});
   const enumUnapprovedEncryptMsgsKey = Object.keys(
@@ -36,9 +35,9 @@ const ConfirmPageContainerNavigation = () => {
     ...enumUnapprovedEncryptMsgsKey,
   ];
 
-  const enumUnapprovedTxs = Object.keys(unconfirmedTransactions).filter(
-    (key) => enumDecryptAndEncryptMsgs.includes(key) === false,
-  );
+  const enumUnapprovedTxs = unconfirmedTransactions
+    .map((tx) => tx.id)
+    .filter((key) => enumDecryptAndEncryptMsgs.includes(key) === false);
 
   const currentPosition = enumUnapprovedTxs.indexOf(id);
 
@@ -54,7 +53,7 @@ const ConfirmPageContainerNavigation = () => {
     if (txId) {
       dispatch(clearConfirmTransaction());
       history.push(
-        unconfirmedTransactions[txId]?.msgParams
+        unconfirmedTransactions[currentPosition]?.msgParams
           ? `${CONFIRM_TRANSACTION_ROUTE}/${txId}${SIGNATURE_REQUEST_PATH}`
           : `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
       );

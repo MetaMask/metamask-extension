@@ -110,13 +110,13 @@ describe('NewNetworkInfo', () => {
         expect(getByTestId('new-network-info__wrapper')).toBeInTheDocument();
       });
       // render title
-      expect(getByText('You have switched to')).toBeInTheDocument();
+      expect(getByText("You're now using")).toBeInTheDocument();
       // render the network name
       expect(getByText('Ethereum Mainnet')).toBeInTheDocument();
       expect(
         getByTestId('new-network-info__bullet-paragraph').textContent,
       ).toMatchInlineSnapshot(
-        `"• The native token on this network is ETH. It is the token used for gas fees. "`,
+        `"Gas is ETH The native token on this network is ETH. It is the token used for gas fees. "`,
       );
     });
 
@@ -260,7 +260,9 @@ describe('NewNetworkInfo', () => {
         });
         // render add token link when token is supported
         expect(
-          getByText('Click here to manually add the tokens.'),
+          getByText(
+            'Your tokens may not automatically show up in your wallet. You can always add tokens manually.',
+          ),
         ).toBeInTheDocument();
       });
     });

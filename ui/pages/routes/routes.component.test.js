@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 
 import { SEND_STAGES } from '../../ducks/send';
 import { renderWithProvider } from '../../../test/jest';
@@ -28,10 +28,13 @@ jest.mock('webextension-polyfill', () => ({
 
 jest.mock('../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
 }));
@@ -64,31 +67,49 @@ jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
 
+const render = async (route, state) => {
+  const store = configureMockStore()({
+    ...mockSendState,
+    ...state,
+  });
+
+  let result;
+
+  await act(
+    async () => (result = renderWithProvider(<Routes />, store, route)),
+  );
+
+  return result;
+};
+
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
+
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
   });
+
   describe('render during send flow', () => {
-    it('should render with network change disabled while adding recipient for send flow', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
+    it('should render with network change disabled while adding recipient for send flow', async () => {
+      const state = {
         send: {
           ...mockSendState.send,
           stage: SEND_STAGES.ADD_RECIPIENT,
         },
-      });
+      };
 
-      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
+      const { getByTestId } = await render(['/send'], state);
 
       const networkDisplay = getByTestId('network-display');
-      fireEvent.click(networkDisplay);
+      await act(async () => {
+        fireEvent.click(networkDisplay);
+      });
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render with network change disabled while user is in send page', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
+
+    it('should render with network change disabled while user is in send page', async () => {
+      const state = {
         metamask: {
           ...mockSendState.metamask,
           providerConfig: {
@@ -97,16 +118,18 @@ describe('Routes Component', () => {
             type: NETWORK_TYPES.GOERLI,
           },
         },
-      });
-      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
+      };
+      const { getByTestId } = await render(['/send'], state);
 
       const networkDisplay = getByTestId('network-display');
-      fireEvent.click(networkDisplay);
+      await act(async () => {
+        fireEvent.click(networkDisplay);
+      });
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render with network change disabled while editing a send transaction', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
+
+    it('should render with network change disabled while editing a send transaction', async () => {
+      const state = {
         send: {
           ...mockSendState.send,
           stage: SEND_STAGES.EDIT,
@@ -119,16 +142,18 @@ describe('Routes Component', () => {
             type: NETWORK_TYPES.GOERLI,
           },
         },
-      });
-      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
+      };
+      const { getByTestId } = await render(['/send'], state);
 
       const networkDisplay = getByTestId('network-display');
-      fireEvent.click(networkDisplay);
+      await act(async () => {
+        fireEvent.click(networkDisplay);
+      });
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render when send transaction is not active', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
+
+    it('should render when send transaction is not active', async () => {
+      const state = {
         metamask: {
           ...mockSendState.metamask,
           swapsState: {
@@ -151,8 +176,8 @@ describe('Routes Component', () => {
         localeMessages: {
           currentLocale: 'en',
         },
-      });
-      const { getByTestId } = renderWithProvider(<Routes />, store);
+      };
+      const { getByTestId } = await render(undefined, state);
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
     });
   });

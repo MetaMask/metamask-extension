@@ -1,0 +1,15 @@
+Step,Test steps,Test data,Expected result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Switch networks to a test network.,e.g. Sepolia,The Sepolia balance is shown on the overview. The wallet address is shown on the overview. The selected network is Sepolia.,
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to connect with MetaMask. ,,,
+6,Connect with the current account. ,,,
+7,Deploy failing contract.,,"MetaMask popup with estimated gas fees, total fees appears.",
+8,Proceed to confirm contract deployment and wait for the transaction to be confirmed.,,"Contract deployment status on MetamMask Activity list displayed as ""Confirmed"". ""Send failing transaction"" button on the test dapp window is active.",
+9,Deploy failing transaction.,,"MetaMask popup with contract interaction screen appears. Warning on the red background is displayed: ""We were not able to estimate gas. There might be an error in the contract and this transaction may fail."" The warning includes a link  ""I want to proceed anyway"".",
+10,"Click ""I want to proceed anyway"" and confirm transaction.",,,
+11,Switch back to the wallet.,,,
+12,Open the Activity tab.,,"""Contract interaction"" transaction in ""Pending"" status is displayed.",
+13,"Allow some time for the transaction status to update to ""Failed"".",,,Waiting times may vary based on network conditions.
+14,Proceed to view the transaction on the block explorer.,,Block explorer opens in the new tab.,

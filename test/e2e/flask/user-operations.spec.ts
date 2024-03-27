@@ -8,6 +8,7 @@ import {
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
+  createDappTransaction,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -38,6 +39,7 @@ async function installExampleSnap(driver: Driver) {
     text: 'Connect',
     tag: 'button',
   });
+  await driver.findElement({ text: 'Installation request', tag: 'h2' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
   await driver.clickElement({
     text: 'Install',
@@ -90,19 +92,6 @@ async function setSnapConfig(
   await driver.clickElement({ text: 'Set Chain Config' });
   await driver.fill('#set-chain-config-chain-config-object', data);
   await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
-}
-
-async function createDappTransaction(
-  driver: Driver,
-  transaction: TransactionParams,
-) {
-  await openDapp(
-    driver,
-    null,
-    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
-      transaction,
-    ])}`,
-  );
 }
 
 async function createSwap(driver: Driver) {
@@ -253,12 +242,7 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(
-          driver,
-          GANACHE_ACCOUNT,
-          convertETHToHexGwei(1),
-          true,
-        );
+        await sendTransaction(driver, GANACHE_ACCOUNT, 1, true);
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);

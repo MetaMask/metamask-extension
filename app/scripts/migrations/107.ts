@@ -3,17 +3,17 @@ import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 107;
 
-interface AccountBalance {
+type AccountBalance = {
   address: string;
   balance: string;
-}
+};
 
-interface AccountTrackerControllerState {
+type AccountTrackerControllerState = {
   accountsByChainId: Record<string, Record<string, AccountBalance>>;
   accounts: Record<string, AccountBalance>;
   currentBlockGasLimit: string;
   currentBlockGasLimitByChainId: Record<string, string>;
-}
+};
 
 /**
  * Migrates state from the now removed CachedBalancesController to the AccountTrackerController and formats it accordingly.
