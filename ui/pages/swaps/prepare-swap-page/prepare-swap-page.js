@@ -64,9 +64,11 @@ import {
   getHardwareWalletType,
   getIsBridgeChain,
   getMetaMetricsId,
+} from '../../../selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,

@@ -54,9 +54,11 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-  getSmartTransactionsOptInStatus,
-  getIsAllowedStxChainId,
 } from '../../../selectors';
+import {
+  getIsAllowedStxChainId,
+  getSmartTransactionsOptInStatus,
+} from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
