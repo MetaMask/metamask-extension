@@ -28,7 +28,10 @@ export const ConfirmInfoRowTypedSignData = ({ data }: { data: string }) => {
 
   return (
     <Box width={BlockSize.Full}>
-      <ConfirmInfoRow label={`${t('primaryType')}:`} style={{ paddingLeft: 0 }}>
+      <ConfirmInfoRow
+        label={`${t('primaryType')}:`}
+        style={{ paddingLeft: 0, paddingRight: 0 }}
+      >
         <ConfirmInfoRowText text={primaryType} />
       </ConfirmInfoRow>
       <Box style={{ marginLeft: -8 }}>
