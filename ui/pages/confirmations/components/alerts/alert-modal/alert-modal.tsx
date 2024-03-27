@@ -35,7 +35,7 @@ export type AlertModalProps = {
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
   /** The function to be executed when the button in the alert modal is clicked. */
-  handleButtonClick: () => void;
+  onButtonClick: () => void;
   /** The unique key representing the specific alert field. */
   alertKey: string;
   /** The function to be executed when the modal needs to be closed. */
@@ -78,7 +78,7 @@ function getSeverityStyle(severity: Severity) {
 
 export function AlertModal({
   ownerId,
-  handleButtonClick,
+  onButtonClick,
   alertKey,
   onClose,
   customButton,
@@ -197,7 +197,7 @@ export function AlertModal({
             width={BlockSize.Full}
             onClick={() => {
               setAlertConfirmed(selectedAlert.key, !isConfirmed);
-              handleButtonClick();
+              onButtonClick();
             }}
             size={ButtonSize.Lg}
             data-testid="alert-modal-button"

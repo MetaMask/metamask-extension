@@ -19,12 +19,14 @@ const alertsMock: Alert[] = [
       'Operator is untrusted according to previous activity',
     ],
   },
+  { key: 'Data', field: 'Data', severity: Severity.Warning, message: 'Alert 2', alertDetails:['detail 1 warning', 'detail 2 warning'] },
+  { key: 'Contract', field: 'Contract', severity: Severity.Info, message: 'Alert Info', alertDetails:['detail 1 info', 'detail  info'] },
 ];
 const ownerIdMock = '123';
 const storeMock = configureStore({
   confirmAlerts: {
     alerts: { [ownerIdMock]: alertsMock },
-    confirmed: { [ownerIdMock]: { 'From': false, 'data': false, 'contract': false } },
+    confirmed: { [ownerIdMock]: { 'From': false, 'Data': false, 'Contract': false } },
   },
   confirm: {
     currentConfirmation: {
@@ -82,9 +84,9 @@ AlertRowCritical.args = {
  */
 export const AlertRowWarning = DefaultStory.bind({});
 AlertRowWarning.args = {
-  label: 'From',
+  label: 'Data',
   children: 'Value',
-  alertKey: 'From',
+  alertKey: 'Data',
   variant: ConfirmInfoRowVariant.Warning,
 };
 
@@ -93,7 +95,7 @@ AlertRowWarning.args = {
  */
 export const AlertRowInformative = DefaultStory.bind({});
 AlertRowInformative.args = {
-  label: 'From',
+  label: 'Contract',
   children: 'Value',
-  alertKey: 'From',
+  alertKey: 'Contract',
 };
