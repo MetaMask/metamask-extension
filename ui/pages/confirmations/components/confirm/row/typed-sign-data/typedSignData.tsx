@@ -9,7 +9,7 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
 
-import { DataTree } from './dataTree';
+import { DataTree } from '../dataTree';
 
 const parseMessage = (dataToParse: string) => {
   const { message, primaryType, types } = JSON.parse(dataToParse);

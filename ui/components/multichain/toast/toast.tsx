@@ -18,8 +18,8 @@ export const Toast = ({
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
   text: string;
-  actionText: string;
-  onActionClick: () => void;
+  actionText?: string;
+  onActionClick?: () => void;
   onClose: () => void;
 }) => {
   const { theme } = document.documentElement.dataset;
