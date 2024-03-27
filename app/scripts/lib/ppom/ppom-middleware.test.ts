@@ -32,6 +32,8 @@ const createMiddleWare = (
   options: {
     securityAlertsEnabled?: boolean;
     chainId?: Hex;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUpdateSecurityAlertResponseByTxId?: any;
   } = {
     mockUpdateSecurityAlertResponseByTxId: () => undefined,
@@ -129,6 +131,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
