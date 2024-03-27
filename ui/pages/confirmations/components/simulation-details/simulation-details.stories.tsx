@@ -85,6 +85,17 @@ const storeMockPolygon = configureStore({
   },
 });
 
+const storeMockArbitrum = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    providerConfig: {
+      ...mockState.metamask.providerConfig,
+      chainId: CHAIN_IDS.ARBITRUM,
+      ticker: 'ETH',
+    },
+  },
+});
+
 const meta: Meta<typeof SimulationDetails> = {
   title: 'Components/App/SimulationDetails',
   component: SimulationDetails,
@@ -146,12 +157,12 @@ export const SendSmallAmount: Story = {
   },
 };
 
-export const MaticNativeAsset: Story = {
+export const PolygonNativeAsset: Story = {
   args: {
     simulationData: {
       nativeBalanceChange: {
         ...DUMMY_BALANCE_CHANGE,
-        difference: '0x123456',
+        difference: '0x9345678923456789',
         isDecrease: true,
       },
       tokenBalanceChanges: [],
@@ -160,6 +171,19 @@ export const MaticNativeAsset: Story = {
   decorators: [(story) => <Provider store={storeMockPolygon}>{story()}</Provider>],
 };
 
+export const ArbitrumNativeAsset: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x9345678923456789',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  },
+  decorators: [(story) => <Provider store={storeMockArbitrum}>{story()}</Provider>],
+};
 
 export const ReceiveOnly: Story = {
   args: {

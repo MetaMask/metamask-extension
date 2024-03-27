@@ -10,6 +10,7 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
