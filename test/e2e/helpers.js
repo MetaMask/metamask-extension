@@ -5,6 +5,7 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
+const { By } = require('selenium-webdriver');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
@@ -751,7 +752,14 @@ const sendScreenToConfirmScreen = async (
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
+
+  const inputAmount = await driver.findElement(
+    By.className('unit-input__input'),
+  );
+
+  for (const number of String(quantity)) {
+    await inputAmount.press(number);
+  }
 
   // check if element exists and click it
   await driver
@@ -787,8 +795,14 @@ const sendTransaction = async (
 ) => {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
 
+  const inputAmount = await driver.findElement(
+    By.className('unit-input__input'),
+  );
+
+  for (const number of String(quantity)) {
+    await inputAmount.press(number);
+  }
   await driver.clickElement({
     text: 'Continue',
     tag: 'button',
