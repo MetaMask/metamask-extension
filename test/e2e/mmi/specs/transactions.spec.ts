@@ -34,6 +34,8 @@ const sendTransaction = async (
   // Setup testnetwork in settings
   const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
   await mainMenuPage.goto();
+  await mainMenuPage.fillPassword();
+  await mainMenuPage.finishOnboarding();
   await mainMenuPage.selectMenuOption('settings');
   await mainMenuPage.selectSettings('Advance');
   await mainMenuPage.switchTestNetwork();
