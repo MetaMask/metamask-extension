@@ -11,7 +11,6 @@ import {
   acknowledgeRecipientWarning,
   getCurrentDraftTransaction,
   getSendAsset,
-  updateSendAmount,
   updateSendAsset,
 } from '../../../../../ducks/send';
 import {
@@ -25,7 +24,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { SendHexData, SendPageRow } from '.';
 
-export const SendPageContent = ({
+export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
 }: {
   requireContractAddressAcknowledgement: boolean;
@@ -50,6 +49,7 @@ export const SendPageContent = ({
   // Gas data
   const dispatch = useDispatch();
 
+  // TODO: replace this with dest logic, then abstract both usages to a util
   const handleSelectToken = async (token: any) => {
     if (token.type === AssetType.native) {
       dispatch(
@@ -119,9 +119,6 @@ export const SendPageContent = ({
           asset={transactionAsset}
           onAssetChange={handleSelectToken}
           amount={amount}
-          onAmountChange={(newAmount: string) =>
-            dispatch(updateSendAmount(newAmount))
-          }
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}

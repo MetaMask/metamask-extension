@@ -44,6 +44,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       {...(props as BoxProps<'div'>)}
     >
       <Tooltip
+        style={{ display: 'flex' }}
         title={text}
         data-testid="multichain-badge-status__tooltip"
         position="bottom"

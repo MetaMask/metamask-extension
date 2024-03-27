@@ -28,6 +28,7 @@ export default class UnitInput extends PureComponent {
     hideSuffix: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     keyPressRegex: PropTypes.instanceOf(RegExp),
+    isDisabled: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -126,6 +127,7 @@ export default class UnitInput extends PureComponent {
       actionComponent,
       children,
       dataTestId,
+      isDisabled,
     } = this.props;
     const { value, isOverflowing } = this.state;
 
@@ -149,6 +151,7 @@ export default class UnitInput extends PureComponent {
             style={{ display: 'inherit' }}
           >
             <input
+              disabled={isDisabled}
               data-testid={dataTestId}
               type="number"
               dir="ltr"
