@@ -88,7 +88,6 @@ export default class SecurityTab extends PureComponent {
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
-    setTransactionSecurityCheckEnabled: PropTypes.func,
     disableExternalServices: PropTypes.bool,
     setDisableExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -982,28 +981,6 @@ export default class SecurityTab extends PureComponent {
     setSecurityAlertsEnabled(newValue);
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * toggleTransactionSecurityCheck
-   *
-   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
-   */
-  toggleTransactionSecurityCheck(oldValue) {
-    const newValue = !oldValue;
-    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
-      this.props;
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        opensea_alerts_enabled: newValue,
-      },
-    });
-    setTransactionSecurityCheckEnabled(newValue);
-    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
-      this.toggleSecurityAlert(true);
-    }
-  }
 
   renderDisableExternalServices() {
     const { t } = this.context;

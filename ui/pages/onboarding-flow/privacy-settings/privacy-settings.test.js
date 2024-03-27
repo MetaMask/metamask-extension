@@ -133,7 +133,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(submitButton);
 
     expect(setDisableExternalServicesStub).toHaveBeenCalledTimes(1);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(1);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
