@@ -43,9 +43,7 @@ describe('Privacy Settings Onboarding View', () => {
       useMultiAccountBalanceChecker: true,
       ipfsGateway: 'test.link',
       useAddressBarEnsResolution: true,
-      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       useTransactionSimulations: true,
-      ///: END:ONLY_INCLUDE_IF
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -67,9 +65,7 @@ describe('Privacy Settings Onboarding View', () => {
   const setIncomingTransactionsPreferencesStub = jest.fn();
   const onboardingToggleBasicFunctionalityOnStub = jest.fn();
   const setDisableExternalServicesStub = jest.fn();
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   const setUseTransactionSimulationsStub = jest.fn();
-  ///: END:ONLY_INCLUDE_IF
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -85,9 +81,7 @@ describe('Privacy Settings Onboarding View', () => {
     setDisableExternalServices: setDisableExternalServicesStub,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
-    ///: END:ONLY_INCLUDE_IF
   });
 
   it('should update preferences', () => {
@@ -116,9 +110,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
     fireEvent.click(toggles[10]);
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     fireEvent.click(toggles[11]);
-    ///: END:ONLY_INCLUDE_IF
 
     expect(mockOpenBasicFunctionalityModal).toHaveBeenCalledTimes(1);
 
