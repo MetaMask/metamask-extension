@@ -4,8 +4,15 @@ on:
     secrets:
       SONAR_TOKEN:
         required: true
-  push:
-    branches: [chore/sonar-integration]
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
 
 jobs:
   sonarcloud:
