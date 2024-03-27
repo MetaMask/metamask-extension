@@ -156,7 +156,7 @@
     transition: border-color 150ms ease-in-out;
 
     &:focus-within {
-      border-color: var(--color-border-default);
+      border-color: var(--color-primary-default);
     }
 
     &__status-icon {
@@ -174,7 +174,7 @@
       background-color: var(--color-background-default);
 
       &::placeholder {
-        color: var(--color-text-muted);
+        color: var(--color-text-alternative);
       }
     }
 
@@ -190,8 +190,6 @@
     }
 
     &--valid {
-      border-color: var(--color-primary-default);
-
       .ens-input__wrapper {
         &__input {
           @extend %row-nowrap;
