@@ -71,11 +71,11 @@ describe('DataTree', () => {
 
   it('correctly renders reverse strings', () => {
     const data = {
-      ['Sign into \u202E EVIL']: {
+      'Sign into \u202E EVIL': {
         type: 'string',
         value: 'Sign into \u202E EVIL',
       },
-      ['A number']: { type: 'uint32', value: '1337' },
+      'A number': { type: 'uint32', value: '1337' },
     };
     const { container } = renderWithProvider(<DataTree data={data} />, store);
     expect(container).toMatchSnapshot();

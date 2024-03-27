@@ -18,21 +18,6 @@ export type TreeData = {
   type: string;
 };
 
-const DataField = ({ value, type }: { value: ValueType; type: string }) => {
-  if (typeof value === 'object' && value !== null) {
-    return <DataTree data={value} />;
-  }
-  if (
-    type === 'address' &&
-    isValidHexAddress(value, {
-      mixedCaseUseChecksum: true,
-    })
-  ) {
-    return <ConfirmInfoRowAddress address={value} />;
-  }
-  return <ConfirmInfoRowText text={sanitizeString(value)} />;
-};
-
 export const DataTree = ({
   data,
 }: {
@@ -54,3 +39,19 @@ export const DataTree = ({
     })}
   </Box>
 );
+
+
+const DataField = ({ value, type }: { value: ValueType; type: string }) => {
+  if (typeof value === 'object' && value !== null) {
+    return <DataTree data={value} />;
+  }
+  if (
+    type === 'address' &&
+    isValidHexAddress(value, {
+      mixedCaseUseChecksum: true,
+    })
+  ) {
+    return <ConfirmInfoRowAddress address={value} />;
+  }
+  return <ConfirmInfoRowText text={sanitizeString(value)} />;
+};
