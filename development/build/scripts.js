@@ -58,7 +58,7 @@ const {
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {
-  'sentry-install.js': {
+  'scripts/sentry-install.js': {
     // globals sentry need to function
     window: '',
     navigator: '',
@@ -96,8 +96,8 @@ const mv3ScuttlingConfig = { ...scuttlingConfigBase };
 
 const standardScuttlingConfig = {
   ...scuttlingConfigBase,
-  'sentry-install.js': {
-    ...scuttlingConfigBase['sentry-install.js'],
+  'scripts/sentry-install.js': {
+    ...scuttlingConfigBase['scripts/sentry-install.js'],
     document: '',
   },
 };
@@ -400,7 +400,7 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `${label}.js`,
+      destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
@@ -424,7 +424,7 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `${label}.js`,
+      destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
@@ -452,7 +452,7 @@ function createScriptTasks({
         buildTarget,
         buildType,
         browserPlatforms,
-        destFilepath: `${inpage}.js`,
+        destFilepath: `scripts/${inpage}.js`,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         ignoredFiles,
@@ -467,25 +467,29 @@ function createScriptTasks({
         if (process.env.ENABLE_MV3) {
           return;
         }
-        // stringify inpage.js into itself, and then make it inject itself into the page
+        // stringify scripts/inpage.js into itself, and then make it inject itself into the page
         browserPlatforms.forEach((browser) => {
           makeSelfInjecting(
-            path.join(__dirname, `../../dist/${browser}/${inpage}.js`),
+            path.join(__dirname, `../../dist/${browser}/scripts/${inpage}.js`),
           );
         });
-        // delete the inpage.js source map, as it no longer represents inpage.js
-        // and so `yarn source-map-explorer` can't handle it. It's also not
-        // useful anyway, as inpage.js is injected as a `script.textContent`,
-        // and not tracked in Sentry or browsers devtools anyway.
+        // delete the scripts/inpage.js source map, as it no longer represents
+        // scripts/inpage.js and so `yarn source-map-explorer` can't handle it.
+        // It's also not useful anyway, as scripts/inpage.js is injected as a
+        // `script.textContent`, and not tracked in Sentry or browsers devtools
+        // anyway.
         unlinkSync(
-          path.join(__dirname, `../../dist/sourcemaps/${inpage}.js.map`),
+          path.join(
+            __dirname,
+            `../../dist/sourcemaps/scripts/${inpage}.js.map`,
+          ),
         );
       },
       createNormalBundle({
         buildTarget,
         buildType,
         browserPlatforms,
-        destFilepath: `${contentscript}.js`,
+        destFilepath: `scripts/${contentscript}.js`,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         ignoredFiles,
@@ -559,7 +563,7 @@ async function createManifestV3AppInitializationBundle({
     browserPlatforms: mv3BrowserPlatforms,
     buildTarget,
     buildType,
-    destFilepath: 'app-init.js',
+    destFilepath: 'scripts/app-init.js',
     entryFilepath: './app/scripts/app-init.js',
     extraEnvironmentVariables,
     ignoredFiles,
@@ -718,7 +722,7 @@ function createFactoredBuild({
       // add lavamoat policy loader file to packer output
       moduleGroupPackerStream.push(
         new Vinyl({
-          path: 'policy-load.js',
+          path: 'scripts/policy-load.js',
           contents: lavapack.makePolicyLoaderStream(lavamoatOpts),
         }),
       );
@@ -1280,18 +1284,22 @@ function renderJavaScriptLoader({
   );
 
   const securityScripts = applyLavaMoat
-    ? ['./runtime-lavamoat.js', './lockdown-more.js', './policy-load.js']
+    ? [
+        './scripts/runtime-lavamoat.js',
+        './scripts/lockdown-more.js',
+        './scripts/policy-load.js',
+      ]
     : [
-        './lockdown-install.js',
-        './lockdown-run.js',
-        './lockdown-more.js',
-        './runtime-cjs.js',
+        './scripts/lockdown-install.js',
+        './scripts/lockdown-run.js',
+        './scripts/lockdown-more.js',
+        './scripts/runtime-cjs.js',
       ];
 
   const requiredScripts = [
-    './snow.js',
-    './use-snow.js',
-    './sentry-install.js',
+    './scripts/snow.js',
+    './scripts/use-snow.js',
+    './scripts/sentry-install.js',
     ...securityScripts,
     ...jsBundles,
   ];
