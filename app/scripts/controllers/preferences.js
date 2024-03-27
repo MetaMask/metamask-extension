@@ -112,6 +112,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
+      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       useTransactionSimulations: true,
       enableMV3TimestampSave: true,
       ///: END:ONLY_INCLUDE_IF
