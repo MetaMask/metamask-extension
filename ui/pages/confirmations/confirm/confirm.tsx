@@ -11,7 +11,9 @@ import { Title } from '../components/confirm/title';
 import { Page } from '../../../components/multichain/pages/page';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { BlockaidAlert } from '../components/confirm/blockaid-alert';
+///: END:ONLY_INCLUDE_IF
 
 const Confirm = () => {
   setCurrentConfirmation();
