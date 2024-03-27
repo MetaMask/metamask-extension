@@ -144,18 +144,32 @@ export const MultipleTokens: Story = {
   },
 };
 
-export const MaticNativeAsset: Story = {
+export const LongValuesAndNames: Story = {
   args: {
     simulationData: {
       nativeBalanceChange: {
         ...DUMMY_BALANCE_CHANGE,
-        difference: '0x123456',
+        difference: '0x12345678912345678',
         isDecrease: true,
       },
-      tokenBalanceChanges: [],
+      tokenBalanceChanges: [
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_1_MOCK,
+          difference: '0x42345909',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+        ...DUMMY_BALANCE_CHANGE,
+        address: ERC20_TOKEN_2_MOCK,
+        difference: '0x123456901',
+        isDecrease: false,
+        standard: SimulationTokenStandard.erc20,
+        },
+      ],
     },
   },
-  decorators: [(story) => <Provider store={storeMockPolygon}>{story()}</Provider>],
 };
 
 export const SendSmallAmount: Story = {

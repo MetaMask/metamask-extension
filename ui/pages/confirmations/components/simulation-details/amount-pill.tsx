@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -56,21 +56,24 @@ export const AmountPill: React.FC<{
   if (asset.tokenId) {
     amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
   }
-
   return (
-    <Text
+    <Box
+      data-testid="simulation-details-amount-pill"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
       backgroundColor={backgroundColor}
-      color={color}
+      alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
       style={{
         padding: '0px 8px',
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
       }}
-      variant={TextVariant.bodyMd}
     >
-      {amountParts.join(' ')}
-    </Text>
+      <Text ellipsis variant={TextVariant.bodyMd} color={color}>
+        {amountParts.join(' ')}
+      </Text>
+    </Box>
   );
 };

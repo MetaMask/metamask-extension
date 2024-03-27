@@ -36,6 +36,9 @@ const NativeAssetPill: React.FC = () => {
       gap={1}
       style={{
         padding: '1px 8px 1px 4px',
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
       }}
     >
       <AvatarNetwork
@@ -62,10 +65,19 @@ export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
     return <NativeAssetPill />;
   }
   return (
-    <Name
-      type={NameType.ETHEREUM_ADDRESS}
-      value={asset.address}
-      preferContractSymbol
-    />
+    <Box
+      data-testid="simulation-details-asset-pill"
+      style={{
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
+      }}
+    >
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={asset.address}
+        preferContractSymbol
+      />
+    </Box>
   );
 };

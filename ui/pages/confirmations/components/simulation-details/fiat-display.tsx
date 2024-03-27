@@ -13,7 +13,8 @@ const textStyle = {
   color: TextColor.textAlternative,
   variant: TextVariant.bodySm,
   paddingRight: 2 as SizeNumber,
-};
+  textAlign: 'right',
+} as const;
 
 const FiatNotAvailableDisplay: React.FC = () => {
   const t = useI18nContext();
