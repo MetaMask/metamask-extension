@@ -257,6 +257,10 @@ export class SmartTransactionHook {
   async onApproveOrReject(
     controllerMessenger: SmartTransactionsControllerMessenger,
   ) {
+    if (this.approvalFlowEnded) {
+      return;
+    }
+    this.approvalFlowEnded = true;
     controllerMessenger.call('ApprovalController:endFlow', {
       id: this.approvalFlowId,
     });
