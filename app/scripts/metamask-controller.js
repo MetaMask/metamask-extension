@@ -171,6 +171,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
 } from '../../shared/constants/network';
+import { ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS } from '../../shared/constants/smartTransactions';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -211,6 +212,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
+import sharedSelectors from '../../shared/modules/selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -234,6 +236,7 @@ import {
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
+import { SmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -1595,6 +1598,17 @@ export default class MetamaskController extends EventEmitter {
           () => listener(),
         );
       },
+      pendingTransactions: {
+        isResubmitEnabled: () => {
+          const state = {
+            metamask: this.getState(),
+          };
+          return !(
+            sharedSelectors.getSmartTransactionsOptInStatus(state) &&
+            sharedSelectors.getIsAllowedStxChainId(state)
+          );
+        },
+      },
       provider: this.provider,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1612,6 +1626,25 @@ export default class MetamaskController extends EventEmitter {
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
+        publish: (transactionMeta) => {
+          const state = {
+            metamask: this.getState(),
+          };
+          const isSmartTransaction =
+            sharedSelectors.getIsSmartTransaction(state);
+          if (!isSmartTransaction) {
+            // Will cause TransactionController to publish to the RPC provider as normal.
+            return { transactionHash: undefined };
+          }
+          const smartTransactionHook = new SmartTransactionHook();
+          return smartTransactionHook.submit({
+            transactionMeta,
+            transactionController: this.txController,
+            smartTransactionsController: this.smartTransactionsController,
+            controllerMessenger: this.controllerMessenger,
+            isSmartTransaction,
+          });
+        },
       },
       sign: (...args) => this.keyringController.signTransaction(...args),
       state: initState.TransactionController,
@@ -1800,18 +1833,19 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-          this.txController.nonceTracker,
-        ),
+        getNonceLock: this.txController.getNonceLock.bind(this.txController),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
+        getTransactions: this.txController.getTransactions.bind(
+          this.txController,
+        ),
         provider: this.provider,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
       },
       {
-        supportedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+        supportedChainIds: ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
       },
       initState.SmartTransactionsController,
     );
@@ -3431,10 +3465,6 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
 
       // Smart Transactions
-      setSmartTransactionsOptInStatus:
-        smartTransactionsController.setOptInState.bind(
-          smartTransactionsController,
-        ),
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
         smartTransactionsController,
       ),
@@ -5564,6 +5594,11 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
+      getIsSmartTransaction: () => {
+        return sharedSelectors.getIsSmartTransaction({
+          metamask: this.getState(),
+        });
+      },
     };
     return {
       ...controllerActions,

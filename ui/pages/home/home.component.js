@@ -15,6 +15,7 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import SmartTransactionsModal from '../../components/app/smart-transactions-modal/smart-transactions-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -206,6 +207,9 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    setStxOptIn: PropTypes.func.isRequired,
+    isStxOptInAvailable: PropTypes.bool.isRequired,
+    stxOptIn: PropTypes.bool,
   };
 
   state = {
@@ -419,6 +423,16 @@ export default class Home extends PureComponent {
         location: 'Terms Of Use Popover',
       },
     });
+  };
+
+  onStxNotRightNow = () => {
+    const { setStxOptIn } = this.props;
+    setStxOptIn(false);
+  };
+
+  onEnableStx = () => {
+    const { setStxOptIn } = this.props;
+    setStxOptIn(true);
   };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -804,6 +818,8 @@ export default class Home extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IF
+      stxOptIn,
+      isStxOptInAvailable,
     } = this.props;
 
     if (forgottenPassword) {
@@ -814,6 +830,13 @@ export default class Home extends PureComponent {
     const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    const showSmartTransactionsModal =
+      completedOnboarding &&
+      (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
+      !process.env.IN_TEST &&
+      !newNetworkAddedConfigurationId &&
+      isStxOptInAvailable;
+
     const showWhatsNew =
       completedOnboarding &&
       (!onboardedInThisUISession ||
@@ -821,7 +844,8 @@ export default class Home extends PureComponent {
       announcementsToShow &&
       showWhatsNewPopup &&
       !process.env.IN_TEST &&
-      !newNetworkAddedConfigurationId;
+      !newNetworkAddedConfigurationId &&
+      !showSmartTransactionsModal;
 
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -856,6 +880,11 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
+          <SmartTransactionsModal
+            onEnable={this.onEnableStx}
+            onNotRightNow={this.onStxNotRightNow}
+            isOpen={stxOptIn === null}
+          />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder

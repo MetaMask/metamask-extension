@@ -66,6 +66,8 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
 
+import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -162,12 +164,16 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     updateTransactionValue: PropTypes.func,
+    setSwapsFeatureFlags: PropTypes.func,
+    fetchSmartTransactionsLiveness: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    smartTransactionsOptInStatus: PropTypes.bool,
+    isAllowedStxChainId: PropTypes.bool,
   };
 
   state = {
@@ -704,6 +710,7 @@ export default class ConfirmTransactionBase extends Component {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
+    const hideLoadingIndicator = false;
     let loadingIndicatorMessage;
 
     switch (keyringForAccount?.type) {
@@ -749,11 +756,7 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(
-          txData,
-          false, // hideLoadingIndicator
-          loadingIndicatorMessage, // loadingIndicatorMessage
-        )
+        sendTransaction(txData, hideLoadingIndicator, loadingIndicatorMessage)
           .then(() => {
             if (!this._isMounted) {
               return;
@@ -955,13 +958,17 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
     const {
       toAddress,
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      smartTransactionsOptInStatus,
+      isAllowedStxChainId,
+      setSwapsFeatureFlags,
+      fetchSmartTransactionsLiveness,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -997,6 +1004,14 @@ export default class ConfirmTransactionBase extends Component {
     });
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
+
+    if (smartTransactionsOptInStatus && isAllowedStxChainId) {
+      // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
+      // Long-term, we want to have a new proxy service specifically for feature flags.
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      await setSwapsFeatureFlags(swapsFeatureFlags);
+      await fetchSmartTransactionsLiveness();
+    }
   }
 
   componentWillUnmount() {

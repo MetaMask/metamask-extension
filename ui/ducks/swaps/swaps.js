@@ -60,12 +60,14 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
-  accountSupportsSmartTx,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
 } from '../../selectors';
-
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../shared/modules/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -322,24 +324,6 @@ export const getSmartTransactionsError = (state) =>
 export const getSmartTransactionsErrorMessageDismissed = (state) =>
   state.appState.smartTransactionsErrorMessageDismissed;
 
-export const getSmartTransactionsEnabled = (state) => {
-  const supportedAccount = accountSupportsSmartTx(state);
-  const chainId = getCurrentChainId(state);
-  const isAllowedNetwork =
-    ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
-  const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
-      ?.extensionActive;
-  const smartTransactionsLiveness =
-    state.metamask.smartTransactionsState?.liveness;
-  return Boolean(
-    isAllowedNetwork &&
-      supportedAccount &&
-      smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
-  );
-};
-
 export const getCurrentSmartTransactionsEnabled = (state) => {
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
@@ -432,10 +416,6 @@ export const getApproveTxParams = (state) => {
 
   const gasPrice = getUsedSwapsGasPrice(state);
   return { ...approvalNeeded, gasPrice, data };
-};
-
-export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.smartTransactionsState?.userOptInV2;
 };
 
 export const getCurrentSmartTransactions = (state) => {
