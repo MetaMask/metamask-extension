@@ -556,7 +556,7 @@ describe('Selectors', () => {
       };
       const isSupported =
         selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
-      expect(isSupported).toBe(true);
+      expect(isSupported).toBe(false);
     });
   });
 

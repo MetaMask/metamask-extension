@@ -1790,8 +1790,8 @@ export function getCurrentNetwork(state) {
 }
 
 export function getIsNetworkSupportedByBlockaid(state) {
-  const currentNetwork = getCurrentNetwork(state);
-  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentNetwork.chainId);
+  const currentChainId = getCurrentChainId(state);
+  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
 
   return isSupported;
 }
