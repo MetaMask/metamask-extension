@@ -24,6 +24,7 @@ import {
   setDefaultHomeActiveTabName,
   addToAddressBook,
   updateTransaction,
+  updateEditableParams,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -377,6 +378,9 @@ export const mapDispatchToProps = (dispatch) => {
       ),
     updateTransaction: (txMeta) => {
       dispatch(updateTransaction(txMeta, true));
+    },
+    updateTransactionValue: (id, value) => {
+      dispatch(updateEditableParams(id, { value }));
     },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>

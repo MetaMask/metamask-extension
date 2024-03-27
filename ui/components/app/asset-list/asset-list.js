@@ -64,14 +64,14 @@ const AssetList = ({ onClickAsset }) => {
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
 
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    currentNetwork.chainId,
+    chainId,
     ticker,
     type,
   );
@@ -133,9 +133,9 @@ const AssetList = ({ onClickAsset }) => {
         event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          chain_id: currentNetwork.chainId,
+          chain_id: chainId,
           locale: currentLocale,
-          network: currentNetwork.nickname,
+          network: nickname,
           referrer: ORIGIN_METAMASK,
         },
       });
@@ -145,9 +145,9 @@ const AssetList = ({ onClickAsset }) => {
         event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          chain_id: currentNetwork.chainId,
+          chain_id: chainId,
           locale: currentLocale,
-          network: currentNetwork.nickname,
+          network: nickname,
           referrer: ORIGIN_METAMASK,
         },
       });
@@ -156,7 +156,8 @@ const AssetList = ({ onClickAsset }) => {
     shouldShowBuy,
     shouldShowReceive,
     trackEvent,
-    currentNetwork,
+    chainId,
+    nickname,
     currentLocale,
   ]);
 
@@ -195,7 +196,7 @@ const AssetList = ({ onClickAsset }) => {
                     properties: {
                       location: 'Home',
                       text: 'Buy',
-                      chain_id: currentNetwork.chainId,
+                      chain_id: chainId,
                       token_symbol: defaultSwapsToken,
                     },
                   });
