@@ -10,11 +10,10 @@ export type HandlerWrapper = {
 };
 
 /**
- * @typedef {object} ProviderStateHandlerResult
- * @property {string} chainId - The current chain ID.
- * @property {boolean} isUnlocked - Whether the extension is unlocked or not.
- * @property {string} networkVersion - The current network ID.
- * @property {string[]} accounts - List of permitted accounts for the specified origin.
+ * @property chainId - The current chain ID.
+ * @property isUnlocked - Whether the extension is unlocked or not.
+ * @property networkVersion - The current network ID.
+ * @property accounts - List of permitted accounts for the specified origin.
  */
 export type ProviderStateHandlerResult = {
   chainId: string;
