@@ -9,13 +9,13 @@ import type {
   Json,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapperType, GetAccountsType } from './handlers-helper';
+import { HandlerWrapper, GetAccounts } from './handlers-helper';
 
-type ethAccountsHandlerOptionsType = {
-  getAccounts: GetAccountsType;
+type EthAccountsHandlerOptions = {
+  getAccounts: GetAccounts;
 };
 
-type EthereumAccountsRequestType<
+type EthereumAccountsRequestConstraint<
   Params extends JsonRpcParams = JsonRpcParams,
   Result extends Json = Json,
 > = {
@@ -24,15 +24,15 @@ type EthereumAccountsRequestType<
     res: JsonRpcResponse<Result>,
     _next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,
-    { getAccounts }: ethAccountsHandlerOptionsType,
+    { getAccounts }: EthAccountsHandlerOptions,
   ) => Promise<void>;
-} & HandlerWrapperType;
+} & HandlerWrapper;
 
 /**
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
 
-const requestEthereumAccounts: EthereumAccountsRequestType = {
+const requestEthereumAccounts: EthereumAccountsRequestConstraint = {
   methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
   implementation: ethAccountsHandler,
   hookNames: {
@@ -59,7 +59,7 @@ async function ethAccountsHandler<
   res: JsonRpcResponse<Result>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { getAccounts }: ethAccountsHandlerOptionsType,
+  { getAccounts }: EthAccountsHandlerOptions,
 ): Promise<void> {
   res.result = await getAccounts();
   return end();
