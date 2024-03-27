@@ -264,8 +264,8 @@ describe('Create token, approve token and approve token without gas', function (
         editBtn.click();
 
         await driver.waitForSelector({
-          text: '0.00008953 ETH',
-          tag: 'h1',
+          text: 'Edit priority',
+          tag: 'header',
         });
 
         await editGasFeeForm(driver, '60001', '10');
