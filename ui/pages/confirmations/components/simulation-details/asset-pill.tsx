@@ -36,9 +36,6 @@ const NativeAssetPill: React.FC = () => {
       gap={1}
       style={{
         padding: '1px 8px 1px 4px',
-        flexShrink: 1,
-        flexBasis: 'auto',
-        minWidth: 0,
       }}
     >
       <AvatarNetwork
@@ -60,24 +57,23 @@ const NativeAssetPill: React.FC = () => {
  * @param props
  * @param props.asset
  */
-export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => {
-  if (asset.standard === TokenStandard.none) {
-    return <NativeAssetPill />;
-  }
-  return (
-    <Box
-      data-testid="simulation-details-asset-pill"
-      style={{
-        flexShrink: 1,
-        flexBasis: 'auto',
-        minWidth: 0,
-      }}
-    >
+export const AssetPill: React.FC<{ asset: AssetIdentifier }> = ({ asset }) => (
+  <Box
+    data-testid="simulation-details-asset-pill"
+    style={{
+      flexShrink: 1,
+      flexBasis: 'auto',
+      minWidth: 0,
+    }}
+  >
+    {asset.standard === TokenStandard.none ? (
+      <NativeAssetPill />
+    ) : (
       <Name
         type={NameType.ETHEREUM_ADDRESS}
         value={asset.address}
         preferContractSymbol
       />
-    </Box>
-  );
-};
+    )}
+  </Box>
+);

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -13,7 +14,7 @@ const textStyle = {
   color: TextColor.textAlternative,
   variant: TextVariant.bodySm,
   paddingRight: 2 as SizeNumber,
-  textAlign: 'right',
+  textAlign: 'right' as TextAlign,
 } as const;
 
 const FiatNotAvailableDisplay: React.FC = () => {

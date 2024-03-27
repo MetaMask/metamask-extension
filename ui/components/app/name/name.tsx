@@ -32,6 +32,11 @@ export type NameProps = {
    * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
    */
   preferContractSymbol?: boolean;
+
+  /**
+   * Optional style object to apply to the component.
+   */
+  style?: React.CSSProperties;
 };
 
 function formatValue(value: string, type: NameType): string {
