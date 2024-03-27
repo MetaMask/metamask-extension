@@ -1607,6 +1607,10 @@ export default class MetamaskController extends EventEmitter {
           () => listener(),
         );
       },
+      pendingTransactions: {
+        isResubmitEnabled: () =>
+          !this.preferencesController.store.getState().preferences?.stxOptIn,
+      },
       provider: this.provider,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
