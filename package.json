@@ -231,8 +231,7 @@
     "@babel/runtime@npm:^7.4.0": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.18.3": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
     "@babel/runtime@npm:^7.8.3": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@babel/runtime@npm:^7.8.4": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@metamask/transaction-controller@npm:^25.3.0": "npm:@metamask-previews/transaction-controller@25.3.0-preview-07ab424"
+    "@babel/runtime@npm:^7.8.4": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -315,7 +314,7 @@
     "@metamask/snaps-rpc-methods": "^7.0.1",
     "@metamask/snaps-sdk": "^3.1.1",
     "@metamask/snaps-utils": "^7.0.3",
-    "@metamask/transaction-controller": "^25.3.0",
+    "@metamask/transaction-controller": "^26.0.0",
     "@metamask/user-operation-controller": "^6.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",
