@@ -15,7 +15,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import {
   getCurrentNetwork,
   getIsBridgeChain,

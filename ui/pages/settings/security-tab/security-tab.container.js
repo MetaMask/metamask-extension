@@ -11,7 +11,6 @@ import {
   setUsePhishDetect,
   setUseTokenDetection,
   setDisableExternalServices,
-  setTransactionSecurityCheckEnabled,
   setUseAddressBarEnsResolution,
   setOpenSeaEnabled,
   setUseNftDetection,
@@ -112,8 +111,6 @@ const mapDispatchToProps = (dispatch) => {
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
-    setTransactionSecurityCheckEnabled: (value) =>
-      dispatch(setTransactionSecurityCheckEnabled(value)),
     setDisableExternalServices: (value) => {
       return dispatch(setDisableExternalServices(value));
     },
