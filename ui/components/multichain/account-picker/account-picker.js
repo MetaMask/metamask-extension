@@ -70,7 +70,7 @@ export const AccountPicker = ({
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={showAddress ? Size.MD : Size.XS}
+        size={showAddress ? Size.SM : Size.XS}
         borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
       <Text
