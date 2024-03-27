@@ -267,8 +267,6 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
-  # Determines if feature flagged Settings Page - Developer Options should be used
-  - SETTINGS_PAGE_DEV_OPTIONS
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
 
@@ -277,6 +275,8 @@ env:
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
+  # Determines if feature flagged Settings Page - Developer Options should be used
+  - ENABLE_SETTINGS_PAGE_DEV_OPTIONS
 
   ###
   # Meta variables

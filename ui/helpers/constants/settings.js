@@ -462,7 +462,7 @@ const SETTINGS_CONSTANTS = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-if (process.env.SETTINGS_PAGE_DEV_OPTIONS) {
+if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS) {
   SETTINGS_CONSTANTS.push(
     // developerOptions settingsRefs[0]
     {
