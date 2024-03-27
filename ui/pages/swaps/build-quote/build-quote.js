@@ -57,9 +57,11 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getUseCurrencyRateCheck,
+} from '../../../selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors';
 
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';

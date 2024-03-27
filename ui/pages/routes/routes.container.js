@@ -18,8 +18,8 @@ import {
   getShowExtensionInFullSizeView,
   getSelectedAccount,
   getPermittedAccountsForCurrentTab,
-  getSmartTransactionsOptInStatus,
 } from '../../selectors';
+import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
   lockMetamask,
   hideImportNftsModal,
