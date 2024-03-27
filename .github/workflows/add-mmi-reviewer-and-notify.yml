@@ -1,0 +1,54 @@
+name: Add MMI reviewer and notify via Slack
+
+on:
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  process-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add reviewer when team-mmi label is added
+        if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const github = require('@actions/github');
+            const payload = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              reviewers: ['zone-live', 'albertolive', 'shane-t']
+            };
+            github.rest.pulls.requestReviewers(payload);
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify via Slack
+        if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: repo,message,commit,author,action
+          custom_payload: |
+            {
+              "text": "A PR with label 'team-mmi' was added and requires review: ${GITHUB_REPOSITORY}#${{ github.event.pull_request.number }}",
+              "attachments": [
+                {
+                  "color": "#2eb886",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${GITHUB_REPOSITORY}",
+                      "short": true
+                    },
+                    {
+                      "title": "PR",
+                      "value": "#${{ github.event.pull_request.number }}",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
