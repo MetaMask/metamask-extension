@@ -2731,31 +2731,27 @@ export default class MetamaskController extends EventEmitter {
 
     const { chainId } = networkClient.configuration;
 
+    const { completedOnboarding } = this.onboardingController.store.getState();
+
     let networkVersion = this.deprecatedNetworkVersions[networkClientId];
-    if (networkVersion) {
-      return {
-        chainId,
-        networkVersion,
-      };
-    }
-
-    const ethQuery = new EthQuery(networkClient.provider);
-    networkVersion = await new Promise((resolve) => {
-      ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
-        if (error) {
-          console.error(error);
-          resolve(null);
-        } else {
-          resolve(convertNetworkId(result));
-        }
+    if (!networkVersion && completedOnboarding) {
+      const ethQuery = new EthQuery(networkClient.provider);
+      networkVersion = await new Promise((resolve) => {
+        ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
+          if (error) {
+            console.error(error);
+            resolve(null);
+          } else {
+            resolve(convertNetworkId(result));
+          }
+        });
       });
-    });
-
-    this.deprecatedNetworkVersions[networkClientId] = networkVersion;
+      this.deprecatedNetworkVersions[networkClientId] = networkVersion;
+    }
 
     return {
       chainId,
-      networkVersion,
+      networkVersion: networkVersion ?? 'loading',
     };
   }
 
