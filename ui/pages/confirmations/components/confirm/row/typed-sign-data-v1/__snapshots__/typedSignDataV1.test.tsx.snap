@@ -22,7 +22,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              0:
+              Sign into \\u202E EVIL:
             </p>
           </div>
           <div
@@ -31,7 +31,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
             >
-              Hi, Alice!
+              Sign into \\u202E EVIL
             </p>
           </div>
         </div>
@@ -45,7 +45,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
             >
-              1:
+              A number:
             </p>
           </div>
           <div
