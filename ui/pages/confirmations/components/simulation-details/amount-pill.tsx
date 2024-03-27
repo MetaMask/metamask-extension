@@ -15,6 +15,7 @@ import {
   DEFAULT_PRECISION_DECIMALS,
   MIN_DISPLAY_AMOUNT,
 } from '../../../../hooks/useCurrencyDisplay';
+import Tooltip from '../../../../components/ui/tooltip';
 import { Amount, AssetIdentifier } from './types';
 
 // Format an amount for display.
@@ -71,9 +72,15 @@ export const AmountPill: React.FC<{
         minWidth: 0,
       }}
     >
-      <Text ellipsis variant={TextVariant.bodyMd} color={color}>
-        {amountParts.join(' ')}
-      </Text>
+      <Tooltip
+        title={amountParts.join(' ')}
+        wrapperStyle={{ minWidth: 0 }}
+        interactive
+      >
+        <Text ellipsis variant={TextVariant.bodyMd} color={color}>
+          {amountParts.join(' ')}
+        </Text>
+      </Tooltip>
     </Box>
   );
 };

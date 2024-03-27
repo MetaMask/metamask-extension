@@ -12,6 +12,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
+import Tooltip from '../../ui/tooltip';
 import NameDetails from './name-details/name-details';
 
 export type NameProps = {
@@ -114,15 +115,21 @@ export default function Name({
             size={IconSize.Md}
           />
         )}
-        {hasDisplayName ? (
-          <Text className="name__name" variant={TextVariant.bodyMd}>
-            {name}
-          </Text>
-        ) : (
-          <Text className="name__value" variant={TextVariant.bodyMd}>
-            {formattedValue}
-          </Text>
-        )}
+        <Tooltip
+          title={hasDisplayName ? name : value}
+          wrapperStyle={{ minWidth: 0 }}
+          interactive
+        >
+          {hasDisplayName ? (
+            <Text className="name__name" variant={TextVariant.bodyMd}>
+              {name}
+            </Text>
+          ) : (
+            <Text className="name__value" variant={TextVariant.bodyMd}>
+              {formattedValue}
+            </Text>
+          )}
+        </Tooltip>
       </div>
     </div>
   );
