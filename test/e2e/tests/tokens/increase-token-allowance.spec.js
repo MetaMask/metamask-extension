@@ -158,6 +158,7 @@ describe('Increase Token Allowance', function () {
       text: 'Transfer From Tokens',
       tag: 'button',
     });
+    await driver.delay(2000);
   }
 
   async function pollForTokenAddressesError(
@@ -225,6 +226,7 @@ describe('Increase Token Allowance', function () {
       text: 'Increase Token Allowance',
       tag: 'button',
     });
+    await driver.delay(2000);
 
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     const setSpendingCap = await driver.findElement(
