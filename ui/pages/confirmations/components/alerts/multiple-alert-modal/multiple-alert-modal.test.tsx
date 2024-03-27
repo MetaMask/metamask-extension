@@ -36,7 +36,7 @@ describe('MultipleAlertModal', () => {
 
   const defaultProps: MultipleAlertModalProps = {
     ownerId: OWNER_ID_MOCK,
-    handleButtonClick: handleButtonClickMock,
+    onButtonClick: handleButtonClickMock,
     alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
   };
