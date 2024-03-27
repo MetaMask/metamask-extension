@@ -40,6 +40,8 @@ const defaultArgs = {
 };
 
 describe('Keyring Snap Remove Warning', () => {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
   beforeAll(() => {
     store = configureMockStore()(mockStore);
