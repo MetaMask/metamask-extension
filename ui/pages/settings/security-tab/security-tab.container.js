@@ -114,7 +114,6 @@ const mapDispatchToProps = (dispatch) => {
     setDisableExternalServices: (value) => {
       return dispatch(setDisableExternalServices(value));
     },
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));
     },

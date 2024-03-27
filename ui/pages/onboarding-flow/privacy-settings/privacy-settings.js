@@ -48,9 +48,7 @@ import {
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
   setDisableExternalServices,
-  ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
   setUseTransactionSimulations,
-  ///: END:ONLY_INCLUDE_IF
   setPetnamesEnabled,
 } from '../../../store/actions';
 import {
