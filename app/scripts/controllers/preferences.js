@@ -110,6 +110,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
+      ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
       useTransactionSimulations: true,
       ///: END:ONLY_INCLUDE_IF
       disableExternalServices: true,
