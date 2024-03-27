@@ -13,8 +13,14 @@ import {
   ButtonIcon,
   IconName,
   IconSize,
+  AvatarAccount,
+  AvatarAccountVariant,
 } from '../../../../../components/component-library';
-import { IconColor } from '../../../../../helpers/constants/design-system';
+import {
+  IconColor,
+  Size,
+  BackgroundColor,
+} from '../../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -24,6 +30,7 @@ export default class DomainInput extends Component {
 
   static propTypes = {
     className: PropTypes.string,
+    isBlockie: PropTypes.boolean,
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     scanQrCode: PropTypes.func,
@@ -90,7 +97,8 @@ export default class DomainInput extends Component {
 
   render() {
     const { t } = this.context;
-    const { className, selectedAddress, selectedName, userInput } = this.props;
+    const { className, selectedAddress, selectedName, userInput, isBlockie } =
+      this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
 
@@ -106,14 +114,19 @@ export default class DomainInput extends Component {
           {hasSelectedAddress ? (
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
+                <AvatarAccount
+                  variant={
+                    isBlockie
+                      ? AvatarAccountVariant.Blockies
+                      : AvatarAccountVariant.Jazzicon
+                  }
+                  address={selectedAddress}
+                  size={Size.SM}
+                  borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+                />
                 <div className="ens-input__selected-input__title">
                   {selectedName || selectedAddress}
                 </div>
-                {selectedName !== selectedAddress && (
-                  <div className="ens-input__selected-input__subtitle">
-                    {selectedAddress}
-                  </div>
-                )}
               </div>
               <ButtonIcon
                 iconName={IconName.Close}
