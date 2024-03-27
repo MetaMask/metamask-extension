@@ -233,6 +233,15 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Record the current popup Id so outdated popups can be closed
+   *
+   * @param {string} currentExtensionPopupId - Timestamp of last opened popup
+   */
+  setCurrentExtensionPopupId(currentExtensionPopupId) {
+    this.store.updateState({ currentExtensionPopupId });
+  }
+
+  /**
    * Sets the last active time to the current time.
    */
   setLastActiveTime() {

@@ -4713,19 +4713,14 @@ export function neverShowSwitchedNetworkMessage() {
   ]);
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
-export function setTransactionSecurityCheckEnabled(
-  transactionSecurityCheckEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
-        transactionSecurityCheckEnabled,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
+/**
+ * Update the currentPopupid generated when the user opened the popup
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export async function setCurrentExtensionPopupId(id: number) {
+  await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
