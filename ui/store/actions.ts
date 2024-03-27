@@ -2244,6 +2244,21 @@ export function clearSwitchedNetworkDetails(): ThunkAction<
   };
 }
 
+/**
+ * Update the currentPopupid generated when the user opened the popup
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export async function setCurrentExtensionPopupId(
+  id: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
   // TODO: Replace `any` with type
