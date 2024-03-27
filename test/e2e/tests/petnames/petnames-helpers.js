@@ -28,7 +28,7 @@ async function clickName(driver, value) {
 
 async function saveName(driver, value, name, proposedName) {
   await clickName(driver, value);
-    await driver.clickElement('.form-combo-field');
+  await driver.clickElement('.form-combo-field');
 
   if (proposedName) {
     await driver.clickElement({
