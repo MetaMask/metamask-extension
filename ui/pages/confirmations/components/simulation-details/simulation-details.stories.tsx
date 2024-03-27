@@ -144,6 +144,20 @@ export const MultipleTokens: Story = {
   },
 };
 
+export const MaticNativeAsset: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x123456',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  },
+  decorators: [(story) => <Provider store={storeMockPolygon}>{story()}</Provider>],
+};
+
 export const SendSmallAmount: Story = {
   args: {
     simulationData: {
