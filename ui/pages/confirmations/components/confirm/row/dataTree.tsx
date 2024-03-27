@@ -13,7 +13,7 @@ import {
 
 type ValueType = string | Record<string, TreeData> | TreeData[];
 
-type TreeData = {
+export type TreeData = {
   value: ValueType;
   type: string;
 };
