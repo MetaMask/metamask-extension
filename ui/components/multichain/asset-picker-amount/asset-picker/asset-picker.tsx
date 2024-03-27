@@ -84,7 +84,7 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         className="asset-picker"
         display={Display.Flex}
         alignItems={AlignItems.center}
-        gap={3}
+        gap={2}
         padding={2}
         paddingLeft={2}
         paddingRight={2}
