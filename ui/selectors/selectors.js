@@ -106,6 +106,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -119,7 +120,6 @@ import {
   getOrderedConnectedAccountsForActiveTab,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
-import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
