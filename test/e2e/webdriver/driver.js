@@ -150,27 +150,33 @@ class Driver {
   }
 
   /**
-   * Builds a locator object for the given element. This function exemplifies a sophisticated
-   * approach to element location, catering to various scenarios and preferences in locator
-   * specification. By encapsulating multiple locator strategies into a single, unified
-   * interface, it significantly streamlines the test writing process.
+   * In web automation testing, locators are crucial commands that guide the framework to identify
+   * and select HTML elements on a webpage for interaction. They play a vital role in executing various
+   * actions such as clicking buttons, filling text, or retrieving data from web pages.
    *
+   * buildLocator function enhances element matching capabilities by introducing support for inline locators,
+   * offering an alternative to the traditional use of Selenium's By abstraction.
+   *
+   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
+   *
+   * @example <caption>Example to locate the amount text box using its class on the send transaction screen</caption>
+   *        await driver.findElement('.unit-input__input’);
+   *
+   * To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
+   * @example <caption>Example to locate the password text box using its ID on the login screen</caption>
+   *        await driver.findElement('#password');
+   *
+   * To target an element based on its attribute using a CSS selector,
+   * use square brackets ([]) to specify the attribute name and its value.
+   * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute data-testid and its value on the overview screen</caption>
+   *        await driver.findElement('[data-testid="eth-overview-buy"]');
+   *
+   * To locate an element by XPath locator strategy
+   * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
+   *        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
    * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
    * @returns {object} By object that can be used to locate elements.
    * @throws {Error} Will throw an error if an invalid locator strategy is provided.
-   * @example <caption>Example usage of buildLocator</caption>
-   *
-   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
-   * await driver.findElement('.unit-input__input’); //Syntax for CSS selector by class name
-   *
-   * To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
-   * await driver.findElement('#password'); // Syntax for CSS selector by ID
-   *
-   * To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.
-   * await driver.findElement('[data-testid="eth-overview-buy"]'); // Syntax for CSS selector by data-testid(HTML attribute and value)
-   *
-   * To locate an element by XPath, use a path expression to navigate through elements and attributes in the HTML document.
-   * await driver.findClickableElement({ text: 'Confirm', tag: 'button' }); // Syntax for locating the button element that contains text ‘Confirm’
    */
   buildLocator(locator) {
     if (typeof locator === 'string') {
@@ -224,9 +230,9 @@ class Driver {
    * This method is particularly useful for automating interactions with text fields,
    * such as username or password inputs, search boxes, or any editable text areas.
    *
-   * @param {string | object} rawLocator - The web element to fill.
+   * @param {string | object} rawLocator - element locator to fill.
    * @param {string} input - The value to fill the element with.
-   * @returns {Promise} A promise that will be fulfilled when the fill command has completed.
+   * @returns {Promise<WebElement>} Promise resolving to the filled element
    */
   async fill(rawLocator, input) {
     const element = await this.findElement(rawLocator);
@@ -239,9 +245,9 @@ class Driver {
    * This can include typing characters into a text field,
    * activating keyboard shortcuts, or any other keyboard-related interactions
    *
-   * @param {string | object} rawLocator - The web element to press the key on.
+   * @param {string | object} rawLocator - element locator to press the key on.
    * @param {string} keys - The key to press.
-   * @returns {Promise} A promise that will be fulfilled when the key press command has completed.
+   * @returns {Promise<WebElement>} promise resolving to the filled element
    */
   async press(rawLocator, keys) {
     const element = await this.findElement(rawLocator);
@@ -257,27 +263,28 @@ class Driver {
    * Function to wait for a specific condition to be met within a given timeout period,
    * with an option to catch and handle any errors that occur during the wait.
    *
+   *  @example <caption>Example wait until a condition occurs</caption>
+   *            await driver.wait(async () => {
+   *              let info = await getBackupJson();
+   *              return info !== null;
+   *            }, 10000);
+   * @example <caption>Example wait until the condition for finding the elements is met and ensuring that the length validation is also satisfied</caption>
+   *            await driver.wait(async () => {
+   *              const confirmedTxes = await driver.findElements(
+   *              '.transaction-list__completed-transactions .transaction-list-item',
+   *              );
+   *            return confirmedTxes.length === 1;
+   *            }, 10000);
+   * @example <caption>Example wait until a mock condition occurs</caption>
+   *           await driver.wait(async () => {
+   *              const isPending = await mockedEndpoint.isPending();
+   *              return isPending === false;
+   *           }, 3000);
    * @param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.
    * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
    * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
    * @returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.
    * @throws {Error} Will throw an error if the condition is not met within the timeout period.
-   * @example <caption>Example wait until a condition occurs</caption>
-   * await driver.wait(async () => {
-   *  let info = await getBackupJson();
-   *   return info !== null;}, 10000);
-   * @example <caption>Example wait until the condition for finding the elements is met and ensuring that the length validation is also satisfied</caption>
-   * await driver.wait(async () => {
-   *     const confirmedTxes = await driver.findElements(
-   *      '.transaction-list__completed-transactions .transaction-list-item',
-   *     );
-   *     return confirmedTxes.length === 1;
-   *   }, 10000);
-   * @example <caption>Example wait until a mock condition occurs</caption>
-   *  await driver.wait(async () => {
-   *   const isPending = await mockedEndpoint.isPending();
-   *   return isPending === false;
-   *  }, 3000);
    */
   async wait(condition, timeout = this.timeout, catchError = false) {
     try {
@@ -294,8 +301,9 @@ class Driver {
   /**
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
-   * @param {string | object} rawLocator - The locator to use for finding the element.
-   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds) to wait for the condition to be met and desired state of the element to wait for.
+   * @param {string | object} rawLocator - Element locator
+   * @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds)
+   * to wait for the condition to be met and desired state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @returns {Promise} A promise that will be fulfilled when the element reaches the specified state or the timeout expires.
@@ -331,7 +339,7 @@ class Driver {
    * Waits for an element that matches the given locator to become non-empty within the timeout period.
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *
-   * @param {string | object} element - The locator to use for finding the element.
+   * @param {string | object} element - Element locator
    * @returns {Promise} A promise that will be fulfilled when the element becomes non-empty or the timeout expires.
    * @throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
    */
@@ -416,7 +424,7 @@ class Driver {
    * Finds an element on the page using the given locator
    * and returns a reference to the first matching element.
    *
-   * @param {string | object} rawLocator - The locator object to use for finding the element.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<WebElement>} A promise that resolves to the found element.
    */
   async findElement(rawLocator) {
@@ -431,7 +439,7 @@ class Driver {
   /**
    * Finds a visible element on the page using the given locator.
    *
-   * @param {string | object} rawLocator - The locator object to use for finding the element.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<WebElement>} A promise that resolves to the found visible element.
    */
   async findVisibleElement(rawLocator) {
@@ -443,7 +451,7 @@ class Driver {
   /**
    * Finds a clickable element on the page using the given locator.
    *
-   * @param {string | object} rawLocator - The locator object to use for finding the clickable element.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
   async findClickableElement(rawLocator) {
@@ -459,7 +467,7 @@ class Driver {
    * Finds all elements on the page that match the given locator.
    * If there are no matches, an empty list is returned.
    *
-   * @param {string | object} rawLocator - The locator object to use for finding the elements.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<Array<WebElement>>} A promise that resolves to an array of found elements.
    */
   async findElements(rawLocator) {
@@ -474,7 +482,7 @@ class Driver {
   /**
    * Finds all clickable elements on the page that match the given locator.
    *
-   * @param {string | object} rawLocator - The locator object to use for finding the clickable elements.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<Array<WebElement>>} A promise that resolves to an array of found clickable elements.
    */
   async findClickableElements(rawLocator) {
@@ -494,7 +502,7 @@ class Driver {
   /**
    * Function that aims to simulate a click action on a specified web element within a web page
    *
-   * @param {string | object} rawLocator - The web element to click.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise} A promise that will be fulfilled when the click command has completed.
    */
   async clickElement(rawLocator) {
@@ -543,7 +551,7 @@ class Driver {
   /**
    * Simulates a click at the given x and y coordinates.
    *
-   * @param rawLocator
+   * @param rawLocator - Element locator
    * @param {number} x - The x coordinate to click at.
    * @param {number} y - The y coordinate to click at.
    * @returns {Promise} A promise that will be fulfilled when the click command has completed.
@@ -560,7 +568,7 @@ class Driver {
   /**
    * Simulates holding the mouse button down on the given web element.
    *
-   * @param {string | object} rawLocator - The web element to hold the mouse button down on.
+   * @param {string | object} rawLocator - Element locator
    * @param {number} ms - The number of milliseconds to hold the mouse button down.
    * @returns {Promise} A promise that will be fulfilled when the mouse down command has completed.
    */
@@ -593,12 +601,23 @@ class Driver {
    * Assertion is a statement that checks if a specified condition is true.
    * If the condition is true, the program continues to execute.
    * If the condition is false, throws an error or fails.
+   *
+   * Below are the assertions that can be used in the E2E test driver:-
+   * 1. assertElementNotPresent
+   * 2. isElementPresent
+   * 3. isElementPresentAndVisible
+   *
+   * When do we use assertions?
+   *    - Checking if a variable has the expected value.
+   *    - Verifying that an object is not null.
+   *    - Ensuring that a web element is visible, contains specific text, or is enabled/disabled.
+   *    - Verify that a certain condition holds at a specific point in the program or test case.
    */
 
   /**
    * Checks if an element that matches the given locator is present on the page.
    *
-   * @param {string | object} rawLocator - The locator to use for finding the element.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<boolean>} A promise that will be fulfilled with a boolean indicating whether the element is present.
    */
   async isElementPresent(rawLocator) {
@@ -613,7 +632,7 @@ class Driver {
   /**
    * Checks if an element that matches the given locator is present and visible on the page.
    *
-   * @param {string | object} rawLocator - The locator to use for finding the element.
+   * @param {string | object} rawLocator - Element locator
    * @returns {Promise<boolean>} A promise that will be fulfilled with a boolean indicating whether the element is present and visible.
    */
   async isElementPresentAndVisible(rawLocator) {
@@ -628,7 +647,7 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator - The element locator.
+   * @param {string} rawLocator - Element locator
    * @param {string} contentToPaste - The content to paste.
    */
   async pasteIntoField(rawLocator, contentToPaste) {
@@ -781,7 +800,7 @@ class Driver {
   /**
    * Retrieves the title of the window or tab with the given handle ID.
    *
-   * @param {int} handlerId - representing the unique identifier (handle) of the browser window or tab
+   * @param {int} handlerId - representing the unique identifier (handler) of the browser window or tab
    *  whose title you want to retrieve.
    * @returns {Promise<string>} A promise that will be fulfilled with the title of the window or tab when the command has completed.
    */
@@ -880,7 +899,6 @@ class Driver {
 
   /**
    * Closes the current window or tab in the browser session.
-   * This is particularly useful for cleaning up after a test or when switching between different windows or tabs.
    *
    *  @returns {Promise} A promise that will be fulfilled when the close command has completed.
    */
