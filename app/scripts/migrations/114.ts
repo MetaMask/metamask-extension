@@ -45,6 +45,7 @@ function transformState(state: Record<string, any>) {
   ) {
     if (state.PreferencesController.transactionSecurityCheckEnabled) {
       state.PreferencesController.securityAlertsEnabled = true;
+      state.PreferencesController.hasMigratedFromOpenSeaToBlockaid = true;
     }
 
     delete state.PreferencesController.transactionSecurityCheckEnabled;
