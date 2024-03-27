@@ -48,7 +48,6 @@
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
     "switchedNetworkNeverShowMessage": "boolean",
-    "currentExtensionPopupId": "string"
   },
   "ApprovalController": {
     "pendingApprovals": "object",

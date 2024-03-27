@@ -86,7 +86,6 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
-    currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
