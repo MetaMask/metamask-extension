@@ -1644,6 +1644,7 @@ export default class MetamaskController extends EventEmitter {
             // Will cause TransactionController to publish to the RPC provider as normal.
             return { transactionHash: undefined };
           }
+          const featureFlags = sharedSelectors.getFeatureFlagsByChainId(state);
           const smartTransactionHook = new SmartTransactionHook();
           return smartTransactionHook.submit({
             transactionMeta,
@@ -1651,6 +1652,7 @@ export default class MetamaskController extends EventEmitter {
             smartTransactionsController: this.smartTransactionsController,
             controllerMessenger: this.controllerMessenger,
             isSmartTransaction,
+            featureFlags,
           });
         },
       },
