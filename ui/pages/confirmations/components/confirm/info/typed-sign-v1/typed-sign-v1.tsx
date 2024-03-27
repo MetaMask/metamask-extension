@@ -12,6 +12,7 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
+import { TypedSignDataV1Type } from '../../../../types/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
 
 const TypedSignV1Info: React.FC = () => {
@@ -42,7 +43,7 @@ const TypedSignV1Info: React.FC = () => {
       >
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignDataV1
-            data={currentConfirmation.msgParams?.data}
+            data={currentConfirmation.msgParams?.data as TypedSignDataV1Type}
           />
         </ConfirmInfoRow>
       </Box>
