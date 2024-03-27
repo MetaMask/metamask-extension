@@ -1,4 +1,3 @@
-// const { strict: assert } = require('assert');
 const { connectAccountToTestDapp } = require('../../accounts/common');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -15,9 +14,7 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: { hasMigratedFromOpenSeaToBlockaid: true },
-          })
+          .withPreferencesController({ hasMigratedFromOpenSeaToBlockaid: true })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -44,9 +41,7 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: { hasMigratedFromOpenSeaToBlockaid: true },
-          })
+          .withPreferencesController({ hasMigratedFromOpenSeaToBlockaid: true })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -88,9 +83,7 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: { hasMigratedFromOpenSeaToBlockaid: true },
-          })
+          .withPreferencesController({ hasMigratedFromOpenSeaToBlockaid: true })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
@@ -117,9 +110,7 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: { hasMigratedFromOpenSeaToBlockaid: true },
-          })
+          .withPreferencesController({ hasMigratedFromOpenSeaToBlockaid: true })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),

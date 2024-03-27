@@ -2298,16 +2298,10 @@ export function getShowFiatInTestnets(state) {
 }
 
 export function getHasMigratedFromOpenSeaToBlockaid(state) {
-  const { hasMigratedFromOpenSeaToBlockaid } = getPreferences(state);
-  return Boolean(hasMigratedFromOpenSeaToBlockaid);
+  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
 }
 
 export function getHasDismissedOpenSeaToBlockaidBanner(state) {
-  console.log({
-    state,
-    hasDismissedOpenSeaToBlockaidBanner:
-      state.metamask.hasDismissedOpenSeaToBlockaidBanner,
-  });
   return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 

@@ -362,11 +362,6 @@ export default function TokenAllowance({
     !isNetworkSupportedByBlockaid &&
     !hasDismissedOpenSeaToBlockaidBanner;
 
-  console.log({
-    hasMigratedFromOpenSeaToBlockaid,
-    isNetworkSupportedByBlockaid,
-    hasDismissedOpenSeaToBlockaidBanner,
-  });
   const handleCloseOpenSeaToBlockaidBannerAlert = () => {
     dispatch(dismissOpenSeaToBlockaidBanner());
   };
