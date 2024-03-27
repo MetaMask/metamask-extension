@@ -1,5 +1,5 @@
 diff --git a/lib/index.js b/lib/index.js
-index b7a810396d6c0dad839fc08f1e192f5df134879f..93cb54be0f33c77e9f801f1c23330eb0fc65bb38 100644
+index b7a810396d6c0dad839fc08f1e192f5df134879f..14c6b3afaf1ca1d2805bea6c136cf9e48881db33 100644
 --- a/lib/index.js
 +++ b/lib/index.js
 @@ -4,7 +4,7 @@ exports.Optional = exports.Type = exports.AssertWeak = exports.Assert = exports.
