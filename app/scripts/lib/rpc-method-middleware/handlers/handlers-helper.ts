@@ -4,7 +4,7 @@ import type {
 } from '@metamask/permission-controller';
 import type { Json } from '@metamask/utils';
 
-export type HandlerWrapperType = {
+export type HandlerWrapper = {
   methodNames: [string];
   hookNames: Record<string, boolean>;
 };
@@ -30,10 +30,16 @@ export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   iconUrl?: string | null;
 } & Record<string, Json>;
 
-export type GetAccountsType = () => Promise<string[]>;
-export type GetProviderStateType = (
+export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
+export type GetAccounts = () => Promise<string[]>;
+export type GetProviderState = (
   origin: string,
 ) => Promise<ProviderStateHandlerResult>;
-export type GetWeb3ShimUsageStateType = (origin: string) => undefined | 1 | 2;
-export type SetWeb3ShimUsageRecordedType = (origin: string) => void;
-export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
+export type GetWeb3ShimUsageState = (origin: string) => undefined | 1 | 2;
+export type HandleWatchAssetRequest = ({
+  asset,
+  type,
+  origin,
+  networkClientId,
+}: Record<string, string>) => Promise<void>;
+export type SetWeb3ShimUsageRecorded = (origin: string) => void;
