@@ -268,6 +268,9 @@ export const SmartTransactionStatusPage = ({
               variant={ButtonVariant.Link}
               onClick={() => {
                 global.platform.openTab({ url: blockExplorerUrl });
+                if (!isSmartTransactionPending) {
+                  onCloseExtension();
+                }
               }}
             >
               {t('viewTransaction')}
