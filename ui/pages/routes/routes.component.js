@@ -802,8 +802,8 @@ export default class Routes extends Component {
                 />
               }
               text={this.context.t('switchedNetworkToastMessage', [
-                switchedNetworkDetails.nickname.toUpperCase(),
-                getURLHost(switchedNetworkDetails.origin).toUpperCase(),
+                switchedNetworkDetails.nickname,
+                getURLHost(switchedNetworkDetails.origin),
               ])}
               actionText={this.context.t('switchedNetworkToastDecline')}
               onActionClick={() => setSwitchedNetworkNeverShowMessage()}
