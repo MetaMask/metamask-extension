@@ -220,6 +220,10 @@ env:
   # Variables that are modified with hardcoded code
   ###
 
+  # Used to enable confirmation redesigned pages
+  - ENABLE_CONFIRMATION_REDESIGN: ''
+  # Determines if feature flagged Settings Page - Developer Options should be used
+  - ENABLE_SETTINGS_PAGE_DEV_OPTIONS
   # Used for debugging changes to the phishing warning page.
   # Modified in <root>/development/build/scripts.js:@getPhishingWarningPageUrl
   - PHISHING_WARNING_PAGE_URL: null
@@ -261,10 +265,6 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
-  # Used to enable confirmation redesigned pages
-  - ENABLE_CONFIRMATION_REDESIGN: ''
-  # Determines if feature flagged Settings Page - Developer Options should be used
-  - ENABLE_SETTINGS_PAGE_DEV_OPTIONS
 
   ###
   # Meta variables
