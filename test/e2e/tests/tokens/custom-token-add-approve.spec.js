@@ -5,7 +5,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -282,7 +282,7 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'h1',
         });
 
-        await editGasfeeForm(driver, '60001', '10');
+        await editGasFeeForm(driver, '60001', '10');
 
         await driver.waitForSelector(
           {
