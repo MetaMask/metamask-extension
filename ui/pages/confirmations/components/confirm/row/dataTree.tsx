@@ -34,7 +34,7 @@ export const DataTree = ({ data }: { data: Record<string, TreeData> }) => (
           }) ? (
             <ConfirmInfoRowAddress address={value} />
           ) : (
-            <ConfirmInfoRowText text={value} />
+            <ConfirmInfoRowText text={sanitizeString(value)} />
           )}
         </ConfirmInfoRow>
       );
