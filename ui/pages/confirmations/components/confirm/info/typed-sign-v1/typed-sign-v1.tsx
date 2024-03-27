@@ -13,7 +13,6 @@ import {
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
-import { TypedSignDataV1Type } from '../../../../types/confirm';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
@@ -22,13 +21,6 @@ const TypedSignV1Info: React.FC = () => {
   if (!currentConfirmation?.msgParams) {
     return null;
   }
-
-  const data = (
-    currentConfirmation.msgParams?.data as TypedSignDataV1Type
-  ).reduce(
-    (val, { name, value, type }) => ({ ...val, [name]: { type, value } }),
-    {},
-  );
 
   return (
     <>
@@ -49,7 +41,9 @@ const TypedSignV1Info: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('message')}>
-          <ConfirmInfoRowTypedSignDataV1 data={data} />
+          <ConfirmInfoRowTypedSignDataV1
+            data={currentConfirmation.msgParams?.data}
+          />
         </ConfirmInfoRow>
       </Box>
     </>

@@ -6,15 +6,8 @@ import { ConfirmInfoRowTypedSignDataV1 } from './typedSignDataV1';
 
 describe('ConfirmInfoRowTypedSignData', () => {
   it('should match snapshot', () => {
-    const mockData = {
-      'Sign into \u202E EVIL': {
-        type: 'string',
-        value: 'Sign into \u202E EVIL',
-      },
-      'A number': { type: 'uint32', value: '1337' },
-    };
     const { container } = render(
-      <ConfirmInfoRowTypedSignDataV1 data={mockData} />,
+      <ConfirmInfoRowTypedSignDataV1 data={unapprovedTypedSignMsgV1.msgParams.data} />,
     );
     expect(container).toMatchSnapshot();
   });
