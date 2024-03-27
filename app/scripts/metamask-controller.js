@@ -1607,8 +1607,15 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       pendingTransactions: {
-        isResubmitEnabled: () =>
-          !this.preferencesController.store.getState().preferences?.stxOptIn,
+        isResubmitEnabled: () => {
+          const state = {
+            metamask: this.getState(),
+          };
+          return !(
+            sharedSelectors.getSmartTransactionsOptInStatus(state) &&
+            sharedSelectors.getIsAllowedStxChainId(state)
+          );
+        },
       },
       provider: this.provider,
       hooks: {
