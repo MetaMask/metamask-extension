@@ -87,6 +87,10 @@ export default class SignatureRequestOriginal extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
+    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool.isRequired,
+    isNetworkSupportedByBlockaid: PropTypes.bool.isRequired,
+    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool.isRequired,
+    dismissOpenSeaToBlockaidBanner: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
