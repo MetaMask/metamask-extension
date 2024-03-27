@@ -65,9 +65,8 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
-import { BannerAlert, BannerBase } from '../../../components/component-library';
+import { BannerAlert } from '../../../components/component-library';
 import { Severity } from '../../../helpers/constants/design-system';
-import { SUPPORTED_CHAIN_IDS } from '../../../../app/scripts/lib/ppom/ppom-middleware';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -171,6 +170,10 @@ export default class ConfirmTransactionBase extends Component {
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
+    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
+    dismissOpenSeaToBlockaidBanner: PropTypes.func,
+    isNetworkSupportedByBlockaid: PropTypes.bool,
   };
 
   state = {
@@ -185,7 +188,6 @@ export default class ConfirmTransactionBase extends Component {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
     ///: END:ONLY_INCLUDE_IF
-    showBanner: true,
   };
 
   componentDidUpdate(prevProps) {
