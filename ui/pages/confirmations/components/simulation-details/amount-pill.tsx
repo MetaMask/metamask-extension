@@ -73,6 +73,7 @@ export const AmountPill: React.FC<{
       }}
     >
       <Tooltip
+        position="bottom"
         title={amountParts.join(' ')}
         wrapperStyle={{ minWidth: 0 }}
         interactive

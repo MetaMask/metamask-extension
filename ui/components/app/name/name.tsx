@@ -116,6 +116,7 @@ export default function Name({
           />
         )}
         <Tooltip
+          position="bottom"
           title={hasDisplayName ? name : value}
           wrapperStyle={{ minWidth: 0 }}
           interactive
