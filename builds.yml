@@ -270,6 +270,8 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Enables the notifications feature within the build:
+  - NOTIFICATIONS: '' 
 
   ###
   # Meta variables
