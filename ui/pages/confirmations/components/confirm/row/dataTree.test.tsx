@@ -62,15 +62,21 @@ const store = configureStore(mockState);
 
 describe('DataTree', () => {
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(<DataTree data={mockData} />, store);
+    const { container } = renderWithProvider(
+      <DataTree data={mockData} />,
+      store,
+    );
     expect(container).toMatchSnapshot();
   });
 
   it('correctly renders reverse strings', () => {
-    const data  = {
-      ['Sign into \u202E EVIL']: {type: 'string', value: 'Sign into \u202E EVIL' },
+    const data = {
+      ['Sign into \u202E EVIL']: {
+        type: 'string',
+        value: 'Sign into \u202E EVIL',
+      },
       ['A number']: { type: 'uint32', value: '1337' },
-    }
+    };
     const { container } = renderWithProvider(<DataTree data={data} />, store);
     expect(container).toMatchSnapshot();
   });
