@@ -30,6 +30,6 @@ describe('PersonalSignInfo', () => {
     };
     const mockStore = configureMockStore([])(mockState);
     const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
-    expect(container).toMatchSnapshot();
+    expect(container).toMatchInlineSnapshot(`<div />`);
   });
 });
