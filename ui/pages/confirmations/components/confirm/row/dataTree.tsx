@@ -40,7 +40,6 @@ export const DataTree = ({
   </Box>
 );
 
-
 const DataField = ({ value, type }: { value: ValueType; type: string }) => {
   if (typeof value === 'object' && value !== null) {
     return <DataTree data={value} />;

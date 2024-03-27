@@ -7,7 +7,9 @@ import { ConfirmInfoRowTypedSignDataV1 } from './typedSignDataV1';
 describe('ConfirmInfoRowTypedSignData', () => {
   it('should match snapshot', () => {
     const { container } = render(
-      <ConfirmInfoRowTypedSignDataV1 data={unapprovedTypedSignMsgV1.msgParams.data} />,
+      <ConfirmInfoRowTypedSignDataV1
+        data={unapprovedTypedSignMsgV1.msgParams.data}
+      />,
     );
     expect(container).toMatchSnapshot();
   });
