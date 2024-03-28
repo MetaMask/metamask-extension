@@ -323,24 +323,11 @@ exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] =
           class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/question.svg');"
         />
-        <div
-          style="min-width: 0;"
+        <p
+          class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
         >
-          <div
-            aria-describedby="tippy-tooltip-1"
-            class=""
-            data-original-title="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
-          >
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0x5CfE7...6a7e1
-            </p>
-          </div>
-        </div>
+          0x5CfE7...6a7e1
+        </p>
       </div>
     </div>
   </div>
