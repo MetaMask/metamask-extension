@@ -2099,6 +2099,9 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  * @returns Boolean
  */
 export function getUseRequestQueue(state) {
+  if (process.env.MULTICHAIN) {
+    return true;
+  }
   return state.metamask.useRequestQueue;
 }
 
