@@ -70,6 +70,7 @@ export default class AppStateController extends EventEmitter {
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
+      currentExtensionPopupId: 0,
     });
     this.timer = null;
 
@@ -402,6 +403,15 @@ export default class AppStateController extends EventEmitter {
    */
   setShowAccountBanner(showAccountBanner) {
     this.store.updateState({ showAccountBanner });
+  }
+
+  /**
+   * Sets a unique ID for the current extension popup
+   *
+   * @param currentExtensionPopupId
+   */
+  setCurrentExtensionPopupId(currentExtensionPopupId) {
+    this.store.updateState({ currentExtensionPopupId });
   }
 
   /**
