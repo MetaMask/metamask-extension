@@ -1168,6 +1168,7 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'NetworkController:getNetworkClientById',
           'NetworkController:getState',
+          'NetworkController:getSelectedNetworkClient',
           'PermissionController:hasPermissions',
           'PermissionController:getSubjectNames',
         ],
@@ -1180,6 +1181,7 @@ export default class MetamaskController extends EventEmitter {
       getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
+      domainProxyMap: new Map(),
     });
 
     this.permissionLogController = new PermissionLogController({
