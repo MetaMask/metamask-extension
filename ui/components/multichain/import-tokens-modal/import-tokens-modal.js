@@ -253,8 +253,8 @@ export const ImportTokensModal = ({ onClose }) => {
     const symbolLength = symbol.length;
     let symbolError = null;
 
-    if (symbolLength <= 0 || symbolLength >= 12) {
-      symbolError = t('symbolBetweenZeroTwelve');
+    if (symbolLength <= 0 || symbolLength > 64) {
+      symbolError = t('symbolBetweenZeroSixtyFour');
     }
 
     setCustomSymbol(symbol);
