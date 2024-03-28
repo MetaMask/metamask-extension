@@ -100,6 +100,7 @@ const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
 const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
 const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
+const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
 const SIGNATURE_REQUEST_PATH = '/signature-request';
 const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
@@ -182,6 +183,8 @@ const PATH_NAME_MAP = {
     'Confirm Approve Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`]:
     'Confirm Set Approval For All Transaction Page',
+  [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`]:
+    'Confirm Increase Allowance Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`]:
     'Confirm Transfer From Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`]:
@@ -230,6 +233,7 @@ export {
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
+  CONFIRM_INCREASE_ALLOWANCE_PATH,
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
