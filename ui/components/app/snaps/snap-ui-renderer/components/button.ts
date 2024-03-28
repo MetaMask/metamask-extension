@@ -5,7 +5,6 @@ export const button: UIComponentFactory<Button> = ({ element }) => ({
   element: 'SnapUIButton',
   props: {
     type: element.buttonType,
-    variant: element.variant,
     name: element.name,
   },
   children: element.value,

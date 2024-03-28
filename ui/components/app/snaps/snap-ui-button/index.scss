@@ -1,0 +1,10 @@
+.snap-ui-button {
+  background: none;
+  color: var(--color-primary-default);
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--color-primary-alternative);
+  }
+}
