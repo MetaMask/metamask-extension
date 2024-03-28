@@ -1,6 +1,15 @@
-import React, { useContext, useRef, useEffect, useState } from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useContext,
+  ///: END:ONLY_INCLUDE_IF
+  useRef,
+  useEffect,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { I18nContext } from '../../../../../contexts/i18n';
+///: END:ONLY_INCLUDE_IF
 import Identicon from '../../../../../components/ui/identicon';
 import Confusable from '../../../../../components/ui/confusable';
 import {
@@ -183,7 +192,9 @@ DomainInputResolutionCell.propTypes = {
   domainType: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   domainName: PropTypes.string.isRequired,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   resolvingSnap: PropTypes.string.isRequired,
+  ///: END:ONLY_INCLUDE_IF
   onClick: PropTypes.func,
   protocol: PropTypes.string,
 };
