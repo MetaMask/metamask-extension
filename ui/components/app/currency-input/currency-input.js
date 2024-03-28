@@ -145,7 +145,6 @@ export default function CurrencyInput({
       isLastZeroOrDotJustExposed && isBackspacedInputEqualToNewValue;
 
     if (isInputLikelyBackspaced) {
-      console.log(`overridden to ${inputValueIfBackspaced}`);
       decimalizedHexValue = inputValueIfBackspaced;
     }
 
