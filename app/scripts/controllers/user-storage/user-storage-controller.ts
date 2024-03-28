@@ -66,7 +66,7 @@ export type UserStorageControllerMessenger = RestrictedControllerMessenger<
 >;
 
 export type AuthParams = {
-  getBearerToken: () => Promise<string | null>;
+  getBearerToken: () => Promise<string>;
   getSessionIdentifier: () => Promise<string | null>;
   signIn: () => Promise<void>;
   isAuthEnabled: () => boolean;

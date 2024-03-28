@@ -304,6 +304,10 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
+///: END:ONLY_INCLUDE_IF
+import AuthenticationController from './controllers/authentication/authentication-controller';
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1280,6 +1284,7 @@ export default class MetamaskController extends EventEmitter {
         allowLocalSnaps,
         requireAllowlist,
       },
+      preinstalledSnaps: PREINSTALLED_SNAPS,
     });
 
     this.notificationController = new NotificationController({
@@ -1387,23 +1392,24 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
 
     // Notification Controllers
-    // This controller relies on work from another PR.
-    // https://github.com/MetaMask/metamask-extension/pull/23286
-    // For now the methods have been stubbed out.
-    // NOTE - this controller is not connected to anything live yet & will only be functioning once the full feature is merged.
-    const stubbedAuthMethod = () => {
-      throw new Error('Unimplemented Method');
-    };
+    this.authenticationController = new AuthenticationController({
+      state: initState.AuthenticationController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'AuthenticationController',
+        allowedActions: [`${this.snapController.name}:handleRequest`],
+      }),
+    });
     this.userStorageController = new UserStorageController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
         allowedActions: [`${this.snapController.name}:handleRequest`],
       }),
       auth: {
-        getBearerToken: stubbedAuthMethod,
-        getSessionIdentifier: stubbedAuthMethod,
-        isAuthEnabled: stubbedAuthMethod,
-        signIn: stubbedAuthMethod,
+        getBearerToken: () => this.authenticationController.getBearerToken(),
+        getSessionIdentifier: async () =>
+          (await this.authenticationController.getSessionProfile())?.profileId,
+        isAuthEnabled: () => this.authenticationController.state.isSignedIn,
+        signIn: () => this.authenticationController.performSignIn(),
       },
     });
 

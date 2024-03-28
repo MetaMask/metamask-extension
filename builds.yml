@@ -199,6 +199,10 @@ env:
   ###
   # Notifications Feature
   ###
+  - AUTH_API: https://authentication.api.cx.metamask.io
+  - OIDC_API: https://oidc.api.cx.metamask.io
+  - OIDC_CLIENT_ID: 77285a0b-a0c6-4681-ba36-cc7d3a21aece
+  - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
 
   ###
@@ -266,8 +270,13 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+
   # Used to enable confirmation redesigned pages
   - ENABLE_CONFIRMATION_REDESIGN: ''
+
+    # Enables the notifications feature within the build:
+  - NOTIFICATIONS: ''
+
   ###
   # Meta variables
   ###
