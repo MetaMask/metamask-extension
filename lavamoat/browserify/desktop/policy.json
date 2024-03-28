@@ -506,6 +506,7 @@
         "Element.prototype": true,
         "Node.prototype": true,
         "console.warn": true,
+        "crypto": true,
         "document": true
       },
       "packages": {
