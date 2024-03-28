@@ -402,61 +402,100 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="send__select-recipient-wrapper__group-item"
+      class="send__select-recipient-wrapper__list"
     >
       <div
-        class=""
+        class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
       >
-        <div
-          class="identicon"
-          style="height: 28px; width: 28px; border-radius: 14px;"
+        <p
+          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
         >
-          <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(24, 151, 242);"
-          >
-            <svg
-              height="28"
-              width="28"
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="#2362E1"
-                height="28"
-                transform="translate(3.140663911693453 -4.667521795329333) rotate(458.4 14 14)"
-                width="28"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#F94301"
-                height="28"
-                transform="translate(-13.443026878443934 6.993307681050803) rotate(268.8 14 14)"
-                width="28"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#FA7900"
-                height="28"
-                transform="translate(-7.941722319388745 25.795013895597954) rotate(117.3 14 14)"
-                width="28"
-                x="0"
-                y="0"
-              />
-            </svg>
-          </div>
-        </div>
+          Contacts
+        </p>
       </div>
       <div
-        class="send__select-recipient-wrapper__group-item__content"
+        class="send__select-recipient-wrapper__list"
       >
         <div
-          class="send__select-recipient-wrapper__group-item__title"
+          class="send__select-recipient-wrapper__recent-group-wrapper"
+        />
+        <div
+          class="box send__select-recipient-wrapper__group box--flex-direction-row"
+          data-testid="recipient-group"
         >
-          DNS Re...tion
+          <div
+            class="box send__select-recipient-wrapper__group-label box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              A
+            </p>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 28px; width: 28px; border-radius: 14px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
+                >
+                  <svg
+                    height="28"
+                    width="28"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#C81432"
+                      height="28"
+                      transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
+                      width="28"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#187AF2"
+                      height="28"
+                      transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
+                      width="28"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#FB183E"
+                      height="28"
+                      transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
+                      width="28"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+              data-testid="recipient"
+            >
+              <p
+                class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+              >
+                Address Book Account 1
+              </p>
+              <p
+                class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+              >
+                0xc42e...8813
+              </p>
+            </div>
+          </div>
         </div>
-        
       </div>
     </div>
   </div>
@@ -496,38 +535,38 @@ exports[`Add Recipient Component Send State should match snapshot 1`] = `
       >
         <div
           class="identicon"
-          style="height: 28px; width: 28px; border-radius: 14px;"
+          style="height: 32px; width: 32px; border-radius: 16px;"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(245, 143, 0);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(245, 143, 0);"
           >
             <svg
-              height="28"
-              width="28"
+              height="32"
+              width="32"
               x="0"
               y="0"
             >
               <rect
                 fill="#018E74"
-                height="28"
-                transform="translate(5.524091896954402 -4.749745570944453) rotate(358.4 14 14)"
-                width="28"
+                height="32"
+                transform="translate(6.3132478822336004 -5.428280652507946) rotate(358.4 16 16)"
+                width="32"
                 x="0"
                 y="0"
               />
               <rect
                 fill="#18CAF2"
-                height="28"
-                transform="translate(6.724913619395038 -10.621076649467508) rotate(414.8 14 14)"
-                width="28"
+                height="32"
+                transform="translate(7.685615565022901 -12.13837331367715) rotate(414.8 16 16)"
+                width="32"
                 x="0"
                 y="0"
               />
               <rect
                 fill="#C81474"
-                height="28"
-                transform="translate(-4.907795154940259 -21.945972385956175) rotate(322.3 14 14)"
-                width="28"
+                height="32"
+                transform="translate(-5.608908748503153 -25.081111298235626) rotate(322.3 16 16)"
+                width="32"
                 x="0"
                 y="0"
               />
@@ -541,20 +580,60 @@ exports[`Add Recipient Component Send State should match snapshot 1`] = `
         <div
           class="send__select-recipient-wrapper__group-item__title"
         >
-          A
-          c
-          c
-          o
-          u
-          n
-          t
-           
-          2
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            A
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            c
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            c
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            o
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            u
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            n
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            t
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+             
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            2
+          </p>
         </div>
         <div
           class="send__select-recipient-wrapper__group-item__subtitle"
         >
-          0xec1a...251b
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          >
+            0xec1a...251b
+          </p>
         </div>
       </div>
     </div>

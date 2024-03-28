@@ -10,7 +10,7 @@ import {
 } from '../../../../../ducks/send';
 import {
   getDomainError,
-  getDomainResolution,
+  getDomainResolutions,
   getDomainWarning,
 } from '../../../../../ducks/domains';
 import {
@@ -58,15 +58,16 @@ export const SendPageRecipient = () => {
   const recipient = useSelector(getRecipient);
   const userInput = useSelector(getRecipientUserInput) || '';
 
-  const domainResolution = useSelector(getDomainResolution);
+  const domainResolutions = useSelector(getDomainResolutions) || [];
   const domainError = useSelector(getDomainError);
   const domainWarning = useSelector(getDomainWarning);
 
   let addressBookEntryName = '';
+  const domainResolution = domainResolutions[0];
   const entry = useSelector((state) =>
-    getAddressBookEntry(state, domainResolution),
+    getAddressBookEntry(state, domainResolution?.resolvedAddress),
   );
-  if (domainResolution && entry?.name) {
+  if (domainResolution?.resolvedAddress && entry?.name) {
     addressBookEntryName = entry.name;
   }
 
@@ -85,7 +86,7 @@ export const SendPageRecipient = () => {
     );
   } else if (domainResolution && !recipient.error) {
     contents = renderExplicitAddress(
-      domainResolution,
+      domainResolution.resolvedAddress,
       addressBookEntryName || userInput,
       'ENS resolution',
       dispatch,

@@ -2260,9 +2260,9 @@ export function resetRecipientInput() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
+    await dispatch(resetDomainResolution());
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
   };
 }

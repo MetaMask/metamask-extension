@@ -159,6 +159,19 @@
         max-width: 100%;
         width: 100%;
       }
+
+      &__resolution-list {
+        background: var(--color-background-default);
+        box-sizing: border-box;
+        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+        border-radius: 6px;
+        position: absolute;
+        width: 309px;
+        z-index: 10;
+        bottom: 96px;
+        max-height: 96px;
+        overflow-y: auto;
+      }
     }
   }
 

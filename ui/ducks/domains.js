@@ -5,8 +5,12 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
-import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 import {
+  getChainIdsCaveat,
+  getLookupMatchersCaveat,
+} from '@metamask/snaps-rpc-methods';
+import {
+  getAddressBookEntry,
   getCurrentChainId,
   getNameLookupSnapsIds,
   getPermissionSubjects,
@@ -41,14 +45,12 @@ const ENS = 'ENS';
 
 const initialState = {
   stage: 'UNINITIALIZED',
-  resolution: null,
+  resolutions: null,
   error: null,
   warning: null,
   chainId: null,
   domainType: null,
   domainName: null,
-  // TODO: This should be resolvingSnaps in the future when we allow for conflict resolution
-  resolvingSnap: null,
 };
 
 export const domainInitialState = initialState;
@@ -66,18 +68,18 @@ const slice = createSlice({
     },
     lookupEnd: (state, action) => {
       // first clear out the previous state
-      state.resolution = null;
+      state.resolutions = null;
       state.error = null;
       state.warning = null;
       state.domainType = null;
       state.domainName = null;
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      state.resolvingSnap = null;
-      ///: END:ONLY_INCLUDE_IF
-      const { address, error, chainId, domainType, domainName, resolvingSnap } =
+      const { resolutions, error, chainId, domainType, domainName } =
         action.payload;
       state.domainType = domainType;
       if (state.domainType === ENS) {
+        // currently ENS resolutions will only ever have one element since we do not do fuzzy matching for ENS.
+        // error handling logic will need to be updated to accommodate multiple results in the future when the ENS snap is built.
+        const address = resolutions[0]?.resolvedAddress;
         if (error) {
           if (
             isValidDomainName(domainName) &&
@@ -99,7 +101,7 @@ const slice = createSlice({
           } else if (address === ZERO_X_ERROR_ADDRESS) {
             state.error = ENS_REGISTRATION_ERROR;
           } else {
-            state.resolution = address;
+            state.resolutions = resolutions;
           }
           if (isValidDomainName(address) && isConfusing(address)) {
             state.warning = CONFUSING_ENS_ERROR;
@@ -107,9 +109,8 @@ const slice = createSlice({
         } else {
           state.error = ENS_NO_ADDRESS_FOR_NAME;
         }
-      } else if (address) {
-        state.resolution = address;
-        state.resolvingSnap = resolvingSnap;
+      } else if (resolutions.length > 0) {
+        state.resolutions = resolutions;
       } else if (domainName.length > 0) {
         state.error = NO_RESOLUTION_FOR_DOMAIN;
       }
@@ -117,7 +118,7 @@ const slice = createSlice({
     enableDomainLookup: (state, action) => {
       state.stage = 'INITIALIZED';
       state.error = null;
-      state.resolution = null;
+      state.resolutions = null;
       state.warning = null;
       state.chainId = action.payload;
     },
@@ -125,22 +126,19 @@ const slice = createSlice({
       state.stage = 'NO_NETWORK_SUPPORT';
       state.error = null;
       state.warning = null;
-      state.resolution = null;
+      state.resolutions = null;
       state.chainId = null;
     },
     domainNotSupported: (state) => {
-      state.resolution = null;
+      state.resolutions = null;
       state.warning = null;
       state.error = DOMAIN_NOT_SUPPORTED_ON_NETWORK;
     },
     resetDomainResolution: (state) => {
-      state.resolution = null;
+      state.resolutions = null;
       state.warning = null;
       state.error = null;
       state.domainType = null;
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      state.resolvingSnap = null;
-      ///: END:ONLY_INCLUDE_IF
     },
   },
   extraReducers: (builder) => {
@@ -194,7 +192,24 @@ export async function fetchResolutions({ domain, chainId, state }) {
   const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
     const chainIdCaveat = getChainIdsCaveat(permission);
-    return chainIdCaveat?.includes(chainId) ?? true;
+    const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
+
+    if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
+      return false;
+    }
+
+    if (lookupMatchersCaveat) {
+      const { tlds, schemes } = lookupMatchersCaveat;
+      if (
+        tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
+        schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
+      ) {
+        return true;
+      }
+      return false;
+    }
+
+    return true;
   });
 
   // previous logic would switch request args based on the domain property to determine
@@ -230,7 +245,14 @@ export async function fetchResolutions({ domain, chainId, state }) {
         const resolutions = result.value.resolvedAddresses.map(
           (resolution) => ({
             ...resolution,
-            snapId: filteredNameLookupSnapsIds[idx],
+            resolvingSnap: getSnapMetadata(
+              state,
+              filteredNameLookupSnapsIds[idx],
+            )?.name,
+            addressBookEntryName: getAddressBookEntry(
+              state,
+              resolution.resolvedAddress,
+            )?.name,
           }),
         );
         return successfulResolutions.concat(resolutions);
@@ -263,10 +285,11 @@ export function lookupDomainName(domainName) {
     } else {
       await dispatch(lookupStart(trimmedDomainName));
       log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
-      let address;
+      let resolutions = [];
       let fetchedResolutions;
       let hasSnapResolution = false;
       let error;
+      let address;
       try {
         address = await web3Provider?.resolveName(trimmedDomainName);
       } catch (err) {
@@ -274,23 +297,25 @@ export function lookupDomainName(domainName) {
       }
       const chainId = getCurrentChainId(state);
       const chainIdInt = parseInt(chainId, 16);
-      if (!address) {
-        // TODO: allow for conflict resolution in future iterations, we don't have designs
-        // for this currently, so just displaying the first result.
+      if (address) {
+        resolutions = [
+          {
+            resolvedAddress: address,
+            protocol: 'Ethereum Name Service',
+            addressBookEntryName: getAddressBookEntry(state, address)?.name,
+          },
+        ];
+      } else {
         fetchedResolutions = await fetchResolutions({
           domain: trimmedDomainName,
           chainId: `eip155:${chainIdInt}`,
           state,
         });
-        const resolvedAddress = fetchedResolutions[0]?.resolvedAddress;
-        hasSnapResolution = Boolean(resolvedAddress);
+        hasSnapResolution = fetchedResolutions.length > 0;
         if (hasSnapResolution) {
-          address = resolvedAddress;
+          resolutions = fetchedResolutions;
         }
       }
-
-      const snapId = fetchedResolutions?.[0]?.snapId;
-      const snapName = getSnapMetadata(state, snapId)?.name;
 
       // Due to the asynchronous nature of looking up domains, we could reach this point
       // while a new lookup has started, if so we don't use the found result.
@@ -301,7 +326,7 @@ export function lookupDomainName(domainName) {
 
       await dispatch(
         lookupEnd({
-          address,
+          resolutions,
           error,
           chainId,
           network: chainIdInt,
@@ -310,19 +335,14 @@ export function lookupDomainName(domainName) {
               ? 'Other'
               : ENS,
           domainName: trimmedDomainName,
-          ...(hasSnapResolution ? { resolvingSnap: snapName } : {}),
         }),
       );
     }
   };
 }
 
-export function getDomainResolution(state) {
-  return state[name].resolution;
-}
-
-export function getResolvingSnap(state) {
-  return state[name].resolvingSnap;
+export function getDomainResolutions(state) {
+  return state[name].resolutions;
 }
 
 export function getDomainError(state) {
