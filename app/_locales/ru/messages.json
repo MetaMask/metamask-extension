@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Оповещения»"
   },

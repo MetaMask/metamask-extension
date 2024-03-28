@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "Coffre-fort AirGap"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
   },

@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
   },

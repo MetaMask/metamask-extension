@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
   },

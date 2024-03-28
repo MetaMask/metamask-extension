@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "AirGap-Tresor"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "Dies kann in „Einstellungen > Benachrichtigungen“ geändert werden."
   },

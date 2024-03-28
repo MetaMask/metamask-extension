@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "에어갭 볼트"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
