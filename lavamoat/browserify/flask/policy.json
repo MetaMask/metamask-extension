@@ -108,28 +108,28 @@
         "browserify>util": true
       }
     },
-    "@ethereumjs/common": {
-      "packages": {
-        "@ethereumjs/common>crc-32": true,
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "browserify>buffer": true,
-        "webpack>events": true
-      }
-    },
-    "@ethereumjs/common>crc-32": {
-      "globals": {
-        "DO_NOT_EXPORT_CRC": true,
-        "define": true
-      }
-    },
     "@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/common": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "browserify>buffer": true,
+        "webpack>events": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/common>crc-32": {
+      "globals": {
+        "DO_NOT_EXPORT_CRC": true,
+        "define": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/rlp": {
@@ -2487,8 +2487,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
@@ -3449,7 +3449,7 @@
     },
     "eth-lattice-keyring>@ethereumjs/tx": {
       "packages": {
-        "@ethereumjs/common": true,
+        "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/providers": true,
@@ -3513,7 +3513,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
         "@ethersproject/abi": true,
         "@metamask/ethjs>js-sha3": true,
         "@metamask/ppom-validator>elliptic": true,
@@ -3537,7 +3537,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": {
       "packages": {
-        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
         "webpack>events": true
@@ -3557,7 +3557,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
-        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx>@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "browserify>buffer": true,
         "webpack>events": true
