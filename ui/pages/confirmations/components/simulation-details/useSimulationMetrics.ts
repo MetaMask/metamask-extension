@@ -80,16 +80,6 @@ export function useSimulationMetrics({
 
   useIncompleteAssetEvent(balanceChanges, displayNamesByAddress);
 
-  // Skip metrics if simulation disabled or chain not supported.
-  if (
-    [
-      SimulationErrorCode.ChainNotSupported,
-      SimulationErrorCode.Disabled,
-    ].includes(simulationData?.error?.code as SimulationErrorCode)
-  ) {
-    return;
-  }
-
   const receivingAssets = balanceChanges.filter(
     (change) => !change.amount.isNegative,
   );
@@ -123,9 +113,23 @@ export function useSimulationMetrics({
 
   const params = { properties, sensitiveProperties };
 
+  const shouldSkipMetrics = [
+    SimulationErrorCode.ChainNotSupported,
+    SimulationErrorCode.Disabled,
+  ].includes(simulationData?.error?.code as SimulationErrorCode);
+
   useEffect(() => {
+    if (shouldSkipMetrics) {
+      return;
+    }
+
     updateTransactionEventFragment(params, transactionId);
-  }, [transactionId, JSON.stringify(params)]);
+  }, [
+    shouldSkipMetrics,
+    updateTransactionEventFragment,
+    transactionId,
+    JSON.stringify(params),
+  ]);
 }
 
 function useIncompleteAssetEvent(
