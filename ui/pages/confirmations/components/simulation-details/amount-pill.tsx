@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -15,6 +15,7 @@ import {
   DEFAULT_PRECISION_DECIMALS,
   MIN_DISPLAY_AMOUNT,
 } from '../../../../hooks/useCurrencyDisplay';
+import Tooltip from '../../../../components/ui/tooltip';
 import { Amount, AssetIdentifier } from './types';
 
 // Format an amount for display.
@@ -47,30 +48,49 @@ export const AmountPill: React.FC<{
     : TextColor.successDefault;
 
   const amountParts: string[] = [amount.isNegative ? '-' : '+'];
+  const tooltipParts: string[] = [];
 
+  // ERC721 amounts are always 1 are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
-    // ERC721 amounts are always 1 and don't need to be displayed.
-    amountParts.push(formatAmount(amount));
+    const formattedAmount = formatAmount(amount);
+    const fullPrecisionAmount = amount.numeric.abs().toString();
+
+    amountParts.push(formattedAmount);
+    tooltipParts.push(fullPrecisionAmount);
   }
 
   if (asset.tokenId) {
-    amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
+    const tokenIdPart = `#${hexToDecimal(asset.tokenId)}`;
+
+    amountParts.push(tokenIdPart);
+    tooltipParts.push(tokenIdPart);
   }
 
   return (
-    <Text
+    <Box
+      data-testid="simulation-details-amount-pill"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
       backgroundColor={backgroundColor}
-      color={color}
+      alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
       style={{
         padding: '0px 8px',
+        flexShrink: 1,
+        flexBasis: 'auto',
+        minWidth: 0,
       }}
-      variant={TextVariant.bodyMd}
     >
-      {amountParts.join(' ')}
-    </Text>
+      <Tooltip
+        position="bottom"
+        title={tooltipParts.join(' ')}
+        wrapperStyle={{ minWidth: 0 }}
+        interactive
+      >
+        <Text ellipsis variant={TextVariant.bodyMd} color={color}>
+          {amountParts.join(' ')}
+        </Text>
+      </Tooltip>
+    </Box>
   );
 };
