@@ -3,6 +3,12 @@ import { Numeric } from '../../../../../shared/modules/Numeric';
 
 const MAX_DECIMALS_TOKEN_SECONDARY = 6;
 
+const getNumDigitsAfterDecimal = (value: string) => {
+  const digitsAfterDecimal = String(value).split('.')[1] || '';
+
+  return digitsAfterDecimal.length;
+};
+
 /**
  * A hook that creates a function which processes a new decimal value and returns the new fiat and token decimal values
  *
