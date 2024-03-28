@@ -106,6 +106,8 @@ export default class MMIController extends EventEmitter {
 
   private updateTransactionHash: (txId: string, txHash: string) => void;
 
+  private setChannelId: (channelId: string) => void;
+
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
     // TODO: Replace `any` with type
@@ -147,6 +149,7 @@ export default class MMIController extends EventEmitter {
     this.extension = opts.extension;
 
     this.updateTransactionHash = opts.updateTransactionHash;
+    this.setChannelId = opts.setChannelId;
 
     this.trackTransactionEvents = opts.trackTransactionEvents;
     this.txStateManager = {
@@ -183,6 +186,13 @@ export default class MMIController extends EventEmitter {
       'eth_signTypedData:signed',
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'v4');
+      },
+    );
+
+    this.transactionUpdateController.on(
+      'handshake',
+      async ({ channelId }: { channelId: string }) => {
+        this.setChannelId(channelId);
       },
     );
   } // End of constructor

@@ -58,8 +58,7 @@ import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedAddress } from '../../../store/actions';
-
-const GK8_DISPLAY_NAME = 'gk8';
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -90,6 +89,7 @@ const CustodyPage = () => {
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const [accounts, setAccounts] = useState();
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const address = useSelector(getSelectedAddress);
@@ -161,15 +161,13 @@ const CustodyPage = () => {
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
-        // open confirm Connect Custodian modal except for gk8
-        if (
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
-          GK8_DISPLAY_NAME
-        ) {
+        if (custodianByDisplayName.isManualTokenInputSupported) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          setIsConfirmConnectCustodianModalVisible(true);
+          custodianByDisplayName.isQRCodeSupported
+            ? setShowQRCodeModal(true)
+            : setIsConfirmConnectCustodianModalVisible(true);
         }
 
         trackEvent({
@@ -735,6 +733,15 @@ const CustodyPage = () => {
           custodianURL={
             matchedCustodian?.onboardingUrl || matchedCustodian?.website
           }
+        />
+      )}
+
+      {showQRCodeModal && (
+        <QRCodeModal
+          onClose={() => {
+            setShowQRCodeModal(false);
+          }}
+          custodianName={selectedCustodianDisplayName}
         />
       )}
     </Box>
