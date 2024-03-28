@@ -263,24 +263,46 @@ async function start() {
 }
 
 async function queryCurrentActiveTab(windowType) {
-  // At the time of writing we only have the `activeTab` permission which means
-  // that this query will only succeed in the popup context (i.e. after a "browserAction")
-  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
-    return {};
-  }
 
-  const tabs = await browser.tabs
+
+  const emptyActiveTab = {};
+  let tabs = await browser.tabs
     .query({ active: true, currentWindow: true })
     .catch((e) => {
       checkForLastErrorAndLog() || log.error(e);
     });
+    if (process.env.IN_TEST) {
+    const URL_PARAMS = new URLSearchParams(window.location.search);
+    if (URL_PARAMS.get('activeTabOrigin')) {
+      tabs = [
+        {
+          id: URL_PARAMS.get('id') || Date.now(),
+          title: URL_PARAMS.get('title') || 'https://app.uniswap.org/',
+          url: URL_PARAMS.get('activeTabOrigin'),
+        },
+      ];
+    } else {
+      return emptyActiveTab;
+    }
+  }
+  // At the time of writing we only have the `activeTab` permission which means
+  // that this query will only succeed in the popup context (i.e. after a "browserAction")
+  else if (windowType === ENVIRONMENT_TYPE_POPUP) {
+    tabs = await browser.tabs
+      .query({ active: true, currentWindow: true })
+      .catch((e) => {
+        checkForLastErrorAndLog() || log.error(e);
+      });
+  } else {
+    return emptyActiveTab;
+  }
 
   const [activeTab] = tabs;
   const { id, title, url } = activeTab;
   const { origin, protocol } = url ? new URL(url) : {};
 
   if (!origin || origin === 'null') {
-    return {};
+    return emptyActiveTab;
   }
 
   return { id, title, origin, protocol, url };
