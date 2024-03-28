@@ -1,4 +1,5 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import AuthenticationController, {
   AuthenticationControllerMessenger,
   AuthenticationControllerState,
@@ -232,7 +233,7 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
 });
 
 function createAuthenticationMessenger() {
-  const messenger = new ControllerMessenger<any, any>();
+  const messenger = new ControllerMessenger<HandleSnapRequest, never>();
   return messenger.getRestricted({
     name: 'AuthenticationController',
     allowedActions: [`SnapController:handleRequest`],
@@ -246,6 +247,7 @@ function createMockAuthenticationMessenger() {
   const mockSnapSignMessage = jest
     .fn()
     .mockResolvedValue('MOCK_SIGNED_MESSAGE');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockCall.mockImplementation(((actionType: any, params: any) => {
     if (
       actionType === 'SnapController:handleRequest' &&
@@ -262,6 +264,7 @@ function createMockAuthenticationMessenger() {
     }
 
     return '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any);
 
   return { messenger, mockSnapGetPublicKey, mockSnapSignMessage };
