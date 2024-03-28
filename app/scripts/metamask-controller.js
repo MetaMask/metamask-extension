@@ -870,7 +870,6 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
-        interval: 10000,
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
         selectedAddress: this.accountsController.getSelectedAccount().address,
@@ -1643,6 +1642,16 @@ export default class MetamaskController extends EventEmitter {
             }
             this.currencyRatePollingToken =
               this.currencyRateController.startPollingByNetworkClientId(
+                this.networkController.state.selectedNetworkClientId,
+              );
+
+            if (this.tokenRatesPollingToken) {
+              this.tokenRatesController.stopPollingByPollingToken(
+                this.tokenRatesPollingToken,
+              );
+            }
+            this.tokenRatesPollingToken =
+              this.tokenRatesController.startPollingByNetworkClientId(
                 this.networkController.state.selectedNetworkClientId,
               );
           }
