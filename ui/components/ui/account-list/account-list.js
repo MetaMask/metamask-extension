@@ -38,13 +38,6 @@ const AccountList = ({
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [selectedAccounts]);
 
-  const shortenAddress = (address, chars = 5) => {
-    if (!address) {
-      return '';
-    }
-    return `${address.slice(0, chars + 2)}...${address.slice(-chars)}`;
-  };
-
   const Header = () => {
     let checked = false;
     let isIndeterminate = false;
@@ -111,10 +104,10 @@ const AccountList = ({
       <div className="choose-account-list__wrapper">
         <Box
           className="choose-account-list__list"
-          style={{ overflowX: 'clip' }}
+          style={{ overflowX: 'hidden' }}
         >
           {accounts.map((account, index) => {
-            const { address, label, balance } = account;
+            const { address, addressLabel, balance } = account;
             const isSelectedAccount = selectedAccounts.has(address);
             return (
               <Box
@@ -135,7 +128,12 @@ const AccountList = ({
                   width={BlockSize.Full}
                   alignItems={AlignItems.center}
                 >
-                  <Checkbox isChecked={isSelectedAccount} />
+                  <Checkbox
+                    isChecked={isSelectedAccount}
+                    iconProps={{
+                      style: { cursor: 'pointer' },
+                    }}
+                  />
                   <Box marginLeft={2}>
                     <Identicon diameter={34} address={address} />
                   </Box>
@@ -143,7 +141,10 @@ const AccountList = ({
                     display={Display.Flex}
                     justifyContent={JustifyContent.spaceBetween}
                     width={BlockSize.Full}
-                    marginLeft={4}
+                    paddingLeft={3}
+                    style={{
+                      minWidth: 0,
+                    }}
                   >
                     <Box
                       display={Display.Flex}
@@ -152,31 +153,34 @@ const AccountList = ({
                     >
                       <Text
                         variant={TextVariant.bodyLgMedium}
-                        style={{ maxWidth: '130px' }}
+                        style={{
+                          textWrap: 'nowrap',
+                        }}
                         ellipsis
                       >
-                        {label}
+                        {addressLabel}
                       </Text>
-                      <Text
-                        as="span"
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textAlternative}
-                      >
-                        {shortenAddress(address)}
-                      </Text>
-                    </Box>
-                    <Box display={Display.Flex}>
-                      <UserPreferencedCurrencyDisplay
-                        type={PRIMARY}
-                        value={balance}
-                        style={{
-                          color: 'var(--color-text-alternative)',
-                          flexWrap: 'nowrap',
-                        }}
-                        suffix={nativeCurrency}
-                        numberOfDecimals={2}
-                        ethNumberOfDecimals={5}
-                      />
+                      <Box display={Display.Flex}>
+                        <UserPreferencedCurrencyDisplay
+                          type={PRIMARY}
+                          value={balance}
+                          style={{
+                            color: 'var(--color-text-alternative)',
+                            flexWrap: 'nowrap',
+                          }}
+                          suffix={nativeCurrency}
+                          numberOfDecimals={2}
+                          ethNumberOfDecimals={5}
+                          textProps={{
+                            color: TextColor.textAlternative,
+                            variant: TextVariant.bodyMd,
+                          }}
+                          suffixProps={{
+                            color: TextColor.textAlternative,
+                            variant: TextVariant.bodyMd,
+                          }}
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 </Box>

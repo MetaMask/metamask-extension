@@ -281,8 +281,6 @@ export default class PermissionConnect extends Component {
     return redirecting ? null : (
       <Box
         style={{
-          marginBottom:
-            targetSubjectMetadata.subjectType === SubjectType.Snap && '14px',
           boxShadow:
             targetSubjectMetadata.subjectType === SubjectType.Snap &&
             'var(--shadow-size-lg) var(--color-shadow-default)',
