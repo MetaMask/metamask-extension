@@ -2239,7 +2239,6 @@ export default class MetamaskController extends EventEmitter {
               this.networkController.state.selectedNetworkClientId,
             ));
     }
-
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
