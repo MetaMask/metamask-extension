@@ -10,7 +10,6 @@ export const ConfirmInfoRowTypedSignDataV1 = ({
 }: {
   data?: TypedSignDataV1Type;
 }) => {
-export const ConfirmInfoRowTypedSignDataV1 = ({ data }: any) => {
   if (!data) {
     return null;
   }
