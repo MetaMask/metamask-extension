@@ -49,6 +49,7 @@ const initialState = {
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
+    featureNotificationsEnabled: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,

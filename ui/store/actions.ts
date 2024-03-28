@@ -3001,6 +3001,10 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
+export function setFeatureNotificationsEnabled(value: boolean) {
+  return setPreference('featureNotificationsEnabled', value);
+}
+
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }

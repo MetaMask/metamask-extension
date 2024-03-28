@@ -3091,6 +3091,14 @@
   "notificationsEmptyText": {
     "message": "This is where you can find notifications from your installed snaps."
   },
+  "notificationsFeatureToggle": {
+    "message": "Enable Wallet Notifications",
+    "description": "Experimental feature title"
+  },
+  "notificationsFeatureToggleDescription": {
+    "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
+    "description": "Description of the experimental notifications feature"
+  },
   "notificationsHeader": {
     "message": "Notifications"
   },

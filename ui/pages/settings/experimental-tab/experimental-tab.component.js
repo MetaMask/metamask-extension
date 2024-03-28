@@ -54,6 +54,8 @@ export default class ExperimentalTab extends PureComponent {
     setUseRequestQueue: PropTypes.func,
     petnamesEnabled: PropTypes.bool.isRequired,
     setPetnamesEnabled: PropTypes.func.isRequired,
+    featureNotificationsEnabled: PropTypes.bool,
+    setFeatureNotificationsEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -245,10 +247,40 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderNotificationsToggle() {
+    const { t } = this.context;
+    const { featureNotificationsEnabled, setFeatureNotificationsEnabled } =
+      this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('notificationsFeatureToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('notificationsFeatureToggleDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={featureNotificationsEnabled}
+            onToggle={(value) => setFeatureNotificationsEnabled(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="toggle-notifications"
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
+        {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
