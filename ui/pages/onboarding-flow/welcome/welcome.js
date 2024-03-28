@@ -58,6 +58,9 @@ export default function OnboardingWelcome() {
     if (currentKeyring) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
         history.replace(ONBOARDING_COMPLETION_ROUTE);
+      }
+      if (firstTimeFlowType === FirstTimeFlowType.restore) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -101,7 +104,7 @@ export default function OnboardingWelcome() {
   ]);
 
   const onImportClick = async () => {
-    dispatch(setFirstTimeFlowType('import'));
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletImportStarted,

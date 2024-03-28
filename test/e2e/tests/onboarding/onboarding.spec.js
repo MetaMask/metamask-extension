@@ -18,8 +18,12 @@ const {
   onboardingRevealAndConfirmSRP,
   onboardingCompleteWalletCreation,
   regularDelayMs,
+  unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const {
+  FirstTimeFlowType,
+} = require('../../../../shared/constants/onboarding');
 
 describe('MetaMask onboarding @no-mmi', function () {
   const wrongSeedPhrase =
@@ -440,6 +444,59 @@ describe('MetaMask onboarding @no-mmi', function () {
             `${mockedEndpoints[i]} should make requests after onboarding`,
           );
         }
+      },
+    );
+  });
+
+  it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
+    // We don't use onboarding:true here because we want there to be a vault,
+    // simulating what will happen when a user eventually restores their vault
+    // during a state persistence failure. Instead, we set the
+    // firstTimeFlowType to 'restore' and completedOnboarding to false. as well
+    // as some other first time state options to get us into an onboarding
+    // state similar to a new state tree.
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withOnboardingController({
+            completedOnboarding: false,
+            firstTimeFlowType: FirstTimeFlowType.restore,
+            seedPhraseBackedUp: null,
+          })
+          .withMetaMetricsController({
+            participateInMetaMetrics: null,
+            metaMetricsId: null,
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await unlockWallet(driver);
+
+        // First screen we should be on is MetaMetrics
+        assert.equal(
+          await driver.isElementPresent({
+            text: 'Help us improve MetaMask',
+            tag: 'h2',
+          }),
+          true,
+          'First screen should be MetaMetrics',
+        );
+
+        // select no thanks
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+        // Next should be Secure your wallet screen
+        assert.equal(
+          await driver.isElementPresent({
+            text: 'Secure your wallet',
+            tag: 'h2',
+          }),
+          true,
+        );
       },
     );
   });

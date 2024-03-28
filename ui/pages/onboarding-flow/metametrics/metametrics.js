@@ -13,8 +13,8 @@ import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
-  getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
+  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
 
 import {
@@ -38,7 +38,7 @@ export default function OnboardingMetametrics() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
+  const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const trackEvent = useContext(MetaMetricsContext);
