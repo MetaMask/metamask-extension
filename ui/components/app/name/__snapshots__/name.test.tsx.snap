@@ -10,24 +10,11 @@ exports[`Name renders address with no saved name 1`] = `
         class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/question.svg');"
       />
-      <div
-        style="min-width: 0;"
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
       >
-        <div
-          aria-describedby="tippy-tooltip-1"
-          class=""
-          data-original-title="0xc0ffee254729296a45a3885639ac7e10f9d54977"
-          data-tooltipped=""
-          style="display: inline;"
-          tabindex="0"
-        >
-          <p
-            class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-          >
-            0xC0ffe...54977
-          </p>
-        </div>
-      </div>
+        0xC0ffe...54977
+      </p>
     </div>
   </div>
 </div>
@@ -83,24 +70,11 @@ exports[`Name renders address with saved name 1`] = `
           </div>
         </div>
       </div>
-      <div
-        style="min-width: 0;"
+      <p
+        class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
       >
-        <div
-          aria-describedby="tippy-tooltip-2"
-          class=""
-          data-original-title="TestName"
-          data-tooltipped=""
-          style="display: inline;"
-          tabindex="0"
-        >
-          <p
-            class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
-          >
-            TestName
-          </p>
-        </div>
-      </div>
+        TestName
+      </p>
     </div>
   </div>
 </div>

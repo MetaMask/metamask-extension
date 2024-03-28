@@ -12,7 +12,6 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import Identicon from '../../ui/identicon';
-import Tooltip from '../../ui/tooltip';
 import NameDetails from './name-details/name-details';
 
 export type NameProps = {
@@ -33,11 +32,6 @@ export type NameProps = {
    * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
    */
   preferContractSymbol?: boolean;
-
-  /**
-   * Optional style object to apply to the component.
-   */
-  style?: React.CSSProperties;
 };
 
 function formatValue(value: string, type: NameType): string {
@@ -115,22 +109,15 @@ export default function Name({
             size={IconSize.Md}
           />
         )}
-        <Tooltip
-          position="bottom"
-          title={hasDisplayName ? name : value}
-          wrapperStyle={{ minWidth: 0 }}
-          interactive
-        >
-          {hasDisplayName ? (
-            <Text className="name__name" variant={TextVariant.bodyMd}>
-              {name}
-            </Text>
-          ) : (
-            <Text className="name__value" variant={TextVariant.bodyMd}>
-              {formattedValue}
-            </Text>
-          )}
-        </Tooltip>
+        {hasDisplayName ? (
+          <Text className="name__name" variant={TextVariant.bodyMd}>
+            {name}
+          </Text>
+        ) : (
+          <Text className="name__value" variant={TextVariant.bodyMd}>
+            {formattedValue}
+          </Text>
+        )}
       </div>
     </div>
   );

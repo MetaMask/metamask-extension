@@ -48,15 +48,24 @@ export const AmountPill: React.FC<{
     : TextColor.successDefault;
 
   const amountParts: string[] = [amount.isNegative ? '-' : '+'];
+  const tooltipParts: string[] = [];
 
+  // ERC721 amounts are always 1 are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
-    // ERC721 amounts are always 1 and don't need to be displayed.
-    amountParts.push(formatAmount(amount));
+    const formattedAmount = formatAmount(amount);
+    const fullPrecisionAmount = amount.numeric.abs().toString();
+
+    amountParts.push(formattedAmount);
+    tooltipParts.push(fullPrecisionAmount);
   }
 
   if (asset.tokenId) {
-    amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
+    const tokenIdPart = `#${hexToDecimal(asset.tokenId)}`;
+
+    amountParts.push(tokenIdPart);
+    tooltipParts.push(tokenIdPart);
   }
+
   return (
     <Box
       data-testid="simulation-details-amount-pill"
@@ -74,7 +83,7 @@ export const AmountPill: React.FC<{
     >
       <Tooltip
         position="bottom"
-        title={amountParts.join(' ')}
+        title={tooltipParts.join(' ')}
         wrapperStyle={{ minWidth: 0 }}
         interactive
       >
