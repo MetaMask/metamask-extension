@@ -71,7 +71,7 @@ const LedgerInfo: React.FC = () => {
             if (environmentTypeIsFullScreen) {
               window.location.reload();
             } else {
-              (global.platform as any).openExtensionInBrowser(null, null, true);
+              global.platform.openExtensionInBrowser(null, null, true);
             }
           }}
         >
@@ -100,7 +100,7 @@ const LedgerInfo: React.FC = () => {
                   ),
                 );
               } else {
-                (global.platform as any).openExtensionInBrowser(
+                global.platform.openExtensionInBrowser(
                   null,
                   null,
                   true,
