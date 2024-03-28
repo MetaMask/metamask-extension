@@ -4900,7 +4900,7 @@ __metadata:
   resolution: "@metamask/network-controller@npm:18.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.2"
+    "@metamask/controller-utils": "npm:^9.0.1"
     "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
     "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
     "@metamask/eth-json-rpc-provider": "npm:^3.0.1"
@@ -4944,7 +4944,7 @@ __metadata:
   resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch::version=18.0.1&hash=be87e4"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.2"
+    "@metamask/controller-utils": "npm:^9.0.1"
     "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
     "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
     "@metamask/eth-json-rpc-provider": "npm:^3.0.1"
