@@ -258,7 +258,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: { port, chainId, ganacheOptions2 },
+          concurrent: [{ port, chainId, ganacheOptions2 }],
         },
         title: this.test.fullTitle(),
       },
