@@ -34,14 +34,17 @@ const appStateController = {
   },
 };
 
-const handler = createRPCMethodTrackingMiddleware({
-  trackEvent,
-  getMetricsState,
-  rateLimitTimeout: 1000,
-  rateLimitSamplePercent: 0.1,
-  globalRateLimitMaxAmount: 0,
-  appStateController,
-});
+const createHandler = (opts) =>
+  createRPCMethodTrackingMiddleware({
+    trackEvent,
+    getMetricsState,
+    rateLimitTimeout: 1000,
+    rateLimitSamplePercent: 0.1,
+    globalRateLimitTimeout: 0,
+    globalRateLimitMaxAmount: 0,
+    appStateController,
+    ...opts,
+  });
 
 function getNext(timeout = 500) {
   let deferred;
@@ -100,6 +103,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { executeMiddlewareStack, next } = getNext();
+      const handler = createHandler();
       handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).not.toHaveBeenCalled();
@@ -121,6 +125,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { executeMiddlewareStack, next } = getNext();
+      const handler = createHandler();
       handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).not.toHaveBeenCalled();
@@ -147,6 +152,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next } = getNext();
+      const handler = createHandler();
       await handler(req, res, next);
       expect(trackEvent).toHaveBeenCalledTimes(1);
       expect(trackEvent.mock.calls[0][0]).toMatchObject({
@@ -180,6 +186,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next } = getNext();
+      const handler = createHandler();
       await handler(req, res, next);
       expect(trackEvent).toHaveBeenCalledTimes(1);
       /**
@@ -213,6 +220,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
@@ -236,6 +244,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: { code: errorCodes.provider.userRejectedRequest },
       };
       const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
@@ -257,6 +266,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       const res = {};
       const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
@@ -278,6 +288,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
       handler(req, res, next);
       expect(trackEvent).not.toHaveBeenCalled();
       executeMiddlewareStack();
@@ -299,8 +310,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
             error: null,
           };
 
-          let callCount = 0;
+          const handler = createHandler();
 
+          let callCount = 0;
           while (callCount < 3) {
             callCount += 1;
             const { next, executeMiddlewareStack } = getNext();
@@ -348,8 +360,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
             error: null,
           };
 
-          let callCount = 0;
+          const handler = createHandler();
 
+          let callCount = 0;
           while (callCount < 5) {
             callCount += 1;
             const { next, executeMiddlewareStack } = getNext();
@@ -367,45 +380,40 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     describe('events rated globally rate limited', () => {
-      beforeEach(() => {
-        jest
-          .spyOn(Math, 'random')
-          .mockReturnValueOnce(0) // not rate limited
-          .mockReturnValueOnce(0.09) // not rate limited
-          .mockReturnValueOnce(0.1) // rate limited
-          .mockReturnValueOnce(0.11) // rate limited
-          .mockReturnValueOnce(1); // rate limited
-      });
-      afterEach(() => {
-        jest.spyOn(Math, 'random').mockRestore();
-      });
-      it( `should only track events if the global rate limit has not been hit`,
-        async (method, eventsTrackedPerRequest) => {
-          const req = {
-            method,
-            origin: 'some.dapp',
-          };
+      it('should only track events if the global rate limit has not been hit', async () => {
+        const req = {
+          method: 'some_method_rate_limited_by_sample',
+          origin: 'some.dapp',
+        };
 
-          const res = {
-            error: null,
-          };
+        const res = {
+          error: null,
+        };
 
-          let callCount = 0;
+        const handler = createHandler({
+          rateLimitSamplePercent: 1, // track every event for this spec
+          globalRateLimitTimeout: 1000,
+          globalRateLimitMaxAmount: 3,
+        });
 
-          while (callCount < 5) {
-            callCount += 1;
-            const { next, executeMiddlewareStack } = getNext();
-            handler(req, res, next);
-            await executeMiddlewareStack();
+        let callCount = 0;
+        while (callCount < 4) {
+          callCount += 1;
+          const { next, executeMiddlewareStack } = getNext();
+          handler(req, res, next);
+          await executeMiddlewareStack();
+          if (callCount !== 4) {
+            await waitForSeconds(0.6);
           }
+        }
 
-          const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
-          expect(trackEvent).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEvent.mock.calls.forEach((call) => {
-            expect(call[0].properties.method).toBe(method);
-          });
-        },
-      );
+        expect(trackEvent).toHaveBeenCalledTimes(3);
+        trackEvent.mock.calls.forEach((call) => {
+          expect(call[0].properties.method).toBe(
+            'some_method_rate_limited_by_sample',
+          );
+        });
+      });
     });
 
     it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
@@ -417,6 +425,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
 
       detectSIWE.mockImplementation(() => {
         return { isSIWEMessage: true };
@@ -449,6 +458,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           error: mockError,
         };
         const { next, executeMiddlewareStack } = getNext();
+        const handler = createHandler();
 
         await handler(req, res, next);
         await executeMiddlewareStack();
@@ -477,6 +487,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           error: null,
         };
         const { next } = getNext();
+        const handler = createHandler();
 
         await handler(req, res, next);
 

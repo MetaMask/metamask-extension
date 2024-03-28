@@ -179,7 +179,7 @@ export default function createRPCMethodTrackingMiddleware({
     }
 
     const isGlobalRateLimited =
-      globalRateLimitMaxAmount &&
+      globalRateLimitMaxAmount > 0 &&
       globalRateLimitCount >= globalRateLimitMaxAmount;
 
     // Get the participateInMetaMetrics state to determine if we should track
