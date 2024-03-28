@@ -30,6 +30,7 @@ export const ENTRYPOINT_PATTERNS = [
   'app/scripts/sentry-install',
   'app/scripts/ui',
   'development/build/index',
+  '**/*.spec',
   '**/*.stories',
   '**/*.test',
 ];

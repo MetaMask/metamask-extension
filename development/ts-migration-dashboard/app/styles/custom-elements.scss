@@ -10,6 +10,27 @@ Disabling Stylelint's hex color rule here because the TypeScript migration dashb
   --blue: hsl(246deg 97% 55%);
   --light-cyan: hsl(178deg 100% 85%);
   --cyan: hsl(178deg 100% 42%);
+  --royal-blue: hsl(246deg 68.99% 61.7%);
+}
+
+.search {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background-color: var(--blue-gray-100);
+  padding: 0.5rem;
+  z-index: 10;
+
+  &__input {
+    font-size: 1rem;
+    width: 20rem;
+    display: block;
+  }
+
+  &__result-count {
+    margin-top: 1rem;
+    font-size: 0.9em;
+  }
 }
 
 .page-header {
@@ -121,12 +142,17 @@ Disabling Stylelint's hex color rule here because the TypeScript migration dashb
     height: 1.5rem;
   }
 
-  &--has-been-converted {
+  &--was-originally-in-ts {
     background-color: var(--green);
+    border: 3px solid var(--royal-blue);
   }
 
-  &--to-be-converted {
+  &--should-be-converted-to-ts {
     background-color: var(--blue-gray-100);
+  }
+
+  &--has-been-converted-to-ts {
+    background-color: var(--green);
   }
 
   &--test,
@@ -138,6 +164,11 @@ Disabling Stylelint's hex color rule here because the TypeScript migration dashb
     border-color: var(--cyan);
     background-color: var(--light-cyan);
     border-width: 2px;
+  }
+
+  &--search-highlighted {
+    border-color: rgba(0, 0, 0.6) !important;
+    box-shadow: 0 0 5px 6px rgb(255 34 222 / 40%);
   }
 }
 

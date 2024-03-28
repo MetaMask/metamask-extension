@@ -9,40 +9,60 @@ import {
 } from './constants';
 
 /**
+ * The format that a file is in.
+ */
+enum Format {
+  JavaScript = 'javascript',
+  TypeScript = 'typescript',
+}
+
+/**
  * Represents a module that has been imported somewhere in the codebase, whether
  * it is local to the project or an NPM package.
  *
+ * @property currentFormat - Whether the module is currently written in
+ * JavaScript or TypeScript.
+ * @property dependencies - The modules which import this module.
+ * @property dependents - The modules which are imported by this module.
  * @property id - If an NPM package, then the name of the package; otherwise the
  * path to a file within the project.
- * @property dependents - The modules which are imported by this module.
+ * @property isExternal - Whether the module refers to a NPM package.
  * @property level - How many modules it takes to import this module (from the
  * root of the dependency tree).
- * @property isExternal - Whether the module refers to a NPM package.
- * @property hasBeenConverted - Whether the module was one of the files we
- * wanted to convert to TypeScript and has been converted.
+ * @property originalFormat - Whether the module was originally written in
+ * JavaScript or TypeScript.
  */
 type Module = {
-  id: string;
-  dependents: Module[];
+  currentFormat: Format;
   dependencies: Module[];
-  level: number;
+  dependents: Module[];
+  id: string;
   isExternal: boolean;
-  hasBeenConverted: boolean;
+  level: number;
+  originalFormat: Format;
 };
 
 /**
  * Represents a module that belongs to a certain level within the dependency
  * graph, displayed as a box in the UI.
  *
+ * @property hasBeenConvertedToTypeScript - Whether the module was originally
+ * written in JavaScript and is now written in TypeScript.
+ * @property dependencyIds - The IDs of modules which import this module.
+ * @property dependents - The IDs of modules which are imported by this module.
  * @property id - The id of the module.
- * @property hasBeenConverted - Whether or not the module has been converted to
- * TypeScript.
+ * @property shouldBeConvertedToTypeScript - Whether the module was originally
+ * written in JavaScript and has not been converted to TypeScript.
+ * @property wasOriginallyInTypeScript - Whether the module was originally
+ * written in TypeScript.
  */
 export type ModulePartitionChild = {
-  id: string;
-  hasBeenConverted: boolean;
-  dependentIds: string[];
   dependencyIds: string[];
+  dependentIds: string[];
+  hasBeenConvertedToTypeScript: boolean;
+  id: string;
+  shouldBeConvertedToTypeScript: boolean;
+  wasOriginallyInTypeScript: boolean;
 };
 
 /**
@@ -78,11 +98,21 @@ export default async function buildModulePartitions(): Promise<
     await Promise.all(
       ENTRYPOINT_PATTERNS.map((entrypointPattern) => {
         return fg(
-          path.resolve(ROOT_DIRECTORY_PATH, `${entrypointPattern}.{js,ts,tsx}`),
+          path.resolve(
+            ROOT_DIRECTORY_PATH,
+            `${entrypointPattern}.{js,jsx,ts,tsx}`,
+          ),
         );
       }),
     )
-  ).flat();
+  )
+    .flat()
+    .filter((filePath) => {
+      return !/^(?:\.storybook|node_modules)\//u.test(
+        path.relative(ROOT_DIRECTORY_PATH, filePath),
+      );
+    })
+    .sort();
 
   const entryFilePaths = filterFilePaths(
     possibleEntryFilePaths.map((possibleEntrypoint) =>
@@ -91,9 +121,14 @@ export default async function buildModulePartitions(): Promise<
     allowedFilePaths,
   );
 
+  const nonExistent: string[] = [];
   const result = await madge(entryFilePaths, {
     baseDir: ROOT_DIRECTORY_PATH,
     tsConfig: path.join(ROOT_DIRECTORY_PATH, 'tsconfig.json'),
+    fileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+    detectiveOptions: {
+      nonExistent,
+    },
   });
   const dependenciesByFilePath = result.obj();
   const modulesById = buildModulesWithLevels(
@@ -126,7 +161,7 @@ function readFilesToConvert(): string[] {
  * Filters the given set of file paths according to the given allow list. As the
  * entry file paths could refer to TypeScript files, and the allow list is
  * guaranteed to be JavaScript files, the entry file paths are normalized to end
- * in `.js` before being filtered.
+ * in `.js` or `.jsx` before being filtered.
  *
  * @param filePaths - A set of file paths.
  * @param allowedFilePaths - A set of allowed file paths.
@@ -134,7 +169,9 @@ function readFilesToConvert(): string[] {
  */
 function filterFilePaths(filePaths: string[], allowedFilePaths: string[]) {
   return filePaths.filter((filePath) =>
-    allowedFilePaths.includes(filePath.replace(/\.tsx?$/u, '.js')),
+    allowedFilePaths.includes(
+      filePath.replace(/\.ts$/u, '.js').replace(/\.tsx$/u, '.jsx'),
+    ),
   );
 }
 
@@ -209,14 +246,7 @@ function buildModulesWithLevels(
   // and we don't need to follow it.
 
   let modulesToFill: Module[] = entryModuleIds.map((moduleId) => {
-    return {
-      id: moduleId,
-      dependents: [],
-      dependencies: [],
-      level: 0,
-      isExternal: false,
-      hasBeenConverted: /\.tsx?$/u.test(moduleId),
-    };
+    return buildModule(moduleId, allowedFilePaths);
   });
   const modulesById: Record<string, Module> = {};
 
@@ -258,12 +288,11 @@ function buildModulesWithLevels(
       }
 
       // Skip files that weren't on the original list of JavaScript files to
-      // convert, as we don't want them to show up on the status dashboard
+      // convert, as we don't want them to show up on the dashboard
       if (
         !npmPackageMatch &&
-        !allowedFilePaths.includes(
-          dependencyModuleId.replace(/\.tsx?$/u, '.js'),
-        )
+        /\.jsx$/u.test(dependencyModuleId) &&
+        !allowedFilePaths.includes(dependencyModuleId)
       ) {
         continue;
       }
@@ -271,14 +300,15 @@ function buildModulesWithLevels(
       let existingDependencyModule = modulesById[dependencyModuleId];
 
       if (existingDependencyModule === undefined) {
-        existingDependencyModule = {
-          id: dependencyModuleId,
-          dependents: [currentModule],
-          dependencies: [],
-          level: currentModule.level + 1,
-          isExternal: Boolean(npmPackageMatch),
-          hasBeenConverted: /\.tsx?$/u.test(dependencyModuleId),
-        };
+        existingDependencyModule = buildModule(
+          dependencyModuleId,
+          allowedFilePaths,
+          {
+            dependents: [currentModule],
+            level: currentModule.level + 1,
+            isExternal: Boolean(npmPackageMatch),
+          },
+        );
         dependencyModulesToFill.push(existingDependencyModule);
       } else if (currentModule.level + 1 > existingDependencyModule.level) {
         existingDependencyModule.level = currentModule.level + 1;
@@ -319,6 +349,41 @@ function buildModulesWithLevels(
   }
 
   return modulesById;
+}
+
+/**
+ * Constructs a module object for insertion into the tree.
+ *
+ * @param id - The desired ID of the module.
+ * @param moduleIdsToConvert - The list of original JavaScript files to
+ * convert to TypeScript; used to know whether this module should be converted
+ * or has already been converted.
+ * @param overrides - The set of properties to assign to the new module.
+ * If omitted, reasonable defaults will be used.
+ * @returns The built Module.
+ */
+function buildModule(
+  id: string,
+  moduleIdsToConvert: string[],
+  overrides: Partial<Module> = {},
+): Module {
+  const isTypeScript = /\.tsx?$/u.test(id);
+  const withinModuleIdsToConvert = moduleIdsToConvert.includes(
+    id.replace(/\.ts$/u, '.js').replace(/\.tsx$/u, '.jsx'),
+  );
+  return {
+    currentFormat: isTypeScript ? Format.TypeScript : Format.JavaScript,
+    dependencies: [],
+    dependents: [],
+    id,
+    isExternal: false,
+    level: 0,
+    originalFormat:
+      isTypeScript && !withinModuleIdsToConvert
+        ? Format.TypeScript
+        : Format.JavaScript,
+    ...overrides,
+  };
 }
 
 /**
@@ -366,13 +431,24 @@ function partitionModulesByLevel(
     modulePartitions[i] = { level: i + 1, children: [] };
   }
   Object.values(modulesById).forEach((module) => {
+    const hasBeenConvertedToTypeScript =
+      module.originalFormat === Format.JavaScript &&
+      module.currentFormat === Format.TypeScript;
+    const wasOriginallyInTypeScript =
+      module.originalFormat === Format.TypeScript;
+    const shouldBeConvertedToTypeScript =
+      module.originalFormat === Format.JavaScript &&
+      module.currentFormat === Format.JavaScript;
+
     modulePartitions[module.level].children.push({
-      id: module.id,
-      hasBeenConverted: module.hasBeenConverted,
-      dependentIds: module.dependents.map((dependent) => dependent.id).sort(),
+      hasBeenConvertedToTypeScript,
       dependencyIds: module.dependencies
         .map((dependency) => dependency.id)
         .sort(),
+      dependentIds: module.dependents.map((dependent) => dependent.id).sort(),
+      id: module.id,
+      shouldBeConvertedToTypeScript,
+      wasOriginallyInTypeScript,
     });
   });
   Object.values(modulePartitions).forEach((partition) => {
