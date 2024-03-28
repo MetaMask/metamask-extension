@@ -43,7 +43,7 @@ describe('AlertModal', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('disables button when alerts are not acknowledge', () => {
+  it('disables button when alert is not acknowledged', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
         ownerId={ownerIdMock}
