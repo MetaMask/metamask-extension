@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import {
   CONFIRM_APPROVE_PATH,
+  CONFIRM_INCREASE_ALLOWANCE_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
@@ -179,6 +180,30 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexMaximumTransactionFee={hexMaximumTransactionFee}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_INCREASE_ALLOWANCE_PATH}`}
+        render={() => (
+          <ConfirmApprove
+            assetStandard={assetStandard}
+            assetName={assetName}
+            userBalance={userBalance}
+            tokenSymbol={tokenSymbol}
+            decimals={decimals}
+            tokenImage={tokenImage}
+            tokenAmount={tokenAmount}
+            tokenId={tokenId}
+            userAddress={userAddress}
+            tokenAddress={tokenAddress}
+            toAddress={toAddress}
+            transaction={transaction}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
           />
         )}
       />
