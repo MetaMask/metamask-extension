@@ -11,7 +11,20 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import {
+  DEFAULT_PRECISION_DECIMALS,
+  MIN_DISPLAY_AMOUNT,
+} from '../../../../hooks/useCurrencyDisplay';
 import { Amount, AssetIdentifier } from './types';
+
+// Format an amount for display.
+const formatAmount = (amount: Amount): string => {
+  const displayAmount = amount.numeric.abs().round(DEFAULT_PRECISION_DECIMALS);
+
+  return displayAmount.isZero() && !amount.numeric.isZero()
+    ? MIN_DISPLAY_AMOUNT
+    : displayAmount.toString();
+};
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -35,13 +48,15 @@ export const AmountPill: React.FC<{
 
   const amountParts: string[] = [amount.isNegative ? '-' : '+'];
 
-  const hideAmount = asset.standard === TokenStandard.ERC721;
-  if (!hideAmount) {
-    amountParts.push(amount.numeric.abs().round(6).toString());
+  if (asset.standard !== TokenStandard.ERC721) {
+    // ERC721 amounts are always 1 and don't need to be displayed.
+    amountParts.push(formatAmount(amount));
   }
+
   if (asset.tokenId) {
     amountParts.push(`#${hexToDecimal(asset.tokenId)}`);
   }
+
   return (
     <Text
       display={Display.Flex}
