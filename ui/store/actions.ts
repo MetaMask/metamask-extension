@@ -2187,6 +2187,45 @@ export function clearPendingTokens(): Action {
   };
 }
 
+export function automaticallySwitchNetwork(
+  networkClientIdForThisDomain: string,
+  selectedTabOrigin: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
+    await dispatch(
+      setSwitchedNetworkDetails({
+        networkClientId: networkClientIdForThisDomain,
+        origin: selectedTabOrigin,
+      }),
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwitchedNetworkDetails(
+  switchedNetworkDetails,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setSwitchedNetworkDetails', [
+      switchedNetworkDetails,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function clearSwitchedNetworkDetails(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('clearSwitchedNetworkDetails', []);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
   // TODO: Replace `any` with type
@@ -4710,6 +4749,12 @@ export function hideAccountBanner() {
 
 export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
+}
+
+export function neverShowSwitchedNetworkMessage() {
+  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
+    true,
+  ]);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

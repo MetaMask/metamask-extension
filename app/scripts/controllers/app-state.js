@@ -67,6 +67,9 @@ export default class AppStateController extends EventEmitter {
       },
       surveyLinkLastClickedOrClosed: null,
       signatureSecurityAlertResponses: {},
+      // States used for displaying the changed network toast
+      switchedNetworkDetails: null,
+      switchedNetworkNeverShowMessage: false,
     });
     this.timer = null;
 
@@ -399,6 +402,36 @@ export default class AppStateController extends EventEmitter {
    */
   setShowAccountBanner(showAccountBanner) {
     this.store.updateState({ showAccountBanner });
+  }
+
+  /**
+   * Sets an object with networkName and appName
+   * or `null` if the message is meant to be cleared
+   *
+   * @param switchedNetworkDetails
+   */
+  setSwitchedNetworkDetails(switchedNetworkDetails) {
+    this.store.updateState({ switchedNetworkDetails });
+  }
+
+  /**
+   * Clears the switched network details in state
+   */
+  clearSwitchedNetworkDetails() {
+    this.store.updateState({ switchedNetworkDetails: null });
+  }
+
+  /**
+   * Remembers if the user prefers to never see the
+   * network switched message again
+   *
+   * @param switchedNetworkNeverShowMessage
+   */
+  setSwitchedNetworkNeverShowMessage(switchedNetworkNeverShowMessage) {
+    this.store.updateState({
+      switchedNetworkDetails: null,
+      switchedNetworkNeverShowMessage,
+    });
   }
 
   /**
