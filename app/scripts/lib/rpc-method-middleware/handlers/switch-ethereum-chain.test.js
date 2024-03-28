@@ -51,7 +51,6 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetProviderType).toHaveBeenCalledWith(
       MOCK_MAINNET_CONFIGURATION.type,
     );
-    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 
   it('should call setProviderType when switching to a built in infura network, when chainId from request is lower case', async () => {
@@ -83,7 +82,6 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetProviderType).toHaveBeenCalledWith(
       MOCK_LINEA_MAINNET_CONFIGURATION.type,
     );
-    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 
   it('should call setProviderType when switching to a built in infura network, when chainId from request is upper case', async () => {
@@ -116,7 +114,6 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetProviderType).toHaveBeenCalledWith(
       MOCK_LINEA_MAINNET_CONFIGURATION.type,
     );
-    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 
   it('should call setActiveNetwork when switching to a custom network', async () => {
@@ -148,6 +145,5 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetActiveNetwork).toHaveBeenCalledWith(
       MOCK_MAINNET_CONFIGURATION.id,
     );
-    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 });

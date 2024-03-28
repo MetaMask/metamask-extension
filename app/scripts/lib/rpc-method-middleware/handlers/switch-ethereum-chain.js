@@ -154,10 +154,12 @@ async function switchEthereumChainHandler(
       }
 
       // Ensure toast displays for change
-      await setSwitchedNetworkDetails({
-        networkClientId: approvedRequestData.type || approvedRequestData.id,
-        origin: req.origin,
-      });
+      if (process.env.MULTICHAIN) {
+        await setSwitchedNetworkDetails({
+          networkClientId: approvedRequestData.type || approvedRequestData.id,
+          origin: req.origin,
+        });
+      }
 
       if (hasPermissions(req.origin)) {
         setNetworkClientIdForDomain(req.origin, networkClientId);
