@@ -21,10 +21,12 @@ jest.mock('../../../../../selectors', () => ({
 }));
 
 jest.mock('../../../../../ducks/domains', () => ({
-  getDomainResolutions: (s) => ({
-    resolvedAddress: `mockSendDomainResolutions:${s}`,
-    protocol: 'Ethereum Name Service',
-  }),
+  getDomainResolutions: (s) => [
+    {
+      resolvedAddress: `mockSendDomainResolutions:${s}`,
+      protocol: 'Ethereum Name Service',
+    },
+  ],
   getDomainType: (s) => `mockSendDomainType:${s}`,
   getDomainError: (s) => `mockSendDomainResolutionError:${s}`,
   getDomainWarning: (s) => `mockSendDomainResolutionWarning:${s}`,
@@ -50,11 +52,10 @@ describe('add-recipient container', () => {
     it('should map the correct properties to props', () => {
       expect(mapStateToProps('mockState')).toStrictEqual({
         addressBook: [{ name: 'mockAddressBook:mockState' }],
-        addressBookEntryName: undefined,
         contacts: [{ name: 'mockAddressBook:mockState' }],
         domainResolutions: [
           {
-            resolvedAddress: 'mockSendDomainResolution:mockState',
+            resolvedAddress: 'mockSendDomainResolutions:mockState',
             protocol: 'Ethereum Name Service',
           },
         ],
