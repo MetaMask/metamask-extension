@@ -104,7 +104,7 @@ const useLedgerConnection = () => {
 
   useEffect(() => {
     if (!isLedgerWallet) {
-      return;
+      return undefined;
     }
     return () => {
       dispatch(setLedgerTransportStatus(HardwareTransportStates.none));
