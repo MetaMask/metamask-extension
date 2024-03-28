@@ -112,6 +112,8 @@ describe('ConfirmNav', () => {
     const rejectAllButton = getByRole('button', { name: /Reject all/iu });
     const rejectSpy = jest
       .spyOn(Actions, 'rejectPendingApproval')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(rejectAllButton);
     expect(rejectSpy).toHaveBeenCalledTimes(3);
