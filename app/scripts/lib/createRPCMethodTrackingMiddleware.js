@@ -109,6 +109,7 @@ const EVENT_NAME_MAP = {
 };
 
 const rateLimitTimeoutsByMethod = {};
+let globalRateLimitCount = 0;
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
@@ -129,6 +130,8 @@ const rateLimitTimeoutsByMethod = {};
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {AppStateController} opts.appStateController
+ * @param opts.globalRateLimitTimeout
+ * @param opts.globalRateLimitMaxAmount
  * @returns {Function}
  */
 ///: END:ONLY_INCLUDE_IF
@@ -138,6 +141,8 @@ export default function createRPCMethodTrackingMiddleware({
   getMetricsState,
   rateLimitTimeout = 60 * 5 * 1000, // 5 minutes
   rateLimitSamplePercent = 0.001, // 0.1%
+  globalRateLimitTimeout = 60 * 5 * 1000, // 5 minutes
+  globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
@@ -173,6 +178,10 @@ export default function createRPCMethodTrackingMiddleware({
         break;
     }
 
+    const isGlobalRateLimited =
+      globalRateLimitMaxAmount &&
+      globalRateLimitCount >= globalRateLimitMaxAmount;
+
     // Get the participateInMetaMetrics state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
     // the metametrics controller's trackEvent method as well.
@@ -190,7 +199,9 @@ export default function createRPCMethodTrackingMiddleware({
       // Don't track if the request came from our own UI or background
       origin !== ORIGIN_METAMASK &&
       // Don't track if the rate limit has been hit
-      isRateLimited === false &&
+      !isRateLimited &&
+      // Don't track if the global rate limit has been hit
+      !isGlobalRateLimited &&
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
 
@@ -277,6 +288,11 @@ export default function createRPCMethodTrackingMiddleware({
           delete rateLimitTimeoutsByMethod[method];
         }, rateLimitTimeout);
       }
+
+      globalRateLimitCount += 1;
+      setTimeout(() => {
+        globalRateLimitCount -= 1;
+      }, globalRateLimitTimeout);
     }
 
     next(async (callback) => {

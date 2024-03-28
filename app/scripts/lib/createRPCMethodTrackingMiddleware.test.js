@@ -39,6 +39,7 @@ const handler = createRPCMethodTrackingMiddleware({
   getMetricsState,
   rateLimitTimeout: 1000,
   rateLimitSamplePercent: 0.1,
+  globalRateLimitMaxAmount: 0,
   appStateController,
 });
 
@@ -337,6 +338,48 @@ describe('createRPCMethodTrackingMiddleware', () => {
         ['eth_getBalance', 1],
       ])(
         `should only track a random percentage of '%s' events`,
+        async (method, eventsTrackedPerRequest) => {
+          const req = {
+            method,
+            origin: 'some.dapp',
+          };
+
+          const res = {
+            error: null,
+          };
+
+          let callCount = 0;
+
+          while (callCount < 5) {
+            callCount += 1;
+            const { next, executeMiddlewareStack } = getNext();
+            handler(req, res, next);
+            await executeMiddlewareStack();
+          }
+
+          const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
+          expect(trackEvent).toHaveBeenCalledTimes(expectedNumberOfCalls);
+          trackEvent.mock.calls.forEach((call) => {
+            expect(call[0].properties.method).toBe(method);
+          });
+        },
+      );
+    });
+
+    describe('events rated globally rate limited', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(Math, 'random')
+          .mockReturnValueOnce(0) // not rate limited
+          .mockReturnValueOnce(0.09) // not rate limited
+          .mockReturnValueOnce(0.1) // rate limited
+          .mockReturnValueOnce(0.11) // rate limited
+          .mockReturnValueOnce(1); // rate limited
+      });
+      afterEach(() => {
+        jest.spyOn(Math, 'random').mockRestore();
+      });
+      it( `should only track events if the global rate limit has not been hit`,
         async (method, eventsTrackedPerRequest) => {
           const req = {
             method,
