@@ -2207,6 +2207,8 @@ export function getLayer1GasFee(
   chainId: Hex,
   networkClientId: NetworkClientId,
   transactionParams: TransactionParams,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async () =>
     await submitRequestToBackground('getLayer1GasFee', [
