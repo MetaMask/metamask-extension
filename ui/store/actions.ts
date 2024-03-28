@@ -4985,3 +4985,11 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   ]);
 }
 ///: END:ONLY_INCLUDE_IF
+
+export async function enablePushNotifications() {
+  await submitRequestToBackground('enablePushNotifications', [true]);
+}
+
+export async function disablePushNotifications() {
+  await submitRequestToBackground('disablePushNotifications', [true]);
+}

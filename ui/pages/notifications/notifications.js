@@ -14,15 +14,23 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   deleteExpiredNotifications,
   markNotificationsAsRead,
+  enablePushNotifications,
+  disablePushNotifications,
 } from '../../store/actions';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
+  Box,
+  ButtonBase,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../components/component-library';
-import { Color } from '../../helpers/constants/design-system';
+import {
+  FlexDirection,
+  JustifyContent,
+  Color,
+} from '../../helpers/constants/design-system';
 
 export function NotificationItem({ notification, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
@@ -110,6 +118,24 @@ export default function Notifications() {
           {t('notificationsMarkAllAsRead')}
         </Button>
       </div>
+      <Box
+        padding={8}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.SpaceBetween}
+      >
+        <ButtonBase
+          onClick={() => dispatch(enablePushNotifications())}
+          disabled={false}
+        >
+          Enable Push Notifications
+        </ButtonBase>
+        <ButtonBase
+          onClick={() => dispatch(disablePushNotifications())}
+          disabled={false}
+        >
+          Disable Push Notifications
+        </ButtonBase>
+      </Box>
       <div
         className={classnames(
           'notifications__container',
