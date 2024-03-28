@@ -224,7 +224,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     ) {
       const thisPopupId = Date.now();
       global.metamask.id = thisPopupId;
-      await actions.setCurrentExtensionPopupId(thisPopupId);
+      await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
     }
   }
 

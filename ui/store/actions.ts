@@ -2250,7 +2250,7 @@ export function clearSwitchedNetworkDetails(): ThunkAction<
  * @param id - The Snap interface ID.
  * @returns Promise Resolved on successfully submitted background request.
  */
-export async function setCurrentExtensionPopupId(
+export function setCurrentExtensionPopupId(
   id: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
