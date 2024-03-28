@@ -28,16 +28,9 @@ export default function useProcessNewDecimalValue(
 
       const truncateToDecimals = (
         numeric: Numeric,
-        maxDecimals = assetDecimals,
+        numDigitsAfterDecimal: number,
       ) => {
-        const digitsAfterDecimal = numeric.toString().split('.')[1] || '';
-
-        const maxPossibleDecimals = Math.min(maxDecimals, assetDecimals);
-
-        const digitsCutoff = Math.min(
-          digitsAfterDecimal.length,
-          maxPossibleDecimals,
-        );
+        const digitsCutoff = Math.min(numDigitsAfterDecimal, assetDecimals);
 
         return numeric.toFixed(digitsCutoff);
       };
@@ -48,7 +41,10 @@ export default function useProcessNewDecimalValue(
         newFiatDecimalValue = tokenToFiatConversionRate
           ? numericDecimalValue.times(tokenToFiatConversionRate).toFixed(2)
           : undefined;
-        newTokenDecimalValue = truncateToDecimals(numericDecimalValue);
+        newTokenDecimalValue = truncateToDecimals(
+          numericDecimalValue,
+          getNumDigitsAfterDecimal(newDecimalValue),
+        );
       } else {
         newFiatDecimalValue = numericDecimalValue.toFixed(2);
 
@@ -58,7 +54,10 @@ export default function useProcessNewDecimalValue(
         newTokenDecimalValue = tokenToFiatConversionRate
           ? truncateToDecimals(
               exactTokenValue,
-              MAX_DECIMALS_TOKEN_SECONDARY,
+              Math.min(
+                getNumDigitsAfterDecimal(exactTokenValue.toString()),
+                MAX_DECIMALS_TOKEN_SECONDARY,
+              ),
             )
           : undefined;
       }
