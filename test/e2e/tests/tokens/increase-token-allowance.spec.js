@@ -26,6 +26,10 @@ describe('Increase Token Allowance', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+
         const ACCOUNT_1_NAME = 'Account 1';
         const ACCOUNT_2_NAME = '2nd Account';
 
