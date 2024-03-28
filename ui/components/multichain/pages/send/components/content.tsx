@@ -50,6 +50,8 @@ export const SendPageContent = ({
   // Gas data
   const dispatch = useDispatch();
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelectToken = async (token: any) => {
     if (token.type === AssetType.native) {
       dispatch(
