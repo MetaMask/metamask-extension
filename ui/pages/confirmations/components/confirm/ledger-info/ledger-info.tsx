@@ -100,11 +100,7 @@ const LedgerInfo: React.FC = () => {
                   ),
                 );
               } else {
-                global.platform.openExtensionInBrowser(
-                  null,
-                  null,
-                  true,
-                );
+                global.platform.openExtensionInBrowser(null, null, true);
               }
             }}
           >
