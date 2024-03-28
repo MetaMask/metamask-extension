@@ -16,9 +16,6 @@ const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 describe('Transfer custom tokens @no-mmi', function () {
   const smartContract = SMART_CONTRACTS.HST;
   it('send custom tokens from extension customizing gas values', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         dapp: true,
@@ -44,9 +41,8 @@ describe('Transfer custom tokens @no-mmi', function () {
           css: '.ens-input__selected-input__title',
           text: recipientAddress,
         });
-        await driver.fill('.unit-input__input', '1');
-        await driver.waitForSelector('.transaction-detail-item__detail-values');
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.fill('input[placeholder="0"]', '1');
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // check transaction details
         await driver.waitForSelector({
