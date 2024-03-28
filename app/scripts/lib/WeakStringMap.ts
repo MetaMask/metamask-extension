@@ -1,6 +1,8 @@
 export class WeakStringMap {
   map: Map<string, WeakRef<WeakKey>>;
+
   finalizationRegistry: FinalizationRegistry<string>;
+
   constructor() {
     this.map = new Map();
     this.finalizationRegistry = new FinalizationRegistry((key: string) => {
@@ -8,7 +10,7 @@ export class WeakStringMap {
     });
   }
 
-  set(key: string, value: any) {
+  set(key: string, value: object) {
     const ref = new WeakRef(value);
     this.map.set(key, ref);
 
