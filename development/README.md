@@ -21,6 +21,8 @@ To start the [Mock Segment API](./mock-segment.js):
     node development/mock-segment.js
     ```
 
+    > You can also provide the `-v`/`--verbose` option to dump more information from the events.
+
 Events triggered whilst using the extension will be logged to the console of the Mock Segment API.
 
 More information on the API and its usage can be found [here](./mock-segment.js#L28).
