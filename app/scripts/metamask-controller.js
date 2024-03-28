@@ -870,6 +870,7 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        interval: 10000,
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
         selectedAddress: this.accountsController.getSelectedAccount().address,
@@ -899,22 +900,31 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.TokenRatesController,
     );
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.tokenRatesController.start();
-    }
 
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.startPollingByNetworkClientId(
-            this.networkController.state.selectedNetworkClientId,
-          );
-          this.tokenRatesController.start();
+          this.currencyRatePollingToken =
+            this.currencyRateController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            );
+          this.tokenRatesPollingToken =
+            this.tokenRatesController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            );
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stopAllPolling();
-          this.tokenRatesController.stop();
+          if (this.currencyRatePollingToken) {
+            this.currencyRateController.stopPollingByPollingToken(
+              this.currencyRatePollingToken,
+            );
+          }
+          if (this.tokenRatesPollingToken) {
+            this.tokenRatesController.stopPollingByPollingToken(
+              this.tokenRatesPollingToken,
+            );
+          }
         }
       }, this.preferencesController.store.getState()),
     );
@@ -1626,10 +1636,15 @@ export default class MetamaskController extends EventEmitter {
           if (
             this.preferencesController.store.getState().useCurrencyRateCheck
           ) {
-            await this.currencyRateController.stopAllPolling();
-            this.currencyRateController.startPollingByNetworkClientId(
-              this.networkController.state.selectedNetworkClientId,
-            );
+            if (this.currencyRatePollingToken) {
+              this.currencyRateController.stopPollingByPollingToken(
+                this.currencyRatePollingToken,
+              );
+            }
+            this.currencyRatePollingToken =
+              this.currencyRateController.startPollingByNetworkClientId(
+                this.networkController.state.selectedNetworkClientId,
+              );
           }
         } catch (error) {
           // TODO: Handle failure to get conversion rate more gracefully
@@ -2210,12 +2225,28 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
+      this.currencyRateController.isPaused
+        ? this.currencyRateController.resume()
+        : (this.currencyRatePollingToken =
+            this.currencyRateController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            ));
+
+      this.tokenRatesController.isPaused
+        ? this.tokenRatesController.resume()
+        : (this.tokenRatesPollingToken =
+            this.tokenRatesController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            ));
     }
+
     if (this.preferencesController.store.getState().useTokenDetection) {
-      this.tokenListController.start();
+      this.tokenRatesController.isPaused
+        ? this.tokenRatesController.resume()
+        : (this.tokenListPollingToken =
+            this.tokenListController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            ));
     }
   }
 
@@ -2223,11 +2254,11 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.stopAllPolling();
+      this.currencyRateController.pause();
+      this.tokenRatesController.pause();
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
-      this.tokenListController.stop();
-      this.tokenRatesController.stop();
+      this.tokenListController.pause();
     }
   }
 
