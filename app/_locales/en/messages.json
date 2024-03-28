@@ -443,6 +443,10 @@
   "approveButtonText": {
     "message": "Approve"
   },
+  "approveIncreaseAllowance": {
+    "message": "Increase $1 spending cap",
+    "description": "The token symbol that is being approved"
+  },
   "approveSpendingCap": {
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
