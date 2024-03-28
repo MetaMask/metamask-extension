@@ -19,8 +19,29 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import { editExistingTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
-
+import {
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
 import { useAssetDetails } from '../hooks/useAssetDetails';
+import { useGasFeeContext } from '../../../contexts/gasFee';
+
+function applyMultilayerFees(transactionFees, multiLayerFees = '0x0') {
+  const {
+    ethTransactionTotal,
+    fiatTransactionTotal,
+    hexTransactionTotal,
+    hexMaximumTransactionFee,
+    hexMinimumTransactionFee,
+  } = transactionFees;
+
+  return {
+    ethTransactionTotal: sumHexes(ethTransactionTotal, multiLayerFees),
+    fiatTransactionTotal: sumHexes(fiatTransactionTotal, multiLayerFees),
+    hexTransactionTotal: sumHexes(hexTransactionTotal, multiLayerFees),
+    hexMaximumTransactionFee: sumHexes(hexMaximumTransactionFee, multiLayerFees),
+    hexMinimumTransactionFee: sumHexes(hexMinimumTransactionFee, multiLayerFees),
+  }
+}
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
   const { txParams: { data, to: tokenAddress, from: userAddress } = {} } =
@@ -28,6 +49,10 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const {
+    estimatedL1Fees,
+  } = useGasFeeContext();
 
   const {
     assetStandard,
@@ -44,10 +69,14 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
   const {
     ethTransactionTotal,
     fiatTransactionTotal,
+    ...otherTransactionFees
+  } = useSelector((state) => transactionFeeSelector(state, transaction));
+
+  const {
     hexTransactionTotal,
     hexMaximumTransactionFee,
     hexMinimumTransactionFee,
-  } = useSelector((state) => transactionFeeSelector(state, transaction));
+  } = applyMultilayerFees(otherTransactionFees, estimatedL1Fees);
 
   return (
     <Switch>

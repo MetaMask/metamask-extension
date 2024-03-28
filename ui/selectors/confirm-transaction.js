@@ -14,9 +14,13 @@ import {
   getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
+  getMultiLayerFee
+} from '../ducks/app/app';
+import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../shared/constants/gas';
+import { Numeric } from '../../shared/modules/Numeric';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -218,6 +222,7 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
+  const multiLayerFee = getMultiLayerFee(state);
   const networkAndAccountSupportsEIP1559 =
     checkNetworkAndAccountSupports1559(state);
 
@@ -311,10 +316,10 @@ export const transactionFeeSelector = function (state, txData) {
   });
 
   const ethTransactionFee = getTransactionFee({
-    value: hexMinimumTransactionFee,
+    value: sumHexes(hexMinimumTransactionFee, multiLayerFee || '0x0'),
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
-    numberOfDecimals: 6,
+    numberOfDecimals: 9,
     conversionRate,
   });
 
@@ -322,7 +327,7 @@ export const transactionFeeSelector = function (state, txData) {
     fiatMinimumTransactionFee,
     fiatTransactionAmount,
   );
-  const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount);
+  const ethTransactionTotal = (new Numeric(ethTransactionFee, 10)).add(ethTransactionAmount, 10);
   const hexTransactionTotal = sumHexes(value, hexMinimumTransactionFee);
 
   return {

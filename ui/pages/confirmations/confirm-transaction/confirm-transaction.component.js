@@ -21,6 +21,7 @@ import {
 } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
+import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
@@ -204,45 +205,54 @@ const ConfirmTransaction = () => {
   ///: END:ONLY_INCLUDE_IF
 
   if (isValidTokenMethod && isValidTransactionId) {
-    return <ConfirmTokenTransactionSwitch transaction={transaction} />;
+
+    return <GasFeeContextProvider
+      transaction={transaction}
+    >
+      <ConfirmTokenTransactionSwitch transaction={transaction} />
+    </GasFeeContextProvider>;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
   return isValidTransactionId ? (
-    <Switch>
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_DEPLOY_CONTRACT_PATH}`}
-        component={ConfirmDeployContract}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_ETHER_PATH}`}
-        component={ConfirmSendEther}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
-        component={ConfirmContractInteraction}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
-        component={ConfirmSignatureRequest}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-        component={ConfirmDecryptMessage}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
-        component={ConfirmEncryptionPublicKey}
-      />
-      <Route path="*" component={ConfirmTransactionSwitch} />
-    </Switch>
+    <GasFeeContextProvider
+      transaction={transaction}
+    >
+      <Switch>
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_DEPLOY_CONTRACT_PATH}`}
+          component={ConfirmDeployContract}
+        />
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_ETHER_PATH}`}
+          component={ConfirmSendEther}
+        />
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
+          component={ConfirmContractInteraction}
+        />
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
+          component={ConfirmSignatureRequest}
+        />
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+          component={ConfirmDecryptMessage}
+        />
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+          component={ConfirmEncryptionPublicKey}
+        />
+        <Route path="*" component={ConfirmTransactionSwitch} />
+      </Switch>
+    </GasFeeContextProvider>
   ) : (
     <Loading />
   );
