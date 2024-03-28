@@ -303,7 +303,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           text: networkName,
         });
 
-        await locateAccountBalanceDOM(driver, secondaryGanacheServer);
+        await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
       },
     );
   });
