@@ -72,8 +72,7 @@ function getSnapNameComponent(snapName) {
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: getLeftIcon(IconName.Eye),
-    rightIcon: null,
+    leftIcon: IconName.Eye,
     weight: 3,
   }),
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)

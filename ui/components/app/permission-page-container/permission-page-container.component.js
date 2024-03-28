@@ -37,6 +37,8 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
+    history: PropTypes.object.isRequired,
+    connectPath: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -117,6 +119,11 @@ export default class PermissionPageContainer extends Component {
     ///: END:ONLY_INCLUDE_IF
   }
 
+  goBack() {
+    const { history, connectPath } = this.props;
+    history.push(connectPath);
+  }
+
   onCancel = () => {
     const { request, rejectPermissionsRequest } = this.props;
     rejectPermissionsRequest(request.metadata.id);
@@ -194,11 +201,12 @@ export default class PermissionPageContainer extends Component {
             <PermissionsConnectFooter />
           )}
           <PageContainerFooter
+            footerClassName="permission-page-container-footer"
             cancelButtonType="default"
-            onCancel={() => this.onCancel()}
-            cancelText={this.context.t('cancel')}
+            onCancel={() => this.goBack()}
+            cancelText={this.context.t('back')}
             onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('connect')}
+            submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
           />
         </div>
