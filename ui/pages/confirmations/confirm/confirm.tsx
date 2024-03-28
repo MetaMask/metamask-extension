@@ -8,9 +8,7 @@ import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signatur
 ///: END:ONLY_INCLUDE_IF
 import { Nav } from '../components/confirm/nav';
 import { Title } from '../components/confirm/title';
-import { Box } from '../../../components/component-library';
-import { Content, Page } from '../../../components/multichain/pages/page';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { Page } from '../../../components/multichain/pages/page';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -23,7 +21,7 @@ const Confirm = () => {
   syncConfirmPath();
 
   return (
-    <Page backgroundColor={BackgroundColor.backgroundAlternative}>
+    <Page>
       <Nav />
       <Header />
       {
@@ -31,7 +29,7 @@ const Confirm = () => {
         <MMISignatureMismatchBanner />
         ///: END:ONLY_INCLUDE_IF
       }
-      <Content backgroundColor={BackgroundColor.backgroundAlternative}>
+      <ScrollToBottom>
         <LedgerInfo />
         {
           // todo: section below is to be removed once new alerts implementation is there
@@ -40,12 +38,8 @@ const Confirm = () => {
           ///: END:ONLY_INCLUDE_IF
         }
         <Title />
-        <ScrollToBottom>
-          <Box padding={4}>
-            <Info />
-          </Box>
-        </ScrollToBottom>
-      </Content>
+        <Info />
+      </ScrollToBottom>
       <Footer />
     </Page>
   );
