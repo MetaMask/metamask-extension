@@ -16,7 +16,6 @@ type SendMetadataOptions = {
   addSubjectMetadata: AddSubjectMetadata;
   subjectType: SubjectType;
 };
-
 type SendMetadataConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
     req: JsonRpcRequest<Params>,
@@ -26,13 +25,11 @@ type SendMetadataConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
     { addSubjectMetadata, subjectType }: SendMetadataOptions,
   ) => void;
 } & HandlerWrapper;
-
 /**
  * This internal method is used by our external provider to send metadata about
  * permission subjects so that we can e.g. display a proper name and icon in
  * our UI.
  */
-
 const sendMetadata = {
   methodNames: [MESSAGE_TYPE.SEND_METADATA],
   implementation: sendMetadataHandler,
@@ -41,7 +38,6 @@ const sendMetadata = {
     subjectType: true,
   },
 } satisfies SendMetadataConstraint;
-
 export default sendMetadata;
 
 /**
