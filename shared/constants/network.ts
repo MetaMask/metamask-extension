@@ -148,6 +148,8 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
+  ANCIENT8_TESTNET: '0x1ad1ba8',
+  ANCIENT8_MAINNET: '0x34fb5e38',
   ARBITRUM_GOERLI: '0x66eed',
   BLAST: '0x13e31',
 } as const;
@@ -884,6 +886,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.ANCIENT8_MAINNET
+    | typeof CHAIN_IDS.ANCIENT8_TESTNET
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
   >]: BuyableChainSettings;
