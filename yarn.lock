@@ -4913,6 +4913,28 @@ __metadata:
     eth-block-tracker: "npm:^8.0.0"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
+  checksum: 70f06c231977e9215b1b81216a6cabcff5e928df9524f8889079bbc21657bb4c2167ebb20758d31c6cc859647d5d01d5a1022af2590b9d7fbe69ec5bfe71b099
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^18.1.0":
+  version: 18.1.0
+  resolution: "@metamask/network-controller@npm:18.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/controller-utils": "npm:^9.0.2"
+    "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
+    "@metamask/eth-json-rpc-provider": "npm:^3.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    eth-block-tracker: "npm:^8.0.0"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
   checksum: cc3751205de1514333a99a638fc6fa7bdaa7fac505e32531fb1a71af5e9839e994de79c59ab91b08bdc8d3fbb4bb17330a677adf75754e5f56745d6d68e56515
   languageName: node
   linkType: hard
@@ -4922,7 +4944,7 @@ __metadata:
   resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch::version=18.0.1&hash=be87e4"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^9.0.2"
     "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
     "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
     "@metamask/eth-json-rpc-provider": "npm:^3.0.1"
@@ -5668,7 +5690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^25.1.0, @metamask/transaction-controller@npm:^25.2.1":
+"@metamask/transaction-controller@npm:^25.1.0":
   version: 25.2.1
   resolution: "@metamask/transaction-controller@npm:25.2.1"
   dependencies:
