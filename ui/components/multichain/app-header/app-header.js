@@ -117,15 +117,18 @@ export const AppHeader = ({ location }) => {
 
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showConnectedStatus =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-    origin &&
-    origin !== browser.runtime.id;
+    getEnvironmentType() ===
+      (ENVIRONMENT_TYPE_POPUP && origin && origin !== browser.runtime.id) ||
+    (
+      process.env.IN_TEST &&
+      new URLSearchParams(window.location.search).has('activeTabOrigin')
+    );
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
     .querySelector('[dir]')
     ?.getAttribute('dir');
-
+console.log(showConnectedStatus)
   // Disable the network and account pickers if the user is in
   // a critical flow
   const sendStage = useSelector(getSendStage);
@@ -367,7 +370,7 @@ export const AppHeader = ({ location }) => {
               >
                 <Box display={Display.Flex} gap={4}>
                   {showConnectedStatus ? (
-                    <Box ref={menuRef}>
+                    <Box ref={menuRef} data-test-id="connection-status">
                       <ConnectedStatusIndicator
                         onClick={() => {
                           if (process.env.MULTICHAIN) {
