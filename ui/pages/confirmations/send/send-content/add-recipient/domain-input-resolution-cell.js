@@ -4,15 +4,19 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import Identicon from '../../../../../components/ui/identicon';
 import Confusable from '../../../../../components/ui/confusable';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AvatarIcon,
   BadgeWrapper,
   IconName,
   IconSize,
+  ///: END:ONY_INCLUDE_IF
   Text,
 } from '../../../../../components/component-library';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   BackgroundColor,
   IconColor,
+  ///: END:ONY_INCLUDE_IF
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -23,11 +27,15 @@ export default function DomainInputResolutionCell({
   domainType,
   address,
   domainName,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   resolvingSnap,
+  ///: END:ONY_INCLUDE_IF
   onClick,
   protocol,
 }) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const t = useContext(I18nContext);
+  ///: END:ONY_INCLUDE_IF
   const titleRef = useRef(null);
   const breakpointRef = useRef(null);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
@@ -163,7 +171,7 @@ export default function DomainInputResolutionCell({
         )}
         {domainType === 'ENS' && (
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
-            Ethereum Name Service
+            {protocol}
           </Text>
         )}
       </div>
