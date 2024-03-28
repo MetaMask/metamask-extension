@@ -107,6 +107,15 @@ const EVENT_NAME_MAP = {
   },
 };
 
+/**
+ * This object maps a method name to a function that accept the method params and
+ * returns a non-sensitive version that can be included in tracked events.
+ * The default is to return undefined.
+ */
+const TRANSFORM_PARAMS_MAP = {
+  [MESSAGE_TYPE.WATCH_ASSET]: ({ type }) => ({ type }),
+};
+
 const rateLimitTimeouts = {};
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -146,7 +155,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method } = req;
+    const { origin, method, params } = req;
 
     // Determine what type of rate limit to apply based on method
     const rateLimitType =
@@ -247,6 +256,11 @@ export default function createRPCMethodTrackingMiddleware({
         }
       } else {
         eventProperties.method = method;
+      }
+
+      const transformParams = TRANSFORM_PARAMS_MAP[method];
+      if (transformParams) {
+        eventProperties.params = transformParams(params);
       }
 
       trackEvent({

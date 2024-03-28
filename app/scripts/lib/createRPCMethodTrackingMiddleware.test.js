@@ -391,5 +391,74 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
     });
+
+    it.each([
+      ['no params', 'method_without_transform', {}, undefined],
+      [
+        'no params',
+        'eth_call',
+        [
+          {
+            accessList: [],
+            blobVersionedHashes: [],
+            blobs: [],
+            to: null,
+          },
+          null,
+        ],
+        undefined,
+      ],
+      ['no params', 'eth_sandRawTransaction', ['0xdeadbeef'], undefined],
+      [
+        'no params',
+        'eth_sendTransaction',
+        {
+          to: '0x1',
+          from: '0x2',
+          gas: '0x3',
+          gasPrice: '0x4',
+          value: '0x5',
+          data: '0xdeadbeef',
+          maxPriorityFeePerGas: '0x6',
+          maxFeePerGas: '0x7',
+        },
+        undefined,
+      ],
+      [
+        'only the type param',
+        'wallet_watchAsset',
+        {
+          type: 'ERC20',
+          options: {
+            address: '0xb60e8dd61c5d32be8058bb8eb970870f07233155',
+            symbol: 'FOO',
+            decimals: 18,
+            image: 'https://foo.io/token-image.svg',
+          },
+        },
+        { type: 'ERC20' },
+      ],
+    ])(
+      `should include %s in the '%s' tracked events params property`,
+      async (_, method, params, expected) => {
+        const req = {
+          method,
+          origin: 'some.dapp',
+          params,
+        };
+
+        const res = {
+          error: null,
+        };
+
+        const { next } = getNext();
+        await handler(req, res, next);
+
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent.mock.calls[0][0].properties.params).toStrictEqual(
+          expected,
+        );
+      },
+    );
   });
 });
