@@ -4998,6 +4998,9 @@ export default class MetamaskController extends EventEmitter {
         setActiveNetwork: (networkClientId) => {
           this.networkController.setActiveNetwork(networkClientId);
         },
+        setSwitchedNetworkDetails: (detailsObj) => {
+          this.appStateController.setSwitchedNetworkDetails(detailsObj);
+        },
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
