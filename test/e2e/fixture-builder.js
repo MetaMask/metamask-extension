@@ -881,9 +881,11 @@ class FixtureBuilder {
   }
 
   withPreferencesControllerUseRequestQueueEnabled() {
-    return this.withPreferencesController({
-      useRequestQueue: true,
-    });
+    return merge(
+      this.withPreferencesController({
+        useRequestQueue: true,
+      }),
+    );
   }
 
   withSmartTransactionsController(data) {
