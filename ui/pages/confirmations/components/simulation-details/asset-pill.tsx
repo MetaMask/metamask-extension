@@ -10,6 +10,7 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -34,11 +35,18 @@ const NativeAssetPill: React.FC = () => {
       backgroundColor={BackgroundColor.backgroundAlternative}
       gap={1}
       style={{
-        padding: '2px 8px 2px 4px',
+        padding: '1px 8px 1px 4px',
       }}
     >
-      <AvatarNetwork name={ticker} size={AvatarNetworkSize.Sm} src={imgSrc} />
-      <Text variant={TextVariant.bodyMd}>{ticker}</Text>
+      <AvatarNetwork
+        name={ticker}
+        size={AvatarNetworkSize.Xs}
+        src={imgSrc}
+        borderColor={BorderColor.borderDefault}
+      />
+      <Text ellipsis variant={TextVariant.bodyMd}>
+        {ticker}
+      </Text>
     </Box>
   );
 };
