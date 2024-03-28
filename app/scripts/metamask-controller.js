@@ -352,6 +352,8 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
+    this.hasNetworkRequestsBeenTriggered = false;
+
     this.controllerMessenger = new ControllerMessenger();
 
     this.loggingController = new LoggingController({
@@ -1428,7 +1430,11 @@ export default class MetamaskController extends EventEmitter {
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       const { completedOnboarding } =
         this.onboardingController.store.getState();
-      if (activeControllerConnections > 0 && completedOnboarding) {
+      if (
+        activeControllerConnections > 0 &&
+        completedOnboarding &&
+        this.isUnlocked()
+      ) {
         this.triggerNetworkrequests();
       } else {
         this.stopNetworkRequests();
@@ -2214,15 +2220,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   triggerNetworkrequests() {
-    this.accountTracker.start();
-    this.txController.startIncomingTransactionPolling();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
-    }
-    if (this.preferencesController.store.getState().useTokenDetection) {
-      this.tokenListController.start();
+    if (!this.hasNetworkRequestsBeenTriggered) {
+      this.accountTracker.start();
+      this.txController.startIncomingTransactionPolling();
+      if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+        this.currencyRateController.startPollingByNetworkClientId(
+          this.networkController.state.selectedNetworkClientId,
+        );
+      }
+      if (this.preferencesController.store.getState().useTokenDetection) {
+        this.tokenListController.start();
+      }
+
+      this.hasNetworkRequestsBeenTriggered = true;
     }
   }
 
@@ -2236,6 +2246,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
+    this.hasNetworkRequestsBeenTriggered = false;
   }
 
   resetStates(resetMethods) {
@@ -5336,6 +5347,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.unMarkPasswordForgotten();
+
+    // If the wallet is locked when the `controllerConnectionChanged` event is
+    // emitted, we need to start polling for balances as soon as it is unlocked.
+    this.triggerNetworkrequests();
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
