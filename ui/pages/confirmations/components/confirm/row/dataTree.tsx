@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { isValidHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
-import { sanitizeString } from '../../../../../../helpers/utils/util';
+import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { sanitizeString } from '../../../../../helpers/utils/util';
 
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
-} from '../../../../../../components/app/confirm/info/row';
+} from '../../../../../components/app/confirm/info/row';
 
 type TreeData = {
   value: string | Record<string, TreeData>;
@@ -34,7 +34,7 @@ export const DataTree = ({ data }: { data: Record<string, TreeData> }) => (
           }) ? (
             <ConfirmInfoRowAddress address={value} />
           ) : (
-            <ConfirmInfoRowText text={value} />
+            <ConfirmInfoRowText text={sanitizeString(value)} />
           )}
         </ConfirmInfoRow>
       );

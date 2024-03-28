@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationErrorCode,
+} from '@metamask/transaction-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
@@ -68,7 +71,11 @@ describe('useSimulationMetrics', () => {
   const useEffectMock = jest.mocked(useEffect);
   const useDisplayNamesMock = jest.mocked(useDisplayNames);
   const useContextMock = jest.mocked(useContext);
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
   function expectUpdateTransactionEventFragmentCalled(
@@ -79,6 +86,8 @@ describe('useSimulationMetrics', () => {
       balanceChanges?: BalanceChange[];
       simulationData?: SimulationData | undefined;
     },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
   ) {
     useSimulationMetrics({
@@ -105,9 +114,13 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 
     useEffectMock.mockImplementation((fn) => fn());
@@ -132,7 +145,11 @@ describe('useSimulationMetrics', () => {
 
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
-      ['reverted', { error: { isReverted: true } }, 'transaction_revert'],
+      [
+        'reverted',
+        { error: { code: SimulationErrorCode.Reverted } },
+        'transaction_revert',
+      ],
       ['failed', { error: { message: 'testError' } }, 'failed'],
       ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
       ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
@@ -480,5 +497,22 @@ describe('useSimulationMetrics', () => {
         },
       });
     });
+  });
+
+  it.each([
+    ['simulation disabled', { error: { code: SimulationErrorCode.Disabled } }],
+    [
+      'chain not supported',
+      { error: { code: SimulationErrorCode.ChainNotSupported } },
+    ],
+  ])('does not update fragment if %s', (_, simulationData) => {
+    useSimulationMetrics({
+      balanceChanges: [BALANCE_CHANGE_MOCK],
+      simulationData: simulationData as SimulationData,
+      loadingTime: LOADING_TIME_MOCK,
+      transactionId: TRANSACTION_ID_MOCK,
+    });
+
+    expect(updateTransactionEventFragmentMock).not.toHaveBeenCalled();
   });
 });
