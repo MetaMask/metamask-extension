@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-// import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../check-box';
 import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
@@ -13,6 +12,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  Color,
   Display,
   FlexDirection,
   IconColor,
@@ -89,12 +89,16 @@ const AccountList = ({
             </Tooltip>
           </div>
         ) : null}
-        <div
-          className="choose-account-list__text-blue"
+        <Text
+          color={TextColor.infoDefault}
+          variant={TextVariant.bodyMd}
+          style={{
+            cursor: 'pointer'
+          }}
           onClick={() => selectNewAccountViaModal(handleAccountClick)}
         >
           {t('newAccount')}
-        </div>
+        </Text>
       </div>
     );
   };
@@ -119,7 +123,7 @@ const AccountList = ({
                 ref={isSelectedAccount ? selectedAccountScrollRef : null}
                 backgroundColor={
                   isSelectedAccount
-                    ? BackgroundColor.backgroundAlternative
+                    ? Color.primaryMuted
                     : BackgroundColor.backgroundDefault
                 }
               >

@@ -33,6 +33,7 @@
   }
 
   &__wrapper {
+    margin-top: 8px;
     display: flex;
     overflow: hidden;
     width: 100%;
@@ -61,7 +62,7 @@
     }
 
     &:hover {
-      background: var(--color-background-alternative);
+      background: var(--color-primary-muted);
       cursor: pointer;
     }
 
