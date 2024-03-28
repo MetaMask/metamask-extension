@@ -243,6 +243,9 @@
   "addIPFSGateway": {
     "message": "선호하는 IPFS 게이트웨이를 추가하세요"
   },
+  "addImportAccount": {
+    "message": "계정 혹은 하드웨어 지갑을 추가하세요."
+  },
   "addMemo": {
     "message": "메모 추가"
   },
@@ -597,6 +600,18 @@
   },
   "busy": {
     "message": "바쁨"
+  },
+  "buy": {
+    "message": "구매"
+  },
+  "buyAndSell": {
+    "message": "구매 & 판매"
+  },
+  "buyAndSellDescription": {
+    "message": "crypto를 구매하거나 당신의 crypto를 판매해서 현금으로 바꾸세요."
+  },
+  "buyAndSellDisabled": {
+    "message": "구매 & 판매는 이 네트워크에서 사용할 수 없습니다."
   },
   "buyAsset": {
     "message": "$1 구매",
@@ -1239,6 +1254,10 @@
   "disconnectThisAccount": {
     "message": "이 계정 연결 해제"
   },
+  "discoverSnaps": {
+    "message": "Snaps 찾아보기",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "해지"
   },
@@ -1495,7 +1514,7 @@
     "message": "실험적"
   },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요.",
+    "message": "커뮤니티에서 제작된 스냅들을 탐색해보고 당신의 web3 경험을 개인화하세요.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
@@ -2358,6 +2377,12 @@
   "newContract": {
     "message": "새 계약"
   },
+  "newNFTDetectedInNFTsTabMessage": {
+    "message": "MetaMask가 당신의 지갑 안의 새 NFT들을 자동으로 감지하고 보여줄 수 있도록 하세요."
+  },
+  "newNFTsAutodetected": {
+    "message": "NFT 자동 감지"
+  },
   "newNetworkAdded": {
     "message": "“$1”(을)를 성공적으로 추가했습니다!"
   },
@@ -2658,18 +2683,18 @@
     "message": "맞춤 네트워크 추가"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1에서는 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집합니다.",
+    "message": "$1 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집하지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1에서는 사용자의 IP 주소 전체를 수집합니다.",
+    "message": "$1 사용자의 IP 주소 전체를 수집하지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsNeverEmphasis": {
     "message": "절대로"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1에서는 데이터를 판매합니다. 항상요!",
+    "message": "$1 데이터를 판매하지 않습니다. 항상요!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsSendAnonymize": {
@@ -3027,7 +3052,7 @@
     "message": "자신의 자금을 지키세요"
   },
   "refreshList": {
-    "message": "새로 고침 목록"
+    "message": "목록 새로 고침"
   },
   "reject": {
     "message": "거부"
