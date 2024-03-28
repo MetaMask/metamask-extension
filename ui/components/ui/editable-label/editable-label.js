@@ -17,6 +17,7 @@ export default class EditableLabel extends Component {
     defaultValue: PropTypes.string,
     className: PropTypes.string,
     accounts: PropTypes.array,
+    testId: PropTypes.string,
   };
 
   static contextTypes = {
@@ -62,7 +63,7 @@ export default class EditableLabel extends Component {
           onChange={(event) => {
             this.setState({ value: event.target.value });
           }}
-          data-testid="editable-input"
+          testId={this.props.testId || 'editable-input'}
           error={!isValidAccountName}
           helpText={errorMessage}
           autoFocus

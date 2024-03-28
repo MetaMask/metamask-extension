@@ -48,6 +48,7 @@ export const FormTextField = ({
   truncate,
   type = 'text',
   value,
+  testId,
   ...props
 }) => (
   <Box
@@ -101,6 +102,7 @@ export const FormTextField = ({
         truncate,
         type,
         value,
+        testId,
         ...textFieldProps,
       }}
     />
