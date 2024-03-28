@@ -124,17 +124,42 @@ export default function CurrencyInput({
       return;
     }
 
-    const decimalizedHexValue = new Numeric(hexValue, 16)
+    let decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
       .shiftedBy(assetDecimals)
       .toString();
 
+    const inputValueIfBackspaced = tokenDecimalValue.slice(
+      0,
+      tokenDecimalValue.length - 1,
+    );
+
+    const isLastZeroOrDotJustExposed =
+      inputValueIfBackspaced.endsWith('0') ||
+      inputValueIfBackspaced.endsWith('.');
+
+    const isBackspacedInputEqualToNewValue =
+      Number(inputValueIfBackspaced) === Number(decimalizedHexValue);
+
+    const isInputLikelyBackspaced =
+      isLastZeroOrDotJustExposed && isBackspacedInputEqualToNewValue;
+
+    if (isInputLikelyBackspaced) {
+      console.log(`overridden to ${inputValueIfBackspaced}`);
+      decimalizedHexValue = inputValueIfBackspaced;
+    }
     const { newTokenDecimalValue, newFiatDecimalValue } =
       processNewDecimalValue(decimalizedHexValue);
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
-  }, [hexValue, assetDecimals, processNewDecimalValue, isTokenPrimary]);
+  }, [
+    hexValue,
+    assetDecimals,
+    processNewDecimalValue,
+    isTokenPrimary,
+    tokenDecimalValue,
+  ]);
 
   const renderSwapButton = () => {
     if (swapIcon) {
