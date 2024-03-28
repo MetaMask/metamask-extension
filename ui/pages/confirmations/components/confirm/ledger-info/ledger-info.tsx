@@ -5,7 +5,7 @@ import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
   HardwareTransportStates,
-  LEDGER_USB_VENDOR_ID_NUMERIC,
+  LEDGER_USB_VENDOR_ID,
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
@@ -91,11 +91,10 @@ const LedgerInfo: React.FC = () => {
               if (environmentTypeIsFullScreen) {
                 const connectedDevices =
                   await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: LEDGER_USB_VENDOR_ID_NUMERIC }],
+                    filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
                   });
                 const webHidIsConnected = connectedDevices.some(
-                  (device) =>
-                    device.vendorId === Number(LEDGER_USB_VENDOR_ID_NUMERIC),
+                  (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
                 );
                 dispatch(
                   setLedgerWebHidConnectedStatus(
