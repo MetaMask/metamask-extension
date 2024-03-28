@@ -66,3 +66,5 @@ export enum WebHIDConnectedStatuses {
 }
 
 export const LEDGER_USB_VENDOR_ID = '0x2c97';
+
+export const LEDGER_USB_VENDOR_ID_NUMERIC = 0x2c97;
