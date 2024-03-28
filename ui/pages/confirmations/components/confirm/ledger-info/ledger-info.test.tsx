@@ -1,15 +1,15 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import mockState from '../../../../../../test/data/mock-state.json';
-import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import LedgerInfo from './ledger-info';
 import {
   HardwareTransportStates,
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
+import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import LedgerInfo from './ledger-info';
 
 describe('LedgerInfo', () => {
   it('renders correctly if account is ledger account', () => {
