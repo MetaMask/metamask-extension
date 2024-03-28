@@ -28,7 +28,7 @@ import {
   getMemoizedCurrentChainId,
   getMemoizedTxId,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { useSignatureInsights } from '../../../hooks/snaps/useSignatureInsights';
 ///: END:ONLY_INCLUDE_IF
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -200,7 +200,7 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedTypedMessages,
   ]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const { warnings } = useSignatureInsights({ txData });
   ///: END:ONLY_INCLUDE_IF
   const resolvedSecurityAlertResponse =
@@ -233,7 +233,7 @@ const ConfirmTxScreen = ({ match }) => {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       selectedAccount={selectedAccount}
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings={warnings}
       ///: END:ONLY_INCLUDE_IF
     />
