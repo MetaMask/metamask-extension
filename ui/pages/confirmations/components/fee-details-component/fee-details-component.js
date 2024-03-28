@@ -42,18 +42,15 @@ export default function FeeDetailsComponent({
 
   const t = useI18nContext();
 
-  const {
-    maximumCostInHexWei: hexMaximumTransactionFee,
-    minimumCostInHexWei: hexMinimumTransactionFee,
-  } = useGasFeeContext();
+  const { minimumCostInHexWei: hexMinimumTransactionFee } = useGasFeeContext();
 
   const getTransactionFeeTotal = useMemo(() => {
     if (isMultiLayerFeeNetwork) {
-      return addHexes(hexMaximumTransactionFee, layer1GasFee || 0);
+      return addHexes(hexMinimumTransactionFee, layer1GasFee || 0);
     }
 
-    return hexMaximumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMaximumTransactionFee, layer1GasFee]);
+    return hexMinimumTransactionFee;
+  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, layer1GasFee]);
 
   const renderTotalDetailText = useCallback(
     (value) => {
