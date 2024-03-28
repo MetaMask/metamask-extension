@@ -67,6 +67,23 @@ aliases:
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
 
+commands:
+  repeat3:
+    description: 'Repeat this command 3 times, until it succeeds'
+    parameters:
+      command:
+        type: string
+    steps:
+      - run:
+          name: repeat3 << parameters.command >>
+          command: |
+            (mkdir -p repeat3 && << parameters.command >>) ||
+            (echo 'fail1' > repeat3/fail1.txt && << parameters.command >>) ||
+            (echo 'fail2' > repeat3/fail2.txt && << parameters.command >>) ||
+            echo 'fail3' > repeat3/fail3.txt
+      - store_artifacts:
+          path: repeat3
+
 workflows:
   test_and_release:
     jobs:
@@ -426,8 +443,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Validate LavaMoat build policy
+      - repeat3:
           command: yarn lavamoat:build:auto
       - run:
           name: Check working tree
@@ -442,8 +458,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Validate LavaMoat << parameters.build-type >>  policy
+      - repeat3:
           command: yarn lavamoat:webapp:auto:ci '--build-types=<< parameters.build-type >>'
       - run:
           name: Check working tree
@@ -462,8 +477,7 @@ jobs:
                 pattern: /^master$/
                 value: << pipeline.git.branch >>
           steps:
-            - run:
-                name: build:dist
+            - repeat3:
                 command: yarn build dist
       - when:
           condition:
@@ -471,8 +485,7 @@ jobs:
               pattern: /^master$/
               value: << pipeline.git.branch >>
           steps:
-            - run:
-                name: build:prod
+            - repeat3:
                 command: yarn build prod
       - run:
           name: build:debug
@@ -491,8 +504,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
+      - repeat3:
           command: yarn build --build-type desktop dist
       - run:
           name: build:debug
@@ -522,8 +534,7 @@ jobs:
                 pattern: /^master$/
                 value: << pipeline.git.branch >>
           steps:
-            - run:
-                name: build:dist
+            - repeat3:
                 command: yarn build --build-type mmi dist
       - when:
           condition:
@@ -531,8 +542,7 @@ jobs:
               pattern: /^master$/
               value: << pipeline.git.branch >>
           steps:
-            - run:
-                name: build:prod
+            - repeat3:
                 command: yarn build --build-type mmi prod
       - run:
           name: build:debug
@@ -565,8 +575,7 @@ jobs:
                 pattern: /^master$/
                 value: << pipeline.git.branch >>
           steps:
-            - run:
-                name: build:dist
+            - repeat3:
                 command: yarn build --build-type flask dist
       - when:
           condition:
@@ -574,8 +583,7 @@ jobs:
               pattern: /^master$/
               value: << pipeline.git.branch >>
           steps:
-            - run:
-                name: build:prod
+            - repeat3:
                 command: yarn build --build-type flask prod
       - run:
           name: build:debug
@@ -598,8 +606,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Build extension for testing
+      - repeat3:
           command: yarn build:test:flask
       - run:
           name: Move test build to 'dist-test-flask' to avoid conflict with production build
@@ -619,8 +626,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Build extension for testing
+      - repeat3:
           command: yarn build:test:mmi
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
@@ -666,8 +672,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Build extension in mv3 for testing
+      - repeat3:
           command: yarn build:test:mv3
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
@@ -687,8 +692,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Build extension for testing
+      - repeat3:
           command: yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
@@ -706,13 +710,14 @@ jobs:
 
   prep-build-multichain-test:
     executor: node-browsers-medium-plus
+    environment:
+      MULTICHAIN: 1
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: Build extension for testing
-          command: MULTICHAIN=1 yarn build:test
+      - repeat3:
+          command: yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-multichain
