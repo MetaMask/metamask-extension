@@ -161,4 +161,19 @@ describe('useProcessNewDecimalValue', () => {
       newTokenDecimalValue: '1',
     });
   });
+
+  it('Token is primary; extra decimals', () => {
+    const {
+      result: { current: processingFunction },
+    } = renderUseProcessNewDecimalValue(4, true, new Numeric(0.5, 10));
+
+    expect(processingFunction('1.00')).toStrictEqual({
+      newFiatDecimalValue: '0.50',
+      newTokenDecimalValue: '1.00',
+    });
+    expect(processingFunction('0.1000')).toStrictEqual({
+      newFiatDecimalValue: '0.05',
+      newTokenDecimalValue: '0.1000',
+    });
+  });
 });
