@@ -6,7 +6,9 @@ export class WeakStringMap {
   constructor() {
     this.map = new Map();
     this.finalizationRegistry = new FinalizationRegistry((key: string) => {
-      this.map.delete(key);
+      if (!this.map.get(key)?.deref()) {
+        this.map.delete(key);
+      }
     });
   }
 
