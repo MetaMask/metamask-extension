@@ -405,14 +405,77 @@ export async function loadStateFromPersistence() {
   versionedData =
     (await localStore.get()) || migrator.generateInitialState(firstTimeState);
 
+  // In an effort to get error reports when issues arise with data persistence,
+  // we load a key from localStorage that we set later in this file containing
+  // the last known successfully ran migration version. If the migration
+  // version in versionedData differs from this stored value that is indicative
+  // of some sort of issue occuring.
+  const lastGoodMigration = global.localStorage.getItem('lastGoodMigration');
+  // localStorage is serialized to strings, so we need to convert it to a
+  // number.
+  const lastGoodMigrationNum =
+    typeof Number(lastGoodMigration) === 'number'
+      ? Number(lastGoodMigration)
+      : 0;
+  const currentVersionNumber = versionedData.meta?.version;
+
+  // A new install would have no lastGoodMigration, so we only want to check
+  // for existence and for a mismatch if the lastGoodMigrationNum is not the
+  // same. If this is the case we capture a message.
+  if (lastGoodMigration && lastGoodMigrationNum !== currentVersionNumber) {
+    sentry?.captureMessage('MetaMask - Migration Version Mismatch');
+  }
+
   // check if somehow state is empty
   // this should never happen but new error reporting suggests that it has
   // for a small number of users
   // https://github.com/metamask/metamask-extension/issues/3919
   if (versionedData && !versionedData.data) {
+    // We persist the vault to localStorage as a failsafe in the event state
+    // corruption occurs.
+    const keyringVault = global.localStorage.getItem('metaMaskVault');
     // unable to recover, clear state
     versionedData = migrator.generateInitialState(firstTimeState);
-    sentry.captureMessage('MetaMask - Empty vault found - unable to recover');
+    if (global.localStorage.getItem('USER_OPTED_IN_TO_RESTORE') === 'true') {
+      //  When we get to this point we pull it out of
+      // localStorage and use it to at least allow the user to recover their
+      // accounts and backup their seed phrase. The rest of their settings will
+      // be wiped and returned to default. For the sake of transparency we will
+      // show an error screen to the user informing them what happened and that
+      // their settings are defaulted. The 'restoredFromBackup' flag is used to
+      // show this error screen in ui.js. Once they restart the app the flag is
+      // reverted to bypass the error screen.
+      if (keyringVault) {
+        versionedData.data.KeyringController = {
+          // Restore the vault from localstorage
+          vault: JSON.parse(keyringVault),
+          // Set a flag to indicate that the vault was restored from backup
+          restoredFromBackup: true,
+        };
+        // We have to set the completedOnboarding flag to true to avoid an
+        // Infinite routing loop where after unlocking they are redirected back
+        // to an unlock screen on the onboarding flow.
+        versionedData.data.OnboardingController = {
+          completedOnboarding: true, // Will change this to firstTimeFlowType: FirstTimeFlowType.restore soon
+        };
+      }
+      // Remove the OPTED_IN flag so that if the corruption were to happen
+      // again the user would not be automatically restored from the backup
+      // but would rather be presented with the options again.
+      global.localStorage.removeItem('USER_OPTED_IN_TO_RESTORE');
+    } else {
+      // We set some initializationFlags in the preferences controller here so
+      // that ui.js may interpret them and display an error.
+      versionedData.data.PreferencesController = {
+        initializationFlags: {
+          corruptionDetected: true,
+          vaultBackedUp: keyringVault !== null,
+        },
+      };
+      sentry?.captureMessage(
+        'MetaMask - Empty vault found - unable to recover',
+      );
+    }
   }
 
   // report migration errors to sentry
@@ -448,6 +511,13 @@ export async function loadStateFromPersistence() {
 
   // write to disk
   localStore.set(versionedData.data);
+
+  // In an effort to track irregularities in migration and data storage, we
+  // store the last good migration that ran without crashing the app at this
+  // point. We can then compare this number to the current migration version
+  // higher up in this file to determine if something happened during loading
+  // state from storage that caused the migration number to be out of sync.
+  global.localStorage.setItem('lastGoodMigration', versionedData.meta.version);
 
   // return just the data
   return versionedData;
