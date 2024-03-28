@@ -1,6 +1,13 @@
 /* eslint-disable */
 
 /**
+ * Firebase App
+ *
+ * This is the entry point for the Firebase SDK.
+ * This library is published here https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js
+ */
+
+/**
  * @license
  * Copyright 2017 Google LLC
  *
