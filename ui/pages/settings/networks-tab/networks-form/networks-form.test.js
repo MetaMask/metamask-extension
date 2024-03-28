@@ -18,13 +18,8 @@ const renderComponent = (props) => {
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
-const defaultNetworks = defaultNetworksData.map((network) => ({
-  ...network,
-  viewOnly: true,
-}));
-
 const propNewNetwork = {
-  networksToRender: defaultNetworks,
+  networksToRender: defaultNetworksData,
   addNewNetwork: true,
 };
 
@@ -39,7 +34,7 @@ const propNetworkDisplay = {
     rpcPrefs: {},
   },
   isCurrentRpcTarget: false,
-  networksToRender: defaultNetworks,
+  networksToRender: defaultNetworksData,
   addNewNetwork: false,
 };
 
