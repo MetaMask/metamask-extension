@@ -4,52 +4,48 @@ import type {
 } from '@metamask/json-rpc-engine';
 import type {
   JsonRpcRequest,
-  JsonRpcResponse,
   JsonRpcParams,
-  Json,
+  PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  HandlerWrapperType,
-  getWeb3ShimUsageStateType,
-  setWeb3ShimUsageRecordedType,
-} from './handlers-helpers';
+  HandlerWrapper,
+  GetWeb3ShimUsageState,
+  SetWeb3ShimUsageRecorded,
+} from './handlers-helper';
 
-type logWeb3ShimUsageOptionsType = {
-  getWeb3ShimUsageState: getWeb3ShimUsageStateType;
-  setWeb3ShimUsageRecorded: setWeb3ShimUsageRecordedType;
+type LogWeb3ShimUsageOptions = {
+  getWeb3ShimUsageState: GetWeb3ShimUsageState;
+  setWeb3ShimUsageRecorded: SetWeb3ShimUsageRecorded;
 };
-
-type logWeb3ShimUsageType<
-  Params extends JsonRpcParams = JsonRpcParams,
-  Result extends Json = Json,
-> = {
-  implementation: (
-    req: JsonRpcRequest<Params>,
-    res: JsonRpcResponse<Result>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    {
-      getWeb3ShimUsageState,
-      setWeb3ShimUsageRecorded,
-    }: logWeb3ShimUsageOptionsType,
-  ) => void;
-} & HandlerWrapperType;
-
+type LogWeb3ShimUsageConstraint<Params extends JsonRpcParams = JsonRpcParams> =
+  {
+    implementation: (
+      req: JsonRpcRequest<Params>,
+      res: PendingJsonRpcResponse<true>,
+      _next: JsonRpcEngineNextCallback,
+      end: JsonRpcEngineEndCallback,
+      {
+        getWeb3ShimUsageState,
+        setWeb3ShimUsageRecorded,
+      }: LogWeb3ShimUsageOptions,
+    ) => void;
+  } & HandlerWrapper;
 /**
  * This RPC method is called by the inpage provider whenever it detects the
  * accessing of a non-existent property on our window.web3 shim. We use this
  * to alert the user that they are using a legacy dapp, and will have to take
  * further steps to be able to use it.
  */
-const logWeb3ShimUsage: logWeb3ShimUsageType = {
+const logWeb3ShimUsage = {
   methodNames: [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE],
   implementation: logWeb3ShimUsageHandler,
   hookNames: {
     getWeb3ShimUsageState: true,
     setWeb3ShimUsageRecorded: true,
   },
-};
+} satisfies LogWeb3ShimUsageConstraint;
+
 export default logWeb3ShimUsage;
 
 /**
@@ -63,18 +59,12 @@ export default logWeb3ShimUsage;
  * @param options.setWeb3ShimUsageRecorded - A function that records web3 shim
  * usage for a particular origin.
  */
-function logWeb3ShimUsageHandler<
-  Params extends JsonRpcParams = JsonRpcParams,
-  Result extends Json = Json,
->(
+function logWeb3ShimUsageHandler<Params extends JsonRpcParams = JsonRpcParams>(
   req: JsonRpcRequest<Params>,
-  res: JsonRpcResponse<Result>,
+  res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  {
-    getWeb3ShimUsageState,
-    setWeb3ShimUsageRecorded,
-  }: logWeb3ShimUsageOptionsType,
+  { getWeb3ShimUsageState, setWeb3ShimUsageRecorded }: LogWeb3ShimUsageOptions,
 ) {
   const { origin } = req;
   if (getWeb3ShimUsageState(origin) === undefined) {
