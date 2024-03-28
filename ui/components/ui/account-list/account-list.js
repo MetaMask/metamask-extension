@@ -132,9 +132,7 @@ const AccountList = ({
                   width={BlockSize.Full}
                   alignItems={AlignItems.center}
                 >
-                  <Checkbox
-                    isChecked={isSelectedAccount}
-                  />
+                  <Checkbox isChecked={isSelectedAccount} />
                   <Box marginLeft={2}>
                     <Identicon diameter={34} address={address} />
                   </Box>
