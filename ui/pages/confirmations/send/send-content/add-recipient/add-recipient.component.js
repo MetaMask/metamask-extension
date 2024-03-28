@@ -32,9 +32,7 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     domainType: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IF
     updateRecipientUserInput: PropTypes.func,
   };
 
