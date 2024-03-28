@@ -3124,12 +3124,14 @@
         "location": true,
         "navigator": true,
         "open": true,
+        "origin": true,
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect": true,
+        "@trezor/connect-web>@trezor/connect-common": true,
         "@trezor/connect-web>@trezor/utils": true,
         "@trezor/connect-web>tslib": true,
         "webpack>events": true
@@ -3149,9 +3151,82 @@
         "@trezor/connect-web>tslib": true
       }
     },
+    "@trezor/connect-web>@trezor/connect-common": {
+      "globals": {
+        "console.warn": true,
+        "localStorage.getItem": true,
+        "localStorage.setItem": true,
+        "navigator": true,
+        "setTimeout": true,
+        "window": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": true,
+        "@trezor/connect-web>@trezor/utils": true,
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils": {
+      "globals": {
+        "innerHeight": true,
+        "innerWidth": true,
+        "location.hostname": true,
+        "location.origin": true,
+        "navigator.languages": true,
+        "navigator.platform": true,
+        "navigator.userAgent": true,
+        "screen.height": true,
+        "screen.width": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": true,
+        "@trezor/connect-web>tslib": true,
+        "browserify>process": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
+      "globals": {
+        "define": true
+      }
+    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf": {
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
+        "@trezor/connect-web>tslib": true,
+        "browserify>buffer": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
+      "globals": {
+        "process": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/base64": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/eventemitter": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/float": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
+      "globals": {
+        "console.log": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": {
+      "globals": {
+        "XMLHttpRequest": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
+        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": {
@@ -3166,8 +3241,15 @@
     },
     "@trezor/connect-web>@trezor/utils": {
       "globals": {
+        "AbortController": true,
+        "Intl.NumberFormat": true,
         "clearTimeout": true,
         "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true,
+        "browserify>buffer": true,
+        "webpack>events": true
       }
     },
     "@trezor/connect-web>tslib": {
