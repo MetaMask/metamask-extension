@@ -117,7 +117,6 @@
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/core>@babel/helpers": true,
-        "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "@babel/core>convert-source-map": true,
@@ -132,6 +131,7 @@
         "@babel/preset-env": true,
         "@babel/preset-react": true,
         "@babel/preset-typescript": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true,
         "depcheck>json5": true,
         "nock>debug": true
@@ -142,8 +142,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -154,8 +154,8 @@
       "packages": {
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -173,7 +173,7 @@
         "@babel/core>@babel/helper-compilation-targets>semver": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
-        "webpack>browserslist": true
+        "browserslist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>lru-cache": {
@@ -225,8 +225,8 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/types": true
+        "@babel/core>@babel/types": true,
+        "depcheck>@babel/parser": true
       }
     },
     "@babel/core>@babel/types": {
@@ -1259,7 +1259,7 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -1450,10 +1450,10 @@
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>fraction.js": true,
         "autoprefixer>normalize-range": true,
+        "browserslist": true,
         "postcss": true,
         "postcss>picocolors": true,
-        "stylelint>postcss-value-parser": true,
-        "webpack>browserslist": true
+        "stylelint>postcss-value-parser": true
       }
     },
     "babelify": {
@@ -2037,6 +2037,28 @@
         "watchify>xtend": true
       }
     },
+    "browserslist": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "autoprefixer>caniuse-lite": true,
+        "browserslist>electron-to-chromium": true,
+        "browserslist>node-releases": true
+      }
+    },
     "chalk": {
       "packages": {
         "chalk>ansi-styles": true,
@@ -2327,9 +2349,9 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
-        "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true,
         "babel/preset-env>b@babel/types": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
@@ -3086,6 +3108,7 @@
         "path.dirname": true
       },
       "globals": {
+        "__dirname": true,
         "__filename": true
       },
       "packages": {
@@ -3247,8 +3270,22 @@
         "__dirname": true
       },
       "packages": {
-        "del>rimraf": true,
-        "eslint>file-entry-cache>flat-cache>flatted": true
+        "eslint>file-entry-cache>flat-cache>flatted": true,
+        "eslint>file-entry-cache>flat-cache>rimraf": true
+      }
+    },
+    "eslint>file-entry-cache>flat-cache>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "eslint>glob-parent": {
@@ -3708,31 +3745,7 @@
         "setInterval": true
       },
       "packages": {
-        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver": true
-      }
-    },
-    "gulp-livereload>tiny-lr>faye-websocket>websocket-driver": {
-      "builtin": {
-        "crypto.createHash": true,
-        "crypto.randomBytes": true,
-        "events.EventEmitter": true,
-        "stream.Stream": true,
-        "url.parse": true,
-        "util.inherits": true
-      },
-      "globals": {
-        "Buffer": true,
-        "process.version.match": true
-      },
-      "packages": {
-        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": true,
-        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>websocket-extensions": true
-      }
-    },
-    "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": {
-      "builtin": {
-        "assert.equal": true,
-        "assert.ok": true
+        "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
     "gulp-postcss": {
@@ -7904,11 +7917,11 @@
       "packages": {
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>normalize-range": true,
+        "browserslist": true,
         "stylelint>autoprefixer>num2fraction": true,
         "stylelint>postcss": true,
         "stylelint>postcss-value-parser": true,
-        "stylelint>postcss>picocolors": true,
-        "webpack>browserslist": true
+        "stylelint>postcss>picocolors": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -8466,10 +8479,32 @@
         "terser>@jridgewell/source-map": true
       }
     },
-    "terser>@jridgewell/source-map": {
+    "terser-webpack-plugin>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -8477,33 +8512,12 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
         "define": true
       }
@@ -8625,8 +8639,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "ts-node>acorn-walk": {
@@ -8879,26 +8893,28 @@
         "watchify>xtend": true
       }
     },
-    "webpack>browserslist": {
+    "webpack-dev-server>sockjs>websocket-driver": {
       "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true
+        "crypto.createHash": true,
+        "crypto.randomBytes": true,
+        "events.EventEmitter": true,
+        "stream.Stream": true,
+        "url.parse": true,
+        "util.inherits": true
       },
       "globals": {
-        "console.warn": true,
-        "process.env": true,
-        "process.versions.node": true
+        "process.version": true
       },
       "packages": {
-        "autoprefixer>caniuse-lite": true,
-        "webpack>browserslist>electron-to-chromium": true,
-        "webpack>browserslist>node-releases": true
+        "koa>content-disposition>safe-buffer": true,
+        "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
+        "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
+      }
+    },
+    "webpack-dev-server>sockjs>websocket-driver>http-parser-js": {
+      "builtin": {
+        "assert.equal": true,
+        "assert.ok": true
       }
     },
     "webpack>json-parse-even-better-errors": {
@@ -8931,13 +8947,24 @@
         "process": true
       },
       "packages": {
+        "yargs-parser": true,
         "yargs>cliui": true,
         "yargs>escalade": true,
         "yargs>get-caller-file": true,
         "yargs>require-directory": true,
         "yargs>string-width": true,
-        "yargs>y18n": true,
-        "yargs>yargs-parser": true
+        "yargs>y18n": true
+      }
+    },
+    "yargs-parser": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.normalize": true,
+        "path.resolve": true,
+        "util.format": true
+      },
+      "globals": {
+        "process": true
       }
     },
     "yargs>cliui": {

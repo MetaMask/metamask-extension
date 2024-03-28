@@ -60,6 +60,19 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  # webpack
+  - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
+  - 'webpack-dev-server' # dev tool
+  - 'html-bundler-webpack-plugin' # build tool
+  - 'postcss-loader' # build tool
+  - '@swc/helpers' # build tool
+  - browserslist # build tool
+  - 'buffer' # polyfill
+  - 'crypto-browserify' # polyfill
+  - 'process' # polyfill
+  - 'stream-http' # polyfill
+  - 'rimraf' # misc: install helper
+  - 'json-schema-to-ts' # misc: typescript helper
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
 
