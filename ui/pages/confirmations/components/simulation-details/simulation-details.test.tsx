@@ -1,7 +1,10 @@
 import configureStore from 'redux-mock-store';
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationErrorCode,
+} from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SimulationDetails } from './simulation-details';
@@ -55,7 +58,9 @@ describe('SimulationDetails', () => {
   });
 
   it('renders error content when simulation error is reverted', () => {
-    renderSimulationDetails({ error: { isReverted: true, message: '' } });
+    renderSimulationDetails({
+      error: { code: SimulationErrorCode.Reverted, message: '' },
+    });
 
     expect(
       screen.getByText(/transaction is likely to fail/u),
@@ -64,7 +69,10 @@ describe('SimulationDetails', () => {
 
   it('renders no content when simulation error is due to unsupported chain', () => {
     const { container } = renderSimulationDetails({
-      error: { isReverted: false, message: 'Chain is not supported' },
+      error: {
+        code: SimulationErrorCode.ChainNotSupported,
+        message: 'Chain is not supported',
+      },
     });
 
     expect(container).toBeEmptyDOMElement();
@@ -72,7 +80,7 @@ describe('SimulationDetails', () => {
 
   it('renders error content when simulation error has a generic message', () => {
     renderSimulationDetails({
-      error: { isReverted: false, message: 'Unknown error' },
+      error: { message: 'Unknown error' },
     });
     expect(
       screen.getByText(/error loading your estimation/u),
