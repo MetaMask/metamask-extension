@@ -37,7 +37,7 @@ export default function DomainInputResolutionCell({
       titleRef.current.offsetWidth < titleRef.current.scrollWidth;
     const breakpointLength = titleRef.current.textContent.length;
 
-    if (isOverflowing) {
+    if (isOverflowing && !breakpointRef.current) {
       breakpointRef.current = breakpointLength;
     }
 
@@ -52,8 +52,10 @@ export default function DomainInputResolutionCell({
       }
     }
 
-    setIsTitleOverflowing(isOverflowing);
-  }, [domainName]);
+    if (isOverflowing !== isTitleOverflowing) {
+      setIsTitleOverflowing(isOverflowing);
+    }
+  }, [domainName, isTitleOverflowing]);
 
   const OverflowingTitle = () => (
     <Tooltip

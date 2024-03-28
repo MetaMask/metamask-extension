@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
   return {
     qrCodeData: getQrCodeData(state),
     domainError: getDomainError(state),
-    domainResolution: getDomainResolutions(state),
+    domainResolutions: getDomainResolutions(state),
   };
 };
 
