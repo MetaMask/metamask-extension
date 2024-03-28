@@ -51,9 +51,13 @@ export default function useProcessNewDecimalValue(
         newTokenDecimalValue = truncateToDecimals(numericDecimalValue);
       } else {
         newFiatDecimalValue = numericDecimalValue.toFixed(2);
+
+        const exactTokenValue = numericDecimalValue.divide(
+          tokenToFiatConversionRate,
+        );
         newTokenDecimalValue = tokenToFiatConversionRate
           ? truncateToDecimals(
-              numericDecimalValue.divide(tokenToFiatConversionRate),
+              exactTokenValue,
               MAX_DECIMALS_TOKEN_SECONDARY,
             )
           : undefined;
