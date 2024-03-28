@@ -48,10 +48,10 @@ export default function useProcessNewDecimalValue(
       } else {
         newFiatDecimalValue = numericDecimalValue.toFixed(2);
 
-        const exactTokenValue = numericDecimalValue.divide(
-          tokenToFiatConversionRate,
-        );
-        newTokenDecimalValue = tokenToFiatConversionRate
+        const exactTokenValue = tokenToFiatConversionRate
+          ? numericDecimalValue.divide(tokenToFiatConversionRate)
+          : undefined;
+        newTokenDecimalValue = exactTokenValue
           ? truncateToDecimals(
               exactTokenValue,
               Math.min(
