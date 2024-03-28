@@ -93,7 +93,7 @@ const AccountList = ({
           color={TextColor.infoDefault}
           variant={TextVariant.bodyMd}
           style={{
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
           onClick={() => selectNewAccountViaModal(handleAccountClick)}
         >
@@ -134,9 +134,6 @@ const AccountList = ({
                 >
                   <Checkbox
                     isChecked={isSelectedAccount}
-                    iconProps={{
-                      style: { cursor: 'pointer' },
-                    }}
                   />
                   <Box marginLeft={2}>
                     <Identicon diameter={34} address={address} />
