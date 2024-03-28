@@ -266,6 +266,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         return t('networkNameZkSyncEra');
       case CHAIN_IDS.LINEA_MAINNET:
         return t('networkNameLinea');
+      case CHAIN_IDS.BASE:
+        return t('networkNameBase');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -297,16 +299,19 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
 
-  const gasLimitForMax = usedQuote?.gasEstimate || `0x0`;
-
-  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
-    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
-    .round(0)
-    .toString(16);
+  const estimatedGasLimit = new BigNumber(
+    usedQuote?.gasEstimate || 0,
+    16,
+  ).toString(16);
 
   const nonCustomMaxGasLimit = usedQuote?.gasEstimate
-    ? usedGasLimitWithMultiplier
-    : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
+    ? `0x${estimatedGasLimit}`
+    : `0x${decimalToHex(
+        new BigNumber(usedQuote?.maxGas)
+          .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
+          .toString() || 0,
+      )}`;
+
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;

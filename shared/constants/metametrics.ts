@@ -587,6 +587,7 @@ export enum MetaMetricsEventName {
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
   SimulationFails = 'Simulation Fails',
+  SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -663,7 +664,7 @@ export enum MetaMetricsEventName {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
-  SnapInstallRejected = 'Snap Update Rejected',
+  SnapInstallRejected = 'Snap Install Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
   SnapUpdateStarted = 'Snap Update Started',
