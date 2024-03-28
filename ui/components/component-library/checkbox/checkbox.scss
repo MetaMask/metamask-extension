@@ -1,6 +1,4 @@
 .mm-checkbox {
-  cursor: pointer;
-
   &__input-wrapper {
     position: relative;
   }
@@ -13,6 +11,7 @@
 
     &:hover:not(:disabled) {
       background-color: var(--color-background-default-hover);
+      cursor: pointer;
     }
 
     &:focus {
