@@ -889,6 +889,9 @@
       }
     },
     "@metamask/announcement-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
         "immer": true
       }
