@@ -101,12 +101,12 @@ export default function Name({
         onClick={handleClick}
       >
         {hasDisplayName ? (
-          <Identicon address={value} diameter={18} />
+          <Identicon address={value} diameter={16} />
         ) : (
           <Icon
             name={IconName.Question}
             className="name__icon"
-            size={IconSize.Lg}
+            size={IconSize.Md}
           />
         )}
         {hasDisplayName ? (
