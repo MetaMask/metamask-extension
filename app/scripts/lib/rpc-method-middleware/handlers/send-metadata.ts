@@ -17,7 +17,7 @@ type SendMetadataOptions = {
   subjectType: SubjectType;
 };
 
-type SendMetadataConstraints<Params extends JsonRpcParams = JsonRpcParams> = {
+type SendMetadataConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
   implementation: (
     req: JsonRpcRequest<Params>,
     res: PendingJsonRpcResponse<true>,
@@ -40,7 +40,7 @@ const sendMetadata = {
     addSubjectMetadata: true,
     subjectType: true,
   },
-} satisfies SendMetadataConstraints;
+} satisfies SendMetadataConstraint;
 
 export default sendMetadata;
 
