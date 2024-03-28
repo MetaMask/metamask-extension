@@ -7,7 +7,7 @@ exports[`Name renders address with no saved name 1`] = `
       class="name name__missing"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/question.svg');"
       />
       <p
@@ -31,38 +31,38 @@ exports[`Name renders address with saved name 1`] = `
       >
         <div
           class="identicon"
-          style="height: 18px; width: 18px; border-radius: 9px;"
+          style="height: 16px; width: 16px; border-radius: 8px;"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(245, 196, 0);"
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
           >
             <svg
-              height="18"
-              width="18"
+              height="16"
+              width="16"
               x="0"
               y="0"
             >
               <rect
                 fill="#C8144D"
-                height="18"
-                transform="translate(-0.9231442102660704 -2.672213349688873) rotate(408.5 9 9)"
-                width="18"
+                height="16"
+                transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                width="16"
                 x="0"
                 y="0"
               />
               <rect
                 fill="#FB1860"
-                height="18"
-                transform="translate(8.699725589158856 -1.5148649719147114) rotate(402.6 9 9)"
-                width="18"
+                height="16"
+                transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                width="16"
                 x="0"
                 y="0"
               />
               <rect
                 fill="#03505E"
-                height="18"
-                transform="translate(1.2375522258984861 -14.79073284594546) rotate(308.0 9 9)"
-                width="18"
+                height="16"
+                transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                width="16"
                 x="0"
                 y="0"
               />
