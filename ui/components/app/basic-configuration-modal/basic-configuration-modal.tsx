@@ -26,6 +26,7 @@ import {
   Icon,
   IconSize,
   Checkbox,
+  ButtonSize,
 } from '../../component-library';
 import { getDisableExternalServices } from '../../../selectors';
 import {
@@ -124,6 +125,7 @@ export function BasicConfigurationModal() {
         <ModalFooter>
           <Box display={Display.Flex} gap={4}>
             <Button
+              size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
               onClick={() => {
@@ -133,9 +135,10 @@ export function BasicConfigurationModal() {
               {t('cancel')}
             </Button>
             <Button
+              size={ButtonSize.Lg}
               disabled={!hasAgreed && !isBasicConfigurationSettingOff}
               width={BlockSize.Half}
-              variant={ButtonVariant.Secondary}
+              variant={ButtonVariant.Primary}
               onClick={() => {
                 if (onboardingFlow) {
                   dispatch(hideBasicFunctionalityModal());
@@ -147,7 +150,7 @@ export function BasicConfigurationModal() {
                     : disableExternalServices();
                 }
               }}
-              danger
+              danger={!isBasicConfigurationSettingOff}
             >
               {isBasicConfigurationSettingOff ? t('turnOn') : t('turnOff')}
             </Button>

@@ -114,7 +114,10 @@ export default class PreferencesController {
       useExternalNameSources: true,
       useTransactionSimulations: true,
       enableMV3TimestampSave: true,
-      disableExternalServices: true,
+      // Turning OFF basic functionality toggle means turning ON this disableExternalServices flag.
+      // Whenever disableExternalServices is true, certain features will be disabled.
+      // The flag is false by Default, meaning the toggle is ON by default.
+      disableExternalServices: false,
       ...opts.initState,
     };
 
@@ -215,12 +218,12 @@ export default class PreferencesController {
 
   setDisableExternalServices(disableExternalServices) {
     this.store.updateState({ disableExternalServices });
-    this.setUseTokenDetection(disableExternalServices);
-    this.setUseCurrencyRateCheck(disableExternalServices);
-    this.setUsePhishDetect(disableExternalServices);
-    this.setUseAddressBarEnsResolution(disableExternalServices);
-    this.setOpenSeaEnabled(disableExternalServices);
-    this.setUseNftDetection(disableExternalServices);
+    this.setUseTokenDetection(!disableExternalServices);
+    this.setUseCurrencyRateCheck(!disableExternalServices);
+    this.setUsePhishDetect(!disableExternalServices);
+    this.setUseAddressBarEnsResolution(!disableExternalServices);
+    this.setOpenSeaEnabled(!disableExternalServices);
+    this.setUseNftDetection(!disableExternalServices);
   }
 
   /**

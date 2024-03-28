@@ -1009,8 +1009,9 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={!disableExternalServices}
-            onToggle={(value) => {
-              if (value === true) {
+            onToggle={(nextVal) => {
+              if (nextVal === true) {
+                // If we are going to be disabling external services, then we want to show the "turn off" warning modal
                 setBasicFunctionalityModalOpen();
               } else {
                 setDisableExternalServices(false);
