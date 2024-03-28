@@ -182,9 +182,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     updateCurrentLocale: (code) => {
       store.dispatch(actions.updateCurrentLocale(code));
     },
-    setProviderType: (type) => {
-      store.dispatch(actions.setProviderType(type));
-    },
     setFeatureFlag: (key, value) => {
       store.dispatch(actions.setFeatureFlag(key, value));
     },

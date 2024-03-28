@@ -22,8 +22,7 @@ const MOCK_LINEA_MAINNET_CONFIGURATION = {
 };
 
 describe('switchEthereumChainHandler', () => {
-  it('should call setProviderType when switching to a built in infura network', async () => {
-    const mockSetProviderType = jest.fn();
+  it('should call setActiveNetwork when switching to a built in infura network', async () => {
     const mockSetActiveNetwork = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
@@ -40,19 +39,17 @@ describe('switchEthereumChainHandler', () => {
         setNetworkClientIdForDomain: jest.fn(),
         getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,
       },
     );
-    expect(mockSetProviderType).toHaveBeenCalledTimes(1);
-    expect(mockSetProviderType).toHaveBeenCalledWith(
+    expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
+    expect(mockSetActiveNetwork).toHaveBeenCalledWith(
       MOCK_MAINNET_CONFIGURATION.type,
     );
   });
 
-  it('should call setProviderType when switching to a built in infura network, when chainId from request is lower case', async () => {
-    const mockSetProviderType = jest.fn();
+  it('should call setActiveNetwork when switching to a built in infura network, when chainId from request is lower case', async () => {
     const mockSetActiveNetwork = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
@@ -69,19 +66,17 @@ describe('switchEthereumChainHandler', () => {
         setNetworkClientIdForDomain: jest.fn(),
         findNetworkClientIdByChainId: () => 123,
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,
       },
     );
-    expect(mockSetProviderType).toHaveBeenCalledTimes(1);
-    expect(mockSetProviderType).toHaveBeenCalledWith(
+    expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
+    expect(mockSetActiveNetwork).toHaveBeenCalledWith(
       MOCK_LINEA_MAINNET_CONFIGURATION.type,
     );
   });
 
-  it('should call setProviderType when switching to a built in infura network, when chainId from request is upper case', async () => {
-    const mockSetProviderType = jest.fn();
+  it('should call setActiveNetwork when switching to a built in infura network, when chainId from request is upper case', async () => {
     const mockSetActiveNetwork = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
@@ -98,19 +93,17 @@ describe('switchEthereumChainHandler', () => {
         setNetworkClientIdForDomain: jest.fn(),
         getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,
       },
     );
-    expect(mockSetProviderType).toHaveBeenCalledTimes(1);
-    expect(mockSetProviderType).toHaveBeenCalledWith(
+    expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
+    expect(mockSetActiveNetwork).toHaveBeenCalledWith(
       MOCK_LINEA_MAINNET_CONFIGURATION.type,
     );
   });
 
   it('should call setActiveNetwork when switching to a custom network', async () => {
-    const mockSetProviderType = jest.fn();
     const mockSetActiveNetwork = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
@@ -127,7 +120,6 @@ describe('switchEthereumChainHandler', () => {
         setNetworkClientIdForDomain: jest.fn(),
         getProviderConfig: () => ({ chainId: CHAIN_IDS.MAINNET }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
-        setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,
       },

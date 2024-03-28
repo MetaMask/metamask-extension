@@ -16,7 +16,7 @@ import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { setProviderType } from '../../../store/actions';
+import { setActiveNetwork } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import {
@@ -72,7 +72,7 @@ const ConfirmAddCustodianToken = () => {
                 connectRequest.chainId.toString(),
             );
 
-            await dispatch(setProviderType(networkType));
+            await dispatch(setActiveNetwork(networkType));
           }
         }
 

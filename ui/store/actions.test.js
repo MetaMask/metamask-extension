@@ -1085,49 +1085,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setProviderType', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setProviderType', async () => {
-      const store = mockStore();
-
-      const setProviderTypeStub = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setProviderType: setProviderTypeStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setProviderType());
-      expect(setProviderTypeStub.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning when setProviderType throws', async () => {
-      const store = mockStore();
-
-      background.getApi.returns({
-        setProviderType: sinon
-          .stub()
-          .callsFake((_, cb) => cb(new Error('error'))),
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem changing networks!',
-        },
-      ];
-
-      await store.dispatch(actions.setProviderType());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();

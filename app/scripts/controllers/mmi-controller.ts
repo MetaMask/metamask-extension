@@ -859,7 +859,7 @@ export default class MMIController extends EventEmitter {
       16,
     );
     if (selectedChainId !== chainId && chainId === 1) {
-      await this.networkController.setProviderType('mainnet');
+      await this.networkController.setActiveNetwork('mainnet');
     } else if (selectedChainId !== chainId) {
       const { networkConfigurations } = this.networkController.state;
 
