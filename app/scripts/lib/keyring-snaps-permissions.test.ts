@@ -15,6 +15,8 @@ describe('keyringSnapPermissionsBuilder', () => {
       registerActionHandler: jest.fn(),
       registerInitialEventPayload: jest.fn(),
       publish: jest.fn(),
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     state: {},
   });
@@ -85,6 +87,8 @@ describe('keyringSnapPermissionsBuilder', () => {
   ])('"%s" cannot call any methods', (origin) => {
     const permissions = keyringSnapPermissionsBuilder(
       mockController,
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       origin as any,
     );
     expect(permissions()).toStrictEqual([]);
@@ -106,6 +110,8 @@ describe('isProtocolAllowed', () => {
     [1, false],
     [0, false],
     [-1, false],
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" cannot call any methods', (origin: any, expected: boolean) => {
     expect(isProtocolAllowed(origin)).toBe(expected);
   });

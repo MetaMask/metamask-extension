@@ -23,6 +23,7 @@ export type ConnectAccountsListProps = {
   deselectAll: () => void;
   selectAll: () => void;
   handleAccountClick: (address: string) => void;
+  onAccountsUpdate: () => void;
   selectedAccounts: string[];
   accounts: AccountType[];
   checked: boolean;

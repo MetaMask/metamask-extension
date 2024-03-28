@@ -9,7 +9,7 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" type="text/css" href="../lib/d3-flamegraph.css" />
+    <link rel="stylesheet" href="../lib/d3-flamegraph.css" />
 
     <style>
       /* Space out content a bit */
@@ -70,16 +70,13 @@
     </div>
 
     <!-- D3.js -->
-    <script src="https://d3js.org/d3.v7.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v7.js"></script>
 
     <!-- d3-flamegraph -->
-    <script type="text/javascript" src="../lib/d3-flamegraph.js"></script>
-    <script
-      type="text/javascript"
-      src="../lib/d3-flamegraph-tooltip.js"
-    ></script>
+    <script src="../lib/d3-flamegraph.js"></script>
+    <script src="../lib/d3-flamegraph-tooltip.js"></script>
 
-    <script type="text/javascript">
+    <script>
       var chart = flamegraph()
         .width(960)
         .cellHeight(18)
