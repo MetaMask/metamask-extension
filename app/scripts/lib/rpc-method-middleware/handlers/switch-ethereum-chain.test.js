@@ -25,6 +25,7 @@ describe('switchEthereumChainHandler', () => {
   it('should call setProviderType when switching to a built in infura network', async () => {
     const mockSetProviderType = jest.fn();
     const mockSetActiveNetwork = jest.fn();
+    const mockSetSwitchedNetworkDetails = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
       {
@@ -42,6 +43,7 @@ describe('switchEthereumChainHandler', () => {
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
+        setSwitchedNetworkDetails: mockSetSwitchedNetworkDetails,
         requestUserApproval: mockRequestUserApproval,
       },
     );
@@ -49,11 +51,13 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetProviderType).toHaveBeenCalledWith(
       MOCK_MAINNET_CONFIGURATION.type,
     );
+    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 
   it('should call setProviderType when switching to a built in infura network, when chainId from request is lower case', async () => {
     const mockSetProviderType = jest.fn();
     const mockSetActiveNetwork = jest.fn();
+    const mockSetSwitchedNetworkDetails = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
       {
@@ -71,6 +75,7 @@ describe('switchEthereumChainHandler', () => {
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
+        setSwitchedNetworkDetails: mockSetSwitchedNetworkDetails,
         requestUserApproval: mockRequestUserApproval,
       },
     );
@@ -78,11 +83,14 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetProviderType).toHaveBeenCalledWith(
       MOCK_LINEA_MAINNET_CONFIGURATION.type,
     );
+    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 
   it('should call setProviderType when switching to a built in infura network, when chainId from request is upper case', async () => {
     const mockSetProviderType = jest.fn();
     const mockSetActiveNetwork = jest.fn();
+    const mockSetSwitchedNetworkDetails = jest.fn();
+
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
       {
@@ -100,6 +108,7 @@ describe('switchEthereumChainHandler', () => {
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
+        setSwitchedNetworkDetails: mockSetSwitchedNetworkDetails,
         requestUserApproval: mockRequestUserApproval,
       },
     );
@@ -107,11 +116,13 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetProviderType).toHaveBeenCalledWith(
       MOCK_LINEA_MAINNET_CONFIGURATION.type,
     );
+    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 
   it('should call setActiveNetwork when switching to a custom network', async () => {
     const mockSetProviderType = jest.fn();
     const mockSetActiveNetwork = jest.fn();
+    const mockSetSwitchedNetworkDetails = jest.fn();
     const switchEthereumChainHandler = switchEthereumChain.implementation;
     await switchEthereumChainHandler(
       {
@@ -129,6 +140,7 @@ describe('switchEthereumChainHandler', () => {
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
+        setSwitchedNetworkDetails: mockSetSwitchedNetworkDetails,
         requestUserApproval: mockRequestUserApproval,
       },
     );
@@ -136,5 +148,6 @@ describe('switchEthereumChainHandler', () => {
     expect(mockSetActiveNetwork).toHaveBeenCalledWith(
       MOCK_MAINNET_CONFIGURATION.id,
     );
+    expect(mockSetSwitchedNetworkDetails).toHaveBeenCalledTimes(1);
   });
 });

@@ -21,7 +21,6 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
-  getSwitchedNetworkDetails,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -194,12 +193,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
           getOriginOfCurrentTab(state),
         ),
       );
-    } else if (getSwitchedNetworkDetails(state)) {
-      // It's possible that old details could exist if the user
-      // opened the toast but then didn't close it
-      // Clear out any existing switchedNetworkDetails
-      // if the user didn't just change the dapp network
-      await store.dispatch(actions.clearSwitchedNetworkDetails(null));
     }
   }
 

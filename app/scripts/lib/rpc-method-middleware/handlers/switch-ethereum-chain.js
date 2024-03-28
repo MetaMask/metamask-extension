@@ -24,6 +24,7 @@ const switchEthereumChain = {
     setNetworkClientIdForDomain: true,
     setProviderType: true,
     setActiveNetwork: true,
+    setSwitchedNetworkDetails: true,
     requestUserApproval: true,
     getNetworkConfigurations: true,
     getProviderConfig: true,
@@ -66,6 +67,7 @@ async function switchEthereumChainHandler(
     requestUserApproval,
     getProviderConfig,
     hasPermissions,
+    setSwitchedNetworkDetails,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -140,6 +142,7 @@ async function switchEthereumChainHandler(
         type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
+
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
           .map(({ chainId: id }) => id)
@@ -149,6 +152,13 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
+
+      // Ensure toast displays for change
+      await setSwitchedNetworkDetails({
+        networkClientId: approvedRequestData.type || approvedRequestData.id,
+        origin: req.origin,
+      });
+
       if (hasPermissions(req.origin)) {
         setNetworkClientIdForDomain(req.origin, networkClientId);
       }
