@@ -26,10 +26,14 @@ Object.defineProperty(globalThis, 'performance', {
 });
 
 const createMiddleWare = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   usePPOM?: any,
   options: {
     securityAlertsEnabled?: boolean;
     chainId?: Hex;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUpdateSecurityAlertResponseByTxId?: any;
   } = {
     mockUpdateSecurityAlertResponseByTxId: () => undefined,
@@ -60,9 +64,17 @@ const createMiddleWare = (
   };
 
   return createPPOMMiddleware(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ppomController as any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     networkController as any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
     mockUpdateSecurityAlertResponseByTxId,
   );
@@ -119,6 +131,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
@@ -223,6 +237,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: () => undefined,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
@@ -237,6 +253,8 @@ describe('PPOMMiddleware', () => {
   });
 
   it('calls next method when ppomController.usePPOM throws error', async () => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (_callback: any) => {
       throw Error('Some error');
     };
@@ -254,6 +272,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
@@ -271,6 +291,8 @@ describe('PPOMMiddleware', () => {
     const ppom = {
       validateJsonRpc: validateMock,
     };
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };
@@ -303,6 +325,8 @@ describe('PPOMMiddleware', () => {
       validateJsonRpc: validateMock,
     };
 
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usePPOM = async (callback: any) => {
       callback(ppom);
     };

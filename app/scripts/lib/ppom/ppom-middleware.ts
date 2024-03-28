@@ -63,6 +63,8 @@ export function createPPOMMiddleware<
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appStateController: any,
   updateSecurityAlertResponseByTxId: (
     req: JsonRpcRequest<JsonRpcParams> & {
