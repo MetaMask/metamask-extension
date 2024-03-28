@@ -42,7 +42,7 @@ const Confusable = ({ input, asText, confusableWrapperName = '' }) => {
 Confusable.propTypes = {
   input: PropTypes.string.isRequired,
   asText: PropTypes.bool,
-  textProps: PropTypes.object,
+  confusableWrapperName: PropTypes.string,
 };
 
 export default Confusable;
