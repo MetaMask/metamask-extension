@@ -27,7 +27,7 @@ export default {
       control: 'text',
       description: 'The unique identifier of the entity that owns the alert.',
     },
-    handleButtonClick: {
+    onAcknowledgeClick: {
       action: 'onClick',
       description: 'The handler for the alert modal.',
     },
@@ -41,7 +41,7 @@ export default {
     },
   },
   args: {
-    handleButtonClick: () => {},
+    onAcknowledgeClick: () => {},
     ownerId: ownerIdMock,
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],

@@ -7,7 +7,7 @@ import { AlertModal } from './alert-modal';
 
 describe('AlertModal', () => {
   const ownerIdMock = '123';
-  const handleButtonClickMock = jest.fn();
+  const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
   const fromAlertKeyMock = 'from';
   const alertsMock = [
@@ -33,7 +33,7 @@ describe('AlertModal', () => {
     const { container } = renderWithProvider(
       <AlertModal
         ownerId={ownerIdMock}
-        handleButtonClick={handleButtonClickMock}
+        onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
         alertKey={fromAlertKeyMock}
       />,
@@ -47,7 +47,7 @@ describe('AlertModal', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
         ownerId={ownerIdMock}
-        handleButtonClick={handleButtonClickMock}
+        onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
         alertKey={fromAlertKeyMock}
       />,
@@ -57,7 +57,7 @@ describe('AlertModal', () => {
     expect(getByTestId('alert-modal-button')).toBeDisabled();
   });
 
-  it('calls handleButtonClick when the button is clicked', () => {
+  it('calls onAcknowledgeClick when the button is clicked', () => {
     const mockStoreAcknowledgeAlerts = configureMockStore([])({
       ...mockState,
       confirmAlerts: {
@@ -68,7 +68,7 @@ describe('AlertModal', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
         ownerId={ownerIdMock}
-        handleButtonClick={handleButtonClickMock}
+        onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
         alertKey={fromAlertKeyMock}
       />,
@@ -76,26 +76,6 @@ describe('AlertModal', () => {
     );
 
     fireEvent.click(getByTestId('alert-modal-button'));
-    expect(handleButtonClickMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls custom button', () => {
-    const customButton = {
-      label: 'Custom Button',
-      onClick: jest.fn(),
-    };
-    const { getByText } = renderWithProvider(
-      <AlertModal
-        ownerId={ownerIdMock}
-        handleButtonClick={handleButtonClickMock}
-        onClose={onCloseMock}
-        alertKey={fromAlertKeyMock}
-        customButton={customButton}
-      />,
-      mockStore,
-    );
-
-    fireEvent.click(getByText(customButton.label));
-    expect(customButton.onClick).toBeCalledTimes(1);
+    expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
   });
 });
