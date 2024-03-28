@@ -4,13 +4,13 @@ import useProcessNewDecimalValue from './useProcessNewDecimalValue';
 
 const renderUseProcessNewDecimalValue = (
   assetDecimals: number,
-  isFiatPrimary: boolean,
+  isTokenPrimary: boolean,
   tokenToFiatConversionRate: Numeric,
 ) => {
   return renderHook(() =>
     useProcessNewDecimalValue(
       assetDecimals,
-      isFiatPrimary,
+      isTokenPrimary,
       tokenToFiatConversionRate,
     ),
   );
