@@ -8,6 +8,10 @@ const mockPassword = 'password';
 const mockData = 'data';
 
 describe('encryptorFactory', () => {
+  afterEach(async () => {
+    jest.resetAllMocks();
+  });
+
   const mockBrowserPassworder = browserPassworder as jest.Mocked<
     typeof browserPassworder
   >;
