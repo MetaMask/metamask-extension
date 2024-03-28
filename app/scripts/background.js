@@ -62,6 +62,8 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
+import { generateSkipOnboardingState } from './skip-onboarding';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 
 /* eslint-enable import/first */
 
@@ -82,7 +84,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
-const firstTimeState = { ...rawFirstTimeState };
+let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_POPUP]: true,
@@ -275,6 +277,7 @@ function saveTimestamp() {
 async function initialize() {
   try {
     const initData = await loadStateFromPersistence();
+
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
@@ -397,8 +400,18 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({ migrations });
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.SKIP_ONBOARDING
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
   migrator.on('error', console.warn);
+
+  if (process.env.SKIP_ONBOARDING) {
+    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
+    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  }
 
   // read from disk
   // first from preferred, async API:

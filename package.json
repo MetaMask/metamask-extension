@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
+    "start:skip-onboarding": "SKIP_ONBOARDING=true yarn start",
     "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
     "start:flask": "yarn start --build-type flask",
     "start:mmi": "yarn start --build-type mmi",
