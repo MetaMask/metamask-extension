@@ -2645,7 +2645,7 @@
     "message": "Nein, danke!"
   },
   "onboardingMetametricsInfuraTerms": {
-    "message": "*Wenn Sie Infura als Standard-RPC-Anbieter in MetaMask vewenden, speichert Infura Ihre IP-Adresse und Ihre Etherum-Wallet-Adresse, wenn Sie eine Transaktion senden. Wir speichern diese Daten in keinster Weise in unserem System, um sie miteinander in Verbindung zu bringen. Für weitere Informationen darüber, wie MetaMask und Infura in Hinischt auf Datenspeicherung zusammenarbeiten, sehen Sie sich bitte unser Update $1 an. Für mehr Informationen bezüglich unseren allgemeinen Datenschutzpraktiken, sehen Sie sich bitte unsere $2 an.",
+    "message": "*Wenn Sie Infura als Standard-RPC-Anbieter in MetaMask vewenden, speichert Infura Ihre IP-Adresse und Ihre Ethereum-Wallet-Adresse, wenn Sie eine Transaktion senden. Wir speichern diese Daten in keinster Weise in unserem System, um sie miteinander in Verbindung zu bringen. Für weitere Informationen darüber, wie MetaMask und Infura in Hinischt auf Datenspeicherung zusammenarbeiten, sehen Sie sich bitte unser Update $1 an. Für mehr Informationen bezüglich unseren allgemeinen Datenschutzpraktiken, sehen Sie sich bitte unsere $2 an.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {

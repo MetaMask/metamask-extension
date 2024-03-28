@@ -161,7 +161,7 @@
     "message": "Ühendamine Linea Goerli testvõrguga"
   },
   "connectingToMainnet": {
-    "message": "Ühenduse loomine peamise Etherumi võrguga"
+    "message": "Ühenduse loomine peamise Ethereumi võrguga"
   },
   "contractDeployment": {
     "message": "Lepingu juurutamine"
