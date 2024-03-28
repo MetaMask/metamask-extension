@@ -112,6 +112,7 @@ export default class PreferencesController {
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
       useTransactionSimulations: true,
+      disableExternalServices: true,
       ...opts.initState,
     };
 
@@ -209,6 +210,16 @@ export default class PreferencesController {
    */
   setUseSafeChainsListValidation(val) {
     this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  setDisableExternalServices(disableExternalServices) {
+    this.store.updateState({ disableExternalServices });
+    this.setUseTokenDetection(disableExternalServices);
+    this.setUseCurrencyRateCheck(disableExternalServices);
+    this.setUsePhishDetect(disableExternalServices);
+    this.setUseAddressBarEnsResolution(disableExternalServices);
+    this.setOpenSeaEnabled(disableExternalServices);
+    this.setUseNftDetection(disableExternalServices);
   }
 
   /**

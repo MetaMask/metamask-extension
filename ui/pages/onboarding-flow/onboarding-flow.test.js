@@ -51,6 +51,9 @@ describe('Onboarding Flow', () => {
     localeMessages: {
       currentLocale: 'en',
     },
+    appState: {
+      externalServicesOnboardingToggleState: true,
+    },
   };
 
   process.env.METAMASK_BUILD_TYPE = 'main';

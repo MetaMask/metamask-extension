@@ -3009,6 +3009,10 @@ export default class MetamaskController extends EventEmitter {
           throw new Error(`No account found for address: ${address}`);
         }
       },
+      setDisableExternalServices:
+        preferencesController.setDisableExternalServices.bind(
+          preferencesController,
+        ),
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(

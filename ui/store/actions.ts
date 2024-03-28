@@ -3371,6 +3371,19 @@ export function setIpfsGateway(
   };
 }
 
+export function setDisableExternalServices(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setDisableExternalServices`);
+    callBackgroundMethod('setDisableExternalServices', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 export function setIsIpfsGatewayEnabled(
   val: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

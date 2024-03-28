@@ -1047,6 +1047,10 @@ export function getIpfsGateway(state) {
   return state.metamask.ipfsGateway;
 }
 
+export function getDisableExternalServices(state) {
+  return state.metamask.disableExternalServices;
+}
+
 export function getInfuraBlocked(state) {
   return (
     state.metamask.networksMetadata[getSelectedNetworkClientId(state)]
@@ -2291,6 +2295,14 @@ export function getUpdatedAndSortedAccounts(state) {
 
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
+}
+
+export function getShowBasicFunctionalityModal(state) {
+  return state.appState.showBasicFunctionalityModal;
+}
+
+export function getExternalServicesOnboardingToggleState(state) {
+  return state.appState.externalServicesOnboardingToggleState;
 }
 
 export const useSafeChainsListValidationSelector = (state) => {
