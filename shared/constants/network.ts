@@ -146,6 +146,7 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  ZORA: '0x76adf1',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
@@ -883,6 +884,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.ZORA
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
