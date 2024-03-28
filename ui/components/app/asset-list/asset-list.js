@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
@@ -13,9 +13,6 @@ import {
   getShouldHideZeroBalanceTokens,
   getIsBuyableChain,
   getCurrentNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getSwapsDefaultToken,
-  ///: END:ONLY_INCLUDE_IF
   getSelectedAccount,
   getPreferences,
   getIsMainnet,
@@ -25,7 +22,6 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -36,36 +32,26 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  AssetListConversionButton,
-  ///: END:ONLY_INCLUDE_IF
+  ReceiveTokenLink,
 } from '../../multichain';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useRamps from '../../../hooks/experiences/useRamps';
-///: END:ONLY_INCLUDE_IF
-import { Display } from '../../../helpers/constants/design-system';
-
-import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
-///: END:ONLY_INCLUDE_IF
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const { chainId, nickname } = useSelector(getCurrentNetwork);
-  const currentLocale = useSelector(getCurrentLocale);
+  const { chainId } = useSelector(getCurrentNetwork);
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
@@ -81,8 +67,6 @@ const AssetList = ({ onClickAsset }) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const {
     currency: primaryCurrency,
@@ -120,48 +104,8 @@ const AssetList = ({ onClickAsset }) => {
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
-  const shouldShowReceive = balanceIsZero;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const { openBuyCryptoInPdapp } = useRamps();
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  ///: END:ONLY_INCLUDE_IF
-
-  useEffect(() => {
-    if (shouldShowBuy) {
-      trackEvent({
-        event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          chain_id: chainId,
-          locale: currentLocale,
-          network: nickname,
-          referrer: ORIGIN_METAMASK,
-        },
-      });
-    }
-    if (shouldShowReceive) {
-      trackEvent({
-        event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          chain_id: chainId,
-          locale: currentLocale,
-          network: nickname,
-          referrer: ORIGIN_METAMASK,
-        },
-      });
-    }
-  }, [
-    shouldShowBuy,
-    shouldShowReceive,
-    trackEvent,
-    chainId,
-    nickname,
-    currentLocale,
-  ]);
 
   let isStakeable = isMainnet;
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
@@ -175,53 +119,7 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {shouldShowBuy || shouldShowReceive ? (
-        <Box
-          paddingInlineStart={4}
-          paddingInlineEnd={4}
-          display={Display.Flex}
-          gap={2}
-        >
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            shouldShowBuy ? (
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
-                onClick={() => {
-                  openBuyCryptoInPdapp();
-                  trackEvent({
-                    event: MetaMetricsEventName.NavBuyButtonClicked,
-                    category: MetaMetricsEventCategory.Navigation,
-                    properties: {
-                      location: 'Home',
-                      text: 'Buy',
-                      chain_id: chainId,
-                      token_symbol: defaultSwapsToken,
-                    },
-                  });
-                }}
-              />
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            shouldShowReceive ? (
-              <AssetListConversionButton
-                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
-                onClick={() => setShowReceiveModal(true)}
-              />
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
-          {showReceiveModal ? (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          ) : null}
-        </Box>
-      ) : null}
+      {shouldShowBuy && <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />}
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
@@ -269,9 +167,18 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <ImportTokenLink margin={4} marginBottom={2} />
-      </Box>
+      {balanceIsZero && (
+        <ReceiveTokenLink
+          margin={4}
+          marginBottom={0}
+          marginTop={detectedTokens.length > 0 ? 0 : 4}
+        />
+      )}
+      <ImportTokenLink
+        margin={4}
+        marginBottom={2}
+        marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
+      />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
