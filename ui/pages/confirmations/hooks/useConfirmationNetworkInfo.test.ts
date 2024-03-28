@@ -28,7 +28,7 @@ describe('useConfirmationNetworkInfo', () => {
     expect(result.current.networkImageUrl).toBe('./images/eth_logo.svg');
   });
 
-  it('returns display name and image of provider chainId when confirmation chainId is not present', () => {
+  it('returns display name and image for custom network', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
@@ -85,7 +85,7 @@ describe('useConfirmationNetworkInfo', () => {
     expect(result.current.networkImageUrl).toBe('');
   });
 
-  it('returns correct details about custom network', () => {
+  it('returns correct details about custom network whose chainId is same as a network pre-defined in extension', () => {
     const customNetwork = {
       chainId: '0x1',
       id: '2f9ae569-1d3e-492b-8741-cb10c2434f91',

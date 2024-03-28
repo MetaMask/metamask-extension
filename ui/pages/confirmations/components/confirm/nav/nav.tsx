@@ -61,9 +61,7 @@ const Nav = () => {
       // In new routing all confirmations will support
       // "/confirm-transaction/<confirmation_id>"
       history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${
-          pendingConfirmations[currentConfirmationPosition + pos].id
-        }${
+        `${CONFIRM_TRANSACTION_ROUTE}/${nextConfirmation.id}${
           isSignatureApprovalRequest(nextConfirmation)
             ? SIGNATURE_REQUEST_PATH
             : ''
