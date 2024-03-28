@@ -145,7 +145,6 @@ export default function CurrencyInput({
       isLastZeroOrDotJustExposed && isBackspacedInputEqualToNewValue;
 
     if (isInputLikelyBackspaced) {
-      console.log(`overridden to ${inputValueIfBackspaced}`);
       decimalizedHexValue = inputValueIfBackspaced;
     }
 
@@ -157,7 +156,12 @@ export default function CurrencyInput({
     const { newTokenDecimalValue, newFiatDecimalValue } =
       processNewDecimalValue(decimalizedHexValue);
 
-    setTokenDecimalValue(newTokenDecimalValue);
+    const isTrailingDotNeeded =
+      decimalizedHexValue.endsWith('.') && !newTokenDecimalValue.endsWith('.');
+
+    setTokenDecimalValue(
+      `${newTokenDecimalValue}${isTrailingDotNeeded ? '.' : ''}`,
+    );
     setFiatDecimalValue(newFiatDecimalValue);
   }, [
     hexValue,
