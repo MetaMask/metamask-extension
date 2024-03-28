@@ -4,10 +4,14 @@ type UsePollingOptions = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
   startPollingByNetworkClientId: (
     networkClientId: string,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     options: any,
   ) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
   networkClientId: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
 };
 

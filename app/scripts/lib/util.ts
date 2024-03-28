@@ -181,6 +181,8 @@ export const isValidDate = (d: Date | number) => {
  */
 
 type DeferredPromise = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   promise: Promise<any>;
   resolve?: () => void;
   reject?: () => void;

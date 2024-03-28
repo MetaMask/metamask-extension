@@ -1,6 +1,12 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 
+export type TypedSignDataV1Type = {
+  name: string;
+  value: string;
+  type: string;
+}[];
+
 export type SecurityAlertResponse = {
   reason: string;
   features?: string[];
@@ -15,7 +21,8 @@ export type SignatureRequestType = {
   msgParams?: {
     from: string;
     origin: string;
-    data: string;
+    data: string | TypedSignDataV1Type;
+    version?: string;
   };
   type: TransactionType;
   custodyId?: string;

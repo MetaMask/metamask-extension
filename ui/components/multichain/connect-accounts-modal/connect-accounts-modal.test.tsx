@@ -7,6 +7,7 @@ import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 const render = () => {
   const props = {
     onClose: () => ({}),
+    onAccountsUpdate: () => ({}),
     handleAccountClick: () => ({}),
     deselectAll: () => ({}),
     selectAll: () => ({}),

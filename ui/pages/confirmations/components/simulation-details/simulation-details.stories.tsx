@@ -7,6 +7,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
@@ -73,6 +74,17 @@ const storeMock = configureStore({
   },
 });
 
+const storeMockPolygon = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    providerConfig: {
+      ...mockState.metamask.providerConfig,
+      chainId: CHAIN_IDS.POLYGON,
+      ticker: 'MATIC',
+    },
+  },
+});
+
 const meta: Meta<typeof SimulationDetails> = {
   title: 'Components/App/SimulationDetails',
   component: SimulationDetails,
@@ -119,6 +131,33 @@ export const MultipleTokens: Story = {
       }],
     },
   },
+};
+
+export const SendSmallAmount: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x123',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  },
+};
+
+export const MaticNativeAsset: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x123456',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  },
+  decorators: [(story) => <Provider store={storeMockPolygon}>{story()}</Provider>],
 };
 
 

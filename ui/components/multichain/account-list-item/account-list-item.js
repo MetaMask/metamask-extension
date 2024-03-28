@@ -77,6 +77,7 @@ export const AccountListItem = ({
   currentTabOrigin,
   isActive = false,
   startAccessory,
+  onActionClick,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -377,6 +378,7 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           disableAccountSwitcher={isSingleAccount}
           isOpen={accountOptionsMenuOpen}
+          onActionClick={onActionClick}
         />
       )}
     </Box>
@@ -423,6 +425,10 @@ AccountListItem.propTypes = {
    * Function that closes the menu
    */
   closeMenu: PropTypes.func,
+  /**
+   * Function to set account name to show disconnect toast when an account is disconnected
+   */
+  onActionClick: PropTypes.func,
   /**
    * File location of the avatar icon
    */

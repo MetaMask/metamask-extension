@@ -890,6 +890,9 @@
     "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
     "description": "$1 is the origin name"
   },
+  "connectedAccountsToast": {
+    "message": "Connected accounts updated"
+  },
   "connectedSites": {
     "message": "Connected sites"
   },
@@ -1414,6 +1417,14 @@
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
+  },
+  "disconnectedAllAccountsToast": {
+    "message": "All accounts disconnected from $1",
+    "description": "$1 is name of the dapp`"
+  },
+  "disconnectedSingleAccountToast": {
+    "message": "$1 disconnected from $2",
+    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -3305,6 +3316,15 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
+  },
+  "openSeaToBlockaidBtnLabel": {
+    "message": "Explore Snaps"
+  },
+  "openSeaToBlockaidDescription": {
+    "message": "Security alerts are no longer available on this network. Installing a Snap may improve your security."
+  },
+  "openSeaToBlockaidTitle": {
+    "message": "Heads up!"
   },
   "operationFailed": {
     "message": "Operation Failed"

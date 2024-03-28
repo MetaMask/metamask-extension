@@ -26,6 +26,14 @@ const mockState = {
 };
 
 describe('useCurrentConfirmation', () => {
+  beforeAll(() => {
+    process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
+  });
+
+  afterAll(() => {
+    process.env.ENABLE_CONFIRMATION_REDESIGN = 'false';
+  });
+
   it('should return current confirmation', () => {
     const { result } = renderHookWithProvider(
       () => useCurrentConfirmation(),

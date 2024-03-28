@@ -29,6 +29,8 @@ const BlockaidAlert = () => {
         ...currentConfirmation,
         securityAlertResponse:
           signatureSecurityAlertResponses?.[
+            // TODO: Replace `any` with type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             currentConfirmation?.securityAlertResponse?.securityAlertId as any
           ],
       }}

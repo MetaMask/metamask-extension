@@ -57,6 +57,8 @@ test.describe('MMI Navigation', () => {
       await getPageAndCloseRepeated(context, 'home.html'),
     );
 
+    await mainPage.finishOnboarding();
+
     // Check main page links
     await checkLinkURL(
       context,

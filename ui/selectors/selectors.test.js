@@ -526,6 +526,40 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getIsNetworkSupportedByBlockaid', () => {
+    it('returns true if current network is Linea', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.providerConfig,
+            chainId: CHAIN_IDS.LINEA_MAINNET,
+          },
+        },
+      };
+      const isSupported =
+        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
+      expect(isSupported).toBe(true);
+    });
+
+    it('returns false if current network is Goerli', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.providerConfig,
+            chainId: CHAIN_IDS.GOERLI,
+          },
+        },
+      };
+      const isSupported =
+        selectors.getIsNetworkSupportedByBlockaid(modifiedMockState);
+      expect(isSupported).toBe(false);
+    });
+  });
+
   describe('#getAllEnabledNetworks', () => {
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
@@ -1165,7 +1199,9 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
-        active: true,
+        active: false,
+        connections: true,
+        lastSelected: undefined,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',

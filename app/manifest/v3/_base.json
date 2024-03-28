@@ -14,7 +14,7 @@
   },
   "author": "https://metamask.io",
   "background": {
-    "service_worker": "app-init.js"
+    "service_worker": "scripts/app-init.js"
   },
   "commands": {
     "_execute_browser_action": {
@@ -30,11 +30,11 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "disable-console.js",
-        "lockdown-install.js",
-        "lockdown-run.js",
-        "lockdown-more.js",
-        "contentscript.js"
+        "scripts/disable-console.js",
+        "scripts/lockdown-install.js",
+        "scripts/lockdown-run.js",
+        "scripts/lockdown-more.js",
+        "scripts/contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true

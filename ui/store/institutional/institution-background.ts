@@ -29,6 +29,8 @@ export function showInteractiveReplacementTokenBanner({
           oldRefreshToken,
         },
       ]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err) {
         dispatch(displayWarning(err.message));
@@ -58,6 +60,8 @@ export function setTypedMessageInProgress(msgId: string) {
     dispatch(showLoadingIndication());
     try {
       await submitRequestToBackground('setTypedMessageInProgress', [msgId]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -73,6 +77,8 @@ export function setPersonalMessageInProgress(msgId: string) {
     dispatch(showLoadingIndication());
     try {
       await submitRequestToBackground('setPersonalMessageInProgress', [msgId]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -92,11 +98,17 @@ export function setPersonalMessageInProgress(msgId: string) {
 export function mmiActionsFactory() {
   function createAsyncAction(
     name: string,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useForceUpdateMetamaskState?: any,
     loadingText?: string,
   ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
     log.debug(`background.${name}`);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return async (dispatch: any) => {
       if (loadingText) {
         dispatch(showLoadingIndication(loadingText));
@@ -123,6 +135,8 @@ export function mmiActionsFactory() {
     };
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function createAction(name: string, payload: any) {
     return () => {
       callBackgroundMethod(name, [payload], (err) => {

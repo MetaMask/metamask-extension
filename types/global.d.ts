@@ -68,6 +68,8 @@ type sendMessage = {
     callback?: (response: Record<string, unknown>) => void,
   ): void;
   (
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     message: any,
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
@@ -190,6 +192,8 @@ type sendMessage = {
         url: string;
       };
     },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (response: { result: any; error?: Error }) => void,
   );
   (
@@ -202,6 +206,8 @@ declare class Runtime {
   onMessage: {
     addListener: (
       callback: (
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         message: any,
         sender: MessageSender,
         sendResponse: (response?: ResponseType) => void,

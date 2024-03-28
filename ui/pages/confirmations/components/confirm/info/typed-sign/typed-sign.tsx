@@ -24,7 +24,9 @@ const TypedSignInfo: React.FC = () => {
     return null;
   }
 
-  const { domain = {} } = JSON.parse(currentConfirmation?.msgParams?.data);
+  const { domain = {} } = JSON.parse(
+    currentConfirmation.msgParams.data as string,
+  );
 
   return (
     <>
@@ -35,7 +37,7 @@ const TypedSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
+          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>
         {isValidAddress(domain.verifyingContract) && (
           <ConfirmInfoRow label={t('interactingWith')}>
@@ -51,7 +53,7 @@ const TypedSignInfo: React.FC = () => {
       >
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data}
+            data={currentConfirmation.msgParams?.data as string}
           />
         </ConfirmInfoRow>
       </Box>

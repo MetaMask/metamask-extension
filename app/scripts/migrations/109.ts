@@ -27,6 +27,8 @@ export async function migrate(
   return versionedData;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const identities: PreferencesControllerState['identities'] =
     state?.PreferencesController?.identities ?? {};

@@ -12,6 +12,7 @@ import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
+import type { Hex } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
 import { captureException } from '@sentry/browser';
@@ -34,6 +35,7 @@ export type SecurityAlertResponse = {
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
+  description?: string;
 };
 
 export type AddTransactionOptions = NonNullable<
@@ -59,7 +61,7 @@ export type AddTransactionOptions = NonNullable<
 >;
 
 type BaseAddTransactionRequest = {
-  chainId: string;
+  chainId: Hex;
   networkClientId: string;
   ppomController: PPOMController;
   securityAlertsEnabled: boolean;
@@ -78,6 +80,8 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dappRequest: Record<string, any>;
 };
 
@@ -270,6 +274,8 @@ async function addUserOperationWithController(
   } = request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { origin, requireApproval, type } = transactionOptions as any;
 
   const normalisedTransaction: TransactionParams = {

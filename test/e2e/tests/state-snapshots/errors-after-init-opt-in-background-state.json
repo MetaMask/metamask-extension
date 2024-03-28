@@ -155,6 +155,7 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",

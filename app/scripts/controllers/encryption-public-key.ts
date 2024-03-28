@@ -87,7 +87,11 @@ export type EncryptionPublicKeyControllerOptions = {
   messenger: EncryptionPublicKeyControllerMessenger;
   getEncryptionPublicKey: (address: string) => Promise<string>;
   getAccountKeyringType: (account: string) => Promise<string>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getState: () => any;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
 };
 
@@ -105,10 +109,14 @@ export default class EncryptionPublicKeyController extends BaseController<
 
   private _getAccountKeyringType: (account: string) => Promise<string>;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _getState: () => any;
 
   private _encryptionPublicKeyManager: EncryptionPublicKeyManager;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metricsEvent: (payload: any, options?: any) => void;
 
   /**
@@ -352,6 +360,8 @@ export default class EncryptionPublicKeyController extends BaseController<
   ) {
     messageManager.subscribe((state: MessageManagerState<AbstractMessage>) => {
       const newMessages = this._migrateMessages(
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         state.unapprovedMessages as any,
       );
       this.update((draftState) => {

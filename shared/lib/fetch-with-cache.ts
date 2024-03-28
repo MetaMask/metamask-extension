@@ -9,7 +9,11 @@ const fetchWithCache = async ({
   functionName = '',
 }: {
   url: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchOptions?: Record<string, any>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cacheOptions?: Record<string, any>;
   functionName: string;
 }) => {

@@ -81,6 +81,8 @@ type TemporaryBackgroundState = {
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IF
   internalAccounts: {
@@ -100,6 +102,8 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
 };
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
   const isDev = debugModeEnabled && !process.env.IN_TEST;

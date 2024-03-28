@@ -51,14 +51,22 @@ export const snapKeyringBuilder = (
   getSnapController: () => SnapController,
   persistKeyringHelper: () => Promise<void>,
   setSelectedAccountHelper: (address: string) => void,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   removeAccountHelper: (address: string) => Promise<any>,
   trackEvent: (
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload: Record<string, any>,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     options?: Record<string, any>,
   ) => void,
   getSnapName: (snapId: string) => string,
 ) => {
   const builder = (() => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new SnapKeyring(getSnapController() as any, {
       addressExists: async (address) => {
         const addresses = await controllerMessenger.call(
@@ -348,6 +356,8 @@ export const snapKeyringBuilder = (
         }
       },
     });
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
   builder.type = SnapKeyring.type;
   return builder;

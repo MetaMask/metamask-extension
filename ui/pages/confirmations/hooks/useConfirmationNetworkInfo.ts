@@ -29,11 +29,16 @@ function useConfirmationNetworkInfo() {
     const currentChainId =
       currentConfirmation?.chainId ?? providerConfig.chainId;
     confirmationNetwork = allNetworks.find(
-      ({ chainId }) => chainId === currentChainId,
+      ({ id, chainId }) =>
+        chainId === currentChainId &&
+        (providerConfig.type === NETWORK_TYPES.RPC
+          ? id === providerConfig.id
+          : id === providerConfig.type),
     );
+
     if (confirmationNetwork) {
-      const { nickname, providerType, type } = confirmationNetwork;
-      if (providerType === NETWORK_TYPES.RPC || type === NETWORK_TYPES.RPC) {
+      const { nickname } = confirmationNetwork;
+      if (providerConfig.type === NETWORK_TYPES.RPC) {
         networkDisplayName = nickname ?? t('privateNetwork');
       } else {
         networkDisplayName =

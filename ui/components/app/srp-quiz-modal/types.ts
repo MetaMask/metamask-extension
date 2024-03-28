@@ -14,6 +14,8 @@ export type IQuizInformationProps = {
   /**
    * The icon to display in the modal should use <Icon /> component
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: any;
   /**
    * The image to display in the modal

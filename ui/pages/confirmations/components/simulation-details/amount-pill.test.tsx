@@ -3,7 +3,12 @@ import { render } from '@testing-library/react';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { AmountPill } from './amount-pill';
-import { Amount, TokenAssetIdentifier } from './types';
+import {
+  Amount,
+  AssetIdentifier,
+  NATIVE_ASSET_IDENTIFIER,
+  TokenAssetIdentifier,
+} from './types';
 
 const TOKEN_ID_MOCK = '0xabc';
 
@@ -22,29 +27,71 @@ const ERC1155_ASSET_MOCK: TokenAssetIdentifier = {
   tokenId: TOKEN_ID_MOCK,
 };
 
-describe('AmountPill', () => {
-  describe('ERC20', () => {
-    const cases = [
-      {
-        isNegative: true,
-        numeric: new Numeric(-123.456, 10),
-        expected: '- 123.456',
-      },
-      {
-        isNegative: false,
-        numeric: new Numeric(789.012, 10),
-        expected: '+ 789.012',
-      },
-    ];
-    it.each(cases)(
-      'renders the correct sign and amount',
-      ({ isNegative, numeric, expected }) => {
-        const amount = { isNegative, numeric } as Amount;
+const renderAndExpectText = (
+  asset: AssetIdentifier,
+  amount: Amount,
+  expectedText: string,
+): void => {
+  const { getByText } = render(<AmountPill asset={asset} amount={amount} />);
+  expect(getByText(expectedText)).toBeInTheDocument();
+};
 
-        const { getByText } = render(
-          <AmountPill asset={ERC20_ASSET_MOCK} amount={amount} />,
+describe('AmountPill', () => {
+  const nativeAndErc20Cases = [
+    {
+      isNegative: true,
+      numeric: new Numeric(-123.456, 10),
+      expected: '- 123.456',
+    },
+    {
+      isNegative: false,
+      numeric: new Numeric(789.012, 10),
+      expected: '+ 789.012',
+    },
+    {
+      isNegative: true,
+      numeric: new Numeric(-0.000000001, 10),
+      expected: '- <0.000001',
+    },
+    {
+      isNegative: false,
+      numeric: new Numeric(0.000000001, 10),
+      expected: '+ <0.000001',
+    },
+    {
+      isNegative: true,
+      numeric: new Numeric(0, 10),
+      expected: '- 0',
+    },
+    {
+      isNegative: false,
+      numeric: new Numeric(0, 10),
+      expected: '+ 0',
+    },
+  ];
+
+  describe('Native', () => {
+    it.each(nativeAndErc20Cases)(
+      'renders the correct sign and amount for $expected',
+      ({ isNegative, numeric, expected }) => {
+        renderAndExpectText(
+          NATIVE_ASSET_IDENTIFIER,
+          { isNegative, numeric } as Amount,
+          expected,
         );
-        expect(getByText(expected)).toBeInTheDocument();
+      },
+    );
+  });
+
+  describe('ERC20', () => {
+    it.each(nativeAndErc20Cases)(
+      'renders the correct sign and amount for $expected',
+      ({ isNegative, numeric, expected }) => {
+        renderAndExpectText(
+          ERC20_ASSET_MOCK,
+          { isNegative, numeric } as Amount,
+          expected,
+        );
       },
     );
   });
@@ -64,31 +111,15 @@ describe('AmountPill', () => {
     ];
 
     it.each(cases)(
-      'renders the token ID with just a plus or minus',
+      'renders the token ID with just a plus or minus for $expected',
       ({ isNegative, numeric, expected }) => {
-        const amount = {
-          isNegative,
-          numeric,
-        } as Amount;
-
-        const { getByText } = render(
-          <AmountPill asset={ERC721_ASSET_MOCK} amount={amount} />,
+        renderAndExpectText(
+          ERC721_ASSET_MOCK,
+          { isNegative, numeric } as Amount,
+          expected,
         );
-        expect(getByText(expected)).toBeInTheDocument();
       },
     );
-
-    it('does not render the amount', () => {
-      const amount = {
-        isNegative: true,
-        numeric: new Numeric(1, 10),
-      } as Amount;
-
-      const { queryByText } = render(
-        <AmountPill asset={ERC721_ASSET_MOCK} amount={amount} />,
-      );
-      expect(queryByText('-')).not.toBeInTheDocument();
-    });
   });
 
   describe('ERC1155', () => {
@@ -111,14 +142,13 @@ describe('AmountPill', () => {
     ];
 
     it.each(cases)(
-      'renders the correct sign, amount, and token ID',
+      'renders the correct sign, amount, and token ID for $expected',
       ({ isNegative, numeric, expected }) => {
-        const amount = { isNegative, numeric } as Amount;
-
-        const { getByText } = render(
-          <AmountPill asset={ERC1155_ASSET_MOCK} amount={amount} />,
+        renderAndExpectText(
+          ERC1155_ASSET_MOCK,
+          { isNegative, numeric } as Amount,
+          expected,
         );
-        expect(getByText(expected)).toBeInTheDocument();
       },
     );
   });

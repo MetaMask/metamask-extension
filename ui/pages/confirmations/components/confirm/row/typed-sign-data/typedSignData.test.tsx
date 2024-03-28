@@ -33,7 +33,11 @@ describe('ConfirmInfoRowTypedSignData', () => {
   });
 
   it('should not render data whose type is not defined', () => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (rawMessageV4.message as any).do_not_display = 'one';
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (rawMessageV4.message as any).do_not_display_2 = {
       do_not_display: 'two',
     };

@@ -135,6 +135,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
+        '@typescript-eslint/no-explicit-any': 'error',
         // this rule is new, but we didn't use it before, so it's off now
         '@typescript-eslint/no-duplicate-enum-values': 'off',
         '@typescript-eslint/no-shadow': [

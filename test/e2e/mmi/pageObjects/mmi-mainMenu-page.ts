@@ -88,6 +88,17 @@ export class MMIMainMenuPage {
       .click();
   }
 
+  async fillPassword() {
+    await this.page.getByTestId('unlock-password').fill(process.env.MMI_E2E_MMI_PASSWORD as string);
+    await this.page.getByRole('button', { name: /unlock/iu }).click();
+  }
+
+  async finishOnboarding() {
+    await this.page.getByRole('button', { name: /continue/iu }).click();
+    await this.page.getByRole('button', { name: /continue to wallet/iu }).click();
+  }
+
+
   async switchTestNetwork() {
     await this.page
       .locator(

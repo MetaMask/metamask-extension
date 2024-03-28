@@ -373,6 +373,24 @@ describe('Numeric', () => {
       });
     });
 
+    describe('isZero', () => {
+      it('should return true for positive zero', () => {
+        expect(new Numeric(0, 10).isZero()).toStrictEqual(true);
+      });
+
+      it('should return true for negative 0', () => {
+        expect(new Numeric(-0, 10).isZero()).toStrictEqual(true);
+      });
+
+      it('should return false for positive non-zero', () => {
+        expect(new Numeric(10, 10).isZero()).toStrictEqual(false);
+      });
+
+      it('should return false for negative non-zero', () => {
+        expect(new Numeric(-10, 10).isZero()).toStrictEqual(false);
+      });
+    });
+
     describe('applyConversionRate', () => {
       it('should multiply the value by the conversionRate supplied', () => {
         expect(

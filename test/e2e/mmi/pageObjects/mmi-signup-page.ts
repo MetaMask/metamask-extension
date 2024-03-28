@@ -52,7 +52,7 @@ export class MMISignUpPage {
     this.agreePasswordTermsCheck = page.getByTestId('create-password-terms');
     this.importBtn = page.locator('button:has-text("Import my wallet")');
     this.doneBtn = page.locator('button:has-text("Done")');
-    this.gotItBtn = page.locator('button:has-text("Got it!")');
+    this.gotItBtn = page.locator('button:has-text("Got it")');
     this.nextBtn = page.locator('button:has-text("Next")');
   }
 
@@ -84,12 +84,6 @@ export class MMISignUpPage {
 
   async info() {
     await this.page.getByRole('button', { name: /continue/iu }).click();
-    await this.page
-      .getByRole('button', {
-        name: /continue metamask institutional onboarding/iu,
-      })
-      .click();
-    // After this click its redirect to the dashboard but we don't need to signin
   }
 
   async close() {
