@@ -148,6 +148,12 @@ export default function CurrencyInput({
       console.log(`overridden to ${inputValueIfBackspaced}`);
       decimalizedHexValue = inputValueIfBackspaced;
     }
+
+    // do not update if they already match
+    if (Number(decimalizedHexValue) === Number(tokenDecimalValue)) {
+      return;
+    }
+
     const { newTokenDecimalValue, newFiatDecimalValue } =
       processNewDecimalValue(decimalizedHexValue);
 
