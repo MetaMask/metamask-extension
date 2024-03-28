@@ -197,6 +197,11 @@ env:
   - ASSET_PREFIX: null
 
   ###
+  # Notifications Feature
+  ###
+  - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
+
+  ###
   # API keys to 3rd party services
   ###
 
