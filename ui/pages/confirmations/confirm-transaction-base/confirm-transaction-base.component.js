@@ -1101,8 +1101,8 @@ export default class ConfirmTransactionBase extends Component {
     // as this component is made functional, useTransactionFunctionType can be used to get functionType
     const isTokenApproval =
       txData.type === TransactionType.tokenMethodSetApprovalForAll ||
-      txData.type === TransactionType.tokenMethodApprove;
-
+      txData.type === TransactionType.tokenMethodApprove ||
+      txData.type === TransactionType.tokenMethodIncreaseAllowance;
     const isContractInteraction =
       txData.type === TransactionType.contractInteraction;
 
