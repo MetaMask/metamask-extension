@@ -9,14 +9,14 @@ import {
   BadgeWrapper,
   IconName,
   IconSize,
-  ///: END:ONY_INCLUDE_IF
+  ///: END:ONLY_INCLUDE_IF
   Text,
 } from '../../../../../components/component-library';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   BackgroundColor,
   IconColor,
-  ///: END:ONY_INCLUDE_IF
+  ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -29,13 +29,13 @@ export default function DomainInputResolutionCell({
   domainName,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   resolvingSnap,
-  ///: END:ONY_INCLUDE_IF
+  ///: END:ONLY_INCLUDE_IF
   onClick,
   protocol,
 }) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const t = useContext(I18nContext);
-  ///: END:ONY_INCLUDE_IF
+  ///: END:ONLY_INCLUDE_IF
   const titleRef = useRef(null);
   const breakpointRef = useRef(null);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
