@@ -12,7 +12,8 @@ import {
 import {
   BannerAlert,
   BannerAlertSeverity,
-  ButtonLink,
+  Button,
+  ButtonVariant,
   Text,
 } from '../../../../../components/component-library';
 import {
@@ -65,8 +66,10 @@ const LedgerInfo: React.FC = () => {
         </li>
       </ul>
       {transportStatus === HardwareTransportStates.deviceOpenFailure && (
-        <ButtonLink
+        <Button
+          variant={ButtonVariant.Link}
           textAlign={TextAlign.Left}
+          fontWeight={FontWeight.Normal}
           onClick={async () => {
             if (environmentTypeIsFullScreen) {
               window.location.reload();
@@ -76,12 +79,14 @@ const LedgerInfo: React.FC = () => {
           }}
         >
           {t('ledgerConnectionInstructionCloseOtherApps')}
-        </ButtonLink>
+        </Button>
       )}
       {usingWebHID &&
         webHidConnectedStatus === WebHIDConnectedStatuses.notConnected && (
-          <ButtonLink
+          <Button
+            variant={ButtonVariant.Link}
             textAlign={TextAlign.Left}
+            fontWeight={FontWeight.Normal}
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
                 const connectedDevices =
@@ -107,7 +112,7 @@ const LedgerInfo: React.FC = () => {
             {environmentTypeIsFullScreen
               ? t('clickToConnectLedgerViaWebHID')
               : t('openFullScreenForLedgerWebHid')}
-          </ButtonLink>
+          </Button>
         )}
     </BannerAlert>
   );
