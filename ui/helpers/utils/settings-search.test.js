@@ -1,5 +1,5 @@
 import React from 'react';
-import { SETTINGS_CONSTANTS } from '../constants/settings';
+import SETTINGS_CONSTANTS from '../constants/settings';
 import {
   getSettingsRoutes,
   getNumberOfSettingRoutesInTab,
