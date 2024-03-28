@@ -32,7 +32,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../hooks/useAlerts';
 
 export type AlertModalProps = {
-  /** The unique identifier of the entity that owns the alert */
+  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
   ownerId: string;
   /** The function to be executed when the button in the alert modal is clicked */
   handleButtonClick: () => void;
