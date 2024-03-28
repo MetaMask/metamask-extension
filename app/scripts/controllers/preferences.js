@@ -57,8 +57,9 @@ export default class PreferencesController {
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
-      useNftDetection: false,
+      useTokenDetection: opts?.initState?.useTokenDetection ?? true,
+      useNftDetection: opts?.initState?.useNftDetection ?? true,
+      // useNftDetection: true,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
       useRequestQueue: false,
