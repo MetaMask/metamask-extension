@@ -334,7 +334,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
       it.each([
         ['any_method_without_rate_limit_type_set', 1],
-        ['eth_chainId', 1],
+        ['eth_getBalance', 1],
       ])(
         `should only track a random percentage of '%s' events`,
         async (method, eventsTrackedPerRequest) => {
