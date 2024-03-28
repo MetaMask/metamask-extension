@@ -163,24 +163,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         width={BlockSize.Full}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
-      <MenuItem
-        iconName={IconName.Connect}
-        disabled={hasUnapprovedTransactions}
-        onClick={() => {
-          history.push(CONNECTED_ROUTE);
-          trackEvent({
-            event: MetaMetricsEventName.NavConnectedSitesOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-connected-sites"
-      >
-        {t('connectedSites')}
-      </MenuItem>
       {process.env.MULTICHAIN ? (
         <MenuItem
           iconName={IconName.SecurityTick}
@@ -199,7 +181,26 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         >
           {t('allPermissions')}
         </MenuItem>
-      ) : null}
+      ) : (
+        <MenuItem
+          iconName={IconName.Connect}
+          disabled={hasUnapprovedTransactions}
+          onClick={() => {
+            history.push(CONNECTED_ROUTE);
+            trackEvent({
+              event: MetaMetricsEventName.NavConnectedSitesOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-connected-sites"
+        >
+          {t('connectedSites')}
+        </MenuItem>
+      )}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
