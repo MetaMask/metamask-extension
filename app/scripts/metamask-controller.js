@@ -2241,12 +2241,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (this.preferencesController.store.getState().useTokenDetection) {
-      this.tokenRatesController.isPaused
-        ? this.tokenRatesController.resume()
-        : (this.tokenListPollingToken =
-            this.tokenListController.startPollingByNetworkClientId(
-              this.networkController.state.selectedNetworkClientId,
-            ));
+      this.tokenListController.start();
     }
   }
 
@@ -2258,7 +2253,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenRatesController.pause();
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
-      this.tokenListController.pause();
+      this.tokenListController.stop();
     }
   }
 
