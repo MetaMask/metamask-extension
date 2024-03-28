@@ -36,7 +36,7 @@ export type AlertModalProps = {
   ownerId: string;
   /** The function to be executed when the button in the alert modal is clicked */
   handleButtonClick: () => void;
-  /** The unique key representing the specific alert field */
+  /** The key of the specific alert to display from the `confirmAlerts` reducer.  */
   alertKey: string;
   /** The function to be executed when the modal needs to be closed */
   onClose: () => void;
