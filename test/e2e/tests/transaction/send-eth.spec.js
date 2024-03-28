@@ -284,8 +284,8 @@ describe('Send ETH', function () {
               tag: 'button',
             });
             await driver.waitForSelector({
-              text: '0.00021 ETH',
-              tag: 'h1',
+              text: 'Edit priority',
+              tag: 'header',
             });
             await editGasfeeForm(driver, '21000', '100');
             await driver.waitForSelector({

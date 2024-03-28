@@ -844,6 +844,7 @@ async function buildEventFragmentProperties({
     [
       TransactionType.contractInteraction,
       TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
       TransactionType.tokenMethodSafeTransferFrom,
       TransactionType.tokenMethodSetApprovalForAll,
       TransactionType.tokenMethodTransfer,
