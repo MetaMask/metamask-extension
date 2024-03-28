@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+// eslint-disable-next-line import/no-named-as-default
 import Router from 'react-router-dom';
 
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
