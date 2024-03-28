@@ -201,4 +201,89 @@ describe('Deprecated networks', function () {
       },
     );
   });
+
+  it('Should show deprecation warning when switching to Polygon mumbai', async function () {
+    const TEST_CHAIN_ID = CHAIN_IDS.POLYGON_TESTNET;
+    async function mockRPCURLAndChainId(mockServer) {
+      return [
+        await mockServer
+          .forPost('https://responsive-rpc.url/')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              id: '1694444405781',
+              jsonrpc: '2.0',
+              result: TEST_CHAIN_ID,
+            },
+          })),
+      ];
+    }
+
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({ useSafeChainsListValidation: false })
+          .build(),
+        title: this.test.fullTitle(),
+        testSpecificMock: mockRPCURLAndChainId,
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await openDapp(driver);
+        await driver.executeScript(`
+        var params = [{
+          chainId: "${TEST_CHAIN_ID}",
+          chainName: "Polygon Mumbai",
+          nativeCurrency: {
+            name: "",
+            symbol: "MATIC",
+            decimals: 18
+          },
+          rpcUrls: ["https://responsive-rpc.url/"],
+          blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
+        }]
+        window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params
+        })
+      `);
+        await driver.waitUntilXWindowHandles(3);
+        const windowHandles = await driver.getAllWindowHandles();
+        const [extension] = windowHandles;
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Dialog,
+          windowHandles,
+        );
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        const switchNetworkBtn = await driver.findElement({
+          tag: 'button',
+          text: 'Switch network',
+        });
+
+        await switchNetworkBtn.click();
+
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(extension);
+        const deprecationWarningText = 'This network is deprecated';
+        const isDeprecationWarningDisplayed = await driver.isElementPresent({
+          text: deprecationWarningText,
+        });
+
+        assert.equal(
+          isDeprecationWarningDisplayed,
+          true,
+          'Goerli deprecation warning is not displayed',
+        );
+      },
+    );
+  });
 });
