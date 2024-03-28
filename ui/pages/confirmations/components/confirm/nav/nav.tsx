@@ -94,6 +94,9 @@ const Nav = () => {
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       padding={3}
+      style={{
+        zIndex: 2,
+      }}
     >
       <Box alignItems={AlignItems.center} display={Display.Flex}>
         <ButtonIcon

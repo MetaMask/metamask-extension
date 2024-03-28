@@ -5,14 +5,17 @@ import configureStore from '../../../../store/store';
 import { SimulationDetails } from './simulation-details';
 import mockState from '../../../../../test/data/mock-state.json';
 import { Hex } from '@metamask/utils';
-import { SimulationTokenStandard } from '@metamask/transaction-controller';
+import {
+  SimulationErrorCode,
+  SimulationTokenStandard,
+} from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const DUMMY_BALANCE_CHANGE = {
   previousBalance: '0xIGNORED' as Hex,
   newBalance: '0xIGNORED' as Hex,
-}
+};
 
 const CHAIN_ID_MOCK = '0x1';
 const ERC20_TOKEN_1_MOCK = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'; // WBTC
@@ -37,30 +40,26 @@ const storeMock = configureStore({
         address: ERC20_TOKEN_1_MOCK,
         symbol: 'WBTC',
         name: 'Wrapped Bitcoin',
-        iconUrl:
-          `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_1_MOCK}.png`,
+        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_1_MOCK}.png`,
       },
       [ERC20_TOKEN_2_MOCK]: {
         address: ERC20_TOKEN_2_MOCK,
         symbol: 'USDC',
         name: 'USD Coin',
-        iconUrl:
-          `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_2_MOCK}.png`,
+        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC20_TOKEN_2_MOCK}.png`,
       },
       [ERC721_TOKEN_MOCK]: {
         address: ERC721_TOKEN_MOCK,
         symbol: 'CK',
         name: 'CryptoKitties',
-        iconUrl:
-          `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC721_TOKEN_MOCK}.png`,
+        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC721_TOKEN_MOCK}.png`,
       },
       [ERC1155_TOKEN_MOCK]: {
         address: ERC1155_TOKEN_MOCK,
         symbol: 'MAYC',
         name: 'Mutant Ape Yacht Club',
-        iconUrl:
-          `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `
-      }
+        iconUrl: `https://static.metafi.codefi.network/api/v1/tokenIcons/1/${ERC1155_TOKEN_MOCK}.png `,
+      },
     },
     names: {
       [NameType.ETHEREUM_ADDRESS]: {
@@ -102,33 +101,38 @@ export const MultipleTokens: Story = {
         difference: '0x12345678912345678',
         isDecrease: true,
       },
-      tokenBalanceChanges: [{
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC20_TOKEN_1_MOCK,
-        difference: '0x123456',
-        isDecrease: false,
-        standard: SimulationTokenStandard.erc20,
-      }, {
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC20_TOKEN_2_MOCK,
-        difference: '0x123456901',
-        isDecrease: false,
-        standard: SimulationTokenStandard.erc20,
-      }, {
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC721_TOKEN_MOCK,
-        difference: '0x1',
-        isDecrease: false,
-        id: '0x721',
-        standard: SimulationTokenStandard.erc721,
-      }, {
-        ...DUMMY_BALANCE_CHANGE,
-        address: ERC1155_TOKEN_MOCK,
-        difference: '0x13',
-        isDecrease: false,
-        id: '0x1155',
-        standard: SimulationTokenStandard.erc1155,
-      }],
+      tokenBalanceChanges: [
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_1_MOCK,
+          difference: '0x123456',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_2_MOCK,
+          difference: '0x123456901',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC721_TOKEN_MOCK,
+          difference: '0x1',
+          isDecrease: false,
+          id: '0x721',
+          standard: SimulationTokenStandard.erc721,
+        },
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC1155_TOKEN_MOCK,
+          difference: '0x13',
+          isDecrease: false,
+          id: '0x1155',
+          standard: SimulationTokenStandard.erc1155,
+        },
+      ],
     },
   },
 };
@@ -157,9 +161,10 @@ export const MaticNativeAsset: Story = {
       tokenBalanceChanges: [],
     },
   },
-  decorators: [(story) => <Provider store={storeMockPolygon}>{story()}</Provider>],
+  decorators: [
+    (story) => <Provider store={storeMockPolygon}>{story()}</Provider>,
+  ],
 };
-
 
 export const ReceiveOnly: Story = {
   args: {
@@ -198,39 +203,28 @@ export const NoBalanceChanges: Story = {
   },
 };
 
-
 export const Loading: Story = {
   args: {
     simulationData: undefined,
   },
-}
+};
 
 export const TransactionReverted: Story = {
   args: {
     simulationData: {
-      error: { isReverted: true },
+      error: { code: SimulationErrorCode.Reverted },
       nativeBalanceChange: undefined,
       tokenBalanceChanges: [],
     },
   },
-}
-
-export const ChainNotSupported: Story = {
-  args: {
-    simulationData: {
-      error: { isReverted: false, message: 'lorem ipsum Chain is not supported lorem ipsum ' },
-      nativeBalanceChange: undefined,
-      tokenBalanceChanges: [],
-    },
-  },
-}
+};
 
 export const GenericError: Story = {
   args: {
     simulationData: {
-      error: { isReverted: false },
+      error: {},
       nativeBalanceChange: undefined,
       tokenBalanceChanges: [],
     },
   },
-}
+};
