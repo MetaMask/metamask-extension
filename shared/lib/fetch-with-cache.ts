@@ -9,7 +9,11 @@ const fetchWithCache = async ({
   functionName = '',
 }: {
   url: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fetchOptions?: Record<string, any>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cacheOptions?: Record<string, any>;
   functionName: string;
 }) => {
@@ -49,8 +53,7 @@ const fetchWithCache = async ({
       `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`,
     );
   }
-  const responseJson =
-    response.status === 204 ? undefined : await response.json();
+  const responseJson = await response.json();
   const cacheEntry = {
     cachedResponse: responseJson,
     cachedTime: currentTime,

@@ -5,11 +5,11 @@ import {
   selectAlerts,
   selectConfirmedAlertKeys,
   selectGeneralAlerts,
-} from '../../../selectors/alerts';
+} from '../selectors/alerts';
 import {
   Alert,
   setAlertConfirmed as setAlertConfirmedAction,
-} from '../../../ducks/confirm-alerts/confirm-alerts';
+} from '../ducks/confirm-alerts/confirm-alerts';
 
 const useAlerts = (ownerId: string) => {
   const dispatch = useDispatch();

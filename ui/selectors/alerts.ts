@@ -9,7 +9,7 @@ export type AlertsState = {
 };
 
 export function selectAlerts(state: AlertsState, ownerId: string): Alert[] {
-  return state.confirmAlerts.alerts[ownerId] || [];
+  return state.confirmAlerts.alerts[ownerId] ?? [];
 }
 
 export const selectGeneralAlerts = createSelector(

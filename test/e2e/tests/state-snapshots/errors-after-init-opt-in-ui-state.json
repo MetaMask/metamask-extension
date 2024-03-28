@@ -75,6 +75,7 @@
     "showAccountBanner": true,
     "trezorModel": null,
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},

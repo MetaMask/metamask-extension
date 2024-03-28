@@ -526,14 +526,6 @@ export default class Routes extends Component {
       return true;
     }
 
-    if (matchPath(location.pathname, { path: ASSET_ROUTE, exact: false })) {
-      let hideAppHeader = true;
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      hideAppHeader = false;
-      ///: END:ONLY_INCLUDE_IF
-      return hideAppHeader;
-    }
-
     const isHandlingPermissionsRequest = Boolean(
       matchPath(location.pathname, {
         path: CONNECT_ROUTE,
@@ -648,11 +640,12 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-    let isLoadingShown = isLoading;
+    let isLoadingShown = isLoading && completedOnboarding;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
       isLoading &&
+      completedOnboarding &&
       !pendingConfirmations.some(
         (confirmation) =>
           confirmation.type ===
@@ -715,7 +708,9 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
+          {!isLoading && isNetworkLoading && completedOnboarding ? (
+            <LoadingNetwork />
+          ) : null}
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
@@ -787,6 +782,8 @@ export default class Routes extends Component {
         return t('connectingToSepolia');
       case NETWORK_TYPES.LINEA_GOERLI:
         return t('connectingToLineaGoerli');
+      case NETWORK_TYPES.LINEA_SEPOLIA:
+        return t('connectingToLineaSepolia');
       case NETWORK_TYPES.LINEA_MAINNET:
         return t('connectingToLineaMainnet');
       default:
