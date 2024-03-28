@@ -11,10 +11,6 @@ import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 const Info: React.FC = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
-  if (!currentConfirmation?.type) {
-    return null;
-  }
-
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
       [TransactionType.personalSign]: () => PersonalSignInfo,
@@ -28,6 +24,10 @@ const Info: React.FC = () => {
     }),
     [currentConfirmation],
   );
+
+  if (!currentConfirmation?.type) {
+    return null;
+  }
 
   const InfoComponent =
     ConfirmationInfoComponentMap[
