@@ -172,35 +172,6 @@ export const PolygonNativeAsset: Story = {
   ],
 };
 
-export const SendSmallAmount: Story = {
-  args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x123',
-        isDecrease: true,
-      },
-      tokenBalanceChanges: [],
-    },
-  },
-};
-
-export const PolygonNativeAsset: Story = {
-  args: {
-    simulationData: {
-      nativeBalanceChange: {
-        ...DUMMY_BALANCE_CHANGE,
-        difference: '0x9345678923456789',
-        isDecrease: true,
-      },
-      tokenBalanceChanges: [],
-    },
-  },
-  decorators: [
-    (story) => <Provider store={storeMockPolygon}>{story()}</Provider>,
-  ],
-};
-
 export const ArbitrumNativeAsset: Story = {
   args: {
     simulationData: {
