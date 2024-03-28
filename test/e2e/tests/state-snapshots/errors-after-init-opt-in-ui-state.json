@@ -3,6 +3,7 @@
   "activeTab": "object",
   "appState": "object",
   "confirm": "object",
+  "confirmAlerts": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
   "history": { "mostRecentOverviewPage": "/" },

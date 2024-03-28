@@ -6,7 +6,7 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../../../components/component-library';
+} from '../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,

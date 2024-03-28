@@ -340,8 +340,17 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "alert": {
+    "message": "Alert"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
+  },
+  "alertModalAcknowledge": {
+    "message": "I have acknowledged the risk and still want to proceed."
+  },
+  "alertModalDetails": {
+    "message": "Alert Details"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
