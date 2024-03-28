@@ -145,7 +145,11 @@ describe('useSimulationMetrics', () => {
 
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
-      ['reverted', { error: { isReverted: true } }, 'transaction_revert'],
+      [
+        'reverted',
+        { error: { code: SimulationErrorCode.Reverted } },
+        'transaction_revert',
+      ],
       ['failed', { error: { message: 'testError' } }, 'failed'],
       ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
       ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],

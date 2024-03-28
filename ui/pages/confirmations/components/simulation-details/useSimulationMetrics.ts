@@ -253,7 +253,7 @@ function getSimulationResponseType(
     return SimulationResponseType.InProgress;
   }
 
-  if (simulationData.error?.isReverted) {
+  if (simulationData.error?.code === SimulationErrorCode.Reverted) {
     return SimulationResponseType.Reverted;
   }
 
