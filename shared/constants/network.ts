@@ -149,6 +149,7 @@ export const CHAIN_IDS = {
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
+  SUPER_LUMIO: '0x22a2',
   BLAST: '0x13e31',
 } as const;
 
@@ -885,6 +886,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
+    | typeof CHAIN_IDS.SUPER_LUMIO
     | typeof CHAIN_IDS.BLAST
   >]: BuyableChainSettings;
 } = {
