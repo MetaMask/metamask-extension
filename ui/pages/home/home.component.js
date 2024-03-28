@@ -979,7 +979,7 @@ export default class Home extends PureComponent {
                   name={t('activity')}
                   tabKey="activity"
                 >
-                  <TransactionList boxProps={{ paddingTop: 4 }} />
+                  <TransactionList />
                   {
                     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
                     <ButtonLink
