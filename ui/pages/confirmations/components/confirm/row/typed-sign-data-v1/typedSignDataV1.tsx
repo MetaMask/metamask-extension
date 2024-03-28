@@ -5,6 +5,8 @@ import { BlockSize } from '../../../../../../helpers/constants/design-system';
 
 import { DataTree } from '../dataTree';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ConfirmInfoRowTypedSignDataV1 = ({ data }: any) => {
   if (!data) {
     return null;

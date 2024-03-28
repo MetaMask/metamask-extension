@@ -27,6 +27,8 @@ import {
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({
