@@ -85,6 +85,7 @@
     "PreferencesController": {
       "advancedGasFee": null,
       "currentLocale": "en",
+      "disableExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
       "featureFlags": {},
       "forgottenPassword": false,
