@@ -131,9 +131,10 @@ export default function CurrencyInput({
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
+    // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     hexValue,
-    tokenDecimalValue,
     asset?.address,
     processNewDecimalValue,
     isTokenPrimary,
