@@ -508,8 +508,8 @@ export default class MetamaskController extends EventEmitter {
 
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
-      allowedActions: ['PreferencesController:getState'],
-      allowedEvents: ['PreferencesController:stateChange'],
+      allowedActions: [],
+      allowedEvents: [],
     });
 
     this.preferencesController = new PreferencesController({
@@ -2509,6 +2509,7 @@ export default class MetamaskController extends EventEmitter {
       this.controllerMessenger.publish(
         'PreferencesController:stateChange',
         state,
+        [],
       );
     });
 
