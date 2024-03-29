@@ -2,20 +2,27 @@ import React from 'react';
 
 import { Box } from '../../../../../../components/component-library';
 import { BlockSize } from '../../../../../../helpers/constants/design-system';
-
+import { TypedSignDataV1Type } from '../../../../types/confirm';
 import { DataTree } from '../dataTree';
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const ConfirmInfoRowTypedSignDataV1 = ({ data }: any) => {
+export const ConfirmInfoRowTypedSignDataV1 = ({
+  data,
+}: {
+  data?: TypedSignDataV1Type;
+}) => {
   if (!data) {
     return null;
   }
 
+  const parsedData = data.reduce(
+    (val, { name, value, type }) => ({ ...val, [name]: { type, value } }),
+    {},
+  );
+
   return (
-    <Box width={BlockSize.Full} style={{ margin: '0 -8px' }}>
-      <Box style={{ margin: '0 -8px' }}>
-        <DataTree data={data} />
+    <Box width={BlockSize.Full}>
+      <Box style={{ marginLeft: -8 }}>
+        <DataTree data={parsedData} />
       </Box>
     </Box>
   );
