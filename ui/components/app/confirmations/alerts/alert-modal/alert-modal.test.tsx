@@ -6,15 +6,10 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { AlertModal } from './alert-modal';
 
 describe('AlertModal', () => {
-<<<<<<< HEAD:ui/pages/confirmations/components/alerts/alert-modal/alert-modal.test.tsx
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
   const ALERT_MESSAGE_MOCK = 'Alert 1';
-  const handleButtonClickMock = jest.fn();
-=======
-  const ownerIdMock = '123';
   const onAcknowledgeClickMock = jest.fn();
->>>>>>> feat/single-alert-modal-component:ui/components/app/confirmations/alerts/alert-modal/alert-modal.test.tsx
   const onCloseMock = jest.fn();
   const alertsMock = [
     {
@@ -40,13 +35,8 @@ describe('AlertModal', () => {
   it('renders the alert modal', () => {
     const { getByText } = renderWithProvider(
       <AlertModal
-<<<<<<< HEAD:ui/pages/confirmations/components/alerts/alert-modal/alert-modal.test.tsx
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
-=======
-        ownerId={ownerIdMock}
         onAcknowledgeClick={onAcknowledgeClickMock}
->>>>>>> feat/single-alert-modal-component:ui/components/app/confirmations/alerts/alert-modal/alert-modal.test.tsx
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
       />,
@@ -59,13 +49,8 @@ describe('AlertModal', () => {
   it('disables button when alert is not acknowledged', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
-<<<<<<< HEAD:ui/pages/confirmations/components/alerts/alert-modal/alert-modal.test.tsx
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
-=======
-        ownerId={ownerIdMock}
         onAcknowledgeClick={onAcknowledgeClickMock}
->>>>>>> feat/single-alert-modal-component:ui/components/app/confirmations/alerts/alert-modal/alert-modal.test.tsx
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
       />,
@@ -85,13 +70,8 @@ describe('AlertModal', () => {
     });
     const { getByTestId } = renderWithProvider(
       <AlertModal
-<<<<<<< HEAD:ui/pages/confirmations/components/alerts/alert-modal/alert-modal.test.tsx
         ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
-=======
-        ownerId={ownerIdMock}
         onAcknowledgeClick={onAcknowledgeClickMock}
->>>>>>> feat/single-alert-modal-component:ui/components/app/confirmations/alerts/alert-modal/alert-modal.test.tsx
         onClose={onCloseMock}
         alertKey={FROM_ALERT_KEY_MOCK}
       />,
@@ -99,30 +79,6 @@ describe('AlertModal', () => {
     );
 
     fireEvent.click(getByTestId('alert-modal-button'));
-<<<<<<< HEAD:ui/pages/confirmations/components/alerts/alert-modal/alert-modal.test.tsx
-    expect(handleButtonClickMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls custom button', () => {
-    const customButton = {
-      label: 'Custom Button',
-      onClick: jest.fn(),
-    };
-    const { getByText } = renderWithProvider(
-      <AlertModal
-        ownerId={OWNER_ID_MOCK}
-        handleButtonClick={handleButtonClickMock}
-        onClose={onCloseMock}
-        alertKey={FROM_ALERT_KEY_MOCK}
-        customButton={customButton}
-      />,
-      mockStore,
-    );
-
-    fireEvent.click(getByText(customButton.label));
-    expect(customButton.onClick).toBeCalledTimes(1);
-=======
     expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
->>>>>>> feat/single-alert-modal-component:ui/components/app/confirmations/alerts/alert-modal/alert-modal.test.tsx
   });
 });

@@ -11,7 +11,7 @@ import {
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
-  const handleButtonClickMock = jest.fn();
+  const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
   const alertsMock = [
     {
@@ -36,7 +36,7 @@ describe('MultipleAlertModal', () => {
 
   const defaultProps: MultipleAlertModalProps = {
     ownerId: OWNER_ID_MOCK,
-    handleButtonClick: handleButtonClickMock,
+    onAcknowledgeClick: onAcknowledgeClickMock,
     alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
   };

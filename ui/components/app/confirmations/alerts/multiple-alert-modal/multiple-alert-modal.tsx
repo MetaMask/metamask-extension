@@ -5,21 +5,21 @@ import {
   ButtonIconSize,
   IconName,
   Text,
-} from '../../../../../components/component-library';
+} from '../../../../component-library';
 import {
   Display,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useAlerts from '../../../hooks/useAlerts';
+import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 
 export type MultipleAlertModalProps = {
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
   /** The function to be executed when the button in the alert modal is clicked. */
-  handleButtonClick: () => void;
+  onAcknowledgeClick: () => void;
   /** The unique key representing the specific alert field. */
   alertKey: string;
   /** The function to be executed when the modal needs to be closed. */
@@ -28,7 +28,7 @@ export type MultipleAlertModalProps = {
 
 export function MultipleAlertModal({
   ownerId,
-  handleButtonClick,
+  onAcknowledgeClick,
   alertKey,
   onClose,
 }: MultipleAlertModalProps) {
@@ -56,19 +56,19 @@ export function MultipleAlertModal({
     );
   }, [alerts]);
 
-  const onButtonClick = useCallback(() => {
+  const handleAcknowledgeClick = useCallback(() => {
     if (selectedIndex + 1 === alerts.length) {
-      handleButtonClick();
+      onAcknowledgeClick();
       return;
     }
 
     onNext();
-  }, [handleButtonClick, onNext, selectedIndex, alerts]);
+  }, [onAcknowledgeClick, onNext, selectedIndex, alerts]);
 
   return (
     <AlertModal
       ownerId={ownerId}
-      handleButtonClick={onButtonClick}
+      onAcknowledgeClick={handleAcknowledgeClick}
       alertKey={selectedAlert.key}
       onClose={onClose}
       multipleAlerts={
