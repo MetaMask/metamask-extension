@@ -143,6 +143,19 @@ export const MultipleTokens: Story = {
   },
 };
 
+export const SendSmallAmount: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x123',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  },
+};
+
 export const LongValuesAndNames: Story = {
   args: {
     simulationData: {
