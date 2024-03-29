@@ -21,8 +21,8 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="number"
-          value="0"
+          type="text"
+          value=""
         />
         <div
           class="unit-input__suffix"
@@ -79,8 +79,8 @@ exports[`CurrencyInput Component rendering should render properly with a native 
           placeholder="0"
           step="any"
           style="width: 20ch;"
-          type="number"
-          value="0"
+          type="text"
+          value="0.004327880204275946"
         />
         <div
           class="unit-input__suffix"
@@ -119,8 +119,8 @@ exports[`CurrencyInput Component rendering should render properly with an ETH va
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="number"
-          value="0"
+          type="text"
+          value="1"
         />
         <div
           class="unit-input__suffix"
@@ -172,8 +172,8 @@ exports[`CurrencyInput Component rendering should render properly without a suff
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="number"
-          value="0"
+          type="text"
+          value=""
         />
         <div
           class="unit-input__suffix"

@@ -20,8 +20,8 @@ exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="number"
-          value="0"
+          type="text"
+          value=""
         />
       </div>
       <div

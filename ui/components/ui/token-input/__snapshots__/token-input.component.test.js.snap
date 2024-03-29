@@ -21,8 +21,8 @@ exports[`TokenInput Component Name of the group should render properly 1`] = `
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="number"
-          value="0"
+          type="text"
+          value=""
         />
         <div
           class="unit-input__suffix"
