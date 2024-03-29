@@ -80,6 +80,8 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dappRequest: Record<string, any>;
 };
 
@@ -272,6 +274,8 @@ async function addUserOperationWithController(
   } = request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { origin, requireApproval, type } = transactionOptions as any;
 
   const normalisedTransaction: TransactionParams = {
