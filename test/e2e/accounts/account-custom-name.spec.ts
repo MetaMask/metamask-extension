@@ -19,12 +19,10 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         );
         await driver.clickElement('[data-testid="account-list-menu-details"]');
         await driver.clickElement('[data-testid="editable-label-button"]');
-        await driver.fill(
-          '[data-testid="account-name-editable-label"]',
-          newAccountLabel,
-        );
+        await driver.fill('[data-testid="account-name-editable-label"]', newAccountLabel);
         // await driver.delay(1000);
       },
     );
   });
 });
+
