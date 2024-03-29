@@ -111,18 +111,8 @@ export default function CurrencyInput({
     );
   };
 
-  // reset form when token is changed
-  useEffect(() => {
-    setTokenDecimalValue('0');
-    setFiatDecimalValue('0');
-  }, [asset?.address]);
-
   // align input to upstream value
   useEffect(() => {
-    if (!isTokenPrimary) {
-      return;
-    }
-
     const decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
       .shiftedBy(assetDecimals)
