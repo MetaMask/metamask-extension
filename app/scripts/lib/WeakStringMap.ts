@@ -1,8 +1,6 @@
 export class WeakStringMap {
   map: Map<string, WeakRef<WeakKey>>;
 
-  finalizationRegistry: FinalizationRegistry<string>;
-
   constructor() {
     this.map = new Map();
   }
@@ -30,11 +28,7 @@ export class WeakStringMap {
   }
 
   delete(key: string) {
-    const value = this.get(key);
-    if (value !== undefined) {
-      return this.map.delete(key);
-    }
-    return false;
+    return this.map.delete(key);
   }
 
   clear() {
