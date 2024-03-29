@@ -199,7 +199,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       // opened the toast but then didn't close it
       // Clear out any existing switchedNetworkDetails
       // if the user didn't just change the dapp network
-      await store.dispatch(actions.clearSwitchedNetworkDetails(null));
+      await store.dispatch(actions.clearSwitchedNetworkDetails());
     }
   }
 

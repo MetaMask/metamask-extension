@@ -1691,7 +1691,8 @@ export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
  * @returns Network ID to switch to
  */
 export function getNetworkToAutomaticallySwitchTo(state) {
-  const numberOfUnapprovedTx = getNumberOfAllUnapprovedTransactionsAndMessages(state);
+  const numberOfUnapprovedTx =
+    getNumberOfAllUnapprovedTransactionsAndMessages(state);
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations

@@ -112,7 +112,8 @@ function mapStateToProps(state) {
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
-    unapprovedTransactions: getNumberOfAllUnapprovedTransactionsAndMessages(state),
+    unapprovedTransactions:
+      getNumberOfAllUnapprovedTransactionsAndMessages(state),
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
