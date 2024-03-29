@@ -11,6 +11,13 @@ const defaultFormatOptions = {
   decimalPlaces: 4,
 };
 
+/**
+ * calcTokenAmount is duplicated here specifically for use within the Service Worker context.
+ * This duplication is intentional to avoid importing the entire transactions-controller-utils module,
+ * which could potentially increase the size of the Service Worker script and impact its load time and performance.
+ *
+ * The original function can be found in the transactions-controller-utils module shared/lib/transactions-controller-utils.js
+ */
 export function calcTokenAmount(value: string, decimals: string) {
   const multiplier = Math.pow(10, Number(decimals || 0));
   return new BigNumber(String(value)).div(multiplier);

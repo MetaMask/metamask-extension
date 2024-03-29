@@ -302,7 +302,7 @@ export const CURRENCY_SYMBOLS = {
   ONE: 'ONE',
 } as const;
 
-const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
+export const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ...CURRENCY_SYMBOLS,
   BASE: 'ETH',
   LINEA_MAINNET: 'ETH',

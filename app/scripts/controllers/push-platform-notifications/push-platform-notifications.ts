@@ -45,6 +45,15 @@ const metadata = {
   },
 };
 
+/**
+ * Manages push notifications for the application, including enabling, disabling, and updating triggers for push notifications.
+ * This controller integrates with Firebase Cloud Messaging (FCM) to handle the registration and management of push notifications.
+ * It is responsible for registering and unregistering the service worker that listens for push notifications,
+ * managing the FCM token, and communicating with the server to register or unregister the device for push notifications.
+ * Additionally, it provides functionality to update the server with new UUIDs that should trigger push notifications.
+ *
+ * @extends {BaseController<typeof controllerName, PushPlatformNotificationsControllerState, PushPlatformNotificationsControllerMessanger>}
+ */
 export class PushPlatformNotificationsController extends BaseController<
   typeof controllerName,
   PushPlatformNotificationsControllerState,
@@ -101,7 +110,9 @@ export class PushPlatformNotificationsController extends BaseController<
   public async enablePushNotifications(UUIDs: string[]) {
     const bearerToken = await this.getBearerToken();
     if (!bearerToken) {
-      log.error('Failed to enable push notifications: BearerToken token is missing.');
+      log.error(
+        'Failed to enable push notifications: BearerToken token is missing.',
+      );
       throw new Error();
     }
 
@@ -141,8 +152,10 @@ export class PushPlatformNotificationsController extends BaseController<
   public async disablePushNotifications(UUIDs: string[]) {
     const bearerToken = await this.getBearerToken();
     if (!bearerToken) {
-      log.error('Failed to enable push notifications: BearerToken token is missing.');
-      throw new Error();
+      const errorMessage =
+        'Failed to enable push notifications: BearerToken token is missing.';
+      log.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     try {
@@ -160,12 +173,13 @@ export class PushPlatformNotificationsController extends BaseController<
           // the service worker (that sends push notifications) is also removed
           await targetRegistration?.unregister().catch(() => null);
         } catch (error) {
-          console.error('Service worker unregistration failed:', error);
+          log.error('Service worker unregistration failed:', error);
         }
       }
     } catch (error) {
-      log.error('Failed to disable push notifications:', error);
-      throw new Error();
+      const errorMessage = `Failed to disable push notifications: ${error}`;
+      log.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     // 2. Send a request to the server to unregister the token/device
@@ -194,8 +208,10 @@ export class PushPlatformNotificationsController extends BaseController<
   public async updateTriggerPushNotifications(UUIDs: string[]) {
     const bearerToken = await this.getBearerToken();
     if (!bearerToken) {
-      log.error('Failed to enable push notifications: BearerToken token is missing.');
-      throw new Error();
+      const errorMessage =
+        'Failed to enable push notifications: BearerToken token is missing.';
+      log.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     try {
@@ -205,8 +221,9 @@ export class PushPlatformNotificationsController extends BaseController<
         UUIDs,
       );
     } catch (error) {
-      log.error('Failed to update triggers for push notifications:', error);
-      throw new Error();
+      const errorMessage = `Failed to update triggers for push notifications: ${error}`;
+      log.error(errorMessage);
+      throw new Error(errorMessage);
     }
   }
 }
