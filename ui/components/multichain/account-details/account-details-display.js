@@ -70,7 +70,7 @@ export const AccountDetailsDisplay = ({
           });
         }}
         accounts={accounts}
-        testId="account-name-editable-label"
+        data-testid="account-name-editable-label"
       />
       <QrCodeView Qr={{ data: address }} />
       {exportPrivateKeyFeatureEnabled ? (
