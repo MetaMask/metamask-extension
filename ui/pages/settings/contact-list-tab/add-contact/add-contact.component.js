@@ -91,7 +91,7 @@ export default class AddContact extends PureComponent {
         }}
         onReset={() => {
           this.props.resetDomainResolution();
-          this.setState({ ethAddress: '', input: '', selectedAddress: '' });
+          this.setState({ input: '', selectedAddress: '' });
         }}
         userInput={this.state.selectedAddress || this.state.input}
       />
