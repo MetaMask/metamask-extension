@@ -111,6 +111,12 @@ export default function CurrencyInput({
     );
   };
 
+  // reset form when token is changed
+  useEffect(() => {
+    setTokenDecimalValue('0');
+    setFiatDecimalValue('0');
+  }, [asset?.address]);
+
   // align input to upstream value
   useEffect(() => {
     if (!isTokenPrimary) {
