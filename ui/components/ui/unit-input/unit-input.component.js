@@ -87,13 +87,13 @@ export default class UnitInput extends PureComponent {
     const { value: userInput } = event.target;
     let value = userInput;
 
-    if (value && !this.props.keyPressRegex.test(value)) {
-      event.preventDefault();
-      return;
-    }
-
     if (userInput.length && userInput.length > 1) {
       value = removeLeadingZeroes(userInput);
+    }
+
+    if (!this.props.keyPressRegex.test(value)) {
+      event.preventDefault();
+      return;
     }
 
     this.setState({
