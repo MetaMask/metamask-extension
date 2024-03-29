@@ -100,7 +100,7 @@
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
-    "disableExternalServices": false,
+    "disableExternalServices": "boolean",
     "useMultiAccountBalanceChecker": true,
     "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": true,
