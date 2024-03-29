@@ -6,6 +6,8 @@ import configureStore from '../../../../../store/store';
 
 import { ConfirmInfoRowCurrency } from './currency';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const render = (props: Record<string, any> = {}) => {
   const store = configureStore({
     metamask: {
