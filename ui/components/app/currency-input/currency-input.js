@@ -113,12 +113,6 @@ export default function CurrencyInput({
 
   // reset form when token is changed
   useEffect(() => {
-    setTokenDecimalValue('0');
-    setFiatDecimalValue('0');
-  }, [asset?.address]);
-
-  useEffect(() => {
-    // do not override the input when it is using fiat, since it is imprecise
     if (!isTokenPrimary) {
       return;
     }
@@ -128,12 +122,22 @@ export default function CurrencyInput({
       .shiftedBy(assetDecimals)
       .toString();
 
+    if (Number(decimalizedHexValue) === Number(tokenDecimalValue)) {
+      return;
+    }
+
     const { newTokenDecimalValue, newFiatDecimalValue } =
-      processNewDecimalValue(decimalizedHexValue);
+      processNewDecimalValue(decimalizedHexValue, true);
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
-  }, [hexValue, assetDecimals, processNewDecimalValue, isTokenPrimary]);
+  }, [
+    hexValue,
+    asset?.address,
+    processNewDecimalValue,
+    isTokenPrimary,
+    assetDecimals,
+  ]);
 
   const renderSwapButton = () => {
     if (swapIcon) {
