@@ -171,6 +171,22 @@ export const LongValuesAndNames: Story = {
   },
 };
 
+export const PolygonNativeAsset: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x9345678923456789',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [],
+    },
+  },
+  decorators: [
+    (story) => <Provider store={storeMockPolygon}>{story()}</Provider>,
+  ],
+};
+
 export const ArbitrumNativeAsset: Story = {
   args: {
     simulationData: {
