@@ -88,7 +88,7 @@ export default class UnitInput extends PureComponent {
     let value = userInput;
 
     if (userInput.length && userInput.length > 1) {
-      value = removeLeadingZeroes(userInput);
+      value = removeLeadingZeroes(userInput).replace(/,/u, '.');
     }
 
     if (!this.props.keyPressRegex.test(value)) {
