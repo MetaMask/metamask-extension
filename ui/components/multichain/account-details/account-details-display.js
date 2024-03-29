@@ -70,7 +70,10 @@ export const AccountDetailsDisplay = ({
           });
         }}
         accounts={accounts}
+<<<<<<< HEAD
         testId="account-name-editable-label"
+=======
+>>>>>>> parent of 1231771c02 (Add data-testid and test for account name)
       />
       <QrCodeView Qr={{ data: address }} />
       {exportPrivateKeyFeatureEnabled ? (
