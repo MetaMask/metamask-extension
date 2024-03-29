@@ -20,7 +20,7 @@ exports[`UnitInput Component rendering should match snapshot of error class when
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="text"
+          type="number"
           value=""
         />
       </div>
@@ -49,7 +49,7 @@ exports[`UnitInput Component rendering should match snapshot with a child compon
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="text"
+          type="number"
           value=""
         />
       </div>
@@ -83,7 +83,7 @@ exports[`UnitInput Component rendering should match snapshot with a suffix 1`] =
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="text"
+          type="number"
           value=""
         />
         <div
@@ -117,7 +117,7 @@ exports[`UnitInput Component rendering should match snapshot without a suffix 1`
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="text"
+          type="number"
           value=""
         />
       </div>

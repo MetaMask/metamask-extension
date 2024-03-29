@@ -50,8 +50,8 @@ exports[`SendAmountRow Component render Native Asset Type should match snapshot 
                 placeholder="0"
                 step="any"
                 style="width: 1.5ch;"
-                type="text"
-                value="1"
+                type="number"
+                value="0"
               />
               <div
                 class="unit-input__suffix"
@@ -120,8 +120,8 @@ exports[`SendAmountRow Component render Token Asset Type should match snapshot f
                 placeholder="0"
                 step="any"
                 style="width: 1.5ch;"
-                type="text"
-                value=""
+                type="number"
+                value="0"
               />
               <div
                 class="unit-input__suffix"

@@ -21,7 +21,7 @@ exports[`NFTInput matches snapshot 1`] = `
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
-          type="text"
+          type="number"
           value="1"
         />
       </div>

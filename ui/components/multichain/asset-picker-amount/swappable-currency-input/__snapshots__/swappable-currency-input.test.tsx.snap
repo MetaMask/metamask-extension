@@ -23,7 +23,7 @@ exports[`SwappableCurrencyInput ERC1155: matches snapshot: ERC1155 1`] = `
           placeholder="0"
           step="any"
           style="width: 5.5ch;"
-          type="text"
+          type="number"
           value="20480"
         />
       </div>
@@ -53,8 +53,8 @@ exports[`SwappableCurrencyInput native: matches snapshot: native 1`] = `
           placeholder="0"
           step="any"
           style="width: 19ch;"
-          type="text"
-          value="0.00000000000002048"
+          type="number"
+          value="0"
         />
         <div
           class="unit-input__suffix"
@@ -93,8 +93,8 @@ exports[`SwappableCurrencyInput token: matches snapshot: token 1`] = `
           placeholder="0"
           step="any"
           style="width: 19ch;"
-          type="text"
-          value="0.00000000000002048"
+          type="number"
+          value="0"
         />
         <div
           class="unit-input__suffix"

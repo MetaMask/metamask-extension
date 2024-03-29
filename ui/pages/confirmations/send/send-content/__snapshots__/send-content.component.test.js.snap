@@ -121,8 +121,8 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     placeholder="0"
                     step="any"
                     style="width: 1.5ch;"
-                    type="text"
-                    value="1"
+                    type="number"
+                    value="0"
                   />
                   <div
                     class="unit-input__suffix"
