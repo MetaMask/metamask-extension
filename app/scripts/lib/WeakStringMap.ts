@@ -5,22 +5,31 @@ export class WeakStringMap {
     this.map = new Map();
   }
 
-  set(key: string, value: object) {
-    const ref = new WeakRef(value);
-    this.map.set(key, ref);
+  set(key: string, value: any) {
+    const weakReffedValue = {} as any
+    Object.keys(value).forEach((key) => {
+      weakReffedValue[key] = new WeakRef(value[key])
+    })
+    this.map.set(key, weakReffedValue);
   }
 
   get(key: string) {
-    const ref = this.map.get(key);
-    if (!ref) {
+    const weakReffedValue = this.map.get(key) as any;
+    if (!weakReffedValue) {
       return undefined;
     }
 
-    const value = ref.deref();
-    if (value === undefined) {
-      this.map.delete(key);
-    }
-    return value;
+    const deReffedValue = {} as any
+    Object.keys(weakReffedValue).forEach((key) => {
+      const deref = weakReffedValue[key].deref()
+      if (deref === undefined) {
+        this.map.delete(key)
+        return undefined
+      }
+      deReffedValue[key] = deref
+    })
+
+    return deReffedValue;
   }
 
   has(key: string) {
@@ -28,7 +37,11 @@ export class WeakStringMap {
   }
 
   delete(key: string) {
-    return this.map.delete(key);
+    const value = this.get(key);
+    if (value !== undefined) {
+      return this.map.delete(key);
+    }
+    return false;
   }
 
   clear() {
