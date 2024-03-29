@@ -2507,7 +2507,7 @@ export default class MetamaskController extends EventEmitter {
 
       // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
       this.controllerMessenger.publish(
-        `${this.preferencesController.name}:stateChange`,
+        'PreferencesController:stateChange',
         [state, []],
       );
     });
