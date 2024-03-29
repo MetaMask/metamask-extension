@@ -21,7 +21,7 @@ import {
   getSwitchedNetworkDetails,
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
-  getNumberOfAllUnapprovedTransactions,
+  getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -112,7 +112,7 @@ function mapStateToProps(state) {
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     switchedNetworkDetails,
     networkToAutomaticallySwitchTo,
-    unapprovedTransactions: getNumberOfAllUnapprovedTransactions(state),
+    unapprovedTransactions: getNumberOfAllUnapprovedTransactionsAndMessages(state),
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:

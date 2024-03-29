@@ -1669,7 +1669,7 @@ export function getShowRecoveryPhraseReminder(state) {
  * @param state - Redux state object.
  * @returns Number of unapproved transactions
  */
-export function getNumberOfAllUnapprovedTransactions(state) {
+export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
   const unapprovedTxs = getUnapprovedTransactions(state);
   const allUnapprovedMessages = {
     ...unapprovedTxs,
@@ -1691,7 +1691,7 @@ export function getNumberOfAllUnapprovedTransactions(state) {
  * @returns Network ID to switch to
  */
 export function getNetworkToAutomaticallySwitchTo(state) {
-  const numberOfUnapprovedTx = getNumberOfAllUnapprovedTransactions(state);
+  const numberOfUnapprovedTx = getNumberOfAllUnapprovedTransactionsAndMessages(state);
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations

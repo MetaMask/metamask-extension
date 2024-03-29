@@ -201,10 +201,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getNumberOfAllUnapprovedTransactions', () => {
+  describe('#getNumberOfAllUnapprovedTransactionsAndMessages', () => {
     it('returns no unapproved transactions and messages', () => {
       expect(
-        selectors.getNumberOfAllUnapprovedTransactions({
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
             unapprovedMsgs: {},
@@ -215,7 +215,7 @@ describe('Selectors', () => {
 
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
-        selectors.getNumberOfAllUnapprovedTransactions({
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             providerConfig: {
               ...mockState.metamask.networkConfigurations
