@@ -156,6 +156,51 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getNeverShowSwitchedNetworkMessage', () => {
+    it('returns the correct value', () => {
+      expect(
+        selectors.getNeverShowSwitchedNetworkMessage({
+          metamask: { switchedNetworkNeverShowMessage: true },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#getSwitchedNetworkDetails', () => {
+    it('returns no details when switchedNetworkDetails is empty', () => {
+      expect(
+        selectors.getSwitchedNetworkDetails({
+          metamask: { switchedNetworkDetails: undefined },
+        }),
+      ).toStrictEqual(null);
+    });
+
+    it('returns network information when valid switchedNetworkDetails are present', () => {
+      const origin = 'portfolio.metamask.io';
+
+      expect(
+        selectors.getSwitchedNetworkDetails({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            switchedNetworkDetails: {
+              networkClientId:
+                mockState.metamask.networkConfigurations
+                  .testNetworkConfigurationId.id,
+              origin,
+            },
+          },
+        }),
+      ).toStrictEqual({
+        imageUrl: './images/eth_logo.svg',
+        nickname:
+          mockState.metamask.networkConfigurations.testNetworkConfigurationId
+            .nickname,
+        origin,
+      });
+    });
+  });
+
   describe('#getNumberOfAllUnapprovedTransactions', () => {
     it('returns no unapproved transactions and messages', () => {
       expect(

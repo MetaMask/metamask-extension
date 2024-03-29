@@ -2173,6 +2173,13 @@ export function clearPendingTokens(): Action {
   };
 }
 
+/**
+ * Action to switch globally selected network and set switched network details
+ * for the purpose of displaying the user a toast about the network change
+ *
+ * @param networkClientIdForThisDomain - Thet network client ID last used by the origin
+ * @param selectedTabOrigin - Origin of the current tab
+ */
 export function automaticallySwitchNetwork(
   networkClientIdForThisDomain: string,
   selectedTabOrigin: string,
@@ -2189,9 +2196,17 @@ export function automaticallySwitchNetwork(
   };
 }
 
-export function setSwitchedNetworkDetails(
-  switchedNetworkDetails,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+/**
+ * Action to store details about the switched-to network in the background state
+ *
+ * @param switchedNetworkDetails - Object containing networkClientId and origin
+ * @param switchedNetworkDetails.networkClientId
+ * @param switchedNetworkDetails.selectedTabOrigin
+ */
+export function setSwitchedNetworkDetails(switchedNetworkDetails: {
+  networkClientId: string;
+  selectedTabOrigin: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('setSwitchedNetworkDetails', [
       switchedNetworkDetails,
@@ -2200,6 +2215,9 @@ export function setSwitchedNetworkDetails(
   };
 }
 
+/**
+ * Action to clear details about the switched-to network in the background state
+ */
 export function clearSwitchedNetworkDetails(): ThunkAction<
   void,
   MetaMaskReduxState,

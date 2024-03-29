@@ -405,10 +405,9 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets an object with networkName and appName
-   * or `null` if the message is meant to be cleared
+   * Track which network MetaMask has just automatically switched to, or call this with `null` to clear that state.
    *
-   * @param switchedNetworkDetails
+   * @param {{ origin: string, networkClientId: string } | null} switchedNetworkDetails - Details about the network that MetaMask just switched to.
    */
   setSwitchedNetworkDetails(switchedNetworkDetails) {
     this.store.updateState({ switchedNetworkDetails });
@@ -425,7 +424,7 @@ export default class AppStateController extends EventEmitter {
    * Remembers if the user prefers to never see the
    * network switched message again
    *
-   * @param switchedNetworkNeverShowMessage
+   * @param {boolean} switchedNetworkNeverShowMessage
    */
   setSwitchedNetworkNeverShowMessage(switchedNetworkNeverShowMessage) {
     this.store.updateState({

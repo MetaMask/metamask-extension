@@ -637,6 +637,12 @@ export function getNeverShowSwitchedNetworkMessage(state) {
   return state.metamask.switchedNetworkNeverShowMessage;
 }
 
+/**
+ * Provides information about the last network change if present
+ *
+ * @param state - Redux state object.
+ * @returns An object with information about the network with the given networkClientId
+ */
 export function getSwitchedNetworkDetails(state) {
   const { switchedNetworkDetails } = state.metamask;
   const allNetworks = getAllNetworks(state);
