@@ -288,3 +288,9 @@ env:
   ###
 
   - EIP_4337_ENTRYPOINT: null
+
+  ###
+  # Bug Fix? GitHub Issue #23805
+  ###
+
+  - SUITE_TYPE
