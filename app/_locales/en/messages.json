@@ -1396,6 +1396,9 @@
   "disconnect": {
     "message": "Disconnect"
   },
+  "disconnectAccount": {
+    "message": "Disconnect account"
+  },
   "disconnectAllAccounts": {
     "message": "Disconnect all accounts"
   },

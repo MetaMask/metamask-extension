@@ -36,6 +36,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   addPermittedAccount,
+  removePermittedAccount,
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
@@ -70,7 +71,6 @@ export const AccountListItemMenu = ({
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
-  const shouldRenderConnectAccount = process.env.MULTICHAIN && !isConnected;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
@@ -178,19 +178,29 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          {shouldRenderConnectAccount ? (
+          {process.env.MULTICHAIN ? (
             <Box display={[Display.Flex, Display.None]}>
               <MenuItem
                 data-testid="account-list-menu-connect-account"
                 onClick={() => {
-                  dispatch(
-                    addPermittedAccount(activeTabOrigin, identity.address),
-                  );
+                  if (isConnected) {
+                    dispatch(
+                      removePermittedAccount(activeTabOrigin, identity.address),
+                    );
+                  } else {
+                    dispatch(
+                      addPermittedAccount(activeTabOrigin, identity.address),
+                    );
+                  }
                   onClose();
                 }}
-                iconName={IconName.UserCircleLink}
+                iconName={
+                  isConnected ? IconName.Logout : IconName.UserCircleLink
+                }
               >
-                <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
+                <Text variant={TextVariant.bodySm}>
+                  {isConnected ? t('disconnectAccount') : t('connectAccount')}
+                </Text>
               </MenuItem>
             </Box>
           ) : null}
