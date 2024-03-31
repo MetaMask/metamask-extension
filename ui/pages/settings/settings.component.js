@@ -7,7 +7,7 @@ import TabBar from '../../components/app/tab-bar';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
-  SECURITY_ROUTE,
+  // SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
@@ -47,7 +47,7 @@ import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
-import SecurityTab from './security-tab';
+// import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
@@ -307,11 +307,12 @@ class SettingsPage extends PureComponent {
         icon: <Icon name={IconName.Book} />,
         key: CONTACT_LIST_ROUTE,
       },
-      {
-        content: t('securityAndPrivacy'),
-        icon: <i className="fa fa-lock" />,
-        key: SECURITY_ROUTE,
-      },
+      // 隐藏安全和隐私入口
+      // {
+      //   content: t('securityAndPrivacy'),
+      //   icon: <i className="fa fa-lock" />,
+      //   key: SECURITY_ROUTE,
+      // },
       {
         content: t('alerts'),
         icon: <Icon name={IconName.Notification} />,
@@ -385,7 +386,7 @@ class SettingsPage extends PureComponent {
           path={ADD_POPULAR_CUSTOM_NETWORK}
           render={() => <AddNetwork />}
         />
-        <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
+        {/* <Route exact path={SECURITY_ROUTE} component={SecurityTab} /> */}
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
