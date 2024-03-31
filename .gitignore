@@ -46,7 +46,7 @@ notes.txt
 .nyc_output
 
 # MetaMask configuration
-.metamaskrc
+# .metamaskrc
 .metamaskprodrc
 
 # Test results
