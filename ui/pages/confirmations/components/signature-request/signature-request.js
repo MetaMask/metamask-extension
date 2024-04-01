@@ -13,11 +13,15 @@ import {
   resolvePendingApproval,
   completedTx,
   rejectPendingApproval,
+  dismissOpenSeaToBlockaidBanner,
 } from '../../../../store/actions';
 import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
+  getHasDismissedOpenSeaToBlockaidBanner,
+  getIsNetworkSupportedByBlockaid,
+  getHasMigratedFromOpenSeaToBlockaid,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   accountsWithSendEtherInfoSelector,
   getSelectedAccount,
@@ -55,6 +59,7 @@ import {
   TextColor,
   TextVariant,
   Size,
+  Severity,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   BackgroundColor,
@@ -68,6 +73,7 @@ import {
   ButtonLink,
   TagUrl,
   Text,
+  BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Icon,
   IconName,
@@ -208,6 +214,25 @@ const SignatureRequest = ({
     primaryType,
   } = parseMessage(data);
 
+  const hasMigratedFromOpenSeaToBlockaid = useSelector(
+    getHasMigratedFromOpenSeaToBlockaid,
+  );
+  const isNetworkSupportedByBlockaid = useSelector(
+    getIsNetworkSupportedByBlockaid,
+  );
+  const hasDismissedOpenSeaToBlockaidBanner = useSelector(
+    getHasDismissedOpenSeaToBlockaidBanner,
+  );
+
+  const showOpenSeaToBlockaidBannerAlert =
+    hasMigratedFromOpenSeaToBlockaid &&
+    !isNetworkSupportedByBlockaid &&
+    !hasDismissedOpenSeaToBlockaidBanner;
+
+  const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+    dispatch(dismissOpenSeaToBlockaidBanner());
+  };
+
   return (
     <>
       <div className="signature-request">
@@ -224,6 +249,23 @@ const SignatureRequest = ({
             <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
             ///: END:ONLY_INCLUDE_IF
           }
+          {showOpenSeaToBlockaidBannerAlert ? (
+            <BannerAlert
+              severity={Severity.Info}
+              title={t('openSeaToBlockaidTitle')}
+              description={t('openSeaToBlockaidDescription')}
+              actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+              actionButtonProps={{
+                href: 'https://snaps.metamask.io/transaction-insights',
+                externalLink: true,
+              }}
+              marginBottom={4}
+              marginLeft={4}
+              marginTop={4}
+              marginRight={4}
+              onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+            />
+          ) : null}
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
