@@ -115,10 +115,6 @@ export default function CurrencyInput({
 
   // align input to upstream value
   useEffect(() => {
-    if (!isDisabled) {
-      return;
-    }
-
     const decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
       .shiftedBy(assetDecimals)
