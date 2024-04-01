@@ -66,10 +66,6 @@ export const AssetPickerAmount = ({
 
   return (
     <Box className="asset-picker-amount">
-      <Box display={Display.Flex}>
-        {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
-      </Box>
       <Box
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
@@ -95,7 +91,11 @@ export const AssetPickerAmount = ({
           amount={amount}
         />
       </Box>
-      <AssetBalance asset={asset} error={error} />
+      <Box display={Display.Flex}>
+        {/* The fiat value will always leave dust and is often inaccurate anyways */}
+        <AssetBalance asset={asset} error={error} />
+        {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
+      </Box>
     </Box>
   );
 };
