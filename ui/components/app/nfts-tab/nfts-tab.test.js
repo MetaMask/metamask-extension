@@ -6,8 +6,10 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import NftsTab from '.';
+
+const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
 const NFTS = [
   {
@@ -152,6 +154,7 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
+  balance = ETH_BALANCE,
 }) => {
   const store = configureStore({
     metamask: {
@@ -170,7 +173,11 @@ const render = ({
       accounts: {
         [selectedAddress]: {
           address: selectedAddress,
-          balance: '0x0',
+        },
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          [selectedAddress]: { balance },
         },
       },
       internalAccounts: {
@@ -191,6 +198,7 @@ const render = ({
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      currentCurrency: 'usd',
       useNftDetection,
       nftsDropdownState,
     },
@@ -324,10 +332,10 @@ describe('NFT Items', () => {
   });
 
   describe('NFT Tab Ramps Card', () => {
-    it('shows the ramp card when there are no NFTs', () => {
+    it('shows the ramp card when user balance is zero', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
-        nfts: [],
+        balance: '0x0',
       });
       expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
     });
@@ -335,7 +343,7 @@ describe('NFT Items', () => {
     it('does not show the ramp card when the account has a balance', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
+        balance: ETH_BALANCE,
       });
       expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
