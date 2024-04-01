@@ -67,6 +67,9 @@ export default class AppStateController extends EventEmitter {
       },
       surveyLinkLastClickedOrClosed: null,
       signatureSecurityAlertResponses: {},
+      // States used for displaying the changed network toast
+      switchedNetworkDetails: null,
+      switchedNetworkNeverShowMessage: false,
     });
     this.timer = null;
 
@@ -399,6 +402,35 @@ export default class AppStateController extends EventEmitter {
    */
   setShowAccountBanner(showAccountBanner) {
     this.store.updateState({ showAccountBanner });
+  }
+
+  /**
+   * Track which network MetaMask has just automatically switched to, or call this with `null` to clear that state.
+   *
+   * @param {{ origin: string, networkClientId: string } | null} switchedNetworkDetails - Details about the network that MetaMask just switched to.
+   */
+  setSwitchedNetworkDetails(switchedNetworkDetails) {
+    this.store.updateState({ switchedNetworkDetails });
+  }
+
+  /**
+   * Clears the switched network details in state
+   */
+  clearSwitchedNetworkDetails() {
+    this.store.updateState({ switchedNetworkDetails: null });
+  }
+
+  /**
+   * Remembers if the user prefers to never see the
+   * network switched message again
+   *
+   * @param {boolean} switchedNetworkNeverShowMessage
+   */
+  setSwitchedNetworkNeverShowMessage(switchedNetworkNeverShowMessage) {
+    this.store.updateState({
+      switchedNetworkDetails: null,
+      switchedNetworkNeverShowMessage,
+    });
   }
 
   /**
