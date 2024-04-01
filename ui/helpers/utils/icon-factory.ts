@@ -1,3 +1,4 @@
+import type Jazzicon from '@metamask/jazzicon';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**
@@ -14,7 +15,7 @@ class IconFactory {
   /**
    * Function to generate a Jazzicon SVG element.
    */
-  jazzicon: (diameter: number, seed: number) => SVGSVGElement;
+  jazzicon: typeof Jazzicon;
 
   /**
    * Cache for storing generated SVG elements to avoid re-rendering.
@@ -26,7 +27,7 @@ class IconFactory {
    *
    * @param jazzicon - A function that returns a Jazzicon SVG given a diameter and seed.
    */
-  constructor(jazzicon: (diameter: number, seed: number) => SVGSVGElement) {
+  constructor(jazzicon: typeof Jazzicon) {
     this.jazzicon = jazzicon;
     this.cache = {};
   }
@@ -90,7 +91,7 @@ let iconFactory: IconFactory | undefined;
  * @returns An IconFactory instance.
  */
 export default function iconFactoryGenerator(
-  jazzicon: (diameter: number, seed: number) => SVGSVGElement,
+  jazzicon: typeof Jazzicon,
 ): IconFactory {
   if (!iconFactory) {
     iconFactory = new IconFactory(jazzicon);
