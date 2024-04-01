@@ -13,7 +13,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   BUYABLE_CHAINS_MAP,
@@ -77,6 +77,7 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
+  getIsUnlocked,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -106,6 +107,8 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
+import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -476,6 +479,12 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+/**
+ * Selector to return an origin to network ID map
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed Snaps.
+ */
 export function getAllDomains(state) {
   return state.metamask.domains;
 }
@@ -618,6 +627,40 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
+/**
+ * Retrieves user preference to never see the "Switched Network" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function getNeverShowSwitchedNetworkMessage(state) {
+  return state.metamask.switchedNetworkNeverShowMessage;
+}
+
+/**
+ * Provides information about the last network change if present
+ *
+ * @param state - Redux state object.
+ * @returns An object with information about the network with the given networkClientId
+ */
+export function getSwitchedNetworkDetails(state) {
+  const { switchedNetworkDetails } = state.metamask;
+  const allNetworks = getAllNetworks(state);
+
+  if (switchedNetworkDetails) {
+    const switchedNetwork = allNetworks.find(
+      ({ id }) => switchedNetworkDetails.networkClientId === id,
+    );
+    return {
+      nickname: switchedNetwork?.nickname,
+      imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
+      origin: switchedNetworkDetails?.origin,
+    };
+  }
+
+  return null;
+}
+
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
@@ -735,6 +778,11 @@ export function getShowTestNetworks(state) {
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
+}
+
+export function getFeatureNotificationsEnabled(state) {
+  const { featureNotificationsEnabled = false } = getPreferences(state);
+  return featureNotificationsEnabled;
 }
 
 export function getShowExtensionInFullSizeView(state) {
@@ -1620,6 +1668,67 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
+/**
+ * Retrieves the number of unapproved transactions and messages
+ *
+ * @param state - Redux state object.
+ * @returns Number of unapproved transactions
+ */
+export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
+  const unapprovedTxs = getUnapprovedTransactions(state);
+  const allUnapprovedMessages = {
+    ...unapprovedTxs,
+    ...state.metamask.unapprovedMsgs,
+    ...state.metamask.unapprovedDecryptMsgs,
+    ...state.metamask.unapprovedPersonalMsgs,
+    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
+    ...state.metamask.unapprovedTypedMessages,
+  };
+  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
+  return numUnapprovedMessages;
+}
+
+/**
+ * Returns the network client ID of the network that should be auto-switched to
+ * based on the current tab origin and its last network connected to
+ *
+ * @param state - Redux state object.
+ * @returns Network ID to switch to
+ */
+export function getNetworkToAutomaticallySwitchTo(state) {
+  const numberOfUnapprovedTx =
+    getNumberOfAllUnapprovedTransactionsAndMessages(state);
+
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
+  const selectedTabOrigin = getOriginOfCurrentTab(state);
+  const useRequestQueue = getUseRequestQueue(state);
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    getIsUnlocked(state) &&
+    useRequestQueue &&
+    selectedTabOrigin &&
+    numberOfUnapprovedTx === 0 &&
+    process.env.MULTICHAIN
+  ) {
+    const domainNetworks = getAllDomains(state);
+    const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
+    const currentNetwork = getCurrentNetwork(state);
+
+    // If we have a match, "silently" switch networks if the network differs
+    // from the current network
+    if (
+      networkIdForThisDomain &&
+      currentNetwork.id !== networkIdForThisDomain
+    ) {
+      return networkIdForThisDomain;
+    }
+  }
+  return null;
+}
+
 export function getShowTermsOfUse(state) {
   const { termsOfUseLastAgreed } = state.metamask;
 
@@ -1786,6 +1895,13 @@ export function getCurrentNetwork(state) {
       ? (network) => network.id === providerConfig.id
       : (network) => network.id === providerConfig.type;
   return allNetworks.find(filter);
+}
+
+export function getIsNetworkSupportedByBlockaid(state) {
+  const currentChainId = getCurrentChainId(state);
+  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+
+  return isSupported;
 }
 
 export function getAllEnabledNetworks(state) {
@@ -2287,6 +2403,14 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
+}
+
+export function getHasMigratedFromOpenSeaToBlockaid(state) {
+  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
+}
+
+export function getHasDismissedOpenSeaToBlockaidBanner(state) {
+  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**
