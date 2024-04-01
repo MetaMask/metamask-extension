@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
@@ -89,6 +89,7 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
+  const urlParams: { origin: string } = useParams();
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
   // TODO: Replace `any` with type
@@ -227,7 +228,7 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(activeTabOrigin)}
+            {urlParams.origin}
           </Text>
         </Box>
       </Header>
