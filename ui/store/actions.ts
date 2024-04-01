@@ -111,6 +111,7 @@ import {
   logErrorWithMessage,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -196,6 +197,8 @@ export function createNewVaultAndRestore(
     );
 
     // TODO: Add types for vault
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let vault: any;
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -410,6 +413,8 @@ export function removeAccount(
 
 export function importNewAccount(
   strategy: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any[],
   loadingMessage: ReactFragment,
 ): ThunkAction<
@@ -792,6 +797,8 @@ const updateMetamaskStateFromBackground = (): Promise<
  */
 export function updatePreviousGasParams(
   txId: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   previousGasParams: Record<string, any>,
 ): ThunkAction<
   Promise<TransactionMeta>,
@@ -1195,6 +1202,8 @@ export function removeSnap(
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [k: string]: { permissions: Record<string, any> };
     };
 
@@ -1237,6 +1246,8 @@ export async function handleSnapRequest(args: {
     id?: string;
     jsonrpc: '2.0';
     method: string;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params?: Record<string, any>;
   };
 }): Promise<void> {
@@ -1606,8 +1617,12 @@ export function updateMetamaskState(
       newState.addressBook?.[newProviderConfig?.chainId] ?? {};
     const oldAddressBook =
       currentState.addressBook?.[providerConfig?.chainId] ?? {};
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const oldAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: currentState });
     const newSelectedAccount = newAccounts[newSelectedAddress];
@@ -2148,8 +2163,8 @@ type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
 
 export async function getTokenStandardAndDetails(
   address: string,
-  userAddress: string,
-  tokenId: string,
+  userAddress?: string,
+  tokenId?: string,
 ): Promise<
   Awaited<
     ReturnType<AssetsContractController['getTokenStandardAndDetails']>
@@ -2172,8 +2187,67 @@ export function clearPendingTokens(): Action {
   };
 }
 
+/**
+ * Action to switch globally selected network and set switched network details
+ * for the purpose of displaying the user a toast about the network change
+ *
+ * @param networkClientIdForThisDomain - Thet network client ID last used by the origin
+ * @param selectedTabOrigin - Origin of the current tab
+ */
+export function automaticallySwitchNetwork(
+  networkClientIdForThisDomain: string,
+  selectedTabOrigin: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(setActiveNetwork(networkClientIdForThisDomain));
+    await dispatch(
+      setSwitchedNetworkDetails({
+        networkClientId: networkClientIdForThisDomain,
+        origin: selectedTabOrigin,
+      }),
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+/**
+ * Action to store details about the switched-to network in the background state
+ *
+ * @param switchedNetworkDetails - Object containing networkClientId and origin
+ * @param switchedNetworkDetails.networkClientId
+ * @param switchedNetworkDetails.selectedTabOrigin
+ */
+export function setSwitchedNetworkDetails(switchedNetworkDetails: {
+  networkClientId: string;
+  selectedTabOrigin: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setSwitchedNetworkDetails', [
+      switchedNetworkDetails,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+/**
+ * Action to clear details about the switched-to network in the background state
+ */
+export function clearSwitchedNetworkDetails(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('clearSwitchedNetworkDetails', []);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -2543,6 +2617,8 @@ export function hideImportTokensModal(): Action {
   };
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModalPayload = { name: string } & Record<string, any>;
 
 export function showModal(payload: ModalPayload): PayloadAction<ModalPayload> {
@@ -2575,6 +2651,8 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function setConfirmationExchangeRates(value: Record<string, any>) {
   return {
     type: actionConstants.SET_CONFIRMATION_EXCHANGE_RATES,
@@ -2980,6 +3058,10 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
+export function setFeatureNotificationsEnabled(value: boolean) {
+  return setPreference('featureNotificationsEnabled', value);
+}
+
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
@@ -3160,6 +3242,23 @@ export function setUseMultiAccountBalanceChecker(
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
       dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
+export function dismissOpenSeaToBlockaidBanner(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    // skipping loading indication as it blips in the UI and looks weird
+    log.debug(`background.dismissOpenSeaToBlockaidBanner`);
+    callBackgroundMethod('dismissOpenSeaToBlockaidBanner', [], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }
@@ -3858,7 +3957,7 @@ export function rejectAllMessages(
 }
 
 export function setFirstTimeFlowType(
-  type: 'create' | 'import',
+  type: FirstTimeFlowType,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setFirstTimeFlowType`);
@@ -4297,10 +4396,15 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
  * @param networkClientId - unique identifier for the network client
  * @returns polling token that can be used to stop polling
  */
-export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
-  return submitRequestToBackground('gasFeeStartPollingByNetworkClientId', [
-    networkClientId,
-  ]);
+export async function gasFeeStartPollingByNetworkClientId(
+  networkClientId: string,
+) {
+  const pollingToken = await submitRequestToBackground(
+    'gasFeeStartPollingByNetworkClientId',
+    [networkClientId],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
 }
 
 /**
@@ -4310,10 +4414,11 @@ export function gasFeeStartPollingByNetworkClientId(networkClientId: string) {
  *
  * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
  */
-export function gasFeeStopPollingByPollingToken(pollingToken: string) {
-  return submitRequestToBackground('gasFeeStopPollingByPollingToken', [
+export async function gasFeeStopPollingByPollingToken(pollingToken: string) {
+  await submitRequestToBackground('gasFeeStopPollingByPollingToken', [
     pollingToken,
   ]);
+  await removePollingTokenFromAppState(pollingToken);
 }
 
 export function getGasFeeTimeEstimate(
@@ -4664,19 +4769,10 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
-export function setTransactionSecurityCheckEnabled(
-  transactionSecurityCheckEnabled: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
-        transactionSecurityCheckEnabled,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
-  };
+export function neverShowSwitchedNetworkMessage() {
+  return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
+    true,
+  ]);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -4735,6 +4831,14 @@ export function setUseRequestQueue(val: boolean): void {
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export function setUseTransactionSimulations(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseTransactionSimulations', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -4854,6 +4958,8 @@ export function updateProposedNames(
     );
 
     return data;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
 
@@ -4862,6 +4968,8 @@ export function setName(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (async () => {
     await submitRequestToBackground<void>('setName', [request]);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
 
@@ -4906,6 +5014,8 @@ export function updateInterfaceState(
   return (async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground<void>('updateInterfaceState', [id, state]);
     await forceUpdateMetamaskState(dispatch);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
 
@@ -4921,6 +5031,8 @@ export function deleteInterface(
   return (async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground<void>('deleteInterface', [id]);
     await forceUpdateMetamaskState(dispatch);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
 }
 ///: END:ONLY_INCLUDE_IF

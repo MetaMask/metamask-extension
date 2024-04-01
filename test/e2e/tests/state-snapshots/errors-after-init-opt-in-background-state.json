@@ -45,7 +45,9 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
-    "signatureSecurityAlertResponses": "object"
+    "signatureSecurityAlertResponses": "object",
+    "switchedNetworkDetails": "object",
+    "switchedNetworkNeverShowMessage": "boolean"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -155,6 +157,7 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
@@ -174,11 +177,10 @@
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
-    "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
     "useExternalNameSources": "boolean",
+    "useTransactionSimulations": true,
     "selectedAddress": "string"
   },
   "SelectedNetworkController": { "domains": "object" },

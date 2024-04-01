@@ -9,6 +9,7 @@ import {
   onboardingMetametricsDisagree,
 } from '../../../../app/_locales/en/messages.json';
 import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
 const mockPushHistory = jest.fn();
@@ -35,7 +36,7 @@ describe('Onboarding Metametrics Component', () => {
 
   const mockState = {
     metamask: {
-      firstTimeFlowType: 'create',
+      firstTimeFlowType: FirstTimeFlowType.create,
       participateInMetaMetrics: '',
     },
   };
