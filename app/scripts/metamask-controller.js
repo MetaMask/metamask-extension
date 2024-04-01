@@ -2223,6 +2223,7 @@ export default class MetamaskController extends EventEmitter {
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
+      this.tokenDetectionController.enable();
     }
   }
 
@@ -2235,6 +2236,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
+      this.tokenDetectionController.disable();
     }
   }
 
@@ -5637,11 +5639,6 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
-    if (open) {
-      this.tokenDetectionController.enable();
-    } else {
-      this.tokenDetectionController.disable();
-    }
   }
   /* eslint-enable accessor-pairs */
 
