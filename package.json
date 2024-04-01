@@ -495,7 +495,6 @@
     "axios": "^1.1.3",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
-    "brfs": "^2.0.2",
     "browserify": "^17.0.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
