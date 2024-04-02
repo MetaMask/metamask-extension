@@ -18,7 +18,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.issue.number,
-              reviewers: ['zone-live', 'albertolive', 'shane-t']
+              team_reviewers: ['mmi']
             };
             github.rest.pulls.requestReviewers(payload);
           github-token: ${{ secrets.GITHUB_TOKEN }}
