@@ -23,6 +23,7 @@ import {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   RECIPIENT_TYPES,
+  SWAPS_QUOTES_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 
 import {
@@ -355,6 +356,7 @@ export const RECIPIENT_SEARCH_MODES = {
  *  has selected for the recipient to receive.
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
+ * @property {string} [swapQuotesError] - error message for swap quotes
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
  *  validity of the draft transaction, which will be either 'VALID' or
  *  'INVALID', depending on our ability to generate a valid txParams object for
@@ -410,6 +412,7 @@ export const draftTransactionInitialState = {
   transactionType: TransactionEnvelopeType.legacy,
   userInputHexData: null,
   isSwapQuoteLoading: false,
+  swapQuotesError: null,
   quotes: null,
 };
 
@@ -792,6 +795,10 @@ export const fetchSwapAndSendQuotes = createAsyncThunk(
       recipient: draftTransaction.recipient.address,
       slippage: '5', // TODO: update when solution is available
     });
+
+    if (!Object.keys(quotes).length) {
+      throw new Error(SWAPS_QUOTES_ERROR);
+    }
 
     return { quotes };
   },
@@ -1749,6 +1756,7 @@ const slice = createSlice({
           state.draftTransactions[state.currentTransactionUUID];
 
         if (draftTransaction) {
+          draftTransaction.swapQuotesError = null;
           draftTransaction.isSwapQuoteLoading = true;
         }
       })
@@ -1761,6 +1769,15 @@ const slice = createSlice({
           if (action.payload) {
             draftTransaction.quotes = action.payload.quotes;
           }
+        }
+      })
+      .addCase(fetchSwapAndSendQuotes.rejected, (state, action) => {
+        const draftTransaction =
+          state.draftTransactions[state.currentTransactionUUID];
+
+        if (draftTransaction) {
+          draftTransaction.isSwapQuoteLoading = false;
+          draftTransaction.swapQuotesError = action.error.message;
         }
       })
       .addCase(SELECTED_ACCOUNT_CHANGED, (state, action) => {
