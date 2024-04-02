@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -54,6 +54,8 @@ import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 import { NftItem } from '../../multichain/nft-item';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function NftDetails({ nft }) {
   const {
@@ -74,6 +76,7 @@ export default function NftDetails({ nft }) {
   const nftContracts = useSelector(getNftContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
@@ -94,10 +97,26 @@ export default function NftDetails({ nft }) {
     'M/d/y',
   );
 
-  const onRemove = () => {
-    dispatch(removeAndIgnoreNft(address, tokenId));
-    dispatch(setNewNftAddedMessage(''));
-    dispatch(setRemoveNftMessage('success'));
+  const onRemove = async () => {
+    try {
+      await dispatch(removeAndIgnoreNft(address, tokenId));
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage('success'));
+    } catch (err) {
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage('error'));
+    }
+    // track event
+    trackEvent({
+      event: MetaMetricsEventName.NFTRemoved,
+      category: 'Wallet',
+      sensitiveProperties: {
+        token_contract_address: address,
+        tokenId: tokenId.toString(),
+        asset_type: AssetType.NFT,
+        token_standard: standard,
+      },
+    });
     history.push(DEFAULT_ROUTE);
   };
 
