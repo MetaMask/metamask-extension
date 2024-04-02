@@ -394,7 +394,7 @@ jobs:
             # Fetch the PRs associated with the current branch and check the response
             PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
               "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
-
+            echo "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
             # Check if the response contains valid JSON
             if ! echo "$PR_RESPONSE" | jq empty; then
                 echo "Failed to parse JSON response."
@@ -404,6 +404,7 @@ jobs:
 
             # Check if we received an array of PRs
             if ! echo "$PR_RESPONSE" | jq -e '. | type == "array"'; then
+                echo "$PR_RESPONSE"
                 echo "Expected an array of PRs, got something else."
                 exit 1
             fi
