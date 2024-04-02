@@ -43,7 +43,6 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  clearSmartTransactionFees,
 } from '../../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -1004,7 +1003,6 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      isSmartTransaction,
       smartTransactionsOptInStatus,
       isAllowedStxChainId,
       setSwapsFeatureFlags,
@@ -1043,17 +1041,13 @@ export default class ConfirmTransactionBase extends Component {
       }
     });
 
+    window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
+
     if (smartTransactionsOptInStatus && isAllowedStxChainId) {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await setSwapsFeatureFlags(swapsFeatureFlags);
       await fetchSmartTransactionsLiveness();
     }
-
-    if (isSmartTransaction) {
-      clearSmartTransactionFees();
-    }
-
-    window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
   }
 
   componentWillUnmount() {
