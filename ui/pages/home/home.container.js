@@ -49,8 +49,8 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
   getPreferences,
-  getIsStxOptInAvailable,
 } from '../../selectors';
+import { getIsStxOptInAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,

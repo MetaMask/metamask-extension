@@ -19,9 +19,11 @@ import {
   getHardwareWalletType,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+} from '../../../selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
   DEFAULT_ROUTE,

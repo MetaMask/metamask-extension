@@ -21,9 +21,11 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getFullTxData,
+} from '../../../selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors';
 
 import {
   getUsedQuote,

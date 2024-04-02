@@ -13,9 +13,11 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
+} from '../../../selectors/selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors/selectors';
+} from '../../../../shared/modules/selectors';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
