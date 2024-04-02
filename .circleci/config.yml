@@ -73,7 +73,7 @@ aliases:
       at: .
     name: Check if MMI Optional tests should run
     command: |
-      RUN_MMI_OPTIONAL=$(cat /RUN_MMI_OPTIONAL)
+      RUN_MMI_OPTIONAL=$(cat RUN_MMI_OPTIONAL)
       if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI_OPTIONAL}" == "true" ]]; then
         echo "Running MMI Optional tests"
       else
