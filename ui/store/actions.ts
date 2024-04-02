@@ -84,7 +84,6 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -3067,6 +3066,10 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
+export function setStxOptIn(value: boolean) {
+  return setPreference('stxOptIn', value);
+}
+
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -4532,26 +4535,6 @@ export async function setWeb3ShimUsageAlertDismissed(origin: string) {
 }
 
 // Smart Transactions Controller
-export async function setSmartTransactionsOptInStatus(
-  optInState: boolean,
-  prevOptInState: boolean,
-) {
-  trackMetaMetricsEvent({
-    actionId: generateActionId(),
-    event: 'STX OptIn',
-    category: MetaMetricsEventCategory.Swaps,
-    sensitiveProperties: {
-      stx_enabled: true,
-      current_stx_enabled: true,
-      stx_user_opt_in: optInState,
-      stx_prev_user_opt_in: prevOptInState,
-    },
-  });
-  await submitRequestToBackground('setSmartTransactionsOptInStatus', [
-    optInState,
-  ]);
-}
-
 export function clearSmartTransactionFees() {
   submitRequestToBackground('clearSmartTransactionFees');
 }

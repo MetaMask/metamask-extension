@@ -1580,9 +1580,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableSmartSwaps": {
-    "message": "Enable Smart Swaps"
-  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -1752,9 +1749,6 @@
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
-  },
-  "faqAndRiskDisclosures": {
-    "message": "FAQ and Risk Disclosures"
   },
   "fast": {
     "message": "Fast"
@@ -2524,8 +2518,11 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Manage in settings"
+  "marketCap": {
+    "message": "Market cap"
+  },
+  "marketDetails": {
+    "message": "Market details"
   },
   "max": {
     "message": "Max"
@@ -3156,6 +3153,21 @@
   "notificationsStakingPortfolioTitle": {
     "message": "Stake smarter in Portfolio",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStxActionText": {
+    "message": "Continue"
+  },
+  "notificationsStxDescription1": {
+    "message": "Smart transactions enhance the reliability, privacy, and cost-effectiveness of MetaMask."
+  },
+  "notificationsStxDescription2": {
+    "message": "Right now, smart transactions are only available on ETH Mainnet. You can turn them off at any time in settings."
+  },
+  "notificationsStxManageInSettings": {
+    "message": "Manage in settings"
+  },
+  "notificationsStxTitle": {
+    "message": "Introducing smart transactions"
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -4410,28 +4422,26 @@
   "smartContracts": {
     "message": "Smart contracts"
   },
-  "smartSwaps": {
-    "message": "Smart Swaps"
-  },
-  "smartSwapsAreHere": {
-    "message": "Smart Swaps are here!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
-  },
-  "smartSwapsDescription2": {
-    "message": "*Smart Swaps will submit your transaction privately. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1.",
-    "description": "$1 is an external link to FAQ and Risk Disclosures"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartSwapsTooltip": {
-    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures. To learn more, read our $1",
-    "description": "$1 is an external link to FAQ and Risk Disclosures"
+  "smartTransactionCancelled": {
+    "message": "Smart Transaction was cancelled"
+  },
+  "smartTransactionError": {
+    "message": "Smart Transaction had an error"
+  },
+  "smartTransactionPending": {
+    "message": "Submitting Smart Transaction"
+  },
+  "smartTransactionSuccess": {
+    "message": "Transaction successful"
+  },
+  "smartTransactions": {
+    "message": "Smart transactions"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -4799,18 +4809,6 @@
   "strong": {
     "message": "Strong"
   },
-  "stxBenefit1": {
-    "message": "Minimize transaction costs"
-  },
-  "stxBenefit2": {
-    "message": "Reduce transaction failures"
-  },
-  "stxBenefit3": {
-    "message": "Eliminate stuck transactions"
-  },
-  "stxBenefit4": {
-    "message": "Prevent front-running"
-  },
   "stxCancelled": {
     "message": "Swap would have failed"
   },
@@ -4820,12 +4818,19 @@
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
+  "stxEstimatedCompletition": {
+    "message": "Estimated completition in < $1",
+    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
+  },
   "stxFailure": {
     "message": "Swap failed"
   },
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescription": {
+    "message": "Turn on smart transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -5807,7 +5812,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
@@ -5818,6 +5823,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewTransaction": {
+    "message": "View  transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"

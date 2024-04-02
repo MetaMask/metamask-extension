@@ -43,6 +43,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  clearSmartTransactionFees,
 } from '../../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -67,6 +68,8 @@ import FeeDetailsComponent from '../components/fee-details-component/fee-details
 import { SimulationDetails } from '../components/simulation-details';
 import { BannerAlert } from '../../../components/component-library';
 import { Severity } from '../../../helpers/constants/design-system';
+
+import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -164,16 +167,24 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     updateTransactionValue: PropTypes.func,
+    setSwapsFeatureFlags: PropTypes.func,
+    fetchSmartTransactionsLiveness: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+<<<<<<< HEAD
     hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
     hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
     dismissOpenSeaToBlockaidBanner: PropTypes.func,
     isNetworkSupportedByBlockaid: PropTypes.bool,
+=======
+    isSmartTransaction: PropTypes.bool,
+    smartTransactionsOptInStatus: PropTypes.bool,
+    isAllowedStxChainId: PropTypes.bool,
+>>>>>>> 428e47fa91 (Add Smart Transactions (WIP))
   };
 
   state = {
@@ -737,7 +748,10 @@ export default class ConfirmTransactionBase extends Component {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       fromInternalAccount,
       ///: END:ONLY_INCLUDE_IF
+      isSmartTransaction,
     } = this.props;
+
+    const hideLoadingIndicator = isSmartTransaction;
 
     let loadingIndicatorMessage;
 
@@ -784,11 +798,7 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(
-          txData,
-          false, // hideLoadingIndicator
-          loadingIndicatorMessage, // loadingIndicatorMessage
-        )
+        sendTransaction(txData, hideLoadingIndicator, loadingIndicatorMessage)
           .then(() => {
             if (!this._isMounted) {
               return;
@@ -990,13 +1000,18 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
     const {
       toAddress,
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      isSmartTransaction,
+      smartTransactionsOptInStatus,
+      isAllowedStxChainId,
+      setSwapsFeatureFlags,
+      fetchSmartTransactionsLiveness,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -1030,6 +1045,16 @@ export default class ConfirmTransactionBase extends Component {
         removePollingTokenFromAppState(this.state.pollingToken);
       }
     });
+
+    if (smartTransactionsOptInStatus && isAllowedStxChainId) {
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      await setSwapsFeatureFlags(swapsFeatureFlags);
+      await fetchSmartTransactionsLiveness();
+    }
+
+    if (isSmartTransaction) {
+      clearSmartTransactionFees();
+    }
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
   }

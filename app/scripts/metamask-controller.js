@@ -211,6 +211,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
+import sharedSelectors from '../../shared/modules/selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -234,6 +235,7 @@ import {
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
+import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -1621,6 +1623,22 @@ export default class MetamaskController extends EventEmitter {
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
+        publish: (transactionMeta) => {
+          const isSmartTransaction = sharedSelectors.getIsSmartTransaction({
+            metamask: this.getState(),
+          });
+          if (!isSmartTransaction) {
+            // Will cause TransactionController to publish to the RPC provider as normal.
+            return { transactionHash: undefined };
+          }
+          return submitSmartTransactionHook({
+            transactionMeta,
+            transactionController: this.txController,
+            smartTransactionsController: this.smartTransactionsController,
+            controllerMessenger: this.controllerMessenger,
+            isSmartTransaction,
+          });
+        },
       },
       sign: (...args) => this.keyringController.signTransaction(...args),
       state: initState.TransactionController,
@@ -3427,10 +3445,6 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
 
       // Smart Transactions
-      setSmartTransactionsOptInStatus:
-        smartTransactionsController.setOptInState.bind(
-          smartTransactionsController,
-        ),
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
         smartTransactionsController,
       ),

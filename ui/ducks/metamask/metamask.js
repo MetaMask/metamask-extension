@@ -47,6 +47,7 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
+    stxOptIn: false,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
@@ -398,6 +399,10 @@ export const getGasFeeEstimates = createSelector(
     return gasFeeControllerEstimates;
   },
 );
+
+export const getSmartTransactionFees = (state) => {
+  return state.metamask.smartTransactionsState?.fees;
+};
 
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;

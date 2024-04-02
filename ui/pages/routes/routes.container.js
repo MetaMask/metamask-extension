@@ -22,6 +22,7 @@ import {
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
+  getSmartTransactionsOptInStatus,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -98,6 +99,7 @@ function mapStateToProps(state) {
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
+    stxOptIn: getSmartTransactionsOptInStatus(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     forgottenPassword: state.metamask.forgottenPassword,

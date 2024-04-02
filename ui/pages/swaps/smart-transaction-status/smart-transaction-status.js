@@ -10,8 +10,6 @@ import {
   getCurrentSmartTransactions,
   getSelectedQuote,
   getTopQuote,
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getSwapsNetworkConfig,
   cancelSwapsSmartTransaction,
@@ -21,6 +19,8 @@ import {
   getHardwareWalletType,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {

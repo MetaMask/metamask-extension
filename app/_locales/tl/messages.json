@@ -3491,12 +3491,6 @@
   "smartContracts": {
     "message": "Mga smart na kontrata"
   },
-  "smartSwapsAreHere": {
-    "message": "Nandito na ang mga Smart Swap!"
-  },
-  "smartSwapsDescription": {
-    "message": "Mas humusay pa ang mga MetaMask Swap! Ang pag-enable sa mga Smart Swap ay magbibigay-daan sa MetaMask na i-optimize ang iyong Swap gamit ang program para makatulong na:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Hindi sapat ang pondo para sa smart swap."
   },
@@ -3775,18 +3769,6 @@
   },
   "strong": {
     "message": "Mahirap"
-  },
-  "stxBenefit1": {
-    "message": "Bawasan ang mga gastos sa transaksyon"
-  },
-  "stxBenefit2": {
-    "message": "Bawasan ang mga nabigong transaksyon"
-  },
-  "stxBenefit3": {
-    "message": "Alisin ang mga hindi umuusad na transaksyon"
-  },
-  "stxBenefit4": {
-    "message": "Pigilan ang front-running"
   },
   "stxCancelled": {
     "message": "Nabigo sana ang pag-swap kung"

@@ -101,7 +101,12 @@ export const smartTransactionsListSelector = (state) =>
   state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
-    ?.filter((stx) => !stx.confirmed)
+    ?.filter((stx) => {
+      const isSwapStx = !stx.skipConfirm;
+      // We only want to return unconfirmed Swaps smart transactions here.
+      // Non-Swaps transactions will be part of a regular transaction list.
+      return !stx.confirmed && isSwapStx;
+    })
     .map((stx) => ({
       ...stx,
       transactionType: TransactionType.smart,
