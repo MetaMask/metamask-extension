@@ -66,6 +66,16 @@ aliases:
         echo "Checkout branch '${CIRCLE_BRANCH}' at commit '${CIRCLE_SHA1}'"
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
+  # Check if MMI Optional tests should run
+  - &check-mmi-optional
+    name: Check if MMI Optional tests should run
+    command: |
+      if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI_OPTIONAL}" == "true" ]]; then
+        echo "Running MMI Optional tests"
+      else
+        echo "Skipping MMI Optional tests"
+        circleci-agent step halt
+      fi
 
 workflows:
   test_and_release:
@@ -133,6 +143,7 @@ workflows:
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
+            - check-pr-tag
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -176,7 +187,6 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
-            - check-pr-tag
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -415,11 +425,11 @@ jobs:
             if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
               echo "team-mmi tag found."
               # You can create a file or an environment variable to signal the next steps
-              echo 'export RUN_MMI="true"' >> $BASH_ENV
+              echo 'export RUN_MMI_OPTIONAL="true"' >> $BASH_ENV
               source $BASH_ENV
             else
               echo "team-mmi tag not found."
-              echo 'export RUN_MMI="false"' >> $BASH_ENV
+              echo 'export RUN_MMI_OPTIONAL="false"' >> $BASH_ENV
               source $BASH_ENV
             fi
 
@@ -687,6 +697,7 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-browsers-medium-plus
     steps:
+      - run: *check-mmi-optional
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
@@ -1168,15 +1179,7 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
-      - run:
-          name: Check if the test should run
-          command: |
-            if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI}" == "true" ]]; then
-              echo "Running E2E tests"
-            else
-              echo "Conditions not met, skipping E2E tests."
-              circleci-agent step halt
-            fi
+      - run: *check-mmi-optional
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
