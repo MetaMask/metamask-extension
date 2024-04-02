@@ -42,7 +42,7 @@ export const SendPageRecipientContent = ({
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
 
-  const { asset: transactionAsset, amount } = useSelector(
+  const { sendAsset: transactionAsset, amount } = useSelector(
     getCurrentDraftTransaction,
   );
 

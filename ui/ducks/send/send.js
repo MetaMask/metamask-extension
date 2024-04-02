@@ -332,7 +332,7 @@ export const RECIPIENT_SEARCH_MODES = {
  * @typedef {object} DraftTransaction
  * @property {Amount} amount - An object containing information about the
  *  amount of currency to send.
- * @property {Asset} asset - An object that describes the asset that the user
+ * @property {Asset} sendAsset - An object that describes the asset that the user
  *  has selected to send.
  * @property {Account} [fromAccount] - The send flow is usually only relative to
  *  the currently selected account. When editing a transaction, however, the
@@ -368,7 +368,7 @@ export const draftTransactionInitialState = {
     error: null,
     value: '0x0',
   },
-  asset: {
+  sendAsset: {
     balance: '0x0',
     details: null,
     error: null,
@@ -540,7 +540,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         gasPrice: draftTransaction.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
-        sendToken: draftTransaction.asset.details,
+        sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
         value: draftTransaction.amount.value,
         data: draftTransaction.userInputHexData,
@@ -664,8 +664,8 @@ export const initializeSendState = createAsyncThunk(
       draftTransaction.recipient.address
     ) {
       gasLimit =
-        draftTransaction.asset.type === AssetType.token ||
-        draftTransaction.asset.type === AssetType.NFT
+        draftTransaction.sendAsset.type === AssetType.token ||
+        draftTransaction.sendAsset.type === AssetType.NFT
           ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
           : GAS_LIMITS.SIMPLE;
       // Run our estimateGasLimit logic to get a more accurate estimation of
@@ -677,7 +677,7 @@ export const initializeSendState = createAsyncThunk(
           draftTransaction.fromAccount?.address ??
           sendState.selectedAccount.address ??
           account.address,
-        sendToken: draftTransaction.asset.details,
+        sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
         data: draftTransaction.userInputHexData,
@@ -859,7 +859,7 @@ const slice = createSlice({
       }
       if (
         state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.asset.type === AssetType.native
+        draftTransaction.sendAsset.type === AssetType.native
       ) {
         slice.caseReducers.updateAmountToMax(state);
       }
@@ -915,12 +915,12 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
       let amount = '0x0';
-      if (draftTransaction.asset.type === AssetType.token) {
-        const decimals = draftTransaction.asset.details?.decimals ?? 0;
+      if (draftTransaction.sendAsset.type === AssetType.token) {
+        const decimals = draftTransaction.sendAsset.details?.decimals ?? 0;
 
         const multiplier = Math.pow(10, Number(decimals));
 
-        amount = new Numeric(draftTransaction.asset.balance, 16)
+        amount = new Numeric(draftTransaction.sendAsset.balance, 16)
           .times(multiplier, 10)
           .toString();
       } else {
@@ -929,7 +929,7 @@ const slice = createSlice({
           16,
         ).add(new Numeric(state.gasTotalForLayer1 || '0x0', 16));
 
-        amount = new Numeric(draftTransaction.asset.balance, 16)
+        amount = new Numeric(draftTransaction.sendAsset.balance, 16)
           .minus(_gasTotal)
           .toString();
       }
@@ -951,18 +951,18 @@ const slice = createSlice({
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
-      draftTransaction.asset.type = asset.type;
-      draftTransaction.asset.balance = asset.balance;
-      draftTransaction.asset.error = asset.error;
+      draftTransaction.sendAsset.type = asset.type;
+      draftTransaction.sendAsset.balance = asset.balance;
+      draftTransaction.sendAsset.error = asset.error;
 
       if (
-        draftTransaction.asset.type === AssetType.token ||
-        draftTransaction.asset.type === AssetType.NFT
+        draftTransaction.sendAsset.type === AssetType.token ||
+        draftTransaction.sendAsset.type === AssetType.NFT
       ) {
-        draftTransaction.asset.details = asset.details;
+        draftTransaction.sendAsset.details = asset.details;
       } else {
         // clear the details object when sending native currency
-        draftTransaction.asset.details = null;
+        draftTransaction.sendAsset.details = null;
         if (draftTransaction.recipient.error === CONTRACT_ADDRESS_ERROR) {
           // Errors related to sending tokens to their own contract address
           // are no longer valid when sending native currency.
@@ -1107,7 +1107,7 @@ const slice = createSlice({
       state.gasTotalForLayer1 = action.payload;
       if (
         state.amountMode === AMOUNT_MODES.MAX &&
-        draftTransaction.asset.type === AssetType.native
+        draftTransaction.sendAsset.type === AssetType.native
       ) {
         slice.caseReducers.updateAmountToMax(state);
       }
@@ -1216,7 +1216,7 @@ const slice = createSlice({
       draftTransaction.amount.value = addHexPrefix(action.payload);
       // Once amount has changed, validate the field
       slice.caseReducers.validateAmountField(state);
-      if (draftTransaction.asset.type === AssetType.native) {
+      if (draftTransaction.sendAsset.type === AssetType.native) {
         // if sending the native asset the amount being sent will impact the
         // gas field as well because the gas validation takes into
         // consideration the available balance minus amount sent before
@@ -1278,30 +1278,31 @@ const slice = createSlice({
       switch (true) {
         // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.
-        case draftTransaction.asset.type === AssetType.native &&
+        case draftTransaction.sendAsset.type === AssetType.native &&
           !isBalanceSufficient({
             amount: draftTransaction.amount.value,
-            balance: draftTransaction.asset.balance,
+            balance: draftTransaction.sendAsset.balance,
             gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
           break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
-        case draftTransaction.asset.type === AssetType.token &&
+        case draftTransaction.sendAsset.type === AssetType.token &&
           !isTokenBalanceSufficient({
-            tokenBalance: draftTransaction.asset.balance ?? '0x0',
+            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
             amount: draftTransaction.amount.value,
-            decimals: draftTransaction.asset.details.decimals,
+            decimals: draftTransaction.sendAsset.details.decimals,
           }):
           draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
           break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
-        case draftTransaction.asset.type === AssetType.NFT &&
-          draftTransaction.asset.details.standard === TokenStandard.ERC1155 &&
+        case draftTransaction.sendAsset.type === AssetType.NFT &&
+          draftTransaction.sendAsset.details.standard ===
+            TokenStandard.ERC1155 &&
           !isERC1155BalanceSufficient({
-            tokenBalance: draftTransaction.asset.balance ?? '0x0',
+            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
             amount: draftTransaction.amount.value,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
@@ -1309,8 +1310,8 @@ const slice = createSlice({
 
         // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
         case amountValue.isFloat() &&
-          draftTransaction.asset.type === AssetType.NFT &&
-          draftTransaction.asset.details.standard === TokenStandard.ERC1155:
+          draftTransaction.sendAsset.type === AssetType.NFT &&
+          draftTransaction.sendAsset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
           break;
         // If none of the above are true, set error to null
@@ -1333,7 +1334,7 @@ const slice = createSlice({
         state.draftTransactions[state.currentTransactionUUID];
       const insufficientFunds = !isBalanceSufficient({
         amount:
-          draftTransaction.asset.type === AssetType.native
+          draftTransaction.sendAsset.type === AssetType.native
             ? draftTransaction.amount.value
             : '0x0',
         balance:
@@ -1380,7 +1381,7 @@ const slice = createSlice({
           } else if (
             isOriginContractAddress(
               state.recipientInput,
-              draftTransaction.asset?.details?.address,
+              draftTransaction.sendAsset?.details?.address,
             )
           ) {
             draftTransaction.recipient.error = CONTRACT_ADDRESS_ERROR;
@@ -1443,14 +1444,14 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case Boolean(draftTransaction.asset.error):
+          case Boolean(draftTransaction.sendAsset.error):
             slice.caseReducers.addHistoryEntry(state, {
-              payload: `Asset is in error ${draftTransaction.asset.error}`,
+              payload: `Asset is in error ${draftTransaction.sendAsset.error}`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case draftTransaction.asset.type === AssetType.token &&
-            draftTransaction.asset.details === null:
+          case draftTransaction.sendAsset.type === AssetType.token &&
+            draftTransaction.sendAsset.details === null:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Asset is TOKEN and token details is null`,
             });
@@ -1526,8 +1527,9 @@ const slice = createSlice({
               action.payload.account.balance;
             // We need to update the asset balance if the asset is the native
             // network asset. Once we update the balance we recompute error state.
-            if (draftTransaction.asset.type === AssetType.native) {
-              draftTransaction.asset.balance = action.payload.account.balance;
+            if (draftTransaction.sendAsset.type === AssetType.native) {
+              draftTransaction.sendAsset.balance =
+                action.payload.account.balance;
             }
             slice.caseReducers.validateAmountField(state);
             slice.caseReducers.validateGasField(state);
@@ -1607,11 +1609,11 @@ const slice = createSlice({
             // the network from the network dropdown, then the selected asset is
             // no longer valid and should be set to the native asset for the
             // network.
-            draftTransaction.asset.type = AssetType.native;
-            draftTransaction.asset.balance =
+            draftTransaction.sendAsset.type = AssetType.native;
+            draftTransaction.sendAsset.balance =
               draftTransaction.fromAccount?.balance ??
               state.selectedAccount.balance;
-            draftTransaction.asset.details = null;
+            draftTransaction.sendAsset.details = null;
           }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
@@ -1658,20 +1660,22 @@ const slice = createSlice({
           // the asset is set to the native network asset, and then validate
           // the transaction.
           if (draftTransaction) {
-            if (draftTransaction?.asset.type === AssetType.native) {
-              draftTransaction.asset.balance = action.payload.account.balance;
+            if (draftTransaction?.sendAsset.type === AssetType.native) {
+              draftTransaction.sendAsset.balance =
+                action.payload.account.balance;
             }
 
             // If selected account was changed and selected asset is a token then
             // reset asset to native asset
-            if (draftTransaction?.asset.type === AssetType.token) {
-              draftTransaction.asset.type =
-                draftTransactionInitialState.asset.type;
-              draftTransaction.asset.error =
-                draftTransactionInitialState.asset.error;
-              draftTransaction.asset.details =
-                draftTransactionInitialState.asset.details;
-              draftTransaction.asset.balance = action.payload.account.balance;
+            if (draftTransaction?.sendAsset.type === AssetType.token) {
+              draftTransaction.sendAsset.type =
+                draftTransactionInitialState.sendAsset.type;
+              draftTransaction.sendAsset.error =
+                draftTransactionInitialState.sendAsset.error;
+              draftTransaction.sendAsset.details =
+                draftTransactionInitialState.sendAsset.details;
+              draftTransaction.sendAsset.balance =
+                action.payload.account.balance;
             }
 
             slice.caseReducers.validateAmountField(state);
@@ -2010,20 +2014,20 @@ export function updateSendAmount(amount) {
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     let logAmount = amount;
-    if (draftTransaction.asset.type === AssetType.token) {
+    if (draftTransaction.sendAsset.type === AssetType.token) {
       const multiplier = Math.pow(
         10,
-        Number(draftTransaction.asset.details?.decimals || 0),
+        Number(draftTransaction.sendAsset.details?.decimals || 0),
       );
       const decimalValueString = new Numeric(addHexPrefix(amount), 16)
         .toBase(10)
         .applyConversionRate(
-          draftTransaction.asset.details?.symbol ? multiplier : 1,
+          draftTransaction.sendAsset.details?.symbol ? multiplier : 1,
           true,
         )
         .toString();
       logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
-        draftTransaction.asset.details?.symbol
+        draftTransaction.sendAsset.details?.symbol
       }`;
     } else {
       const ethValue = getValueFromWeiHex({
@@ -2213,7 +2217,7 @@ export function updateSendHexData(hexData) {
     const state = getState();
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-    if (draftTransaction.asset.type === AssetType.native) {
+    if (draftTransaction.sendAsset.type === AssetType.native) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
@@ -2356,10 +2360,10 @@ export function signTransaction() {
           ? TransactionType.contractInteraction
           : TransactionType.simpleSend;
 
-      if (draftTransaction.asset.type !== AssetType.native) {
-        if (draftTransaction.asset.type === AssetType.NFT) {
+      if (draftTransaction.sendAsset.type !== AssetType.native) {
+        if (draftTransaction.sendAsset.type === AssetType.NFT) {
           if (
-            draftTransaction.asset.details.standard === TokenStandard.ERC721
+            draftTransaction.sendAsset.details.standard === TokenStandard.ERC721
           ) {
             transactionType = TransactionType.tokenMethodTransferFrom;
           } else {
@@ -2386,7 +2390,7 @@ export function signTransaction() {
         setMaxValueMode(
           transactionId,
           amountMode === AMOUNT_MODES.MAX &&
-            draftTransaction.asset.type === AssetType.native,
+            draftTransaction.sendAsset.type === AssetType.native,
         ),
       );
     }
@@ -2574,7 +2578,7 @@ export function getGasInputMode(state) {
  * @type {Selector<?Asset>}
  */
 export function getSendAsset(state) {
-  return getCurrentDraftTransaction(state).asset;
+  return getCurrentDraftTransaction(state).sendAsset;
 }
 
 /**
