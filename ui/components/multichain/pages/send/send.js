@@ -58,7 +58,7 @@ export const SendPage = () => {
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
 
-  const { asset: transactionAsset, amount } = useSelector(
+  const { sendAsset: transactionAsset, amount } = useSelector(
     getCurrentDraftTransaction,
   );
   const draftTransactionID = useSelector(getDraftTransactionID);
