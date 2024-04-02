@@ -720,6 +720,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - RUN_MMI_OPTIONAL
             - dist-test-mmi-playwright
             - builds-test-mmi-playwright
       - store_artifacts:
