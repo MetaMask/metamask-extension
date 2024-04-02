@@ -1614,9 +1614,7 @@ export default class MetamaskController extends EventEmitter {
       },
       pendingTransactions: {
         isResubmitEnabled: () => {
-          const state = {
-            metamask: this.getState(),
-          };
+          const state = this._getMetaMaskState();
           return !(
             getSmartTransactionsOptInStatus(state) &&
             getCurrentChainSupportsSmartTransactions(state)
@@ -5584,9 +5582,7 @@ export default class MetamaskController extends EventEmitter {
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
       getIsSmartTransaction: () => {
-        return getIsSmartTransaction({
-          metamask: this.getState(),
-        });
+        return getIsSmartTransaction(this._getMetaMaskState());
       },
     };
     return {
@@ -6037,9 +6033,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _publishSmartTransactionHook(transactionMeta) {
-    const state = {
-      metamask: this.getState(),
-    };
+    const state = this._getMetaMaskState();
     const isSmartTransaction = getIsSmartTransaction(state);
     if (!isSmartTransaction) {
       // Will cause TransactionController to publish to the RPC provider as normal.
@@ -6055,5 +6049,11 @@ export default class MetamaskController extends EventEmitter {
       featureFlags,
     });
     return smartTransactionHook.submit();
+  }
+
+  _getMetaMaskState() {
+    return {
+      metamask: this.getState(),
+    };
   }
 }
