@@ -378,8 +378,6 @@ jobs:
   check-pr-tag:
     docker:
       - image: cimg/base:stable
-    environment:
-      GITHUB_REPO: '$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME'
     steps:
       - run:
           name: Check for MMI Team Tag
@@ -388,13 +386,12 @@ jobs:
 
             # GitHub Personal Access Token for API Authentication
             GITHUB_TOKEN="${GITHUB_TOKEN}"
-            GITHUB_REPO="${GITHUB_REPO}"
             BRANCH="${CIRCLE_BRANCH}"
 
             # Fetch the PRs associated with the current branch and check the response
             PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-              "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
-            echo "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
+              "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
+            echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
             # Check if the response contains valid JSON
             if ! echo "$PR_RESPONSE" | jq empty; then
                 echo "Failed to parse JSON response."
