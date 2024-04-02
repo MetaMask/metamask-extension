@@ -43,6 +43,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  clearSmartTransactionFees,
 } from '../../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -174,16 +175,13 @@ export default class ConfirmTransactionBase extends Component {
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
-<<<<<<< HEAD
     hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
     hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
     dismissOpenSeaToBlockaidBanner: PropTypes.func,
     isNetworkSupportedByBlockaid: PropTypes.bool,
-=======
     isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
     isAllowedStxChainId: PropTypes.bool,
->>>>>>> 428e47fa91 (Add Smart Transactions (WIP))
   };
 
   state = {
@@ -1006,6 +1004,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      isSmartTransaction,
       smartTransactionsOptInStatus,
       isAllowedStxChainId,
       setSwapsFeatureFlags,
@@ -1045,11 +1044,13 @@ export default class ConfirmTransactionBase extends Component {
     });
 
     if (smartTransactionsOptInStatus && isAllowedStxChainId) {
-      // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
-      // Long-term, we want to have a new proxy service specifically for feature flags.
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await setSwapsFeatureFlags(swapsFeatureFlags);
       await fetchSmartTransactionsLiveness();
+    }
+
+    if (isSmartTransaction) {
+      clearSmartTransactionFees();
     }
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);

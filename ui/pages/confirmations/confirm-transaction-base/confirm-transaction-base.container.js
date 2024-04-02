@@ -58,7 +58,6 @@ import {
   getHasDismissedOpenSeaToBlockaidBanner,
   getHasMigratedFromOpenSeaToBlockaid,
   getIsNetworkSupportedByBlockaid,
-  getIsSmartTransaction,
   getSmartTransactionsOptInStatus,
   getIsAllowedStxChainId,
 } from '../../../selectors';
@@ -164,7 +163,6 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
-  const isSmartTransaction = getIsSmartTransaction(state);
   const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
   const isAllowedStxChainId = getIsAllowedStxChainId(state);
 
@@ -346,7 +344,6 @@ const mapStateToProps = (state, ownProps) => {
     isUserOpContractDeployError,
     useMaxValue,
     maxValue,
-    isSmartTransaction,
     smartTransactionsOptInStatus,
     isAllowedStxChainId,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
