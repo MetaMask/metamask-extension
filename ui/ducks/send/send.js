@@ -1732,9 +1732,6 @@ const slice = createSlice({
         slice.caseReducers.validateSendState(state);
       })
       .addCase(fetchSwapAndSendQuotes.pending, (state) => {
-        // when we begin initializing state, which can happen when switching
-        // chains even after loading the send flow, we set gasEstimateIsLoading
-        // as initialization will trigger a fetch for gasPrice estimates.
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
@@ -2424,6 +2421,7 @@ export function resetSendState() {
  *
  * @returns {ThunkAction<void>}
  */
+// TODO: update this?
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
@@ -2483,6 +2481,7 @@ export function signTransaction() {
           ? TransactionType.contractInteraction
           : TransactionType.simpleSend;
 
+      // TODO: check this for dest
       if (draftTransaction.sendAsset.type !== AssetType.native) {
         if (draftTransaction.sendAsset.type === AssetType.NFT) {
           if (
