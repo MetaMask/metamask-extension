@@ -1166,14 +1166,14 @@ jobs:
     parallelism: 2
     steps:
       - run:
-        name: Check if the test should run
-        command: |
-          if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI}" == "true" ]]; then
-            echo "Running E2E tests"
-          else
-            echo "Conditions not met, skipping E2E tests."
-            circleci-agent step halt
-          fi
+          name: Check if the test should run
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI}" == "true" ]]; then
+              echo "Running E2E tests"
+            else
+              echo "Conditions not met, skipping E2E tests."
+              circleci-agent step halt
+            fi
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
