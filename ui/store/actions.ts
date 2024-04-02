@@ -3066,7 +3066,7 @@ export function setShowExtensionInFullSizeView(value: boolean) {
 }
 
 export function setStxOptIn(value: boolean) {
-  return setPreference('stxOptIn', value);
+  return setPreference('smartTransactionsOptInStatus', value);
 }
 
 export function setAutoLockTimeLimit(value: boolean) {

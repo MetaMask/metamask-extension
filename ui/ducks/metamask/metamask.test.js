@@ -19,7 +19,6 @@ import reduceMetamask, {
   getSendToAccounts,
   getTransactionGasFeeEstimates,
   isNotEIP1559Network,
-  getSmartTransactionFees,
 } from './metamask';
 
 const EOA_EVM_METHODS = [
@@ -620,29 +619,6 @@ describe('MetaMask Reducers', () => {
 
     it('returns undefined if no confirm transaction', () => {
       expect(getTransactionGasFeeEstimates({})).toBeUndefined();
-    });
-  });
-
-  describe('getSmartTransactionFees', () => {
-    it('should return an object with smart transaction fees', () => {
-      const fees = createGetSmartTransactionFeesApiResponse();
-      const state = {
-        metamask: {
-          smartTransactionsState: {
-            fees,
-          },
-        },
-      };
-      const result = getSmartTransactionFees(state);
-      expect(result).toStrictEqual(fees);
-    });
-
-    it('should return undefined if smartTransactionsState is not defined in the state', () => {
-      const state = {
-        metamask: {},
-      };
-      const result = getSmartTransactionFees(state);
-      expect(result).toBe(undefined);
     });
   });
 

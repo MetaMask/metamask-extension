@@ -212,7 +212,12 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
-import sharedSelectors from '../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  getFeatureFlagsByChainId,
+  getSmartTransactionsOptInStatus,
+  getCurrentChainSupportsSmartTransactions,
+} from '../../shared/modules/selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -1612,8 +1617,8 @@ export default class MetamaskController extends EventEmitter {
             metamask: this.getState(),
           };
           return !(
-            sharedSelectors.getSmartTransactionsOptInStatus(state) &&
-            sharedSelectors.getIsAllowedStxChainId(state)
+            getSmartTransactionsOptInStatus(state) &&
+            getCurrentChainSupportsSmartTransactions(state)
           );
         },
       },
@@ -1634,27 +1639,7 @@ export default class MetamaskController extends EventEmitter {
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
-        publish: (transactionMeta) => {
-          const state = {
-            metamask: this.getState(),
-          };
-          const isSmartTransaction =
-            sharedSelectors.getIsSmartTransaction(state);
-          if (!isSmartTransaction) {
-            // Will cause TransactionController to publish to the RPC provider as normal.
-            return { transactionHash: undefined };
-          }
-          const featureFlags = sharedSelectors.getFeatureFlagsByChainId(state);
-          const smartTransactionHook = new SmartTransactionHook();
-          return smartTransactionHook.submit({
-            transactionMeta,
-            transactionController: this.txController,
-            smartTransactionsController: this.smartTransactionsController,
-            controllerMessenger: this.controllerMessenger,
-            isSmartTransaction,
-            featureFlags,
-          });
-        },
+        publish: this._publishSmartTransactionHook.bind(this),
       },
       sign: (...args) => this.keyringController.signTransaction(...args),
       state: initState.TransactionController,
@@ -5598,7 +5583,7 @@ export default class MetamaskController extends EventEmitter {
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
       getIsSmartTransaction: () => {
-        return sharedSelectors.getIsSmartTransaction({
+        return getIsSmartTransaction({
           metamask: this.getState(),
         });
       },
@@ -6048,5 +6033,26 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       { updatedTransactionMeta },
     );
+  }
+
+  _publishSmartTransactionHook(transactionMeta) {
+    const state = {
+      metamask: this.getState(),
+    };
+    const isSmartTransaction = getIsSmartTransaction(state);
+    if (!isSmartTransaction) {
+      // Will cause TransactionController to publish to the RPC provider as normal.
+      return { transactionHash: undefined };
+    }
+    const featureFlags = getFeatureFlagsByChainId(state);
+    const smartTransactionHook = new SmartTransactionHook({
+      transactionMeta,
+      transactionController: this.txController,
+      smartTransactionsController: this.smartTransactionsController,
+      controllerMessenger: this.controllerMessenger,
+      isSmartTransaction,
+      featureFlags,
+    });
+    return smartTransactionHook.submit();
   }
 }

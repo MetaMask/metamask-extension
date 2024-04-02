@@ -150,7 +150,7 @@ export const createSwapsMockStore = () => {
       },
       preferences: {
         showFiatInTestnets: true,
-        stxOptIn: true,
+        smartTransactionsOptInStatus: true,
       },
       transactions: [
         {

@@ -51,7 +51,7 @@ export default class AdvancedTab extends PureComponent {
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
-    stxOptIn: PropTypes.bool,
+    smartTransactionsOptInStatus: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
@@ -245,7 +245,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { stxOptIn, setStxOptIn } = this.props;
+    const { smartTransactionsOptInStatus, setStxOptIn } = this.props;
 
     const learMoreLink = (
       <ButtonLink
@@ -282,7 +282,7 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={stxOptIn}
+            value={smartTransactionsOptInStatus}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
               this.context.trackEvent({

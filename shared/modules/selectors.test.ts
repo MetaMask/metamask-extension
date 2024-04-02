@@ -2,7 +2,7 @@ import { createSwapsMockStore } from '../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../constants/network';
 import {
   getSmartTransactionsOptInStatus,
-  getIsAllowedStxChainId,
+  getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
 } from './selectors';
@@ -12,7 +12,7 @@ describe('Selectors', () => {
     return {
       metamask: {
         preferences: {
-          stxOptIn: true,
+          smartTransactionsOptInStatus: true,
         },
         internalAccounts: {
           selectedAccount: 'account1',
@@ -58,10 +58,10 @@ describe('Selectors', () => {
     });
   });
 
-  describe('getIsAllowedStxChainId', () => {
+  describe('getCurrentChainSupportsSmartTransactions', () => {
     it('should return true if the chain ID is allowed for smart transactions', () => {
       const state = createMockState();
-      const result = getIsAllowedStxChainId(state);
+      const result = getCurrentChainSupportsSmartTransactions(state);
       expect(result).toBe(true);
     });
 
@@ -77,7 +77,7 @@ describe('Selectors', () => {
           },
         },
       };
-      const result = getIsAllowedStxChainId(newState);
+      const result = getCurrentChainSupportsSmartTransactions(newState);
       expect(result).toBe(false);
     });
   });
@@ -177,7 +177,7 @@ describe('Selectors', () => {
           ...state.metamask,
           preferences: {
             ...state.metamask.preferences,
-            stxOptIn: false,
+            smartTransactionsOptInStatus: false,
           },
         },
       };

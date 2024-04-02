@@ -99,7 +99,7 @@ function mapStateToProps(state) {
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
-    stxOptIn: getSmartTransactionsOptInStatus(state),
+    smartTransactionsOptInStatus: getSmartTransactionsOptInStatus(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     forgottenPassword: state.metamask.forgottenPassword,
