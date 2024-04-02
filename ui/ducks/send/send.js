@@ -10,6 +10,7 @@ import {
 import {
   decimalToHex,
   getValueFromWeiHex,
+  hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
@@ -114,6 +115,7 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
+import { getSwapAndSendQuotes } from '../../components/multichain/pages/send/send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -347,6 +349,8 @@ export const RECIPIENT_SEARCH_MODES = {
  *  TransactionController this field will be populated with its id from the
  *  TransactionController state. This is required to be able to update the
  *  transaction in the controller.
+ * @property {boolean} isSwapQuoteLoading – is a swap quote being fetched
+ * @property {object} quotes – quotes for swaps // TODO: update type
  * @property {Asset} receiveAsset - An object that describes the asset that the user
  *  has selected for the recipient to receive.
  * @property {Recipient} recipient - An object that describes the intended
@@ -405,6 +409,8 @@ export const draftTransactionInitialState = {
   status: SEND_STATUSES.VALID,
   transactionType: TransactionEnvelopeType.legacy,
   userInputHexData: null,
+  isSwapQuoteLoading: false,
+  quotes: null,
 };
 
 /**
@@ -726,6 +732,68 @@ export const initializeSendState = createAsyncThunk(
       useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
     };
+  },
+);
+
+/**
+ * Fetch the swap and send transaction if the source and destination token do not match
+ *
+ * @param {string} hexData - hex encoded string representing transaction data.
+ * @returns {ThunkAction<void>}
+ */
+
+export const fetchSwapAndSendQuotes = createAsyncThunk(
+  'send/fetchSwapAndSendQuotes',
+  async (_, thunkApi) => {
+    const state = thunkApi.getState();
+    const sendState = state[name];
+
+    const chainId = getCurrentChainId(state);
+
+    const draftTransaction =
+      sendState.draftTransactions[sendState.currentTransactionUUID];
+
+    // TODO: move to util
+    const sender =
+      draftTransaction.fromAccount?.address ??
+      sendState.selectedAccount.address ??
+      getSelectedInternalAccount(state).address;
+
+    // return early if swap isn't required
+    if (
+      draftTransaction?.sendAsset?.details?.address ===
+      draftTransaction?.receiveAsset?.details?.address
+    ) {
+      return { quotes: null };
+    }
+
+    const sourceAmount = hexToDecimal(draftTransaction.amount.value);
+
+    // return early if form isn't filled out
+    if (
+      !Number(sourceAmount) ||
+      // !draftTransaction.sendAsset ||
+      // !draftTransaction.receiveAsset ||
+      !draftTransaction.recipient.address
+    ) {
+      return { quotes: null };
+    }
+
+    const quotes = await getSwapAndSendQuotes({
+      chainId,
+      sourceAmount,
+      sourceToken:
+        draftTransaction.sendAsset?.details?.address ||
+        '0x0000000000000000000000000000000000000000',
+      destinationToken:
+        draftTransaction.receiveAsset?.details?.address ||
+        '0x0000000000000000000000000000000000000000',
+      sender,
+      recipient: draftTransaction.recipient.address,
+      slippage: '5', // TODO: update when solution is available
+    });
+
+    return { quotes };
   },
 );
 
@@ -1663,6 +1731,28 @@ const slice = createSlice({
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
+      .addCase(fetchSwapAndSendQuotes.pending, (state) => {
+        // when we begin initializing state, which can happen when switching
+        // chains even after loading the send flow, we set gasEstimateIsLoading
+        // as initialization will trigger a fetch for gasPrice estimates.
+        const draftTransaction =
+          state.draftTransactions[state.currentTransactionUUID];
+
+        if (draftTransaction) {
+          draftTransaction.isSwapQuoteLoading = true;
+        }
+      })
+      .addCase(fetchSwapAndSendQuotes.fulfilled, (state, action) => {
+        const draftTransaction =
+          state.draftTransactions[state.currentTransactionUUID];
+
+        if (draftTransaction) {
+          draftTransaction.isSwapQuoteLoading = false;
+          if (action.payload) {
+            draftTransaction.quotes = action.payload.quotes;
+          }
+        }
+      })
       .addCase(SELECTED_ACCOUNT_CHANGED, (state, action) => {
         // This event occurs when the user selects a new account from the
         // account menu, or the currently active account's balance updates.
@@ -1950,6 +2040,7 @@ export function updateRecipient({ address, nickname }) {
         nickname: nickname || nicknameFromAddressBookEntryOrAccountName,
       }),
     );
+    await dispatch(fetchSwapAndSendQuotes());
     await dispatch(computeEstimatedGasLimit());
   };
 }
@@ -2067,6 +2158,8 @@ export function updateSendAmount(amount) {
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
+
+    await dispatch(fetchSwapAndSendQuotes());
     await dispatch(computeEstimatedGasLimit());
   };
 }
@@ -2217,6 +2310,7 @@ export function updateSendAsset(
       await dispatch(
         actions.updateAsset({ asset, initialAssetSet, isReceived }),
       );
+      await dispatch(fetchSwapAndSendQuotes());
     }
     if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
       await dispatch(computeEstimatedGasLimit());
@@ -2245,6 +2339,7 @@ export function updateSendHexData(hexData) {
     const state = getState();
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+    await dispatch(fetchSwapAndSendQuotes());
     if (draftTransaction.sendAsset.type === AssetType.native) {
       await dispatch(computeEstimatedGasLimit());
     }
@@ -2445,6 +2540,7 @@ export function toggleSendMaxMode() {
       await dispatch(actions.updateAmountToMax());
       await dispatch(addHistoryEntry(`sendFlow - user toggled max mode on`));
     }
+    await dispatch(fetchSwapAndSendQuotes());
     await dispatch(computeEstimatedGasLimit());
   };
 }
