@@ -60,6 +60,58 @@ export const showRemainingTimeInMinAndSec = (
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
+const getDisplayValues = ({
+  t,
+  countdown,
+  isSmartTransactionPending,
+  isSmartTransactionTakingTooLong,
+  isSmartTransactionSuccess,
+  isSmartTransactionCancelled,
+}: {
+  t: ReturnType<typeof useI18nContext>;
+  countdown: JSX.Element | undefined;
+  isSmartTransactionPending: boolean;
+  isSmartTransactionTakingTooLong: boolean;
+  isSmartTransactionSuccess: boolean;
+  isSmartTransactionCancelled: boolean;
+}) => {
+  if (isSmartTransactionPending && isSmartTransactionTakingTooLong) {
+    return {
+      title: t('smartTransactionTakingTooLong'),
+      description: t('smartTransactionTakingTooLongDescription', [countdown]),
+      iconName: IconName.Clock,
+      iconColor: IconColor.primaryDefault,
+    };
+  } else if (isSmartTransactionPending) {
+    return {
+      title: t('smartTransactionPending'),
+      description: t('stxEstimatedCompletion', [countdown]),
+      iconName: IconName.Clock,
+      iconColor: IconColor.primaryDefault,
+    };
+  } else if (isSmartTransactionSuccess) {
+    return {
+      title: t('smartTransactionSuccess'),
+      iconName: IconName.Confirmation,
+      iconColor: IconColor.successDefault,
+    };
+  } else if (isSmartTransactionCancelled) {
+    return {
+      title: t('smartTransactionCancelled'),
+      description: t('smartTransactionCancelledDescription', [countdown]),
+      iconName: IconName.Danger,
+      iconColor: IconColor.errorDefault,
+    };
+  }
+  // E.g. reverted or unknown statuses.
+  return {
+    title: t('smartTransactionError'),
+    description: t('smartTransactionErrorDescription'),
+    iconName: IconName.Danger,
+    iconColor: IconColor.errorDefault,
+  };
+};
+
 export const SmartTransactionStatusPage = ({
   requestState,
   onCloseExtension,
@@ -73,8 +125,8 @@ export const SmartTransactionStatusPage = ({
     smartTransaction.status === SmartTransactionStatuses.PENDING;
   const isSmartTransactionSuccess =
     smartTransaction?.status === SmartTransactionStatuses.SUCCESS;
-  const isSmartTransactionCancelled = smartTransaction?.status?.startsWith(
-    SmartTransactionStatuses.CANCELLED,
+  const isSmartTransactionCancelled = Boolean(
+    smartTransaction?.status?.startsWith(SmartTransactionStatuses.CANCELLED),
   );
   const featureFlags: Record<string, any> | null = useSelector(
     getFeatureFlagsByChainId,
@@ -106,52 +158,26 @@ export const SmartTransactionStatusPage = ({
       { blockExplorerUrl: baseNetworkUrl },
     );
   }
-  let title;
-  let description;
-  let iconName;
-  let iconColor;
-  let countdown;
+  const countdown = isSmartTransactionPending ? (
+    <Text
+      display={Display.InlineBlock}
+      textAlign={TextAlign.Center}
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodySm}
+      className="smart-transaction-status-page__countdown"
+    >
+      {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
+    </Text>
+  ) : undefined;
 
-  if (isSmartTransactionPending) {
-    countdown = (
-      <Text
-        display={Display.InlineBlock}
-        textAlign={TextAlign.Center}
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodySm}
-        className="smart-transaction-status-page__countdown"
-      >
-        {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
-      </Text>
-    );
-  }
-
-  if (isSmartTransactionPending && isSmartTransactionTakingTooLong) {
-    title = t('smartTransactionTakingTooLong');
-    description = t('smartTransactionTakingTooLongDescription', [countdown]);
-    iconName = IconName.Clock;
-    iconColor = IconColor.primaryDefault;
-  } else if (isSmartTransactionPending) {
-    title = t('smartTransactionPending');
-    description = t('stxEstimatedCompletion', [countdown]);
-    iconName = IconName.Clock;
-    iconColor = IconColor.primaryDefault;
-  } else if (isSmartTransactionSuccess) {
-    title = t('smartTransactionSuccess');
-    iconName = IconName.Confirmation;
-    iconColor = IconColor.successDefault;
-  } else if (isSmartTransactionCancelled) {
-    title = t('smartTransactionCancelled');
-    description = t('smartTransactionCancelledDescription');
-    iconName = IconName.Danger;
-    iconColor = IconColor.errorDefault;
-  } else {
-    // E.g. reverted or unknown statuses.
-    title = t('smartTransactionError');
-    description = t('smartTransactionErrorDescription');
-    iconName = IconName.Danger;
-    iconColor = IconColor.errorDefault;
-  }
+  const { title, description, iconName, iconColor } = getDisplayValues({
+    t,
+    countdown,
+    isSmartTransactionPending,
+    isSmartTransactionTakingTooLong,
+    isSmartTransactionSuccess,
+    isSmartTransactionCancelled,
+  });
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -267,10 +293,10 @@ export const SmartTransactionStatusPage = ({
               type="link"
               variant={ButtonVariant.Link}
               onClick={() => {
-                global.platform.openTab({ url: blockExplorerUrl });
                 if (!isSmartTransactionPending) {
                   onCloseExtension();
                 }
+                global.platform.openTab({ url: blockExplorerUrl });
               }}
             >
               {t('viewTransaction')}

@@ -35,7 +35,7 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
-    stxOptIn,
+    smartTransactionsOptInStatus,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
@@ -45,7 +45,7 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
-    stxOptIn,
+    smartTransactionsOptInStatus,
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,

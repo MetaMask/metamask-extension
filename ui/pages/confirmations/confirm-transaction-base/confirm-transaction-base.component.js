@@ -180,7 +180,7 @@ export default class ConfirmTransactionBase extends Component {
     isNetworkSupportedByBlockaid: PropTypes.bool,
     isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
-    isAllowedStxChainId: PropTypes.bool,
+    currentChainSupportsSmartTransactions: PropTypes.bool,
   };
 
   state = {
@@ -1004,7 +1004,7 @@ export default class ConfirmTransactionBase extends Component {
       getNextNonce,
       tryReverseResolveAddress,
       smartTransactionsOptInStatus,
-      isAllowedStxChainId,
+      currentChainSupportsSmartTransactions,
       setSwapsFeatureFlags,
       fetchSmartTransactionsLiveness,
     } = this.props;
@@ -1043,7 +1043,9 @@ export default class ConfirmTransactionBase extends Component {
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
 
-    if (smartTransactionsOptInStatus && isAllowedStxChainId) {
+    if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
+      // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
+      // Long-term, we want to have a new proxy service specifically for feature flags.
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await setSwapsFeatureFlags(swapsFeatureFlags);
       await fetchSmartTransactionsLiveness();

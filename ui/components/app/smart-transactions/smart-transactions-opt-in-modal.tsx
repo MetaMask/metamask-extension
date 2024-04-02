@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -21,19 +22,25 @@ import {
   ModalHeader,
   ModalContent,
 } from '../../component-library';
+import { setStxOptIn } from '../../../store/actions';
 
-type Props = {
-  onEnable: () => void;
-  onNotRightNow: () => void;
+export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
 };
 
-export default function SmartTransactionsModal({
-  onEnable,
-  onNotRightNow,
+export default function SmartTransactionsOptInModal({
   isOpen,
-}: Props) {
+}: SmartTransactionsOptInModalProps) {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const onEnable = () => {
+    dispatch(setStxOptIn(true));
+  };
+  const onNotRightNow = () => {
+    dispatch(setStxOptIn(false));
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -49,7 +56,7 @@ export default function SmartTransactionsModal({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
         >
-          {t('introducingSmartTransctions')}
+          {t('introducingSmartTransactions')}
         </ModalHeader>
         <Box
           display={Display.Flex}

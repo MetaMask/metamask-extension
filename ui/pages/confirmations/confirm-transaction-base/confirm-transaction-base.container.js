@@ -60,7 +60,7 @@ import {
   getIsNetworkSupportedByBlockaid,
 } from '../../../selectors';
 import {
-  getIsAllowedStxChainId,
+  getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsOptInStatus,
 } from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -166,7 +166,8 @@ const mapStateToProps = (state, ownProps) => {
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
   const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
-  const isAllowedStxChainId = getIsAllowedStxChainId(state);
+  const currentChainSupportsSmartTransactions =
+    getCurrentChainSupportsSmartTransactions(state);
 
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
@@ -347,7 +348,7 @@ const mapStateToProps = (state, ownProps) => {
     useMaxValue,
     maxValue,
     smartTransactionsOptInStatus,
-    isAllowedStxChainId,
+    currentChainSupportsSmartTransactions,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

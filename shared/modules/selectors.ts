@@ -13,20 +13,22 @@ import { getNetworkNameByChainId } from './feature-flags';
 export const getSmartTransactionsOptInStatus = (
   state: Record<string, any>,
 ): boolean | null => {
-  return state.metamask.preferences?.stxOptIn;
+  return state.metamask.preferences?.smartTransactionsOptInStatus;
 };
 
-export const getIsAllowedStxChainId = (state: Record<string, any>): boolean => {
+export const getCurrentChainSupportsSmartTransactions = (
+  state: Record<string, any>,
+): boolean => {
   const chainId = getCurrentChainId(state);
   return ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
 };
 
 const getIsAllowedRpcUrlForStx = (state: Record<string, any>) => {
   const chainId = getCurrentChainId(state);
-  const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
-    process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.TESTING;
-  if (!isNotDevelopment || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
+  const isDevelopment =
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING;
+  if (isDevelopment || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
     // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
     return true;
   }
@@ -40,7 +42,11 @@ const getIsAllowedRpcUrlForStx = (state: Record<string, any>) => {
 };
 
 export const getIsStxOptInAvailable = (state: Record<string, any>) => {
-  return getIsAllowedStxChainId(state) && getIsAllowedRpcUrlForStx(state);
+  return (
+    getCurrentChainSupportsSmartTransactions(state) &&
+    getIsAllowedRpcUrlForStx(state) &&
+    getSmartTransactionsOptInStatus(state) === null
+  );
 };
 
 export const getSmartTransactionsEnabled = (
@@ -54,7 +60,8 @@ export const getSmartTransactionsEnabled = (
   const smartTransactionsLiveness =
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
-    getIsStxOptInAvailable(state) &&
+    getCurrentChainSupportsSmartTransactions(state) &&
+      getIsAllowedRpcUrlForStx(state) &&
       supportedAccount &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness,
@@ -81,14 +88,3 @@ export function getFeatureFlagsByChainId(state: Record<string, any>) {
     },
   };
 }
-
-const sharedSelectors = {
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
-  getIsSmartTransaction,
-  getIsAllowedStxChainId,
-  getFeatureFlagsByChainId,
-  getIsStxOptInAvailable,
-};
-
-export default sharedSelectors;

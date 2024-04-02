@@ -1,13 +1,15 @@
 import { CHAIN_IDS } from '../constants/network';
 
-export const ETHEREUM = 'ethereum';
-export const POLYGON = 'polygon';
-export const BSC = 'bsc';
-export const AVALANCHE = 'avalanche';
-export const OPTIMISM = 'optimism';
-export const ARBITRUM = 'arbitrum';
-export const ZKSYNC_ERA = 'zksync';
-export const LINEA = 'linea';
+enum NetworkName {
+  Ethereum = 'ethereum',
+  Polygon = 'polygon',
+  Bsc = 'bsc',
+  Avalanche = 'avalanche',
+  Optimism = 'optimism',
+  Arbitrum = 'arbitrum',
+  ZkSyncEra = 'zksync',
+  Linea = 'linea',
+}
 
 /**
  * @param chainId
@@ -18,21 +20,21 @@ export const getNetworkNameByChainId = (chainId: string): string => {
     case CHAIN_IDS.MAINNET:
     case CHAIN_IDS.GOERLI:
     case CHAIN_IDS.SEPOLIA:
-      return ETHEREUM;
+      return NetworkName.Ethereum;
     case CHAIN_IDS.BSC:
-      return BSC;
+      return NetworkName.Bsc;
     case CHAIN_IDS.POLYGON:
-      return POLYGON;
+      return NetworkName.Polygon;
     case CHAIN_IDS.AVALANCHE:
-      return AVALANCHE;
+      return NetworkName.Avalanche;
     case CHAIN_IDS.OPTIMISM:
-      return OPTIMISM;
+      return NetworkName.Optimism;
     case CHAIN_IDS.ARBITRUM:
-      return ARBITRUM;
+      return NetworkName.Arbitrum;
     case CHAIN_IDS.ZKSYNC_ERA:
-      return ZKSYNC_ERA;
+      return NetworkName.ZkSyncEra;
     case CHAIN_IDS.LINEA_MAINNET:
-      return LINEA;
+      return NetworkName.Linea;
     default:
       return '';
   }
