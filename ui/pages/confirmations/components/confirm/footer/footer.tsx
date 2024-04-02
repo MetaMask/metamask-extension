@@ -9,7 +9,9 @@ import {
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
+///: END:ONLY_INCLUDE_IF
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
@@ -62,7 +64,7 @@ const Footer = () => {
   }, [currentConfirmation]);
 
   return (
-    <PageFooter>
+    <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         onClick={onCancel}

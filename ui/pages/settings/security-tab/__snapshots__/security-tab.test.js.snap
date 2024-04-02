@@ -31,10 +31,10 @@ exports[`Security Tab should match snapshot 1`] = `
         Reveal Secret Recovery Phrase
       </button>
     </div>
-    <div
-      class="settings-page__security-tab-sub-header"
-    >
-      <span>
+    <div>
+      <span
+        class="settings-page__security-tab-sub-header"
+      >
         Security alerts
       </span>
     </div>

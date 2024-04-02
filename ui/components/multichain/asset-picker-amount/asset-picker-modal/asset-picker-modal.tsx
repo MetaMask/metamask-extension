@@ -177,6 +177,8 @@ export function AssetPickerModal({
   const collectionsKeys = Object.keys(collections);
 
   const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const collection = (collections as any)[key];
 
     const isMatchingQuery = collection.collectionName
@@ -244,6 +246,8 @@ export function AssetPickerModal({
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
                     value={searchQuery}
+                    // TODO: Replace `any` with type
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => handleSearch(e.target.value)}
                     error={false}
                     autoFocus
@@ -340,6 +344,8 @@ export function AssetPickerModal({
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
                     value={searchQuery}
+                    // TODO: Replace `any` with type
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => handleSearch(e.target.value)}
                     error={false}
                     autoFocus

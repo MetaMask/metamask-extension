@@ -91,12 +91,18 @@ export const Connections = () => {
 
   const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const siteMetadata = useSelector(getSubjectMetadata);
   const connectedSiteMetadata = siteMetadata[activeTabOrigin];
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
 
   const connectedAccounts = useSelector(
@@ -108,10 +114,14 @@ export const Connections = () => {
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as { [key: string]: any[] };
   const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tabToConnect: { origin: any } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
@@ -153,6 +163,8 @@ export const Connections = () => {
 
   // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
   const latestSelected = mergedAccounts.findIndex(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
         index ===
@@ -160,6 +172,8 @@ export const Connections = () => {
           (
             acc: string | number,
             cur: { metadata: { lastSelected: number } },
+            // TODO: Replace `any` with type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
           ) =>
             cur.metadata.lastSelected >
@@ -228,6 +242,8 @@ export const Connections = () => {
                 name={t('connectedaccountsTabKey')}
                 padding={4}
               >
+                {/* TODO: Replace `any` with type */}
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {mergedAccounts.map((account: AccountType, index: any) => {
                   const connectedSites: ConnectedSites = {};
                   const connectedSite = connectedSites[account.address]?.find(
