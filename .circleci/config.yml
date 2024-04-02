@@ -406,19 +406,19 @@ jobs:
                 exit 1
             fi
 
-            # Extract the PR number
-            LABELS=$(echo "$PR_RESPONSE" | jq -r '.[0].labels // empty')
+            # Extract label names from the PR_RESPONSE
+            LABEL_NAMES=$(echo "$PR_RESPONSE" | jq -r '.[0].labels[].name')
 
-            echo "Labels found: $LABELS"
+            echo "Labels found: $LABEL_NAMES"
 
-            # Check if "mmi-team" label is present
-            if [[ $LABELS == *"type-refactor"* ]]; then
-              echo "mmi-team label found."
+            # Check if "team-mmi" label is present
+            if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
+              echo "team-mmi tag found."
               # You can create a file or an environment variable to signal the next steps
               echo 'export RUN_MMI="true"' >> $BASH_ENV
               source $BASH_ENV
             else
-              echo "mmi-team label not found."
+              echo "team-mmi tag not found."
               echo 'export RUN_MMI="false"' >> $BASH_ENV
               source $BASH_ENV
             fi
