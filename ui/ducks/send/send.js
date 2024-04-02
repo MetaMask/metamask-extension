@@ -1533,14 +1533,27 @@ const slice = createSlice({
             break;
           case Boolean(draftTransaction.sendAsset.error):
             slice.caseReducers.addHistoryEntry(state, {
-              payload: `Asset is in error ${draftTransaction.sendAsset.error}`,
+              payload: `Send asset is in error ${draftTransaction.sendAsset.error}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(draftTransaction.receiveAsset.error):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Receive asset is in error ${draftTransaction.receiveAsset.error}`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           case draftTransaction.sendAsset.type === AssetType.token &&
             draftTransaction.sendAsset.details === null:
             slice.caseReducers.addHistoryEntry(state, {
-              payload: `Asset is TOKEN and token details is null`,
+              payload: 'Send asset is TOKEN and token details is null',
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case draftTransaction.receiveAsset.type === AssetType.token &&
+            draftTransaction.receiveAsset.details === null:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: 'Receive asset is TOKEN and token details is null',
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
