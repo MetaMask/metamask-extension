@@ -66,6 +66,7 @@ aliases:
         echo "Checkout branch '${CIRCLE_BRANCH}' at commit '${CIRCLE_SHA1}'"
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
+
   # Check if MMI Optional tests should run
   - &check-mmi-optional
     name: Check if MMI Optional tests should run
