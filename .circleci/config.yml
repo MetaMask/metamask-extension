@@ -77,6 +77,50 @@ workflows:
       - trigger-beta-build:
           requires:
             - prep-deps
+      - check-pr-tag:
+          docker:
+            - image: cimg/base:stable
+          environment:
+            GITHUB_REPO: '$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME'
+          steps:
+            - run:
+                name: Check for MMI Team Tag
+                command: |
+                  #!/bin/bash
+
+                  # GitHub Personal Access Token for API Authentication
+                  GITHUB_TOKEN="${GITHUB_TOKEN}"
+                  GITHUB_REPO="${GITHUB_REPO}"
+                  BRANCH="${CIRCLE_BRANCH}"
+
+                  # Fetch the PR number associated with the current branch
+                  PR_NUMBER=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+                      "https://api.github.com/repos/${GITHUB_REPO}/pulls" | jq --arg BRANCH "$BRANCH" '.[] | select(.head.ref==$BRANCH) | .number')
+
+                  if [ -z "$PR_NUMBER" ]; then
+                    echo "No PR found for branch $BRANCH."
+                    exit 0
+                  fi
+
+                  echo "PR Number: $PR_NUMBER"
+
+                  # Fetch labels for the PR
+                  LABELS=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+                      "https://api.github.com/repos/${GITHUB_REPO}/issues/${PR_NUMBER}/labels" | jq -r '.[].name')
+
+                  echo "Labels found: $LABELS"
+
+                  # Check if "mmi-team" label is present
+                  if [[ $LABELS == *"mmi-team"* ]]; then
+                    echo "mmi-team label found."
+                    # You can create a file or an environment variable to signal the next steps
+                    echo 'export RUN_MMI="true"' >> $BASH_ENV
+                    source $BASH_ENV
+                  else
+                    echo "mmi-team label not found."
+                    echo 'export RUN_MMI="false"' >> $BASH_ENV
+                    source $BASH_ENV
+                  fi
       - prep-deps
       - test-deps-audit:
           requires:
@@ -175,6 +219,7 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+            - check-pr-tag
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -1118,6 +1163,15 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
+      - run:
+        name: Check if the test should run
+        command: |
+          if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI}" == "true" ]]; then
+            echo "Running E2E tests"
+            # Place your E2E test commands here
+          else
+            echo "Conditions not met, skipping E2E tests."
+          fi
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
