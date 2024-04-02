@@ -57,14 +57,17 @@ describe('AssetPicker', () => {
     };
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, container } = render(
       <Provider store={store('NATIVE')}>
         <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
       </Provider>,
     );
     expect(getByText('NATIVE')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', './images/eth_logo.svg');
+    expect(container.querySelector('img')).toBeInTheDocument();
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
   });
 
   it('native: renders overflowing symbol and image', () => {
@@ -74,14 +77,17 @@ describe('AssetPicker', () => {
     };
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, container } = render(
       <Provider store={store('NATIVE TOKEN')}>
         <AssetPicker asset={asset} onAssetChange={() => mockAssetChange()} />
       </Provider>,
     );
     expect(getByText('NATIVE...')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', './images/eth_logo.svg');
+    expect(container.querySelector('img')).toBeInTheDocument();
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      './images/eth_logo.svg',
+    );
   });
 
   it('token: renders symbol and image', () => {
@@ -96,7 +102,7 @@ describe('AssetPicker', () => {
     };
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, container } = render(
       <Provider
         store={store("SHOULDN'T MATTER", {
           'token address': { iconUrl: 'token icon url' },
@@ -106,8 +112,11 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', 'token icon url');
+    expect(container.querySelector('img')).toBeInTheDocument();
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      'token icon url',
+    );
   });
 
   it('token: renders symbol and image overflowing', () => {
@@ -122,7 +131,7 @@ describe('AssetPicker', () => {
     };
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByRole } = render(
+    const { getByText, container } = render(
       <Provider
         store={store("SHOULDN'T MATTER", {
           'token address': { iconUrl: 'token icon url' },
@@ -132,8 +141,11 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('symbol...')).toBeInTheDocument();
-    expect(getByRole('img')).toBeInTheDocument();
-    expect(getByRole('img')).toHaveAttribute('src', 'token icon url');
+    expect(container.querySelector('img')).toBeInTheDocument();
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      'token icon url',
+    );
   });
 
   it('token: renders symbol and image falls back', () => {

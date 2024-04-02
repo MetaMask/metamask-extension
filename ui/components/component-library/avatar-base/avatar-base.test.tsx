@@ -55,12 +55,12 @@ describe('AvatarBase', () => {
   });
   // children
   it('should render children', () => {
-    render(
+    const { container } = render(
       <AvatarBase data-testid="avatar-base">
         <img width="100%" src="./images/arbitrum.svg" />
       </AvatarBase>,
     );
-    const image = screen.getByRole('img');
+    const image = container.querySelector('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', './images/arbitrum.svg');
   });

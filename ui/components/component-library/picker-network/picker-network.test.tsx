@@ -14,14 +14,14 @@ describe('PickerNetwork', () => {
     expect(container).toMatchSnapshot();
   });
   it('should render correct Avatar inside Picker Network', () => {
-    render(
+    const { container } = render(
       <PickerNetwork
         data-testid="picker-network"
         label="Imported"
         src="./images/matic-token.svg"
       />,
     );
-    const image = screen.getByRole('img');
+    const image = container.querySelector('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', './images/matic-token.svg');
   });

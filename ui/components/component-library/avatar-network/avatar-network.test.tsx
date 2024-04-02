@@ -26,8 +26,10 @@ describe('AvatarNetwork', () => {
   });
 
   it('should render image of Avatar Network', () => {
-    render(<AvatarNetwork data-testid="avatar-network" {...args} />);
-    const image = screen.getByRole('img');
+    const { container } = render(
+      <AvatarNetwork data-testid="avatar-network" {...args} />,
+    );
+    const image = container.querySelector('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', args.src);
   });
@@ -40,8 +42,10 @@ describe('AvatarNetwork', () => {
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarNetwork data-testid="avatar-network" {...args} showHalo />);
-    const image = screen.getAllByRole('img', { hidden: true });
+    const { container } = render(
+      <AvatarNetwork data-testid="avatar-network" {...args} showHalo />,
+    );
+    const image = container.querySelectorAll('img');
     expect(image[1]).toHaveClass(
       'mm-avatar-network__network-image--size-reduced',
     );

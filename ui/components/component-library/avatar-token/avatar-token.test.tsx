@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import React from 'react';
 import {
   BackgroundColor,
@@ -24,8 +24,10 @@ describe('AvatarToken', () => {
   });
 
   it('should render image Avatar', () => {
-    render(<AvatarToken {...args} data-testid="avatar-token" />);
-    const image = screen.getByRole('img');
+    const { container } = render(
+      <AvatarToken {...args} data-testid="avatar-token" />,
+    );
+    const image = container.querySelector('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', args.src);
   });
@@ -38,8 +40,10 @@ describe('AvatarToken', () => {
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarToken {...args} data-testid="avatar-token" showHalo />);
-    const image = screen.getAllByRole('img', { hidden: true });
+    const { container } = render(
+      <AvatarToken {...args} data-testid="avatar-token" showHalo />,
+    );
+    const image = container.querySelectorAll('img');
     expect(image[1]).toHaveClass('mm-avatar-token__token-image--size-reduced');
   });
 

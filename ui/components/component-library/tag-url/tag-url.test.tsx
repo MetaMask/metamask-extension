@@ -26,7 +26,7 @@ describe('TagUrl', () => {
   });
 
   it('should render correct Avatar in TagUrl', () => {
-    render(
+    const { container } = render(
       <TagUrl
         data-testid="tag-url"
         label="https://app.uniswap.org"
@@ -34,7 +34,7 @@ describe('TagUrl', () => {
         src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
       />,
     );
-    const image = screen.getByRole('img');
+    const image = container.querySelector('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute(
       'src',

@@ -21,8 +21,10 @@ describe('AvatarFavicon', () => {
   });
 
   it('should render image of Avatar Favicon', () => {
-    render(<AvatarFavicon data-testid="avatar-favicon" {...args} />);
-    const image = screen.getByRole('img');
+    const { container } = render(
+      <AvatarFavicon data-testid="avatar-favicon" {...args} />,
+    );
+    const image = container.querySelector('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', args.src);
   });
