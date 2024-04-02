@@ -1296,7 +1296,7 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
-export const getNonTestNetworks = createSelector(
+export const getNonTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
     return [
@@ -1344,7 +1344,7 @@ export const getNonTestNetworks = createSelector(
   },
 );
 
-export const getTestNetworks = createSelector(
+export const getTestNetworks = createDeepEqualSelector(
   getNetworkConfigurations,
   (networkConfigurations = {}) => {
     return [
@@ -1389,7 +1389,7 @@ export const getTestNetworks = createSelector(
   },
 );
 
-export const getAllNetworks = createSelector(
+export const getAllNetworks = createDeepEqualSelector(
   getNonTestNetworks,
   getTestNetworks,
   (nonTestNetworks, testNetworks) => {
@@ -1884,7 +1884,7 @@ export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
 }
 
-export const getCurrentNetwork = createSelector(
+export const getCurrentNetwork = createDeepEqualSelector(
   getAllNetworks,
   getProviderConfig,
   (allNetworks, providerConfig) => {
@@ -1903,7 +1903,7 @@ export function getIsNetworkSupportedByBlockaid(state) {
   return isSupported;
 }
 
-export const getAllEnabledNetworks = createSelector(
+export const getAllEnabledNetworks = createDeepEqualSelector(
   getNonTestNetworks,
   getAllNetworks,
   getShowTestNetworks,
