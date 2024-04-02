@@ -115,6 +115,7 @@ export default function NftDetails({ nft }) {
         tokenId: tokenId.toString(),
         asset_type: AssetType.NFT,
         token_standard: standard,
+        chain_id: currentNetwork,
       },
     });
     history.push(DEFAULT_ROUTE);
