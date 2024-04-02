@@ -33,8 +33,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getRpcPrefsForCurrentProvider,
   getCurrentChainId,
-  getFeatureFlagsByChainId,
 } from '../../../selectors';
+import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { hideLoadingIndication } from '../../../store/actions';
 

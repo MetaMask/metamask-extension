@@ -14,9 +14,11 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
+} from '../../../selectors/selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors/selectors';
+} from '../../../../shared/modules/selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';

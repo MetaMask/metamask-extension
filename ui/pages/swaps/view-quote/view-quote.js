@@ -63,9 +63,11 @@ import {
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
+} from '../../../selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors';
+} from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
   safeRefetchQuotes,

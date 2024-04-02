@@ -63,10 +63,11 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getSelectedNetworkClientId,
+} from '../../selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../selectors';
-
+} from '../../../shared/modules/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

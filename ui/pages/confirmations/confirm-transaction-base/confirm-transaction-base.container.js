@@ -58,9 +58,11 @@ import {
   getHasDismissedOpenSeaToBlockaidBanner,
   getHasMigratedFromOpenSeaToBlockaid,
   getIsNetworkSupportedByBlockaid,
-  getSmartTransactionsOptInStatus,
-  getIsAllowedStxChainId,
 } from '../../../selectors';
+import {
+  getIsAllowedStxChainId,
+  getSmartTransactionsOptInStatus,
+} from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,

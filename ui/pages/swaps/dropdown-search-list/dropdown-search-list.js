@@ -25,9 +25,11 @@ import {
   getHardwareWalletType,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+} from '../../../selectors/selectors';
+import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-} from '../../../selectors/selectors';
+} from '../../../../shared/modules/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { getCurrentSmartTransactionsEnabled } from '../../../ducks/swaps/swaps';
