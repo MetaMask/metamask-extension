@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
@@ -351,7 +355,7 @@ export const RECIPIENT_SEARCH_MODES = {
  *  TransactionController state. This is required to be able to update the
  *  transaction in the controller.
  * @property {boolean} isSwapQuoteLoading – is a swap quote being fetched
- * @property {object} quotes – quotes for swaps // TODO: update type
+ * @property {object} [quotes] – quotes for swaps // TODO: update type
  * @property {Asset} receiveAsset - An object that describes the asset that the user
  *  has selected for the recipient to receive.
  * @property {Recipient} recipient - An object that describes the intended
@@ -1758,6 +1762,7 @@ const slice = createSlice({
           state.draftTransactions[state.currentTransactionUUID];
 
         if (draftTransaction) {
+          draftTransaction.quotes = draftTransactionInitialState.quotes;
           draftTransaction.swapQuotesError = null;
           draftTransaction.isSwapQuoteLoading = true;
         }
@@ -2637,6 +2642,27 @@ export function getCurrentTransactionUUID(state) {
 export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
 }
+
+export const getBestQuote = createSelector(
+  getCurrentDraftTransaction,
+  ({ quotes, isSwapQuoteLoading, swapQuotesError }) => {
+    const quotesAsArray = Object.values(quotes || {});
+    if (isSwapQuoteLoading || swapQuotesError || !quotesAsArray.length) {
+      return undefined;
+    }
+
+    // TODO: account for gas
+    const bestQuote = quotesAsArray.reduce(
+      (best, current) =>
+        current?.destinationAmount > (best?.destinationAmount || 0)
+          ? current
+          : best,
+      undefined,
+    );
+
+    return bestQuote;
+  },
+);
 
 /**
  * Selector that returns true if a draft transaction exists.
