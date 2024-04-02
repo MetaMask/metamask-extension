@@ -5895,10 +5895,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "@noble/ciphers@npm:0.5.1"
-  checksum: 74c3923fde61a1b2dfe6594cc49a7cb30eaf4535a8b49b138157d5f2958799a36ea5bf29214f99192664426e5fdb1257b3359a2078ba437f7c59c8058144cd96
+"@noble/ciphers@npm:^0.5.1, @noble/ciphers@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@noble/ciphers@npm:0.5.2"
+  checksum: 47a5958954249d5edb49aff48ae6fbfff4d4e5a6bb221c010ebc8e7470c410e9208a2f3f6bf8b7eca83057277478f4ccbdbdcf1bfd324608b334b9f9d28a9fbb
   languageName: node
   linkType: hard
 
@@ -10179,13 +10179,6 @@ __metadata:
   version: 8.1.2
   resolution: "@types/sinonjs__fake-timers@npm:8.1.2"
   checksum: 5f0ddaa4c79924f6fa82ae5f4f2894f4c1d40740690866665d06a74c7e0f220989c99a7f49561c1d9ad6b15a3a8a7cf7be9dc306a7e42fc1c9cf2c89ad80bef3
-  languageName: node
-  linkType: hard
-
-"@types/sjcl@npm:^1":
-  version: 1.0.34
-  resolution: "@types/sjcl@npm:1.0.34"
-  checksum: 196c1c96be8e1f152be3ca47523ac1e0a4d22721c34a3a49c166a23164eb6962426207427ae28811370d45e0cee851731e5bbc86803f3fcce33958a8ea83ac38
   languageName: node
   linkType: hard
 
@@ -24889,6 +24882,7 @@ __metadata:
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
+    "@noble/ciphers": "npm:^0.5.2"
     "@noble/hashes": "npm:^1.3.3"
     "@playwright/test": "npm:^1.39.0"
     "@popperjs/core": "npm:^2.4.0"
@@ -24946,7 +24940,6 @@ __metadata:
     "@types/remote-redux-devtools": "npm:^0.5.5"
     "@types/selenium-webdriver": "npm:^4.1.19"
     "@types/sinon": "npm:^10.0.13"
-    "@types/sjcl": "npm:^1"
     "@types/sprintf-js": "npm:^1"
     "@types/w3c-web-hid": "npm:^1.0.3"
     "@types/watchify": "npm:^3.11.1"
@@ -25117,7 +25110,6 @@ __metadata:
     simple-git: "npm:^3.20.0"
     single-call-balance-checker-abi: "npm:^1.0.0"
     sinon: "npm:^9.0.0"
-    sjcl: "npm:^1.0.8"
     source-map: "npm:^0.7.4"
     source-map-explorer: "npm:^2.4.2"
     sprintf-js: "npm:^1.1.3"
@@ -31674,13 +31666,6 @@ __metadata:
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
   checksum: aba6438f46d2bfcef94cf112c835ab395172c75f67453fe05c340c770d3c402363018ae1ab4172a1026a90c47eaccf3af7b6ff6fa749a680c2929bd7fa2b37a4
-  languageName: node
-  linkType: hard
-
-"sjcl@npm:^1.0.8":
-  version: 1.0.8
-  resolution: "sjcl@npm:1.0.8"
-  checksum: 5ab9fe956bc38608e97a3ad09858702610f4a89a6d445aefcda6aa177fc4f808fdb95dbe6c6f3c235af93b3c363e684ef7ceca8a8f69080fb3ec98e38c98ffd9
   languageName: node
   linkType: hard
 

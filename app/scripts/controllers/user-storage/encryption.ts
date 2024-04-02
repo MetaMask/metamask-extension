@@ -1,117 +1,138 @@
-import sjcl from 'sjcl';
+import { pbkdf2 } from '@noble/hashes/pbkdf2';
+import { sha256 } from '@noble/hashes/sha256';
+import { utf8ToBytes, concatBytes, bytesToHex } from '@noble/hashes/utils';
+import { gcm } from '@noble/ciphers/aes';
+import { randomBytes } from '@noble/ciphers/webcrypto';
 
-// Encryption / Decryption taken from - https://github.com/luke-park/SecureCompatibleEncryptionExamples/blob/master/TypeScript/SCEE-sjcl.ts
+export type EncryptedPayload = {
+  v: '1'; // version
+  d: string; // data
+  iterations: number;
+};
+
+function byteArrayToBase64(byteArray: Uint8Array) {
+  return Buffer.from(byteArray).toString('base64');
+}
+
+function base64ToByteArray(base64: string) {
+  return new Uint8Array(Buffer.from(base64, 'base64'));
+}
+
+function bytesToUtf8(byteArray: Uint8Array) {
+  const decoder = new TextDecoder('utf-8');
+  return decoder.decode(byteArray);
+}
+
 class EncryptorDecryptor {
-  #BITS_PER_WORD = 32;
+  #ALGORITHM_NONCE_SIZE: number = 12; // 12 bytes
 
-  #ALGORITHM_NONCE_SIZE = 3; // 32-bit words.
+  #ALGORITHM_KEY_SIZE: number = 16; // 16 bytes
 
-  #ALGORITHM_KEY_SIZE = 4; // 32-bit words.
+  #PBKDF2_SALT_SIZE: number = 16; // 16 bytes
 
-  #PBKDF2_SALT_SIZE = 4; // 32-bit words.
+  #PBKDF2_ITERATIONS: number = 900_000;
 
-  #PBKDF2_ITERATIONS = 32767;
+  encryptString(plaintext: string, password: string): string {
+    try {
+      return this.#encryptStringV1(plaintext, password);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : e;
+      throw new Error(`Unable to encrypt string - ${errorMessage}`);
+    }
+  }
 
-  encryptString = (plaintext: string, password: string): string => {
-    // Generate a 128-bit salt using a CSPRNG.
-    const salt = sjcl.random.randomWords(this.#PBKDF2_SALT_SIZE);
+  decryptString(encryptedDataStr: string, password: string): string {
+    try {
+      const encryptedData: EncryptedPayload = JSON.parse(encryptedDataStr);
+      if (encryptedData.v === '1') {
+        return this.#decryptStringV1(encryptedData, password);
+      }
+      throw new Error(`Unsupported encrypted data payload - ${encryptedData}`);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : e;
+      throw new Error(`Unable to decrypt string - ${errorMessage}`);
+    }
+  }
+
+  #encryptStringV1(plaintext: string, password: string): string {
+    const salt = randomBytes(this.#PBKDF2_SALT_SIZE);
 
     // Derive a key using PBKDF2.
-    const key = sjcl.misc.pbkdf2(
-      password,
-      salt,
-      this.#PBKDF2_ITERATIONS,
-      this.#ALGORITHM_KEY_SIZE * this.#BITS_PER_WORD,
-    );
+    const key = pbkdf2(sha256, password, salt, {
+      c: this.#PBKDF2_ITERATIONS,
+      dkLen: this.#ALGORITHM_KEY_SIZE,
+    });
 
     // Encrypt and prepend salt.
-    const plaintextRaw = sjcl.codec.utf8String.toBits(plaintext);
-    const ciphertextAndNonceAndSalt = sjcl.bitArray.concat(
+    const plaintextRaw = utf8ToBytes(plaintext);
+    const ciphertextAndNonceAndSalt = concatBytes(
       salt,
       this.#encrypt(plaintextRaw, key),
     );
 
-    return sjcl.codec.base64.fromBits(ciphertextAndNonceAndSalt);
-  };
+    // Convert to Base64
+    const encryptedData = byteArrayToBase64(ciphertextAndNonceAndSalt);
 
-  decryptString = (
-    base64CiphertextAndNonceAndSalt: string,
-    password: string,
-  ): string => {
+    const encryptedPayload: EncryptedPayload = {
+      v: '1',
+      d: encryptedData,
+      iterations: this.#PBKDF2_ITERATIONS,
+    };
+
+    return JSON.stringify(encryptedPayload);
+  }
+
+  #decryptStringV1(data: EncryptedPayload, password: string): string {
+    const { iterations, d: base64CiphertextAndNonceAndSalt } = data;
+
     // Decode the base64.
-    const ciphertextAndNonceAndSalt = sjcl.codec.base64.toBits(
+    const ciphertextAndNonceAndSalt = base64ToByteArray(
       base64CiphertextAndNonceAndSalt,
     );
 
     // Create buffers of salt and ciphertextAndNonce.
-    const salt = sjcl.bitArray.bitSlice(
-      ciphertextAndNonceAndSalt,
-      0,
-      this.#PBKDF2_SALT_SIZE * this.#BITS_PER_WORD,
-    );
-
-    const ciphertextAndNonce = sjcl.bitArray.bitSlice(
-      ciphertextAndNonceAndSalt,
-      this.#PBKDF2_SALT_SIZE * this.#BITS_PER_WORD,
-      ciphertextAndNonceAndSalt.length * this.#BITS_PER_WORD,
+    const salt = ciphertextAndNonceAndSalt.slice(0, this.#PBKDF2_SALT_SIZE);
+    const ciphertextAndNonce = ciphertextAndNonceAndSalt.slice(
+      this.#PBKDF2_SALT_SIZE,
+      ciphertextAndNonceAndSalt.length,
     );
 
     // Derive the key using PBKDF2.
-    const key = sjcl.misc.pbkdf2(
-      password,
-      salt,
-      this.#PBKDF2_ITERATIONS,
-      this.#ALGORITHM_KEY_SIZE * this.#BITS_PER_WORD,
-    );
+    const key = pbkdf2(sha256, password, salt, {
+      c: iterations,
+      dkLen: this.#ALGORITHM_KEY_SIZE,
+    });
 
     // Decrypt and return result.
-    return sjcl.codec.utf8String.fromBits(
-      this.#decrypt(ciphertextAndNonce, key),
-    );
-  };
+    return bytesToUtf8(this.#decrypt(ciphertextAndNonce, key));
+  }
 
-  #encrypt = (plaintext: sjcl.BitArray, key: number[]): sjcl.BitArray => {
-    // Generate a 96-bit nonce using a CSPRNG.
-    const nonce = sjcl.random.randomWords(this.#ALGORITHM_NONCE_SIZE);
+  #encrypt(plaintext: Uint8Array, key: Uint8Array): Uint8Array {
+    const nonce = randomBytes(this.#ALGORITHM_NONCE_SIZE);
 
     // Encrypt and prepend nonce.
-    const ciphertext = sjcl.mode.gcm.encrypt(
-      // eslint-disable-next-line new-cap
-      new sjcl.cipher.aes(key),
-      plaintext,
-      nonce,
-    );
+    const ciphertext = gcm(key, nonce).encrypt(plaintext);
 
-    return sjcl.bitArray.concat(nonce, ciphertext);
-  };
+    return concatBytes(nonce, ciphertext);
+  }
 
-  #decrypt = (
-    ciphertextAndNonce: sjcl.BitArray,
-    key: number[],
-  ): sjcl.BitArray => {
+  #decrypt(ciphertextAndNonce: Uint8Array, key: Uint8Array): Uint8Array {
     // Create buffers of nonce and ciphertext.
-    const nonce = sjcl.bitArray.bitSlice(
-      ciphertextAndNonce,
-      0,
-      this.#ALGORITHM_NONCE_SIZE * this.#BITS_PER_WORD,
-    );
-
-    const ciphertext = sjcl.bitArray.bitSlice(
-      ciphertextAndNonce,
-      this.#ALGORITHM_NONCE_SIZE * this.#BITS_PER_WORD,
-      ciphertextAndNonce.length * this.#BITS_PER_WORD,
+    const nonce = ciphertextAndNonce.slice(0, this.#ALGORITHM_NONCE_SIZE);
+    const ciphertext = ciphertextAndNonce.slice(
+      this.#ALGORITHM_NONCE_SIZE,
+      ciphertextAndNonce.length,
     );
 
     // Decrypt and return result.
-    // eslint-disable-next-line new-cap
-    return sjcl.mode.gcm.decrypt(new sjcl.cipher.aes(key), ciphertext, nonce);
-  };
+    return gcm(key, nonce).decrypt(ciphertext);
+  }
 }
 
 const encryption = new EncryptorDecryptor();
 export default encryption;
 
 export function createSHA256Hash(data: string): string {
-  const hashedData = sjcl.hash.sha256.hash(data);
-  return sjcl.codec.hex.fromBits(hashedData);
+  const hashedData = sha256(data);
+  return bytesToHex(hashedData);
 }
