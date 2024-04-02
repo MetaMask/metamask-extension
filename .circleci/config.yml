@@ -435,8 +435,6 @@ jobs:
               # assign the RUN_MMI_OPTIONAL variable to false
               echo "false" > ./RUN_MMI_OPTIONAL
             fi
-      - store_artifacts:
-          path: RUN_MMI_OPTIONAL
       - persist_to_workspace:
           root: .
           paths:
@@ -706,10 +704,10 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-browsers-medium-plus
     steps:
+      - attach_workspace:
+        at: .
       - run: *check-mmi-optional
       - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
