@@ -14,7 +14,7 @@ import {
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setStxOptIn,
+  setSmartTransactionsOptInStatus,
   setUseNonceField,
   showModal,
 } from '../../../store/actions';
@@ -73,8 +73,8 @@ export const mapDispatchToProps = (dispatch) => {
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
     },
-    setStxOptIn: (value) => {
-      return dispatch(setStxOptIn(value));
+    setSmartTransactionsOptInStatus: (value) => {
+      return dispatch(setSmartTransactionsOptInStatus(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
