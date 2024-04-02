@@ -347,6 +347,8 @@ export const RECIPIENT_SEARCH_MODES = {
  *  TransactionController this field will be populated with its id from the
  *  TransactionController state. This is required to be able to update the
  *  transaction in the controller.
+ * @property {Asset} receiveAsset - An object that describes the asset that the user
+ *  has selected for the recipient to receive.
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
@@ -369,6 +371,12 @@ export const draftTransactionInitialState = {
     value: '0x0',
   },
   sendAsset: {
+    balance: '0x0',
+    details: null,
+    error: null,
+    type: AssetType.native,
+  },
+  receiveAsset: {
     balance: '0x0',
     details: null,
     error: null,
@@ -947,28 +955,37 @@ const slice = createSlice({
      * @returns {void}
      */
     updateAsset: (state, action) => {
-      const { asset, initialAssetSet } = action.payload;
+      const { asset, initialAssetSet, isReceived } = action.payload;
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
-      draftTransaction.sendAsset.type = asset.type;
-      draftTransaction.sendAsset.balance = asset.balance;
-      draftTransaction.sendAsset.error = asset.error;
+      const targetAsset =
+        draftTransaction[isReceived ? 'receiveAsset' : 'sendAsset'];
+
+      targetAsset.type = asset.type;
+      targetAsset.balance = asset.balance;
+      targetAsset.error = asset.error;
 
       if (
-        draftTransaction.sendAsset.type === AssetType.token ||
-        draftTransaction.sendAsset.type === AssetType.NFT
+        targetAsset.type === AssetType.token ||
+        targetAsset.type === AssetType.NFT
       ) {
-        draftTransaction.sendAsset.details = asset.details;
+        targetAsset.details = asset.details;
       } else {
         // clear the details object when sending native currency
-        draftTransaction.sendAsset.details = null;
+        targetAsset.details = null;
         if (draftTransaction.recipient.error === CONTRACT_ADDRESS_ERROR) {
           // Errors related to sending tokens to their own contract address
           // are no longer valid when sending native currency.
           draftTransaction.recipient.error = null;
         }
       }
+
+      // if the send asset is set, match the receive asset
+      if (!isReceived) {
+        draftTransaction.receiveAsset = targetAsset;
+      }
+
       // if amount mode is MAX update amount to max of new asset, otherwise set
       // to zero. This will revalidate the send amount field.
       if (state.amountMode === AMOUNT_MODES.MAX) {
@@ -1614,6 +1631,9 @@ const slice = createSlice({
               draftTransaction.fromAccount?.balance ??
               state.selectedAccount.balance;
             draftTransaction.sendAsset.details = null;
+
+            draftTransaction.receiveAsset =
+              draftTransactionInitialState.receiveAsset;
           }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
@@ -1676,6 +1696,9 @@ const slice = createSlice({
                 draftTransactionInitialState.sendAsset.details;
               draftTransaction.sendAsset.balance =
                 action.payload.account.balance;
+
+              draftTransaction.receiveAsset =
+                draftTransactionInitialState.receiveAsset;
             }
 
             slice.caseReducers.validateAmountField(state);
@@ -2057,11 +2080,13 @@ export function updateSendAmount(amount) {
  * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
+ * @param {boolean} [payload.isReceived] - is the action updating the dest asset
  * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
+// tag
 export function updateSendAsset(
-  { type, details: providedDetails, skipComputeEstimatedGasLimit },
+  { type, details: providedDetails, skipComputeEstimatedGasLimit, isReceived },
   { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
@@ -2094,6 +2119,7 @@ export function updateSendAsset(
             error: null,
           },
           initialAssetSet,
+          isReceived,
         }),
       );
 
@@ -2188,7 +2214,9 @@ export function updateSendAsset(
         }
       }
 
-      await dispatch(actions.updateAsset({ asset, initialAssetSet }));
+      await dispatch(
+        actions.updateAsset({ asset, initialAssetSet, isReceived }),
+      );
     }
     if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
       await dispatch(computeEstimatedGasLimit());
