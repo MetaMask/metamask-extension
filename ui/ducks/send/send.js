@@ -116,7 +116,7 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
-import { getSwapAndSendQuotes } from '../../components/multichain/pages/send/send-utils';
+import { getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
