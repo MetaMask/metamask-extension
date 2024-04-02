@@ -204,7 +204,6 @@ export const SendPage = () => {
         {isSendFormShown && (
           <AssetPickerAmount
             asset={transactionAsset}
-            // TODO: update to dest asset
             amount={amount}
             onAssetChange={handleSelectToken(false)}
             onAmountChange={(newAmount) =>

@@ -9,6 +9,7 @@ import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/me
 import {
   Asset,
   acknowledgeRecipientWarning,
+  getBestQuote,
   getCurrentDraftTransaction,
   getSendAsset,
 } from '../../../../../ducks/send';
@@ -18,6 +19,7 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { SendHexData, SendPageRow } from '.';
+import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
@@ -37,7 +39,18 @@ export const SendPageRecipientContent = ({
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
 
-  const { receiveAsset, amount } = useSelector(getCurrentDraftTransaction);
+  const {
+    receiveAsset,
+    sendAsset,
+    amount: sendAmount,
+  } = useSelector(getCurrentDraftTransaction);
+
+  const bestQuote = useSelector(getBestQuote);
+
+  const amount =
+    receiveAsset.details?.address === sendAsset.details?.address
+      ? sendAmount
+      : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
 
   // Gas data
   const dispatch = useDispatch();
