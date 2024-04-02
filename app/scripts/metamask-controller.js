@@ -5581,6 +5581,11 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
+      getIsSmartTransaction: () => {
+        return sharedSelectors.getIsSmartTransaction({
+          metamask: this.getState(),
+        });
+      },
     };
     return {
       ...controllerActions,
