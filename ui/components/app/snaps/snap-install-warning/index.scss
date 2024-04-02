@@ -1,14 +1,4 @@
 .snap-install-warning {
-  .popover-header {
-    padding-bottom: 0;
-  }
-
-  .permission-cell {
-    margin: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
   .mm-checkbox__input:focus {
     border-color: var(--color-border-default);
     outline: none;
@@ -21,22 +11,5 @@
 
   .mm-checkbox__input {
     cursor: pointer;
-  }
-
-  &__footer {
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
-    flex: 0 0 auto;
-    width: 100%;
-    max-height: 40px;
-  }
-
-  &__footer-button {
-    margin-right: 16px;
-
-    &:last-of-type {
-      margin-right: 0;
-    }
   }
 }

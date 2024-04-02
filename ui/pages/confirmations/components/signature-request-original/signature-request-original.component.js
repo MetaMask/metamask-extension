@@ -10,12 +10,12 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   getURLHostName,
+  hexToText,
   sanitizeString,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
-import { stripHexPrefix } from '../../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import Typography from '../../../../components/ui/typography/typography';
@@ -26,6 +26,7 @@ import {
   TextAlign,
   TextColor,
   Size,
+  Severity,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   Display,
@@ -36,6 +37,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
+  BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
@@ -85,6 +87,10 @@ export default class SignatureRequestOriginal extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
+    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool.isRequired,
+    isNetworkSupportedByBlockaid: PropTypes.bool.isRequired,
+    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool.isRequired,
+    dismissOpenSeaToBlockaidBanner: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
@@ -101,16 +107,6 @@ export default class SignatureRequestOriginal extends Component {
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     showSignatureInsights: false,
     ///: END:ONLY_INCLUDE_IF
-  };
-
-  msgHexToText = (hex) => {
-    try {
-      const stripped = stripHexPrefix(hex);
-      const buff = Buffer.from(stripped, 'hex');
-      return buff.length === 32 ? hex : buff.toString('utf8');
-    } catch (e) {
-      return hex;
-    }
   };
 
   renderTypedData = (data) => {
@@ -139,6 +135,8 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBody = () => {
+    const { t } = this.context;
+
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
@@ -149,9 +147,7 @@ export default class SignatureRequestOriginal extends Component {
     } = txData;
 
     if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-      rows = [
-        { name: this.context.t('message'), value: this.msgHexToText(data) },
-      ];
+      rows = [{ name: this.context.t('message'), value: hexToText(data) }];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data;
     } else if (type === MESSAGE_TYPE.ETH_SIGN) {
@@ -162,11 +158,25 @@ export default class SignatureRequestOriginal extends Component {
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
 
+    const {
+      hasMigratedFromOpenSeaToBlockaid,
+      isNetworkSupportedByBlockaid,
+      hasDismissedOpenSeaToBlockaidBanner,
+      dismissOpenSeaToBlockaidBanner,
+    } = this.props;
+    const showOpenSeaToBlockaidBannerAlert =
+      hasMigratedFromOpenSeaToBlockaid &&
+      !isNetworkSupportedByBlockaid &&
+      !hasDismissedOpenSeaToBlockaidBanner;
+    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+      dismissOpenSeaToBlockaidBanner();
+    };
+
     return (
       <div className="request-signature__body">
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData} margin={4} />
+          <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
@@ -174,6 +184,23 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
+        {showOpenSeaToBlockaidBannerAlert ? (
+          <BannerAlert
+            severity={Severity.Info}
+            title={t('openSeaToBlockaidTitle')}
+            description={t('openSeaToBlockaidDescription')}
+            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+            actionButtonProps={{
+              href: 'https://snaps.metamask.io/transaction-insights',
+              externalLink: true,
+            }}
+            marginBottom={4}
+            marginLeft={4}
+            marginTop={4}
+            marginRight={4}
+            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+          />
+        ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===

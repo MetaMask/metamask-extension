@@ -14,6 +14,7 @@ import {
   FLEX_DIRECTION,
   FontWeight,
   JustifyContent,
+  Severity,
   TextAlign,
   TextColor,
   TextVariant,
@@ -36,6 +37,9 @@ import {
   getTargetAccountWithSendEtherInfo,
   getCustomNonceValue,
   getNextSuggestedNonce,
+  getHasMigratedFromOpenSeaToBlockaid,
+  getIsNetworkSupportedByBlockaid,
+  getHasDismissedOpenSeaToBlockaidBanner,
 } from '../../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import {
@@ -45,6 +49,7 @@ import {
   updateAndApproveTx,
   getNextNonce,
   updateCustomNonce,
+  dismissOpenSeaToBlockaidBanner,
 } from '../../../store/actions';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -71,7 +76,12 @@ import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarnin
 import SimulationErrorMessage from '../components/simulation-error-message';
 import LedgerInstructionField from '../components/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../components/security-provider-banner-message/security-provider-banner-message';
-import { Icon, IconName, Text } from '../../../components/component-library';
+import {
+  BannerAlert,
+  Icon,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 import { ConfirmPageContainerWarning } from '../components/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
@@ -336,6 +346,25 @@ export default function TokenAllowance({
     txData.securityAlertResponse?.result_type === BlockaidResultType.Malicious
       ? 'danger-primary'
       : 'primary';
+
+  const hasMigratedFromOpenSeaToBlockaid = useSelector(
+    getHasMigratedFromOpenSeaToBlockaid,
+  );
+  const isNetworkSupportedByBlockaid = useSelector(
+    getIsNetworkSupportedByBlockaid,
+  );
+  const hasDismissedOpenSeaToBlockaidBanner = useSelector(
+    getHasDismissedOpenSeaToBlockaidBanner,
+  );
+
+  const showOpenSeaToBlockaidBannerAlert =
+    hasMigratedFromOpenSeaToBlockaid &&
+    !isNetworkSupportedByBlockaid &&
+    !hasDismissedOpenSeaToBlockaidBanner;
+
+  const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+    dispatch(dismissOpenSeaToBlockaidBanner());
+  };
   return (
     <Box className="token-allowance-container page-container">
       <Box>
@@ -384,9 +413,26 @@ export default function TokenAllowance({
       />
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert txData={txData} margin={4} />
+        <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
         ///: END:ONLY_INCLUDE_IF
       }
+      {showOpenSeaToBlockaidBannerAlert ? (
+        <BannerAlert
+          severity={Severity.Info}
+          title={t('openSeaToBlockaidTitle')}
+          description={t('openSeaToBlockaidDescription')}
+          actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+          actionButtonProps={{
+            href: 'https://snaps.metamask.io/transaction-insights',
+            externalLink: true,
+          }}
+          marginBottom={4}
+          marginLeft={4}
+          marginTop={4}
+          marginRight={4}
+          onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+        />
+      ) : null}
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

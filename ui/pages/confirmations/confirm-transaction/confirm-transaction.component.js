@@ -12,9 +12,7 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 
-///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
-///: END:ONLY_INCLUDE_IF
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -37,19 +35,17 @@ import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
   use4ByteResolutionSelector,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
-  disconnectGasFeeEstimatePoller,
   getContractMethodData,
-  getGasFeeEstimatesAndStartPolling,
-  addPollingTokenToAppState,
-  removePollingTokenFromAppState,
   setDefaultHomeActiveTabName,
+  gasFeeStartPollingByNetworkClientId,
+  gasFeeStopPollingByPollingToken,
 } from '../../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
-///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 import Confirm from '../confirm/confirm';
-///: END:ONLY_INCLUDE_IF
+import usePolling from '../../../hooks/usePolling';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -57,14 +53,12 @@ const ConfirmTransaction = () => {
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
 
-  const [isMounted, setIsMounted] = useState(false);
-  const [pollingToken, setPollingToken] = useState();
-
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
 
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
@@ -79,10 +73,7 @@ const ConfirmTransaction = () => {
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
   const { currentConfirmation } = useCurrentConfirmation();
-  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     const tx = getTransaction();
@@ -109,30 +100,13 @@ const ConfirmTransaction = () => {
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
 
-  const _beforeUnload = useCallback(() => {
-    setIsMounted(false);
-
-    if (pollingToken) {
-      disconnectGasFeeEstimatePoller(pollingToken);
-      removePollingTokenFromAppState(pollingToken);
-    }
-  }, [pollingToken]);
+  usePolling({
+    startPollingByNetworkClientId: gasFeeStartPollingByNetworkClientId,
+    stopPollingByPollingToken: gasFeeStopPollingByPollingToken,
+    networkClientId: transaction.networkClientId ?? networkClientId,
+  });
 
   useEffect(() => {
-    setIsMounted(true);
-
-    getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
-      if (isMounted) {
-        setPollingToken(_pollingToken);
-        addPollingTokenToAppState(_pollingToken);
-      } else {
-        disconnectGasFeeEstimatePoller(_pollingToken);
-        removePollingTokenFromAppState(_pollingToken);
-      }
-    });
-
-    window.addEventListener('beforeunload', _beforeUnload);
-
     if (!totalUnapproved && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
@@ -148,10 +122,6 @@ const ConfirmTransaction = () => {
       }
     }
 
-    return () => {
-      _beforeUnload();
-      window.removeEventListener('beforeunload', _beforeUnload);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -193,7 +163,6 @@ const ConfirmTransaction = () => {
     use4ByteResolution,
   ]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
   // Code below is required as we need to support both new and old confirmation pages,
   // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
   // Once we migrate all confirmations to new designs we can get rid of this code
@@ -201,7 +170,6 @@ const ConfirmTransaction = () => {
   if (currentConfirmation) {
     return <Confirm />;
   }
-  ///: END:ONLY_INCLUDE_IF
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;

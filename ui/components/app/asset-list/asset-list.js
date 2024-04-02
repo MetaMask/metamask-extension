@@ -64,13 +64,13 @@ const AssetList = ({ onClickAsset }) => {
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
-    currentNetwork.chainId,
+    chainId,
     ticker,
     type,
   );
@@ -93,13 +93,11 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
+  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
-    },
-  );
+    });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
     useCurrencyDisplay(selectedAccountBalance, {
@@ -134,9 +132,9 @@ const AssetList = ({ onClickAsset }) => {
         event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          chain_id: currentNetwork.chainId,
+          chain_id: chainId,
           locale: currentLocale,
-          network: currentNetwork.nickname,
+          network: nickname,
           referrer: ORIGIN_METAMASK,
         },
       });
@@ -146,9 +144,9 @@ const AssetList = ({ onClickAsset }) => {
         event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          chain_id: currentNetwork.chainId,
+          chain_id: chainId,
           locale: currentLocale,
-          network: currentNetwork.nickname,
+          network: nickname,
           referrer: ORIGIN_METAMASK,
         },
       });
@@ -157,7 +155,8 @@ const AssetList = ({ onClickAsset }) => {
     shouldShowBuy,
     shouldShowReceive,
     trackEvent,
-    currentNetwork,
+    chainId,
+    nickname,
     currentLocale,
   ]);
 
@@ -196,7 +195,7 @@ const AssetList = ({ onClickAsset }) => {
                     properties: {
                       location: 'Home',
                       text: 'Buy',
-                      chain_id: currentNetwork.chainId,
+                      chain_id: chainId,
                       token_symbol: defaultSwapsToken,
                     },
                   });
@@ -226,14 +225,15 @@ const AssetList = ({ onClickAsset }) => {
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
+        // The primary and secondary currencies are subject to change based on the user's settings
+        // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
         primary={
-          showPrimaryCurrency(
+          showSecondaryCurrency(
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
           )
-            ? primaryCurrencyProperties.value ??
-              secondaryCurrencyProperties.value
-            : null
+            ? secondaryCurrencyDisplay
+            : undefined
         }
         tokenSymbol={
           useNativeCurrencyAsPrimaryCurrency
@@ -242,11 +242,11 @@ const AssetList = ({ onClickAsset }) => {
         }
         secondary={
           showFiat &&
-          showSecondaryCurrency(
+          showPrimaryCurrency(
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
           )
-            ? secondaryCurrencyDisplay
+            ? primaryCurrencyDisplay
             : undefined
         }
         tokenImage={balanceIsLoading ? null : primaryTokenImage}

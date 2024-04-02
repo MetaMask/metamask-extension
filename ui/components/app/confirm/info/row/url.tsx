@@ -37,10 +37,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
-      style={{
-        // TODO: Box should support this
-        columnGap: '8px',
-      }}
+      gap={2}
     >
       {isHTTP && (
         <Text

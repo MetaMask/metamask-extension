@@ -13,5 +13,7 @@ export const input: UIComponentFactory<Input> = ({ element, form }) => ({
     },
     name: element.name,
     form,
+    error: element.error !== undefined,
+    helpText: element.error,
   },
 });

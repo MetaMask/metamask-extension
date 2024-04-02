@@ -170,7 +170,7 @@ async function getQuoteAndSwapTokens(driver) {
 async function assertReqsNumAndFilterMetrics(driver, mockedEndpoints) {
   const events = await getEventPayloads(driver, mockedEndpoints);
 
-  const numberOfMetaswapRequests = 8;
+  const numberOfMetaswapRequests = 7;
   assert.equal(
     events.length,
     numberOfSegmentRequests + numberOfMetaswapRequests,
@@ -439,12 +439,10 @@ async function assertSwapCompletedEvents(reqs) {
   const assertionsReq13 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
     (req) => Object.keys(req.properties).length === 30,
-
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',
     (req) => req.properties?.locale === 'en',
-
     (req) => req.properties?.token_from === 'TESTETH',
     (req) => req.properties?.token_from_amount === '2',
     (req) => req.properties?.token_to === 'DAI',
@@ -477,7 +475,6 @@ async function assertSwapCompletedEvents(reqs) {
   const assertionsReq14 = [
     (req) => req.event === MetaMetricsEventName.SwapCompleted,
     (req) => Object.keys(req.properties).length === 4,
-
     (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
     (req) => req.properties?.chain_id === toHex(1337),
     (req) => req.properties?.environment_type === 'background',

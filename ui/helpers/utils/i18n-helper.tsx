@@ -50,6 +50,9 @@ export function getNetworkLabelKey(network: string): string {
   if (network === NETWORK_TYPES.LINEA_GOERLI) {
     return 'lineaGoerli';
   }
+  if (network === NETWORK_TYPES.LINEA_SEPOLIA) {
+    return 'lineaSepolia';
+  }
   if (network === NETWORK_TYPES.LINEA_MAINNET) {
     return 'lineaMainnet';
   }

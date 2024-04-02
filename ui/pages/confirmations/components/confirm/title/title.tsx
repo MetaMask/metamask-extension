@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Text } from '../../../../../components/component-library';
@@ -10,24 +10,32 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
 
-const typeToTitleTKey: Partial<Record<TransactionType, string>> = {
-  [TransactionType.personalSign]: 'confirmTitleSignature',
-};
-
-const typeToDescTKey: Partial<Record<TransactionType, string>> = {
-  [TransactionType.personalSign]: 'confirmTitleDescSignature',
-};
-
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
+
+  const typeToTitleTKey: Partial<Record<TransactionType, string>> = useMemo(
+    () => ({
+      [TransactionType.personalSign]: t('confirmTitleSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleSignature'),
+    }),
+    [],
+  );
+
+  const typeToDescTKey: Partial<Record<TransactionType, string>> = useMemo(
+    () => ({
+      [TransactionType.personalSign]: t('confirmTitleDescPersonalSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleDescTypedDataSignature'),
+    }),
+    [],
+  );
 
   if (!currentConfirmation) {
     return null;
   }
 
-  const title = t(typeToTitleTKey[currentConfirmation.type]);
-  const description = t(typeToDescTKey[currentConfirmation.type]);
+  const title = typeToTitleTKey[currentConfirmation.type];
+  const description = typeToDescTKey[currentConfirmation.type];
 
   return (
     <>

@@ -952,7 +952,7 @@ describe('MetaMaskController', () => {
       it('should call keyringController.getAccounts', async () => {
         expect(
           metamaskController.keyringController.getAccounts,
-        ).toHaveBeenCalledTimes(2);
+        ).toHaveBeenCalledTimes(3);
       });
 
       it('should call preferencesController.setAddresses', async () => {

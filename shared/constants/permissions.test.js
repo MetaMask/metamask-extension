@@ -15,7 +15,6 @@ describe('EndowmentPermissions', () => {
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
       [
         'endowment:name-lookup',
-        'endowment:page-home',
         'endowment:signature-insight',
         ...Object.keys(endowmentPermissionBuilders).filter(
           (targetName) =>

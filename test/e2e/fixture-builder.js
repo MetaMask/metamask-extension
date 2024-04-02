@@ -5,6 +5,7 @@ const {
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
+const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
@@ -94,8 +95,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         currencyRates: {
           ETH: {
             conversionDate: 1665507600.0,
-            conversionRate: 1300.0,
-            usdConversionRate: 1300.0,
+            conversionRate: 1700.0,
+            usdConversionRate: 1700.0,
           },
         },
       },
@@ -145,7 +146,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       OnboardingController: {
         completedOnboarding: true,
-        firstTimeFlowType: 'import',
+        firstTimeFlowType: FirstTimeFlowType.import,
         onboardingTabs: {},
         seedPhraseBackedUp: true,
       },
@@ -191,7 +192,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -317,7 +317,6 @@ function onboardingFixture() {
       },
       SelectedNetworkController: {
         domains: {},
-        perDomainNetwork: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -346,6 +345,13 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
+  /**
+   * Constructs a new instance of the FixtureBuilder class.
+   *
+   * @param {object} [options] - The options for the constructor.
+   * @param {boolean} [options.onboarding] - Indicates if onboarding is enabled.
+   * @param {string} [options.inputChainId] - The input chain ID.
+   */
   constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
     this.fixture =
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
@@ -863,13 +869,15 @@ class FixtureBuilder {
   }
 
   withSelectedNetworkControllerPerDomain() {
-    return this.withSelectedNetworkController({
-      domains: {
-        [DAPP_URL]: 'networkConfigurationId',
-        [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-      },
-      perDomainNetwork: true,
-    });
+    return merge(
+      this.withSelectedNetworkController({
+        domains: {
+          [DAPP_URL]: 'networkConfigurationId',
+          [DAPP_ONE_URL]: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+        },
+      }),
+      this.withPreferencesControllerUseRequestQueueEnabled(),
+    );
   }
 
   withPreferencesControllerUseRequestQueueEnabled() {
