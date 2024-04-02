@@ -69,8 +69,11 @@ aliases:
 
   # Check if MMI Optional tests should run
   - &check-mmi-optional
+    attach_workspace:
+      at: .
     name: Check if MMI Optional tests should run
     command: |
+      RUN_MMI_OPTIONAL=$(cat /RUN_MMI_OPTIONAL)
       if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI_OPTIONAL}" == "true" ]]; then
         echo "Running MMI Optional tests"
       else
@@ -425,14 +428,17 @@ jobs:
             # Check if "team-mmi" label is present
             if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
               echo "team-mmi tag found."
-              # You can create a file or an environment variable to signal the next steps
-              echo 'export RUN_MMI_OPTIONAL="true"' >> $BASH_ENV
-              source $BASH_ENV
+              # assign the RUN_MMI_OPTIONAL variable to true
+              echo "true" > RUN_MMI_OPTIONAL
             else
               echo "team-mmi tag not found."
-              echo 'export RUN_MMI_OPTIONAL="false"' >> $BASH_ENV
-              source $BASH_ENV
+              # assign the RUN_MMI_OPTIONAL variable to false
+              echo "false" > RUN_MMI_OPTIONAL
             fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - RUN_MMI_OPTIONAL
 
   prep-deps:
     executor: node-browsers-medium
