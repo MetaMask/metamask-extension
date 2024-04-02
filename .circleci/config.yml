@@ -435,6 +435,8 @@ jobs:
               # assign the RUN_MMI_OPTIONAL variable to false
               echo "false" > ./RUN_MMI_OPTIONAL
             fi
+      - store_artifacts:
+          path: RUN_MMI_OPTIONAL
       - persist_to_workspace:
           root: .
           paths:
