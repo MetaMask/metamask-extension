@@ -51,6 +51,7 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
         )}
         ref={ref}
         as="div"
+        role="img"
         display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}

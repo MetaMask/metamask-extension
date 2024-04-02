@@ -16,6 +16,7 @@ exports[`Token Cell should match snapshot 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          role="img"
         >
           <img
             aria-hidden="true"
@@ -33,6 +34,7 @@ exports[`Token Cell should match snapshot 1`] = `
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            role="img"
           >
             ?
           </div>

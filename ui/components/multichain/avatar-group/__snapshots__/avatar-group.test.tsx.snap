@@ -15,6 +15,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          role="img"
         >
           <img
             alt="AVAX logo"
@@ -29,6 +30,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          role="img"
         >
           <img
             alt="OP logo"
@@ -43,6 +45,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          role="img"
         >
           <img
             alt="MATIC logo"
@@ -57,6 +60,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          role="img"
         >
           <img
             alt="ETH logo"

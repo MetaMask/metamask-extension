@@ -13,6 +13,7 @@ exports[`AssetPicker matches snapshot 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          role="img"
         >
           <img
             aria-hidden="true"

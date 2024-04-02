@@ -24,6 +24,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           <img
             alt="Ethereum Mainnet logo"
@@ -111,6 +112,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           <img
             alt="Linea Mainnet logo"
@@ -198,6 +200,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           F
         </div>
@@ -281,6 +284,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           G
         </div>
@@ -364,6 +368,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           S
         </div>
@@ -447,6 +452,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           <img
             alt="Linea Goerli logo"
@@ -534,6 +540,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          role="img"
         >
           <img
             alt="Linea Sepolia logo"

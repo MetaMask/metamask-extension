@@ -23,6 +23,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
             >
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+                role="img"
                 style="border-width: 0px;"
               >
                 m
@@ -32,6 +33,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                  role="img"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-inverse"
@@ -61,6 +63,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
           >
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon snaps-authorship-header__button mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+              role="img"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -84,6 +87,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-icon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-error-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  role="img"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
@@ -108,6 +112,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                   />
                   <div
                     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    role="img"
                   >
                     <div
                       class="mm-avatar-account__jazzicon"
@@ -203,6 +208,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                       >
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+                          role="img"
                         >
                           ?
                         </div>

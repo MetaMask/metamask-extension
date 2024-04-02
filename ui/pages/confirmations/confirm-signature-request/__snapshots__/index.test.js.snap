@@ -182,6 +182,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            role="img"
           >
             <span
               class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"

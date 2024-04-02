@@ -134,6 +134,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        role="img"
                       >
                         <div
                           class="mm-avatar-account__jazzicon"
@@ -205,6 +206,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        role="img"
                       >
                         <div
                           class="mm-avatar-account__jazzicon"
@@ -276,6 +278,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                     >
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                        role="img"
                       >
                         <div
                           class="mm-avatar-account__jazzicon"
@@ -422,6 +425,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                         >
                           <div
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            role="img"
                           >
                             <div
                               class="mm-avatar-account__jazzicon"
@@ -493,6 +497,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                         >
                           <div
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            role="img"
                           >
                             <div
                               class="mm-avatar-account__jazzicon"
@@ -564,6 +569,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                         >
                           <div
                             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            role="img"
                           >
                             <div
                               class="mm-avatar-account__jazzicon"
