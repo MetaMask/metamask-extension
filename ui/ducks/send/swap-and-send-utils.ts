@@ -2,18 +2,18 @@ import { isNumber } from 'lodash';
 import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
-} from '../../../../../shared/constants/swaps';
-import { SECOND } from '../../../../../shared/constants/time';
-import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+} from '../../../shared/constants/swaps';
+import { SECOND } from '../../../shared/constants/time';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import {
   addHexPrefixToObjectValues,
   truthyDigitString,
   truthyString,
   validHex,
   validateData,
-} from '../../../../../shared/lib/swaps-utils';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+} from '../../../shared/lib/swaps-utils';
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 type ADDRESS = `0x${string}`;
 
