@@ -52,6 +52,10 @@ export const SendPageRecipientContent = ({
   //          - remove background for 721/1155 images
   //          - double border weight for dropdowns
   //          - ensure all NFTs show up in modal
+  //          - ensure selected token in modal is correct
+  //          - limit dest options
+  //          - add delay and polling
+  //          - tooltips showing after upstream change
   // TODO: 5. add analytics + e2e tests
   //       - use transaction lifecycle events once
   // TODO: 6. final design and technical review + revisions
@@ -86,7 +90,7 @@ export const SendPageRecipientContent = ({
         <AssetPickerAmount
           asset={receiveAsset}
           onAssetChange={onAssetChange}
-          amount={amount}
+          amount={amount} // TODO - this should be the amount of the asset being sent
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}

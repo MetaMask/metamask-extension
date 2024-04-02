@@ -170,6 +170,7 @@ export async function estimateGasLimitForSend({
  * @returns {import('@metamask/transaction-controller').TransactionParams} A txParams object that can be used to create a transaction or
  *  update an existing transaction.
  */
+// TODO: update this
 export function generateTransactionParams(sendState) {
   const draftTransaction =
     sendState.draftTransactions[sendState.currentTransactionUUID];
