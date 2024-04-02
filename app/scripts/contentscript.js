@@ -443,6 +443,38 @@ function logStreamDisconnectWarning(remoteLabel, error) {
  * @param {object} msg - instance of message received
  */
 function extensionStreamMessageListener(msg) {
+  // Shows in-page toast when the chain changes
+  if (msg.data.method === 'metamask_chainChanged') {
+    const message = `Chain changed to ${msg.data.params.nickname}`;
+    const id = 'metamaskChainChanged';
+
+    const wrapperStyles = `
+      top: 80px;
+      right: 80px;
+      position: fixed;
+      z-index: 9999999;
+    `;
+    const designStyles = `
+      background: white;
+      border: 1px solid orange;
+      padding: 8px;
+      color: #333;
+    `;
+
+    document.body.lastChild.insertAdjacentHTML(
+      'afterend',
+      `<div style="${wrapperStyles}" id="${id}">
+        <div style="${designStyles}">
+          ${message}
+        </div>
+      </div>
+    `,
+    );
+    setTimeout(() => {
+      document.body.removeChild(document.querySelector(`#${id}`));
+    }, 10000);
+  }
+
   if (
     METAMASK_EXTENSION_CONNECT_SENT &&
     isManifestV3 &&

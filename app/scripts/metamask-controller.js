@@ -211,6 +211,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
+import { getCurrentNetwork } from '../../ui/selectors';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -5842,10 +5843,20 @@ export default class MetamaskController extends EventEmitter {
 
   async _notifyChainChange() {
     if (this.preferencesController.getUseRequestQueue()) {
-      this.notifyAllConnections(async (origin) => ({
-        method: NOTIFICATION_NAMES.chainChanged,
-        params: await this.getProviderNetworkState(origin),
-      }));
+      this.notifyAllConnections(async (origin) => {
+        const params = await this.getProviderNetworkState(origin);
+
+        const { networkConfigurations, providerConfig } =
+          this.networkController.state;
+
+        const state = { metamask: { networkConfigurations, providerConfig } };
+        const { nickname } = getCurrentNetwork(state);
+
+        return {
+          method: NOTIFICATION_NAMES.chainChanged,
+          params: { ...params, nickname },
+        };
+      });
     } else {
       this.notifyAllConnections({
         method: NOTIFICATION_NAMES.chainChanged,
