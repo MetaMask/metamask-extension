@@ -414,7 +414,7 @@ jobs:
             echo "Labels found: $LABELS"
 
             # Check if "mmi-team" label is present
-            if [[ $LABELS == *"mmi-team"* ]]; then
+            if [[ $LABELS == *"type-refactor"* ]]; then
               echo "mmi-team label found."
               # You can create a file or an environment variable to signal the next steps
               echo 'export RUN_MMI="true"' >> $BASH_ENV
