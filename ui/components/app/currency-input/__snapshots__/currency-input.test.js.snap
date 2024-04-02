@@ -11,7 +11,7 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
       <div
         class="unit-input__input-container"
         style="display: inherit;"
-        title=""
+        title="1.00"
       >
         <input
           class="unit-input__input"
@@ -20,7 +20,7 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
           min="0"
           placeholder="0"
           step="any"
-          style="width: 1.5ch;"
+          style="width: 4ch;"
           type="number"
           value="0"
         />
@@ -32,12 +32,12 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
       </div>
       <div
         class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        title="0 ETH"
+        title="0.004327880204275946 ETH"
       >
         <span
           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         >
-          0
+          0.004327880204275946
         </span>
         <span
           class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
