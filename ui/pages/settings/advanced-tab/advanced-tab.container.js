@@ -14,6 +14,7 @@ import {
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
+  setStxOptIn,
   setUseNonceField,
   showModal,
 } from '../../../store/actions';
@@ -34,6 +35,7 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
+    stxOptIn,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
@@ -43,6 +45,7 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
+    stxOptIn,
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,
@@ -69,6 +72,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setShowExtensionInFullSizeView: (value) => {
       return dispatch(setShowExtensionInFullSizeView(value));
+    },
+    setStxOptIn: (value) => {
+      return dispatch(setStxOptIn(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));

@@ -49,6 +49,7 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import sharedSelectors from '../../shared/modules/selectors';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -788,6 +789,22 @@ export function getFeatureNotificationsEnabled(state) {
 export function getShowExtensionInFullSizeView(state) {
   const { showExtensionInFullSizeView } = getPreferences(state);
   return Boolean(showExtensionInFullSizeView);
+}
+
+export function getSmartTransactionsOptInStatus(state) {
+  return sharedSelectors.getSmartTransactionsOptInStatus(state);
+}
+
+export function getIsAllowedStxChainId(state) {
+  return sharedSelectors.getIsAllowedStxChainId(state);
+}
+
+export function getSmartTransactionsEnabled(state) {
+  return sharedSelectors.getSmartTransactionsEnabled(state);
+}
+
+export function getIsSmartTransaction(state) {
+  return sharedSelectors.getIsSmartTransaction(state);
 }
 
 export function getTestNetworkBackgroundColor(state) {
@@ -1604,6 +1621,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
     [NOTIFICATION_STAKING_PORTFOLIO]: true,
+    [NOTIFICATION_SMART_TRANSACTIONS]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF

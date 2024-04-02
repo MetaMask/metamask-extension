@@ -64,6 +64,10 @@ export const UI_NOTIFICATIONS: UINotifications = {
       width: '100%',
     },
   },
+  [NOTIFICATION_SMART_TRANSACTIONS]: {
+    id: Number(NOTIFICATION_SMART_TRANSACTIONS),
+    date: null,
+  },
   [NOTIFICATION_U2F_LEDGER_LIVE]: {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
     date: null,
@@ -216,6 +220,24 @@ export const getTranslatedUINotifications = (
             formattedLocale,
           )
         : '',
+    },
+    [NOTIFICATION_SMART_TRANSACTIONS]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_SMART_TRANSACTIONS],
+      title: t('notificationsStxTitle'),
+      description: [
+        t('notificationsStxDescription1'),
+        t('notificationsStxDescription2'),
+      ],
+      actionText: t('notificationsStxActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_SMART_TRANSACTIONS].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_SMART_TRANSACTIONS].date),
+          )
+        : '',
+      image: {
+        src: 'images/logo/metamask-smart-transactions.png',
+        width: '100%',
+      },
     },
     [NOTIFICATION_U2F_LEDGER_LIVE]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE],

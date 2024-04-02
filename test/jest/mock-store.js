@@ -4,7 +4,7 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
-const createGetSmartTransactionFeesApiResponse = () => {
+export const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -150,6 +150,7 @@ export const createSwapsMockStore = () => {
       },
       preferences: {
         showFiatInTestnets: true,
+        stxOptIn: true,
       },
       transactions: [
         {

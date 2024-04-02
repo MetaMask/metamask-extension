@@ -221,6 +221,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
+      stxOptIn: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
     },
