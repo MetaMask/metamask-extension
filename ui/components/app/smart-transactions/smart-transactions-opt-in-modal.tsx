@@ -22,7 +22,7 @@ import {
   ModalHeader,
   ModalContent,
 } from '../../component-library';
-import { setStxOptIn } from '../../../store/actions';
+import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
@@ -35,10 +35,10 @@ export default function SmartTransactionsOptInModal({
   const dispatch = useDispatch();
 
   const onEnable = () => {
-    dispatch(setStxOptIn(true));
+    dispatch(setSmartTransactionsOptInStatus(true));
   };
   const onNotRightNow = () => {
-    dispatch(setStxOptIn(false));
+    dispatch(setSmartTransactionsOptInStatus(false));
   };
 
   return (

@@ -14,7 +14,7 @@ jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,
-    setStxOptIn: () => mockSetStxOptIn,
+    setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
   };
 });
 
@@ -94,7 +94,7 @@ describe('AdvancedTab Component', () => {
       expect(toggleButton).toBeInTheDocument();
     });
 
-    it('should call setStxOptIn when the toggle button is clicked', () => {
+    it('should call setSmartTransactionsOptInStatus when the toggle button is clicked', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
       fireEvent.click(toggleButton);

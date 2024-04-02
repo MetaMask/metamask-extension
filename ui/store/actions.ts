@@ -3066,7 +3066,7 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
-export function setStxOptIn(value: boolean) {
+export function setSmartTransactionsOptInStatus(value: boolean) {
   return setPreference('smartTransactionsOptInStatus', value);
 }
 

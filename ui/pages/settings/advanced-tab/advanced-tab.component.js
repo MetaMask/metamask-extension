@@ -56,7 +56,7 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    setStxOptIn: PropTypes.func.isRequired,
+    setSmartTransactionsOptInStatus: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
@@ -245,7 +245,8 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleStxOptIn() {
     const { t } = this.context;
-    const { smartTransactionsOptInStatus, setStxOptIn } = this.props;
+    const { smartTransactionsOptInStatus, setSmartTransactionsOptInStatus } =
+      this.props;
 
     const learMoreLink = (
       <ButtonLink
@@ -292,7 +293,7 @@ export default class AdvancedTab extends PureComponent {
                   stx_opt_in: newValue,
                 },
               });
-              setStxOptIn(newValue);
+              setSmartTransactionsOptInStatus(newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
