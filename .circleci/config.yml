@@ -391,20 +391,25 @@ jobs:
             GITHUB_REPO="${GITHUB_REPO}"
             BRANCH="${CIRCLE_BRANCH}"
 
-            # Fetch the PR number associated with the current branch
-            PR_NUMBER=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-                "https://api.github.com/repos/${GITHUB_REPO}/pulls" | jq --arg BRANCH "$BRANCH" '.[] | select(.head.ref==$BRANCH) | .number')
+            # Fetch the PRs associated with the current branch and check the response
+            PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+              "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
 
-            if [ -z "$PR_NUMBER" ]; then
-              echo "No PR found for branch $BRANCH."
-              exit 0
+            # Check if the response contains valid JSON
+            if ! echo "$PR_RESPONSE" | jq empty; then
+                echo "Failed to parse JSON response."
+                echo "$PR_RESPONSE"
+                exit 1
             fi
 
-            echo "PR Number: $PR_NUMBER"
+            # Check if we received an array of PRs
+            if ! echo "$PR_RESPONSE" | jq -e '. | type == "array"'; then
+                echo "Expected an array of PRs, got something else."
+                exit 1
+            fi
 
-            # Fetch labels for the PR
-            LABELS=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-                "https://api.github.com/repos/${GITHUB_REPO}/issues/${PR_NUMBER}/labels" | jq -r '.[].name')
+            # Extract the PR number
+            LABELS=$(echo "$PR_RESPONSE" | jq -r '.[0].labels // empty')
 
             echo "Labels found: $LABELS"
 
