@@ -69,8 +69,6 @@ aliases:
 
   # Check if MMI Optional tests should run
   - &check-mmi-optional
-    attach_workspace:
-      at: .
     name: Check if MMI Optional tests should run
     command: |
       RUN_MMI_OPTIONAL=$(cat ./RUN_MMI_OPTIONAL)
@@ -704,10 +702,10 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-browsers-medium-plus
     steps:
-      - run: *check-mmi-optional
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
+      - run: *check-mmi-optional
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
