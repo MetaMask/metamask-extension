@@ -73,7 +73,7 @@ aliases:
       at: .
     name: Check if MMI Optional tests should run
     command: |
-      RUN_MMI_OPTIONAL=$(cat RUN_MMI_OPTIONAL)
+      RUN_MMI_OPTIONAL=$(cat ./RUN_MMI_OPTIONAL)
       if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI_OPTIONAL}" == "true" ]]; then
         echo "Running MMI Optional tests"
       else
@@ -429,11 +429,11 @@ jobs:
             if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
               echo "team-mmi tag found."
               # assign the RUN_MMI_OPTIONAL variable to true
-              echo "true" > RUN_MMI_OPTIONAL
+              echo "true" > ./RUN_MMI_OPTIONAL
             else
               echo "team-mmi tag not found."
               # assign the RUN_MMI_OPTIONAL variable to false
-              echo "false" > RUN_MMI_OPTIONAL
+              echo "false" > ./RUN_MMI_OPTIONAL
             fi
       - persist_to_workspace:
           root: .
