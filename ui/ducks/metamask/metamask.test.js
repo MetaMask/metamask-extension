@@ -7,7 +7,6 @@ import {
 } from '@metamask/transaction-controller';
 import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
-import { createGetSmartTransactionFeesApiResponse } from '../../../test/jest';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,

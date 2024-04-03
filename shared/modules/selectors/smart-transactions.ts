@@ -1,29 +1,53 @@
 import {
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
-} from '../constants/smartTransactions';
-import { ENVIRONMENT } from '../../development/build/constants';
+} from '../../constants/smartTransactions';
+import { ENVIRONMENT } from '../../../development/build/constants';
 import {
   getCurrentChainId,
   getCurrentNetwork,
   accountSupportsSmartTx,
-} from '../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
-import { getNetworkNameByChainId } from './feature-flags';
+} from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+
+type SmartTransactionsMetaMaskState = {
+  metamask: {
+    preferences: {
+      smartTransactionsOptInStatus: boolean | null;
+    };
+    swapsState: {
+      swapsFeatureFlags: {
+        [key: string]: {
+          extensionActive: boolean;
+          smartTransactions: {
+            expectedDeadline?: number;
+            maxDeadline?: number;
+            returnTxHashAsap?: boolean;
+          };
+        };
+      };
+    };
+    smartTransactionsState: {
+      liveness: boolean;
+    };
+  };
+};
 
 export const getSmartTransactionsOptInStatus = (
-  state: Record<string, any>,
+  state: SmartTransactionsMetaMaskState,
 ): boolean | null => {
   return state.metamask.preferences?.smartTransactionsOptInStatus;
 };
 
 export const getCurrentChainSupportsSmartTransactions = (
-  state: Record<string, any>,
+  state: SmartTransactionsMetaMaskState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
   return ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
 };
 
-const getIsAllowedRpcUrlForStx = (state: Record<string, any>) => {
+const getIsAllowedRpcUrlForSmartTransactions = (
+  state: SmartTransactionsMetaMaskState,
+) => {
   const chainId = getCurrentChainId(state);
   const isDevelopment =
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
@@ -41,16 +65,18 @@ const getIsAllowedRpcUrlForStx = (state: Record<string, any>) => {
   return rpcUrl?.hostname?.endsWith('.infura.io');
 };
 
-export const getIsStxOptInAvailable = (state: Record<string, any>) => {
+export const getIsSmartTransactionsOptInModalAvailable = (
+  state: SmartTransactionsMetaMaskState,
+) => {
   return (
     getCurrentChainSupportsSmartTransactions(state) &&
-    getIsAllowedRpcUrlForStx(state) &&
+    getIsAllowedRpcUrlForSmartTransactions(state) &&
     getSmartTransactionsOptInStatus(state) === null
   );
 };
 
 export const getSmartTransactionsEnabled = (
-  state: Record<string, any>,
+  state: SmartTransactionsMetaMaskState,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
   // TODO: Create a new proxy service only for MM feature flags.
@@ -61,30 +87,17 @@ export const getSmartTransactionsEnabled = (
     state.metamask.smartTransactionsState?.liveness;
   return Boolean(
     getCurrentChainSupportsSmartTransactions(state) &&
-      getIsAllowedRpcUrlForStx(state) &&
+      getIsAllowedRpcUrlForSmartTransactions(state) &&
       supportedAccount &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness,
   );
 };
 
-export const getIsSmartTransaction = (state: Record<string, any>): boolean => {
+export const getIsSmartTransaction = (
+  state: SmartTransactionsMetaMaskState,
+): boolean => {
   const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   return Boolean(smartTransactionsOptInStatus && smartTransactionsEnabled);
 };
-
-export function getFeatureFlagsByChainId(state: Record<string, any>) {
-  const chainId = getCurrentChainId(state);
-  const networkName = getNetworkNameByChainId(chainId);
-  const featureFlags = state.metamask.swapsState?.swapsFeatureFlags;
-  if (!featureFlags?.[networkName]) {
-    return null;
-  }
-  return {
-    smartTransactions: {
-      ...featureFlags[networkName].smartTransactions,
-      ...featureFlags.smartTransactions,
-    },
-  };
-}

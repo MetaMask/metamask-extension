@@ -207,7 +207,7 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
-    isStxOptInAvailable: PropTypes.bool.isRequired,
+    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -828,7 +828,7 @@ export default class Home extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IF
-      isStxOptInAvailable,
+      isSmartTransactionsOptInModalAvailable,
     } = this.props;
 
     if (forgottenPassword) {
@@ -844,7 +844,7 @@ export default class Home extends PureComponent {
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId &&
-      isStxOptInAvailable;
+      isSmartTransactionsOptInModalAvailable;
 
     const showWhatsNew =
       completedOnboarding &&
