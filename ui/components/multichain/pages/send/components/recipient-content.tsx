@@ -18,8 +18,8 @@ import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
-import { SendHexData, SendPageRow } from '.';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
+import { SendHexData, SendPageRow } from '.';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
