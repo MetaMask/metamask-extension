@@ -279,8 +279,11 @@
     }
   }
 
-  &__survey-banner {
+  &__overlay-banners {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     bottom: 8px;
     left: 8px;
     right: 8px;

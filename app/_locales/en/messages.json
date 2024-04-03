@@ -2858,6 +2858,12 @@
   "newPassword": {
     "message": "New password (8 characters min)"
   },
+  "newPrivacyPolicyActionButton": {
+    "message": "Click here to read it"
+  },
+  "newPrivacyPolicyTitle": {
+    "message": "Our privacy policy has been updated"
+  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"

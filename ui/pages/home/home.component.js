@@ -212,6 +212,7 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    showPrivacyPolicyToast: false,
   };
 
   constructor(props) {
@@ -345,7 +346,48 @@ export default class Home extends PureComponent {
       setWaitForConfirmDeepLinkDialog(false);
     });
     ///: END:ONLY_INCLUDE_IF
+
+    this.triggerNewPrivacyPolicyToast();
   }
+
+  triggerNewPrivacyPolicyToast() {
+    const newPrivacyPolicyDate = new Date(2024, 5, 6);
+
+    const userHasClosedToast = Boolean(
+      window.localStorage?.getItem('privacyPolicyToastClosed'),
+    );
+
+    const shownDate = window.localStorage?.getItem(
+      'privacyPolicyToastShownDate',
+    );
+    const parsedShownDate = shownDate && new Date(Number(shownDate));
+    const currentDate = new Date();
+
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+
+    if (userHasClosedToast) {
+      this.setState({ showPrivacyPolicyToast: false });
+    } else if (currentDate >= newPrivacyPolicyDate) {
+      const toastHasBeenShown = Boolean(parsedShownDate);
+
+      if (!toastHasBeenShown) {
+        this.setState({ showPrivacyPolicyToast: true });
+        window.localStorage?.setItem(
+          'privacyPolicyToastShownDate',
+          currentDate.getTime().toString(),
+        );
+      }
+
+      if (currentDate - parsedShownDate < oneDayInMilliseconds) {
+        this.setState({ showPrivacyPolicyToast: true });
+      }
+    }
+  }
+
+  handlePrivacyPolicyBannerClose = () => {
+    window.localStorage?.setItem('privacyPolicyToastClosed', 'true');
+    this.setState({ showPrivacyPolicyToast: false });
+  };
 
   static getDerivedStateFromProps(props) {
     if (shouldCloseNotificationPopup(props)) {
@@ -778,6 +820,56 @@ export default class Home extends PureComponent {
     );
   };
 
+  renderToasts() {
+    const { t } = this.context;
+    const { setSurveyLinkLastClickedOrClosed, showSurveyToast } = this.props;
+
+    return showSurveyToast || this.state.showPrivacyPolicyToast ? (
+      <Box className="home__overlay-banners">
+        {showSurveyToast && (
+          <BannerBase
+            data-theme="dark"
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            startAccessory={
+              <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+            }
+            title={t('surveyTitle')}
+            actionButtonLabel={t('surveyConversion')}
+            actionButtonOnClick={() => {
+              global.platform.openTab({
+                url: 'https://www.getfeedback.com/r/Oczu1vP0',
+              });
+              setSurveyLinkLastClickedOrClosed(Date.now());
+            }}
+            onClose={() => {
+              setSurveyLinkLastClickedOrClosed(Date.now());
+            }}
+          />
+        )}
+        {this.state.showPrivacyPolicyToast && (
+          <BannerBase
+            data-theme="dark"
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            startAccessory={
+              <Icon name={IconName.Info} color={IconColor.iconDefault} />
+            }
+            title={t('newPrivacyPolicyTitle')}
+            actionButtonLabel={t('newPrivacyPolicyActionButton')}
+            actionButtonOnClick={() => {
+              global.platform.openTab({
+                url: 'https://www.consensys.io/privacy-policy',
+              });
+              this.handlePrivacyPolicyBannerClose();
+            }}
+            onClose={() => {
+              this.handlePrivacyPolicyBannerClose();
+            }}
+          />
+        )}
+      </Box>
+    ) : null;
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -785,8 +877,6 @@ export default class Home extends PureComponent {
       onTabClick,
       forgottenPassword,
       history,
-      setSurveyLinkLastClickedOrClosed,
-      showSurveyToast,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -1024,27 +1114,7 @@ export default class Home extends PureComponent {
             }
           </div>
           {this.renderNotifications()}
-          {showSurveyToast ? (
-            <BannerBase
-              className="home__survey-banner"
-              data-theme="dark"
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              startAccessory={
-                <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-              }
-              title={t('surveyTitle')}
-              actionButtonLabel={t('surveyConversion')}
-              actionButtonOnClick={() => {
-                global.platform.openTab({
-                  url: 'https://www.getfeedback.com/r/Oczu1vP0',
-                });
-                setSurveyLinkLastClickedOrClosed(Date.now());
-              }}
-              onClose={() => {
-                setSurveyLinkLastClickedOrClosed(Date.now());
-              }}
-            />
-          ) : null}
+          {this.renderToasts()}
         </div>
       </div>
     );
