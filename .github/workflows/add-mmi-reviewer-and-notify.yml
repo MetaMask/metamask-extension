@@ -2,13 +2,15 @@ name: Add MMI reviewer and notify via Slack
 
 on:
   pull_request_target:
-    branches:
-      - develop
     types: [opened,reopened,synchronize,labeled]
 
 jobs:
   process-label:
+    if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - name: Add reviewer when team-mmi label is added
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
