@@ -2241,29 +2241,18 @@
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/util": true
+        "@metamask/smart-transactions-controller>@ethereumjs/util": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
-        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/util": true,
         "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true,
-        "fetch": true
-      },
-      "packages": {
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true,
-        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
