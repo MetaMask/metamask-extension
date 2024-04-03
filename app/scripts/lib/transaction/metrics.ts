@@ -994,9 +994,9 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     is_smart_transaction: transactionMetricsRequest.getIsSmartTransaction(),
     // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(

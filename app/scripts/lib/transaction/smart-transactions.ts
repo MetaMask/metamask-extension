@@ -47,13 +47,23 @@ export type SmartTransactionsControllerMessenger =
     never
   >;
 
+export type FeatureFlags = {
+  extensionActive: boolean;
+  mobileActive: boolean;
+  smartTransactions: {
+    expectedDeadline?: number;
+    maxDeadline?: number;
+    returnTxHashAsap?: boolean;
+  };
+};
+
 export type SubmitSmartTransactionRequest = {
   transactionMeta: TransactionMeta;
   smartTransactionsController: SmartTransactionsController;
   transactionController: TransactionController;
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionsControllerMessenger;
-  featureFlags: Record<string, any>;
+  featureFlags: FeatureFlags;
 };
 
 export class SmartTransactionHook {
@@ -71,7 +81,15 @@ export class SmartTransactionHook {
 
   #controllerMessenger: SmartTransactionsControllerMessenger;
 
-  #featureFlags: Record<string, any>;
+  #featureFlags: {
+    extensionActive: boolean;
+    mobileActive: boolean;
+    smartTransactions: {
+      expectedDeadline?: number;
+      maxDeadline?: number;
+      returnTxHashAsap?: boolean;
+    };
+  };
 
   #isDapp: boolean;
 
@@ -205,7 +223,7 @@ export class SmartTransactionHook {
   }
 
   async #addListenerToUpdateStatusPage({ uuid }: { uuid: string }) {
-    (this.#smartTransactionsController as any).eventEmitter.on(
+    this.#smartTransactionsController.eventEmitter.on(
       `${uuid}:smartTransaction`,
       async (smartTransaction: SmartTransaction) => {
         const { status } = smartTransaction;
@@ -223,7 +241,7 @@ export class SmartTransactionHook {
 
   #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
     return new Promise((resolve) => {
-      (this.#smartTransactionsController as any).eventEmitter.on(
+      this.#smartTransactionsController.eventEmitter.on(
         `${uuid}:smartTransaction`,
         async (smartTransaction: SmartTransaction) => {
           const { status, statusMetadata } = smartTransaction;

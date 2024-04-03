@@ -385,6 +385,15 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
+          ethereum: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              returnTxHashAsap: false,
+            },
+          },
           smartTransactions: {
             mobileActive: true,
             extensionActive: true,

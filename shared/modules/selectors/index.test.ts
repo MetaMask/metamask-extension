@@ -1,11 +1,11 @@
-import { createSwapsMockStore } from '../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../constants/network';
+import { createSwapsMockStore } from '../../../test/jest';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../constants/network';
 import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
   getSmartTransactionsEnabled,
   getIsSmartTransaction,
-} from './selectors';
+} from '.';
 
 describe('Selectors', () => {
   const createMockState = () => {
@@ -31,8 +31,18 @@ describe('Selectors', () => {
         },
         swapsState: {
           swapsFeatureFlags: {
+            ethereum: {
+              extensionActive: true,
+              mobileActive: false,
+              smartTransactions: {
+                expectedDeadline: 45,
+                maxDeadline: 150,
+                returnTxHashAsap: false,
+              },
+            },
             smartTransactions: {
               extensionActive: true,
+              mobileActive: false,
             },
           },
         },
@@ -103,10 +113,26 @@ describe('Selectors', () => {
 
     it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      (state.metamask.internalAccounts.accounts as any)[
-        state.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = 'Trezor Hardware';
-      expect(getSmartTransactionsEnabled(state)).toBe(false);
+      const newState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          internalAccounts: {
+            ...state.metamask.internalAccounts,
+            selectedAccount: 'account2',
+            accounts: {
+              account2: {
+                metadata: {
+                  keyring: {
+                    type: 'Trezor Hardware',
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+      expect(getSmartTransactionsEnabled(newState)).toBe(false);
     });
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
@@ -194,8 +220,18 @@ describe('Selectors', () => {
           swapsState: {
             ...state.metamask.swapsState,
             swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: false,
+                smartTransactions: {
+                  expectedDeadline: 45,
+                  maxDeadline: 150,
+                  returnTxHashAsap: false,
+                },
+              },
               smartTransactions: {
-                extensionActive: false,
+                extensionActive: true,
+                mobileActive: false,
               },
             },
           },

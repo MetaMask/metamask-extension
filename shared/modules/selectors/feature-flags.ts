@@ -7,6 +7,7 @@ type FeatureFlagsMetaMaskState = {
       swapsFeatureFlags: {
         [key: string]: {
           extensionActive: boolean;
+          mobileActive: boolean;
           smartTransactions: {
             expectedDeadline?: number;
             maxDeadline?: number;

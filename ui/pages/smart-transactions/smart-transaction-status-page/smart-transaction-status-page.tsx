@@ -45,6 +45,9 @@ export type SmartTransactionStatusPageProps = {
   onViewActivity: () => void;
 };
 
+const SMART_TRANSACTIONS_EXPECTED_DEADLINE_FALLBACK = 45;
+const SMART_TRANSACTIONS_MAX_DEADLINE_FALLBACK = 150;
+
 export const showRemainingTimeInMinAndSec = (
   remainingTimeInSec: number,
 ): string => {
@@ -124,12 +127,18 @@ export const SmartTransactionStatusPage = ({
   const isSmartTransactionCancelled = Boolean(
     smartTransaction?.status?.startsWith(SmartTransactionStatuses.CANCELLED),
   );
-  const featureFlags: Record<string, any> | null = useSelector(
-    getFeatureFlagsByChainId,
-  );
+  const featureFlags: {
+    smartTransactions?: {
+      expectedDeadline?: number;
+      maxDeadline?: number;
+    };
+  } | null = useSelector(getFeatureFlagsByChainId);
   const stxEstimatedDeadline =
-    featureFlags?.smartTransactions?.expectedDeadline || 45;
-  const stxMaxDeadline = featureFlags?.smartTransactions?.maxDeadline || 150;
+    featureFlags?.smartTransactions?.expectedDeadline ||
+    SMART_TRANSACTIONS_EXPECTED_DEADLINE_FALLBACK;
+  const stxMaxDeadline =
+    featureFlags?.smartTransactions?.maxDeadline ||
+    SMART_TRANSACTIONS_MAX_DEADLINE_FALLBACK;
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
     useState(stxEstimatedDeadline);
   const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =
