@@ -112,6 +112,65 @@ const getDisplayValues = ({
   };
 };
 
+const useRemainingTime = ({
+  isSmartTransactionPending,
+  smartTransaction,
+  stxMaxDeadline,
+  stxEstimatedDeadline,
+}: {
+  isSmartTransactionPending: boolean;
+  smartTransaction?: SmartTransaction;
+  stxMaxDeadline: number;
+  stxEstimatedDeadline: number;
+}) => {
+  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
+    useState(0);
+  const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =
+    useState(false);
+  const stxDeadline = isSmartTransactionTakingTooLong
+    ? stxMaxDeadline
+    : stxEstimatedDeadline;
+
+  useEffect(() => {
+    if (!isSmartTransactionPending) {
+      return;
+    }
+
+    const calculateRemainingTime = () => {
+      const secondsAfterStxSubmission = smartTransaction?.creationTime
+        ? Math.round((Date.now() - smartTransaction.creationTime) / 1000)
+        : 0;
+
+      if (secondsAfterStxSubmission > stxDeadline) {
+        setTimeLeftForPendingStxInSec(0);
+        if (!isSmartTransactionTakingTooLong) {
+          setIsSmartTransactionTakingTooLong(true);
+        }
+        return;
+      }
+
+      setTimeLeftForPendingStxInSec(stxDeadline - secondsAfterStxSubmission);
+    };
+
+    const intervalId = setInterval(calculateRemainingTime, 1000);
+    calculateRemainingTime();
+
+    // eslint-disable-next-line consistent-return
+    return () => clearInterval(intervalId);
+  }, [
+    isSmartTransactionPending,
+    isSmartTransactionTakingTooLong,
+    smartTransaction?.creationTime,
+    stxDeadline,
+  ]);
+
+  return {
+    timeLeftForPendingStxInSec,
+    isSmartTransactionTakingTooLong,
+    stxDeadline,
+  };
+};
+
 export const SmartTransactionStatusPage = ({
   requestState,
   onCloseExtension,
@@ -140,14 +199,17 @@ export const SmartTransactionStatusPage = ({
   const stxMaxDeadline =
     featureFlags?.smartTransactions?.maxDeadline ||
     SMART_TRANSACTIONS_MAX_DEADLINE_FALLBACK;
-  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] =
-    useState(stxEstimatedDeadline);
-  const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =
-    useState(false);
+  const {
+    timeLeftForPendingStxInSec,
+    isSmartTransactionTakingTooLong,
+    stxDeadline,
+  } = useRemainingTime({
+    isSmartTransactionPending,
+    smartTransaction,
+    stxMaxDeadline,
+    stxEstimatedDeadline,
+  });
   const chainId: string = useSelector(getCurrentChainId);
-  const stxDeadline = isSmartTransactionTakingTooLong
-    ? stxMaxDeadline
-    : stxEstimatedDeadline;
 
   const countdown = isSmartTransactionPending ? (
     <Text
@@ -169,29 +231,6 @@ export const SmartTransactionStatusPage = ({
     isSmartTransactionSuccess,
     isSmartTransactionCancelled,
   });
-
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    if (isSmartTransactionPending) {
-      const calculateRemainingTime = () => {
-        const secondsAfterStxSubmission = smartTransaction?.creationTime
-          ? Math.round((Date.now() - smartTransaction.creationTime) / 1000)
-          : 0;
-        if (secondsAfterStxSubmission > stxDeadline) {
-          if (isSmartTransactionTakingTooLong) {
-            setTimeLeftForPendingStxInSec(0);
-            clearInterval(intervalId);
-            return;
-          }
-          setIsSmartTransactionTakingTooLong(true);
-        }
-        setTimeLeftForPendingStxInSec(stxDeadline - secondsAfterStxSubmission);
-      };
-      intervalId = setInterval(calculateRemainingTime, 1000);
-      calculateRemainingTime();
-    }
-    return () => clearInterval(intervalId);
-  }, [isSmartTransactionPending, isSmartTransactionTakingTooLong]);
 
   useEffect(() => {
     dispatch(hideLoadingIndication());
