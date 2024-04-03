@@ -4042,7 +4042,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A26.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch":
   version: 26.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A26.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch::version=26.0.0&hash=5c15ac"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A26.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch::version=26.0.0&hash=cf1d54"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4078,7 +4078,7 @@ __metadata:
     "@metamask/keyring-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
     "@metamask/preferences-controller": ^8.0.0
-  checksum: 9afa6240eb9ee892345795dd6188e9cb2f2dfb3734c7c111618690a074a87f48b7f36c1d4ba52f03db8161832cc3ca04dcc9a3e355ca395d25b4794878b4fb27
+  checksum: 44e0ce87c9a2e4e161771c212460947629502ad6e72542e87a29a3de6e9c6665190396a2ae7d8206e57ad091cb80ad6634dfbfd254632a5ee6833c496f1ad0ad
   languageName: node
   linkType: hard
 
