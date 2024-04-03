@@ -157,6 +157,8 @@ export async function getSwapAndSendQuotes(
     functionName: 'getSwapAndSendQuotes',
   });
 
+  // TODO: validate recipient and tokens against request
+
   const newQuotes = tradesResponse.reduce(
     (aggIdTradeMap: Record<string, Quote>, quote: Quote) => {
       if (
