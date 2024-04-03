@@ -43,6 +43,7 @@ export const SendPageRecipientContent = ({
     receiveAsset,
     sendAsset,
     amount: sendAmount,
+    isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
   const bestQuote = useSelector(getBestQuote);
@@ -101,6 +102,7 @@ export const SendPageRecipientContent = ({
         <AssetPickerAmount
           asset={receiveAsset}
           onAssetChange={onAssetChange}
+          isAmountLoading={isSwapQuoteLoading}
           amount={amount} // TODO - this should be the amount of the asset being sent
         />
       </SendPageRow>
