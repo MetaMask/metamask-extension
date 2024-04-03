@@ -8,6 +8,15 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
+const toggleOnHideZeroBalance = async (driver) => {
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement({ text: 'Settings', tag: 'div' });
+  await driver.clickElement('[id="toggle-zero-balance"] .toggle-button');
+  await driver.clickElement(
+    '.settings-page__header__title-container__close-button',
+  );
+};
+
 describe('Hide token with zero-balance', function () {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // This script tests the "hide zero-balance tokens" feature in wallet settings, ensuring that tokens with zero        //
@@ -67,6 +76,7 @@ describe('Hide token with zero-balance', function () {
         // Verify that both zero-balance tokens and non-zero-balance tokens are displayed by default
         // Navigate to settings and enable the "hide zero-balance tokens" feature by toggling it on
         // Check that tokens with zero balances are hidden, tokens with non-zero balances remain visible
+
       },
     );
   });
