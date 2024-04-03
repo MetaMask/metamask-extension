@@ -1348,10 +1348,12 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
   getAllDomains,
   getAllNetworks,
   (sitesList, domains, networks) => {
+    console.log('sitesList', sitesList, domains, networks);
     Object.keys(sitesList).forEach((siteKey) => {
       const connectedNetwork = networks.find(
         (network) => network.id === domains[siteKey],
       );
+      console.log(connectedNetwork, siteKey);
       sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
       sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
