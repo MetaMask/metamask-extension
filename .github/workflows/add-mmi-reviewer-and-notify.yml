@@ -4,11 +4,7 @@ on:
   pull_request_target:
     branches:
       - develop
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    types: [opened,reopened,synchronize,labeled]
 
 jobs:
   process-label:
@@ -27,7 +23,8 @@ jobs:
               team_reviewers: ['mmi']
             };
             github.rest.pulls.requestReviewers(payload);
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify via Slack
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
