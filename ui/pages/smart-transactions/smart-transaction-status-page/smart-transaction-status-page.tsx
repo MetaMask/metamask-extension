@@ -33,6 +33,7 @@ import { getCurrentChainId } from '../../../selectors';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 type RequestState = {
   smartTransaction?: SmartTransaction;
@@ -197,9 +198,12 @@ export const SmartTransactionStatusPage = ({
   }, []);
 
   const uuid = smartTransaction?.uuid;
-  const portfolioSmartTransactionStatusUrl = uuid
-    ? `${BaseUrl.Portfolio}/networks/${chainId}/smart-transactions/${uuid}`
-    : undefined;
+  const portfolioSmartTransactionStatusUrl =
+    uuid && chainId
+      ? `${BaseUrl.Portfolio}/networks/${Number(
+          hexToDecimal(chainId),
+        )}/smart-transactions/${uuid}`
+      : undefined;
 
   return (
     <Box
