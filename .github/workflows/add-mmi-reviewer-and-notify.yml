@@ -1,12 +1,17 @@
 name: Add MMI reviewer and notify via Slack
 
 on:
-  pull_request_target:
-    types: [opened,reopened,synchronize,labeled]
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
 
 jobs:
   process-label:
-    if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
