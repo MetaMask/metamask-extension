@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.13.1",
+  "version": "11.13.2",
   "private": true,
   "repository": {
     "type": "git",
