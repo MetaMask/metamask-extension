@@ -8,7 +8,9 @@ import {
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+///: END:ONLY_INCLUDE_IF
   SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../../shared/constants/app';
 import smartTransactionStatusPage from './smart-transaction-status-page';
