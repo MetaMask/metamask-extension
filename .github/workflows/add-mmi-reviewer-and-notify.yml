@@ -35,11 +35,11 @@ jobs:
 
       - name: Notify via Slack
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
-        uses: 8398a7/action-slack@v3
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           status: custom
           fields: repo,message,commit,author,action
-          custom_payload: |
+          payload: |
             {
               "text": "A PR with label 'team-mmi' was added and requires review: ${GITHUB_REPOSITORY}#${{ github.event.pull_request.number }}",
               "attachments": [
