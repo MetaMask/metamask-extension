@@ -1,0 +1,36 @@
+diff --git a/dist/TokenDetectionController.js b/dist/TokenDetectionController.js
+index 9aa09140d47424217eac118aebca9031e5d2a236..40eb28f29b4cd39422bd5d567cd3a8046a5402b9 100644
+--- a/dist/TokenDetectionController.js
++++ b/dist/TokenDetectionController.js
+@@ -225,22 +225,18 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
+             yield __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this);
+         }
+     }));
+-    this.messagingSystem.subscribe('PreferencesController:stateChange', ({ selectedAddress: newSelectedAddress, useTokenDetection }) => __awaiter(this, void 0, void 0, function* () {
+-        const isSelectedAddressChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f") !== newSelectedAddress;
+-        const isDetectionChangedFromPreferences = __classPrivateFieldGet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, "f") !== useTokenDetection;
+-        __classPrivateFieldSet(this, _TokenDetectionController_selectedAddress, newSelectedAddress, "f");
+-        __classPrivateFieldSet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, useTokenDetection, "f");
+-        if (useTokenDetection &&
+-            (isSelectedAddressChanged || isDetectionChangedFromPreferences)) {
+-            yield __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
+-                selectedAddress: __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f"),
+-            });
++    this.messagingSystem.subscribe('PreferencesController:stateChange', ({ useTokenDetection }) => __awaiter(this, void 0, void 0, function* () {
++        if (__classPrivateFieldGet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, "f") !== useTokenDetection) {
++            __classPrivateFieldSet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, useTokenDetection, "f");
++            if (useTokenDetection) {
++                yield __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
++                    selectedAddress: __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f"),
++                });
++            }
+         }
+     }));
+     this.messagingSystem.subscribe('AccountsController:selectedAccountChange', ({ address: newSelectedAddress }) => __awaiter(this, void 0, void 0, function* () {
+-        const isSelectedAddressChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f") !== newSelectedAddress;
+-        if (isSelectedAddressChanged &&
+-            __classPrivateFieldGet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, "f")) {
++        if (__classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f") !== newSelectedAddress) {
+             __classPrivateFieldSet(this, _TokenDetectionController_selectedAddress, newSelectedAddress, "f");
+             yield __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
+                 selectedAddress: __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f"),
