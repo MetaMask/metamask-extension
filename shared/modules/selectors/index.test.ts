@@ -230,7 +230,7 @@ describe('Selectors', () => {
                 },
               },
               smartTransactions: {
-                extensionActive: true,
+                extensionActive: false,
                 mobileActive: false,
               },
             },
