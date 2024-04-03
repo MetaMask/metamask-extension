@@ -107,7 +107,11 @@ describe('submitSmartTransactionHook', () => {
       isSmartTransaction: true,
       controllerMessenger: createSmartTransactionsControllerMessengerMock(),
       featureFlags: {
+        extensionActive: true,
+        mobileActive: false,
         smartTransactions: {
+          expectedDeadline: 45,
+          maxDeadline: 150,
           returnTxHashAsap: false,
         },
       },

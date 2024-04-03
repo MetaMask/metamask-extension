@@ -1,3 +1,4 @@
+import type { Hex } from '@metamask/utils';
 import {
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
@@ -14,20 +15,46 @@ type SmartTransactionsMetaMaskState = {
     preferences: {
       smartTransactionsOptInStatus: boolean | null;
     };
+    internalAccounts: {
+      selectedAccount: string;
+      accounts: {
+        [key: string]: {
+          metadata: {
+            keyring: {
+              type: string;
+            };
+          };
+        };
+      };
+    };
+    providerConfig: {
+      chainId: Hex;
+    };
     swapsState: {
       swapsFeatureFlags: {
-        [key: string]: {
+        ethereum: {
           extensionActive: boolean;
+          mobileActive: boolean;
           smartTransactions: {
             expectedDeadline?: number;
             maxDeadline?: number;
             returnTxHashAsap?: boolean;
           };
         };
+        smartTransactions: {
+          extensionActive: boolean;
+          mobileActive: boolean;
+        };
       };
     };
     smartTransactionsState: {
       liveness: boolean;
+    };
+    networkConfigurations: {
+      [key: string]: {
+        chainId: Hex;
+        rpcUrl: string;
+      };
     };
   };
 };
