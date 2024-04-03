@@ -28,6 +28,7 @@ type AssetPickerAmountProps = OverridingUnion<
     // all of these props should be explicitly received
     asset: Asset;
     amount: Amount;
+    isAmountLoading?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -40,6 +41,7 @@ export const AssetPickerAmount = ({
   asset,
   amount,
   onAmountChange,
+  isAmountLoading,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -89,6 +91,7 @@ export const AssetPickerAmount = ({
           assetType={asset.type}
           asset={asset}
           amount={amount}
+          isAmountLoading={isAmountLoading}
         />
       </Box>
       <Box display={Display.Flex}>

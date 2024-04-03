@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Box } from '../../component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
@@ -36,6 +38,7 @@ const LARGE_SYMBOL_LENGTH = 7;
  * @param options0.swapIcon
  * @param options0.className
  * @param options0.asset
+ * @param options0.isSkeleton
  */
 export default function CurrencyInput({
   hexValue,
@@ -46,6 +49,7 @@ export default function CurrencyInput({
   className = '',
   // if null, the asset is the native currency
   asset,
+  isSkeleton,
 }) {
   const t = useContext(I18nContext);
 
@@ -200,7 +204,12 @@ export default function CurrencyInput({
     );
   };
 
-  return (
+  return isSkeleton ? (
+    <Box className="currency-input__skeleton-container">
+      <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
+      <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
+    </Box>
+  ) : (
     <UnitInput
       isDisabled={isDisabled}
       hideSuffix={isTokenPrimary && isLongSymbol}
@@ -233,4 +242,5 @@ CurrencyInput.propTypes = {
     decimals: PropTypes.number,
     isERC721: PropTypes.bool,
   }),
+  isSkeleton: PropTypes.bool,
 };

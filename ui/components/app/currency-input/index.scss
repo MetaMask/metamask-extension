@@ -17,4 +17,41 @@
     background: none;
     border: none;
   }
+
+  &__pulsing-bar {
+    height: 4px;
+    background: #d9d9d9;
+    animation: pulse 2s infinite;
+    -webkit-animation: pulse 2s infinite;
+  }
+
+  &__skeleton-container {
+    min-height: 54px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    background: #d9d9d9;
+  }
+  50% {
+    background: var(--color-background-alternative);
+  }
+}
+
+@-webkit-keyframes pulse {
+  0%,
+  100% {
+    background: #d9d9d9;
+  }
+  50% {
+    background: var(--color-background-alternative);
+  }
 }
