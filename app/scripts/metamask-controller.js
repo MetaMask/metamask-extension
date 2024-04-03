@@ -2216,6 +2216,7 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
+    this.tokenDetectionController.enable();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
         this.networkController.state.selectedNetworkClientId,
@@ -2223,20 +2224,19 @@ export default class MetamaskController extends EventEmitter {
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
-      this.tokenDetectionController.enable();
     }
   }
 
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
+    this.tokenDetectionController.disable();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.stopAllPolling();
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
-      this.tokenDetectionController.disable();
     }
   }
 
@@ -3723,6 +3723,8 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker.clearAccounts();
 
       this.txController.clearUnapprovedTransactions();
+
+      this.tokenDetectionController.enable();
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
