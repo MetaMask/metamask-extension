@@ -35,7 +35,7 @@ jobs:
 
       - name: Notify via Slack
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           status: custom
           fields: repo,message,commit,author,action
