@@ -5350,9 +5350,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^11.0.0":
+"@metamask/selected-network-controller@file:../core/packages/selected-network-controller::locator=metamask-crx%40workspace%3A.":
   version: 11.0.0
-  resolution: "@metamask/selected-network-controller@npm:11.0.0"
+  resolution: "@metamask/selected-network-controller@file:../core/packages/selected-network-controller#../core/packages/selected-network-controller::hash=31a10c&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/json-rpc-engine": "npm:^8.0.1"
@@ -5363,7 +5363,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
     "@metamask/permission-controller": ^9.0.0
-  checksum: d674d36deff984da679d22e65b3b3827a9e667f8f39ce87e4ae327210609f7ae57fca57c1127b34c880361e188302c94c87bb75ab08db15b6b52341b976961a0
+  checksum: cf1619ce6937ad7de6ae8a1cf0a4dac90130f04c4ae246d96562ad91186cb5ebd42c994b1484705c9511da9ad56693bdc047fc554bd429be450729bc27e220b1
   languageName: node
   linkType: hard
 
