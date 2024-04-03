@@ -48,9 +48,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
-  getPreferences,
 } from '../../selectors';
-import { getIsStxOptInAvailable } from '../../../shared/modules/selectors';
+import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -195,7 +194,8 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-    isStxOptInAvailable: getIsStxOptInAvailable(state),
+    isSmartTransactionsOptInModalAvailable:
+      getIsSmartTransactionsOptInModalAvailable(state),
   };
 };
 

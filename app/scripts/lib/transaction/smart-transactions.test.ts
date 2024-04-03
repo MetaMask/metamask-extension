@@ -15,6 +15,7 @@ import type {
 const addressFrom = '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e';
 const txHash =
   '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
+const uuid = 'uuid';
 
 type SubmitSmartTransactionRequestMocked = SubmitSmartTransactionRequest & {
   smartTransactionsController: jest.Mocked<SmartTransactionsController>;
@@ -64,7 +65,7 @@ const createSmartTransactionsControllerMock = () => {
     }),
     submitSignedTransactions: jest.fn(async () => {
       return {
-        uuid: 'uuid',
+        uuid,
         txHash,
       };
     }),
@@ -223,6 +224,7 @@ describe('submitSmartTransactionHook', () => {
         requestState: {
           smartTransaction: {
             status: 'pending',
+            uuid,
             creationTime: expect.any(Number),
           },
           isDapp: true,
@@ -263,6 +265,7 @@ describe('submitSmartTransactionHook', () => {
         `uuid:smartTransaction`,
         {
           status: 'pending',
+          uuid,
           statusMetadata: {
             minedHash: '',
           },
@@ -273,6 +276,7 @@ describe('submitSmartTransactionHook', () => {
         `uuid:smartTransaction`,
         {
           status: 'success',
+          uuid,
           statusMetadata: {
             minedHash: txHash,
           },
@@ -316,6 +320,7 @@ describe('submitSmartTransactionHook', () => {
         requestState: {
           smartTransaction: {
             status: 'pending',
+            uuid,
             creationTime: expect.any(Number),
           },
           isDapp: true,

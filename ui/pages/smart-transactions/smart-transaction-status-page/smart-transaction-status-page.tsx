@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   SmartTransactionStatuses,
   SmartTransaction,
@@ -30,12 +29,9 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getRpcPrefsForCurrentProvider,
-  getCurrentChainId,
-} from '../../../selectors';
+import { getCurrentChainId } from '../../../selectors';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
 
 type RequestState = {
@@ -138,26 +134,11 @@ export const SmartTransactionStatusPage = ({
     useState(stxEstimatedDeadline);
   const [isSmartTransactionTakingTooLong, setIsSmartTransactionTakingTooLong] =
     useState(false);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const chainId: string = useSelector(getCurrentChainId);
   const stxDeadline = isSmartTransactionTakingTooLong
     ? stxMaxDeadline
     : stxEstimatedDeadline;
 
-  const txHash = smartTransaction?.statusMetadata?.minedHash;
-
-  const baseNetworkUrl: string =
-    rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
-    '';
-
-  let blockExplorerUrl: string = '';
-  if (txHash) {
-    blockExplorerUrl = getBlockExplorerLink(
-      { hash: txHash, chainId, metamaskNetworkId: '' },
-      { blockExplorerUrl: baseNetworkUrl },
-    );
-  }
   const countdown = isSmartTransactionPending ? (
     <Text
       display={Display.InlineBlock}
@@ -205,6 +186,11 @@ export const SmartTransactionStatusPage = ({
   useEffect(() => {
     dispatch(hideLoadingIndication());
   }, []);
+
+  const uuid = smartTransaction?.uuid;
+  const portfolioSmartTransactionStatusUrl = uuid
+    ? `${BaseUrl.Portfolio}/networks/${chainId}/smart-transactions/${uuid}`
+    : undefined;
 
   return (
     <Box
@@ -283,7 +269,7 @@ export const SmartTransactionStatusPage = ({
             </Text>
           </Box>
         )}
-        {blockExplorerUrl && (
+        {portfolioSmartTransactionStatusUrl && (
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -296,7 +282,9 @@ export const SmartTransactionStatusPage = ({
                 if (!isSmartTransactionPending) {
                   onCloseExtension();
                 }
-                global.platform.openTab({ url: blockExplorerUrl });
+                global.platform.openTab({
+                  url: portfolioSmartTransactionStatusUrl,
+                });
               }}
             >
               {t('viewTransaction')}

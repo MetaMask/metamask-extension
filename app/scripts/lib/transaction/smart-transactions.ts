@@ -125,7 +125,9 @@ export class SmartTransactionHook {
       }
       const returnTxHashAsap =
         this.#featureFlags?.smartTransactions?.returnTxHashAsap;
-      this.#addApprovalRequest();
+      this.#addApprovalRequest({
+        uuid,
+      });
       this.#addListenerToUpdateStatusPage({
         uuid,
       });
@@ -160,7 +162,7 @@ export class SmartTransactionHook {
     });
   }
 
-  #addApprovalRequest() {
+  #addApprovalRequest({ uuid }: { uuid: string }) {
     const onApproveOrRejectWrapper = () => {
       this.onApproveOrReject();
     };
@@ -175,6 +177,7 @@ export class SmartTransactionHook {
             smartTransaction: {
               status: SmartTransactionStatuses.PENDING,
               creationTime: Date.now(),
+              uuid,
             },
             isDapp: this.#isDapp,
           },
@@ -194,7 +197,6 @@ export class SmartTransactionHook {
       {
         id: this.#approvalFlowId,
         requestState: {
-          // @ts-expect-error: TODO: this line will be removed once we publish and use the latest STX controller.
           smartTransaction,
           isDapp: this.#isDapp,
         },
