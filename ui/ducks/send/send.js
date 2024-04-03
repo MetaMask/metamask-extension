@@ -1070,8 +1070,12 @@ const slice = createSlice({
       if (state.amountMode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
-        slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
-        slice.caseReducers.updateUserInputHexData(state, { payload: '' });
+        if (isReceived) {
+          draftTransaction.quotes = draftTransactionInitialState.quotes;
+        } else {
+          slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+          slice.caseReducers.updateUserInputHexData(state, { payload: '' });
+        }
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
