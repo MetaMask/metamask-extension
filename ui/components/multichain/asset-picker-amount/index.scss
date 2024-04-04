@@ -84,6 +84,9 @@
 }
 
 // max button
-button.asset-picker-amount__max-clear:hover:not(.--disabled) {
-  text-decoration: none;
+button.asset-picker-amount__max-clear {
+  font-size: design-system.$font-size-h7;
+  &:hover:not(.--disabled) {
+    text-decoration: none;
+  }
 }
