@@ -79,12 +79,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text
-      color={TextColor.textAlternative}
-      variant={TextVariant.bodySm}
-      display={Display.Flex}
-      alignItems={AlignItems.flexStart}
-    >
+    <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
       {t('simulationDetailsNoBalanceChanges')}
     </Text>
   );
