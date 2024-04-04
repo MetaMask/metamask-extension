@@ -23,6 +23,20 @@ export interface Labelable {
   }[];
 }
 
+// This function tries to find a label on a labelable object (i.e. a pull request or an issue) if present
+export function findLabel(
+  labelable: Labelable,
+  labelToFind: Label,
+): {
+  id: string;
+  name: string;
+} | undefined {
+  // Check if label is present on labelable
+  return labelable?.labels?.find(
+    (label) => label.name === labelToFind?.name,
+  );
+}
+
 // This function adds label to a labelable object (i.e. a pull request or an issue)
 export async function addLabelToLabelable(
   octokit: InstanceType<typeof GitHub>,
@@ -77,10 +91,8 @@ export async function removeLabelFromLabelableIfPresent(
   labelable: Labelable,
   labelToRemove: Label,
 ): Promise<void> {
-  // Check if label is present on issue
-  const labelFound = labelable?.labels?.find(
-    (label) => label.name === labelToRemove?.name,
-  );
+  // Check if label is present on labelable
+  const labelFound = findLabel(labelable, labelToRemove);
 
   if (labelFound?.id) {
     // Remove label from labelable
