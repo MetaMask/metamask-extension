@@ -16,8 +16,6 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Add reviewer when team-mmi label is added
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
@@ -31,6 +29,8 @@ jobs:
               team_reviewers: ['mmi']
             };
             github.rest.pulls.requestReviewers(payload);
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify via Slack
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
