@@ -1,7 +1,7 @@
 name: Add MMI reviewer and notify via Slack
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - develop
     types:
