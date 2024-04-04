@@ -30,7 +30,7 @@ jobs:
             };
             github.rest.pulls.requestReviewers(payload);
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify via Slack
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
