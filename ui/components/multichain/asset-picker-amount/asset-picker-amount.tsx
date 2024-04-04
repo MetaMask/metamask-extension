@@ -95,8 +95,9 @@ export const AssetPickerAmount = ({
         />
       </Box>
       <Box display={Display.Flex}>
+        {/* Only show balance if mutable */}
+        {onAmountChange && <AssetBalance asset={asset} error={error} />}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        <AssetBalance asset={asset} error={error} />
         {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
