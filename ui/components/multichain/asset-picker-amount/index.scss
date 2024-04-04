@@ -6,6 +6,7 @@
   &__balance > div > * {
     font-size: design-system.$font-size-h7;
     padding: 0;
+    align-self: baseline;
   }
 
   // input for NFTs
