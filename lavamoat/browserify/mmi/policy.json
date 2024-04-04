@@ -727,7 +727,8 @@
       "packages": {
         "@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
-        "@metamask-institutional/sdk>@metamask-institutional/types": true
+        "@metamask-institutional/sdk>@metamask-institutional/types": true,
+        "gulp-sass>lodash.clonedeep": true
       }
     },
     "@metamask-institutional/institutional-features": {
@@ -740,6 +741,11 @@
       "globals": {
         "console.log": true,
         "fetch": true
+      }
+    },
+    "@metamask-institutional/rpc-allowlist": {
+      "globals": {
+        "URL": true
       }
     },
     "@metamask-institutional/sdk": {
