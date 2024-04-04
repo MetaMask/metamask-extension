@@ -26,7 +26,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.issue.number,
-              team_reviewers: ['MMI']
+              reviewers: ['albertolive', 'shane-t', 'zone-live']
             };
             github.rest.pulls.requestReviewers(payload);
         env:
