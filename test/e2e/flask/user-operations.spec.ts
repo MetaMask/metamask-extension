@@ -111,7 +111,7 @@ async function createSwap(driver: Driver) {
 
 async function confirmTransaction(driver: Driver) {
   await switchToNotificationWindow(driver);
-  await driver.clickElement({ text: 'Confirm' });
+  await driver.clickElement({ text: 'Confirm', css: '[data-testid="page-container-footer-next" ]' });
 }
 
 async function openConfirmedTransaction(driver: Driver) {
