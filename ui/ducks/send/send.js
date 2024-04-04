@@ -110,6 +110,7 @@ import {
   TokenStandard,
 } from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
+import { SECOND } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
@@ -126,6 +127,10 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
+
+const RECENT_REQUEST_ERROR =
+  'This has been replaced with a more recent request';
+const FETCH_DELAY = SECOND;
 
 // typedef import statements
 /**
@@ -361,6 +366,7 @@ export const RECIPIENT_SEARCH_MODES = {
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
  * @property {string} [swapQuotesError] - error message for swap quotes
+ * @property {number} [swapQuotesLatestRequestTimestamp] - error message for swap quotes
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
  *  validity of the draft transaction, which will be either 'VALID' or
  *  'INVALID', depending on our ability to generate a valid txParams object for
@@ -417,6 +423,7 @@ export const draftTransactionInitialState = {
   userInputHexData: null,
   isSwapQuoteLoading: false,
   swapQuotesError: null,
+  swapQuotesLatestRequestTimestamp: null,
   quotes: null,
 };
 
@@ -742,16 +749,18 @@ export const initializeSendState = createAsyncThunk(
   },
 );
 
+// variable tracking the latestFetchTime
+let latestFetchTime;
+
 /**
  * Fetch the swap and send transaction if the source and destination token do not match
  *
- * @param {string} hexData - hex encoded string representing transaction data.
+ * @param {string} requestTimestamp - the timestamp of the request
  * @returns {ThunkAction<void>}
  */
-
-export const fetchSwapAndSendQuotes = createAsyncThunk(
+const fetchSwapAndSendQuotes = createAsyncThunk(
   'send/fetchSwapAndSendQuotes',
-  async (_, thunkApi) => {
+  async ({ requestTimestamp }, thunkApi) => {
     const state = thunkApi.getState();
     const sendState = state[name];
 
@@ -766,45 +775,45 @@ export const fetchSwapAndSendQuotes = createAsyncThunk(
       sendState.selectedAccount.address ??
       getSelectedInternalAccount(state).address;
 
-    // return early if swap isn't required
-    if (
-      draftTransaction?.sendAsset?.details?.address ===
-      draftTransaction?.receiveAsset?.details?.address
-    ) {
-      return { quotes: null };
-    }
-
     const sourceAmount = hexToDecimal(draftTransaction.amount.value);
 
     // return early if form isn't filled out
     if (
       !Number(sourceAmount) ||
-      // !draftTransaction.sendAsset ||
-      // !draftTransaction.receiveAsset ||
+      !draftTransaction.sendAsset ||
+      !draftTransaction.receiveAsset ||
       !draftTransaction.recipient.address
     ) {
-      return { quotes: null };
+      return { quotes: null, requestTimestamp };
     }
 
-    const quotes = await getSwapAndSendQuotes({
-      chainId,
-      sourceAmount,
-      sourceToken:
-        draftTransaction.sendAsset?.details?.address ||
-        '0x0000000000000000000000000000000000000000',
-      destinationToken:
-        draftTransaction.receiveAsset?.details?.address ||
-        '0x0000000000000000000000000000000000000000',
-      sender,
-      recipient: draftTransaction.recipient.address,
-      slippage: '5', // TODO: update when solution is available
-    });
+    const quotes = await new Promise((resolve, reject) =>
+      setTimeout(async () => {
+        if (requestTimestamp !== latestFetchTime) {
+          reject(new Error(RECENT_REQUEST_ERROR));
+        }
+
+        getSwapAndSendQuotes({
+          chainId,
+          sourceAmount,
+          sourceToken:
+            draftTransaction.sendAsset?.details?.address ||
+            '0x0000000000000000000000000000000000000000',
+          destinationToken:
+            draftTransaction.receiveAsset?.details?.address ||
+            '0x0000000000000000000000000000000000000000',
+          sender,
+          recipient: draftTransaction.recipient.address,
+          slippage: '5', // TODO: update when solution is available
+        }).then((response) => resolve(response));
+      }, FETCH_DELAY),
+    );
 
     if (!Object.keys(quotes).length) {
       throw new Error(SWAPS_QUOTES_ERROR);
     }
 
-    return { quotes };
+    return { quotes, requestTimestamp };
   },
 );
 
@@ -1759,7 +1768,7 @@ const slice = createSlice({
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
-      .addCase(fetchSwapAndSendQuotes.pending, (state) => {
+      .addCase(fetchSwapAndSendQuotes.pending, (state, action) => {
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
@@ -1767,13 +1776,21 @@ const slice = createSlice({
           draftTransaction.quotes = draftTransactionInitialState.quotes;
           draftTransaction.swapQuotesError = null;
           draftTransaction.isSwapQuoteLoading = true;
+          draftTransaction.swapQuotesLatestRequestTimestamp = Math.max(
+            action.meta.arg.requestTimestamp,
+            draftTransaction.swapQuotesLatestRequestTimestamp,
+          );
         }
       })
       .addCase(fetchSwapAndSendQuotes.fulfilled, (state, action) => {
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
-        if (draftTransaction) {
+        if (
+          draftTransaction &&
+          action.payload.requestTimestamp ===
+            draftTransaction.swapQuotesLatestRequestTimestamp
+        ) {
           draftTransaction.isSwapQuoteLoading = false;
           if (action.payload) {
             draftTransaction.quotes = action.payload.quotes;
@@ -1781,6 +1798,10 @@ const slice = createSlice({
         }
       })
       .addCase(fetchSwapAndSendQuotes.rejected, (state, action) => {
+        if (action.error.message === RECENT_REQUEST_ERROR) {
+          return;
+        }
+
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
@@ -2058,7 +2079,10 @@ export function updateSendQuote(isComputingSendGasLimit = true) {
       draftTransaction?.receiveAsset?.details?.address;
 
     if (isSwapAndSend) {
-      await dispatch(fetchSwapAndSendQuotes());
+      const currentTime = Date.now();
+      // set this synchronously so it can be used in fetchSwapAndSendQuotes thunks immediately
+      latestFetchTime = currentTime;
+      await dispatch(fetchSwapAndSendQuotes({ requestTimestamp: currentTime }));
     } else if (isComputingSendGasLimit) {
       await dispatch(computeEstimatedGasLimit());
     }

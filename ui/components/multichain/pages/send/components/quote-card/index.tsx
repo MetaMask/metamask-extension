@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentDraftTransaction,
   getBestQuote,
-  fetchSwapAndSendQuotes,
+  updateSendQuote,
 } from '../../../../../../ducks/send';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SECOND } from '../../../../../../../shared/constants/time';
@@ -48,7 +48,7 @@ export function QuoteCard() {
     }
 
     if (timeLeft <= 0) {
-      dispatch(fetchSwapAndSendQuotes());
+      dispatch(updateSendQuote());
     }
 
     const timeout = setTimeout(() => setTimeLeft(timeLeft - 1), SECOND);
