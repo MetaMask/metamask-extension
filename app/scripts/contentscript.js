@@ -434,6 +434,14 @@ function logStreamDisconnectWarning(remoteLabel, error) {
   );
 }
 
+let showChainChanged = false;
+const ignoreSeconds = 2;
+console.log("Running extensionStreamMessageListener")
+setTimeout(() => {
+  console.log("Setting `showChainChanged` to true")
+  showChainChanged = true;
+}, ignoreSeconds * 1000);
+
 /**
  * The function notifies inpage when the extension stream connection is ready. When the
  * 'metamask_chainChanged' method is received from the extension, it implies that the
@@ -445,6 +453,7 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 function extensionStreamMessageListener(msg) {
   // Shows in-page toast when the chain changes
   if (msg.data.method === 'metamask_chainChanged') {
+    const toastDisplaySeconds = 10;
     const message = `Now using <strong>${msg.data.params.nickname}</strong>`;
     const id = 'metamaskChainChanged';
 
@@ -490,21 +499,23 @@ function extensionStreamMessageListener(msg) {
 
     const imageStyles = `display: contents;`;
 
-    document.body.lastElementChild.insertAdjacentHTML(
-      'afterend',
-      `<div style="${themeStyles} ${wrapperStyles}" id="${id}">
-        <div style="${designStyles}">
-          <div style="${imageStyles}">
-            <img src="${image}" width="24" height="24" alt="MetaMask" />
+    if (showChainChanged) {
+      document.body.lastElementChild.insertAdjacentHTML(
+        'afterend',
+        `<div style="${themeStyles} ${wrapperStyles}" id="${id}">
+          <div style="${designStyles}">
+            <div style="${imageStyles}">
+              <img src="${image}" width="24" height="24" alt="MetaMask" />
+            </div>
+            <div>${message}</div>
           </div>
-          <div>${message}</div>
         </div>
-      </div>
-    `,
-    );
-    setTimeout(() => {
-      document.body.removeChild(document.querySelector(`#${id}`));
-    }, 10000);
+      `,
+      );
+      setTimeout(() => {
+        document.body.removeChild(document.querySelector(`#${id}`));
+      }, toastDisplaySeconds * 1000);
+    }
   }
 
   if (
