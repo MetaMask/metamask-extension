@@ -15,8 +15,8 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-///: END:ONLY_INCLUDE_IF
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
+///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -153,6 +153,7 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
+    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
@@ -207,7 +208,6 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
-    isSmartTransactionsOptInModalAvailable: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -802,11 +802,11 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
+      isSmartTransactionsOptInModalAvailable,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IF
-      isSmartTransactionsOptInModalAvailable,
     } = this.props;
 
     if (forgottenPassword) {
@@ -866,6 +866,9 @@ export default class Home extends PureComponent {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
+          <SmartTransactionsOptInModal
+            isOpen={showSmartTransactionsOptInModal}
+          />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
@@ -882,9 +885,6 @@ export default class Home extends PureComponent {
           {
             ///: END:ONLY_INCLUDE_IF
           }
-          <SmartTransactionsOptInModal
-            isOpen={showSmartTransactionsOptInModal}
-          />
           <div className="home__main-view">
             <div className="home__balance-wrapper">
               {
