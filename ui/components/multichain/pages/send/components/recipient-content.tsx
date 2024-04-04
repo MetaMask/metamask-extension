@@ -19,7 +19,7 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
-import { SendHexData, SendPageRow } from '.';
+import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
@@ -106,6 +106,7 @@ export const SendPageRecipientContent = ({
           amount={amount} // TODO - this should be the amount of the asset being sent
         />
       </SendPageRow>
+      <QuoteCard />
       {showHexData ? <SendHexData /> : null}
     </Box>
   );
