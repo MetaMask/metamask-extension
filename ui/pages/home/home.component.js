@@ -10,6 +10,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
 import NftsTab from '../../components/app/nfts-tab';
+import { ThemeType } from '../../../shared/constants/preferences';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
@@ -819,6 +820,7 @@ export default class Home extends PureComponent {
       setSurveyLinkLastClickedOrClosed,
       setNewPrivacyPolicyToastClickedOrClosed,
     } = this.props;
+    const { theme } = document.documentElement.dataset;
 
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
 
@@ -826,7 +828,9 @@ export default class Home extends PureComponent {
       <Box className="home__overlay-banners">
         {showSurveyToast && (
           <BannerBase
-            data-theme="dark"
+            data-theme={
+              theme === ThemeType.light ? ThemeType.dark : ThemeType.light
+            }
             backgroundColor={BackgroundColor.backgroundAlternative}
             startAccessory={
               <Icon name={IconName.Heart} color={IconColor.errorDefault} />
