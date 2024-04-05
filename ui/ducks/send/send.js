@@ -2134,6 +2134,9 @@ export function updateSendQuote(
 
     if (isComputingSendGasLimit) {
       await dispatch(computeEstimatedGasLimit());
+      await dispatch({
+        type: CLEAR_SWAP_AND_SEND_STATE,
+      });
     }
   };
 }
