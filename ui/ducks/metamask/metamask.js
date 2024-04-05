@@ -49,6 +49,7 @@ const initialState = {
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
+    featureNotificationsEnabled: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -539,8 +540,4 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
-}
-
-export function isLineaMainnetNetworkReleased(state) {
-  return state.metamask.isLineaMainnetReleased;
 }
