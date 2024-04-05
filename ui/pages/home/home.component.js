@@ -194,7 +194,9 @@ export default class Home extends PureComponent {
     setActiveNetwork: PropTypes.func,
     showSurveyToast: PropTypes.bool.isRequired,
     showPrivacyPolicyToast: PropTypes.bool.isRequired,
+    newPrivacyPolicyToastShownDate: PropTypes.number.isRequired,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -338,6 +340,7 @@ export default class Home extends PureComponent {
 
   componentDidMount() {
     this.checkStatusAndNavigate();
+    this.updateNewPrivacyPolicyToastDate();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { setWaitForConfirmDeepLinkDialog } = this.props;
@@ -349,44 +352,19 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
   }
 
-  // triggerNewPrivacyPolicyToast() {
-  //   const newPrivacyPolicyDate = new Date(2024, 5, 6);
+  updateNewPrivacyPolicyToastDate() {
+    const {
+      showPrivacyPolicyToast,
+      newPrivacyPolicyToastShownDate,
+      setNewPrivacyPolicyToastShownDate,
+    } = this.props;
 
-  //   const userHasClosedToast = Boolean(
-  //     window.localStorage?.getItem('privacyPolicyToastClosed'),
-  //   );
-
-  //   const shownDate = window.localStorage?.getItem(
-  //     'privacyPolicyToastShownDate',
-  //   );
-  //   const parsedShownDate = shownDate && new Date(Number(shownDate));
-  //   const currentDate = new Date();
-
-  //   const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-
-  //   if (userHasClosedToast) {
-  //     this.setState({ showPrivacyPolicyToast: false });
-  //   } else if (currentDate >= newPrivacyPolicyDate) {
-  //     const toastHasBeenShown = Boolean(parsedShownDate);
-
-  //     if (!toastHasBeenShown) {
-  //       this.setState({ showPrivacyPolicyToast: true });
-  //       window.localStorage?.setItem(
-  //         'privacyPolicyToastShownDate',
-  //         currentDate.getTime().toString(),
-  //       );
-  //     }
-
-  //     if (currentDate - parsedShownDate < oneDayInMilliseconds) {
-  //       this.setState({ showPrivacyPolicyToast: true });
-  //     }
-  //   }
-  // }
-
-  // handlePrivacyPolicyBannerClose = () => {
-  //   window.localStorage?.setItem('privacyPolicyToastClosed', 'true');
-  //   this.setState({ showPrivacyPolicyToast: false });
-  // };
+    // newPrivacyPolicyToastShownDate is always null (persistence is not working)
+    console.log({ showPrivacyPolicyToast, newPrivacyPolicyToastShownDate });
+    if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
+      setNewPrivacyPolicyToastShownDate(Date.now());
+    }
+  }
 
   static getDerivedStateFromProps(props) {
     if (shouldCloseNotificationPopup(props)) {
@@ -819,6 +797,20 @@ export default class Home extends PureComponent {
     );
   };
 
+  getIsPrivacyToastRecent() {
+    const { newPrivacyPolicyToastShownDate } = this.props;
+
+    const currentDate = new Date();
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const newPrivacyPolicyToastShownDateObj = new Date(
+      newPrivacyPolicyToastShownDate,
+    );
+    const toastWasShownLessThanADayAgo =
+      currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
+
+    return toastWasShownLessThanADayAgo;
+  }
+
   renderToasts() {
     const { t } = this.context;
     const {
@@ -827,6 +819,8 @@ export default class Home extends PureComponent {
       setSurveyLinkLastClickedOrClosed,
       setNewPrivacyPolicyToastClickedOrClosed,
     } = this.props;
+
+    const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
 
     return showSurveyToast || showPrivacyPolicyToast ? (
       <Box className="home__overlay-banners">
@@ -850,7 +844,7 @@ export default class Home extends PureComponent {
             }}
           />
         )}
-        {showPrivacyPolicyToast && (
+        {showPrivacyPolicyToast && isPrivacyToastRecent && (
           <BannerBase
             data-theme="dark"
             backgroundColor={BackgroundColor.backgroundAlternative}

@@ -43,6 +43,8 @@ import {
   getSuggestedNfts,
   getApprovalFlows,
   getShowSurveyToast,
+  getNewPrivacyPolicyToastShownDate,
+  getShowPrivacyPolicyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -66,6 +68,7 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setSurveyLinkLastClickedOrClosed,
+  setNewPrivacyPolicyToastShownDate,
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewTokensImportedError,
 } from '../../store/actions';
@@ -183,6 +186,8 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     showSurveyToast: getShowSurveyToast(state),
+    newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
+    showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
     hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
@@ -274,6 +279,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
     setNewPrivacyPolicyToastClickedOrClosed: () =>
       dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
+    setNewPrivacyPolicyToastShownDate: (date) =>
+      dispatch(setNewPrivacyPolicyToastShownDate(date)),
   };
 };
 

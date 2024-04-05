@@ -1751,40 +1751,12 @@ export function getShowSurveyToast(state) {
 }
 
 export function getShowPrivacyPolicyToast(state) {
-  const {
-    newPrivacyPolicyToastClickedOrClosed,
-    newPrivacyPolicyToastShownDate,
-  } = state.metamask;
-
+  const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
   const newPrivacyPolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
-  const parsedShownDate =
-    newPrivacyPolicyToastShownDate &&
-    new Date(Number(newPrivacyPolicyToastShownDate));
   const currentDate = new Date();
-
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-
-  let result = false;
-
-  if (newPrivacyPolicyToastClickedOrClosed) {
-    result = false;
-  } else if (currentDate >= newPrivacyPolicyDate) {
-    const toastHasBeenShown = Boolean(parsedShownDate);
-
-    if (!toastHasBeenShown) {
-      // window.localStorage?.setItem(
-      //   'privacyPolicyToastShownDate',
-      //   currentDate.getTime().toString(),
-      // );
-      result = true;
-    }
-
-    if (currentDate - parsedShownDate < oneDayInMilliseconds) {
-      result = true;
-    }
-  }
-
-  return result;
+  return (
+    !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
+  );
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1794,6 +1766,10 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+}
+
+export function getNewPrivacyPolicyToastShownDate(state) {
+  return state.metamask.newPrivacyPolicyToastShownDate;
 }
 
 export function getShowBetaHeader(state) {
