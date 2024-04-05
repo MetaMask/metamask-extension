@@ -280,7 +280,8 @@
   }
 
   &__overlay-banners {
-    position: absolute;
+    z-index: 9999;
+    position: fixed;
     display: flex;
     flex-direction: column;
     gap: 8px;
