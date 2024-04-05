@@ -2213,7 +2213,7 @@ describe('Actions', () => {
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without tokenID');
     });
 
-    it('should throw when removeAndIgnoreNft throws', async () => {
+    it('should throw when removeAndIgnoreNft throws an error', async () => {
       const store = mockStore();
       const error = new Error('remove nft fake error');
       background.removeAndIgnoreNft = sinon.stub().throws(error);

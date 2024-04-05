@@ -98,10 +98,12 @@ export default function NftDetails({ nft }) {
   );
 
   const onRemove = async () => {
+    let isSuccessfulEvent = false;
     try {
       await dispatch(removeAndIgnoreNft(address, tokenId));
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('success'));
+      isSuccessfulEvent = true;
     } catch (err) {
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('error'));
@@ -116,6 +118,7 @@ export default function NftDetails({ nft }) {
         asset_type: AssetType.NFT,
         token_standard: standard,
         chain_id: currentNetwork,
+        isSuccessful: isSuccessfulEvent,
       },
     });
     history.push(DEFAULT_ROUTE);
