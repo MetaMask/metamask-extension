@@ -16,4 +16,4 @@ Step,Test steps,Test data,Expected result,Notes
 15,Click 'Next'.,,"Metamask popup with the recipient's address, amount, gas and total fees is displayed. The ""Custom nonce"" field with the next suggested nonce value is shown on the confirmation screen.",Use the same nonce value that was assigned to the previous transaction.
 16,Proceed to confirm the transaction.,,,
 17,Switch to the Activity tab.,,One 'Send' transaction with the same nonce and 0 value in 'Pending' state is displayed.,
-18,Allow some time for the transaction to get confirmed.,,Send' and 'Receive' transactions with 0 value and the same nonce are shown on the Activity tab.,The previous transaction was cancelled by the newly created transaction with the same nonce and 0 value.
+18,Allow some time for the transaction to get confirmed.,, 'Send' and 'Receive' transactions with 0 value and the same nonce are shown on the Activity tab.,The previous transaction was cancelled by the newly created transaction with the same nonce and 0 value.
