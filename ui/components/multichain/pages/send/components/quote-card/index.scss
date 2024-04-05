@@ -1,5 +1,10 @@
 @use "design-system";
 
-.countdown-timer {
-  font-size: design-system.$font-size-h7;
+.quote-details {
+  &__fetch-status{
+    font-size: design-system.$font-size-h7;
+  }
+  &__quote-info {
+    font-size: design-system.$font-size-h6;
+  }
 }
