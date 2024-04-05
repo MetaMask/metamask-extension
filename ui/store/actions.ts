@@ -4136,6 +4136,12 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
   };
 }
 
+export function setNewPrivacyPolicyToastClickedOrClosed() {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
