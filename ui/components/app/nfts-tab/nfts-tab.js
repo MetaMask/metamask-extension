@@ -82,6 +82,12 @@ export default function NftsTab() {
     });
   }, [showNftBanner, trackEvent, currentNetwork, currentLocale]);
 
+  useEffect(() => {
+    if (hasAnyNfts) {
+      checkAndUpdateAllNftsOwnershipStatus();
+    }
+  }, [hasAnyNfts]);
+
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
   }

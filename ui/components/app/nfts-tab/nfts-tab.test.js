@@ -258,6 +258,24 @@ describe('NFT Items', () => {
     });
   });
 
+  describe('Update ownership status', () => {
+    it('should update ownership status when it has NFTS', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+      });
+      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not update ownership status when it does not have NFTS', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: [],
+      });
+      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalledTimes(0);
+    });
+  });
+
   describe('Collections', () => {
     it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has NFTs', () => {
       render({
