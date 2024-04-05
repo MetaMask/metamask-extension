@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath, useHistory } from 'react-router-dom';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -77,6 +76,7 @@ import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getURLHost, shortenAddress } from '../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -237,13 +237,16 @@ export const AppHeader = ({ location }) => {
                     <PickerNetwork
                       avatarNetworkProps={{
                         backgroundColor: testNetworkBackgroundColor,
+                        role: 'img',
                       }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
-                      aria-label={t('networkMenu')}
+                      aria-label={`${t('networkMenu')} ${
+                        currentNetwork?.nickname
+                      }`}
                       labelProps={{
                         display: Display.None,
                       }}
@@ -262,8 +265,12 @@ export const AppHeader = ({ location }) => {
                   <PickerNetwork
                     avatarNetworkProps={{
                       backgroundColor: testNetworkBackgroundColor,
+                      role: 'img',
                     }}
                     margin={2}
+                    aria-label={`${t('networkMenu')} ${
+                      currentNetwork?.nickname
+                    }`}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
                     onClick={(e) => {
@@ -482,7 +489,9 @@ export const AppHeader = ({ location }) => {
                 <PickerNetwork
                   avatarNetworkProps={{
                     backgroundColor: testNetworkBackgroundColor,
+                    role: 'img',
                   }}
+                  aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

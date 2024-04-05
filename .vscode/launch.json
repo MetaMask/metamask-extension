@@ -38,7 +38,7 @@
       "type": "pickString",
       "id": "browserToUse",
       "description": "Which browser do you want to test with?",
-      "options": ["chrome", "firefox"],
+      "options": ["chrome", "firefox", "all"],
       "default": "chrome"
     }
   ],

@@ -57,27 +57,27 @@ function importAllScripts() {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
   }
 
-  loadFile('./sentry-install.js');
+  loadFile('./scripts/sentry-install.js');
 
   // eslint-disable-next-line no-undef
   const isWorker = !self.document;
   if (!isWorker) {
-    loadFile('./snow.js');
+    loadFile('./scripts/snow.js');
   }
 
-  loadFile('./use-snow.js');
+  loadFile('./scripts/use-snow.js');
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {
-    loadFile('./runtime-lavamoat.js');
-    loadFile('./lockdown-more.js');
-    loadFile('./policy-load.js');
+    loadFile('./scripts/runtime-lavamoat.js');
+    loadFile('./scripts/lockdown-more.js');
+    loadFile('./scripts/policy-load.js');
   } else {
-    loadFile('./init-globals.js');
-    loadFile('./lockdown-install.js');
-    loadFile('./lockdown-run.js');
-    loadFile('./lockdown-more.js');
-    loadFile('./runtime-cjs.js');
+    loadFile('./scripts/init-globals.js');
+    loadFile('./scripts/lockdown-install.js');
+    loadFile('./scripts/lockdown-run.js');
+    loadFile('./scripts/lockdown-more.js');
+    loadFile('./scripts/runtime-cjs.js');
   }
 
   // This environment variable is set to a string of comma-separated relative file paths.
@@ -145,7 +145,7 @@ const registerInPageContentScript = async () => {
       {
         id: 'inpage',
         matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['inpage.js'],
+        js: ['scripts/inpage.js'],
         runAt: 'document_start',
         world: 'MAIN',
       },

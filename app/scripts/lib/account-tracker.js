@@ -78,14 +78,6 @@ export default class AccountTracker {
     this.onboardingController = opts.onboardingController;
     this.controllerMessenger = opts.controllerMessenger;
 
-    // blockTracker.currentBlock may be null
-    this.#currentBlockNumberByChainId = {
-      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
-    };
-    this.#blockTracker.once('latest', (blockNumber) => {
-      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
-    });
-
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccounts([address]));
 
@@ -124,6 +116,14 @@ export default class AccountTracker {
    * Starts polling with global selected network
    */
   start() {
+    // blockTracker.currentBlock may be null
+    this.#currentBlockNumberByChainId = {
+      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
+    };
+    this.#blockTracker.once('latest', (blockNumber) => {
+      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
+    });
+
     // remove first to avoid double add
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
     // add listener

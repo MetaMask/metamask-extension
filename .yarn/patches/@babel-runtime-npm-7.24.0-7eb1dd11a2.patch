@@ -1,0 +1,37 @@
+diff --git a/helpers/construct.js b/helpers/construct.js
+index 771e1d7952e80f11619424fbabb3744b959ffa49..5fe152bc1129bd8c8b7bb217ca1972ac4e089051 100644
+--- a/helpers/construct.js
++++ b/helpers/construct.js
+@@ -1,10 +1,21 @@
+-var setPrototypeOf = require("./setPrototypeOf.js");
+-var isNativeReflectConstruct = require("./isNativeReflectConstruct.js");
+-function _construct(t, e, r) {
+-  if (isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
+-  var o = [null];
+-  o.push.apply(o, e);
+-  var p = new (t.bind.apply(t, o))();
+-  return r && setPrototypeOf(p, r.prototype), p;
+-}
+-module.exports = _construct, module.exports.__esModule = true, module.exports["default"] = module.exports;
+\ No newline at end of file
++// All of MetaMask's supported browsers include `Reflect.construct` support, so
++// we don't need this polyfill.
++
++// This Proxy preserves the two properties that were added by `@babel/runtime`.
++// I am not entire sure what these properties are for (maybe ES5/ES6
++// interoperability?) but they have been preserved just in case.
++const reflectProxy = new Proxy(
++  Reflect.construct,
++  {
++    get: function (target, property) {
++      if (property === 'default') {
++        return target;
++      } else if (property === '__esModule') {
++        return true;
++      }
++      return Reflect.get(...arguments);
++    }
++  }
++);
++
++module.exports = reflectProxy;
