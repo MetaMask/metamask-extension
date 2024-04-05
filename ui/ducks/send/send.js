@@ -79,6 +79,7 @@ import {
   ACCOUNT_CHANGED,
   ADDRESS_BOOK_UPDATED,
   GAS_FEE_ESTIMATES_UPDATED,
+  CLEAR_SWAP_AND_SEND_STATE,
 } from '../../store/actionConstants';
 import {
   getTokenAddressParam,
@@ -1682,6 +1683,18 @@ const slice = createSlice({
             addressBook[draftTransaction.recipient.address].name;
         }
       })
+      .addCase(CLEAR_SWAP_AND_SEND_STATE, (state) => {
+        const draftTransaction =
+          state.draftTransactions[state.currentTransactionUUID];
+
+        draftTransaction.quotes = draftTransactionInitialState.quotes;
+        draftTransaction.swapQuotesError =
+          draftTransactionInitialState.swapQuotesError;
+        draftTransaction.isSwapQuoteLoading =
+          draftTransactionInitialState.isSwapQuoteLoading;
+        draftTransaction.swapQuotesLatestRequestTimestamp =
+          draftTransactionInitialState.swapQuotesLatestRequestTimestamp;
+      })
       .addCase(computeEstimatedGasLimit.pending, (state) => {
         // When we begin to fetch gasLimit we should indicate we are loading
         // a gas estimate.
@@ -2094,6 +2107,9 @@ export function updateSendQuote(isComputingSendGasLimit = true) {
       await dispatch(fetchSwapAndSendQuotes({ requestTimestamp: currentTime }));
     } else if (isComputingSendGasLimit) {
       await dispatch(computeEstimatedGasLimit());
+      await dispatch({
+        type: CLEAR_SWAP_AND_SEND_STATE,
+      });
     }
   };
 }
