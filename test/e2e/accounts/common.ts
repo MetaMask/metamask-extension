@@ -69,10 +69,10 @@ export async function installSnapSimpleKeyring(
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
-  await driver.waitForSelector({ text: 'Install' });
+  await driver.waitForSelector({ text: 'Confirm' });
 
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 

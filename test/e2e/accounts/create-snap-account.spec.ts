@@ -36,9 +36,9 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'OK' });
@@ -114,9 +114,9 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'OK' });
@@ -205,9 +205,9 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'OK' });

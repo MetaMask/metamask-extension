@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Situs web"
   },
-  "snapInstallRequest": {
-    "message": "Menginstal $1 memberinya izin berikut. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Instalasi selesai"
   },
