@@ -2105,11 +2105,14 @@ export function updateSendQuote(isComputingSendGasLimit = true) {
       // set this synchronously so it can be used in fetchSwapAndSendQuotes thunks immediately
       latestFetchTime = currentTime;
       await dispatch(fetchSwapAndSendQuotes({ requestTimestamp: currentTime }));
-    } else if (isComputingSendGasLimit) {
-      await dispatch(computeEstimatedGasLimit());
+    } else {
       await dispatch({
         type: CLEAR_SWAP_AND_SEND_STATE,
       });
+    }
+
+    if (isComputingSendGasLimit) {
+      await dispatch(computeEstimatedGasLimit());
     }
   };
 }
