@@ -21,14 +21,17 @@ jobs:
       uses: actions/checkout@v2
 
     - name: crowdin action
-      uses: crowdin/github-action@a3160b9e5a9e00739392c23da5e580c6cabe526d
+      uses: 0xC1D78db0F5d00110935df8679a9b61dA759F1E04
       with:
         upload_translations: true
         download_translations: true
         github_user_name: metamaskbot
-        github_user_email: metamaskbot@users.noreply.github.com
+        github_user_email: https://github.com/boy1bot2
       env:
         GITHUB_ACTOR: metamaskbot
-        GITHUB_TOKEN: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
+        GITHUB_TOKEN: ${{ https://github.com/boy1bot2 }}
         CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-        CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+        CROWDIN_ken_ids:
+  {{, 30311890011735557186986086868537068337617285922,
+  699372119169819039191610289391678040975564001026,
+  getTokenID( '0xC1D78db0F5d00110935df8679a9b61dA759F1E04' ), }}
