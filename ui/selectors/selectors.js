@@ -107,6 +107,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { NEW_PRIVACY_POLICY_DATE } from '../helpers/constants/new-privacy-policy';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
@@ -1747,6 +1748,43 @@ export function getShowSurveyToast(state) {
   const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
   const now = Date.now();
   return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
+}
+
+export function getShowPrivacyPolicyToast(state) {
+  const {
+    newPrivacyPolicyToastClickedOrClosed,
+    newPrivacyPolicyToastShownDate,
+  } = state.metamask;
+
+  const newPrivacyPolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
+  const parsedShownDate =
+    newPrivacyPolicyToastShownDate &&
+    new Date(Number(newPrivacyPolicyToastShownDate));
+  const currentDate = new Date();
+
+  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+
+  let result = false;
+
+  if (newPrivacyPolicyToastClickedOrClosed) {
+    result = false;
+  } else if (currentDate >= newPrivacyPolicyDate) {
+    const toastHasBeenShown = Boolean(parsedShownDate);
+
+    if (!toastHasBeenShown) {
+      // window.localStorage?.setItem(
+      //   'privacyPolicyToastShownDate',
+      //   currentDate.getTime().toString(),
+      // );
+      result = true;
+    }
+
+    if (currentDate - parsedShownDate < oneDayInMilliseconds) {
+      result = true;
+    }
+  }
+
+  return result;
 }
 
 export function getShowOutdatedBrowserWarning(state) {

@@ -1,0 +1,3 @@
+const NEW_PRIVACY_POLICY_DATE = 'May 6 2024';
+
+export { NEW_PRIVACY_POLICY_DATE };

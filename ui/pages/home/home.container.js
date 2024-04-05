@@ -66,6 +66,7 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setSurveyLinkLastClickedOrClosed,
+  setNewPrivacyPolicyToastClickedOrClosed,
   setNewTokensImportedError,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
@@ -271,6 +272,8 @@ const mapDispatchToProps = (dispatch) => {
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setNewPrivacyPolicyToastClickedOrClosed: () =>
+      dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
   };
 };
 
