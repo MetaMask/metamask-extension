@@ -9,7 +9,9 @@ import {
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useMMIConfirmationInfo } from '../../../../../hooks/useMMIConfirmations';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
+///: END:ONLY_INCLUDE_IF
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
@@ -22,13 +24,13 @@ const Footer = () => {
   const confirm = useSelector(confirmSelector);
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmationInfo();
+  const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
   let from: string | undefined;
   // todo: extend to other confirmation types
   if (currentConfirmation?.msgParams) {
-    from = currentConfirmation?.msgParams?.from;
+    from = currentConfirmation.msgParams.from;
   }
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -62,7 +64,7 @@ const Footer = () => {
   }, [currentConfirmation]);
 
   return (
-    <PageFooter>
+    <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         onClick={onCancel}

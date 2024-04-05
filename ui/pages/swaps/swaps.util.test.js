@@ -16,6 +16,7 @@ import {
   ARBITRUM,
   ZKSYNC_ERA,
   LINEA,
+  BASE,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -267,6 +268,10 @@ describe('Swaps Util', () => {
 
     it('returns "linea" for Linea chain ID', () => {
       expect(getNetworkNameByChainId(CHAIN_IDS.LINEA_MAINNET)).toBe(LINEA);
+    });
+
+    it('returns "base" for Base chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.BASE)).toBe(BASE);
     });
   });
 

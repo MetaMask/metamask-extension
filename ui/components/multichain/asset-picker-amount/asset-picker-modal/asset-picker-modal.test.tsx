@@ -21,7 +21,7 @@ describe('AssetPickerModal', () => {
 
   it('should render the modal when isOpen is true', () => {
     const { getByText } = renderWithProvider(
-      <AssetPickerModal {...props} />,
+      <AssetPickerModal onAssetChange={() => ({})} {...props} />,
       store,
     );
 
@@ -31,7 +31,7 @@ describe('AssetPickerModal', () => {
 
   it('should not render the modal when isOpen is false', () => {
     const { queryByText } = renderWithProvider(
-      <AssetPickerModal {...props} isOpen={false} />,
+      <AssetPickerModal onAssetChange={() => ({})} {...props} isOpen={false} />,
       store,
     );
     const modalContent = queryByText('Select a token');
@@ -40,7 +40,7 @@ describe('AssetPickerModal', () => {
 
   it('should render the modal with the correct title and search placeholder', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <AssetPickerModal {...props} />,
+      <AssetPickerModal onAssetChange={() => ({})} {...props} />,
       store,
     );
     const modalTitle = getByText('Select a token');

@@ -1047,7 +1047,7 @@ export default function PrepareSwapPage({
             onClick={() => {
               const portfolioUrl = getPortfolioUrl(
                 'bridge',
-                'ext_bridge_button',
+                'ext_bridge_prepare_swap_link',
                 metaMetricsId,
               );
 

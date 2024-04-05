@@ -1386,6 +1386,11 @@
         "define": true
       }
     },
+    "@storybook/test-runner>jest-circus>p-limit": {
+      "packages": {
+        "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
+      }
+    },
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
@@ -2177,11 +2182,6 @@
       },
       "packages": {
         "chokidar>anymatch>picomatch": true
-      }
-    },
-    "copy-webpack-plugin>p-limit": {
-      "packages": {
-        "copy-webpack-plugin>p-limit>yocto-queue": true
       }
     },
     "cross-spawn": {
@@ -3062,12 +3062,23 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>ajv": true,
+        "eslint>@eslint/eslintrc>ajv": true,
         "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
         "nock>debug": true
+      }
+    },
+    "eslint>@eslint/eslintrc>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh": {
@@ -3333,6 +3344,7 @@
         "fs.stat": true,
         "fs.statSync": true,
         "os.cpus": true,
+        "os.platform": true,
         "path.basename": true,
         "path.resolve": true,
         "stream.PassThrough": true,
@@ -6235,7 +6247,7 @@
     },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
-        "copy-webpack-plugin>p-limit": true
+        "@storybook/test-runner>jest-circus>p-limit": true
       }
     },
     "mocha>log-symbols": {
@@ -6448,6 +6460,11 @@
         "process.argv.includes": true,
         "process.env": true,
         "process.platform": true
+      }
+    },
+    "postcss>source-map-js": {
+      "globals": {
+        "console": true
       }
     },
     "prettier": {
@@ -8341,10 +8358,15 @@
         "process.stdout.write": true
       },
       "packages": {
-        "eslint>ajv": true,
         "lodash": true,
+        "stylelint>table>ajv": true,
         "stylelint>table>slice-ansi": true,
         "stylelint>table>string-width": true
+      }
+    },
+    "stylelint>table>ajv": {
+      "packages": {
+        "eslint>fast-deep-equal": true
       }
     },
     "stylelint>table>slice-ansi": {
@@ -8445,10 +8467,9 @@
       }
     },
     "terser>@jridgewell/source-map": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -8866,6 +8887,7 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
