@@ -27,7 +27,7 @@ type Request = {
   slippage: string; // slippage as a percentage; e.g. '1.0' for 1%
 };
 
-type Quote = {
+export type Quote = {
   gasParams: {
     maxGas: number;
   };
