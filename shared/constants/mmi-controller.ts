@@ -37,6 +37,7 @@ export type MMIControllerOptions = {
   setTxStatusFailed: (txId: string) => void;
   updateTransaction: (txMeta: any) => void;
   setChannelId: (channelId: string) => void;
+  setConnectionRequest: (payload: any) => void;
 };
 
 export type ISignedEvent = {

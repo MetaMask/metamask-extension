@@ -92,6 +92,8 @@ export default class MMIController extends EventEmitter {
 
   private setChannelId: (channelId: string) => void;
 
+  private setConnectionRequest: (payload: any) => void;
+
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
     event: any,
@@ -128,6 +130,7 @@ export default class MMIController extends EventEmitter {
 
     this.updateTransactionHash = opts.updateTransactionHash;
     this.setChannelId = opts.setChannelId;
+    this.setConnectionRequest = opts.setConnectionRequest;
 
     this.trackTransactionEvents = opts.trackTransactionEvents;
     this.txStateManager = {
@@ -171,6 +174,14 @@ export default class MMIController extends EventEmitter {
       'handshake',
       async ({ channelId }: { channelId: string }) => {
         this.setChannelId(channelId);
+      },
+    );
+
+    this.transactionUpdateController.on(
+      'connection.request',
+      async (payload) => {
+        console.log('connection.request', payload);
+        this.setConnectionRequest(payload);
       },
     );
   } // End of constructor

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
+import { v4 as uuid } from 'uuid';
 import { Modal, ModalOverlay, Text, Box } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/modal-content';
 import { ModalHeader } from '../../component-library/modal-header/modal-header';
@@ -11,17 +12,22 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import Spinner from '../../ui/spinner';
-import { getChannelId } from '../../../ducks/institutional/institutional';
+import {
+  getChannelId,
+  getConnectionRequest,
+} from '../../../ducks/institutional/institutional';
 
 export default function QRCodeModal({ onClose, custodianName }) {
   const t = useContext(I18nContext);
   const [publicKeyData, setPublicKeyData] = useState(null);
   const [error, setError] = useState('');
   const channelId = useSelector(getChannelId);
+  const connectionRequest = useSelector(getConnectionRequest);
+  const [traceId] = useState(uuid());
 
   async function generatePublicKey() {
     try {
-      const { publicKey } = await window.crypto.subtle.generateKey(
+      const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
         {
           name: 'RSA-OAEP',
           modulusLength: 2048,
@@ -38,7 +44,8 @@ export default function QRCodeModal({ onClose, custodianName }) {
       );
 
       const publicKeyBase64 = Buffer.from(exportedPublicKey).toString('base64');
-
+      console.log('publicKeyBase64: ', publicKeyBase64);
+      console.log('privateKey: ', privateKey);
       setPublicKeyData(publicKeyBase64);
     } catch (e) {
       console.error('Error generating public key:', e);
@@ -50,11 +57,25 @@ export default function QRCodeModal({ onClose, custodianName }) {
     generatePublicKey();
   }, []);
 
-  const qrCodeValue = JSON.stringify({
-    publicKey: publicKeyData,
-    additionalInfo: {},
-    wsClientId: channelId,
-  });
+  useEffect(() => {
+    if (connectionRequest) {
+      console.log('connectionRequest: ', connectionRequest);
+    }
+  }, [connectionRequest]);
+
+  const [qrCodeValue, setQrCodeValue] = useState('');
+  useEffect(() => {
+    if (publicKeyData && channelId) {
+      const value = JSON.stringify({
+        publicKey: publicKeyData,
+        actionDescription: 'mmi:connect-request/qr-code?encrypted',
+        channelId,
+        traceId,
+      });
+      console.log('qrCodeValue: ', value);
+      setQrCodeValue(value);
+    }
+  }, [publicKeyData, channelId, traceId]);
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -74,10 +95,9 @@ export default function QRCodeModal({ onClose, custodianName }) {
           {t('custodianQRCodeScan')}
         </Text>
         {error && <Text color={TextColor.error}>{error}</Text>}
-        {publicKeyData === null && (
+        {publicKeyData === null ? (
           <Spinner color="var(--color-warning-default)" />
-        )}
-        {publicKeyData && (
+        ) : (
           <Box
             style={{
               padding: 20,

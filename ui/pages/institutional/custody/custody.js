@@ -165,7 +165,7 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          custodianByDisplayName.isQRCodeSupported
+          true
             ? setShowQRCodeModal(true)
             : setIsConfirmConnectCustodianModalVisible(true);
         }
