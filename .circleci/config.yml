@@ -404,6 +404,7 @@ jobs:
             PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
               "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
             echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
+
             # Check if the response contains valid JSON
             if ! echo "$PR_RESPONSE" | jq empty; then
                 echo "Failed to parse JSON response."
@@ -416,6 +417,15 @@ jobs:
                 echo "$PR_RESPONSE"
                 echo "Expected an array of PRs, got something else."
                 exit 1
+            fi
+
+            # Check if the array of PRs is empty
+            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
+
+            # If no PRs are found, exit gracefully
+            if [ "$PR_COUNT" -eq 0 ]; then
+              echo "No open PRs found. Exiting."
+              exit 0
             fi
 
             # Extract label names from the PR_RESPONSE
