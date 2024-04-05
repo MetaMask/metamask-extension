@@ -425,6 +425,7 @@ jobs:
             # If no PRs are found, exit gracefully
             if [ "$PR_COUNT" -eq 0 ]; then
               echo "No open PRs found. Exiting."
+              echo "false" > ./RUN_MMI_OPTIONAL
               exit 0
             fi
 
