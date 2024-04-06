@@ -156,6 +156,34 @@ export const SendSmallAmount: Story = {
   },
 };
 
+export const LongValuesAndNames: Story = {
+  args: {
+    simulationData: {
+      nativeBalanceChange: {
+        ...DUMMY_BALANCE_CHANGE,
+        difference: '0x12345678912345678',
+        isDecrease: true,
+      },
+      tokenBalanceChanges: [
+        {
+          ...DUMMY_BALANCE_CHANGE,
+          address: ERC20_TOKEN_1_MOCK,
+          difference: '0x42345909',
+          isDecrease: false,
+          standard: SimulationTokenStandard.erc20,
+        },
+        {
+        ...DUMMY_BALANCE_CHANGE,
+        address: ERC20_TOKEN_2_MOCK,
+        difference: '0x123456901',
+        isDecrease: false,
+        standard: SimulationTokenStandard.erc20,
+        },
+      ],
+    },
+  },
+};
+
 export const PolygonNativeAsset: Story = {
   args: {
     simulationData: {
