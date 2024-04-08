@@ -34,6 +34,7 @@ const TransactionAlerts = ({
   tokenSymbol,
   txData,
   isUsingPaymaster,
+  renderSimulationFailureWarning,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -80,7 +81,7 @@ const TransactionAlerts = ({
         />
       )}
 
-      {supportsEIP1559 && hasSimulationError && (
+      {supportsEIP1559 && hasSimulationError && !renderSimulationFailureWarning && (
         <SimulationErrorMessage
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
@@ -149,6 +150,7 @@ TransactionAlerts.propTypes = {
   tokenSymbol: PropTypes.string,
   txData: PropTypes.object,
   isUsingPaymaster: PropTypes.bool,
+  renderSimulationFailureWarning: PropTypes.bool,
 };
 
 export default TransactionAlerts;

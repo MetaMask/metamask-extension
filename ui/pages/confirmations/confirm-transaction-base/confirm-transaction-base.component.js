@@ -576,6 +576,7 @@ export default class ConfirmTransactionBase extends Component {
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
+          renderSimulationFailureWarning={renderSimulationFailureWarning}
         />
         {simulationDetails}
         <TransactionDetail
