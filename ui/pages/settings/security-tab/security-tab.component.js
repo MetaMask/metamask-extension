@@ -938,7 +938,8 @@ export default class SecurityTab extends PureComponent {
                 target="_blank"
               >
                 {t('learnMoreUpperCase')}
-              </a>])}
+              </a>,
+            ])}
           </div>
         </div>
 

@@ -281,7 +281,8 @@ export default function PrivacySettings() {
                 target="_blank"
               >
                 {t('learnMoreUpperCase')}
-              </a>])}
+              </a>,
+            ])}
           />
           <Setting
             value={addressBarResolution}
