@@ -237,13 +237,16 @@ export const AppHeader = ({ location }) => {
                     <PickerNetwork
                       avatarNetworkProps={{
                         backgroundColor: testNetworkBackgroundColor,
+                        role: 'img',
                       }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
-                      aria-label={t('networkMenu')}
+                      aria-label={`${t('networkMenu')} ${
+                        currentNetwork?.nickname
+                      }`}
                       labelProps={{
                         display: Display.None,
                       }}
@@ -262,8 +265,12 @@ export const AppHeader = ({ location }) => {
                   <PickerNetwork
                     avatarNetworkProps={{
                       backgroundColor: testNetworkBackgroundColor,
+                      role: 'img',
                     }}
                     margin={2}
+                    aria-label={`${t('networkMenu')} ${
+                      currentNetwork?.nickname
+                    }`}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
                     onClick={(e) => {
@@ -482,7 +489,9 @@ export const AppHeader = ({ location }) => {
                 <PickerNetwork
                   avatarNetworkProps={{
                     backgroundColor: testNetworkBackgroundColor,
+                    role: 'img',
                   }}
+                  aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

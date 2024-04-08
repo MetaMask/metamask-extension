@@ -7,6 +7,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   setUseRequestQueue,
   setPetnamesEnabled,
+  setFeatureNotificationsEnabled,
 } from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -14,17 +15,20 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getUseRequestQueue,
   getPetnamesEnabled,
+  getFeatureNotificationsEnabled,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
 const mapStateToProps = (state) => {
   const petnamesEnabled = getPetnamesEnabled(state);
+  const featureNotificationsEnabled = getFeatureNotificationsEnabled(state);
   return {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
     useRequestQueue: getUseRequestQueue(state),
     petnamesEnabled,
+    featureNotificationsEnabled,
   };
 };
 
@@ -36,6 +40,9 @@ const mapDispatchToProps = (dispatch) => {
     setUseRequestQueue: (val) => setUseRequestQueue(val),
     setPetnamesEnabled: (value) => {
       return dispatch(setPetnamesEnabled(value));
+    },
+    setFeatureNotificationsEnabled: (value) => {
+      return dispatch(setFeatureNotificationsEnabled(value));
     },
   };
 };
