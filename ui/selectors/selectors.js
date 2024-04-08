@@ -1228,8 +1228,6 @@ export const getMemoizedMetadataContracts = createDeepEqualSelector(
     getTokenList(state, forceRemoteTokenList),
   (_tokenList, addresses) => addresses,
   (tokenList, addresses) => {
-    console.log('----- Token List Count', Object.keys(tokenList).length);
-
     return addresses.map((address) =>
       Object.values(tokenList).find((identity) =>
         isEqualCaseInsensitive(identity.address, address),

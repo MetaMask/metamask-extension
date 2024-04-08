@@ -6013,8 +6013,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async #onPreferencesControllerStateChange(currentState, previousState) {
-    log.debug('Preferences state change', currentState, previousState);
-
     const { currentLocale } = currentState;
 
     const { chainId } = this.networkController.state.providerConfig;
@@ -6044,7 +6042,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    log.debug('Token detection preferences changed', { enabled: newEnabled });
+    log.debug('Updated remote token list usage', newEnabled);
 
     this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
 
