@@ -9,6 +9,9 @@ function removeLeadingZeroes(str) {
   return str.replace(/^0*(?=\d)/u, '');
 }
 
+// accounts for comma input
+const DECIMAL_INPUT_REGEX = /^\d*(\.|,)?\d*$/u;
+
 /**
  * Component that attaches a suffix or unit of measurement trailing user input, ex. 'ETH'. Also
  * allows rendering a child component underneath the input to, for example, display conversions of
@@ -33,6 +36,7 @@ export default class UnitInput extends PureComponent {
   static defaultProps = {
     value: '',
     placeholder: '0',
+    keyPressRegex: DECIMAL_INPUT_REGEX,
   };
 
   state = {
@@ -85,6 +89,11 @@ export default class UnitInput extends PureComponent {
 
     if (userInput.length && userInput.length > 1) {
       value = removeLeadingZeroes(userInput);
+    }
+
+    if (!this.props.keyPressRegex.test(value)) {
+      event.preventDefault();
+      return;
     }
 
     this.setState({
@@ -158,18 +167,6 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
-              onKeyPress={(e) =>
-                this.props.keyPressRegex &&
-                !this.props.keyPressRegex.test(e.key) &&
-                e.preventDefault()
-              }
-              onPaste={(e) =>
-                this.props.keyPressRegex &&
-                !this.props.keyPressRegex.test(
-                  e.clipboardData.getData('Text'),
-                ) &&
-                e.preventDefault()
-              }
               min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}
