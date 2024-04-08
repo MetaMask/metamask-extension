@@ -3267,10 +3267,6 @@
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },
-  "securityProviderPoweredBy": {
-    "message": "Didukung oleh $1",
-    "description": "The security provider that is providing data"
-  },
   "seeDetails": {
     "message": "Lihat detailnya"
   },

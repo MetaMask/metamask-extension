@@ -64,9 +64,9 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
-///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-import { SimulatedTransactionPreview } from '../../../components/app/simulation-preview';
-///: END:ONLY_INCLUDE_IF
+import { SimulationDetails } from '../components/simulation-details';
+import { BannerAlert } from '../../../components/component-library';
+import { Severity } from '../../../helpers/constants/design-system';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -163,12 +163,17 @@ export default class ConfirmTransactionBase extends Component {
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
+    updateTransactionValue: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
+    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
+    dismissOpenSeaToBlockaidBanner: PropTypes.func,
+    isNetworkSupportedByBlockaid: PropTypes.bool,
   };
 
   state = {
@@ -368,15 +373,9 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   updateValueToMax() {
-    const { maxValue: value, txData, updateTransaction } = this.props;
+    const { maxValue: value, txData, updateTransactionValue } = this.props;
 
-    updateTransaction({
-      ...txData,
-      txParams: {
-        ...txData.txParams,
-        value,
-      },
-    });
+    updateTransactionValue(txData.id, value);
   }
 
   renderDetails() {
@@ -400,6 +399,10 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isMultiLayerFeeNetwork,
+      hasMigratedFromOpenSeaToBlockaid,
+      hasDismissedOpenSeaToBlockaidBanner,
+      dismissOpenSeaToBlockaidBanner,
+      isNetworkSupportedByBlockaid,
     } = this.props;
 
     const { t } = this.context;
@@ -515,15 +518,41 @@ export default class ConfirmTransactionBase extends Component {
         />
       </div>
     );
-    let simulationPreview = null;
-    ///: BEGIN:ONLY_INCLUDE_IF(transaction-simulation)
-    simulationPreview = (
-      <SimulatedTransactionPreview simulationData={txData.simulationData} />
+
+    const simulationDetails = (
+      <SimulationDetails
+        simulationData={txData.simulationData}
+        transactionId={txData.id}
+      />
     );
-    ///: END:ONLY_INCLUDE_IF
+
+    const showOpenSeaToBlockaidBannerAlert =
+      hasMigratedFromOpenSeaToBlockaid &&
+      !isNetworkSupportedByBlockaid &&
+      !hasDismissedOpenSeaToBlockaidBanner;
+    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+      dismissOpenSeaToBlockaidBanner();
+    };
 
     return (
       <div className="confirm-page-container-content__details">
+        {showOpenSeaToBlockaidBannerAlert ? (
+          <BannerAlert
+            severity={Severity.Info}
+            title={t('openSeaToBlockaidTitle')}
+            description={t('openSeaToBlockaidDescription')}
+            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+            actionButtonProps={{
+              href: 'https://snaps.metamask.io/transaction-insights',
+              externalLink: true,
+            }}
+            marginBottom={4}
+            marginLeft={4}
+            marginTop={4}
+            marginRight={4}
+            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+          />
+        ) : null}
         <TransactionAlerts
           txData={txData}
           setUserAcknowledgedGasMissing={() =>
@@ -537,7 +566,7 @@ export default class ConfirmTransactionBase extends Component {
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
         />
-        {simulationPreview}
+        {simulationDetails}
         <TransactionDetail
           disableEditGasFeeButton
           disabled={isDisabled()}
@@ -1072,8 +1101,8 @@ export default class ConfirmTransactionBase extends Component {
     // as this component is made functional, useTransactionFunctionType can be used to get functionType
     const isTokenApproval =
       txData.type === TransactionType.tokenMethodSetApprovalForAll ||
-      txData.type === TransactionType.tokenMethodApprove;
-
+      txData.type === TransactionType.tokenMethodApprove ||
+      txData.type === TransactionType.tokenMethodIncreaseAllowance;
     const isContractInteraction =
       txData.type === TransactionType.contractInteraction;
 

@@ -172,6 +172,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
       bundlerServer,
+      mockServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -199,7 +200,7 @@ async function withFixtures(options, testSuite) {
       ...new Set([...privacyReport, ...privacySnapshot]),
     ].sort();
 
-    // To determine if a new host was requsted, we use the lodash difference
+    // To determine if a new host was requested, we use the lodash difference
     // method to generate an array of the items included in the first argument
     // but not in the second
     const newHosts = difference(mergedReport, privacySnapshot);
@@ -306,12 +307,12 @@ const WINDOW_TITLES = Object.freeze({
 });
 
 /**
- * @param {*} driver - selinium driver
+ * @param {*} driver - Selenium driver
  * @param {*} handlesCount - total count of windows that should be loaded
  * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: metamask extension window
+ *            1. extension: MetaMask extension window
  *            2. dapp: test-app window
- *            3. popup: metsmask extension popup window
+ *            3. popup: MetaMask extension popup window
  */
 const getWindowHandles = async (driver, handlesCount) => {
   await driver.waitUntilXWindowHandles(handlesCount);
@@ -640,6 +641,16 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const createDappTransaction = async (driver, transaction) => {
+  await openDapp(
+    driver,
+    null,
+    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
+      transaction,
+    ])}`,
+  );
+};
+
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -684,6 +695,9 @@ const PRIVATE_KEY =
 const PRIVATE_KEY_TWO =
   '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
 
+const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
@@ -720,7 +734,7 @@ const generateGanacheOptions = ({
 };
 
 // Edit priority gas fee form
-const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
   const inputs = await driver.findElements('input[type="number"]');
   const gasLimitInput = inputs[0];
   const gasPriceInput = inputs[1];
@@ -904,7 +918,7 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
 }
 
 /**
- * This method handles clicking the sign button on signature confrimation
+ * This method handles clicking the sign button on signature confirmation
  * screen.
  *
  * @param {WebDriver} driver
@@ -1067,7 +1081,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 
     await bundlerServer.start();
   } catch (error) {
-    console.log('Failed to initialise bundler', error);
+    console.log('Failed to initialize bundler', error);
     throw error;
   }
 }
@@ -1079,6 +1093,8 @@ module.exports = {
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
+  ACCOUNT_1,
+  ACCOUNT_2,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -1100,6 +1116,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
@@ -1131,5 +1148,5 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
-  editGasfeeForm,
+  editGasFeeForm,
 };
