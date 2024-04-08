@@ -1224,11 +1224,14 @@ describe('Selectors', () => {
   describe('#getShowPrivacyPolicyToast', () => {
     let dateNowSpy;
 
-    describe('mock today', () => {
+    describe('mock one day after', () => {
       beforeEach(() => {
+        const dayAfterPolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
+        dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
+
         dateNowSpy = jest
           .spyOn(Date, 'now')
-          .mockReturnValue(new Date('2024-05-06T00:00:00Z').getTime());
+          .mockReturnValue(dayAfterPolicyDate);
       });
 
       afterEach(() => {
@@ -1254,7 +1257,37 @@ describe('Selectors', () => {
       });
     });
 
-    describe('mock yesterday', () => {
+    describe('mock same day', () => {
+      beforeEach(() => {
+        dateNowSpy = jest
+          .spyOn(Date, 'now')
+          .mockReturnValue(new Date(NEW_PRIVACY_POLICY_DATE).getTime());
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+          },
+        });
+        expect(result).toBe(true);
+      });
+
+      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: true,
+          },
+        });
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('mock day before', () => {
       beforeEach(() => {
         const dayBeforePolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
         dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
