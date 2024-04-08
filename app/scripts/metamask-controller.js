@@ -316,7 +316,7 @@ import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscree
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
 import AuthenticationController from './controllers/authentication/authentication-controller';
-import { WeakDomainProxyMap } from './lib/WeakDomainProxyMap';
+import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1194,7 +1194,7 @@ export default class MetamaskController extends EventEmitter {
       getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
-      domainProxyMap: new WeakDomainProxyMap(),
+      domainProxyMap: new WeakRefObjectMap(),
     });
 
     this.permissionLogController = new PermissionLogController({

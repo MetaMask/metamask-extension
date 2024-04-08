@@ -1,10 +1,10 @@
-import { WeakDomainProxyMap } from './WeakDomainProxyMap';
+import { WeakRefObjectMap } from './WeakRefObjectMap';
 
 describe('WeakDomainProxyMap', () => {
-  let map: WeakDomainProxyMap;
+  let map: WeakRefObjectMap;
 
   beforeEach(() => {
-    map = new WeakDomainProxyMap();
+    map = new WeakRefObjectMap();
   });
 
   it('sets and gets a value', () => {
