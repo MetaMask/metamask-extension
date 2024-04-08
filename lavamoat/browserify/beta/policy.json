@@ -175,8 +175,8 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true,
-        "@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
@@ -184,14 +184,34 @@
         "TextEncoder": true
       },
       "packages": {
-        "@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@metamask/utils>@scure/base": true,
-        "@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/curves": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethersproject/abi": {
@@ -1691,32 +1711,29 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/permission-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
+        "@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/permission-controller>@metamask/json-rpc-engine": true,
         "@metamask/permission-controller>nanoid": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
       }
     },
-    "@metamask/permission-controller>@metamask/controller-utils": {
+    "@metamask/permission-controller>@metamask/base-controller": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
+        "immer": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1934,18 +1951,29 @@
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@metamask/smart-transactions-controller>@ethereumjs/util": true
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/util": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/common": {
       "packages": {
-        "@metamask/smart-transactions-controller>@ethereumjs/util": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/util": true,
         "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/util": {
+      "globals": {
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/smart-transactions-controller>@ethereumjs/tx>@ethereumjs/rlp": true,
+        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller>@ethereumjs/util": {
@@ -2312,6 +2340,8 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
