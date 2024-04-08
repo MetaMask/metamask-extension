@@ -4700,7 +4700,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1 को $2 पर देखें",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan पर $1 देखें",
