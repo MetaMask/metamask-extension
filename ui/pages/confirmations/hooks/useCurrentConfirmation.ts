@@ -59,6 +59,7 @@ const useCurrentConfirmation = () => {
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
         pendingConfirmation.type !== ApprovalType.EthSignTypedData
       ) {
+        setCurrentConfirmation(undefined);
         return;
       }
       if (pendingConfirmation.type === ApprovalType.PersonalSign) {

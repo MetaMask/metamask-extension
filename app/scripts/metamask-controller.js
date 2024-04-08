@@ -508,8 +508,8 @@ export default class MetamaskController extends EventEmitter {
 
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
-      allowedActions: ['PreferencesController:getState'],
-      allowedEvents: ['PreferencesController:stateChange'],
+      allowedActions: [],
+      allowedEvents: [],
     });
 
     this.preferencesController = new PreferencesController({
@@ -2193,6 +2193,7 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
+    this.tokenDetectionController.enable();
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
@@ -2201,6 +2202,7 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
+    this.tokenDetectionController.disable();
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
@@ -2476,8 +2478,9 @@ export default class MetamaskController extends EventEmitter {
 
       // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
       this.controllerMessenger.publish(
-        `${this.preferencesController.name}:stateChange`,
-        [state, []],
+        'PreferencesController:stateChange',
+        state,
+        [],
       );
     });
 
@@ -3115,6 +3118,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
+      setSwitchedNetworkDetails:
+        appStateController.setSwitchedNetworkDetails.bind(appStateController),
+      clearSwitchedNetworkDetails:
+        appStateController.clearSwitchedNetworkDetails.bind(appStateController),
+      setSwitchedNetworkNeverShowMessage:
+        appStateController.setSwitchedNetworkNeverShowMessage.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -3691,6 +3702,8 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker.clearAccounts();
 
       this.txController.clearUnapprovedTransactions();
+
+      this.tokenDetectionController.enable();
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
@@ -5615,11 +5628,6 @@ export default class MetamaskController extends EventEmitter {
    */
   set isClientOpen(open) {
     this._isClientOpen = open;
-    if (open) {
-      this.tokenDetectionController.enable();
-    } else {
-      this.tokenDetectionController.disable();
-    }
   }
   /* eslint-enable accessor-pairs */
 
