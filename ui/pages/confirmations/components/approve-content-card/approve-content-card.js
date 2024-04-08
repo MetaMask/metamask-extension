@@ -19,6 +19,7 @@ import {
 import { I18nContext } from '../../../../contexts/i18n';
 import { ConfirmGasDisplay } from '../confirm-gas-display';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
+import { parseStandardTokenTransactionData } from '../../../../../shared/modules/transaction.utils';
 
 export default function ApproveContentCard({
   showHeader = true,
@@ -45,6 +46,8 @@ export default function ApproveContentCard({
 }) {
   const t = useContext(I18nContext);
 
+  const tokenData = parseStandardTokenTransactionData(data);
+  const functionName = tokenData?.name;
   return (
     <Box
       className={classnames({
@@ -154,9 +157,7 @@ export default function ApproveContentCard({
                 color={TextColor.textAlternative}
                 as="h6"
               >
-                {isSetApproveForAll
-                  ? t('functionSetApprovalForAll')
-                  : t('functionApprove')}
+                {functionName}
               </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
