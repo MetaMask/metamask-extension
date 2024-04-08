@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import {
   Box,
@@ -39,7 +39,7 @@ export type AlertModalProps = {
    * The navigation component passed when more exists more than one alert.
    * It override `startAccessory` of ModalHeaderDefault and by default no navigation button is present.
    */
-  multipleAlerts?: React.ReactNode;
+  headerStartAccessory?: React.ReactNode;
   /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
   ownerId: string;
   /** The key of the specific alert to display from the `confirmAlerts` reducer.  */
@@ -135,18 +135,12 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
 
 function AcknowledgeCheckbox({
   selectedAlert,
-  setIsAlertAcknowledged,
-  isAlertAcknowledged,
+  setAlertConfirmed,
+  isConfirmed,
 }: {
   selectedAlert: Alert;
-  setIsAlertAcknowledged: React.Dispatch<
-    React.SetStateAction<{
-      [x: string]: boolean;
-    }>
-  >;
-  isAlertAcknowledged: {
-    [x: string]: boolean;
-  };
+  setAlertConfirmed: (alertKey: string, isConfirmed: boolean) => void;
+  isConfirmed: boolean;
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
@@ -163,13 +157,8 @@ function AcknowledgeCheckbox({
       <Checkbox
         label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
-        isChecked={isAlertAcknowledged[selectedAlert.key]}
-        onChange={() =>
-          setIsAlertAcknowledged((prevState) => ({
-            ...prevState,
-            [selectedAlert.key]: !prevState[selectedAlert.key],
-          }))
-        }
+        isChecked={isConfirmed}
+        onClick={() => setAlertConfirmed(selectedAlert.key, !isConfirmed)}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -178,39 +167,20 @@ function AcknowledgeCheckbox({
 }
 
 function AcknowledgeButton({
-  selectedAlertKey,
-  setAlertConfirmed,
-  isAlertAcknowledged,
-  isConfirmed,
   onAcknowledgeClick,
 }: {
-  selectedAlertKey: string;
-  setAlertConfirmed: (alertKey: string, isConfirmed: boolean) => void;
-  isAlertAcknowledged: {
-    [x: string]: boolean;
-  };
-  isConfirmed: boolean;
   onAcknowledgeClick: () => void;
 }) {
   const t = useI18nContext();
-
-  const handleAcknowledgeClick = (
-    alertKey: string,
-    isAlertConfirmed: boolean,
-  ) => {
-    setAlertConfirmed(alertKey, !isAlertConfirmed);
-    onAcknowledgeClick();
-  };
 
   return (
     <>
       <Button
         variant={ButtonVariant.Primary}
         width={BlockSize.Full}
-        onClick={() => handleAcknowledgeClick(selectedAlertKey, isConfirmed)}
+        onClick={onAcknowledgeClick}
         size={ButtonSize.Lg}
         data-testid="alert-modal-button"
-        disabled={!isAlertAcknowledged[selectedAlertKey]}
       >
         {t('gotIt')}
       </Button>
@@ -223,7 +193,7 @@ export function AlertModal({
   onAcknowledgeClick,
   alertKey,
   onClose,
-  multipleAlerts,
+  headerStartAccessory,
 }: AlertModalProps) {
   const { alerts, isAlertConfirmed, setAlertConfirmed } = useAlerts(ownerId);
 
@@ -237,9 +207,6 @@ export function AlertModal({
     return null;
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const [isAlertAcknowledged, setIsAlertAcknowledged] = useState({
-    [selectedAlert.key]: isConfirmed,
-  });
 
   return (
     <Modal isOpen onClose={handleClose}>
@@ -247,28 +214,22 @@ export function AlertModal({
       <ModalContent>
         <ModalHeader
           onClose={handleClose}
-          startAccessory={multipleAlerts}
+          startAccessory={headerStartAccessory}
           className={'alert-modal__header'}
           borderWidth={1}
-          display={multipleAlerts ? Display.InlineFlex : Display.Block}
+          display={headerStartAccessory ? Display.InlineFlex : Display.Block}
         />
         <ModalBody>
           <AlertHeader selectedAlert={selectedAlert} />
           <AlertDetails selectedAlert={selectedAlert} />
           <AcknowledgeCheckbox
             selectedAlert={selectedAlert}
-            isAlertAcknowledged={isAlertAcknowledged}
-            setIsAlertAcknowledged={setIsAlertAcknowledged}
+            isConfirmed={isConfirmed}
+            setAlertConfirmed={setAlertConfirmed}
           />
         </ModalBody>
         <ModalFooter>
-          <AcknowledgeButton
-            selectedAlertKey={selectedAlert.key}
-            onAcknowledgeClick={onAcknowledgeClick}
-            isConfirmed={isConfirmed}
-            isAlertAcknowledged={isAlertAcknowledged}
-            setAlertConfirmed={setAlertConfirmed}
-          />
+          <AcknowledgeButton onAcknowledgeClick={onAcknowledgeClick} />
         </ModalFooter>
       </ModalContent>
     </Modal>

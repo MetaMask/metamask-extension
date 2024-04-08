@@ -36,7 +36,7 @@ describe('MultipleAlertModal', () => {
 
   const defaultProps: MultipleAlertModalProps = {
     ownerId: OWNER_ID_MOCK,
-    onAcknowledgeClick: onAcknowledgeClickMock,
+    onFinalAcknowledgeClick: onAcknowledgeClickMock,
     alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
   };
@@ -49,6 +49,29 @@ describe('MultipleAlertModal', () => {
 
     expect(getByTestId('alert-modal-next-button')).toBeDefined();
   });
+
+  it('invokes the onFinalAcknowledgeClick when the button is clicked', () => {
+    const { getByTestId } = renderWithProvider(
+      <MultipleAlertModal {...defaultProps} alertKey={'data'} />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('alert-modal-button'));
+
+    expect(onAcknowledgeClickMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('render the next alert when the "Got it" button is clicked', () => {
+    const { getByTestId, getByText } = renderWithProvider(
+      <MultipleAlertModal {...defaultProps} />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('alert-modal-button'));
+
+    expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+  });
+
   describe('Navigation', () => {
     it('calls next alert when the next button is clicked', () => {
       const { getByTestId, getByText } = renderWithProvider(
@@ -61,7 +84,7 @@ describe('MultipleAlertModal', () => {
       expect(getByText(alertsMock[1].message)).toBeInTheDocument();
     });
 
-    it('calls back alert when the back button is clicked', () => {
+    it('calls previous alert when the previous button is clicked', () => {
       const selectSecondAlertMock = { ...defaultProps, alertKey: 'data' };
       const { getByTestId, getByText } = renderWithProvider(
         <MultipleAlertModal {...selectSecondAlertMock} />,
