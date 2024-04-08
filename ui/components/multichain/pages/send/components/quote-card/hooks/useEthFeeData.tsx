@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
   getGasFeeEstimates,
   getNativeCurrency,
-} from '../../../../../../ducks/metamask/metamask';
-import { EtherDenomination } from '../../../../../../../shared/constants/common';
+} from '../../../../../../../ducks/metamask/metamask';
+import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import {
   getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
-} from '../../../../../../selectors/selectors';
-import { getUsedSwapsGasPrice } from '../../../../../../ducks/swaps/swaps';
-import { formatCurrency } from '../../../../../../helpers/utils/confirm-tx.util';
+} from '../../../../../../../selectors/selectors';
+import { getUsedSwapsGasPrice } from '../../../../../../../ducks/swaps/swaps';
+import { formatCurrency } from '../../../../../../../helpers/utils/confirm-tx.util';
 
 export default function useEthFeeData(gasLimit = 0) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);

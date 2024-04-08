@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Box, Text } from '../../../../../component-library';
 import {
   AlignItems,
@@ -22,7 +22,12 @@ import ExchangeRateDisplay from '../../../../../../pages/swaps/exchange-rate-dis
 import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import { getNativeCurrency } from '../../../../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../../../../shared/constants/transaction';
-import useEthFeeData from './useEthFeeData';
+import useEthFeeData from './hooks/useEthFeeData';
+import InfoTooltip from '../../../../../ui/info-tooltip';
+import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
+import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
+import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../pages/swaps/prepare-swap-page/review-quote';
+import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
 
 const REFRESH_INTERVAL = 30;
 const NATIVE_CURRENCY_DECIMALS = 18;
@@ -34,6 +39,9 @@ const NATIVE_CURRENCY_DECIMALS = 18;
 export function QuoteCard() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+
+  const translatedNetworkName = useTranslatedNetworkName();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { isSwapQuoteLoading, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
@@ -136,8 +144,49 @@ export function QuoteCard() {
             </Text>
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.stretch}>
-            <Text color={TextColor.textAlternative} marginRight={'auto'}>
+            <Text
+              display={Display.Flex}
+              color={TextColor.textAlternative}
+              marginRight={'auto'}
+              gap={1}
+              alignItems={AlignItems.center}
+            >
               {t('transactionDetailGasHeading')}
+              <InfoTooltip
+                position="left"
+                contentText={
+                  (
+                    <>
+                      <p className="fee-card__info-tooltip-paragraph">
+                        {t('swapGasFeesSummary', [translatedNetworkName])}
+                      </p>
+                      <p className="fee-card__info-tooltip-paragraph">
+                        {t('swapGasFeesDetails')}
+                      </p>
+                      <p className="fee-card__info-tooltip-paragraph">
+                        <a
+                          className="fee-card__link"
+                          onClick={() => {
+                            /* istanbul ignore next */
+                            trackEvent({
+                              event: 'Clicked "Gas Fees: Learn More" Link',
+                              // TODO: update for swap and send
+                              category: MetaMetricsEventCategory.Swaps,
+                            });
+                            global.platform.openTab({
+                              url: GAS_FEES_LEARN_MORE_URL,
+                            });
+                          }}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {t('swapGasFeesLearnMore')}
+                        </a>
+                      </p>
+                    </>
+                  ) as any
+                }
+              />
             </Text>
             <Box display={Display.Flex} marginLeft={'auto'}>
               <Text>{formattedEthGasFee}</Text>

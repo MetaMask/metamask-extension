@@ -144,7 +144,7 @@ import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
 
-const GAS_FEES_LEARN_MORE_URL =
+export const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function ReviewQuote({ setReceiveToAmount }) {
