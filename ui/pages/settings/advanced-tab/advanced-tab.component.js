@@ -5,6 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -256,7 +257,7 @@ export default class AdvancedTab extends PureComponent {
           alignItems: AlignItems.flexStart,
         }}
         as="a"
-        href="https://support.metamask.io/hc/en-us/articles/9184393821211"
+        href={SMART_TRANSACTIONS_LEARN_MORE_URL}
         target="_blank"
         rel="noopener noreferrer"
       >
