@@ -1,10 +1,17 @@
 @use "design-system";
 
-.quote-details {
-  &__fetch-status{
+.quote-card {
+  &__fetch-status {
     font-size: design-system.$font-size-h7;
   }
   &__quote-info {
-    font-size: design-system.$font-size-h6;
+  }
+}
+
+.tippy-tooltip {
+  &#{&}-info-theme {
+    max-width: 200px;
+    padding: 16px;
+    padding-bottom: 16px;
   }
 }
