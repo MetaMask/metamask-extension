@@ -4703,7 +4703,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Afficher $1 à $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Afficher $1 sur Etherscan",

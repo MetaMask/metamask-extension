@@ -4700,7 +4700,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $2 上查看 $1",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "在 Etherscan 上查看 $1",
