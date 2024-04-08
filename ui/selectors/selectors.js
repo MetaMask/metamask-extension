@@ -1753,7 +1753,7 @@ export function getShowSurveyToast(state) {
 export function getShowPrivacyPolicyToast(state) {
   const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
   const newPrivacyPolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
-  const currentDate = new Date();
+  const currentDate = new Date(Date.now());
   return (
     !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
   );

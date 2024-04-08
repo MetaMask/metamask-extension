@@ -11,6 +11,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
+import { NEW_PRIVACY_POLICY_DATE } from '../helpers/constants/new-privacy-policy';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -1217,6 +1218,64 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('#getShowPrivacyPolicyToast', () => {
+    let dateNowSpy;
+
+    describe('mock today', () => {
+      beforeEach(() => {
+        dateNowSpy = jest
+          .spyOn(Date, 'now')
+          .mockReturnValue(new Date('2024-05-06T00:00:00Z').getTime());
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it('shows the privacy policy toast when not yet seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+          },
+        });
+        expect(result).toBe(true);
+      });
+
+      it('does not show the privacy policy toast when seen and on or after the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: true,
+          },
+        });
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('mock yesterday', () => {
+      beforeEach(() => {
+        const dayBeforePolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
+        dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
+
+        dateNowSpy = jest
+          .spyOn(Date, 'now')
+          .mockReturnValue(dayBeforePolicyDate.getTime());
+      });
+
+      afterEach(() => {
+        dateNowSpy.mockRestore();
+      });
+
+      it('does not show the privacy policy toast before the policy date', () => {
+        const result = selectors.getShowPrivacyPolicyToast({
+          metamask: {
+            newPrivacyPolicyToastClickedOrClosed: null,
+          },
+        });
+        expect(result).toBe(false);
+      });
     });
   });
 
