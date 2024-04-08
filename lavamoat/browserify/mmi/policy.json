@@ -761,6 +761,11 @@
         "fetch": true
       }
     },
+    "@metamask-institutional/rpc-allowlist": {
+      "globals": {
+        "URL": true
+      }
+    },
     "@metamask-institutional/sdk": {
       "globals": {
         "URLSearchParams": true,
