@@ -2859,10 +2859,10 @@
     "message": "New password (8 characters min)"
   },
   "newPrivacyPolicyActionButton": {
-    "message": "Click here to read it"
+    "message": "Read more"
   },
   "newPrivacyPolicyTitle": {
-    "message": "Our privacy policy has been updated"
+    "message": "We’ve updated our privacy policy"
   },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
