@@ -516,7 +516,6 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       messenger: preferencesMessenger,
-      tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
       onKeyringStateChange: (listener) =>
@@ -2217,12 +2216,19 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+
+    const { useCurrencyRateCheck } = preferencesControllerState;
+
+    if (useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
         this.networkController.state.selectedNetworkClientId,
       );
     }
-    if (this.preferencesController.store.getState().useTokenDetection) {
+
+    if (this.#isTokenListRequired(preferencesControllerState)) {
       this.tokenListController.start();
     }
   }
@@ -2231,10 +2237,17 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+
+    const { useCurrencyRateCheck } = preferencesControllerState;
+
+    if (useCurrencyRateCheck) {
       this.currencyRateController.stopAllPolling();
     }
-    if (this.preferencesController.store.getState().useTokenDetection) {
+
+    if (this.#isTokenListRequired(preferencesControllerState)) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
@@ -2495,25 +2508,11 @@ export default class MetamaskController extends EventEmitter {
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
 
-    this.preferencesController.store.subscribe(async (state) => {
-      const { currentLocale } = state;
-
-      const { chainId } = this.networkController.state.providerConfig;
-      await updateCurrentLocale(currentLocale);
-
-      if (state.incomingTransactionsPreferences?.[chainId]) {
-        this.txController.startIncomingTransactionPolling();
-      } else {
-        this.txController.stopIncomingTransactionPolling();
-      }
-
-      // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-      this.controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        state,
-        [],
-      );
-    });
+    this.preferencesController.store.subscribe(
+      previousValueComparator((prevState, currState) => {
+        this.#onPreferencesControllerStateChange(currState, prevState);
+      }, this.preferencesController.store.getState()),
+    );
 
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,
@@ -6011,5 +6010,58 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       { updatedTransactionMeta },
     );
+  }
+
+  async #onPreferencesControllerStateChange(currentState, previousState) {
+    log.debug('Preferences state change', currentState, previousState);
+
+    const { currentLocale } = currentState;
+
+    const { chainId } = this.networkController.state.providerConfig;
+    await updateCurrentLocale(currentLocale);
+
+    if (currentState.incomingTransactionsPreferences?.[chainId]) {
+      this.txController.startIncomingTransactionPolling();
+    } else {
+      this.txController.stopIncomingTransactionPolling();
+    }
+
+    this.#checkTokenDetectionPreferences(currentState, previousState);
+
+    // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
+    this.controllerMessenger.publish(
+      'PreferencesController:stateChange',
+      currentState,
+      [],
+    );
+  }
+
+  #checkTokenDetectionPreferences(currentState, previousState) {
+    const previousEnabled = this.#isTokenListRequired(previousState);
+    const newEnabled = this.#isTokenListRequired(currentState);
+
+    if (previousEnabled === newEnabled) {
+      return;
+    }
+
+    log.debug('Token detection preferences changed', { enabled: newEnabled });
+
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
+
+    if (newEnabled) {
+      this.tokenListController.start();
+    } else {
+      this.tokenListController.clearingTokenListData();
+      this.tokenListController.stop();
+    }
+  }
+
+  #isTokenListRequired(preferencesControllerState) {
+    const {
+      useTokenDetection,
+      preferences: { petnamesEnabled },
+    } = preferencesControllerState;
+
+    return useTokenDetection || petnamesEnabled;
   }
 }
